@@ -18,7 +18,7 @@
  */
 
 import { request } from "graphql-request";
-import { LoginPayload } from "./types";
+import { LoginPayload } from "../types";
 
 const GET_DATABASES_QUERY = `
     query {

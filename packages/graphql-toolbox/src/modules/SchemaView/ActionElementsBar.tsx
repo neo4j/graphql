@@ -27,9 +27,17 @@ interface Props {
     formatTheCode: () => void;
     introspect: () => Promise<void>;
     onSubmit: () => void;
+    saveAsFavorite: () => void;
 }
 
-export const ActionElementsBar = ({ hasSchema, loading, formatTheCode, introspect, onSubmit }: Props) => {
+export const ActionElementsBar = ({
+    hasSchema,
+    loading,
+    formatTheCode,
+    introspect,
+    onSubmit,
+    saveAsFavorite,
+}: Props) => {
     return (
         <div className="flex items-center w-full pb-4">
             <div className="justify-start">
@@ -49,6 +57,19 @@ export const ActionElementsBar = ({ hasSchema, loading, formatTheCode, introspec
                 </ProTooltip>
             </div>
             <div className="flex-1 flex justify-end">
+                <ProTooltip tooltipText="Save as Favorite" width={120} left={-35} top={45}>
+                    <Button
+                        data-test-schema-editor-favourite-button
+                        className="mr-4"
+                        color="neutral"
+                        fill="outlined"
+                        style={{ padding: "0.75rem" }}
+                        onClick={saveAsFavorite}
+                        disabled={loading}
+                    >
+                        <HeroIcon className="h-6 w-6" iconName="StarIcon" type="outline" />
+                    </Button>
+                </ProTooltip>
                 <ProTooltip tooltipText="Prettify" width={60} left={-2} top={45}>
                     <Button
                         data-test-schema-editor-prettify-button

@@ -22,7 +22,7 @@ import * as neo4j from "neo4j-driver";
 import { encrypt, decrypt } from "../utils/utils";
 import { LOCAL_STATE_LOGIN, VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
 import { resolveNeo4jDesktopLoginPayload } from "./utils";
-import { LoginPayload } from "./types";
+import { LoginPayload } from "../types";
 import { Storage } from "../utils/storage";
 
 interface LoginOptions {

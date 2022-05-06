@@ -18,7 +18,6 @@
  */
 
 import { useContext, useEffect, useRef, useState } from "react";
-import { GraphQLDateTime, directives } from "@neo4j/graphql";
 import { DirectiveLocation, GraphQLDirective, GraphQLObjectType, GraphQLSchema, GraphQLString } from "graphql";
 import { EditorFromTextArea } from "codemirror";
 import { CodeMirror } from "../../utils/utils";
@@ -62,7 +61,6 @@ export const SchemaEditor = ({ loading, mirrorRef }: Props) => {
                 },
             }),
             directives: [
-                ...Object.values(directives),
                 new GraphQLDirective({
                     name: "test",
                     description: "Use for bla",
@@ -74,7 +72,6 @@ export const SchemaEditor = ({ loading, mirrorRef }: Props) => {
                     locations: [DirectiveLocation.OBJECT, DirectiveLocation.FIELD_DEFINITION],
                 }),
             ],
-            types: [GraphQLDateTime],
         });
 
         const element = ref.current as HTMLTextAreaElement;

@@ -35,7 +35,7 @@ export class Storage {
         return window.localStorage.getItem(key);
     }
 
-    public static retrieveJSON(key: string): string | null {
+    public static retrieveJSON(key: string): any | null {
         if (!window.localStorage) return null;
         const data = this.retrieve(key);
         if (!data) return null;

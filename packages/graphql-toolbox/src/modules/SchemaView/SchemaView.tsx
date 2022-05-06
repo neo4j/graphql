@@ -28,6 +28,7 @@ import {
     LOCAL_STATE_CREATE_CONSTRAINT,
     LOCAL_STATE_ENABLE_DEBUG,
     LOCAL_STATE_ENABLE_REGEX,
+    LOCAL_STATE_FAVOURITES,
     LOCAL_STATE_TYPE_DEFS,
 } from "../../constants";
 import { formatCode, ParserOptions } from "../EditorView/utils";
@@ -40,10 +41,12 @@ import { SchemaSettings } from "./SchemaSettings";
 import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
 import { ActionElementsBar } from "./ActionElementsBar";
 import { SchemaEditor } from "./SchemaEditor";
+import { Favourite } from "src/types";
+import { Favourites } from "./Favourites";
 
 export interface Props {
     hasSchema: boolean;
-    onChange: (s: GraphQLSchema) => void;
+    onChange: (schema: GraphQLSchema) => void;
 }
 
 export const SchemaView = ({ hasSchema, onChange }: Props) => {
@@ -52,7 +55,6 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const [error, setError] = useState<string | GraphQLError>("");
     const [loading, setLoading] = useState(false);
     const refForEditorMirror = useRef<EditorFromTextArea | null>(null);
-
     const [isDebugChecked, setIsDebugChecked] = useState<string | null>(Storage.retrieve(LOCAL_STATE_ENABLE_DEBUG));
     const [isCheckConstraintChecked, setIsCheckConstraintChecked] = useState<string | null>(
         Storage.retrieve(LOCAL_STATE_CHECK_CONSTRAINT)
@@ -61,11 +63,28 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
         Storage.retrieve(LOCAL_STATE_CREATE_CONSTRAINT)
     );
     const [isRegexChecked, setIsRegexChecked] = useState<string | null>(Storage.retrieve(LOCAL_STATE_ENABLE_REGEX));
+    const [favourites, setFavourites] = useState<Favourite[] | null>(Storage.retrieveJSON(LOCAL_STATE_FAVOURITES));
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
     const formatTheCode = (): void => {
         if (!refForEditorMirror.current) return;
         formatCode(refForEditorMirror.current, ParserOptions.GRAPH_QL);
+    };
+
+    const saveAsFavourite = (): void => {
+        const value = refForEditorMirror.current?.getValue();
+        if (!value) return;
+        const newFavourites: Favourite[] = [
+            ...(favourites || []),
+            { id: new Date().getTime().toString(), name: value.substring(0, 24), typeDefs: value },
+        ];
+        setFavourites(newFavourites);
+        Storage.storeJSON(LOCAL_STATE_FAVOURITES, newFavourites);
+    };
+
+    const setTypeDefsFromFavourite = (typeDefs: string) => {
+        if (!typeDefs || !refForEditorMirror) return;
+        refForEditorMirror.current?.setValue(typeDefs);
     };
 
     const buildSchema = useCallback(
@@ -134,7 +153,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     return (
         <div className="w-full flex">
             <div className="h-content-container flex justify-start w-96 bg-white">
-                <div className="p-6">
+                <div className="p-6 w-full">
                     <SchemaSettings
                         isRegexChecked={isRegexChecked}
                         isDebugChecked={isDebugChecked}
@@ -144,6 +163,11 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                         setIsDebugChecked={setIsDebugChecked}
                         setIsCheckConstraintChecked={setIsCheckConstraintChecked}
                         setIsCreateConstraintChecked={setIsCreateConstraintChecked}
+                    />
+                    <Favourites
+                        favourites={favourites}
+                        setFavourites={setFavourites}
+                        onSelectFavourite={setTypeDefsFromFavourite}
                     />
                 </div>
             </div>
@@ -155,6 +179,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                         formatTheCode={formatTheCode}
                         onSubmit={onSubmit}
                         introspect={introspect}
+                        saveAsFavorite={saveAsFavourite}
                     />
                     <SchemaErrorDisplay error={error} />
                     <SchemaEditor mirrorRef={refForEditorMirror} loading={loading} />
