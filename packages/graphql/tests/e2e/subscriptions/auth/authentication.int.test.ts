@@ -100,7 +100,7 @@ describe("Subscription auth", () => {
         expect(wsClient.errors).toEqual([]);
     });
 
-    test("authentication fails", async () => {
+    test("unauthenticated subscription does not send events", async () => {
         wsClient = new WebSocketTestClient(server.wsPath);
         await wsClient.subscribe(`
                                 subscription {
@@ -115,6 +115,40 @@ describe("Subscription auth", () => {
         const result = await createMovie("movie1");
 
         expect(result.body.errors).toBeUndefined();
+        expect(wsClient.events).toEqual([]);
+        expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
+    });
+
+    test("unauthenticated subscription fails", async () => {
+        wsClient = new WebSocketTestClient(server.wsPath);
+        await wsClient.subscribe(`
+                                subscription {
+                                    ${typeMovie.operations.subscribe.created} {
+                                        ${typeMovie.operations.subscribe.payload.created} {
+                                            title
+                                        }
+                                    }
+                                }
+                                `);
+
+        await wsClient.waitForNextEvent();
+        expect(wsClient.events).toEqual([]);
+        expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
+    });
+
+    test("authentication fails with wrong secret", async () => {
+        const badJwtToken = createJwtHeader("wrong-secret", { roles: ["admin"] });
+        wsClient = new WebSocketTestClient(server.wsPath, badJwtToken);
+        await wsClient.subscribe(`
+                                subscription {
+                                    ${typeMovie.operations.subscribe.created} {
+                                        ${typeMovie.operations.subscribe.payload.created} {
+                                            title
+                                        }
+                                    }
+                                }
+                                `);
+        await wsClient.waitForNextEvent();
         expect(wsClient.events).toEqual([]);
         expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
     });

@@ -27,6 +27,8 @@ export class WebSocketTestClient {
     private path: string;
     private client: Client;
 
+    private onEvent: (() => void) | undefined;
+
     constructor(path: string, jwt?: string) {
         this.path = path;
         this.client = createClient({
@@ -38,6 +40,13 @@ export class WebSocketTestClient {
         });
     }
 
+    public waitForNextEvent(): Promise<void> {
+        if (this.onEvent) return Promise.reject("Cannot wait for multiple events");
+        return new Promise<void>((resolve) => {
+            this.onEvent = resolve;
+        });
+    }
+
     public async subscribe(query: string): Promise<void> {
         await new Promise<void>((resolve, reject) => {
             this.client.subscribe(
@@ -46,6 +55,10 @@ export class WebSocketTestClient {
                     next: (value) => {
                         if (value.errors) this.errors = [...this.errors, ...value.errors];
                         else if (value.data) this.events.push(value.data);
+                        if (this.onEvent) {
+                            this.onEvent();
+                            this.onEvent = undefined;
+                        }
                     },
                     error(err) {
                         reject(err);
