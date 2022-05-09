@@ -7,6 +7,9 @@ on:
         description: "API token for Codecov, if it is available in the current context"
         required: false
 
+env:
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
 jobs:
   tck-tests:
     runs-on: ubuntu-latest
@@ -29,7 +32,7 @@ jobs:
         run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run TCK tests
         run: yarn --cwd packages/graphql run test:tck --coverage
-      - if: ${{ secrets.CODECOV_TOKEN != '' }}
+      - if: ${{ env.CODECOV_TOKEN != '' }}
         name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
@@ -51,7 +54,7 @@ jobs:
         run: yarn
       - name: Run Schema tests
         run: yarn --cwd packages/graphql run test:schema --coverage
-      - if: ${{ secrets.CODECOV_TOKEN != '' }}
+      - if: ${{ env.CODECOV_TOKEN != '' }}
         name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
