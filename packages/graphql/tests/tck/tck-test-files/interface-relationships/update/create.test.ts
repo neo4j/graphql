@@ -98,6 +98,8 @@ describe("Interface Relationships - Update create", () => {
             WITH this
             CALL {
             WITH this
+            CALL {
+            WITH this
             MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
             RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
             UNION
@@ -105,7 +107,8 @@ describe("Interface Relationships - Update create", () => {
             MATCH (this)-[:ACTED_IN]->(this_Series:Series)
             RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
-            WITH this, collect(actedIn) AS actedIn
+            RETURN collect(actedIn) AS actedIn
+            }
             RETURN collect(DISTINCT this { .name, actedIn: actedIn }) AS data"
         `);
 
