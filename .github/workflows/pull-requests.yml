@@ -195,7 +195,7 @@ jobs:
           path: packages/plugins/${{ matrix.package }}/coverage/
 
   e2e-tests-plugins:
-    uses: ./.github/workflows/reusable/subscriptions-plugin-rabbitmq-e2e-test.yml
+    uses: ./.github/workflows/reusable-subscriptions-plugin-rabbitmq-e2e-test.yml
     # needs:
     #   - cache-dependencies
 
