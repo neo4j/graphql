@@ -210,10 +210,16 @@ function createInterfaceProjectionAndParams({
 
         return subquery.join("\n");
     });
-    const interfaceProjection = [`WITH ${fullWithVars.join(", ")}`, "CALL {", subqueries.join("\nUNION\n"), "}"];
+    let interfaceProjection = [`WITH ${fullWithVars.join(", ")}`, "CALL {", subqueries.join("\nUNION\n"), "}"];
 
     if (field.typeMeta.array) {
-        interfaceProjection.push(`WITH ${fullWithVars.join(", ")}, collect(${field.fieldName}) AS ${field.fieldName}`);
+        interfaceProjection = [
+            `WITH ${fullWithVars.join(", ")}`,
+            "CALL {",
+            ...interfaceProjection,
+            `RETURN collect(${field.fieldName}) AS ${field.fieldName}`,
+            "}",
+        ];
     }
 
     if (Object.keys(whereArgs).length) {
