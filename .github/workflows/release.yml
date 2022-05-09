@@ -116,24 +116,7 @@ jobs:
   #         echo "$RES" | grep -qv "error"
 
   package-tests:
-    needs:
-      - cache-dependencies
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn
-      - name: Build graphql
-        run: yarn build
-        working-directory: packages/graphql
-      - name: Run @neo4j/graphql package tests
-        run: yarn --cwd packages/graphql run test:package-tests
+    uses: ./.github/workflows/reusable-api-library-tests.yml
 
   integration-tests-on-prem:
     needs:
