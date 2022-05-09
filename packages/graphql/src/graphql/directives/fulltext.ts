@@ -21,7 +21,6 @@ import {
     DirectiveLocation,
     GraphQLDirective,
     GraphQLInputObjectType,
-    GraphQLInt,
     GraphQLList,
     GraphQLNonNull,
     GraphQLString,
