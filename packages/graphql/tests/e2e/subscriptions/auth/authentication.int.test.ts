@@ -29,53 +29,121 @@ import neo4j from "../../setup/neo4j";
 import { createJwtHeader } from "../../../utils/create-jwt-request";
 
 describe("Subscription auth", () => {
-    let driver: Driver;
-
     const typeMovie = generateUniqueType("Movie");
-
-    let server: TestGraphQLServer;
-    let wsClient: WebSocketTestClient;
+    let driver: Driver;
     let jwtToken: string;
 
     beforeAll(async () => {
         jwtToken = createJwtHeader("secret", { roles: ["admin"] });
-        const typeDefs = `
-         type ${typeMovie} {
-             title: String!
-         }
-
-         extend type ${typeMovie} @auth(rules: [{ isAuthenticated: true }])
-         `;
-
         driver = await neo4j();
-
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            driver,
-            plugins: {
-                subscriptions: new TestSubscriptionsPlugin(),
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
-            },
-        });
-
-        server = new ApolloTestServer(neoSchema);
-        await server.start();
     });
-
-    afterEach(async () => {
-        await wsClient.close();
-    });
-
     afterAll(async () => {
-        await server.close();
         await driver.close();
     });
 
-    test("authentication pass", async () => {
-        wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
-        await wsClient.subscribe(`
+    describe("auth without operations", () => {
+        let server: TestGraphQLServer;
+        let wsClient: WebSocketTestClient;
+
+        beforeAll(async () => {
+            const typeDefs = `
+            type ${typeMovie} {
+                title: String!
+            }
+
+            extend type ${typeMovie} @auth(rules: [{ isAuthenticated: true }])
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+                plugins: {
+                    subscriptions: new TestSubscriptionsPlugin(),
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
+
+            server = new ApolloTestServer(neoSchema);
+            await server.start();
+        });
+
+        afterEach(async () => {
+            await wsClient.close();
+        });
+
+        afterAll(async () => {
+            await server.close();
+        });
+
+        test("authentication pass", async () => {
+            wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
+            await wsClient.subscribe(`
+                subscription {
+                    ${typeMovie.operations.subscribe.created} {
+                        ${typeMovie.operations.subscribe.payload.created} {
+                            title
+                        }
+                    }
+                }
+                `);
+
+            const result = await createMovie("movie1", server);
+
+            expect(result.body.errors).toBeUndefined();
+            expect(wsClient.events).toEqual([
+                {
+                    [typeMovie.operations.subscribe.created]: {
+                        [typeMovie.operations.subscribe.payload.created]: {
+                            title: "movie1",
+                        },
+                    },
+                },
+            ]);
+            expect(wsClient.errors).toEqual([]);
+        });
+
+        test("unauthenticated subscription does not send events", async () => {
+            wsClient = new WebSocketTestClient(server.wsPath);
+            await wsClient.subscribe(`
+                    subscription {
+                        ${typeMovie.operations.subscribe.created} {
+                            ${typeMovie.operations.subscribe.payload.created} {
+                                title
+                            }
+                        }
+                    }
+                    `);
+
+            const result = await createMovie("movie1", server);
+
+            expect(result.body.errors).toBeUndefined();
+            expect(wsClient.events).toEqual([]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
+        });
+
+        test("unauthenticated subscription fails", async () => {
+            wsClient = new WebSocketTestClient(server.wsPath);
+            await wsClient.subscribe(`
+                        subscription {
+                            ${typeMovie.operations.subscribe.created} {
+                                ${typeMovie.operations.subscribe.payload.created} {
+                                    title
+                                }
+                            }
+                        }
+                        `);
+
+            await wsClient.waitForNextEvent();
+            expect(wsClient.events).toEqual([]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
+        });
+
+        test("authentication fails with wrong secret", async () => {
+            const badJwtToken = createJwtHeader("wrong-secret", { roles: ["admin"] });
+            wsClient = new WebSocketTestClient(server.wsPath, badJwtToken);
+            await wsClient.subscribe(`
                             subscription {
                                 ${typeMovie.operations.subscribe.created} {
                                     ${typeMovie.operations.subscribe.payload.created} {
@@ -84,76 +152,243 @@ describe("Subscription auth", () => {
                                 }
                             }
                             `);
+            await wsClient.waitForNextEvent();
+            expect(wsClient.events).toEqual([]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
+        });
+    });
 
-        const result = await createMovie("movie1");
+    describe("auth with subscribe operations", () => {
+        let server: TestGraphQLServer;
+        let wsClient: WebSocketTestClient;
 
-        expect(result.body.errors).toBeUndefined();
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: {
-                        title: "movie1",
+        beforeAll(async () => {
+            const typeDefs = `
+            type ${typeMovie} {
+                title: String!
+            }
+
+            extend type ${typeMovie} @auth(rules: [{ isAuthenticated: true, operations: [SUBSCRIBE] }])
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+                plugins: {
+                    subscriptions: new TestSubscriptionsPlugin(),
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
+
+            server = new ApolloTestServer(neoSchema);
+            await server.start();
+        });
+
+        afterEach(async () => {
+            await wsClient.close();
+        });
+
+        afterAll(async () => {
+            await server.close();
+        });
+
+        test("authentication pass", async () => {
+            wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
+            await wsClient.subscribe(`
+                subscription {
+                    ${typeMovie.operations.subscribe.created} {
+                        ${typeMovie.operations.subscribe.payload.created} {
+                            title
+                        }
+                    }
+                }
+                `);
+
+            const result = await createMovie("movie1", server);
+
+            expect(result.body.errors).toBeUndefined();
+            expect(wsClient.events).toEqual([
+                {
+                    [typeMovie.operations.subscribe.created]: {
+                        [typeMovie.operations.subscribe.payload.created]: {
+                            title: "movie1",
+                        },
                     },
                 },
-            },
-        ]);
-        expect(wsClient.errors).toEqual([]);
+            ]);
+            expect(wsClient.errors).toEqual([]);
+        });
+
+        test("unauthenticated subscription does not send events", async () => {
+            wsClient = new WebSocketTestClient(server.wsPath);
+            await wsClient.subscribe(`
+                    subscription {
+                        ${typeMovie.operations.subscribe.created} {
+                            ${typeMovie.operations.subscribe.payload.created} {
+                                title
+                            }
+                        }
+                    }
+                    `);
+
+            const result = await createMovie("movie1", server);
+
+            expect(result.body.errors).toBeUndefined();
+            expect(wsClient.events).toEqual([]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
+        });
     });
 
-    test("unauthenticated subscription does not send events", async () => {
-        wsClient = new WebSocketTestClient(server.wsPath);
-        await wsClient.subscribe(`
-                                subscription {
-                                    ${typeMovie.operations.subscribe.created} {
-                                        ${typeMovie.operations.subscribe.payload.created} {
-                                            title
-                                        }
-                                    }
-                                }
-                                `);
+    describe("auth with multiple rules with different operations", () => {
+        let server: TestGraphQLServer;
+        let wsClient: WebSocketTestClient;
 
-        const result = await createMovie("movie1");
+        beforeAll(async () => {
+            const typeDefs = `
+            type ${typeMovie} {
+                title: String!
+            }
 
-        expect(result.body.errors).toBeUndefined();
-        expect(wsClient.events).toEqual([]);
-        expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
+            extend type ${typeMovie} @auth(rules: [{ isAuthenticated: false, operations: [DELETE] }, { isAuthenticated: true, operations: [SUBSCRIBE] }])
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+                plugins: {
+                    subscriptions: new TestSubscriptionsPlugin(),
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
+
+            server = new ApolloTestServer(neoSchema);
+            await server.start();
+        });
+
+        afterEach(async () => {
+            await wsClient.close();
+        });
+
+        afterAll(async () => {
+            await server.close();
+        });
+
+        test("authentication pass", async () => {
+            wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
+            await wsClient.subscribe(`
+                subscription {
+                    ${typeMovie.operations.subscribe.created} {
+                        ${typeMovie.operations.subscribe.payload.created} {
+                            title
+                        }
+                    }
+                }
+                `);
+
+            const result = await createMovie("movie1", server);
+
+            expect(result.body.errors).toBeUndefined();
+            expect(wsClient.events).toEqual([
+                {
+                    [typeMovie.operations.subscribe.created]: {
+                        [typeMovie.operations.subscribe.payload.created]: {
+                            title: "movie1",
+                        },
+                    },
+                },
+            ]);
+            expect(wsClient.errors).toEqual([]);
+        });
+
+        test("unauthenticated subscription does not send events", async () => {
+            wsClient = new WebSocketTestClient(server.wsPath);
+            await wsClient.subscribe(`
+                    subscription {
+                        ${typeMovie.operations.subscribe.created} {
+                            ${typeMovie.operations.subscribe.payload.created} {
+                                title
+                            }
+                        }
+                    }
+                    `);
+
+            const result = await createMovie("movie1", server);
+
+            expect(result.body.errors).toBeUndefined();
+            expect(wsClient.events).toEqual([]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
+        });
     });
 
-    test("unauthenticated subscription fails", async () => {
-        wsClient = new WebSocketTestClient(server.wsPath);
-        await wsClient.subscribe(`
-                                subscription {
-                                    ${typeMovie.operations.subscribe.created} {
-                                        ${typeMovie.operations.subscribe.payload.created} {
-                                            title
-                                        }
-                                    }
-                                }
-                                `);
+    describe("auth without subscribe oprations", () => {
+        let server: TestGraphQLServer;
+        let wsClient: WebSocketTestClient;
 
-        await wsClient.waitForNextEvent();
-        expect(wsClient.events).toEqual([]);
-        expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
+        beforeAll(async () => {
+            const typeDefs = `
+            type ${typeMovie} {
+                title: String!
+            }
+
+            extend type ${typeMovie} @auth(rules: [{ isAuthenticated: true, operations: [CREATE] }])
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+                plugins: {
+                    subscriptions: new TestSubscriptionsPlugin(),
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
+
+            server = new ApolloTestServer(neoSchema);
+            await server.start();
+        });
+
+        afterEach(async () => {
+            await wsClient.close();
+        });
+
+        afterAll(async () => {
+            await server.close();
+        });
+
+        test("unauthenticated subscription pass and send events", async () => {
+            wsClient = new WebSocketTestClient(server.wsPath);
+            await wsClient.subscribe(`
+                    subscription {
+                        ${typeMovie.operations.subscribe.created} {
+                            ${typeMovie.operations.subscribe.payload.created} {
+                                title
+                            }
+                        }
+                    }
+                    `);
+
+            const result = await createMovie("movie1", server);
+
+            expect(result.body.errors).toBeUndefined();
+            expect(wsClient.events).toEqual([
+                {
+                    [typeMovie.operations.subscribe.created]: {
+                        [typeMovie.operations.subscribe.payload.created]: {
+                            title: "movie1",
+                        },
+                    },
+                },
+            ]);
+            expect(wsClient.errors).toEqual([]);
+        });
     });
 
-    test("authentication fails with wrong secret", async () => {
-        const badJwtToken = createJwtHeader("wrong-secret", { roles: ["admin"] });
-        wsClient = new WebSocketTestClient(server.wsPath, badJwtToken);
-        await wsClient.subscribe(`
-                                subscription {
-                                    ${typeMovie.operations.subscribe.created} {
-                                        ${typeMovie.operations.subscribe.payload.created} {
-                                            title
-                                        }
-                                    }
-                                }
-                                `);
-        await wsClient.waitForNextEvent();
-        expect(wsClient.events).toEqual([]);
-        expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
-    });
-
-    async function createMovie(title: string): Promise<Response> {
+    async function createMovie(title: string, server: TestGraphQLServer): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
             .set("authorization", jwtToken)
