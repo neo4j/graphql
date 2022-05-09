@@ -40,6 +40,3 @@ export {
     Neo4jGraphQLAuthenticationError,
     Neo4jGraphQLForbiddenError,
 } from "./classes";
-
-export { GraphQLDateTime } from "./schema/types/scalars";
-export * as directives from "./schema/validation/directives";

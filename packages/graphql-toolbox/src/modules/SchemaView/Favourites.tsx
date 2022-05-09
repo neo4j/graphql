@@ -23,13 +23,19 @@ import { Favourite } from "../../types";
 import { LOCAL_STATE_FAVOURITES } from "src/constants";
 import { Fragment, useState } from "react";
 
-interface PropsTwo {
+interface NameComponentProps {
     name: string;
     saveName: (newName: string) => void;
     onSelectFavourite: () => void;
 }
 
-const NameComponent = ({ name, saveName, onSelectFavourite }: PropsTwo) => {
+interface FavouritesProps {
+    favourites: Favourite[] | null;
+    setFavourites: (nextState: Favourite[] | null) => void;
+    onSelectFavourite: (typeDefs: string) => void;
+}
+
+const NameComponent = ({ name, saveName, onSelectFavourite }: NameComponentProps) => {
     const [editMode, setEditMode] = useState<boolean>(false);
     const [nameValue, setNameValue] = useState<string>(name);
 
@@ -71,13 +77,7 @@ const NameComponent = ({ name, saveName, onSelectFavourite }: PropsTwo) => {
     );
 };
 
-interface Props {
-    favourites: Favourite[] | null;
-    setFavourites: (nextState: Favourite[] | null) => void;
-    onSelectFavourite: (typeDefs: string) => void;
-}
-
-export const Favourites = ({ favourites, setFavourites, onSelectFavourite }: Props) => {
+export const Favourites = ({ favourites, setFavourites, onSelectFavourite }: FavouritesProps) => {
     const deleteFavourite = (id: string): void => {
         const nextFavs = favourites?.filter((fav) => fav.id !== id) || null;
         setFavourites(nextFavs);

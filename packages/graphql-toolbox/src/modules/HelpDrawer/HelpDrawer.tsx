@@ -125,7 +125,7 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
                 )}
 
                 {!showDocs ? (
-                    <div className="absolute bottom-8 right-28 text-primaryBlue font-bold text-sm">
+                    <div className="absolute bottom-8 right-28 n-text-primary-40 font-bold text-sm">
                         <CannyFeedbackButton />
                     </div>
                 ) : null}

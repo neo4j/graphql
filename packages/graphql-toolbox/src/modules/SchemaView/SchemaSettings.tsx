@@ -81,7 +81,7 @@ export const SchemaSettings = ({
         Storage.store(LOCAL_STATE_CREATE_CONSTRAINT, nextCreate);
     };
 
-    const InfoToolTip = ({ text, width }): JSX.Element => {
+    const InfoToolTip = ({ text, width }: { text: React.ReactNode; width: number }): JSX.Element => {
         return (
             <ProTooltip
                 tooltipText={text}
