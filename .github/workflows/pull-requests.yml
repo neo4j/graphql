@@ -41,7 +41,7 @@ jobs:
           eslint_flags: "."
 
   package-tests:
-    uses: ./.github/workflows/reusable-api-library-tests.yml
+    uses: ./.github/workflows/reusable-package-tests.yml
 
   neo-push-tests:
     needs:
