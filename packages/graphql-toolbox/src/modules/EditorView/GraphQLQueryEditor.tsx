@@ -80,7 +80,7 @@ export const GraphQLQueryEditor = ({
             lint: {
                 // @ts-ignore
                 schema: schema,
-                validationRules: null,
+                validationRules: [],
             },
             hintOptions: {
                 schema: schema,

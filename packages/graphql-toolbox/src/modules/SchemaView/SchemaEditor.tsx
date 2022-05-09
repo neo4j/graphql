@@ -100,7 +100,7 @@ export const SchemaEditor = ({ loading, mirrorRef }: Props) => {
             lint: {
                 // @ts-ignore
                 schema: testSchema,
-                validationRules: null,
+                validationRules: [],
             },
             hintOptions: {
                 schema: testSchema,
