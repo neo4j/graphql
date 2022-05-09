@@ -90,29 +90,8 @@ jobs:
           flags: ${{ matrix.package }},unit
           fail_ci_if_error: true
 
-  schema-tests:
-    needs:
-      - cache-dependencies
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Run Schema tests
-        run: yarn --cwd packages/graphql run test:schema --coverage
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/graphql/coverage/
-          flags: graphql,schema
-          fail_ci_if_error: true
+  api-library-tests:
+    uses: ./.github/workflows/reusable-api-library-tests.yml
 
   # nextjs-app-setup:
   #   needs:
@@ -168,38 +147,6 @@ jobs:
   #         RES=$(curl 'http://localhost:3000/api/graphql' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: http://localhost:3000' --data-binary '{"query":"{\n  movies {\n    title\n  }\n}"}' --compressed --silent)
   #         echo "$RES"
   #         echo "$RES" | grep -qv "error"
-
-  tck-tests:
-    needs:
-      - cache-dependencies
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
-      - name: Run TCK tests
-        run: yarn --cwd packages/graphql run test:tck --coverage
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/graphql/coverage/
-          flags: graphql,tck
-          fail_ci_if_error: true
 
   package-tests:
     needs:
