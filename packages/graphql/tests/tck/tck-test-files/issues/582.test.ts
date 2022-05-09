@@ -46,7 +46,7 @@ describe("#582", () => {
 
     test("should be able to nest connection where inputs", async () => {
         const query = gql`
-            query($where: EntityWhere) {
+            query ($where: EntityWhere) {
                 entities(where: $where) {
                     type
                 }
@@ -103,7 +103,7 @@ describe("#582", () => {
 
     test("should be able to nest connection where inputs down more levels", async () => {
         const query = gql`
-            query($where: EntityWhere) {
+            query ($where: EntityWhere) {
                 entities(where: $where) {
                     type
                 }

@@ -50,7 +50,7 @@ function createWhereAndParams({
         return ["", {}];
     }
 
-    function reducer(res: Res, [key, value]: [string, GraphQLWhereArg]): Res {
+    function reducer(res: Res, [key, value]: [string, any | GraphQLWhereArg | GraphQLWhereArg[]]): Res {
         let param = "";
         if (chainStr) {
             param = `${chainStr}_${key}`;
@@ -104,6 +104,17 @@ function createWhereAndParams({
         // Relationship Field
 
         const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
+
+        if (node.isGlobalNode && key === "id") {
+            const { field, id } = node.fromGlobalId(value as string);
+            param = param.replace(key, field);
+
+            // get the dbField from the returned property fieldName
+            const dbField = mapToDbProperty(node, field);
+            res.clauses.push(`${varName}.${dbField} = $${param}`);
+            res.params = { ...res.params, [param]: id };
+            return res;
+        }
 
         if (isAggregate) {
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
@@ -220,6 +231,7 @@ function createWhereAndParams({
                     relationship,
                     relationshipVariable: `${collectedMap}.relationship`,
                     parameterPrefix,
+                    listPredicates: [listPredicate],
                 });
 
                 resultStr += connectionWhere[0];

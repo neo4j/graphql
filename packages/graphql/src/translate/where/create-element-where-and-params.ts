@@ -36,12 +36,14 @@ function createElementWhereAndParams({
     varName,
     context,
     parameterPrefix,
+    listPredicates,
 }: {
     whereInput: GraphQLWhereArg;
     element: GraphElement;
     varName: string;
     context: Context;
     parameterPrefix: string;
+    listPredicates?: string[];
 }): [string, any] {
     if (!Object.keys(whereInput).length) {
         return ["", {}];
@@ -173,13 +175,15 @@ function createElementWhereAndParams({
                         return;
                     }
 
+                    const hasPreviousSinglePredicate = listPredicates?.length
+                        ? listPredicates.includes("SINGLE")
+                        : null;
+
+                    const currentListPredicate = hasPreviousSinglePredicate ? "SINGLE" : getListPredicate(operator);
+
                     const resultArr = [
                         `RETURN ${existsStr}`,
-                        `AND ${getListPredicate(
-                            operator
-                        )}(${collectedMap} IN [(${safeNodeVariable})${inStr}[${relationshipVariable}:${
-                            connectionField.relationship.type
-                        }]${outStr}(${relatedNodeVariable}${labels}) | { node: ${relatedNodeVariable}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
+                        `AND ${currentListPredicate}(${collectedMap} IN [(${safeNodeVariable})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${relatedNodeVariable}${labels}) | { node: ${relatedNodeVariable}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
                     ];
 
                     const connectionWhere = createConnectionWhereAndParams({
@@ -190,15 +194,23 @@ function createElementWhereAndParams({
                         relationship,
                         relationshipVariable: `${collectedMap}.relationship`,
                         parameterPrefix: `${parameterPrefix}.${fieldName}`,
+                        // listPredicates stores all list predicates (SINGLE, ANY, NONE,..) while (recursively) translating the where clauses
+                        listPredicates: [currentListPredicate, ...(listPredicates || [])],
                     });
 
                     resultArr.push(connectionWhere[0]);
                     resultArr.push(")"); // close NONE/ANY
 
-                    const apocRunFirstColumn = wrapInApocRunFirstColumn(resultArr.join("\n"), {
-                        [safeNodeVariable]: varName,
-                        [rootParam]: `$${rootParam}`,
-                    });
+                    const expectMultipleValues = listPredicates?.length ? !listPredicates.includes("SINGLE") : true;
+
+                    const apocRunFirstColumn = wrapInApocRunFirstColumn(
+                        resultArr.join("\n"),
+                        {
+                            [safeNodeVariable]: varName,
+                            [rootParam]: `$${rootParam}`,
+                        },
+                        expectMultipleValues
+                    );
 
                     res.clauses.push(apocRunFirstColumn);
 

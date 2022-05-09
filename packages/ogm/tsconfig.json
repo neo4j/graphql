@@ -6,9 +6,12 @@
         "outDir": "dist",
         "paths": {
             "@neo4j/graphql": ["../graphql/src"],
-            "@neo4j/graphql-plugin-auth": ["../graphql-plugin-auth/src"]
+            "@neo4j/graphql-plugin-auth": ["../plugins/graphql-plugin-auth/src"]
         }
     },
     "include": ["src/**/*", "tests/**/*"],
-    "references": [{ "path": "../graphql/tsconfig.json" }, { "path": "../graphql-plugin-auth/tsconfig.json" }]
+    "references": [
+        { "path": "../graphql/tsconfig.json" },
+        { "path": "../plugins/graphql-plugin-auth/tsconfig.json" }
+    ]
 }

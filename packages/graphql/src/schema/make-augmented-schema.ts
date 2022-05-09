@@ -21,6 +21,8 @@ import { IResolvers, TypeSource } from "@graphql-tools/utils";
 import {
     DefinitionNode,
     DocumentNode,
+    GraphQLID,
+    GraphQLNonNull,
     GraphQLScalarType,
     InterfaceTypeDefinitionNode,
     Kind,
@@ -83,6 +85,7 @@ import { CartesianPointDistance } from "./types/input-objects/CartesianPointDist
 import getNodes from "./get-nodes";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
+import { addGlobalNodeFields } from "./create-global-nodes";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -153,6 +156,8 @@ function makeAugmentedSchema(
     //
     // These are flags to check whether the types are used and then create them if they are
     let { pointInTypeDefs, cartesianPointInTypeDefs } = getNodesResult;
+
+    const hasGlobalNodes = addGlobalNodeFields(nodes, composer);
 
     const relationshipProperties = interfaceTypes.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
     const interfaceRelationships = interfaceTypes.filter((i) => interfaceRelationshipNames.has(i.name.value));
@@ -528,6 +533,19 @@ function makeAugmentedSchema(
             interfaces: node.interfaces.map((x) => x.name.value),
         });
 
+        if (node.isGlobalNode) {
+            composeNode.setField("id", {
+                type: new GraphQLNonNull(GraphQLID),
+                resolve: (src) => {
+                    const field = node.getGlobalIdField();
+                    const value = src[field] as string | number;
+                    return node.toGlobalId(value.toString());
+                },
+            });
+
+            composeNode.addInterface("Node");
+        }
+
         const sortFields = getSortableFields(node).reduce(
             (res, f) => ({
                 ...res,
@@ -607,7 +625,7 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${node.name}Where`,
-            fields: queryFields,
+            fields: node.isGlobalNode ? { id: "ID", ...queryFields } : queryFields,
         });
 
         if (node.fulltextDirective) {
@@ -813,6 +831,7 @@ function makeAugmentedSchema(
     }
 
     const generatedTypeDefs = composer.toSDL();
+
     let parsedDoc = parse(generatedTypeDefs);
 
     function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
@@ -850,6 +869,7 @@ function makeAugmentedSchema(
             }
             return res;
         }, {}),
+        ...(hasGlobalNodes ? { Node: { __resolveType: (root) => root.__resolveType } } : {}),
     };
 
     unionTypes.forEach((union) => {

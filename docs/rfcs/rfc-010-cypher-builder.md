@@ -51,7 +51,6 @@ const movieNode = new CypherBuilder.Node({
 });
 const relationship = new CypherBuilder.Relationship({ source: node1, target: node2, type: "ACTED_IN" });
 
-// NOTE: Alternatively, Match should take a "MatchPattern" instead of a relationship 
 const query = new CypherBuilder.Match(relationship).where(actorNode, {name: "Arthur"}).return(movieNode, ["title"]);
 
 const { cypher, params } = query.build()

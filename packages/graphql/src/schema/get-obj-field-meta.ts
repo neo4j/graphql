@@ -466,6 +466,10 @@ function getObjFieldMeta({
 
                             primitiveField.autogenerate = true;
                         }
+                        const global = idDirective.arguments?.find((a) => a.name.value === "global");
+                        if (global) {
+                            primitiveField.isGlobalIdField = true;
+                        }
                     }
 
                     if (defaultDirective) {

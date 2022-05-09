@@ -242,7 +242,7 @@ Accepts the arguments below:
 [[api-reference-assertconstraints]]
 == `assertIndexesAndConstraints`
 
-Asynchronous method to assert the existence of database constraints, that either resolves to `void` in a successful scenario, or throws an error if the necessary consraints do not exist following its execution.
+Asynchronous method to assert the existence of database constraints, that either resolves to `void` in a successful scenario, or throws an error if the necessary constraints do not exist following its execution.
 
 Takes an `input` object as a parameter, the supported fields of which are described below.
 
