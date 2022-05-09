@@ -193,28 +193,8 @@ jobs:
           name: unit-coverage-${{ matrix.package }}
           path: packages/plugins/${{ matrix.package }}/coverage/
 
-
-  schema-tests:
-    needs:
-      - cache-dependencies
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Run Schema tests
-        run: yarn --cwd packages/graphql run test:schema --coverage
-      - name: Archive coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: schema-coverage-graphql
-          path: packages/graphql/coverage/
+  api-library-tests:
+    uses: ./.github/workflows/reusable-api-library-tests.yml
 
   # nextjs-app-setup:
   #   needs:
@@ -270,36 +250,6 @@ jobs:
   #         RES=$(curl 'http://localhost:3000/api/graphql' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: http://localhost:3000' --data-binary '{"query":"{\n  movies {\n    title\n  }\n}"}' --compressed --silent)
   #         echo "$RES"
   #         echo "$RES" | grep -qv "error"
-
-  tck-tests:
-    needs:
-      - cache-dependencies
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
-      - name: Run TCK tests
-        run: yarn --cwd packages/graphql run test:tck --coverage
-      - name: Archive coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: tck-coverage-graphql
-          path: packages/graphql/coverage/
 
   ui-e2e-tests:
     needs:
