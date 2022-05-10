@@ -2638,13 +2638,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/debug@npm:4.1.5":
-  version: 4.1.5
-  resolution: "@types/debug@npm:4.1.5"
-  checksum: 36bdb74909be193aeeb8c9bb64ef45d691f35181dcf75285728ec1e07103cb91042be2e8294f0624fc5922d9b4f68482faf5ea3068288577ebdccee76cd7870c
-  languageName: node
-  linkType: hard
-
 "@types/debug@npm:4.1.7, @types/debug@npm:^4.0.0":
   version: 4.1.7
   resolution: "@types/debug@npm:4.1.7"
@@ -6386,18 +6379,6 @@ __metadata:
     supports-color:
       optional: true
   checksum: 3dbad3f94ea64f34431a9cbf0bafb61853eda57bff2880036153438f50fb5a84f27683ba0d8e5426bf41a8c6ff03879488120cf5b3a761e77953169c0600a708
-  languageName: node
-  linkType: hard
-
-"debug@npm:4.3.1":
-  version: 4.3.1
-  resolution: "debug@npm:4.3.1"
-  dependencies:
-    ms: 2.1.2
-  peerDependenciesMeta:
-    supports-color:
-      optional: true
-  checksum: 2c3352e37d5c46b0d203317cd45ea0e26b2c99f2d9dfec8b128e6ceba90dfb65425f5331bf3020fe9929d7da8c16758e737f4f3bfc0fce6b8b3d503bae03298b
   languageName: node
   linkType: hard
 
@@ -12915,7 +12896,7 @@ __metadata:
     "@neo4j/graphql-ogm": ^3.2.0
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/bcrypt": 3.0.1
-    "@types/debug": 4.1.5
+    "@types/debug": 4.1.7
     "@types/dotenv": 8.2.0
     "@types/express": 4.17.9
     "@types/jest": 27.4.0
@@ -12925,7 +12906,7 @@ __metadata:
     apollo-server-express: ^3.6.7
     bcrypt: 5.0.1
     cross-env: 7.0.3
-    debug: 4.3.1
+    debug: 4.3.4
     dotenv: ^10.0.0
     express: 4.17.1
     graphql: 16.5.0
