@@ -12,12 +12,16 @@ The former approach has several downsides:
 Add new input properties that solve atomic operations like:
 - `_ADD`
 - `_SUBTRACT`
+- `_MULTIPLY`
+- `_DIVIDE`
 
 For instance `counter_ADD` or `counter_SUBTRACT`.
 These properties should be available for all the following types:
 - Int
-- Float
 - BigInt
+- Float
+
+The MULTIPLY and the DIVIDE operations will then be available only for fields defined as Float.
 
 ### Usage Examples
 Given the following type definitions:
@@ -54,16 +58,23 @@ updateNodes(
 #### Schema size
 The proposed solution could increase the size of the augmented schema noticeably.
 
+#### Overflow
+In cases where a mathematical operation leads to an overflow, then an exception must be raised.
+
 ## Alternative Solution
 Create a new GraphQL scalar type that supports these operations:
 - `ADD`
 - `SUBTRACT`
+- `MULTIPLY`
+- `DIVIDE`
 
 For instance `counter: { ADD: 1 }` or `counter: { SUBTRACT: 1 }`, the syntax `counter: 1` should remains valid.
 The new GraphQL scalar type should be available for all the following types:
 - Int
 - Float
 - BigInt
+
+The MULTIPLY and the DIVIDE operations will then be available only for fields defined as Float.
 
 ### Usage Examples
 Given the following type definitions:
@@ -112,6 +123,9 @@ type Node {
 ```
 A future investigation on the feasibility of the above will be required in the case there will be a follow-up over this solution.
 
+#### Overflow
+In cases where a mathematical operation leads to an overflow, then an exception must be raised.
+
 ## Risks
 - Schema size.
 
@@ -121,7 +135,7 @@ None.
 ## Out of Scope
 - `DateTime` and `Location` types.
 - Lists of supported types.
-- MULTIPLY AND DIVIDE operations.
+- MULTIPLY AND DIVIDE for Integer and BigInt.
 
 ## Discarded solutions
 ### Interpolation
