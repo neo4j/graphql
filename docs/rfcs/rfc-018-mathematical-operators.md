@@ -10,10 +10,17 @@ The former approach has several downsides:
 
 ## Proposed Solution
 Add new input properties that solve atomic operations like:
+- `_INCREMENT`
+- `_DECREMENT`
+
+available for Int and BigInt fields.
+And:
 - `_ADD`
 - `_SUBTRACT`
 - `_MULTIPLY`
 - `_DIVIDE`
+
+available for Float fields.
 
 For instance `counter_ADD` or `counter_SUBTRACT`.
 These properties should be available for all the following types:
@@ -36,7 +43,7 @@ The operator _ADD could then be used in a mutation like:
 updateNodes(
   where: { id: "e9bc687a-efd1-419d-b208" }
   update: {
-    counter_ADD: 1,
+    counter_INCREMENT: 1,
   }
 )
 ```
@@ -49,7 +56,7 @@ updateNodes(
   where: { id: "e9bc687a-efd1-419d-b208" }
   update: {
     counter: 10,
-    counter_ADD: 1,
+    counter_INCREMENT: 1,
   }
 )
 ```
@@ -63,12 +70,20 @@ In cases where a mathematical operation leads to an overflow, then an exception 
 
 ## Alternative Solution
 Create a new GraphQL scalar type that supports these operations:
+- `INCREMENT`
+- `DECREMENT`
+
+available for Int and BigInt fields.
+And:
 - `ADD`
 - `SUBTRACT`
 - `MULTIPLY`
 - `DIVIDE`
 
-For instance `counter: { ADD: 1 }` or `counter: { SUBTRACT: 1 }`, the syntax `counter: 1` should remains valid.
+available for Float fields.
+
+
+For instance `counter: { INCREMENT: 1 }` or `counter: { DECREMENT: 1 }`, the syntax `counter: 1` should remains valid.
 The new GraphQL scalar type should be available for all the following types:
 - Int
 - Float
@@ -107,8 +122,8 @@ type Node {
 }
 
 type IntBoxed {
-  ADD: Int
-  SUBTRACT: Int
+  INCREMENT: Int
+  DECREMENT: Int
 }
 ```
 The above will raise an error as GraphQL does not support unions between scalar types.
