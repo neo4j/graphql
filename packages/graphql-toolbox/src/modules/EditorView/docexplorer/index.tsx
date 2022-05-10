@@ -29,7 +29,8 @@ const initialNav: NavStackItem = {
 };
 
 type DocExplorerProps = {
-    children?: React.ReactNode;
+    closeButton?: React.ReactNode;
+    titleBarBackButton?: React.ReactNode;
     schema?: GraphQLSchema | null;
     schemaErrors?: readonly GraphQLError[];
 };
@@ -47,11 +48,6 @@ type DocExplorerState = {
  *
  *   - schema: A required GraphQLSchema instance that provides GraphQL document
  *     definitions.
- *
- * Children:
- *
- *   - Any provided children will be positioned in the right-hand-side of the
- *     top bar. Typically this will be a "close" button for temporary explorer.
  *
  */
 export class DocExplorer extends React.Component<DocExplorerProps, DocExplorerState> {
@@ -124,6 +120,7 @@ export class DocExplorer extends React.Component<DocExplorerProps, DocExplorerSt
         return (
             <section className="graphiql-container doc-explorer" key={navItem.name} aria-label="Documentation Explorer">
                 <div className="doc-explorer-title-bar">
+                    <div className="doc-explorer-title-back">{this.props.titleBarBackButton}</div>
                     {prevName && (
                         <button
                             className="doc-explorer-back"
@@ -134,7 +131,7 @@ export class DocExplorer extends React.Component<DocExplorerProps, DocExplorerSt
                         </button>
                     )}
                     <div className="doc-explorer-title">{navItem.title || navItem.name}</div>
-                    <div className="doc-explorer-rhs">{this.props.children}</div>
+                    <div className="doc-explorer-rhs">{this.props.closeButton}</div>
                 </div>
                 <div className="doc-explorer-contents">
                     {shouldSearchBoxAppear && (

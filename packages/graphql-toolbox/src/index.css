@@ -28,3 +28,7 @@ li.CodeMirror-hint-active {
     pointer-events: none;
     opacity: 0.85;
 }
+
+.background-help-card {
+    background: linear-gradient(322.07deg, #7AD1FF -117.98%, #E6F8FF 86.42%);
+}

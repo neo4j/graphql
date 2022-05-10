@@ -2600,10 +2600,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/bcrypt@npm:3.0.0":
-  version: 3.0.0
-  resolution: "@types/bcrypt@npm:3.0.0"
-  checksum: 443e8aae65acb3cc19d0402a595dd3be861863cda85cfa825c8f427d8929b54ee980dd2cb9c6d027f6487e32c8c27a81566f35c84f601dbe3b2a2efd39e28323
+"@types/bcrypt@npm:3.0.1":
+  version: 3.0.1
+  resolution: "@types/bcrypt@npm:3.0.1"
+  checksum: e8cdb677acabd0c6f6cdf3148feae73336c0fe471d55d42474ac3ecdb735434ab5a43338b337aeef71a1c8f9aa56572e9c9d035338ab19b3f3c8291e70d3eb4d
   languageName: node
   linkType: hard
 
@@ -2679,13 +2679,6 @@ __metadata:
   version: 4.1.1
   resolution: "@types/crypto-js@npm:4.1.1"
   checksum: ea3d6a67b69f88baeb6af96004395903d2367a41bd5cd86306da23a44dd96589749495da50974a9b01bb5163c500764c8a33706831eade036bddae016417e3ea
-  languageName: node
-  linkType: hard
-
-"@types/debug@npm:4.1.5":
-  version: 4.1.5
-  resolution: "@types/debug@npm:4.1.5"
-  checksum: 36bdb74909be193aeeb8c9bb64ef45d691f35181dcf75285728ec1e07103cb91042be2e8294f0624fc5922d9b4f68482faf5ea3068288577ebdccee76cd7870c
   languageName: node
   linkType: hard
 
@@ -3244,13 +3237,6 @@ __metadata:
   version: 2.0.6
   resolution: "@types/unist@npm:2.0.6"
   checksum: 25cb860ff10dde48b54622d58b23e66214211a61c84c0f15f88d38b61aa1b53d4d46e42b557924a93178c501c166aa37e28d7f6d994aba13d24685326272d5db
-  languageName: node
-  linkType: hard
-
-"@types/uuid@npm:8.3.0":
-  version: 8.3.0
-  resolution: "@types/uuid@npm:8.3.0"
-  checksum: 0f46b15020b9c252473fb327a6491fd7d238c7b5bbaebd32195a0de178db040f6abb96902507ba25dd4a673cdd9cc28b8880512dba54561e8bc60d8f326c1e30
   languageName: node
   linkType: hard
 
@@ -6521,18 +6507,6 @@ __metadata:
     supports-color:
       optional: true
   checksum: 3dbad3f94ea64f34431a9cbf0bafb61853eda57bff2880036153438f50fb5a84f27683ba0d8e5426bf41a8c6ff03879488120cf5b3a761e77953169c0600a708
-  languageName: node
-  linkType: hard
-
-"debug@npm:4.3.1":
-  version: 4.3.1
-  resolution: "debug@npm:4.3.1"
-  dependencies:
-    ms: 2.1.2
-  peerDependenciesMeta:
-    supports-color:
-      optional: true
-  checksum: 2c3352e37d5c46b0d203317cd45ea0e26b2c99f2d9dfec8b128e6ceba90dfb65425f5331bf3020fe9929d7da8c16758e737f4f3bfc0fce6b8b3d503bae03298b
   languageName: node
   linkType: hard
 
@@ -13056,18 +13030,18 @@ __metadata:
     "@neo4j/graphql": ^3.2.0
     "@neo4j/graphql-ogm": ^3.2.0
     "@neo4j/graphql-plugin-auth": ^1.0.0
-    "@types/bcrypt": 3.0.0
-    "@types/debug": 4.1.5
+    "@types/bcrypt": 3.0.1
+    "@types/debug": 4.1.7
     "@types/dotenv": 8.2.0
     "@types/express": 4.17.9
     "@types/jest": 27.4.0
     "@types/jsonwebtoken": 8.5.1
     "@types/node": 14.14.14
-    "@types/uuid": 8.3.0
+    "@types/uuid": 8.3.4
     apollo-server-express: ^3.6.7
     bcrypt: 5.0.1
     cross-env: 7.0.3
-    debug: 4.3.1
+    debug: 4.3.4
     dotenv: ^10.0.0
     express: 4.17.1
     graphql: 16.5.0

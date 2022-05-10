@@ -17,17 +17,12 @@
  * limitations under the License.
  */
 
-import {
-    EDITOR_QUERY_BUTTON,
-    EDITOR_QUERY_INPUT,
-    EDITOR_RESPONSE_OUTPUT,
-    SCHEMA_EDITOR_BUILD_BUTTON,
-} from "../../../src/constants";
+import { EDITOR_PARAMS_INPUT, EDITOR_QUERY_INPUT, EDITOR_RESPONSE_OUTPUT } from "../../../src/constants";
 import { Screen } from "./Screen";
 
 export class Editor extends Screen {
     public async setQuery(query: string) {
-        await this.page.waitForSelector(`#${EDITOR_QUERY_BUTTON}`);
+        await this.page.waitForSelector("[data-test-editor-query-button]");
         await this.page.evaluate(
             ({ id, query }) => {
                 // @ts-ignore -Find a better solution
@@ -37,9 +32,20 @@ export class Editor extends Screen {
         );
     }
 
+    public async setParams(params: string) {
+        await this.page.waitForSelector("[data-test-editor-query-button]");
+        await this.page.evaluate(
+            ({ id, params }) => {
+                // @ts-ignore -Find a better solution
+                document[`${id}`].setValue(params);
+            },
+            { params, id: EDITOR_PARAMS_INPUT }
+        );
+    }
+
     public async submitQuery() {
-        await this.page.waitForSelector(`#${EDITOR_QUERY_BUTTON}`);
-        await this.page.click(`#${EDITOR_QUERY_BUTTON}`);
+        await this.page.waitForSelector("[data-test-editor-query-button]");
+        await this.page.click("[data-test-editor-query-button]");
     }
 
     public async getOutput(): Promise<string> {
@@ -52,6 +58,6 @@ export class Editor extends Screen {
     }
 
     public async awaitSuccess() {
-        await this.page.waitForSelector(`#${SCHEMA_EDITOR_BUILD_BUTTON}`);
+        await this.page.waitForSelector("[data-test-schema-editor-build-button]");
     }
 }

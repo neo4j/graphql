@@ -1,6 +1,6 @@
 # @neo4j/graphql-toolbox
 
-Experiment with your Neo4j GraphQL API on Neo4j Desktop.
+Experiment with your Neo4j GraphQL API.
 
 <p align="center">
   <a href="https://badge.fury.io/js/%40neo4j%2Fgraphql-toolbox">
@@ -24,14 +24,6 @@ Experiment with your Neo4j GraphQL API on Neo4j Desktop.
 2. Define (or Introspect) Typedefs
 3. Build Neo4j GraphQL schema
 4. Experiment and play
-
-## Installation
-
-This application is distributed via NPM. The NPM package contains a static bundle that you could serve over HTTP or use the Neo4j Graph app instructions.
-
-Follow this guide to install the Neo4j GraphQL Toolbox from NPM in Neo4j Desktop:
-
-https://neo4j.com/developer/graph-apps/#_installation_from_package_managers_npm
 
 ## Devleopment
 

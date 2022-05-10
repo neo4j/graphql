@@ -19,12 +19,12 @@
 
 import { useContext, useState } from "react";
 import { GraphQLSchema } from "graphql";
-import { TopBar } from "./TopBar";
-import { Login } from "./login/Login";
-import { SchemaEditor } from "./schema/SchemaEditor";
-import { Editor } from "./editor/Editor";
-import { AuthContext } from "../contexts/auth";
-import { ScreenContext, Screen } from "../contexts/screen";
+import { TopBar } from "../TopBar/TopBar";
+import { Login } from "../Login/Login";
+import { SchemaView } from "../SchemaView/SchemaView";
+import { Editor } from "../EditorView/Editor";
+import { AuthContext } from "../../contexts/auth";
+import { ScreenContext, Screen } from "../../contexts/screen";
 
 export const Main = () => {
     const auth = useContext(AuthContext);
@@ -43,16 +43,16 @@ export const Main = () => {
 
     return (
         <div className="flex w-full h-full flex-col">
-            <TopBar hasSchema={!!schema} />
+            <TopBar />
             <div className="h-content-container w-full overflow-y-auto bg-contentBlue">
                 {screen.view === Screen.TYPEDEFS ? (
-                    <SchemaEditor
+                    <SchemaView
                         hasSchema={!!schema}
                         onChange={(schema) => {
                             setSchema(schema);
                             screen.setScreen(Screen.EDITOR);
                         }}
-                    ></SchemaEditor>
+                    />
                 ) : (
                     <Editor schema={schema} />
                 )}
