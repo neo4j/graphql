@@ -27,7 +27,7 @@
         "react": "18.0.0",
         "react-bootstrap": "2.2.3",
         "react-dom": "18.0.0",
-        "react-markdown": "8.0.2",
+        "react-markdown": "8.0.3",
         "react-mde": "11.5.0",
         "react-router-dom": "6.3.0",
         "showdown": "2.0.3",
