@@ -74,22 +74,21 @@ export class AmqpApi<T> {
     }
 
     private async createQueue(channel: amqp.Channel): Promise<string> {
-        const queue = await channel.assertQueue("", { exclusive: true }); // Creates queue with unique name
+        const queue = await channel.assertQueue("", { exclusive: true }); // Creates queue with unique name, will be closed on amqp connection closed
 
         const queueName = queue.queue;
         await channel.bindQueue(queueName, this.exchange, ""); // binds exchange and queue
         return queueName;
     }
 
-    private consumeMessage(msg: amqp.ConsumeMessage, cb: (msg: T) => void | Promise<void>) {
+    private consumeMessage(msg: amqp.ConsumeMessage, cb: (msg: T) => void) {
         const messageBody = JSON.parse(msg.content.toString()) as T;
-        const promiseOrVoid = cb(messageBody);
-        if (promiseOrVoid) {
-            promiseOrVoid
-                .then(() => {
-                    this.channel?.ack(msg);
-                })
-                .catch(() => {}); // DO NOT ack message if callback throws
-        } else this.channel?.ack(msg);
+        try {
+            cb(messageBody);
+        } catch (err) {
+            console.warn("Error consuming message", err);
+        } finally {
+            this.channel?.ack(msg);
+        }
     }
 }
