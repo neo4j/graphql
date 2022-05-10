@@ -143,17 +143,17 @@ directive @callback(
 
 === Usage
 
-Type Definitions: 
+Type Definitions:
 
 [source, graphql, indent=0]
 ----
 type Product {
     name: String!
-    slug: @callback(operations: [CREATE, UPDATE], name: "slug")
+    slug: String! @callback(operations: [CREATE, UPDATE], name: "slug")
 }
 ----
 
-Schema Construction: 
+Schema Construction:
 
 > Note that the callback is asynchronous!
 
@@ -173,3 +173,38 @@ new Neo4jGraphQL({
     }
 })
 ----
+
+==== Using GraphQL context values
+
+The GraphQL context for the request is available as the third argument in a callback. This maps to the argument pattern for GraphQL resolvers.
+
+For example, if you wanted a field `modifiedBy`:
+
+[source, graphql, indent=0]
+----
+type Record {
+    content: String!
+    modifiedBy: @callback(operations: [CREATE, UPDATE], name: "modifiedBy")
+}
+----
+
+If the username is located in `context.username`, you could define a callback such as:
+
+[source, javascript, indent=0]
+----
+const modifiedByCallback = async (_parent, _args, context) => {
+    return context.username;
+}
+
+new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    config: {
+        callbacks: {
+            modifiedBy: modifiedByCallback
+        }
+    }
+})
+----
+
+NOTE: The second positional argument, in this case `_args`, has a type of `Record<string, never>`, and as such will always be an empty object.

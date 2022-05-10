@@ -17,18 +17,14 @@
  * limitations under the License.
  */
 
-import { CypherContext } from "../CypherContext";
-import { escapeLabel, padLeft } from "../utils";
+import { escapeLabel } from "../utils";
 import { Node } from "./Node";
-import { Param } from "./Param";
-import { serializeParameters } from "./utils";
 import { CypherVariable } from "./References";
 
 export type RelationshipInput = {
     source: Node;
     target: Node;
     type?: string;
-    parameters?: Record<string, Param<any>>;
     directed?: boolean;
 };
 
@@ -37,43 +33,17 @@ export class Relationship implements CypherVariable {
     public readonly source: Node;
     public readonly target: Node;
 
-    private type?: string;
-    private parameters: Record<string, Param<any>>;
-    private directed: boolean;
+    public readonly type?: string;
+    public readonly directed: boolean;
 
     constructor(input: RelationshipInput) {
         this.type = input.type || undefined;
-        this.parameters = input.parameters || {};
         this.source = input.source;
         this.target = input.target;
         this.directed = input.directed === undefined ? true : input.directed;
     }
 
-    public getCypher(context: CypherContext) {
-        const referenceId = context.getVariableId(this);
-        let parametersStr = "";
-        if (this.hasParameters()) {
-            const parameters = serializeParameters(this.parameters, context);
-            parametersStr = padLeft(parameters);
-        }
-
-        const sourceStr = `(${this.source.getReference(context)})`;
-        const targetStr = `(${this.target.getReference(context)})`;
-        const arrowStr = this.getRelationshipArrow();
-        const relationshipStr = `${referenceId || ""}${this.getTypeString()}${parametersStr}`;
-
-        return `${sourceStr}-[${relationshipStr}]${arrowStr}${targetStr}`;
-    }
-
-    private hasParameters(): boolean {
-        return Object.keys(this.parameters).length > 0;
-    }
-
-    private getRelationshipArrow(): "-" | "->" {
-        return this.directed ? "->" : "-";
-    }
-
-    private getTypeString(): string {
+    public getTypeString(): string {
         return this.type ? `:${escapeLabel(this.type)}` : "";
     }
 }
