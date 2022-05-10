@@ -20,8 +20,9 @@
 import { on } from "events";
 import { Neo4jGraphQLError } from "../../../classes";
 import Node from "../../../classes/Node";
-import { AuthRule, SubscriptionsEvent } from "../../../types";
+import { SubscriptionsEvent } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
+import { SubscriptionAuth } from "./subscription-auth";
 import { SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where";
@@ -42,13 +43,10 @@ export function generateSubscribeMethod(node: Node, type: "create" | "update" | 
         if (node.auth) {
             const authRules = node.auth.getRules(["SUBSCRIBE"]);
             for (const rule of authRules) {
-                if (!checkAuthRule(rule, context)) {
+                if (!SubscriptionAuth.validateAuthenticationRule(rule, context)) {
                     throw new Error("Error");
                 }
             }
-            // if (node.auth?.rules[0].isAuthenticated && !context.jwt) {
-            //     throw new Error("Error");
-            // }
         }
 
         const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);
@@ -59,11 +57,4 @@ export function generateSubscribeMethod(node: Node, type: "create" | "update" | 
             );
         });
     };
-}
-
-function checkAuthRule(rule: AuthRule, context: SubscriptionContext): boolean {
-    if (rule.isAuthenticated && !context.jwt) {
-        return false;
-    }
-    return true;
 }
