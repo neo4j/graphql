@@ -22,7 +22,7 @@ import neo4jDriver, { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { parseDuration } from "../../../src/schema/types/scalars/Duration";
+import { parseDuration } from "../../../src/graphql/scalars/Duration";
 
 describe("Duration", () => {
     let driver: Driver;
