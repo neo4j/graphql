@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLSchema, GraphQLString } from "graphql";
+import { GraphQLDirective, GraphQLObjectType, GraphQLScalarType, GraphQLSchema, GraphQLString } from "graphql";
 import { directives, scalars, objects } from "@neo4j/graphql";
 
 export const getSchemaForLintAndAutocompletion = () => {
@@ -14,7 +14,10 @@ export const getSchemaForLintAndAutocompletion = () => {
                 },
             },
         }),
-        directives: [...Object.values(directives)],
-        types: [...Object.values(scalars), ...Object.values(objects)],
+        directives: [...Object.values(directives as { [s: string]: GraphQLDirective })],
+        types: [
+            ...Object.values(scalars as { [s: string]: GraphQLScalarType }),
+            ...Object.values(objects as Record<string, GraphQLObjectType>),
+        ],
     });
 };
