@@ -1260,7 +1260,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/delegate@npm:^8.7.7":
+"@graphql-tools/delegate@npm:^8.7.8":
   version: 8.7.8
   resolution: "@graphql-tools/delegate@npm:8.7.8"
   dependencies:
@@ -1341,7 +1341,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/schema@npm:8.3.11, @graphql-tools/schema@npm:^8.0.0, @graphql-tools/schema@npm:^8.1.2, @graphql-tools/schema@npm:^8.3.1, @graphql-tools/schema@npm:^8.3.10":
+"@graphql-tools/schema@npm:8.3.11, @graphql-tools/schema@npm:^8.0.0, @graphql-tools/schema@npm:^8.1.2, @graphql-tools/schema@npm:^8.3.1, @graphql-tools/schema@npm:^8.3.11":
   version: 8.3.11
   resolution: "@graphql-tools/schema@npm:8.3.11"
   dependencies:
@@ -2173,7 +2173,7 @@ __metadata:
     deep-equal: ^2.0.5
     dot-prop: ^6.0.1
     graphql-compose: ^9.0.6
-    graphql-middleware: 6.1.25
+    graphql-middleware: 6.1.26
     graphql-parse-resolve-info: ^4.12.0
     graphql-relay: ^0.10.0
     graphql-tag: 2.12.6
@@ -8731,15 +8731,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"graphql-middleware@npm:6.1.25":
-  version: 6.1.25
-  resolution: "graphql-middleware@npm:6.1.25"
+"graphql-middleware@npm:6.1.26":
+  version: 6.1.26
+  resolution: "graphql-middleware@npm:6.1.26"
   dependencies:
-    "@graphql-tools/delegate": ^8.7.7
-    "@graphql-tools/schema": ^8.3.10
+    "@graphql-tools/delegate": ^8.7.8
+    "@graphql-tools/schema": ^8.3.11
   peerDependencies:
     graphql: ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
-  checksum: 7a92011377945f2feed57e9a90248b39e9b7b10c79518cfc3714c9f3673533dba6684121d71cbcaba21f263bb98952a8f82380c3e567ac100aeee714fb23ed1c
+  checksum: b5394882526da93b022df20e148ef2a9286b070a3637aba40dd6fa6c2f00f99e9442908e2f1f043c32b975c215308d24ccdef424b9833a91def42ba26be2fdfe
   languageName: node
   linkType: hard
 
