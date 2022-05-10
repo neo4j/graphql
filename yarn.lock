@@ -2087,7 +2087,7 @@ __metadata:
   resolution: "@neo4j/graphql-plugin-subscriptions-rabbitmq@workspace:packages/plugins/graphql-subscriptions-rabbitmq"
   dependencies:
     "@neo4j/graphql": ^3.1.0
-    "@types/amqplib": ^0
+    "@types/amqplib": ^0.8.2
     "@types/debug": 4.1.7
     "@types/jest": 27.4.1
     "@types/node": 16.11.31
@@ -2549,7 +2549,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/amqplib@npm:^0":
+"@types/amqplib@npm:^0.8.2":
   version: 0.8.2
   resolution: "@types/amqplib@npm:0.8.2"
   dependencies:
