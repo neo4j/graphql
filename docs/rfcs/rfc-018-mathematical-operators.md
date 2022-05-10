@@ -12,8 +12,6 @@ The former approach has several downsides:
 Add new input properties that solve atomic operations like:
 - `_ADD`
 - `_SUBTRACT`
-- `_MULTIPLY`
-- `_DIVIDE`
 
 For instance `counter_ADD` or `counter_SUBTRACT`.
 These properties should be available for all the following types:
@@ -60,8 +58,6 @@ The proposed solution could increase the size of the augmented schema noticeably
 Create a new GraphQL scalar type that supports these operations:
 - `ADD`
 - `SUBTRACT`
-- `MULTIPLY`
-- `DIVIDE`
 
 For instance `counter: { ADD: 1 }` or `counter: { SUBTRACT: 1 }`, the syntax `counter: 1` should remains valid.
 The new GraphQL scalar type should be available for all the following types:
@@ -102,8 +98,6 @@ type Node {
 type IntBoxed {
   ADD: Int
   SUBTRACT: Int
-  MULTIPLY: Int
-  DIVIDE: Int
 }
 ```
 The above will raise an error as GraphQL does not support unions between scalar types.
@@ -127,6 +121,7 @@ None.
 ## Out of Scope
 - `DateTime` and `Location` types.
 - Lists of supported types.
+- MULTIPLY AND DIVIDE operations.
 
 ## Discarded solutions
 ### Interpolation
