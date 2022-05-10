@@ -33,9 +33,9 @@ export const getSchemaForLintAndAutocompletion = () => {
                 },
             },
         }),
-        directives: [...Object.values(directives as { [s: string]: GraphQLDirective })],
+        directives: [...Object.values(directives as Record<string, GraphQLDirective>)],
         types: [
-            ...Object.values(scalars as { [s: string]: GraphQLScalarType }),
+            ...Object.values(scalars as Record<string, GraphQLScalarType>),
             ...Object.values(objects as Record<string, GraphQLObjectType>),
         ],
     });
