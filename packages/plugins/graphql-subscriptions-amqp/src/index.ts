@@ -17,16 +17,18 @@
  * limitations under the License.
  */
 
-import amqp from "amqplib";
+import type { Connection as AmqpConnection } from "amqplib";
 import { EventEmitter } from "events";
 import { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "@neo4j/graphql";
-import { AmqpApi, ConnectionOptions } from "./amqp-api";
+import { AmqpApi, ConnectionOptions } from "./amqp-0-9-1-api";
 
-export { ConnectionOptions } from "./amqp-api";
+export { ConnectionOptions } from "./amqp-0-9-1-api";
 
-const DEFAULT_EXCHANGE = "neo4j-graphql";
+const DEFAULT_EXCHANGE = "neo4j.graphql.subscriptions.fx";
 
-export type Neo4jGraphQLSubscriptionsAMQPConstructorOptions = { exchange?: string };
+type AmqpVersion = "0-9-1";
+
+export type Neo4jGraphQLSubscriptionsAMQPConstructorOptions = { amqpVersion?: AmqpVersion; exchange?: string };
 
 export class Neo4jGraphQLSubscriptionsAMQP implements Neo4jGraphQLSubscriptionsPlugin {
     public events: EventEmitter;
@@ -37,7 +39,7 @@ export class Neo4jGraphQLSubscriptionsAMQP implements Neo4jGraphQLSubscriptionsP
         this.amqpApi = new AmqpApi({ exchange: DEFAULT_EXCHANGE, ...options });
     }
 
-    public async connect(connectionOptions: ConnectionOptions): Promise<amqp.Connection> {
+    public async connect(connectionOptions: ConnectionOptions): Promise<AmqpConnection> {
         return this.amqpApi.connect(connectionOptions, (message: SubscriptionsEvent) => {
             this.events.emit(message.event as string, message);
         });

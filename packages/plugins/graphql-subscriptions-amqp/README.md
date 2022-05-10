@@ -1,13 +1,17 @@
 # @neo4j/graphql-plugin-subscriptions-amqp
 
-Subscription plugin with RabbitMQ broker for @neo4j/graphql plugins for `@neo4j/graphql`
+Subscription plugin for `@neo4j/graphql`, currently supporting AMQP 0-9-1 brokers such as:
+
+* RabbitMQ
+* Apache Qpid
+* Apache ActiveMQ
 
 1. [Documentation](https://neo4j.com/docs/graphql-manual/current/subscriptions/)
 
 ## Installation
 
 ```
-$ npm install @neo4j/graphql-plugin-subscriptions-amqp
+npm install @neo4j/graphql-plugin-subscriptions-amqp
 ```
 
 ## Usage
@@ -34,9 +38,9 @@ const neoSchema = new Neo4jGraphQL({
 
 ## Running tests
 
--   `yarn test` to run unit tests
--   `yarn test:e2e` to run integration tests. These tests require a RabbitMQ instance running, and are not run by default
-    -   Use `docker-compose up rabbitmq` to spin up a RabbitMQ container for testing
+* `yarn test` to run unit tests
+* `yarn test:e2e` to run integration tests. These tests require a RabbitMQ instance running, and are not run by default
+  * Use `docker-compose up rabbitmq` to spin up a RabbitMQ container for testing
 
 ## Licence
 
