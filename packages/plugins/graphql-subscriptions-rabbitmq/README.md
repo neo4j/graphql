@@ -2,18 +2,18 @@
 
 Subscription plugin with RabbitMQ broker for @neo4j/graphql plugins for `@neo4j/graphql`
 
-1. [Documentation](https://neo4j.com/docs/graphql-manual/current/auth/)
+1. [Documentation](https://neo4j.com/docs/graphql-manual/current/subscriptions/)
 
 ## Installation
 
 ```
-$ npm install @neo4j/graphql-plugin-auth
+$ npm install @neo4j/graphql-plugin-subscriptions-rabbitmq
 ```
 
 ## Usage
 
 ```javascript
-const Neo4jGraphQLSubscriptionsRabbitMQ = require("@neo4j/graphql-subscriptions-rabbitmq-plugin");
+const Neo4jGraphQLSubscriptionsRabbitMQ = require("@neo4j/graphql-plugin-subscriptions-rabbitmq");
 
 const plugin = new Neo4jGraphQLSubscriptionsRabbitMQ();
 
