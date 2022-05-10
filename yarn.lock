@@ -2163,6 +2163,7 @@ __metadata:
     "@types/node": 16.11.33
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
+    "@types/semver": ^7.3.9
     "@types/supertest": 2.0.12
     "@types/ws": 8.5.3
     apollo-server: 3.7.0
@@ -3106,6 +3107,13 @@ __metadata:
   version: 0.16.2
   resolution: "@types/scheduler@npm:0.16.2"
   checksum: b6b4dcfeae6deba2e06a70941860fb1435730576d3689225a421280b7742318d1548b3d22c1f66ab68e414f346a9542f29240bc955b6332c5b11e561077583bc
+  languageName: node
+  linkType: hard
+
+"@types/semver@npm:^7.3.9":
+  version: 7.3.9
+  resolution: "@types/semver@npm:7.3.9"
+  checksum: 60bfcfdfa7f937be2c6f4b37ddb6714fb0f27b05fe4cbdfdd596a97d35ed95d13ee410efdd88e72a66449d0384220bf20055ab7d6b5df10de4990fbd20e5cbe0
   languageName: node
   linkType: hard
 
