@@ -3186,13 +3186,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/uuid@npm:8.3.0":
-  version: 8.3.0
-  resolution: "@types/uuid@npm:8.3.0"
-  checksum: 0f46b15020b9c252473fb327a6491fd7d238c7b5bbaebd32195a0de178db040f6abb96902507ba25dd4a673cdd9cc28b8880512dba54561e8bc60d8f326c1e30
-  languageName: node
-  linkType: hard
-
 "@types/uuid@npm:8.3.4":
   version: 8.3.4
   resolution: "@types/uuid@npm:8.3.4"
@@ -12928,7 +12921,7 @@ __metadata:
     "@types/jest": 27.4.0
     "@types/jsonwebtoken": 8.5.1
     "@types/node": 14.14.14
-    "@types/uuid": 8.3.0
+    "@types/uuid": 8.3.4
     apollo-server-express: ^3.6.7
     bcrypt: 5.0.1
     cross-env: 7.0.3
