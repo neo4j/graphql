@@ -17,6 +17,9 @@
  * limitations under the License.
  */
 
+import { Point } from "./graphql/objects/Point";
+import { CartesianPoint } from "./graphql/objects/CartesianPoint";
+
 export {
     DriverConfig,
     GraphQLOptionsArg,
@@ -40,3 +43,8 @@ export {
     Neo4jGraphQLAuthenticationError,
     Neo4jGraphQLForbiddenError,
 } from "./classes";
+
+export * as directives from "./graphql/directives";
+export * as scalars from "./graphql/scalars";
+
+export const objects = { Point, CartesianPoint };
