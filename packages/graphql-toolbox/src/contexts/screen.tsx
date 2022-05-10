@@ -38,7 +38,7 @@ export function ScreenProvider(props: React.PropsWithChildren<any>) {
     [value, setValue] = useState<State>({
         view: Screen.TYPEDEFS,
         setScreen: (view: Screen) => {
-            setValue((v) => ({ ...v, view }));
+            setValue((values) => ({ ...values, view }));
         },
     });
 

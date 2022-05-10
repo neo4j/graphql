@@ -17,29 +17,21 @@
  * limitations under the License.
  */
 
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { HeroIcon } from "@neo4j-ndl/react";
 // @ts-ignore - SVG Import
-import Neo4jLogoIcon from "../assets/Neo4j-logo-color.svg";
-import { AuthContext } from "../contexts/auth";
-import { ScreenContext, Screen } from "../contexts/screen";
-import { SettingsContext } from "../contexts/settings";
-import { ProTooltip } from "./ProTooltip";
+import Neo4jLogoIcon from "../../assets/Neo4j-logo-color.svg";
+import { AuthContext } from "../../contexts/auth";
+import { SettingsContext } from "../../contexts/settings";
 
-interface Props {
-    hasSchema: boolean;
-}
-
-export const TopBar = ({ hasSchema }: Props) => {
+export const TopBar = () => {
     const auth = useContext(AuthContext);
-    const screen = useContext(ScreenContext);
     const settings = useContext(SettingsContext);
     const greenDot = <span className="ml-1 mr-1 h-2 w-2 bg-green-400 rounded-full inline-block" />;
     const redDot = <span className="ml-1 mr-1 h-2 w-2 bg-red-400 rounded-full inline-block" />;
 
     const handleHelpClick = () => {
-        if (screen.view !== Screen.EDITOR) return;
-        settings.setIsShowDocsDrawer(!settings.isShowDocsDrawer);
+        settings.setIsShowHelpDrawer(!settings.isShowHelpDrawer);
     };
 
     const handleSettingsClick = () => {
@@ -68,6 +60,7 @@ export const TopBar = ({ hasSchema }: Props) => {
                     {!auth.isNeo4jDesktop ? (
                         <p className="flex items-center mr-6 pr-6 border-r border-gray-700">
                             <span
+                                data-test-topbar-disconnect-button
                                 className="cursor-pointer"
                                 onClick={() => {
                                     auth?.logout();
@@ -80,21 +73,19 @@ export const TopBar = ({ hasSchema }: Props) => {
                     ) : null}
                     <div className="flex items-center">
                         <div className="cursor-pointer mr-4">
-                            <ProTooltip
-                                tooltipText="Build the schema to show the Documentation"
-                                blockVisibility={hasSchema}
-                            >
-                                <HeroIcon
-                                    onClick={handleHelpClick}
-                                    className={`h-7 w-7 opacity-30 ${
-                                        screen.view !== Screen.EDITOR ? "opacity-30" : "opacity-100"
-                                    }`}
-                                    iconName="QuestionMarkCircleIcon"
-                                    type="outline"
-                                />
-                            </ProTooltip>
+                            <HeroIcon
+                                data-test-topbar-help-button
+                                onClick={handleHelpClick}
+                                className="h-7 w-7"
+                                iconName="QuestionMarkCircleIcon"
+                                type="outline"
+                            />
                         </div>
-                        <div className="ml-2 mr-6 cursor-pointer" onClick={handleSettingsClick}>
+                        <div
+                            className="ml-2 mr-6 cursor-pointer"
+                            data-test-topbar-settings-button
+                            onClick={handleSettingsClick}
+                        >
                             <HeroIcon className="h-7 w-7" iconName="CogIcon" type="outline" />
                         </div>
                     </div>

@@ -22,7 +22,7 @@ import { useContext, useEffect, useRef } from "react";
 import { THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
 import { ThemeContext, Theme } from "../../contexts/theme";
 import { CodeMirror } from "../../utils/utils";
-import { Extension, FileName } from "../Filename";
+import { Extension, FileName } from "../../components/Filename";
 import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
 
 export interface Props {

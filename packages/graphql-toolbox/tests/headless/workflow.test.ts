@@ -42,6 +42,21 @@ describe("workflow", () => {
             }
         }
     `;
+    const queryWithVariables = `
+        query($moviesWhere: MovieWhere) {
+            movies(where: $moviesWhere) {
+                id
+            }
+        }
+    `;
+    const variables = `
+        {
+            "moviesWhere": {
+                "id": "${id}"
+            }
+        }
+    `;
+
     let browser: Browser;
     let driver: neo4j.Driver;
 
@@ -55,15 +70,11 @@ describe("workflow", () => {
         await driver.close();
     });
 
-    test("should perform e2e workflow", async () => {
+    test("should perform workflow end-to-end", async () => {
         const page = await getPage({ browser });
 
         const login = new Login(page);
-        await login.setUsername(NEO_USER);
-        await login.setPassword(NEO_PASSWORD);
-        await login.setURL(NEO_URL);
-        await login.submit();
-        await login.awaitSuccess();
+        await login.login();
 
         const schemaEditor = new SchemaEditor(page);
         await schemaEditor.setTypeDefs(typeDefs);
@@ -85,9 +96,25 @@ describe("workflow", () => {
         await page.waitForNetworkIdle();
         await page.waitForTimeout(2000);
 
-        const output = await editor.getOutput();
+        const outputQuery = await editor.getOutput();
 
-        expect(JSON.parse(output)).toMatchObject({
+        expect(JSON.parse(outputQuery)).toMatchObject({
+            data: {
+                movies: [{ id }],
+            },
+        });
+
+        // Testing a query with variables
+        await editor.setQuery(queryWithVariables);
+        await editor.setParams(variables);
+
+        await editor.submitQuery();
+        await page.waitForNetworkIdle();
+        await page.waitForTimeout(2000);
+
+        const outputQueryWithVariables = await editor.getOutput();
+
+        expect(JSON.parse(outputQueryWithVariables)).toMatchObject({
             data: {
                 movies: [{ id }],
             },
