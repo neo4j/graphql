@@ -42,6 +42,19 @@ const neoSchema = new Neo4jGraphQL({
 * `yarn test:e2e` to run integration tests. These tests require a RabbitMQ instance running, and are not run by default
   * Use `docker-compose up rabbitmq` to spin up a RabbitMQ container for testing
 
+### Testing against Apache Qpid
+
+#### Build and run Docker container
+
+* `docker build -t brokerj ./qpid-docker`
+* `docker run -p 5672:5672 brokerj`
+
+This will run in the foreground and can be killed following test run.
+
+#### Running tests against Qpid
+
+* `yarn test:e2e`
+
 ## Licence
 
 [Apache 2.0](https://github.com/neo4j/graphql/blob/master/packages/graphql-plugin-auth/LICENSE.txt)
