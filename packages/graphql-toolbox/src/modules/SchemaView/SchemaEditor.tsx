@@ -18,7 +18,6 @@
  */
 
 import { useContext, useEffect, useRef, useState } from "react";
-import { DirectiveLocation, GraphQLDirective, GraphQLObjectType, GraphQLSchema, GraphQLString } from "graphql";
 import { EditorFromTextArea } from "codemirror";
 import { CodeMirror } from "../../utils/utils";
 import {
@@ -29,6 +28,7 @@ import {
     THEME_EDITOR_LIGHT,
 } from "../../constants";
 import { formatCode, handleEditorDisableState, ParserOptions } from "../EditorView/utils";
+import { getSchemaForLintAndAutocompletion } from "./utils";
 import { Extension, FileName } from "../../components/Filename";
 import { ThemeContext, Theme } from "../../contexts/theme";
 import { Storage } from "../../utils/storage";
@@ -48,31 +48,7 @@ export const SchemaEditor = ({ loading, mirrorRef }: Props) => {
             return;
         }
 
-        const testSchema = new GraphQLSchema({
-            query: new GraphQLObjectType({
-                name: "Query",
-                fields: {
-                    _ignore: {
-                        type: GraphQLString,
-                        resolve: () => {
-                            return "Hello from GraphQL";
-                        },
-                    },
-                },
-            }),
-            directives: [
-                new GraphQLDirective({
-                    name: "test",
-                    description: "Use for bla",
-                    locations: [DirectiveLocation.OBJECT, DirectiveLocation.FIELD_DEFINITION],
-                }),
-                new GraphQLDirective({
-                    name: "redio",
-                    description: "Use for bli",
-                    locations: [DirectiveLocation.OBJECT, DirectiveLocation.FIELD_DEFINITION],
-                }),
-            ],
-        });
+        const schemaForLintAndAutocompletion = getSchemaForLintAndAutocompletion();
 
         const element = ref.current as HTMLTextAreaElement;
 
@@ -99,20 +75,20 @@ export const SchemaEditor = ({ loading, mirrorRef }: Props) => {
             },
             lint: {
                 // @ts-ignore
-                schema: testSchema,
+                schema: schemaForLintAndAutocompletion,
                 validationRules: [],
             },
             hintOptions: {
-                schema: testSchema,
+                schema: schemaForLintAndAutocompletion,
                 closeOnUnfocus: true,
                 completeSingle: false,
                 container: element.parentElement,
             },
             info: {
-                schema: testSchema,
+                schema: schemaForLintAndAutocompletion,
             },
             jump: {
-                schema: testSchema,
+                schema: schemaForLintAndAutocompletion,
             },
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
             extraKeys: {
