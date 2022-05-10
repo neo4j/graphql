@@ -18,41 +18,37 @@
  */
 
 import { useContext, useEffect, useRef, useState } from "react";
-import { GraphQLSchema } from "graphql";
-import { CodeMirror } from "../../utils/utils";
 import { EditorFromTextArea } from "codemirror";
-import { EDITOR_QUERY_INPUT, THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../../constants";
-import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
-import { Extension, FileName } from "../Filename";
+import { CodeMirror } from "../../utils/utils";
+import {
+    DEFAULT_TYPE_DEFS,
+    LOCAL_STATE_TYPE_DEFS,
+    SCHEMA_EDITOR_INPUT,
+    THEME_EDITOR_DARK,
+    THEME_EDITOR_LIGHT,
+} from "../../constants";
+import { formatCode, handleEditorDisableState, ParserOptions } from "../EditorView/utils";
+import { getSchemaForLintAndAutocompletion } from "./utils";
+import { Extension, FileName } from "../../components/Filename";
 import { ThemeContext, Theme } from "../../contexts/theme";
+import { Storage } from "../../utils/storage";
 
 export interface Props {
-    schema: GraphQLSchema;
-    query: string;
     loading: boolean;
-    buttons: any;
     mirrorRef: React.MutableRefObject<EditorFromTextArea | null>;
-    executeQuery: (override?: string) => Promise<void>;
-    onChangeQuery: (query: string) => void;
 }
 
-export const GraphQLQueryEditor = ({
-    schema,
-    mirrorRef,
-    query,
-    loading,
-    buttons,
-    executeQuery,
-    onChangeQuery,
-}: Props) => {
+export const SchemaEditor = ({ loading, mirrorRef }: Props) => {
     const theme = useContext(ThemeContext);
-    const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
     const ref = useRef<HTMLTextAreaElement | null>(null);
+    const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
 
     useEffect(() => {
         if (ref.current === null) {
             return;
         }
+
+        const schemaForLintAndAutocompletion = getSchemaForLintAndAutocompletion();
 
         const element = ref.current as HTMLTextAreaElement;
 
@@ -74,25 +70,25 @@ export const GraphQLQueryEditor = ({
             showCursorWhenSelecting: true,
             lineWrapping: true,
             foldGutter: {
-                // @ts-ignore - GraphQL Adds this one
+                // @ts-ignore - Added By GraphQL Plugin
                 minFoldSize: 4,
             },
             lint: {
                 // @ts-ignore
-                schema: schema,
-                validationRules: null,
+                schema: schemaForLintAndAutocompletion,
+                validationRules: [],
             },
             hintOptions: {
-                schema: schema,
-                closeOnUnfocus: false,
+                schema: schemaForLintAndAutocompletion,
+                closeOnUnfocus: true,
                 completeSingle: false,
                 container: element.parentElement,
             },
             info: {
-                schema: schema,
+                schema: schemaForLintAndAutocompletion,
             },
             jump: {
-                schema: schema,
+                schema: schemaForLintAndAutocompletion,
             },
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
             extraKeys: {
@@ -101,13 +97,8 @@ export const GraphQLQueryEditor = ({
                 "Alt-Space": showHint,
                 "Shift-Space": showHint,
                 "Shift-Alt-Space": showHint,
-                "Cmd-Enter": () => {
-                    executeQuery(mirror.getValue());
-                },
-                "Ctrl-Enter": () => {
-                    executeQuery(mirror.getValue());
-                },
                 "Ctrl-L": () => {
+                    if (!mirror) return;
                     formatCode(mirror, ParserOptions.GRAPH_QL);
                 },
             },
@@ -115,16 +106,18 @@ export const GraphQLQueryEditor = ({
         setMirror(mirror);
         mirrorRef.current = mirror;
 
-        mirror.on("change", (event: any) => {
-            onChangeQuery(event.getValue());
-        });
-    }, [ref, schema]);
+        const storedTypeDefs = Storage.retrieveJSON(LOCAL_STATE_TYPE_DEFS) || DEFAULT_TYPE_DEFS;
+        if (storedTypeDefs && ref.current) {
+            mirror?.setValue(storedTypeDefs);
+            ref.current.value = storedTypeDefs;
+        }
 
-    useEffect(() => {
-        const cursor = mirror?.getCursor();
-        mirror?.setValue(query);
-        if (cursor) mirror?.setCursor(cursor);
-    }, [query]);
+        mirror.on("change", (e) => {
+            if (ref.current) {
+                ref.current.value = e.getValue();
+            }
+        });
+    }, [ref]);
 
     useEffect(() => {
         handleEditorDisableState(mirror, loading);
@@ -132,7 +125,7 @@ export const GraphQLQueryEditor = ({
 
     useEffect(() => {
         // @ts-ignore - Find a better solution
-        document[EDITOR_QUERY_INPUT] = mirror;
+        document[SCHEMA_EDITOR_INPUT] = mirror;
     }, [mirror]);
 
     useEffect(() => {
@@ -142,8 +135,8 @@ export const GraphQLQueryEditor = ({
 
     return (
         <div className="rounded-b-xl" style={{ width: "100%", height: "100%" }}>
-            <FileName name={"query"} extension={Extension.GRAPHQL} buttons={buttons}></FileName>
-            <textarea ref={ref} className="w-full h-full" />
+            <FileName extension={Extension.GRAPHQL} name={"schema"}></FileName>
+            <textarea id={SCHEMA_EDITOR_INPUT} ref={ref} style={{ width: "100%", height: "100%" }} />
         </div>
     );
 };

@@ -17,29 +17,24 @@
  * limitations under the License.
  */
 
-import {
-    SCHEMA_EDITOR_BUILD_BUTTON,
-    SCHEMA_EDITOR_INPUT,
-    SCHEMA_EDITOR_INTROSPECT_BUTTON,
-} from "../../../src/constants";
+import { SCHEMA_EDITOR_INPUT } from "../../../src/constants";
 import { Screen } from "./Screen";
 
 export class SchemaEditor extends Screen {
     public async setTypeDefs(typeDefs: string) {
         await this.page.waitForSelector(`#${SCHEMA_EDITOR_INPUT}`);
-        await this.page.$eval(
-            `#${SCHEMA_EDITOR_INPUT}`,
-            (el, injected) => {
-                // @ts-ignore - Find a way to type this
-                el.value = injected;
+        await this.page.evaluate(
+            ({ id, typeDefs }) => {
+                // @ts-ignore -Find a better solution
+                document[`${id}`].setValue(typeDefs);
             },
-            typeDefs
+            { typeDefs, id: SCHEMA_EDITOR_INPUT }
         );
     }
 
     public async buildSchema() {
-        await this.page.waitForSelector(`#${SCHEMA_EDITOR_BUILD_BUTTON}`);
-        await this.page.click(`#${SCHEMA_EDITOR_BUILD_BUTTON}`);
+        await this.page.waitForSelector("[data-test-schema-editor-build-button]");
+        await this.page.click("[data-test-schema-editor-build-button]");
     }
 
     public async getTypeDefs(): Promise<string> {
@@ -52,7 +47,7 @@ export class SchemaEditor extends Screen {
     }
 
     public async introspect() {
-        await this.page.waitForSelector(`#${SCHEMA_EDITOR_INTROSPECT_BUTTON}`);
-        await this.page.click(`#${SCHEMA_EDITOR_INTROSPECT_BUTTON}`);
+        await this.page.waitForSelector("[data-test-schema-editor-introspect-button]");
+        await this.page.click("[data-test-schema-editor-introspect-button]");
     }
 }

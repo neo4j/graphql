@@ -21,88 +21,89 @@ import { useCallback } from "react";
 import { useContext, useState } from "react";
 import { FormInput } from "./FormInput";
 import { Button } from "@neo4j-ndl/react";
-import {
-    DEFAULT_BOLT_URL,
-    LOGIN_BUTTON,
-    LOGIN_PASSWORD_INPUT,
-    LOGIN_URL_INPUT,
-    LOGIN_USERNAME_INPUT,
-} from "../../constants";
+import { DEFAULT_BOLT_URL } from "../../constants";
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
 import { AuthContext } from "../../contexts/auth";
+import { getConnectUrlSearchParam } from "src/contexts/utils";
 
 export const Login = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const auth = useContext(AuthContext);
+    const [url, setUrl] = useState(getConnectUrlSearchParam() || DEFAULT_BOLT_URL);
 
-    const onSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        setLoading(true);
+    const onSubmit = useCallback(
+        async (event: React.FormEvent<HTMLFormElement>) => {
+            event.preventDefault();
+            setLoading(true);
 
-        try {
-            const data = new FormData(event.currentTarget);
-            const username = data.get("username") as string;
-            const password = data.get("password") as string;
-            const url = data.get("url") as string;
+            try {
+                const data = new FormData(event.currentTarget);
+                const username = data.get("username") as string;
+                const password = data.get("password") as string;
 
-            await auth.login({
-                username,
-                password,
-                url,
-            });
-        } catch (error) {
-            setError((error as Error).message as string);
-        } finally {
-            setLoading(false);
-        }
-    }, []);
+                await auth.login({
+                    username,
+                    password,
+                    url,
+                });
+            } catch (error) {
+                setError((error as Error).message as string);
+            } finally {
+                setLoading(false);
+            }
+        },
+        [url]
+    );
 
     return (
         <div className="grid place-items-center h-screen n-bg-neutral-90">
-            <div className="flex flex-col align-center justify-center bg-white shadow-md rounded p-8">
-                <div className="mb-3">
+            <div className="w-login flex flex-col align-center justify-center bg-white shadow-md rounded p-8">
+                <div className="mb-6 text-center">
                     <img src={Icon} alt="d.s" className="h-12 w-12 mx-auto" />
-                    <h2 className="text-3xl mx-auto">Neo4j GraphQL Toolbox</h2>
+                    <h2 className="mt-1 text-3xl">Neo4j GraphQL Toolbox</h2>
                 </div>
                 <form onSubmit={onSubmit}>
                     <div className="mb-4">
                         <FormInput
-                            id={LOGIN_USERNAME_INPUT}
+                            testTag="data-test-login-username"
                             label="Username"
                             name="username"
                             placeholder="neo4j"
                             required={true}
                             type="text"
                             disabled={loading}
+                            autoComplete="username"
                         ></FormInput>
                     </div>
                     <div className="mb-6">
                         <FormInput
-                            id={LOGIN_PASSWORD_INPUT}
+                            testTag="data-test-login-password"
                             label="Password"
                             name="password"
                             placeholder="password"
                             required={true}
                             type="password"
                             disabled={loading}
+                            autoComplete="current-password"
                         ></FormInput>
                     </div>
                     <div className="mb-8">
                         <FormInput
-                            id={LOGIN_URL_INPUT}
-                            label="Bolt URL"
+                            testTag="data-test-login-url"
+                            label="Connection URI"
                             name="url"
+                            value={url}
+                            onChange={(event) => setUrl(event.currentTarget.value)}
                             placeholder={DEFAULT_BOLT_URL}
-                            defaultValue={DEFAULT_BOLT_URL}
                             required={true}
                             type="text"
                             disabled={loading}
                         ></FormInput>
                     </div>
                     <div className="flex items-center justify-between">
-                        <Button id={LOGIN_BUTTON} color="neutral" fill="outlined" type="submit" disabled={loading}>
+                        <Button data-test-login-button color="neutral" fill="outlined" type="submit" disabled={loading}>
                             {loading ? <>Connecting...</> : <span>Connect</span>}
                         </Button>
                     </div>

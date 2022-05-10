@@ -43,11 +43,7 @@ describe("introspection", () => {
         const page = await getPage({ browser });
 
         const login = new Login(page);
-        await login.setUsername(NEO_USER);
-        await login.setPassword(NEO_PASSWORD);
-        await login.setURL(NEO_URL);
-        await login.submit();
-        await login.awaitSuccess();
+        await login.login();
 
         const sessionFactory = () => driver?.session({ defaultAccessMode: neo4j.session.WRITE }) as neo4j.Session;
         const session = await sessionFactory();

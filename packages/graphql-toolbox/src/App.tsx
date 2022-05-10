@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Main } from "./components/Main";
+import { Main } from "./modules/Main/Main";
 import { AuthProvider } from "./contexts/auth";
 import { ScreenProvider } from "./contexts/screen";
 import { ThemeProvider } from "./contexts/theme";

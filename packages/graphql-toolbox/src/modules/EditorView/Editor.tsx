@@ -27,23 +27,24 @@ import { JSONEditor } from "./JSONEditor";
 import { GraphQLQueryEditor } from "./GraphQLQueryEditor";
 import {
     EDITOR_PARAMS_INPUT,
-    EDITOR_QUERY_BUTTON,
     DEFAULT_QUERY,
     EDITOR_RESPONSE_OUTPUT,
     LOCAL_STATE_TYPE_LAST_PARAMS,
     LOCAL_STATE_TYPE_LAST_QUERY,
 } from "../../constants";
 import { Grid } from "./grid/Grid";
-import { DocExplorer } from "./docexplorer/index";
 import { formatCode, safeParse, ParserOptions } from "./utils";
-import { Extension } from "../Filename";
-import { ViewSelectorComponent } from "../ViewSelectorComponent";
+import { Extension } from "../../components/Filename";
+import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
 import { SettingsContext } from "../../contexts/settings";
 import { Theme, ThemeContext } from "../../contexts/theme";
-import { AppSettings } from "../AppSettings";
-import { ProTooltip } from "../ProTooltip";
+import { AppSettings } from "../AppSettings/AppSettings";
+import { ProTooltip } from "../../components/ProTooltip";
+import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
+import { Storage } from "../../utils/storage";
 
 const DEBOUNCE_TIMEOUT = 500;
+
 export interface Props {
     schema?: GraphQLSchema;
 }
@@ -58,11 +59,11 @@ export const Editor = (props: Props) => {
     const [initVariableValues, setInitVariableValues] = useState("");
     const [output, setOutput] = useState("");
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
-    const showRightPanel = settings.isShowDocsDrawer || settings.isShowSettingsDrawer;
+    const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
     const debouncedSave = useCallback(
         debounce((key, value) => {
-            localStorage.setItem(key, value);
+            Storage.store(key, value);
         }, DEBOUNCE_TIMEOUT),
         []
     );
@@ -100,8 +101,8 @@ export const Editor = (props: Props) => {
     );
 
     useEffect(() => {
-        const initQuery = JSON.parse(localStorage.getItem(LOCAL_STATE_TYPE_LAST_QUERY) as string) || DEFAULT_QUERY;
-        const initParams = JSON.parse(localStorage.getItem(LOCAL_STATE_TYPE_LAST_PARAMS) as string) || "";
+        const initQuery = Storage.retrieveJSON(LOCAL_STATE_TYPE_LAST_QUERY) || DEFAULT_QUERY;
+        const initParams = Storage.retrieveJSON(LOCAL_STATE_TYPE_LAST_PARAMS) || "";
         setInitialLoad(true);
         setQuery(initQuery);
         setVariableValues(initParams);
@@ -138,6 +139,7 @@ export const Editor = (props: Props) => {
                             />
                         </div>
                     </div>
+
                     <Grid
                         isRightPanelVisible={showRightPanel}
                         queryEditor={
@@ -168,7 +170,7 @@ export const Editor = (props: Props) => {
                                                 </Button>
                                             </ProTooltip>
                                             <Button
-                                                id={EDITOR_QUERY_BUTTON}
+                                                data-test-editor-query-button
                                                 className="mr-4 ml-2"
                                                 color="primary"
                                                 fill="text"
@@ -213,18 +215,8 @@ export const Editor = (props: Props) => {
             </div>
             {showRightPanel ? (
                 <div className="h-content-container flex justify-start w-96 bg-white">
-                    {settings.isShowDocsDrawer ? (
-                        <div className="p-6">
-                            <DocExplorer schema={props.schema}>
-                                <button
-                                    className="docExplorerCloseIcon"
-                                    onClick={() => settings.setIsShowDocsDrawer(false)}
-                                    aria-label="Close Documentation Explorer"
-                                >
-                                    {"\u2715"}
-                                </button>
-                            </DocExplorer>
-                        </div>
+                    {settings.isShowHelpDrawer ? (
+                        <HelpDrawer onClickClose={() => settings.setIsShowHelpDrawer(false)} schema={props.schema} />
                     ) : null}
                     {settings.isShowSettingsDrawer ? (
                         <AppSettings onClickClose={() => settings.setIsShowSettingsDrawer(false)} />
