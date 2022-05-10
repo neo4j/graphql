@@ -19,12 +19,12 @@
 
 import amqp from "amqplib";
 import { SubscriptionsEvent } from "@neo4j/graphql";
-import { Neo4jGraphQLSubscriptionsRabbitMQ } from "../../src";
+import { Neo4jGraphQLSubscriptionsAMQP } from "../../src";
 import createPlugin from "./setup/plugin";
 import createRabbitMQConnection from "./setup/rabbitmq";
 
 describe("Subscriptions RabbitMQ Integration", () => {
-    let plugin: Neo4jGraphQLSubscriptionsRabbitMQ;
+    let plugin: Neo4jGraphQLSubscriptionsAMQP;
     let connection: amqp.Connection;
 
     beforeEach(async () => {

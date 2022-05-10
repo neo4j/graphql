@@ -17,15 +17,18 @@
  * limitations under the License.
  */
 
-import amqp from "amqplib";
-import { Neo4jGraphQLSubscriptionsRabbitMQ } from "../../../src";
+import { EventEmitter } from "events";
+import { Neo4jGraphQLSubscriptionsAMQP } from ".";
 
-export default async function createPlugin(connection: amqp.Connection): Promise<Neo4jGraphQLSubscriptionsRabbitMQ> {
-    const plugin = new Neo4jGraphQLSubscriptionsRabbitMQ({
-        exchange: "neo4j-graphql",
+describe("index", () => {
+    test("Neo4jGraphQLSubscriptionsAMQP", () => {
+        expect(Neo4jGraphQLSubscriptionsAMQP).toBeDefined();
     });
 
-    await plugin.connect(connection);
+    test("Neo4jGraphQLSubscriptionsAMQP plugin interface", () => {
+        const plugin = new Neo4jGraphQLSubscriptionsAMQP();
 
-    return plugin;
-}
+        expect(plugin.events).toBeInstanceOf(EventEmitter);
+        expect(typeof plugin.publish).toBe("function");
+    });
+});

@@ -2082,9 +2082,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql-plugin-subscriptions-rabbitmq@workspace:packages/plugins/graphql-subscriptions-rabbitmq":
+"@neo4j/graphql-plugin-subscriptions-amqp@workspace:packages/plugins/graphql-subscriptions-amqp":
   version: 0.0.0-use.local
-  resolution: "@neo4j/graphql-plugin-subscriptions-rabbitmq@workspace:packages/plugins/graphql-subscriptions-rabbitmq"
+  resolution: "@neo4j/graphql-plugin-subscriptions-amqp@workspace:packages/plugins/graphql-subscriptions-amqp"
   dependencies:
     "@neo4j/graphql": ^3.1.0
     "@types/amqplib": ^0.8.2

@@ -1,4 +1,4 @@
-# @neo4j/graphql-plugin-subscriptions-rabbitmq
+# @neo4j/graphql-plugin-subscriptions-amqp
 
 Subscription plugin with RabbitMQ broker for @neo4j/graphql plugins for `@neo4j/graphql`
 
@@ -7,15 +7,15 @@ Subscription plugin with RabbitMQ broker for @neo4j/graphql plugins for `@neo4j/
 ## Installation
 
 ```
-$ npm install @neo4j/graphql-plugin-subscriptions-rabbitmq
+$ npm install @neo4j/graphql-plugin-subscriptions-amqp
 ```
 
 ## Usage
 
 ```javascript
-const Neo4jGraphQLSubscriptionsRabbitMQ = require("@neo4j/graphql-plugin-subscriptions-rabbitmq");
+const Neo4jGraphQLSubscriptionsAMQP = require("@neo4j/graphql-plugin-subscriptions-amqp");
 
-const plugin = new Neo4jGraphQLSubscriptionsRabbitMQ();
+const plugin = new Neo4jGraphQLSubscriptionsAMQP();
 
 await plugin.connect({
     hostname: "localhost",

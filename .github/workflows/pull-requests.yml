@@ -168,7 +168,7 @@ jobs:
       matrix:
         package:
           - graphql-plugin-auth
-          - graphql-subscriptions-rabbitmq
+          - graphql-subscriptions-amqp
         graphql-version:
           - "^15.0.0"
           - "^16.0.0"
@@ -195,7 +195,7 @@ jobs:
           path: packages/plugins/${{ matrix.package }}/coverage/
 
   e2e-tests-plugins:
-    uses: ./.github/workflows/reusable-subscriptions-plugin-rabbitmq-e2e-test.yml
+    uses: ./.github/workflows/reusable-subscriptions-plugin-amqp-e2e-test.yml
 
   schema-tests:
     needs:

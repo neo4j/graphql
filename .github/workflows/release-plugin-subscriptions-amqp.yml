@@ -1,9 +1,9 @@
-name: "Release (Subscriptions RabbitMQ Plugin)"
+name: "Release (Subscriptions AMQP Plugin)"
 
 on:
   push:
     branches:
-      - release/plugin-subscriptions-rabbitmq/*
+      - release/plugin-subscriptions-amqp/*
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -24,7 +24,7 @@ jobs:
     needs:
       - cache-dependencies
 
-    uses: ./.github/workflows/reusable-subscriptions-plugin-rabbitmq-e2e-test.yml
+    uses: ./.github/workflows/reusable-subscriptions-plugin-amqp-e2e-test.yml
 
   bump-version:
     needs:
@@ -51,14 +51,14 @@ jobs:
         run: |
           version=$(echo ${{ github.ref }} | cut -d/ -f5)
           echo "::set-output name=version::$version"
-      - name: Bump @neo4j/graphql-plugin-subscriptions-rabbitmq version
+      - name: Bump @neo4j/graphql-plugin-subscriptions-amqp version
         run: yarn version "${{ steps.get-version.outputs.version }}"
-        working-directory: packages/plugins/graphql-plugin-subscriptions-rabbitmq
+        working-directory: packages/plugins/graphql-plugin-subscriptions-amqp
       - name: Commit and push new version numbers
         run: |
           git config --global user.name 'Neo4j Team GraphQL'
           git config --global user.email 'team-graphql@neotechnology.com'
-          git commit -am "Bump @neo4j/graphql-plugin-subscriptions-rabbitmq version to ${{ steps.get-version.outputs.version }}"
+          git commit -am "Bump @neo4j/graphql-plugin-subscriptions-amqp version to ${{ steps.get-version.outputs.version }}"
           git push
 
   pack:
@@ -68,14 +68,14 @@ jobs:
     strategy:
       matrix:
         package:
-          - plugins/graphql-plugin-subscriptions-rabbitmq
+          - plugins/graphql-plugin-subscriptions-amqp
 
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: release/plugin-subscriptions-rabbitmq/${{ needs.bump-version.outputs.version }}
+          ref: release/plugin-subscriptions-amqp/${{ needs.bump-version.outputs.version }}
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
@@ -149,10 +149,10 @@ jobs:
           git config --global user.name 'Neo4j Team GraphQL'
           git config --global user.email 'team-graphql@neotechnology.com'
       - name: git merge
-        run: git merge --no-ff origin/release/plugin-subscriptions-rabbitmq/${{ needs.bump-version.outputs.version }} --strategy-option theirs
+        run: git merge --no-ff origin/release/plugin-subscriptions-amqp/${{ needs.bump-version.outputs.version }} --strategy-option theirs
       - name: git tag
         run: |
-          git tag -a @neo4j/graphql-plugin-subscriptions-rabbitmq@${{ needs.bump-version.outputs.version }} -m "@neo4j/graphql-plugin-subscriptions-rabbitmq@${{ needs.bump-version.outputs.version }}"
+          git tag -a @neo4j/graphql-plugin-subscriptions-amqp@${{ needs.bump-version.outputs.version }} -m "@neo4j/graphql-plugin-subscriptions-amqp@${{ needs.bump-version.outputs.version }}"
       - name: git push
         run: git push --follow-tags
       - uses: actions/checkout@v3
@@ -161,7 +161,7 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
       - name: git merge
-        run: git merge --no-ff origin/release/plugin-subscriptions-rabbitmq/${{ needs.bump-version.outputs.version }} --strategy-option theirs
+        run: git merge --no-ff origin/release/plugin-subscriptions-amqp/${{ needs.bump-version.outputs.version }} --strategy-option theirs
       - name: git push
         run: git push
 
@@ -183,7 +183,7 @@ jobs:
         run: |
           git config --global user.name 'Neo4j Team GraphQL'
           git config --global user.email 'team-graphql@neotechnology.com'
-          git push origin --delete release/plugin-subscriptions-rabbitmq/${{ needs.bump-version.outputs.version }}
+          git push origin --delete release/plugin-subscriptions-amqp/${{ needs.bump-version.outputs.version }}
 
   changelog:
     needs:
@@ -193,7 +193,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - plugins/graphql-plugin-subscriptions-rabbitmq
+          - plugins/graphql-plugin-subscriptions-amqp
 
     runs-on: ubuntu-latest
 
@@ -208,7 +208,7 @@ jobs:
         id: github-release
         uses: mikepenz/release-changelog-builder-action@v3
         with:
-          configuration: "config/release-changelog-builder-action/configuration-plugin-subscriptions-rabbitmq.json"
+          configuration: "config/release-changelog-builder-action/configuration-plugin-subscriptions-amqp.json"
           toTag: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

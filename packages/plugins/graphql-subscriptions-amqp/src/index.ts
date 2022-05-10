@@ -26,13 +26,13 @@ export { ConnectionOptions } from "./amqp-api";
 
 const DEFAULT_EXCHANGE = "neo4j-graphql";
 
-export type Neo4jGraphQLSubscriptionsRabbitMQConstructorOptions = { exchange?: string };
+export type Neo4jGraphQLSubscriptionsAMQPConstructorOptions = { exchange?: string };
 
-export class Neo4jGraphQLSubscriptionsRabbitMQ implements Neo4jGraphQLSubscriptionsPlugin {
+export class Neo4jGraphQLSubscriptionsAMQP implements Neo4jGraphQLSubscriptionsPlugin {
     public events: EventEmitter;
     private amqpApi: AmqpApi<SubscriptionsEvent>;
 
-    constructor(options: Neo4jGraphQLSubscriptionsRabbitMQConstructorOptions = {}) {
+    constructor(options: Neo4jGraphQLSubscriptionsAMQPConstructorOptions = {}) {
         this.events = new EventEmitter();
         this.amqpApi = new AmqpApi({ exchange: DEFAULT_EXCHANGE, ...options });
     }
