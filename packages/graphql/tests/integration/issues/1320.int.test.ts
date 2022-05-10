@@ -80,8 +80,11 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
             (risk1: ${riskType.name} {code: 'risk-1', mitigationState: 'Accepted'}),
             (team1)-[:OWNS_RISK]->(risk1)
         `;
-
-        await session.run(cypherInsert);
+        try {
+            await session.run(cypherInsert);
+        } finally {
+            await session.close();
+        }
 
         const query = `
             query getAggreationOnTeams {
