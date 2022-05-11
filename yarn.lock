@@ -3171,10 +3171,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/showdown@npm:1.9.4":
-  version: 1.9.4
-  resolution: "@types/showdown@npm:1.9.4"
-  checksum: bebf742fdf154bc37f8b8e8bfb155c7d5a016215326b787bab8fc1e5053cf07d7b85848d473e4382fb245a1c5c856098fb2481778f73ff9748bd8c55a0453afe
+"@types/showdown@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@types/showdown@npm:2.0.0"
+  checksum: 90ae870146b3d3f2ca75732b5ee9b85cd2b10719f1aea8021af97e0bb6828acd7715093a1f715dcc18244636e1a983650556a051b1aa51a06018302b1d7c8722
   languageName: node
   linkType: hard
 
@@ -12929,7 +12929,7 @@ __metadata:
     "@tsconfig/create-react-app": ^1.0.2
     "@types/react-dom": 18.0.0
     "@types/react-router-dom": 5.3.3
-    "@types/showdown": 1.9.4
+    "@types/showdown": 2.0.0
     "@webpack-cli/serve": ^1.6.1
     css-loader: 6.7.1
     dotenv-webpack: 7.1.0
@@ -12942,7 +12942,7 @@ __metadata:
     react-markdown: 8.0.3
     react-mde: 11.5.0
     react-router-dom: 6.3.0
-    showdown: 2.0.3
+    showdown: 2.1.0
     style-loader: 3.3.1
     ts-loader: 9.2.8
     typescript: 4.6.3
@@ -16232,14 +16232,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"showdown@npm:2.0.3":
-  version: 2.0.3
-  resolution: "showdown@npm:2.0.3"
+"showdown@npm:2.1.0":
+  version: 2.1.0
+  resolution: "showdown@npm:2.1.0"
   dependencies:
     commander: ^9.0.0
   bin:
     showdown: bin/showdown.js
-  checksum: 790e728a9ea19d8b3531c1562b063327e95198c9b416f0f927b36e68897233266b8b368e562b61d76dae3eaf88b5b90f95f1fb0a3db9b7504ea6c31e3e305024
+  checksum: 9e33607612c4465f9ef39de356e2cee512e248eb71d4725e1d4353cf3ab4bbe89a94601ce6bfbd8245000633693c8b90e7d85a9613dfeba7704a7422cee78282
   languageName: node
   linkType: hard
 
