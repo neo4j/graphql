@@ -1890,7 +1890,7 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/jest": 27.4.1
     "@types/node": 16.11.34
-    amqplib: ^0.8.0
+    amqplib: ^0.9.0
     apollo-server: 3.6.7
     apollo-server-express: 3.6.7
     camelcase: 6.3.0
@@ -3603,17 +3603,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"amqplib@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "amqplib@npm:0.8.0"
+"amqplib@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "amqplib@npm:0.9.0"
   dependencies:
     bitsyntax: ~0.1.0
     bluebird: ^3.7.2
     buffer-more-ints: ~1.0.0
     readable-stream: 1.x >=1.1.9
-    safe-buffer: ~5.2.1
-    url-parse: ~1.5.1
-  checksum: fc8f227769f0d3a731eeeb9732b862b651810cef763ddf402b97a923bb1818b6739dc6a031cabe8ee0940192b5f3949e2320f76a87ed8f71425a429512c8d4d1
+    url-parse: ~1.5.10
+  checksum: 664be2b75489247e03c9efca6ca6f480764ffc8d8778c2de853b8f5f74497afd5660148b10f2ea803c7a307927823afd808a697a35cf247bad70df4324ca29cd
   languageName: node
   linkType: hard
 
@@ -15164,7 +15163,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safe-buffer@npm:5.2.1, safe-buffer@npm:>=5.1.0, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:^5.1.1, safe-buffer@npm:^5.1.2, safe-buffer@npm:^5.2.0, safe-buffer@npm:~5.2.0, safe-buffer@npm:~5.2.1":
+"safe-buffer@npm:5.2.1, safe-buffer@npm:>=5.1.0, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:^5.1.1, safe-buffer@npm:^5.1.2, safe-buffer@npm:^5.2.0, safe-buffer@npm:~5.2.0":
   version: 5.2.1
   resolution: "safe-buffer@npm:5.2.1"
   checksum: b99c4b41fdd67a6aaf280fcd05e9ffb0813654894223afb78a31f14a19ad220bba8aba1cb14eddce1fcfb037155fe6de4e861784eb434f7d11ed58d1e70dd491
@@ -17411,7 +17410,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"url-parse@npm:~1.5.1":
+"url-parse@npm:~1.5.10":
   version: 1.5.10
   resolution: "url-parse@npm:1.5.10"
   dependencies:
