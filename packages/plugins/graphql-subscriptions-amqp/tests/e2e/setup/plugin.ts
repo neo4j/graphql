@@ -17,18 +17,15 @@
  * limitations under the License.
  */
 
-import { SubscriptionsEvent } from "../../../types";
-import { compareProperties } from "./utils/compare-properties";
+import amqp from "amqplib";
+import { Neo4jGraphQLSubscriptionsAMQP } from "../../../src";
 
-export function updateDiffFilter(event: SubscriptionsEvent): boolean {
-    if (event.event !== "update") {
-        return true;
-    }
+export default async function createPlugin(connection: amqp.Connection): Promise<Neo4jGraphQLSubscriptionsAMQP> {
+    const plugin = new Neo4jGraphQLSubscriptionsAMQP({
+        exchange: "neo4j-graphql",
+    });
 
-    const sameLength = Object.keys(event.properties.old).length === Object.keys(event.properties.new).length;
-    if (!sameLength) return true;
-    const sameProperties = compareProperties(event.properties.old, event.properties.new);
-    if (!sameProperties) return true;
+    await plugin.connect(connection);
 
-    return false;
+    return plugin;
 }
