@@ -36,6 +36,7 @@ export class SubscriptionAuth {
     public static validateRolesRule(rule: AuthRule, context: SubscriptionContext): boolean {
         const authParams = createAuthParam({ context });
         const expectedRoles = rule.roles;
+
         if (!expectedRoles) {
             return true;
         }

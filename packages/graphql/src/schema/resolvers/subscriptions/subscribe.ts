@@ -47,7 +47,6 @@ export function generateSubscribeMethod(node: Node, type: "create" | "update" | 
                     throw new Error("Error, request not authenticated");
                 }
                 if (!SubscriptionAuth.validateRolesRule(rule, context)) {
-                    console.log("IN ERROR");
                     throw new Error("Error, request not authorized");
                 }
             }

@@ -34,17 +34,17 @@ describe("Subscription auth roles", () => {
     let jwtToken: string;
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
+    const typeDefs = `
+    type ${typeMovie} {
+        title: String!
+    }
+
+    extend type ${typeMovie} @auth(rules: [{ operations: [SUBSCRIBE], roles: ["admin"] }])
+    `;
 
     beforeAll(async () => {
         jwtToken = createJwtHeader("secret", { roles: ["admin"] });
         driver = await neo4j();
-        const typeDefs = `
-            type ${typeMovie} {
-                title: String!
-            }
-
-            extend type ${typeMovie} @auth(rules: [{ operations: [SUBSCRIBE], roles: ["admin"] }])
-            `;
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
@@ -132,8 +132,6 @@ describe("Subscription auth roles", () => {
         expect(wsClient.events).toEqual([]);
         expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error, request not authorized" })]);
     });
-
-    test.todo("auth with different rolesPath");
 
     async function createMovie(title: string, server: TestGraphQLServer): Promise<Response> {
         const result = await supertest(server.path)
