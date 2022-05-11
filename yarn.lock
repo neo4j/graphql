@@ -1117,7 +1117,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@faker-js/faker@npm:6.3.1, @faker-js/faker@npm:^6.0.0-alpha.5":
+"@faker-js/faker@npm:6.3.1":
   version: 6.3.1
   resolution: "@faker-js/faker@npm:6.3.1"
   checksum: 05071e952248f4565218a95b089ef8f616130c6ff914bb416ba7c891f81d123b637c2abe8aa2eb7b207b5d4b8bd9c75c8c2133019d2d11db4176948737a95813
@@ -2087,18 +2087,18 @@ __metadata:
   resolution: "@neo4j/graphql-plugin-subscriptions-amqp@workspace:packages/plugins/graphql-subscriptions-amqp"
   dependencies:
     "@neo4j/graphql": ^3.1.0
-    "@types/amqplib": ^0.8.2
+    "@types/amqplib": 0.8.2
     "@types/debug": 4.1.7
     "@types/jest": 27.4.1
     "@types/node": 16.11.34
     amqplib: ^0.8.0
     apollo-server: 3.6.7
     apollo-server-express: 3.6.7
-    camelcase: ^6.2.0
+    camelcase: 6.3.0
     graphql-ws: 5.8.1
     jest: 27.5.1
     neo4j-driver: 4.4.5
-    pluralize: ^8.0.0
+    pluralize: 8.0.0
     randomstring: 1.1.5
     supertest: 6.2.3
     ts-jest: 27.1.4
@@ -2190,7 +2190,7 @@ __metadata:
     "@types/node": 16.11.34
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
-    "@types/semver": ^7.3.9
+    "@types/semver": 7.3.9
     "@types/supertest": 2.0.12
     "@types/ws": 8.5.3
     apollo-server: 3.7.0
@@ -2506,7 +2506,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/create-react-app@npm:1.0.2, @tsconfig/create-react-app@npm:^1.0.2":
+"@tsconfig/create-react-app@npm:1.0.2":
   version: 1.0.2
   resolution: "@tsconfig/create-react-app@npm:1.0.2"
   checksum: 0b60b40cdc9b96cebf94628b4f993a1182b275e29b67d662c578cfcef357266b736fdf17cfe204f30a7e4ea63b8a115d77acfc17bafa376d9001df8537373497
@@ -2550,7 +2550,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/amqplib@npm:^0.8.2":
+"@types/amqplib@npm:0.8.2":
   version: 0.8.2
   resolution: "@types/amqplib@npm:0.8.2"
   dependencies:
@@ -3145,7 +3145,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.3.9":
+"@types/semver@npm:7.3.9":
   version: 7.3.9
   resolution: "@types/semver@npm:7.3.9"
   checksum: 60bfcfdfa7f937be2c6f4b37ddb6714fb0f27b05fe4cbdfdd596a97d35ed95d13ee410efdd88e72a66449d0384220bf20055ab7d6b5df10de4990fbd20e5cbe0
@@ -3586,7 +3586,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@webpack-cli/serve@npm:^1.6.1":
+"@webpack-cli/serve@npm:1.6.1, @webpack-cli/serve@npm:^1.6.1":
   version: 1.6.1
   resolution: "@webpack-cli/serve@npm:1.6.1"
   peerDependencies:
@@ -9212,7 +9212,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-webpack-plugin@npm:5.5.0, html-webpack-plugin@npm:^5.5.0":
+"html-webpack-plugin@npm:5.5.0":
   version: 5.5.0
   resolution: "html-webpack-plugin@npm:5.5.0"
   dependencies:
@@ -12933,16 +12933,16 @@ __metadata:
     "@fortawesome/fontawesome-svg-core": 6.1.1
     "@fortawesome/free-solid-svg-icons": 6.1.1
     "@fortawesome/react-fontawesome": 0.1.18
-    "@tsconfig/create-react-app": ^1.0.2
+    "@tsconfig/create-react-app": 1.0.2
     "@types/react-dom": 18.0.0
     "@types/react-router-dom": 5.3.3
     "@types/showdown": 2.0.0
-    "@webpack-cli/serve": ^1.6.1
+    "@webpack-cli/serve": 1.6.1
     css-loader: 6.7.1
     dotenv-webpack: 7.1.0
     file-loader: 6.2.0
     graphql: 16.5.0
-    html-webpack-plugin: ^5.5.0
+    html-webpack-plugin: 5.5.0
     react: 18.0.0
     react-bootstrap: 2.3.1
     react-dom: 18.0.0
@@ -12954,8 +12954,8 @@ __metadata:
     ts-loader: 9.2.8
     typescript: 4.6.3
     webpack: 5.72.1
-    webpack-cli: ^4.9.2
-    webpack-dev-server: ^4.8.1
+    webpack-cli: 4.9.2
+    webpack-dev-server: 4.9.0
   languageName: unknown
   linkType: soft
 
@@ -12963,7 +12963,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "neo-push-server@workspace:examples/neo-push/server"
   dependencies:
-    "@faker-js/faker": ^6.0.0-alpha.5
+    "@faker-js/faker": 6.3.1
     "@neo4j/graphql": ^3.2.0
     "@neo4j/graphql-ogm": ^3.2.0
     "@neo4j/graphql-plugin-auth": ^1.0.0
@@ -18567,7 +18567,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-cli@npm:4.9.2, webpack-cli@npm:^4.9.2":
+"webpack-cli@npm:4.9.2":
   version: 4.9.2
   resolution: "webpack-cli@npm:4.9.2"
   dependencies:
@@ -18615,7 +18615,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-dev-server@npm:4.9.0, webpack-dev-server@npm:^4.8.1":
+"webpack-dev-server@npm:4.9.0":
   version: 4.9.0
   resolution: "webpack-dev-server@npm:4.9.0"
   dependencies:
