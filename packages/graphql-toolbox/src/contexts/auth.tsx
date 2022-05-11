@@ -21,8 +21,8 @@ import React, { Dispatch, useState, SetStateAction, useEffect } from "react";
 import * as neo4j from "neo4j-driver";
 import { encrypt, decrypt } from "../utils/utils";
 import { LOCAL_STATE_LOGIN, VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
-import { resolveNeo4jDesktopLoginPayload } from "./utils";
-import { LoginPayload } from "../types";
+import { getDatabases, resolveNeo4jDesktopLoginPayload } from "./utils";
+import { LoginPayload, Neo4jDatabase } from "../types";
 import { Storage } from "../utils/storage";
 
 interface LoginOptions {
@@ -36,8 +36,10 @@ export interface State {
     connectUrl?: string;
     isConnected?: boolean;
     isNeo4jDesktop?: boolean;
+    databases?: Neo4jDatabase[];
     login: (options: LoginOptions) => Promise<void>;
     logout: () => void;
+    refreshDatabases: () => void;
 }
 
 export const AuthContext = React.createContext(null as unknown as State);
@@ -85,6 +87,8 @@ export function AuthProvider(props: any) {
             const driver = neo4j.driver(options.url, auth);
             await driver.verifyConnectivity();
 
+            const databases = await getDatabases(driver);
+
             const encodedPayload = encrypt({
                 username: options.username,
                 password: options.password,
@@ -96,7 +100,7 @@ export function AuthProvider(props: any) {
                 checkConnectivity(driver, setValue);
             }, VERIFY_CONNECTION_INTERVAL_MS);
 
-            setValue((v) => ({ ...v, driver, connectUrl: options.url, isConnected: true }));
+            setValue((v) => ({ ...v, driver, connectUrl: options.url, isConnected: true, databases }));
         },
         logout: () => {
             Storage.remove(LOCAL_STATE_LOGIN);
@@ -105,6 +109,12 @@ export function AuthProvider(props: any) {
             }
 
             setValue((v) => ({ ...v, driver: undefined, connectUrl: undefined, isConnected: false }));
+        },
+        refreshDatabases: async () => {
+            if (value?.driver) {
+                const databases = await getDatabases(value?.driver);
+                setValue((v) => ({ ...v, databases }));
+            }
         },
     });
 

@@ -18,7 +18,8 @@
  */
 
 import { request } from "graphql-request";
-import { LoginPayload } from "../types";
+import * as neo4j from "neo4j-driver";
+import { LoginPayload, Neo4jDatabase } from "../types";
 
 const GET_DATABASES_QUERY = `
     query {
@@ -94,6 +95,26 @@ export const resolveNeo4jDesktopLoginPayload = async (): Promise<LoginPayload | 
         console.log("Error while fetching and processing Neo4jDesktop GraphQL API, e: ", error);
         return null;
     }
+};
+
+export const getDatabases = async (driver: neo4j.Driver): Promise<Neo4jDatabase[] | undefined> => {
+    const session = driver.session();
+    let cleanedDatabases: Neo4jDatabase[] = [];
+    try {
+        const result = await session.run("SHOW DATABASES");
+        if (!result || !result.records) return undefined;
+        cleanedDatabases = result.records
+            .map((rec) => rec.toObject())
+            .filter((rec) => rec.access === "read-write" && rec.currentStatus === "online") as Neo4jDatabase[];
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error("Error while fetching databases information, e: ", error);
+        await session.close();
+        return undefined;
+    }
+
+    await session.close();
+    return cleanedDatabases;
 };
 
 export const getConnectUrlSearchParam = (): string | null => {

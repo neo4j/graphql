@@ -100,6 +100,9 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     config: {
                         enableDebug: isDebugChecked === "true",
                         enableRegex: isRegexChecked === "true",
+                        driverConfig: {
+                            database: "kest",
+                        },
                     },
                 };
 
@@ -130,7 +133,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
             setLoading(true);
 
             const sessionFactory = () =>
-                auth?.driver?.session({ defaultAccessMode: neo4j.session.READ }) as neo4j.Session;
+                auth?.driver?.session({ defaultAccessMode: neo4j.session.READ, database: "kest" }) as neo4j.Session;
 
             const typeDefs = await toGraphQLTypeDefs(sessionFactory);
 

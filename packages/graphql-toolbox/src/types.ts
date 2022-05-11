@@ -28,3 +28,16 @@ export interface Favourite {
     name: string;
     typeDefs: string;
 }
+
+export interface Neo4jDatabase {
+    access: string;
+    address: string;
+    aliases: string[];
+    currentStatus: string;
+    default: boolean;
+    error: string;
+    home: boolean;
+    name: string;
+    requestedStatus: string;
+    role: string;
+}
