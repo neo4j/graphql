@@ -54,6 +54,7 @@
         "@types/node": "16.11.33",
         "@types/pluralize": "0.0.29",
         "@types/randomstring": "1.1.8",
+        "@types/semver": "^7.3.9",
         "@types/supertest": "2.0.12",
         "@types/ws": "8.5.3",
         "apollo-server": "3.7.0",
