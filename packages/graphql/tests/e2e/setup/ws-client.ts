@@ -42,6 +42,7 @@ export class WebSocketTestClient {
 
     public waitForNextEvent(): Promise<void> {
         if (this.onEvent) return Promise.reject("Cannot wait for multiple events");
+
         return new Promise<void>((resolve) => {
             this.onEvent = resolve;
         });

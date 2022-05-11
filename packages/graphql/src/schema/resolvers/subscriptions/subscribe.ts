@@ -44,7 +44,11 @@ export function generateSubscribeMethod(node: Node, type: "create" | "update" | 
             const authRules = node.auth.getRules(["SUBSCRIBE"]);
             for (const rule of authRules) {
                 if (!SubscriptionAuth.validateAuthenticationRule(rule, context)) {
-                    throw new Error("Error");
+                    throw new Error("Error, request not authenticated");
+                }
+                if (!SubscriptionAuth.validateRolesRule(rule, context)) {
+                    console.log("IN ERROR");
+                    throw new Error("Error, request not authorized");
                 }
             }
         }

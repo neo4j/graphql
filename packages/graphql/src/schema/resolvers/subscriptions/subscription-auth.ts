@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import { haveSharedElement } from "../../../utils/utils";
+import createAuthParam from "../../../translate/create-auth-param";
 import { AuthRule } from "../../../types";
 import { SubscriptionContext } from "./types";
 
@@ -29,6 +31,19 @@ export class SubscriptionAuth {
         }
 
         return this.validateUnauthenticated(rule);
+    }
+
+    public static validateRolesRule(rule: AuthRule, context: SubscriptionContext): boolean {
+        const authParams = createAuthParam({ context });
+        const expectedRoles = rule.roles;
+        if (!expectedRoles) {
+            return true;
+        }
+
+        if (haveSharedElement(expectedRoles, authParams.roles)) {
+            return true;
+        }
+        return false;
     }
 
     private static isAuthenticated(context: SubscriptionContext): boolean {
