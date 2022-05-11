@@ -9,3 +9,11 @@ services:
         environment:
             - RABBITMQ_DEFAULT_USER=guest
             - RABBITMQ_DEFAULT_PASS=guest
+
+    qpid:
+        build:
+            context: ./qpid-docker
+        image: qpid
+        ports:
+            - "5672:5672"
+            - "8080:8080"

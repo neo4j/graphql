@@ -2,9 +2,9 @@
 
 Subscription plugin for `@neo4j/graphql`, currently supporting AMQP 0-9-1 brokers such as:
 
-* RabbitMQ
-* Apache Qpid
-* Apache ActiveMQ
+-   RabbitMQ
+-   Apache Qpid
+-   Apache ActiveMQ
 
 1. [Documentation](https://neo4j.com/docs/graphql-manual/current/subscriptions/)
 
@@ -38,22 +38,10 @@ const neoSchema = new Neo4jGraphQL({
 
 ## Running tests
 
-* `yarn test` to run unit tests
-* `yarn test:e2e` to run integration tests. These tests require a RabbitMQ instance running, and are not run by default
-  * Use `docker-compose up rabbitmq` to spin up a RabbitMQ container for testing
-
-### Testing against Apache Qpid
-
-#### Build and run Docker container
-
-* `docker build -t brokerj ./qpid-docker`
-* `docker run -p 5672:5672 brokerj`
-
-This will run in the foreground and can be killed following test run.
-
-#### Running tests against Qpid
-
-* `yarn test:e2e`
+-   `yarn test` to run unit tests
+-   `yarn test:e2e` to run integration tests. These tests require a RabbitMQ instance running, and are not run by default
+    -   Use `docker-compose up rabbitmq` to spin up a RabbitMQ container for testing
+    -   Use `docker-compose up qpid` to spin up a Qpid container for testing
 
 ## Licence
 
