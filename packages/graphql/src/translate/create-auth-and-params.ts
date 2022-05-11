@@ -192,7 +192,7 @@ function createAuthAndParams({
         return ["", {}];
     }
 
-    /** FIXME: this is required to keep compatibility with BaseField */
+    /** FIXME: this is required to keep compatibility with BaseField type */
     const nodeAuth = new NodeAuth(entity.auth);
     const authRules = nodeAuth.getRules(operations);
 
