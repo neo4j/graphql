@@ -23,10 +23,6 @@ And:
 available for Float fields.
 
 For instance `counter_ADD` or `counter_SUBTRACT`.
-These properties should be available for all the following types:
-- Int
-- BigInt
-- Float
 
 The MULTIPLY and the DIVIDE operations will then be available only for fields defined as Float.
 
@@ -68,7 +64,23 @@ The proposed solution could increase the size of the augmented schema noticeably
 #### Overflow
 In cases where a mathematical operation leads to an overflow, then an exception must be raised.
 
-## Alternative Solution
+#### Infinity
+The Infinity type is not supported, this means that divisions by zero will be not supported as well.
+
+## Risks
+- Schema size.
+
+### Security consideration
+None.
+
+## Out of Scope
+- `DateTime` and `Location` types.
+- Lists of supported types.
+- MULTIPLY AND DIVIDE for Integer and BigInt fields.
+- Divisions by zero.
+
+## Discarded solutions
+### Alternative Solution
 Create a new GraphQL scalar type that supports these operations:
 - `INCREMENT`
 - `DECREMENT`
@@ -82,16 +94,11 @@ And:
 
 available for Float fields.
 
-
 For instance `counter: { INCREMENT: 1 }` or `counter: { DECREMENT: 1 }`, the syntax `counter: 1` should remains valid.
-The new GraphQL scalar type should be available for all the following types:
-- Int
-- Float
-- BigInt
 
 The MULTIPLY and the DIVIDE operations will then be available only for fields defined as Float.
 
-### Usage Examples
+#### Usage Examples
 Given the following type definitions:
 ```graphql
 type Node {
@@ -108,12 +115,12 @@ updateNodes(
   }
 )
 ```
-### Technical considerations
-#### Inconsistent design
+#### Technical considerations
+##### Inconsistent design
 The proposed solution implements a design different from similar features like [https://neo4j.com/docs/graphql-manual/current/filtering/](https://neo4j.com/docs/graphql-manual/current/filtering/),
 and increase the learning curve of the library.
 
-####  Unions between scalar types
+#####  Unions between scalar types
 Let's consider the following type definition:
 ```graphql
 type Node {
@@ -138,21 +145,12 @@ type Node {
 ```
 A future investigation on the feasibility of the above will be required in the case there will be a follow-up over this solution.
 
-#### Overflow
+##### Overflow
 In cases where a mathematical operation leads to an overflow, then an exception must be raised.
 
-## Risks
-- Schema size.
+##### Infinity
+The Infinity type is not supported, this means that divisions by zero will be not supported as well.
 
-### Security consideration
-None.
-
-## Out of Scope
-- `DateTime` and `Location` types.
-- Lists of supported types.
-- MULTIPLY AND DIVIDE for Integer and BigInt.
-
-## Discarded solutions
 ### Interpolation
 In the following example:
 ```graphql
