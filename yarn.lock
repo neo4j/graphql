@@ -2811,13 +2811,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/invariant@npm:^2.2.35":
-  version: 2.2.35
-  resolution: "@types/invariant@npm:2.2.35"
-  checksum: af1b624057c89789ed0917838fea3d42bb0c101cc22b829a24d8777c678be3bc79d6ae05992a13bdf607b94731262467a2e62a809602ea1f7eea5e8c2242660d
-  languageName: node
-  linkType: hard
-
 "@types/is-uuid@npm:1.0.0":
   version: 1.0.0
   resolution: "@types/is-uuid@npm:1.0.0"
@@ -3054,7 +3047,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prop-types@npm:*, @types/prop-types@npm:^15.0.0, @types/prop-types@npm:^15.7.4":
+"@types/prop-types@npm:*, @types/prop-types@npm:^15.0.0":
   version: 15.7.5
   resolution: "@types/prop-types@npm:15.7.5"
   checksum: 5b43b8b15415e1f298243165f1d44390403bb2bd42e662bca3b5b5633fdd39c938e91b7fce3a9483699db0f7a715d08cef220c121f723a634972fdf596aec980
@@ -3130,7 +3123,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:>=16.14.8, @types/react@npm:>=16.9.11":
+"@types/react@npm:*, @types/react@npm:>=16.9.11":
   version: 18.0.9
   resolution: "@types/react@npm:18.0.9"
   dependencies:
@@ -12956,7 +12949,7 @@ __metadata:
     graphql: 16.5.0
     html-webpack-plugin: ^5.5.0
     react: 18.0.0
-    react-bootstrap: 2.2.3
+    react-bootstrap: 2.3.1
     react-dom: 18.0.0
     react-markdown: 8.0.3
     react-mde: 11.5.0
@@ -15139,18 +15132,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-bootstrap@npm:2.2.3":
-  version: 2.2.3
-  resolution: "react-bootstrap@npm:2.2.3"
+"react-bootstrap@npm:2.3.1":
+  version: 2.3.1
+  resolution: "react-bootstrap@npm:2.3.1"
   dependencies:
     "@babel/runtime": ^7.17.2
     "@restart/hooks": ^0.4.6
     "@restart/ui": ^1.2.0
-    "@types/invariant": ^2.2.35
-    "@types/prop-types": ^15.7.4
-    "@types/react": ">=16.14.8"
     "@types/react-transition-group": ^4.4.4
-    "@types/warning": ^3.0.0
     classnames: ^2.3.1
     dom-helpers: ^5.2.1
     invariant: ^2.2.4
@@ -15160,9 +15149,13 @@ __metadata:
     uncontrollable: ^7.2.1
     warning: ^4.0.3
   peerDependencies:
+    "@types/react": ">=16.14.8"
     react: ">=16.14.0"
     react-dom: ">=16.14.0"
-  checksum: 37daaf1430be7b96deb0e574eebafc74b500f654f55b73359f58dee37980d5753516695d2825ea1acf3c59d02b47ddc70c110672c711232e5a1ec947634c24a3
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 35713466d3e20dd5f2a111e24ab0c97c4c2275e875f4e8f4cbe4d639804ae33e6a3548a6b3deac0877698fd97c0e1c497bfff14cfa8a57b594ba435b2ed6a63e
   languageName: node
   linkType: hard
 
