@@ -73,25 +73,29 @@ async function checkNeo4jCompat({ driver, driverConfig }: { driver: Driver; driv
             const minimumVersions = MIN_VERSIONS.find(({ majorMinor }) => info.version.startsWith(majorMinor));
             const coercedNeo4jVersion = semver.coerce(info.version);
 
-            if (!minimumVersions) {
-                // If new major/minor version comes out, this will stop error being thrown
-                if (semver.lt(coercedNeo4jVersion, MIN_VERSIONS[0].neo4j)) {
-                    errors.push(
-                        `Expected Neo4j version '${MIN_VERSIONS[0].majorMinor}' or greater, received: '${info.version}'`
-                    );
+            if (coercedNeo4jVersion) {
+                if (!minimumVersions) {
+                    // If new major/minor version comes out, this will stop error being thrown
+                    if (semver.lt(coercedNeo4jVersion, MIN_VERSIONS[0].neo4j)) {
+                        errors.push(
+                            `Expected Neo4j version '${MIN_VERSIONS[0].majorMinor}' or greater, received: '${info.version}'`
+                        );
+                    }
+                } else {
+                    if (semver.lt(coercedNeo4jVersion, minimumVersions.neo4j)) {
+                        errors.push(
+                            `Expected minimum Neo4j version: '${minimumVersions.neo4j}' received: '${info.version}'`
+                        );
+                    }
+
+                    if (!info.apocVersion.startsWith(minimumVersions.majorMinor)) {
+                        errors.push(
+                            `APOC version does not match Neo4j version '${minimumVersions.majorMinor}', received: '${info.apocVersion}'`
+                        );
+                    }
                 }
             } else {
-                if (semver.lt(coercedNeo4jVersion, minimumVersions.neo4j)) {
-                    errors.push(
-                        `Expected minimum Neo4j version: '${minimumVersions.neo4j}' received: '${info.version}'`
-                    );
-                }
-
-                if (!info.apocVersion.startsWith(minimumVersions.majorMinor)) {
-                    errors.push(
-                        `APOC version does not match Neo4j version '${minimumVersions.majorMinor}', received: '${info.apocVersion}'`
-                    );
-                }
+                errors.push(`Unable to coerce version '${info.version}'`);
             }
         }
 
