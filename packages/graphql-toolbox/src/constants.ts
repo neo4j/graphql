@@ -28,6 +28,7 @@ export const LOCAL_STATE_CREATE_CONSTRAINT = "neo4j.graphql.createConstraint";
 export const LOCAL_STATE_EDITOR_THEME = "neo4j.graphql.editorTheme";
 export const LOCAL_STATE_ENABLE_REGEX = "neo4j.graphql.enable.regex";
 export const LOCAL_STATE_FAVOURITES = "neo4j.graphql.favourites";
+export const LOCAL_STATE_SHOW_LINT_MARKERS = "neo4j.graphql.showLintMarkers";
 
 export const SCHEMA_EDITOR_INPUT = "SCHEMA_EDITOR_INPUT";
 export const EDITOR_QUERY_INPUT = "EDITOR_QUERY_INPUT";

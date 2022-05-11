@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Fragment, useContext, useState } from "react";
+import { Dispatch, Fragment, SetStateAction, useContext, useState } from "react";
 import { GraphQLSchema } from "graphql";
 import { HeroIcon } from "@neo4j-ndl/react";
 import { Screen, ScreenContext } from "../../contexts/screen";
@@ -60,10 +60,10 @@ const EditorScreenTiles = ({
         <div className="pb-8 flex text-sm">
             <div
                 data-test-help-drawer-schema-doc-tile
-                className="n-bg-primary-50 p-4 pb-6 rounded-2xl cursor-pointer text-white w-1/2 mr-4 flex"
+                className="n-bg-primary-50 p-4 pb-6 rounded-2xl cursor-pointer text-white w-1/2 mr-2 flex"
                 onClick={onClickShowDocs}
             >
-                <HeroIcon className="h-6 w-6 mr-2 flex-1" type="outline" iconName="DocumentIcon" />
+                <HeroIcon className="h-6 w-6 mr-2 flex-1" type="outline" iconName="ColorSwatchIcon" />
                 <span className="flex-1">Current schema documentation</span>
             </div>
 
@@ -79,7 +79,15 @@ const EditorScreenTiles = ({
     );
 };
 
-const SchemaScreenDrawer = ({ showSubComponent, onClickClose, setShowSubComponent }) => {
+const SchemaScreenDrawer = ({
+    showSubComponent,
+    onClickClose,
+    setShowSubComponent,
+}: {
+    showSubComponent: boolean;
+    onClickClose: () => void;
+    setShowSubComponent: Dispatch<SetStateAction<boolean>>;
+}) => {
     return (
         <Fragment>
             {showSubComponent ? (
@@ -88,7 +96,7 @@ const SchemaScreenDrawer = ({ showSubComponent, onClickClose, setShowSubComponen
                 <Fragment>
                     <div
                         data-test-help-drawer-keybindings-tile-schema-view
-                        className="n-bg-neutral-20 p-4 pb-6 mb-8 rounded-2xl cursor-pointer flex"
+                        className="n-bg-neutral-20 p-4 pb-6 mb-8 rounded-2xl cursor-pointer flex text-sm"
                         onClick={() => setShowSubComponent(true)}
                     >
                         <HeroIcon className="h-6 w-6 mr-2" type="outline" iconName="DesktopComputerIcon" />
@@ -101,7 +109,17 @@ const SchemaScreenDrawer = ({ showSubComponent, onClickClose, setShowSubComponen
     );
 };
 
-const EditorScreenDrawer = ({ showSubComponent, onClickClose, setShowSubComponent, schema }) => {
+const EditorScreenDrawer = ({
+    showSubComponent,
+    onClickClose,
+    setShowSubComponent,
+    schema,
+}: {
+    showSubComponent: boolean;
+    onClickClose: () => void;
+    setShowSubComponent: Dispatch<SetStateAction<boolean>>;
+    schema?: GraphQLSchema;
+}) => {
     const [selectedTile, setSelectedTile] = useState("");
 
     const handleOnClickSchemaDocTile = () => {

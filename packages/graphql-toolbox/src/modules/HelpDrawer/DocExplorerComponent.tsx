@@ -1,8 +1,15 @@
+import { GraphQLSchema } from "graphql";
 // @ts-ignore - SVG import
 import ArrowLeft from "../../assets/arrow-left.svg";
 import { DocExplorer } from "../EditorView/docexplorer";
 
-export const DocExplorerComponent = ({ schema, onClickClose, onClickBack }): JSX.Element => {
+interface Props {
+    onClickClose: () => void;
+    onClickBack: () => void;
+    schema?: GraphQLSchema;
+}
+
+export const DocExplorerComponent = ({ schema, onClickClose, onClickBack }: Props): JSX.Element => {
     return (
         <DocExplorer
             schema={schema}

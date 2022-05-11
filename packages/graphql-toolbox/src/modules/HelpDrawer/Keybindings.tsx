@@ -3,12 +3,19 @@ import { Screen, ScreenContext } from "../../contexts/screen";
 // @ts-ignore - SVG import
 import ArrowLeft from "../../assets/arrow-left.svg";
 
+interface RowEntryType {
+    label: string;
+    winCmd: string;
+    macCmd: string;
+    isBgDark?: boolean;
+}
+
 interface Props {
     onClickClose: () => void;
     onClickBack: () => void;
 }
 
-const schemaScreenCmds = [
+const schemaScreenCmds: RowEntryType[] = [
     {
         label: "Show autocomplete hints",
         winCmd: "Ctrl+Space",
@@ -31,9 +38,9 @@ const schemaScreenCmds = [
     },
 ];
 
-const editorScreenCmds = [
+const editorScreenCmds: RowEntryType[] = [
     {
-        label: "Show autocomplete hints",
+        label: "Show\n autocomplete\n hints",
         winCmd: "Ctrl+Space",
         macCmd: "Cmd+Space",
     },
@@ -54,10 +61,12 @@ const editorScreenCmds = [
     },
 ];
 
-const RowEntry = ({ label, winCmd, macCmd, isBgDark }) => {
+const RowEntry = ({ label, winCmd, macCmd, isBgDark }: RowEntryType) => {
     return (
         <div className={`flex text-xs py-4 px-2 ${isBgDark ? "n-bg-neutral-20 rounded-xl" : ""}`}>
-            <span className="flex-1 italic font-light">{label}</span>
+            <div className="flex-1 italic font-light">
+                <span className="whitespace-break-spaces pr-6">{label}</span>
+            </div>
             <span className="flex-1">{winCmd}</span>
             <span className="flex-1">{macCmd}</span>
         </div>
