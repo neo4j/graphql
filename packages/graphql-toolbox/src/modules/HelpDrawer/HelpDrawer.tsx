@@ -68,7 +68,7 @@ const EditorScreenTiles = ({
             </div>
 
             <div
-                data-test-help-drawer-keybindings-tile
+                data-test-help-drawer-keybindings-tile-editor-view
                 className="n-bg-neutral-20 p-4 pb-6 rounded-2xl cursor-pointer w-1/2 flex"
                 onClick={onClickShowKeybindings}
             >
@@ -87,7 +87,7 @@ const SchemaScreenDrawer = ({ showSubComponent, onClickClose, setShowSubComponen
             ) : (
                 <Fragment>
                     <div
-                        data-test-help-drawer-keybindings-tile
+                        data-test-help-drawer-keybindings-tile-schema-view
                         className="n-bg-neutral-20 p-4 pb-6 mb-8 rounded-2xl cursor-pointer flex"
                         onClick={() => setShowSubComponent(true)}
                     >
