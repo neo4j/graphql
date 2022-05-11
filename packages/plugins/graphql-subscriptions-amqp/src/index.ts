@@ -25,6 +25,7 @@ import { AmqpApi, ConnectionOptions } from "./amqp-0-9-1-api";
 export { ConnectionOptions } from "./amqp-0-9-1-api";
 
 const DEFAULT_EXCHANGE = "neo4j.graphql.subscriptions.fx";
+const DEFAULT_VERSION: AmqpVersion = "0-9-1";
 
 type AmqpVersion = "0-9-1";
 
@@ -35,8 +36,11 @@ export class Neo4jGraphQLSubscriptionsAMQP implements Neo4jGraphQLSubscriptionsP
     private amqpApi: AmqpApi<SubscriptionsEvent>;
 
     constructor(options: Neo4jGraphQLSubscriptionsAMQPConstructorOptions = {}) {
+        const defaultOptions = { exchange: DEFAULT_EXCHANGE, amqpVersion: DEFAULT_VERSION };
+        const finalOptions = { ...defaultOptions, ...options };
+
         this.events = new EventEmitter();
-        this.amqpApi = new AmqpApi({ exchange: DEFAULT_EXCHANGE, ...options });
+        this.amqpApi = new AmqpApi({ exchange: finalOptions.exchange });
     }
 
     public async connect(connectionOptions: ConnectionOptions): Promise<AmqpConnection> {
