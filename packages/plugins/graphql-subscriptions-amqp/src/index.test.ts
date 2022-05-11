@@ -17,18 +17,18 @@
  * limitations under the License.
  */
 
-import { SubscriptionsEvent } from "../../../types";
-import { compareProperties } from "./utils/compare-properties";
+import { EventEmitter } from "events";
+import { Neo4jGraphQLSubscriptionsAMQP } from ".";
 
-export function updateDiffFilter(event: SubscriptionsEvent): boolean {
-    if (event.event !== "update") {
-        return true;
-    }
+describe("index", () => {
+    test("Neo4jGraphQLSubscriptionsAMQP", () => {
+        expect(Neo4jGraphQLSubscriptionsAMQP).toBeDefined();
+    });
 
-    const sameLength = Object.keys(event.properties.old).length === Object.keys(event.properties.new).length;
-    if (!sameLength) return true;
-    const sameProperties = compareProperties(event.properties.old, event.properties.new);
-    if (!sameProperties) return true;
+    test("Neo4jGraphQLSubscriptionsAMQP plugin interface", () => {
+        const plugin = new Neo4jGraphQLSubscriptionsAMQP();
 
-    return false;
-}
+        expect(plugin.events).toBeInstanceOf(EventEmitter);
+        expect(typeof plugin.publish).toBe("function");
+    });
+});
