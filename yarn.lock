@@ -2601,10 +2601,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/bcrypt@npm:3.0.1":
-  version: 3.0.1
-  resolution: "@types/bcrypt@npm:3.0.1"
-  checksum: e8cdb677acabd0c6f6cdf3148feae73336c0fe471d55d42474ac3ecdb735434ab5a43338b337aeef71a1c8f9aa56572e9c9d035338ab19b3f3c8291e70d3eb4d
+"@types/bcrypt@npm:5.0.0":
+  version: 5.0.0
+  resolution: "@types/bcrypt@npm:5.0.0"
+  dependencies:
+    "@types/node": "*"
+  checksum: 063c32c7a519d64768dfc0169a319b8244d6a6cb50a355c93992b3c5fee1dbc236526a1111f0e7bb25abc8b0473e5f40a5edfeb8b33cad2a6ea35aa2d7d7db14
   languageName: node
   linkType: hard
 
@@ -12979,7 +12981,7 @@ __metadata:
     "@neo4j/graphql": ^3.2.0
     "@neo4j/graphql-ogm": ^3.2.0
     "@neo4j/graphql-plugin-auth": ^1.0.0
-    "@types/bcrypt": 3.0.1
+    "@types/bcrypt": 5.0.0
     "@types/debug": 4.1.7
     "@types/dotenv": 8.2.0
     "@types/express": 4.17.9
