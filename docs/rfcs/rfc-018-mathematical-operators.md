@@ -80,7 +80,7 @@ None.
 - Divisions by zero.
 
 ## Discarded solutions
-### Alternative Solution
+### New Scalar type
 Create a new GraphQL scalar type that supports these operations:
 - `INCREMENT`
 - `DECREMENT`
