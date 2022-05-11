@@ -27,7 +27,7 @@
         "react": "18.0.0",
         "react-bootstrap": "2.2.3",
         "react-dom": "18.0.0",
-        "react-markdown": "8.0.2",
+        "react-markdown": "8.0.3",
         "react-mde": "11.5.0",
         "react-router-dom": "6.3.0",
         "showdown": "2.0.3",
@@ -39,7 +39,7 @@
         "@tsconfig/create-react-app": "^1.0.2",
         "@webpack-cli/serve": "^1.6.1",
         "html-webpack-plugin": "^5.5.0",
-        "webpack": "^5.72.0",
+        "webpack": "5.72.1",
         "webpack-cli": "^4.9.2",
         "webpack-dev-server": "^4.8.1"
     }
