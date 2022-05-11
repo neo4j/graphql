@@ -23,7 +23,7 @@ import neo4jDriver, { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { parseLocalDateTime } from "../../../src/schema/types/scalars/LocalDateTime";
+import { parseLocalDateTime } from "../../../src/graphql/scalars/LocalDateTime";
 
 describe("LocalDateTime", () => {
     let driver: Driver;

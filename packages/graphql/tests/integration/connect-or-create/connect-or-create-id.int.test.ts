@@ -292,7 +292,6 @@ describe("connect-or-create with @id", () => {
 
         const resultActor = (gqlResult as any).data[typeActor.operations.create][typeActor.plural][0];
         expect(resultActor.movies).toHaveLength(1);
-        console.log(resultActor.movies[0]);
         expect(resultActor.movies[0].subtitle).toBeNull();
     });
 });

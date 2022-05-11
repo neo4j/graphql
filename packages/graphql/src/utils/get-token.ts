@@ -61,8 +61,6 @@ export function getToken(context: Context): string | undefined {
     }
 
     return token;
-
-    // return parseBearerToken(authorization);
 }
 
 export function parseBearerToken(bearerAuth: string): string {
