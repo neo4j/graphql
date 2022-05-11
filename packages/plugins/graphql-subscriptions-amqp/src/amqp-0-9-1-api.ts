@@ -33,10 +33,7 @@ export class AmqpApi<T> {
         this.exchange = exchange || "neo4j-graphql";
     }
 
-    public async connect(
-        amqpConnection: ConnectionOptions,
-        cb: (msg: T) => void | Promise<void>
-    ): Promise<amqp.Connection> {
+    public async connect(amqpConnection: ConnectionOptions, cb: (msg: T) => void): Promise<amqp.Connection> {
         let connection: amqp.Connection;
         if (typeof amqpConnection === "string") {
             connection = await amqp.connect(amqpConnection);
@@ -81,11 +78,12 @@ export class AmqpApi<T> {
         return queueName;
     }
 
-    private consumeMessage(msg: amqp.ConsumeMessage, cb: (msg: T) => void) {
+    private consumeMessage(msg: amqp.ConsumeMessage, cb: (msg: T) => void): void {
         const messageBody = JSON.parse(msg.content.toString()) as T;
         try {
             cb(messageBody);
         } catch (err) {
+            // eslint-disable-next-line no-console
             console.warn("Error consuming message", err);
         } finally {
             this.channel?.ack(msg);
