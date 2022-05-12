@@ -18,7 +18,7 @@
  */
 
 import { graphql, GraphQLSchema } from "graphql";
-import { Driver, Session } from "neo4j-driver";
+import { Driver } from "neo4j-driver";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
