@@ -1,0 +1,32 @@
+{
+    "name": "neo-place",
+    "version": "0.1.0",
+    "description": "Subscriptions example",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/neo4j/graphql.git"
+    },
+    "keywords": [
+        "place",
+        "neo4j",
+        "graph",
+        "subscriptions",
+        "real-time"
+    ],
+    "author": "Neo4j Inc.",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/neo4j/graphql/issues"
+    },
+    "homepage": "https://github.com/neo4j/graphql#readme",
+    "dependencies": {
+        "@apollo/client": "^3.6.2",
+        "graphql": "^16.5.0"
+    }
+}

@@ -1,0 +1,4 @@
+type Pixel @exclude(operations: [CREATE, DELETE]){
+    position: [BigInt!]! @readonly
+    color: String
+}
