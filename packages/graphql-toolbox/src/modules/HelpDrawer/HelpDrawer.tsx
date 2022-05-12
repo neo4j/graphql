@@ -40,7 +40,7 @@ const CannyFeedbackButton = (): JSX.Element => {
         <a
             data-test-help-drawer-canny-button
             className="flex justify-start items-center"
-            href="https://neo4j-graphql.canny.io/neo4j-graphql-toolbox"
+            href="https://feedback.neo4j.com/graphql"
             target="_blank"
         >
             <HeroIcon className="h-6 w-6 mr-2" type="outline" iconName="ChatIcon" />
