@@ -24,6 +24,7 @@ function checkDirectiveCombinations(directives: readonly DirectiveNode[] = []) {
         // FIELD_DEFINITION
         alias: ["cypher", "computed", "relationship"],
         auth: ["computed"],
+        callback: ["id", "default", "relationship"],
         coalesce: [],
         cypher: [],
         default: [],
@@ -31,11 +32,10 @@ function checkDirectiveCombinations(directives: readonly DirectiveNode[] = []) {
         computed: ["alias", "auth", "id", "readonly", "relationship", "writeonly"],
         private: [],
         readonly: ["cypher", "computed"],
-        relationship: ["alias", "coalesce", "cypher", "default", "id", "computed", "readonly"],
+        relationship: ["alias", "callback", "coalesce", "cypher", "default", "id", "computed", "readonly"],
         timestamp: ["id", "unique"],
         unique: ["cypher", "id", "computed", "relationship", "timestamp"],
         writeonly: ["cypher", "computed"],
-        callback: ["id", "default"],
         // OBJECT
         node: [],
         // INTERFACE
