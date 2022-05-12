@@ -17,22 +17,28 @@
  * limitations under the License.
  */
 
-import globalNodeResolver from "./global-node";
-import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
+import { SchemaComposer } from "graphql-compose";
+import { updateResolver } from "./update";
+import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
 
-describe("Global node resolver", () => {
-    test("should return the correct type, args and resolve", () => {
+describe("Update resolver", () => {
+    test("should return the correct; type, args and resolve", () => {
         const node = new NodeBuilder({
             name: "Movie",
-            primitiveFields: [],
-            isGlobalNode: true,
+            // @ts-ignore
+            relationFields: [{}, {}],
         }).instance();
 
-        const result = globalNodeResolver({ nodes: [node] });
-        expect(result.type).toBe("Node");
+        const schemaComposer = new SchemaComposer();
+
+        const result = updateResolver({ node, schemaComposer });
+        expect(result.type).toBe("UpdateMoviesMutationResponse!");
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
-            id: "ID!",
+            where: "MovieWhere",
+            update: "MovieUpdateInput",
+            connect: "MovieConnectInput",
+            disconnect: "MovieDisconnectInput",
         });
     });
 });

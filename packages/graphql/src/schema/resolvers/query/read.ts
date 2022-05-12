@@ -18,21 +18,17 @@
  */
 
 import { GraphQLResolveInfo } from "graphql";
-import { execute } from "../../utils";
-import { Node } from "../../classes";
-import { Context } from "../../types";
-import { translateAggregate } from "../../translate";
-import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
+import { execute } from "../../../utils";
+import { translateRead } from "../../../translate";
+import { Node } from "../../../classes";
+import { Context } from "../../../types";
+import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 
-export default function aggregateResolver({ node }: { node: Node }) {
-    async function resolve(_root: any, _args: any, _context: unknown, info: GraphQLResolveInfo) {
+export function findResolver({ node }: { node: Node }) {
+    async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
-        context.resolveTree = getNeo4jResolveTree(info);
-
-        const [cypher, params] = translateAggregate({
-            context,
-            node,
-        });
+        context.resolveTree = getNeo4jResolveTree(info, { args });
+        const [cypher, params] = translateRead({ context, node });
 
         const executeResult = await execute({
             cypher,
@@ -41,12 +37,16 @@ export default function aggregateResolver({ node }: { node: Node }) {
             context,
         });
 
-        return Object.values(executeResult.records[0] || {})[0];
+        return executeResult.records.map((x) => x.this);
     }
 
     return {
-        type: `${node.aggregateTypeNames.selection}!`,
+        type: `[${node.name}!]!`,
         resolve,
-        args: { where: `${node.name}Where`, ...(node.fulltextDirective ? { fulltext: `${node.name}Fulltext` } : {}) },
+        args: {
+            where: `${node.name}Where`,
+            options: `${node.name}Options`,
+            ...(node.fulltextDirective ? { fulltext: `${node.name}Fulltext` } : {}),
+        },
     };
 }

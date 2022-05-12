@@ -17,21 +17,26 @@
  * limitations under the License.
  */
 
-import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
-import findResolver from "./read";
+import { GraphQLResolveInfo } from "graphql";
+import { defaultFieldResolver } from "./defaultField";
+import { isNeoInt } from "../../../utils/utils";
 
-describe("Read resolver", () => {
-    test("should return the correct; type, args and resolve", () => {
-        const node = new NodeBuilder({
-            name: "Movie",
-        }).instance();
+export function numericalResolver(source, args, context, info: GraphQLResolveInfo) {
+    const value = defaultFieldResolver(source, args, context, info);
 
-        const result = findResolver({ node });
-        expect(result.type).toBe(`[Movie!]!`);
-        expect(result.resolve).toBeInstanceOf(Function);
-        expect(result.args).toMatchObject({
-            where: `MovieWhere`,
-            options: `MovieOptions`,
+    if (Array.isArray(value)) {
+        return value.map((v) => {
+            if (isNeoInt(v)) {
+                return v.toNumber();
+            }
+
+            return v;
         });
-    });
-});
+    }
+
+    if (isNeoInt(value)) {
+        return value.toNumber();
+    }
+
+    return value;
+}

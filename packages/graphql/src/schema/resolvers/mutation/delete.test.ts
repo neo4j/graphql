@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import deleteResolver from "./delete";
-import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
+import { deleteResolver } from "./delete";
+import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
 
 describe("Delete resolver", () => {
     test("should return the correct; type, args and resolve", () => {

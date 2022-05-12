@@ -18,17 +18,34 @@
  */
 
 import { GraphQLResolveInfo } from "graphql";
-import defaultFieldResolver from "./defaultField";
-import { isNeoInt } from "../../utils/utils";
+import { defaultFieldResolver } from "./defaultField";
+import { isNeoInt } from "../../../utils/utils";
+import { Context } from "../../../types";
 
-function numerical(source, args, context, info: GraphQLResolveInfo) {
+export function idResolver(source, args, context: Context, info: GraphQLResolveInfo) {
     const value = defaultFieldResolver(source, args, context, info);
+
+    if (Array.isArray(value)) {
+        return value.map((v) => {
+            if (isNeoInt(v)) {
+                return v.toNumber();
+            }
+
+            if (typeof v === "number") {
+                return v.toString(10);
+            }
+
+            return v;
+        });
+    }
 
     if (isNeoInt(value)) {
         return value.toNumber();
     }
 
+    if (typeof value === "number") {
+        return value.toString(10);
+    }
+
     return value;
 }
-
-export default numerical;

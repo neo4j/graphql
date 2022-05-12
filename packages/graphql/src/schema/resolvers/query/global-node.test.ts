@@ -17,13 +17,22 @@
  * limitations under the License.
  */
 
-export { default as createResolver } from "./create";
-export { default as cypherResolver } from "./cypher";
-export { default as defaultFieldResolver } from "./defaultField";
-export { default as deleteResolver } from "./delete";
-export { default as findResolver } from "./read";
-export { default as updateResolver } from "./update";
-export { default as aggregateResolver } from "./aggregate";
-export { default as numericalResolver } from "./numerical";
-export { default as idResolver } from "./id";
-export { default as rootConnectionResolver } from "./root-connection";
+import { globalNodeResolver } from "./global-node";
+import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
+
+describe("Global node resolver", () => {
+    test("should return the correct type, args and resolve", () => {
+        const node = new NodeBuilder({
+            name: "Movie",
+            primitiveFields: [],
+            isGlobalNode: true,
+        }).instance();
+
+        const result = globalNodeResolver({ nodes: [node] });
+        expect(result.type).toBe("Node");
+        expect(result.resolve).toBeInstanceOf(Function);
+        expect(result.args).toMatchObject({
+            id: "ID!",
+        });
+    });
+});
