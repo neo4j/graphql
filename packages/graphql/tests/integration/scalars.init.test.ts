@@ -23,6 +23,7 @@ import { Kind } from "graphql/language";
 import { generate } from "randomstring";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { generateUniqueType } from "../utils/graphql-types";
 
 const GraphQLUpperCaseString = new GraphQLScalarType({
     name: "UpperCaseString",
@@ -156,5 +157,44 @@ describe("scalars", () => {
         } finally {
             await session.close();
         }
+    });
+
+    test("should serialize a list of integers correctly", async () => {
+        const type = generateUniqueType("Type");
+
+        const typeDefs = `
+            type ${type.name} {
+              integers: [Int!]!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        const integers = [1, 2, 3, 4, 5];
+
+        const mutation = `
+          mutation($input: [${type.name}CreateInput!]!) {
+            ${type.operations.create}(input: $input) {
+              ${type.plural} {
+                integers
+              }
+            }
+          }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: mutation,
+            contextValue: { driver },
+            variableValues: {
+                input: [{ integers }],
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult.data as any)[type.operations.create][type.plural][0]).toEqual({ integers });
     });
 });
