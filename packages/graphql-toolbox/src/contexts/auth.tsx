@@ -40,7 +40,6 @@ export interface State {
     selectedDatabaseName?: string;
     login: (options: LoginOptions) => Promise<void>;
     logout: () => void;
-    refreshDatabases: (driver: neo4j.Driver) => void;
     setSelectedDatabaseName: (databaseName: string) => void;
 }
 
@@ -51,10 +50,11 @@ export function AuthProvider(props: any) {
     let setValue: Dispatch<SetStateAction<State>>;
     let intervalId: number;
 
-    const checkConnectivity = async (driver: neo4j.Driver, setValue: any) => {
+    const checkForDatabaseUpdates = async (driver: neo4j.Driver, setValue: any) => {
         try {
             await driver.verifyConnectivity();
-            setValue((values) => ({ ...values, isConnected: true }));
+            const databases = await getDatabases(driver);
+            setValue((values) => ({ ...values, isConnected: true, databases: databases || [] }));
         } catch (err) {
             setValue((values) => ({ ...values, isConnected: false }));
         }
@@ -100,7 +100,7 @@ export function AuthProvider(props: any) {
             Storage.storeJSON(LOCAL_STATE_LOGIN, encodedPayload);
 
             intervalId = window.setInterval(() => {
-                checkConnectivity(driver, setValue);
+                checkForDatabaseUpdates(driver, setValue);
             }, VERIFY_CONNECTION_INTERVAL_MS);
 
             setValue((v) => ({
@@ -119,10 +119,6 @@ export function AuthProvider(props: any) {
             }
 
             setValue((v) => ({ ...v, driver: undefined, connectUrl: undefined, isConnected: false }));
-        },
-        refreshDatabases: async (driver: neo4j.Driver) => {
-            const databases = await getDatabases(driver);
-            setValue((v) => ({ ...v, databases }));
         },
         setSelectedDatabaseName: (databaseName: string) => {
             Storage.store(LOCAL_STATE_SELECTED_DATABASE_NAME, databaseName);

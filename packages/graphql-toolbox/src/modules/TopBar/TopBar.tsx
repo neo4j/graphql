@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect } from "react";
+import { Fragment, useContext, useEffect } from "react";
 import { HeroIcon } from "@neo4j-ndl/react";
 // @ts-ignore - SVG Import
 import Neo4jLogoIcon from "../../assets/Neo4j-logo-color.svg";
@@ -40,62 +40,43 @@ export const TopBar = () => {
         settings.setIsShowSettingsDrawer(!settings.isShowSettingsDrawer);
     };
 
-    useEffect(() => {
-        const element = document.getElementById("refreshIcon");
-        if (!element) return;
-        // spin the icon for 500 ms on click
-        element.addEventListener("click", (event) => {
-            event.preventDefault;
-            element.classList.add("animate-spin");
-            setTimeout(() => {
-                element.classList.remove("animate-spin");
-            }, 500);
-        });
-    }, []);
-
     return (
         <div className="flex w-full h-16 bg-white border-b border-gray-100">
             <div className="flex-1 flex justify-start">
-                <div className="flex items-center justify-space text-sm">
+                <div className="flex items-center justify-space">
                     <img src={Neo4jLogoIcon} alt="Neo4j logo Icon" className="ml-8 w-24" />
                     <p className="ml-8 text-base">GraphQL Toolbox</p>
                 </div>
             </div>
             <div className="flex-1 flex justify-center">
-                <div className="flex items-center justify-space text-sm">
-                    <p>{auth?.connectUrl}</p>
-                    <p className="ml-1">
-                        {auth?.isConnected ? greenDot : redDot}{" "}
-                        <span className="opacity-60">{auth?.isConnected ? "Online" : "Offline"}</span>
-                    </p>
-                    {auth.databases?.length ? (
-                        <select
-                            name="databaseselection"
-                            className="w-52 ml-6 n-bg-neutral-20 p-2 rounded-lg text-base"
-                            value={auth.selectedDatabaseName}
-                            disabled={screen.view !== Screen.TYPEDEFS}
-                            onChange={(event) => auth.setSelectedDatabaseName(event.target.value)}
-                        >
-                            {auth.databases.map((db) => {
-                                return (
-                                    <option key={db.name} value={db.name}>
-                                        {db.name}
-                                        {db.home ? " - home" : ""}
-                                    </option>
-                                );
-                            })}
-                        </select>
-                    ) : null}
-                    <div
-                        className="cursor-pointer ml-2"
-                        onClick={() => {
-                            if (auth.driver) {
-                                auth.refreshDatabases(auth.driver);
-                            }
-                        }}
-                    >
-                        <HeroIcon id="refreshIcon" className="h-7 w-7" iconName="RefreshIcon" type="outline" />
+                <div className="flex items-center justify-space">
+                    <p className="mr-2">{auth?.isConnected ? greenDot : redDot} </p>
+                    <div className="flex items-center">
+                        <span className="max-width-db-name truncate">{auth.selectedDatabaseName}</span>&#64;
+                        {auth?.connectUrl}
                     </div>
+                    {auth.databases?.length ? (
+                        <Fragment>
+                            <span className="mx-2">/</span>
+                            <select
+                                name="databaseselection"
+                                className="w-36 cursor-pointer"
+                                data-test-topbar-database-selection
+                                value={auth.selectedDatabaseName}
+                                disabled={screen.view !== Screen.TYPEDEFS}
+                                onChange={(event) => auth.setSelectedDatabaseName(event.target.value)}
+                            >
+                                {auth.databases.map((db) => {
+                                    return (
+                                        <option key={db.name} value={db.name}>
+                                            {db.name}
+                                            {/* {db.home ? " - home" : ""} */}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        </Fragment>
+                    ) : null}
                 </div>
             </div>
             <div className="flex-1 flex justify-end">
@@ -111,7 +92,14 @@ export const TopBar = () => {
                             >
                                 <HeroIcon className="h-7 w-7" iconName="LogoutIcon" type="outline" />
                             </span>
-                            <span className="ml-4">Disconnect</span>
+                            <span
+                                className="pl-4 leading-7 cursor-pointer"
+                                onClick={() => {
+                                    auth?.logout();
+                                }}
+                            >
+                                Disconnect
+                            </span>
                         </p>
                     ) : null}
                     <div className="flex items-center">

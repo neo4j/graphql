@@ -32,3 +32,7 @@ li.CodeMirror-hint-active {
 .whitespace-break-spaces {
     white-space: break-spaces;
 }
+
+.max-width-db-name {
+    max-width: 12rem;
+}

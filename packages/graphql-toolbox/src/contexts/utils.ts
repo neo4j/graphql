@@ -53,6 +53,18 @@ const GET_DATABASES_QUERY = `
     }
 `;
 
+const isMultiDbUnsupportedError = (e: Error) => {
+    if (
+        e.message.includes("This is an administration command and it should be executed against the system database") ||
+        e.message.includes("Neo4jError: Unsupported administration command") ||
+        e.message.includes("Neo4jError: Unable to route write operation to leader for database 'system'") ||
+        e.message.includes("Invalid input 'H': expected 't/T' or 'e/E'") // Neo4j 3.5 or older
+    ) {
+        return true;
+    }
+    return false;
+};
+
 export const resolveNeo4jDesktopLoginPayload = async (): Promise<LoginPayload | null> => {
     const url = new URL(window.location.href);
     const apiEndpoint = url.searchParams.get("neo4jDesktopApiUrl");
@@ -101,11 +113,12 @@ export const resolveNeo4jDesktopLoginPayload = async (): Promise<LoginPayload | 
 
 export const getDatabases = async (driver: neo4j.Driver): Promise<Neo4jDatabase[] | undefined> => {
     const session = driver.session();
-    let cleanedDatabases: Neo4jDatabase[] = [];
+
     try {
         const result = await session.run("SHOW DATABASES");
         if (!result || !result.records) return undefined;
-        cleanedDatabases = result.records
+
+        const cleanedDatabases: Neo4jDatabase[] = result.records
             .map((rec) => rec.toObject())
             .filter(
                 (rec) =>
@@ -113,15 +126,18 @@ export const getDatabases = async (driver: neo4j.Driver): Promise<Neo4jDatabase[
                     rec.currentStatus === "online" &&
                     (rec.name || "").toLowerCase() !== "system"
             ) as Neo4jDatabase[];
-    } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error("Error while fetching databases information, e: ", error);
+
         await session.close();
+        return cleanedDatabases;
+    } catch (error) {
+        await session.close();
+        if (error instanceof Error && !isMultiDbUnsupportedError(error)) {
+            // Only log error if it's not a multi-db unsupported error.
+            // eslint-disable-next-line no-console
+            console.error("Error while fetching databases information, e: ", error);
+        }
         return undefined;
     }
-
-    await session.close();
-    return cleanedDatabases;
 };
 
 export const resolveSelectedDatabaseName = (databases: Neo4jDatabase[]): string => {
