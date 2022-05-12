@@ -24,6 +24,7 @@ import { GraphQLError, GraphQLSchema } from "graphql";
 import * as neo4j from "neo4j-driver";
 import { EditorFromTextArea } from "codemirror";
 import {
+    DEFAULT_DATABASE_NAME,
     LOCAL_STATE_CHECK_CONSTRAINT,
     LOCAL_STATE_CREATE_CONSTRAINT,
     LOCAL_STATE_ENABLE_DEBUG,
@@ -101,7 +102,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                         enableDebug: isDebugChecked === "true",
                         enableRegex: isRegexChecked === "true",
                         driverConfig: {
-                            database: "kest",
+                            database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
                         },
                     },
                 };
@@ -125,7 +126,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                 setLoading(false);
             }
         },
-        [isDebugChecked, isCheckConstraintChecked, isCreateConstraintChecked, isRegexChecked]
+        [isDebugChecked, isCheckConstraintChecked, isCreateConstraintChecked, isRegexChecked, auth.selectedDatabaseName]
     );
 
     const introspect = useCallback(async () => {
@@ -133,7 +134,10 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
             setLoading(true);
 
             const sessionFactory = () =>
-                auth?.driver?.session({ defaultAccessMode: neo4j.session.READ, database: "kest" }) as neo4j.Session;
+                auth?.driver?.session({
+                    defaultAccessMode: neo4j.session.READ,
+                    database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
+                }) as neo4j.Session;
 
             const typeDefs = await toGraphQLTypeDefs(sessionFactory);
 
@@ -144,7 +148,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
         } finally {
             setLoading(false);
         }
-    }, [buildSchema, refForEditorMirror.current]);
+    }, [buildSchema, refForEditorMirror.current, auth.selectedDatabaseName]);
 
     const onSubmit = useCallback(() => {
         const value = refForEditorMirror.current?.getValue();

@@ -19,7 +19,9 @@
 
 import { request } from "graphql-request";
 import * as neo4j from "neo4j-driver";
+import { Storage } from "../utils/storage";
 import { LoginPayload, Neo4jDatabase } from "../types";
+import { DEFAULT_DATABASE_NAME, LOCAL_STATE_SELECTED_DATABASE_NAME } from "../constants";
 
 const GET_DATABASES_QUERY = `
     query {
@@ -105,7 +107,12 @@ export const getDatabases = async (driver: neo4j.Driver): Promise<Neo4jDatabase[
         if (!result || !result.records) return undefined;
         cleanedDatabases = result.records
             .map((rec) => rec.toObject())
-            .filter((rec) => rec.access === "read-write" && rec.currentStatus === "online") as Neo4jDatabase[];
+            .filter(
+                (rec) =>
+                    rec.access === "read-write" &&
+                    rec.currentStatus === "online" &&
+                    (rec.name || "").toLowerCase() !== "system"
+            ) as Neo4jDatabase[];
     } catch (error) {
         // eslint-disable-next-line no-console
         console.error("Error while fetching databases information, e: ", error);
@@ -115,6 +122,16 @@ export const getDatabases = async (driver: neo4j.Driver): Promise<Neo4jDatabase[
 
     await session.close();
     return cleanedDatabases;
+};
+
+export const resolveSelectedDatabaseName = (databases: Neo4jDatabase[]): string => {
+    const storedSelectedDatabaseName = Storage.retrieve(LOCAL_STATE_SELECTED_DATABASE_NAME);
+    const isSelectedDBAvailable = databases?.find((database) => database.name === storedSelectedDatabaseName);
+    if (isSelectedDBAvailable && storedSelectedDatabaseName) {
+        return storedSelectedDatabaseName;
+    }
+    const defaultDatabase = databases?.find((database) => database.default) || undefined;
+    return defaultDatabase?.name || DEFAULT_DATABASE_NAME;
 };
 
 export const getConnectUrlSearchParam = (): string | null => {

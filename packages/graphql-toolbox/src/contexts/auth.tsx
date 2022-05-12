@@ -20,8 +20,8 @@
 import React, { Dispatch, useState, SetStateAction, useEffect } from "react";
 import * as neo4j from "neo4j-driver";
 import { encrypt, decrypt } from "../utils/utils";
-import { LOCAL_STATE_LOGIN, VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
-import { getDatabases, resolveNeo4jDesktopLoginPayload } from "./utils";
+import { LOCAL_STATE_LOGIN, LOCAL_STATE_SELECTED_DATABASE_NAME, VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
+import { getDatabases, resolveNeo4jDesktopLoginPayload, resolveSelectedDatabaseName } from "./utils";
 import { LoginPayload, Neo4jDatabase } from "../types";
 import { Storage } from "../utils/storage";
 
@@ -37,9 +37,11 @@ export interface State {
     isConnected?: boolean;
     isNeo4jDesktop?: boolean;
     databases?: Neo4jDatabase[];
+    selectedDatabaseName?: string;
     login: (options: LoginOptions) => Promise<void>;
     logout: () => void;
-    refreshDatabases: () => void;
+    refreshDatabases: (driver: neo4j.Driver) => void;
+    setSelectedDatabaseName: (databaseName: string) => void;
 }
 
 export const AuthContext = React.createContext(null as unknown as State);
@@ -88,6 +90,7 @@ export function AuthProvider(props: any) {
             await driver.verifyConnectivity();
 
             const databases = await getDatabases(driver);
+            const selectedDatabaseName = resolveSelectedDatabaseName(databases || []);
 
             const encodedPayload = encrypt({
                 username: options.username,
@@ -100,7 +103,14 @@ export function AuthProvider(props: any) {
                 checkConnectivity(driver, setValue);
             }, VERIFY_CONNECTION_INTERVAL_MS);
 
-            setValue((v) => ({ ...v, driver, connectUrl: options.url, isConnected: true, databases }));
+            setValue((v) => ({
+                ...v,
+                driver,
+                connectUrl: options.url,
+                isConnected: true,
+                databases,
+                selectedDatabaseName,
+            }));
         },
         logout: () => {
             Storage.remove(LOCAL_STATE_LOGIN);
@@ -110,11 +120,13 @@ export function AuthProvider(props: any) {
 
             setValue((v) => ({ ...v, driver: undefined, connectUrl: undefined, isConnected: false }));
         },
-        refreshDatabases: async () => {
-            if (value?.driver) {
-                const databases = await getDatabases(value?.driver);
-                setValue((v) => ({ ...v, databases }));
-            }
+        refreshDatabases: async (driver: neo4j.Driver) => {
+            const databases = await getDatabases(driver);
+            setValue((v) => ({ ...v, databases }));
+        },
+        setSelectedDatabaseName: (databaseName: string) => {
+            Storage.store(LOCAL_STATE_SELECTED_DATABASE_NAME, databaseName);
+            setValue((v) => ({ ...v, selectedDatabaseName: databaseName }));
         },
     });
 
