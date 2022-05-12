@@ -14,15 +14,17 @@ import {
 
 import CanvasApi from './canvas-api';
 
-let color = "#000000"
+let color = "#FFFFFF"
 const buttons = [
     ["red-button", "#FF0000"],
-    ["blue-button", "#0000FF"]
+    ["blue-button", "#0000FF"],
+    ["white-button", "#FFFFFF"],
+    ["black-button", "#000000"],
+    ["green-button", "#00FF00"]
 ]
 
 for (const buttonAndColor of buttons) {
     const button = document.getElementById(buttonAndColor[0]);
-    console.log(buttonAndColor, button);
     button.onclick = () => {
         selectColor(buttonAndColor[1])
     }
@@ -35,7 +37,6 @@ function selectColor(newColor) {
 
 const wsClient = createWSClient({
     url: 'ws://localhost:4000/graphql',
-    url: 'ws://04b1-217-138-127-202.ngrok.io/graphql',
 });
 
 const client = createClient({
@@ -76,10 +77,6 @@ const canvasApi = new CanvasApi("place", 10, (pixelClicked) => {
     client
         .mutation(updatePixelQuery, params)
         .toPromise()
-        .then(result => {
-            console.log(result)
-
-        });
 })
 
 

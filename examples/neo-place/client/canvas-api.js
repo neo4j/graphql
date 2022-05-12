@@ -5,8 +5,7 @@ module.exports = class CanvasApi {
         this.ctx.imageSmoothingEnabled = false;
         this.pixelScale = pixelScale
         this.onPixelClicked = onPixelClicked
-        // ctx.fillStyle = 'green';
-        // ctx.fillRect(0, 0, canvas.width, canvas.height);
+
         this.canvas.addEventListener('click', (ev) => this.onClick(ev), false);
     }
 
@@ -20,12 +19,17 @@ module.exports = class CanvasApi {
     }
 
     onClick(ev) {
-        let rect = this.canvas.getBoundingClientRect();
-        let x = event.clientX - parseInt(rect.left);
-        let y = event.clientY - parseInt(rect.top);
-
-        const pixelClicked = [parseInt(x / this.pixelScale), parseInt(y / this.pixelScale)]
+        const pixelClicked = this.getCanvasPixel([event.clientX, event.clientY])
         this.onPixelClicked(pixelClicked)
+    }
+
+
+    getCanvasPixel(screenPixel){
+        let rect = this.canvas.getBoundingClientRect();
+        let x = screenPixel[0] - parseInt(rect.left);
+        let y = screenPixel[1] - parseInt(rect.top);
+
+        return [parseInt(x / this.pixelScale), parseInt(y / this.pixelScale)]
     }
 
 
