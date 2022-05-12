@@ -31,7 +31,6 @@ describe("https://github.com/neo4j/graphql/issues/1414", () => {
 
     let schema: GraphQLSchema;
     let driver: Driver;
-    let session: Session;
 
     async function graphqlQuery(query: string) {
         return graphql({
@@ -64,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/1414", () => {
                 callbacks: {
                     nanoid: () => {
                         const id = `nanoid${counter}`;
-                        counter = counter + 1;
+                        counter += 1;
                         return id;
                     },
                 },
