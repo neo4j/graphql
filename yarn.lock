@@ -6786,24 +6786,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:*":
+"dotenv@npm:*, dotenv@npm:16.0.1, dotenv@npm:^16.0.0":
   version: 16.0.1
   resolution: "dotenv@npm:16.0.1"
   checksum: f459ffce07b977b7f15d8cc4ee69cdff77d4dd8c5dc8c85d2d485ee84655352c2415f9dd09d42b5b5985ced3be186130871b34e2f3e2569ebc72fbc2e8096792
-  languageName: node
-  linkType: hard
-
-"dotenv@npm:16.0.0":
-  version: 16.0.0
-  resolution: "dotenv@npm:16.0.0"
-  checksum: 664cebb51f0a9a1d1b930f51f0271e72e26d62feaecc9dc03df39453dd494b4e724809ca480fb3ec3213382b1ed3f791aaeb83569a137f9329ce58efd4853dbf
-  languageName: node
-  linkType: hard
-
-"dotenv@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "dotenv@npm:10.0.0"
-  checksum: f412c5fe8c24fbe313d302d2500e247ba8a1946492db405a4de4d30dd0eb186a88a43f13c958c5a7de303938949c4231c56994f97d05c4bc1f22478d631b4005
   languageName: node
   linkType: hard
 
@@ -12321,7 +12307,7 @@ __metadata:
     bcrypt: 5.0.1
     cross-env: 7.0.3
     debug: 4.3.4
-    dotenv: ^10.0.0
+    dotenv: ^16.0.0
     express: 4.17.1
     graphql: 16.5.0
     jest: 28.1.0
@@ -12374,7 +12360,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 5.23.0
     "@typescript-eslint/parser": 5.23.0
     concurrently: 7.1.0
-    dotenv: 16.0.0
+    dotenv: 16.0.1
     eslint: 8.15.0
     eslint-config-airbnb-typescript: 17.0.0
     eslint-config-prettier: 8.5.0
