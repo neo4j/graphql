@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql-plugin-subscriptions-amqp",
-    "version": "0.1.0",
+    "version": "0.0.1",
     "description": "Subscription plugin for @neo4j/graphql, supporting AMQP brokers such as RabbitMQ",
     "keywords": [
         "neo4j",
@@ -36,23 +36,23 @@
         "@neo4j/graphql": "^3.1.0",
         "@types/amqplib": "0.8.2",
         "@types/debug": "4.1.7",
-        "@types/jest": "27.4.1",
+        "@types/jest": "27.5.1",
         "@types/node": "16.11.34",
         "apollo-server": "3.6.7",
         "apollo-server-express": "3.6.7",
         "camelcase": "6.3.0",
         "graphql-ws": "5.8.1",
-        "jest": "27.5.1",
+        "jest": "28.1.0",
         "neo4j-driver": "4.4.5",
         "pluralize": "8.0.0",
         "randomstring": "1.1.5",
         "supertest": "6.2.3",
-        "ts-jest": "27.1.4",
+        "ts-jest": "28.0.2",
         "typescript": "4.6.3",
         "ws": "8.5.0"
     },
     "dependencies": {
-        "amqplib": "^0.8.0"
+        "amqplib": "^0.9.0"
     },
     "peerDependencies": {
         "@neo4j/graphql": "^3.1.0"
