@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql-plugin-subscriptions-amqp",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "Subscription plugin for @neo4j/graphql, supporting AMQP brokers such as RabbitMQ",
     "keywords": [
         "neo4j",
@@ -15,7 +15,7 @@
     "bugs": {
         "url": "https://github.com/neo4j/graphql/issues"
     },
-    "homepage": "https://github.com/neo4j/graphql/tree/dev/packages/plugins/graphql-subscriptions-amqp",
+    "homepage": "https://github.com/neo4j/graphql/tree/dev/packages/plugins/graphql-plugin-subscriptions-amqp",
     "exports": "./dist/index.js",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
@@ -29,7 +29,7 @@
         "build": "tsc --build tsconfig.production.json",
         "test": "jest",
         "test:unit": "jest src/**/*.test.ts",
-        "test:e2e": "jest tests/**/*.e2e.test.ts --roots packages/plugins/graphql-subscriptions-amqp/tests/e2e --runInBand"
+        "test:e2e": "jest tests/**/*.e2e.test.ts --roots packages/plugins/graphql-plugin-subscriptions-amqp/tests/e2e --runInBand"
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
