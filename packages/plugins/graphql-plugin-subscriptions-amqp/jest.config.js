@@ -4,13 +4,13 @@ module.exports = {
     ...globalConf,
     displayName: "@neo4j/graphql-plugin-subscriptions-amqp",
     roots: [
-        "<rootDir>/packages/plugins/graphql-subscriptions-amqp/src",
-        // "<rootDir>/packages/plugins/graphql-subscriptions-amqp/tests",
+        "<rootDir>/packages/plugins/graphql-plugin-subscriptions-amqp/src",
+        // "<rootDir>/packages/plugins/graphql-plugin-subscriptions-amqp/tests",
     ],
-    coverageDirectory: "<rootDir>/packages/plugins/graphql-subscriptions-amqp/coverage/",
+    coverageDirectory: "<rootDir>/packages/plugins/graphql-plugin-subscriptions-amqp/coverage/",
     globals: {
         "ts-jest": {
-            tsconfig: "<rootDir>/packages/plugins/graphql-subscriptions-amqp/tsconfig.json",
+            tsconfig: "<rootDir>/packages/plugins/graphql-plugin-subscriptions-amqp/tsconfig.json",
         },
     },
 };
