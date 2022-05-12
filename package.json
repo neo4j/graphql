@@ -28,7 +28,7 @@
         "@typescript-eslint/eslint-plugin": "5.23.0",
         "@typescript-eslint/parser": "5.23.0",
         "concurrently": "7.1.0",
-        "dotenv": "16.0.0",
+        "dotenv": "16.0.1",
         "eslint": "8.15.0",
         "eslint-config-airbnb-typescript": "17.0.0",
         "eslint-config-prettier": "8.5.0",
