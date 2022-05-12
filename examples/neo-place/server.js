@@ -43,7 +43,7 @@ async function main() {
     await setupMap(30);
     // Apollo server setup
     const app = express();
-    app.use(express.static('public'))
+    app.use(express.static('dist'))
     const httpServer = createServer(app);
 
     // Setup websocket server on top of express http server
