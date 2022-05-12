@@ -55,9 +55,11 @@ export function generateSubscribeMethod(node: Node, type: "create" | "update" | 
         const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);
 
         return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
-            return (
-                data[0].typename === node.name && subscriptionWhere(args.where, data[0]) && updateDiffFilter(data[0])
-            );
+            const isSubscribedType = data[0].typename === node.name;
+            const matchWhereFilter = subscriptionWhere(args.where, data[0]);
+            const matchUpdateDiffFilter = updateDiffFilter(data[0]);
+
+            return isSubscribedType && matchWhereFilter && matchUpdateDiffFilter;
         });
     };
 }
