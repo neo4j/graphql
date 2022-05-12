@@ -455,9 +455,11 @@ function createUpdateAndParams({
             hasAppliedTimeStamps = true;
         }
 
-        node.primitiveFields.forEach((field) =>
-            addCallbackAndSetParam(field, varName, updateInput, callbackBucket, res.strs)
-        );
+        node.primitiveFields.forEach((field) => {
+            if (field.callback?.operations.includes("UPDATE")) {
+                addCallbackAndSetParam(field, varName, updateInput, callbackBucket, res.strs);
+            }
+        });
 
         const settableField = node.mutableFields.find((x) => x.fieldName === key);
         const authableField = node.authableFields.find((x) => x.fieldName === key);
