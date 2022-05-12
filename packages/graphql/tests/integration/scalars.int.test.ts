@@ -197,4 +197,43 @@ describe("scalars", () => {
 
         expect((gqlResult.data as any)[type.operations.create][type.plural][0]).toEqual({ integers });
     });
+
+    test("should serialize a list of floats correctly", async () => {
+        const type = generateUniqueType("Type");
+
+        const typeDefs = `
+            type ${type.name} {
+              floats: [Float!]!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+        });
+
+        const floats = [1.1, 2.2, 3.3, 4.4, 5.5];
+
+        const mutation = `
+          mutation($input: [${type.name}CreateInput!]!) {
+            ${type.operations.create}(input: $input) {
+              ${type.plural} {
+                floats
+              }
+            }
+          }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: mutation,
+            contextValue: { driver },
+            variableValues: {
+                input: [{ floats }],
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect((gqlResult.data as any)[type.operations.create][type.plural][0]).toEqual({ floats });
+    });
 });
