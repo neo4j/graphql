@@ -63,11 +63,9 @@ function createSetRelationshipPropertiesAndParams({
         }
     });
 
-    relationship.primitiveFields.forEach((field) => {
-        if (field.callback?.operations.includes(operation)) {
-            addCallbackAndSetParam(field, varName, properties, callbackBucket, strs);
-        }
-    });
+    relationship.primitiveFields.forEach((field) =>
+        addCallbackAndSetParam(field, varName, properties, callbackBucket, strs, operation)
+    );
 
     Object.entries(properties).forEach(([key, value]) => {
         const paramName = `${varName}_${key}`;
