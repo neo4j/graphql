@@ -19,48 +19,61 @@
 
 import { Driver } from "neo4j-driver";
 import supertest, { Response } from "supertest";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
-import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
-import { WebSocketClient, WebSocketTestClient } from "../setup/ws-client";
-import neo4j from "../setup/neo4j";
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import amqp from "amqplib";
+import { ApolloTestServer, TestGraphQLServer } from "./setup/apollo-server";
+import { WebSocketTestClient } from "./setup/ws-client";
+import neo4j from "./setup/neo4j";
+import { Neo4jGraphQLSubscriptionsAMQP } from "../../src";
+import { generateUniqueType } from "../utils/graphql-types";
+import createPlugin from "./setup/plugin";
+import createRabbitMQConnection from "./setup/rabbitmq";
 
-describe("Create Subscription", () => {
+describe("Apollo and RabbitMQ Subscription", () => {
     let driver: Driver;
 
     const typeMovie = generateUniqueType("Movie");
 
     let server: TestGraphQLServer;
-    let wsClient: WebSocketClient;
+    let wsClient: WebSocketTestClient;
+
+    let plugin: Neo4jGraphQLSubscriptionsAMQP;
+    let connection: amqp.Connection;
 
     beforeAll(async () => {
+        driver = await neo4j();
+    });
+
+    beforeEach(async () => {
         const typeDefs = `
          type ${typeMovie} {
              title: String
          }
          `;
 
-        driver = await neo4j();
+        connection = await createRabbitMQConnection();
+        plugin = await createPlugin(connection);
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
             plugins: {
-                subscriptions: new TestSubscriptionsPlugin(),
+                subscriptions: plugin,
             },
         });
 
         server = new ApolloTestServer(neoSchema);
         await server.start();
-    });
-
-    beforeEach(() => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
+        await plugin.close();
+        await connection.close();
         await server.close();
+    });
+
+    afterAll(async () => {
         await driver.close();
     });
 
@@ -76,8 +89,12 @@ describe("Create Subscription", () => {
                             }
                             `);
 
+        let nextEventPromise = wsClient.waitForNextEvent(); // NOTE: not awaited on purpose
         await createMovie("movie1");
+        await nextEventPromise;
+        nextEventPromise = wsClient.waitForNextEvent(); // NOTE: not awaited on purpose
         await createMovie("movie2");
+        await nextEventPromise;
 
         expect(wsClient.events).toEqual([
             {
@@ -106,8 +123,11 @@ describe("Create Subscription", () => {
             }
         `);
 
-        await createMovie("movie1");
+        const nextEventPromise = wsClient.waitForNextEvent(); // NOTE: not awaited on purpose
         await createMovie("movie2");
+        await createMovie("movie1");
+
+        await nextEventPromise;
 
         expect(wsClient.events).toEqual([
             {

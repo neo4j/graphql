@@ -17,18 +17,16 @@
  * limitations under the License.
  */
 
-import { SubscriptionsEvent } from "../../../types";
-import { compareProperties } from "./utils/compare-properties";
+import amqp from "amqplib";
 
-export function updateDiffFilter(event: SubscriptionsEvent): boolean {
-    if (event.event !== "update") {
-        return true;
-    }
+export default async function createRabbitMQConnection(): Promise<amqp.Connection> {
+    const { RABBITMQ_HOST = "localhost", RABBITMQ_USER = "guest", RABBITMQ_PASSWORD = "guest" } = process.env;
 
-    const sameLength = Object.keys(event.properties.old).length === Object.keys(event.properties.new).length;
-    if (!sameLength) return true;
-    const sameProperties = compareProperties(event.properties.old, event.properties.new);
-    if (!sameProperties) return true;
+    const connection = await amqp.connect({
+        hostname: RABBITMQ_HOST,
+        username: RABBITMQ_USER,
+        password: RABBITMQ_PASSWORD,
+    });
 
-    return false;
+    return connection;
 }

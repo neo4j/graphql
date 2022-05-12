@@ -20,8 +20,7 @@
 import { on } from "events";
 import { Neo4jGraphQLError } from "../../../classes";
 import Node from "../../../classes/Node";
-import { SubscriptionsEvent } from "../../../subscriptions/subscriptions-event";
-import { Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
+import { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where";
