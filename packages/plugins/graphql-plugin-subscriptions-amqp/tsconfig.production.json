@@ -4,5 +4,6 @@
         "rootDir": "src"
     },
     "exclude": ["src/**/*.test.ts"],
-    "include": ["src/**/*"]
+    "include": ["src/**/*"],
+    "references": [{ "path": "../../graphql/src/tsconfig.production.json" }]
 }
