@@ -35,16 +35,14 @@ import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { validateDocument } from "./validation";
 import { BaseField, Neo4jGraphQLCallbacks } from "../types";
-import {
-    aggregateResolver,
-    createResolver,
-    cypherResolver,
-    deleteResolver,
-    findResolver,
-    updateResolver,
-    numericalResolver,
-    rootConnectionResolver,
-} from "./resolvers";
+import { cypherResolver } from "./resolvers/field/cypher";
+import { numericalResolver } from "./resolvers/field/numerical";
+import { aggregateResolver } from "./resolvers/query/aggregate";
+import { findResolver } from "./resolvers/query/read";
+import { rootConnectionResolver } from "./resolvers/query/root-connection";
+import { createResolver } from "./resolvers/mutation/create";
+import { deleteResolver } from "./resolvers/mutation/delete";
+import { updateResolver } from "./resolvers/mutation/update";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import * as constants from "../constants";
 import * as Scalars from "../graphql/scalars";

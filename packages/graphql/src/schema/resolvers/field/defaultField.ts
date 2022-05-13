@@ -24,7 +24,7 @@ import { GraphQLResolveInfo } from "graphql";
  * @link https://github.com/graphql/graphql-js/blob/main/src/execution/execute.ts#L999-L1015
  */
 // eslint-disable-next-line consistent-return
-export default function defaultFieldResolver(source: any, args: any, context: unknown, info: GraphQLResolveInfo) {
+export function defaultFieldResolver(source: any, args: any, context: unknown, info: GraphQLResolveInfo) {
     if ((typeof source === "object" && source !== null) || typeof source === "function") {
         const property =
             info.fieldNodes[0].alias && Object.prototype.hasOwnProperty.call(source, info.fieldNodes[0].alias.value)

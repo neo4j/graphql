@@ -18,18 +18,18 @@
  */
 
 import { GraphQLResolveInfo, GraphQLUnionType } from "graphql";
-import { execute } from "../../utils";
-import { ConnectionField, Context, CypherField } from "../../types";
-import { graphqlArgsToCompose } from "../to-compose";
-import createAuthAndParams from "../../translate/create-auth-and-params";
-import createAuthParam from "../../translate/create-auth-param";
-import { AUTH_FORBIDDEN_ERROR } from "../../constants";
-import createProjectionAndParams from "../../translate/create-projection-and-params";
-import createConnectionAndParams from "../../translate/connection/create-connection-and-params";
-import { isNeoInt } from "../../utils/utils";
-import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
+import { execute } from "../../../utils";
+import { ConnectionField, Context, CypherField } from "../../../types";
+import { graphqlArgsToCompose } from "../../to-compose";
+import createAuthAndParams from "../../../translate/create-auth-and-params";
+import createAuthParam from "../../../translate/create-auth-param";
+import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
+import createProjectionAndParams from "../../../translate/create-projection-and-params";
+import createConnectionAndParams from "../../../translate/connection/create-connection-and-params";
+import { isNeoInt } from "../../../utils/utils";
+import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 
-export default function cypherResolver({
+export function cypherResolver({
     field,
     statement,
     type,
