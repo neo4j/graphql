@@ -21,7 +21,7 @@ import { GraphQLResolveInfo } from "graphql";
 import { ObjectTypeComposerFieldConfigAsObjectDefinition, SchemaComposer } from "graphql-compose";
 import { nodeDefinitions } from "graphql-relay";
 import { Context, Node } from "../types";
-import globalNodeResolver from "./resolvers/global-node";
+import { globalNodeResolver } from "./resolvers/query/global-node";
 
 // returns true if globalNodeFields added or false if not
 export function addGlobalNodeFields(nodes: Node[], composer: SchemaComposer): boolean {

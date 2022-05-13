@@ -18,7 +18,7 @@
  */
 
 import { request } from "graphql-request";
-import { LoginPayload } from "./types";
+import { LoginPayload } from "../types";
 
 const GET_DATABASES_QUERY = `
     query {
@@ -94,4 +94,11 @@ export const resolveNeo4jDesktopLoginPayload = async (): Promise<LoginPayload | 
         console.log("Error while fetching and processing Neo4jDesktop GraphQL API, e: ", error);
         return null;
     }
+};
+
+export const getConnectUrlSearchParam = (): string | null => {
+    const queryString = window.location.search;
+    if (!queryString) return null;
+    const urlParams = new URLSearchParams(queryString);
+    return urlParams.get("connectURL");
 };
