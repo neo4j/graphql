@@ -18,16 +18,11 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn
+        run: yarn --immutable
 
   unit-tests:
     needs:
       - cache-dependencies
-
-    strategy:
-      matrix:
-        package:
-          - graphql-toolbox
 
     runs-on: ubuntu-latest
 
@@ -39,24 +34,20 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn
-      - name: Run packages/${{ matrix.package }} unit tests
-        run: yarn run test:unit --coverage
-        working-directory: packages/${{ matrix.package }}
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/${{ matrix.package }}/coverage/
-          flags: ${{ matrix.package }},unit
-          fail_ci_if_error: true
+      - name: Run packages/graphql-toolbox unit tests
+        run: yarn run test:unit
+        working-directory: packages/graphql-toolbox
 
-  toolbox-tests:
-        uses: ./.github/workflows/reusable-toolbox-tests.yml
+  toolbox-e2e-tests:
+    needs:
+      - cache-dependencies
+
+    uses: ./.github/workflows/reusable-toolbox-tests.yml
   
   bump-version:
     needs:
       - unit-tests
-      - toolbox-tests
+      - toolbox-e2e-tests
 
     runs-on: ubuntu-latest
 
@@ -86,7 +77,7 @@ jobs:
         run: |
           git config --global user.name 'Neo4j Team GraphQL'
           git config --global user.email 'team-graphql@neotechnology.com'
-          git commit -am "Bump Graphql-Toolbox version to ${{ steps.get-version.outputs.version }}"
+          git commit -am "Bump @neo4j/graphql-toolbox version to ${{ steps.get-version.outputs.version }}"
           git push
 
   deploy:
@@ -108,16 +99,16 @@ jobs:
         with:
           args: --acl public-read --follow-symlinks --delete
         env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}  # TODO: add
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}  # TODO: add
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # TODO: add
-          AWS_REGION: 'us-west-1'   # optional: defaults to us-east-1
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'eu-west-2'
           SOURCE_DIR: 'packages/graphql-toolbox/dist'      # optional: defaults to entire repository
 
   merge-tag-push:
     needs:
       - bump-version
-      - npm-publish
+      - deploy
 
     runs-on: ubuntu-latest
 
@@ -185,11 +176,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Extract product label from tag
-        id: get-label
-        run: |
-          label=$(echo ${{ matrix.package }} | cut -d- -f2)
-          echo "::set-output name=label::$label"
       - name: Extract prerelease from version
         id: get-prerelease
         run: |
@@ -199,7 +185,7 @@ jobs:
         id: github-release
         uses: mikepenz/release-changelog-builder-action@v3
         with:
-          configuration: "config/release-changelog-builder-action/configuration-${{ steps.get-label.outputs.label }}.json"
+          configuration: "config/release-changelog-builder-action/configuration-graphql-toolbox.json"
           toTag: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
