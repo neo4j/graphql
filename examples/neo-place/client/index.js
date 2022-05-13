@@ -80,22 +80,26 @@ const canvasApi = new CanvasApi("place", 10, (pixelClicked) => {
 })
 
 
-const pixelsQuery = gql`
-query Pixels {
-  pixels {
-    position
-    color
-  }
+const canvasQuery = gql`
+query Canvas {
+  canvas
 }
 `;
 
 client
-    .query(pixelsQuery)
+    .query(canvasQuery)
     .toPromise()
     .then(result => {
-
-        for (const pixel of result.data.pixels) {
-            canvasApi.drawPixel(pixel.position, pixel.color)
+        console.log(result.data.canvas)
+        let i=0;
+        let j=0;
+        for (const pixel of result.data.canvas) {
+            canvasApi.drawPixel([i,j], pixel);
+            j++;
+            if(j===30){
+                i++;
+                j=0;
+            }
         }
 
     });
