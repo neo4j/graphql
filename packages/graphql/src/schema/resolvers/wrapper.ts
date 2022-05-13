@@ -91,7 +91,7 @@ export const wrapResolver =
 
 export const wrapSubscription =
     (resolverArgs: WrapResolverArguments) =>
-    (next: Function) =>
+    (next) =>
     async (root: any, args: any, context: SubscriptionConnectionContext = {}, info: GraphQLResolveInfo) => {
         const plugins = resolverArgs?.plugins || {};
         const contextParams = context.connectionParams || {};
