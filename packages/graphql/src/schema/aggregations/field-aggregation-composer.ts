@@ -20,7 +20,7 @@
 import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import { ObjectFields } from "../get-obj-field-meta";
 import { Node } from "../../classes";
-import { numericalResolver } from "../resolvers";
+import { numericalResolver } from "../resolvers/field/numerical";
 import { AggregationTypesMapper } from "./aggregation-types-mapper";
 
 export enum FieldAggregationSchemaTypes {

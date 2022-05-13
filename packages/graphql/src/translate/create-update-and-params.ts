@@ -456,7 +456,7 @@ function createUpdateAndParams({
         }
 
         node.primitiveFields.forEach((field) =>
-            addCallbackAndSetParam(field, varName, updateInput, callbackBucket, res.strs)
+            addCallbackAndSetParam(field, varName, updateInput, callbackBucket, res.strs, "UPDATE")
         );
 
         const settableField = node.mutableFields.find((x) => x.fieldName === key);

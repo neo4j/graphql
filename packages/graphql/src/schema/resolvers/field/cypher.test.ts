@@ -17,20 +17,23 @@
  * limitations under the License.
  */
 
-import createResolver from "./create";
-import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
+import { cypherResolver } from "./cypher";
+import { CypherField } from "../../../types";
 
-describe("Create resolver", () => {
+describe("Cypher resolver", () => {
     test("should return the correct; type, args and resolve", () => {
-        const node = new NodeBuilder({
-            name: "Movie",
-        }).instance();
+        // @ts-ignore
+        const field: CypherField = {
+            // @ts-ignore
+            typeMeta: { name: "Test", pretty: "[Test]" },
+            arguments: [],
+            isEnum: false,
+            isScalar: true,
+        };
 
-        const result = createResolver({ node });
-        expect(result.type).toBe("CreateMoviesMutationResponse!");
+        const result = cypherResolver({ field, statement: "", type: "Query" });
+        expect(result.type).toEqual(field.typeMeta.pretty);
         expect(result.resolve).toBeInstanceOf(Function);
-        expect(result.args).toMatchObject({
-            input: "[MovieCreateInput!]!",
-        });
+        expect(result.args).toMatchObject({});
     });
 });

@@ -18,19 +18,19 @@
  */
 
 import { FieldNode, GraphQLResolveInfo } from "graphql";
-import { SchemaComposer } from "graphql-compose";
-import { execute } from "../../utils";
-import { translateUpdate } from "../../translate";
-import { Node } from "../../classes";
-import { Context } from "../../types";
-import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
-import { publishEventsToPlugin } from "../subscriptions/publish-events-to-plugin";
+import { execute } from "../../../utils";
+import { translateCreate } from "../../../translate";
+import { Node } from "../../../classes";
+import { Context } from "../../../types";
+import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import { publishEventsToPlugin } from "../../subscriptions/publish-events-to-plugin";
 
-export default function updateResolver({ node, schemaComposer }: { node: Node; schemaComposer: SchemaComposer }) {
+export function createResolver({ node }: { node: Node }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         context.resolveTree = getNeo4jResolveTree(info, { args });
-        const [cypher, params] = await translateUpdate({ context, node });
+        const [cypher, params] = await translateCreate({ context, node });
+
         const executeResult = await execute({
             cypher,
             params,
@@ -38,13 +38,12 @@ export default function updateResolver({ node, schemaComposer }: { node: Node; s
             context,
         });
 
-        publishEventsToPlugin(executeResult, context.plugins?.subscriptions);
-
         const nodeProjection = info.fieldNodes[0].selectionSet?.selections.find(
             (selection) => selection.kind === "Field" && selection.name.value === node.plural
         ) as FieldNode;
-
         const nodeKey = nodeProjection?.alias ? nodeProjection.alias.value : nodeProjection?.name?.value;
+
+        publishEventsToPlugin(executeResult, context.plugins?.subscriptions);
 
         return {
             info: {
@@ -54,25 +53,10 @@ export default function updateResolver({ node, schemaComposer }: { node: Node; s
             ...(nodeProjection ? { [nodeKey]: executeResult.records[0]?.data || [] } : {}),
         };
     }
-    const relationFields: Record<string, string> = node.relationFields.length
-        ? {
-              connect: `${node.name}ConnectInput`,
-              disconnect: `${node.name}DisconnectInput`,
-              create: `${node.name}RelationInput`,
-              delete: `${node.name}DeleteInput`,
-          }
-        : {};
 
-    if (schemaComposer.has(`${node.name}ConnectOrCreateInput`)) {
-        relationFields.connectOrCreate = `${node.name}ConnectOrCreateInput`;
-    }
     return {
-        type: `${node.mutationResponseTypeNames.update}!`,
+        type: `${node.mutationResponseTypeNames.create}!`,
         resolve,
-        args: {
-            where: `${node.name}Where`,
-            update: `${node.name}UpdateInput`,
-            ...relationFields,
-        },
+        args: { input: `[${node.name}CreateInput!]!` },
     };
 }
