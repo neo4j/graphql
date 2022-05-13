@@ -171,6 +171,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                         setIsCheckConstraintChecked={setIsCheckConstraintChecked}
                         setIsCreateConstraintChecked={setIsCreateConstraintChecked}
                     />
+                    <hr className="my-8" />
                     <Favourites
                         favourites={favourites}
                         setFavourites={setFavourites}
