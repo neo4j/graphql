@@ -18,13 +18,11 @@
  */
 
 import { GraphQLResolveInfo } from "graphql";
-import defaultFieldResolver from "./defaultField";
-import { isNeoInt } from "../../utils/utils";
-import { Context } from "../../types";
+import { defaultFieldResolver } from "./defaultField";
+import { isNeoInt } from "../../../utils/utils";
+import { Context } from "../../../types";
 
-function id(source, args, context: Context, info: GraphQLResolveInfo) {
-    const value = defaultFieldResolver(source, args, context, info);
-
+function serializeValue(value) {
     if (isNeoInt(value)) {
         return value.toNumber();
     }
@@ -36,4 +34,14 @@ function id(source, args, context: Context, info: GraphQLResolveInfo) {
     return value;
 }
 
-export default id;
+export function idResolver(source, args, context: Context, info: GraphQLResolveInfo) {
+    const value = defaultFieldResolver(source, args, context, info);
+
+    if (Array.isArray(value)) {
+        return value.map((v) => {
+            return serializeValue(v);
+        });
+    }
+
+    return serializeValue(value);
+}

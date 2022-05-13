@@ -151,7 +151,7 @@ jobs:
       matrix:
         package:
           - graphql-plugin-auth
-          - graphql-subscriptions-amqp
+          - graphql-plugin-subscriptions-amqp
         graphql-version:
           - "^15.0.0"
           - "^16.0.0"

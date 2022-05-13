@@ -20,15 +20,15 @@
 import { GraphQLResolveInfo } from "graphql";
 import { InputTypeComposer, SchemaComposer, upperFirst } from "graphql-compose";
 import { PageInfo } from "graphql-relay";
-import { execute } from "../../utils";
-import { translateRead } from "../../translate";
-import { Node } from "../../classes";
-import { Context } from "../../types";
-import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
-import { isNeoInt } from "../../utils/utils";
-import { createConnectionWithEdgeProperties } from "../pagination";
+import { execute } from "../../../utils";
+import { translateRead } from "../../../translate";
+import { Node } from "../../../classes";
+import { Context } from "../../../types";
+import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import { isNeoInt } from "../../../utils/utils";
+import { createConnectionWithEdgeProperties } from "../../pagination";
 
-export default function rootConnectionResolver({ node, composer }: { node: Node; composer: SchemaComposer }) {
+export function rootConnectionResolver({ node, composer }: { node: Node; composer: SchemaComposer }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         const resolveTree = getNeo4jResolveTree(info);

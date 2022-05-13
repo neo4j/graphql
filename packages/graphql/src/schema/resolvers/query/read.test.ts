@@ -17,28 +17,21 @@
  * limitations under the License.
  */
 
-import { SchemaComposer } from "graphql-compose";
-import updateResolver from "./update";
-import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
+import { findResolver } from "./read";
+import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
 
-describe("Update resolver", () => {
+describe("Read resolver", () => {
     test("should return the correct; type, args and resolve", () => {
         const node = new NodeBuilder({
             name: "Movie",
-            // @ts-ignore
-            relationFields: [{}, {}],
         }).instance();
 
-        const schemaComposer = new SchemaComposer();
-
-        const result = updateResolver({ node, schemaComposer });
-        expect(result.type).toBe("UpdateMoviesMutationResponse!");
+        const result = findResolver({ node });
+        expect(result.type).toBe(`[Movie!]!`);
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
-            where: "MovieWhere",
-            update: "MovieUpdateInput",
-            connect: "MovieConnectInput",
-            disconnect: "MovieDisconnectInput",
+            where: `MovieWhere`,
+            options: `MovieOptions`,
         });
     });
 });

@@ -18,14 +18,14 @@
  */
 
 import { GraphQLResolveInfo } from "graphql";
-import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
-import { execute } from "../../utils";
-import { translateDelete } from "../../translate";
-import { Context } from "../../types";
-import { Node } from "../../classes";
-import { publishEventsToPlugin } from "../subscriptions/publish-events-to-plugin";
+import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import { execute } from "../../../utils";
+import { translateDelete } from "../../../translate";
+import { Context } from "../../../types";
+import { Node } from "../../../classes";
+import { publishEventsToPlugin } from "../../subscriptions/publish-events-to-plugin";
 
-export default function deleteResolver({ node }: { node: Node }) {
+export function deleteResolver({ node }: { node: Node }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         context.resolveTree = getNeo4jResolveTree(info, { args });

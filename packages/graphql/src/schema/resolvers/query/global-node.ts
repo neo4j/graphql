@@ -19,14 +19,14 @@
 
 import { GraphQLResolveInfo } from "graphql";
 import { FieldsByTypeName, parseResolveInfo } from "graphql-parse-resolve-info";
-import { execute } from "../../utils";
-import { translateRead } from "../../translate";
-import { Node } from "../../classes";
-import { Context } from "../../types";
-import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
-import { fromGlobalId } from "../../utils/global-ids";
+import { execute } from "../../../utils";
+import { translateRead } from "../../../translate";
+import { Node } from "../../../classes";
+import { Context } from "../../../types";
+import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import { fromGlobalId } from "../../../utils/global-ids";
 
-export default function globalNodeResolver({ nodes }: { nodes: Node[] }) {
+export function globalNodeResolver({ nodes }: { nodes: Node[] }) {
     async function resolve(_root: any, args: { id: string }, context: Context, info: GraphQLResolveInfo) {
         const { typeName, field, id } = fromGlobalId(args.id);
 
