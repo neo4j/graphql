@@ -35,19 +35,17 @@ import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { validateDocument } from "./validation";
 import { BaseField, Neo4jGraphQLCallbacks } from "../types";
-import {
-    aggregateResolver,
-    createResolver,
-    cypherResolver,
-    deleteResolver,
-    findResolver,
-    updateResolver,
-    numericalResolver,
-    rootConnectionResolver,
-} from "./resolvers";
+import { cypherResolver } from "./resolvers/field/cypher";
+import { numericalResolver } from "./resolvers/field/numerical";
+import { aggregateResolver } from "./resolvers/query/aggregate";
+import { findResolver } from "./resolvers/query/read";
+import { rootConnectionResolver } from "./resolvers/query/root-connection";
+import { createResolver } from "./resolvers/mutation/create";
+import { deleteResolver } from "./resolvers/mutation/delete";
+import { updateResolver } from "./resolvers/mutation/update";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import * as constants from "../constants";
-import * as Scalars from "./types/scalars";
+import * as Scalars from "../graphql/scalars";
 import { Node } from "../classes";
 import Relationship from "../classes/Relationship";
 import createConnectionFields from "./create-connection-fields";
@@ -64,24 +62,24 @@ import {
 import getUniqueFields from "./get-unique-fields";
 import getWhereFields from "./get-where-fields";
 import { upperFirst } from "../utils/upper-first";
-import { ensureNonEmptyInput } from "./ensureNonEmptyInput";
+import { ensureNonEmptyInput } from "./ensure-non-empty-input";
 import { getDocument } from "./get-document";
 import { getDefinitionNodes } from "./get-definition-nodes";
 import { isRootType } from "../utils/is-root-type";
 
 // GraphQL type imports
-import { CreateInfo } from "./types/objects/CreateInfo";
-import { DeleteInfo } from "./types/objects/DeleteInfo";
-import { UpdateInfo } from "./types/objects/UpdateInfo";
-import { PageInfo } from "./types/objects/PageInfo";
-import { SortDirection } from "./types/enums/SortDirection";
-import { QueryOptions } from "./types/input-objects/QueryOptions";
-import { Point } from "./types/objects/Point";
-import { CartesianPoint } from "./types/objects/CartesianPoint";
-import { PointInput } from "./types/input-objects/PointInput";
-import { CartesianPointInput } from "./types/input-objects/CartesianPointInput";
-import { PointDistance } from "./types/input-objects/PointDistance";
-import { CartesianPointDistance } from "./types/input-objects/CartesianPointDistance";
+import { CreateInfo } from "../graphql/objects/CreateInfo";
+import { DeleteInfo } from "../graphql/objects/DeleteInfo";
+import { UpdateInfo } from "../graphql/objects/UpdateInfo";
+import { PageInfo } from "../graphql/objects/PageInfo";
+import { SortDirection } from "../graphql/enums/SortDirection";
+import { QueryOptions } from "../graphql/input-objects/QueryOptions";
+import { Point } from "../graphql/objects/Point";
+import { CartesianPoint } from "../graphql/objects/CartesianPoint";
+import { PointInput } from "../graphql/input-objects/PointInput";
+import { CartesianPointInput } from "../graphql/input-objects/CartesianPointInput";
+import { PointDistance } from "../graphql/input-objects/PointDistance";
+import { CartesianPointDistance } from "../graphql/input-objects/CartesianPointDistance";
 import getNodes from "./get-nodes";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";

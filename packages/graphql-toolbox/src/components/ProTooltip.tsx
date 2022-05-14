@@ -22,7 +22,7 @@ import { Tooltip } from "@neo4j-ndl/react";
 
 interface Props {
     children?: any;
-    tooltipText: string;
+    tooltipText: string | React.ReactNode;
     width?: number;
     left?: number;
     top?: number;

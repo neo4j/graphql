@@ -3,6 +3,15 @@
     "baseBranches": ["dev"],
     "rebaseWhen": "auto",
     "automerge": true,
+    "ignorePaths": [
+        "**/node_modules/**",
+        "**/bower_components/**",
+        "**/vendor/**",
+        "**/__tests__/**",
+        "**/test/**",
+        "**/tests/**",
+        "**/__fixtures__/**"
+    ],
     "packageRules": [
         {
             "matchDepTypes": ["dependencies"],
