@@ -1,26 +1,17 @@
-const neo4j = require('neo4j-driver');
-
+const { getDriver } = require("./get-driver");
 
 module.exports = async function setupMap(size) {
-    const driver = neo4j.driver(
-        'neo4j://localhost',
-        neo4j.auth.basic('neo4j', 'dontpanic42')
-    )
+    const driver = await getDriver();
     const session = driver.session();
-    let index=0;
-    for(let i=0; i<size; i++){
-        for(let j=0; j<size; j++){
-            const statement=mergePixelStatement(index, [i,j]);
-            await session.run(statement);
-            index++;
-        }
-    }
+    await session.run(getCanvasStatement(size));
     await session.close();
-    await driver.close()
-}
+};
 
+function getCanvasStatement(size, color = "#FFFFFF") {
+    const upperIndex = size - 1;
 
-function mergePixelStatement(index,position, color="#FFFFFF"){
-    return `MERGE(p${index}:Pixel { position: [${position.join(",")}]})
-        ON CREATE SET p${index}.color="${color}"`
+    return `UNWIND range(0, ${upperIndex}) AS x
+    UNWIND range(0, ${upperIndex}) AS y
+    MERGE(p:Pixel { position: [x, y]})
+    ON CREATE SET p.color="${color}"`;
 }
