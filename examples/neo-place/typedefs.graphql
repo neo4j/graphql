@@ -1,12 +1,16 @@
-type Pixel @exclude(operations: [CREATE, DELETE]){
-    position: [BigInt!]! @readonly
+type Pixel @exclude(operations: [CREATE, DELETE]) {
+    position: [Int!]! @readonly @unique
     color: String
 }
 
-
 type Query {
-    canvas: [String] @cypher(statement: """MATCH(p:Pixel)
-WITH p.color as color
-ORDER BY p.position ASC
-RETURN collect(color) as canvas""")
+    canvas: [String]
+        @cypher(
+            statement: """
+            MATCH(p:Pixel)
+            WITH p.color as color
+            ORDER BY p.position ASC
+            RETURN collect(color) as canvas
+            """
+        )
 }
