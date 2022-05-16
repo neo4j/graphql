@@ -120,7 +120,7 @@ describe("Subscription auth", () => {
 
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Authentication failed" })]);
         });
 
         test("unauthenticated subscription fails", async () => {
@@ -137,7 +137,7 @@ describe("Subscription auth", () => {
 
             await wsClient.waitForNextEvent();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Authentication failed" })]);
         });
 
         test("authentication fails with wrong secret", async () => {
@@ -154,7 +154,7 @@ describe("Subscription auth", () => {
                             `);
             await wsClient.waitForNextEvent();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Authentication failed" })]);
         });
     });
 
@@ -237,7 +237,7 @@ describe("Subscription auth", () => {
 
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Authentication failed" })]);
         });
     });
 
@@ -320,7 +320,7 @@ describe("Subscription auth", () => {
 
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Authentication failed" })]);
         });
     });
 
@@ -440,7 +440,7 @@ describe("Subscription auth", () => {
 
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
-            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Error" })]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Authentication failed" })]);
         });
 
         test("unauthenticated subscription send events", async () => {

@@ -18,7 +18,7 @@
  */
 
 import { on } from "events";
-import { Neo4jGraphQLError } from "../../../classes";
+import { Neo4jGraphQLAuthenticationError, Neo4jGraphQLError } from "../../../classes";
 import Node from "../../../classes/Node";
 import { SubscriptionsEvent } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
@@ -44,7 +44,7 @@ export function generateSubscribeMethod(node: Node, type: "create" | "update" | 
             const authRules = node.auth.getRules(["SUBSCRIBE"]);
             for (const rule of authRules) {
                 if (!SubscriptionAuth.validateAuthenticationRule(rule, context)) {
-                    throw new Error("Error");
+                    throw new Neo4jGraphQLAuthenticationError("Authentication failed");
                 }
             }
         }

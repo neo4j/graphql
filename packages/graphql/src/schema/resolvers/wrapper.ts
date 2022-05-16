@@ -92,9 +92,9 @@ export const wrapResolver =
 export const wrapSubscription =
     (resolverArgs: WrapResolverArguments) =>
     (next) =>
-    async (root: any, args: any, context: SubscriptionConnectionContext = {}, info: GraphQLResolveInfo) => {
+    async (root: any, args: any, context: SubscriptionConnectionContext | undefined, info: GraphQLResolveInfo) => {
         const plugins = resolverArgs?.plugins || {};
-        const contextParams = context.connectionParams || {};
+        const contextParams = context?.connectionParams || {};
 
         if (!plugins.subscriptions) {
             debug("Subscription Plugin not set");
@@ -105,7 +105,7 @@ export const wrapSubscription =
             plugin: plugins.subscriptions,
         };
 
-        if (!context.jwt && contextParams.authorization) {
+        if (!context?.jwt && contextParams.authorization) {
             const token = parseBearerToken(contextParams.authorization);
             subscriptionContext.jwt = await decodeToken(token, plugins.auth);
         }
