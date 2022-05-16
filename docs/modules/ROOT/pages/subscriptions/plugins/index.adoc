@@ -10,7 +10,7 @@ system with  xref::subscriptions/scaling.adoc[horizontal scaling].
 == Official plugins
 The following plugins are supported officially by `@neo4j/graphql`:
 
-* **xref::subscriptions/plugins/debug.adoc[Debug]** - A debug plugin to use while on development, exported directly from the library.
+* **xref::subscriptions/plugins/default.adoc[Default]** - A default plugin to use while on development, exported directly from the library.
 * **xref::subscriptions/plugins/amqp.adoc[AMQP]** - Connect to AMQP brokers such as link:https://www.rabbitmq.com/[RabbitMQ].
 
 
@@ -65,6 +65,13 @@ const neoSchema = new Neo4jGraphQL({
 Note that, in the previous example, extra properties and methods are often needed to handle connection to the broker. As long as the messages
 are sent to the broker in the `publish` method and that these messages are received and then emitted through the `events` property, the subscriptions
 will be properly handled.
+
+== Using Typescript
+If using Typescript, you may import the interface `Neo4jGraphQLSubscriptionsPlugin` to implement you own plugin:
+
+```typescript
+class CustomRedisPlugin implements Neo4jGraphQLSubscriptionsPlugin {}
+```
 
 == Note about event orders
 Events are sent to the plugin in order, however, order is not guaranteed once these events have been broadcasted through a broker.

@@ -23,7 +23,7 @@ You can have many rules for many operations. Each rule is fallen through until a
 [source, graphql, indent=0]
 ----
 @auth(rules: [
-    { operations: [CREATE, UPDATE, DELETE, CONNECT, DISCONNECT] },
+    { operations: [CREATE, UPDATE, DELETE, CONNECT, DISCONNECT, SUBSCRIBE] },
     { operations: [READ] }
 ])
 ----
@@ -74,6 +74,9 @@ The full list of operations and how they related to Cypher clauses are:
 
 |`DISCONNECT`
 |`MATCH` and `DELETE`
+
+|`SUBSCRIBE`
+| `<NONE>`
 |===
 
 == Auth Value Plucking

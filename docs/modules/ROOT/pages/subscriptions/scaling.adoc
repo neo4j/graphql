@@ -26,7 +26,7 @@ In this case, _Client B_ is subscribe to one server, however, when _Client A_ tr
 The change happens successfully in the database, and any client connected to the same server will receive the event, however, _Client A_
 will **not** receive any update, as the server its connected to does not trigger any subscriptions.
 
-This is the behaviour of the xref::subscriptions/plugins/debug.adoc[debug] plugin provided by the library, and it is not intended for production usage.
+This is the behaviour of the xref::subscriptions/plugins/default.adoc[default plugin] provided by the library, and it is not intended for production usage.
 
 ## Using PubSub
 One solution to this problem, and how `@neo4j/graphql` is to use a PubSub pattern with an external broker to broadcast events through multiple

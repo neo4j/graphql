@@ -30,7 +30,7 @@ export class AmqpApi<T> {
     private exchange: string;
 
     constructor({ exchange }: AmqpApiOptions) {
-        this.exchange = exchange || "neo4j-graphql";
+        this.exchange = exchange;
     }
 
     public async connect(amqpConnection: ConnectionOptions, cb: (msg: T) => void): Promise<amqp.Connection> {
