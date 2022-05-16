@@ -18,7 +18,7 @@
  */
 
 import { on } from "events";
-import { Neo4jGraphQLError } from "../../../classes";
+import { Neo4jGraphQLAuthenticationError, Neo4jGraphQLError } from "../../../classes";
 import Node from "../../../classes/Node";
 import { SubscriptionsEvent } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";

@@ -34,9 +34,8 @@ export class NodeAuth implements Auth {
         if (operations) {
             const operationsList = asArray(operations);
             return this.rules.filter((r) => this.operationsMatchRule(operationsList, r));
-        } else {
-            return this.rules;
         }
+        return this.rules;
     }
 
     private operationsMatchRule(operations: AuthOperations[], rule: AuthRule): boolean {
