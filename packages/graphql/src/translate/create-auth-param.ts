@@ -20,7 +20,9 @@
 import dotProp from "dot-prop";
 import { AuthContext, Context } from "../types";
 
-function createAuthParam({ context }: { context: Context }): AuthContext {
+type ContextAuthParams = Pick<Context, "jwt" | "plugins">;
+
+function createAuthParam({ context }: { context: ContextAuthParams }): AuthContext {
     const { jwt } = context;
     const param: AuthContext = {
         isAuthenticated: false,
