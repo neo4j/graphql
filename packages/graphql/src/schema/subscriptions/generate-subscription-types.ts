@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { GraphQLFloat, GraphQLNonNull } from "graphql";
 import { SchemaComposer } from "graphql-compose";
 import { Node } from "../../classes";
 import { EventType } from "../../graphql/enums/EventType";
@@ -24,7 +25,6 @@ import { generateSubscriptionWhereType } from "./generate-subscription-where-typ
 import { generateEventPayloadType } from "./generate-event-payload-type";
 import { generateSubscribeMethod, subscriptionResolve } from "../resolvers/subscriptions/subscribe";
 import { SubscriptionsEvent } from "../../types";
-import { GraphQLFloat, GraphQLInt, GraphQLNonNull } from "graphql";
 
 export function generateSubscriptionTypes({
     schemaComposer,
