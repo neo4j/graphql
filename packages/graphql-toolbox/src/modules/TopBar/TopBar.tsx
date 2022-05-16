@@ -60,7 +60,7 @@ export const TopBar = () => {
                             <span className="mx-2">/</span>
                             <select
                                 name="databaseselection"
-                                className="w-36 cursor-pointer"
+                                className="w-36 cursor-pointer px-2 py-1 rounded border border-gray-100"
                                 data-test-topbar-database-selection
                                 value={auth.selectedDatabaseName}
                                 disabled={screen.view !== Screen.TYPEDEFS}
@@ -82,25 +82,19 @@ export const TopBar = () => {
             <div className="flex-1 flex justify-end">
                 <div className="flex items-center justify-space text-sm">
                     {!auth.isNeo4jDesktop ? (
-                        <p className="flex items-center mr-6 pr-6 border-r border-gray-700">
-                            <span
-                                data-test-topbar-disconnect-button
-                                className="cursor-pointer"
+                        <div className="mr-6 pr-6 border-r border-gray-700">
+                            <div
+                                className="flex items-center px-2 py-1 rounded border border-gray-100 cursor-pointer"
                                 onClick={() => {
                                     auth?.logout();
                                 }}
                             >
-                                <HeroIcon className="h-7 w-7" iconName="LogoutIcon" type="outline" />
-                            </span>
-                            <span
-                                className="pl-4 leading-7 cursor-pointer"
-                                onClick={() => {
-                                    auth?.logout();
-                                }}
-                            >
-                                Disconnect
-                            </span>
-                        </p>
+                                <span data-test-topbar-disconnect-button>
+                                    <HeroIcon className="h-7 w-7" iconName="LogoutIcon" type="outline" />
+                                </span>
+                                <span className="pl-4 leading-7">Disconnect</span>
+                            </div>
+                        </div>
                     ) : null}
                     <div className="flex items-center">
                         <div className="cursor-pointer mr-4">
