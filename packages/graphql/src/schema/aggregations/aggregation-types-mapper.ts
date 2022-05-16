@@ -18,7 +18,8 @@
  */
 
 import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
-import { numericalResolver, idResolver } from "../resolvers";
+import { idResolver } from "../resolvers/field/id";
+import { numericalResolver } from "../resolvers/field/numerical";
 
 export class AggregationTypesMapper {
     private requiredAggregationSelectionTypes: Record<string, ObjectTypeComposer<unknown, unknown>>;

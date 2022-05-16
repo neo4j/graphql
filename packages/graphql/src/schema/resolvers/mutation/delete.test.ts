@@ -17,22 +17,21 @@
  * limitations under the License.
  */
 
-import globalNodeResolver from "./global-node";
-import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
+import { deleteResolver } from "./delete";
+import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
 
-describe("Global node resolver", () => {
-    test("should return the correct type, args and resolve", () => {
+describe("Delete resolver", () => {
+    test("should return the correct; type, args and resolve", () => {
         const node = new NodeBuilder({
             name: "Movie",
-            primitiveFields: [],
-            isGlobalNode: true,
+            relationFields: [],
         }).instance();
 
-        const result = globalNodeResolver({ nodes: [node] });
-        expect(result.type).toBe("Node");
+        const result = deleteResolver({ node });
+        expect(result.type).toBe(`DeleteInfo!`);
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
-            id: "ID!",
+            where: `MovieWhere`,
         });
     });
 });
