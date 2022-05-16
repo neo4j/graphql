@@ -25,8 +25,7 @@ import * as neo4j from "neo4j-driver";
 import { EditorFromTextArea } from "codemirror";
 import {
     DEFAULT_DATABASE_NAME,
-    LOCAL_STATE_CHECK_CONSTRAINT,
-    LOCAL_STATE_CREATE_CONSTRAINT,
+    LOCAL_STATE_CONSTRAINT,
     LOCAL_STATE_ENABLE_DEBUG,
     LOCAL_STATE_ENABLE_REGEX,
     LOCAL_STATE_FAVOURITES,
@@ -42,7 +41,7 @@ import { SchemaSettings } from "./SchemaSettings";
 import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
 import { ActionElementsBar } from "./ActionElementsBar";
 import { SchemaEditor } from "./SchemaEditor";
-import { Favourite } from "src/types";
+import { ConstraintState, Favourite } from "src/types";
 import { Favourites } from "./Favourites";
 
 export interface Props {
@@ -57,13 +56,8 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const [loading, setLoading] = useState(false);
     const refForEditorMirror = useRef<EditorFromTextArea | null>(null);
     const [isDebugChecked, setIsDebugChecked] = useState<string | null>(Storage.retrieve(LOCAL_STATE_ENABLE_DEBUG));
-    const [isCheckConstraintChecked, setIsCheckConstraintChecked] = useState<string | null>(
-        Storage.retrieve(LOCAL_STATE_CHECK_CONSTRAINT)
-    );
-    const [isCreateConstraintChecked, setIsCreateConstraintChecked] = useState<string | null>(
-        Storage.retrieve(LOCAL_STATE_CREATE_CONSTRAINT)
-    );
     const [isRegexChecked, setIsRegexChecked] = useState<string | null>(Storage.retrieve(LOCAL_STATE_ENABLE_REGEX));
+    const [constraintState, setConstraintState] = useState<string | null>(Storage.retrieve(LOCAL_STATE_CONSTRAINT));
     const [favourites, setFavourites] = useState<Favourite[] | null>(Storage.retrieveJSON(LOCAL_STATE_FAVOURITES));
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
@@ -111,11 +105,11 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
 
                 const schema = await neoSchema.getSchema();
 
-                if (isCheckConstraintChecked === "true") {
+                if (constraintState === ConstraintState.check.toString()) {
                     await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: false } });
                 }
 
-                if (isCreateConstraintChecked === "true") {
+                if (constraintState === ConstraintState.create.toString()) {
                     await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: true } });
                 }
 
@@ -126,7 +120,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                 setLoading(false);
             }
         },
-        [isDebugChecked, isCheckConstraintChecked, isCreateConstraintChecked, isRegexChecked, auth.selectedDatabaseName]
+        [isDebugChecked, constraintState, isRegexChecked, auth.selectedDatabaseName]
     );
 
     const introspect = useCallback(async () => {
@@ -164,12 +158,10 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     <SchemaSettings
                         isRegexChecked={isRegexChecked}
                         isDebugChecked={isDebugChecked}
-                        isCheckConstraintChecked={isCheckConstraintChecked}
-                        isCreateConstraintChecked={isCreateConstraintChecked}
+                        constraintState={constraintState}
                         setIsRegexChecked={setIsRegexChecked}
                         setIsDebugChecked={setIsDebugChecked}
-                        setIsCheckConstraintChecked={setIsCheckConstraintChecked}
-                        setIsCreateConstraintChecked={setIsCreateConstraintChecked}
+                        setConstraintState={setConstraintState}
                     />
                     <hr className="my-8" />
                     <Favourites

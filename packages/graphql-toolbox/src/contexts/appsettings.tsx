@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import React, { Dispatch, useState, SetStateAction } from "react";
-import { LOCAL_STATE_SHOW_LINT_MARKERS } from "src/constants";
+import React, { Dispatch, useState, SetStateAction, useEffect } from "react";
+import { LOCAL_STATE_CONSTRAINT, LOCAL_STATE_SHOW_LINT_MARKERS } from "src/constants";
+import { ConstraintState } from "src/types";
 import { Storage } from "../utils/storage";
 
 export interface State {
@@ -38,6 +39,13 @@ export function AppSettingsProvider(props: React.PropsWithChildren<any>) {
             setValue((values) => ({ ...values, showLintMarkers: nextState }));
         },
     });
+
+    useEffect(() => {
+        const constraintState = Storage.retrieve(LOCAL_STATE_CONSTRAINT);
+        if (!constraintState) {
+            Storage.store(LOCAL_STATE_CONSTRAINT, ConstraintState.ignore.toString());
+        }
+    }, []);
 
     return <AppSettingsContext.Provider value={value as State}>{props.children}</AppSettingsContext.Provider>;
 }

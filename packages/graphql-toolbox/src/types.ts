@@ -41,3 +41,9 @@ export interface Neo4jDatabase {
     requestedStatus: string;
     role: string;
 }
+
+export enum ConstraintState {
+    check,
+    create,
+    ignore,
+}
