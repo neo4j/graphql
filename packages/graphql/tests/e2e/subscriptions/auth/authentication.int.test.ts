@@ -562,8 +562,8 @@ describe("Subscription authentication", () => {
         });
     });
 
-    async function createMovie(title: string, server: TestGraphQLServer): Promise<Response> {
-        const result = await supertest(server.path)
+    async function createMovie(title: string, graphQLServer: TestGraphQLServer): Promise<Response> {
+        const result = await supertest(graphQLServer.path)
             .post("")
             .set("authorization", jwtToken)
             .send({
