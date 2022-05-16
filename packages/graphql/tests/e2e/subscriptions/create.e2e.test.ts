@@ -72,6 +72,7 @@ describe("Create Subscription", () => {
                                         title
                                     }
                                     event
+                                    timestamp
                                 }
                             }
                             `);
@@ -84,12 +85,14 @@ describe("Create Subscription", () => {
                 [typeMovie.operations.subscribe.created]: {
                     [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
                     event: "CREATE",
+                    timestamp: expect.any(Number),
                 },
             },
             {
                 [typeMovie.operations.subscribe.created]: {
                     [typeMovie.fieldNames.subscriptions.created]: { title: "movie2" },
                     event: "CREATE",
+                    timestamp: expect.any(Number),
                 },
             },
         ]);

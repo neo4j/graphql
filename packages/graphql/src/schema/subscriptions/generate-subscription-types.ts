@@ -24,6 +24,7 @@ import { generateSubscriptionWhereType } from "./generate-subscription-where-typ
 import { generateEventPayloadType } from "./generate-event-payload-type";
 import { generateSubscribeMethod, subscriptionResolve } from "../resolvers/subscriptions/subscribe";
 import { SubscriptionsEvent } from "../../types";
+import { GraphQLFloat, GraphQLInt, GraphQLNonNull } from "graphql";
 
 export function generateSubscriptionTypes({
     schemaComposer,
@@ -50,6 +51,10 @@ export function generateSubscriptionTypes({
                     type: eventTypeEnum.NonNull,
                     resolve: () => EventType.getValue("CREATE")?.value,
                 },
+                timestamp: {
+                    type: new GraphQLNonNull(GraphQLFloat),
+                    resolve: (source: SubscriptionsEvent) => source.timestamp,
+                },
             },
         });
 
@@ -60,6 +65,10 @@ export function generateSubscriptionTypes({
                     type: eventTypeEnum.NonNull,
                     resolve: () => EventType.getValue("UPDATE")?.value,
                 },
+                timestamp: {
+                    type: new GraphQLNonNull(GraphQLFloat),
+                    resolve: (source: SubscriptionsEvent) => source.timestamp,
+                },
             },
         });
 
@@ -69,6 +78,10 @@ export function generateSubscriptionTypes({
                 event: {
                     type: eventTypeEnum.NonNull,
                     resolve: () => EventType.getValue("DELETE")?.value,
+                },
+                timestamp: {
+                    type: new GraphQLNonNull(GraphQLFloat),
+                    resolve: (source: SubscriptionsEvent) => source.timestamp,
                 },
             },
         });
