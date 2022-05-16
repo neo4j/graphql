@@ -188,7 +188,7 @@ jobs:
         id: github-release
         uses: mikepenz/release-changelog-builder-action@v3
         with:
-          configuration: "config/release-changelog-builder-action/configuration-graphql-toolbox.json"
+          configuration: "config/release-changelog-builder-action/configuration-toolbox.json"
           toTag: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
