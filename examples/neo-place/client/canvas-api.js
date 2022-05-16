@@ -24,13 +24,11 @@ module.exports = class CanvasApi {
     }
 
 
-    getCanvasPixel(screenPixel){
+    getCanvasPixel(screenPixel) {
         let rect = this.canvas.getBoundingClientRect();
         let x = screenPixel[0] - parseInt(rect.left);
         let y = screenPixel[1] - parseInt(rect.top);
 
         return [parseInt(x / this.pixelScale), parseInt(y / this.pixelScale)]
     }
-
-
 }
