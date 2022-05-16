@@ -1834,7 +1834,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/graphql-ogm@^3.2.1, @neo4j/graphql-ogm@workspace:packages/ogm":
+"@neo4j/graphql-ogm@^3.2.2, @neo4j/graphql-ogm@workspace:packages/ogm":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-ogm@workspace:packages/ogm"
   dependencies:
@@ -1842,7 +1842,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^2.3.2
     "@graphql-codegen/typescript": ^2.4.2
     "@graphql-tools/merge": ^8.2.1
-    "@neo4j/graphql": ^3.2.1
+    "@neo4j/graphql": ^3.2.2
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/jest": 27.5.1
     "@types/node": 16.11.35
@@ -1885,7 +1885,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-plugin-subscriptions-amqp@workspace:packages/plugins/graphql-plugin-subscriptions-amqp"
   dependencies:
-    "@neo4j/graphql": ^3.2.1
+    "@neo4j/graphql": ^3.2.2
     "@types/amqplib": 0.8.2
     "@types/debug": 4.1.7
     "@types/jest": 27.5.1
@@ -1904,7 +1904,7 @@ __metadata:
     typescript: 4.6.3
     ws: 8.5.0
   peerDependencies:
-    "@neo4j/graphql": ^3.2.1
+    "@neo4j/graphql": ^3.2.2
   languageName: unknown
   linkType: soft
 
@@ -1914,7 +1914,7 @@ __metadata:
   dependencies:
     "@neo4j-ndl/base": ^0.3.0
     "@neo4j-ndl/react": ^0.3.0
-    "@neo4j/graphql": ^3.2.1
+    "@neo4j/graphql": ^3.2.2
     "@neo4j/introspector": ^1.0.1
     "@tsconfig/create-react-app": 1.0.2
     "@types/codemirror": 5.60.5
@@ -1972,7 +1972,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@^3.2.1, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@^3.2.2, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -2033,7 +2033,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
-    "@neo4j/graphql": ^3.2.1
+    "@neo4j/graphql": ^3.2.2
     "@types/jest": 27.5.1
     "@types/node": 16.11.35
     "@types/pluralize": 0.0.29
@@ -11830,7 +11830,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "migration@workspace:examples/migration"
   dependencies:
-    "@neo4j/graphql": ^3.2.1
+    "@neo4j/graphql": ^3.2.2
     apollo-server: ^3.6.1
     graphql: 16.5.0
     neo4j-driver: 4.4.5
@@ -12212,8 +12212,8 @@ __metadata:
   resolution: "neo-push-server@workspace:examples/neo-push/server"
   dependencies:
     "@faker-js/faker": 6.3.1
-    "@neo4j/graphql": ^3.2.1
-    "@neo4j/graphql-ogm": ^3.2.1
+    "@neo4j/graphql": ^3.2.2
+    "@neo4j/graphql-ogm": ^3.2.2
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/bcrypt": 5.0.0
     "@types/debug": 4.1.7
