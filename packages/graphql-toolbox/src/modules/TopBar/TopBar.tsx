@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { Fragment, useContext, useEffect } from "react";
-import { HeroIcon } from "@neo4j-ndl/react";
+import { Fragment, useContext } from "react";
+import { Button, HeroIcon } from "@neo4j-ndl/react";
 // @ts-ignore - SVG Import
 import Neo4jLogoIcon from "../../assets/Neo4j-logo-color.svg";
 import { AuthContext } from "../../contexts/auth";
@@ -82,18 +82,20 @@ export const TopBar = () => {
             <div className="flex-1 flex justify-end">
                 <div className="flex items-center justify-space text-sm">
                     {!auth.isNeo4jDesktop ? (
-                        <div className="mr-6 pr-6 border-r border-gray-700">
-                            <div
-                                className="flex items-center px-2 py-1 rounded border border-gray-100 cursor-pointer"
+                        <div className="mr-6 pr-2 border-r border-gray-700">
+                            <Button
+                                data-test-topbar-disconnect-button
+                                color="primary"
+                                fill="text"
                                 onClick={() => {
                                     auth?.logout();
                                 }}
                             >
-                                <span data-test-topbar-disconnect-button>
-                                    <HeroIcon className="h-7 w-7" iconName="LogoutIcon" type="outline" />
-                                </span>
-                                <span className="pl-4 leading-7">Disconnect</span>
-                            </div>
+                                <div className="flex items-center">
+                                    <HeroIcon className="h-7 w-7 mr-3" iconName="LogoutIcon" type="outline" />
+                                    <div className="pt-02">Disconnect</div>
+                                </div>
+                            </Button>
                         </div>
                     ) : null}
                     <div className="flex items-center">
