@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
-import { WebSocketClient, WebSocketTestClient } from "../setup/ws-client";
+import { WebSocketTestClient } from "../setup/ws-client";
 import neo4j from "../setup/neo4j";
 
 describe("Create Subscription", () => {
@@ -32,7 +32,7 @@ describe("Create Subscription", () => {
     const typeMovie = generateUniqueType("Movie");
 
     let server: TestGraphQLServer;
-    let wsClient: WebSocketClient;
+    let wsClient: WebSocketTestClient;
 
     beforeAll(async () => {
         const typeDefs = `
@@ -80,6 +80,7 @@ describe("Create Subscription", () => {
         await createMovie("movie1");
         await createMovie("movie2");
 
+        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {
@@ -112,6 +113,7 @@ describe("Create Subscription", () => {
         await createMovie("movie1");
         await createMovie("movie2");
 
+        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {

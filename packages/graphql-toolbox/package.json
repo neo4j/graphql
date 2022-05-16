@@ -31,13 +31,14 @@
         "build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
         "start": "cross-env NODE_ENV=development webpack serve",
         "test-build": "cross-env NODE_ENV=test webpack --config webpack.config.js",
-        "test": "cross-env NODE_ENV=test yarn test-build && jest"
+        "test": "cross-env NODE_ENV=test yarn test-build && jest",
+        "test:unit": "cross-env NODE_ENV=test jest src"
     },
     "author": "Neo4j",
     "dependencies": {
         "@neo4j-ndl/base": "^0.3.0",
         "@neo4j-ndl/react": "^0.3.0",
-        "@neo4j/graphql": "^3.2.1",
+        "@neo4j/graphql": "^3.2.2",
         "@neo4j/introspector": "^1.0.1",
         "codemirror": "^5.65.3",
         "codemirror-graphql": "^1.2.17",

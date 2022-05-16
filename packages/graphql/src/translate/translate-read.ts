@@ -74,6 +74,7 @@ function translateRead({
         context,
         resolveTree,
         varName,
+        isRootConnectionField,
     });
     [projStr] = projection;
     cypherParams = { ...cypherParams, ...projection[1] };
@@ -132,10 +133,14 @@ function translateRead({
         authStr = `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
+    let cypher: string[] = [];
+
     if (isRootConnectionField) {
         const hasAfter = Boolean(afterInput);
         const hasFirst = Boolean(firstInput);
         const hasSort = Boolean(sortInput && sortInput.length);
+        const sortCypherFields = projection[2]?.rootConnectionCypherSortFields ?? [];
+        const sortCypherProj = sortCypherFields.map(({ alias, apocStr }) => `${alias}: ${apocStr}`);
 
         if (hasAfter && typeof afterInput === "string") {
             const offset = cursorToOffset(afterInput) + 1;
@@ -155,14 +160,37 @@ function translateRead({
                 return [
                     ...res,
                     ...Object.entries(sort).map(([field, direction]) => {
-                        return `${varName}.${field} ${direction}`;
+                        // if the sort arg is a cypher field, substitaute "edges" for varName
+                        const varOrEdgeName = sortCypherFields.find((x) => x.alias === field) ? "edges" : varName;
+                        return `${varOrEdgeName}.${field} ${direction}`;
                     }),
                 ];
             }, []);
 
             sortStr = `ORDER BY ${sortArr.join(", ")}`;
         }
-    } else if (optionsInput) {
+        returnStrs.push(`WITH COLLECT({ node: ${varName} ${projStr} }) as edges, totalCount`);
+        returnStrs.push(`RETURN { edges: edges, totalCount: totalCount } as ${varName}`);
+
+        cypher = [
+            "CALL {",
+            matchAndWhereStr,
+            authStr,
+            ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
+            `WITH COLLECT(this) as edges`,
+            `WITH edges, size(edges) as totalCount`,
+            `UNWIND edges as ${varName}`,
+            `WITH ${varName}, totalCount, { ${sortCypherProj.join(", ")}} as edges`,
+            `RETURN ${varName}, totalCount, edges`,
+            ...(sortStr ? [sortStr] : []),
+            ...(offsetStr ? [offsetStr] : []),
+            ...(limitStr ? [limitStr] : []),
+            "}",
+            ...connectionStrs,
+            ...interfaceStrs,
+            ...returnStrs,
+        ];
+    } else {
         const hasOffset = Boolean(optionsInput.offset) || optionsInput.offset === 0;
 
         if (hasOffset) {
@@ -190,64 +218,39 @@ function translateRead({
 
             sortStr = `ORDER BY ${sortArr.join(", ")}`;
         }
-    }
 
-    let cypher: string[] = [];
-
-    if (isRootConnectionField) {
-        returnStrs.push(`WITH COLLECT({ node: ${varName} ${projStr} }) as edges, totalCount`);
-        returnStrs.push(`RETURN { edges: edges, totalCount: totalCount } as ${varName}`);
-    } else {
         returnStrs.push(`RETURN ${varName} ${projStr} as ${varName}`);
-    }
 
-    const projectCypherFieldsAfterLimit = node.cypherFields.length && hasLimit && !cypherSort;
+        const projectCypherFieldsAfterLimit = node.cypherFields.length && hasLimit && !cypherSort;
 
-    if (isRootConnectionField) {
-        cypher = [
-            "CALL {",
-            matchAndWhereStr,
-            authStr,
-            ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
-            `WITH COLLECT(${varName}) as edges`,
-            "WITH edges, size(edges) as totalCount",
-            `UNWIND edges as ${varName}`,
-            `RETURN ${varName}, totalCount`,
-            ...(sortStr ? [sortStr] : []),
-            ...(offsetStr ? [offsetStr] : []),
-            ...(limitStr ? [limitStr] : []),
-            "}",
-            ...connectionStrs,
-            ...interfaceStrs,
-            ...returnStrs,
-        ];
-    } else if (projectCypherFieldsAfterLimit) {
-        cypher = [
-            "CALL {",
-            matchAndWhereStr,
-            authStr,
-            ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
-            `RETURN ${varName}`,
-            ...(sortStr ? [sortStr] : []),
-            ...(offsetStr ? [offsetStr] : []),
-            ...(limitStr ? [limitStr] : []),
-            "}",
-            ...connectionStrs,
-            ...interfaceStrs,
-            ...returnStrs,
-        ];
-    } else {
-        cypher = [
-            matchAndWhereStr,
-            authStr,
-            ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
-            ...connectionStrs,
-            ...interfaceStrs,
-            ...returnStrs,
-            ...(sortStr ? [sortStr] : []),
-            ...(offsetStr ? [offsetStr] : []),
-            ...(limitStr ? [limitStr] : []),
-        ];
+        if (projectCypherFieldsAfterLimit) {
+            cypher = [
+                "CALL {",
+                matchAndWhereStr,
+                authStr,
+                ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
+                `RETURN ${varName}`,
+                ...(sortStr ? [sortStr] : []),
+                ...(offsetStr ? [offsetStr] : []),
+                ...(limitStr ? [limitStr] : []),
+                "}",
+                ...connectionStrs,
+                ...interfaceStrs,
+                ...returnStrs,
+            ];
+        } else {
+            cypher = [
+                matchAndWhereStr,
+                authStr,
+                ...(projAuth ? [`WITH ${varName}`, projAuth] : []),
+                ...connectionStrs,
+                ...interfaceStrs,
+                ...returnStrs,
+                ...(sortStr ? [sortStr] : []),
+                ...(offsetStr ? [offsetStr] : []),
+                ...(limitStr ? [limitStr] : []),
+            ];
+        }
     }
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];
