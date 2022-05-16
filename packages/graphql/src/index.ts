@@ -45,7 +45,7 @@ export {
     Neo4jGraphQLConstructor,
     Neo4jGraphQLAuthenticationError,
     Neo4jGraphQLForbiddenError,
-    Neo4jGraphQLSubscriptionsDev,
+    Neo4jGraphQLSubscriptionsDefaultPlugin,
 } from "./classes";
 
 export * as directives from "./graphql/directives";

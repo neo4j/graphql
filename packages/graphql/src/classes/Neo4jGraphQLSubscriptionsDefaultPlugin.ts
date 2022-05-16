@@ -21,7 +21,7 @@ import { EventEmitter } from "events";
 import { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "../types";
 
 /** Default subscriptions plugin for debug **/
-export class Neo4jGraphQLSubscriptionsDev implements Neo4jGraphQLSubscriptionsPlugin {
+export class Neo4jGraphQLSubscriptionsDefaultPlugin implements Neo4jGraphQLSubscriptionsPlugin {
     public events: EventEmitter = new EventEmitter();
 
     publish(eventMeta: SubscriptionsEvent): void | Promise<void> {
