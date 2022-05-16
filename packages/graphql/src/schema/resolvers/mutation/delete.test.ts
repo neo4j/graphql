@@ -17,18 +17,21 @@
  * limitations under the License.
  */
 
-import { GraphQLResolveInfo } from "graphql";
-import defaultFieldResolver from "./defaultField";
-import { isNeoInt } from "../../utils/utils";
+import { deleteResolver } from "./delete";
+import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
 
-function numerical(source, args, context, info: GraphQLResolveInfo) {
-    const value = defaultFieldResolver(source, args, context, info);
+describe("Delete resolver", () => {
+    test("should return the correct; type, args and resolve", () => {
+        const node = new NodeBuilder({
+            name: "Movie",
+            relationFields: [],
+        }).instance();
 
-    if (isNeoInt(value)) {
-        return value.toNumber();
-    }
-
-    return value;
-}
-
-export default numerical;
+        const result = deleteResolver({ node });
+        expect(result.type).toBe(`DeleteInfo!`);
+        expect(result.resolve).toBeInstanceOf(Function);
+        expect(result.args).toMatchObject({
+            where: `MovieWhere`,
+        });
+    });
+});

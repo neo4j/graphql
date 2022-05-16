@@ -22,7 +22,8 @@ import { DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition, Directi
 import getFieldTypeMeta from "./get-field-type-meta";
 import parseValueNode from "./parse-value-node";
 import { BaseField, InputField, PrimitiveField, TemporalField } from "../types";
-import { numericalResolver, idResolver } from "./resolvers";
+import { numericalResolver } from "./resolvers/field/numerical";
+import { idResolver } from "./resolvers/field/id";
 
 export function graphqlArgsToCompose(args: InputValueDefinitionNode[]) {
     return args.reduce((res, arg) => {

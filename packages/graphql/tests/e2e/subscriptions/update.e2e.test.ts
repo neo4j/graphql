@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
-import { WebSocketClient, WebSocketTestClient } from "../setup/ws-client";
+import { WebSocketTestClient } from "../setup/ws-client";
 import neo4j from "../setup/neo4j";
 
 describe("Update Subscriptions", () => {
@@ -33,7 +33,7 @@ describe("Update Subscriptions", () => {
     const typeActor = generateUniqueType("Actor");
 
     let server: TestGraphQLServer;
-    let wsClient: WebSocketClient;
+    let wsClient: WebSocketTestClient;
 
     beforeAll(async () => {
         const typeDefs = `
@@ -94,6 +94,7 @@ describe("Update Subscriptions", () => {
         await updateMovie("movie1", "movie3");
         await updateMovie("movie2", "movie4");
 
+        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
@@ -129,6 +130,7 @@ describe("Update Subscriptions", () => {
         await updateMovie("movie5", "movie7");
         await updateMovie("movie6", "movie8");
 
+        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
@@ -137,42 +139,6 @@ describe("Update Subscriptions", () => {
             },
         ]);
     });
-
-    async function createMovie(title: string): Promise<Response> {
-        const result = await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeMovie.operations.create}(input: [{ title: "${title}" }]) {
-                            ${typeMovie.plural} {
-                                title
-                            }
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-        return result;
-    }
-
-    async function updateMovie(oldTitle: string, newTitle: string): Promise<Response> {
-        const result = await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeMovie.operations.update}(where: { title: "${oldTitle}" }, update: { title: "${newTitle}" }) {
-                            ${typeMovie.plural} {
-                                title
-                            }
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-        return result;
-    }
 
     test("update subscription with same fields after update won't be triggered", async () => {
         await wsClient.subscribe(`
@@ -191,6 +157,7 @@ describe("Update Subscriptions", () => {
         await updateMovie("movie10", "movie20");
         await updateMovie("movie20", "movie20");
 
+        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
@@ -200,4 +167,40 @@ describe("Update Subscriptions", () => {
             },
         ]);
     });
+
+    async function createMovie(title: string): Promise<Response> {
+        const result = await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                        mutation {
+                            ${typeMovie.operations.create}(input: [{ title: "${title}" }]) {
+                                ${typeMovie.plural} {
+                                    title
+                                }
+                            }
+                        }
+                    `,
+            })
+            .expect(200);
+        return result;
+    }
+
+    async function updateMovie(oldTitle: string, newTitle: string): Promise<Response> {
+        const result = await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                        mutation {
+                            ${typeMovie.operations.update}(where: { title: "${oldTitle}" }, update: { title: "${newTitle}" }) {
+                                ${typeMovie.plural} {
+                                    title
+                                }
+                            }
+                        }
+                    `,
+            })
+            .expect(200);
+        return result;
+    }
 });

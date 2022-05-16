@@ -22,5 +22,5 @@ import { TypeSource } from "@graphql-tools/utils";
 import { DocumentNode } from "graphql";
 
 export function getDocument(typeDefs: TypeSource): DocumentNode {
-    return mergeTypeDefs(Array.isArray(typeDefs) ? (typeDefs as string[]) : [typeDefs as string]);
+    return mergeTypeDefs(typeDefs);
 }

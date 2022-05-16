@@ -23,7 +23,8 @@ import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import mapToDbProperty from "../utils/map-to-db-property";
 import joinPredicates, { isPredicateJoin, PREDICATE_JOINS } from "../utils/join-predicates";
 import ContextParser from "../utils/context-parser";
-import { isString, asArray, haveSharedElement } from "../utils/utils";
+import { isString } from "../utils/utils";
+import { NodeAuth } from "../classes/NodeAuth";
 
 interface Res {
     strs: string[];
@@ -191,15 +192,9 @@ function createAuthAndParams({
         return ["", {}];
     }
 
-    let authRules: AuthRule[] = [];
-    if (operations) {
-        const operationsList = asArray(operations);
-        authRules = entity?.auth.rules.filter(
-            (r) => !r.operations || haveSharedElement(operationsList, r.operations || [])
-        );
-    } else {
-        authRules = entity?.auth.rules;
-    }
+    /** FIXME: this is required to keep compatibility with BaseField type */
+    const nodeAuth = new NodeAuth(entity.auth);
+    const authRules = nodeAuth.getRules(operations);
 
     const hasWhere = (rule: BaseAuthRule): boolean =>
         !!(rule.where || rule.AND?.some(hasWhere) || rule.OR?.some(hasWhere));

@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import globalNodeResolver from "./global-node";
-import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
+import { globalNodeResolver } from "./global-node";
+import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
 
 describe("Global node resolver", () => {
     test("should return the correct type, args and resolve", () => {
