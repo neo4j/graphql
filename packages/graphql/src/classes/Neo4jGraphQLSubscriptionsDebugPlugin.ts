@@ -17,10 +17,14 @@
  * limitations under the License.
  */
 
-export { default as Node, NodeConstructor } from "./Node";
-export { default as Relationship } from "./Relationship";
-export { GraphElement } from "./GraphElement";
-export { default as Exclude, ExcludeConstructor } from "./Exclude";
-export { default as Neo4jGraphQL, Neo4jGraphQLConstructor, Neo4jGraphQLConfig } from "./Neo4jGraphQL";
-export { Neo4jGraphQLSubscriptionsDebug } from "./Neo4jGraphQLSubscriptionsDebugPlugin";
-export * from "./Error";
+import { EventEmitter } from "events";
+import { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "../types";
+
+/** Default subscriptions plugin for debug **/
+export class Neo4jGraphQLSubscriptionsDebug implements Neo4jGraphQLSubscriptionsPlugin {
+    public events: EventEmitter = new EventEmitter();
+
+    publish(eventMeta: SubscriptionsEvent): void | Promise<void> {
+        this.events.emit(eventMeta.event, eventMeta);
+    }
+}
