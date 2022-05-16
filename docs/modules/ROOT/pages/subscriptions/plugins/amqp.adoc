@@ -1,0 +1,4 @@
+[[amqp]]
+= AMQP Plugin
+
+WARNING: Subscriptions are only available as a beta its API may change in the future. It is not recommended to use subscriptions in production environments.

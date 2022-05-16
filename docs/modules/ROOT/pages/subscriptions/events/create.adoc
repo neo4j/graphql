@@ -12,7 +12,8 @@ NOTE: Only nodes created will trigger this event, new relationships will **not**
 A subscription to a type can be made with the top-level subscription `\[type\]Created`. The subscription will contain the following fields:
 
 * `event`: The event triggering this subscription, in this case it will always be `"CREATE"`.
-* `created\[type\]`: The properties of the newly created node, only top-level properties, without relationships, are available.
+* `created[type]`: The properties of the newly created node, only top-level properties, without relationships, are available.
+* `timestamp`: The timestamp in which the mutation was made. Note that multiple events may come with the same timestamp if triggered by the same query.
 
 === Example
 Considering the following type definitions:
@@ -31,6 +32,7 @@ subscription {
             title
         }
         event
+        timestamp
     }
 }
 ```

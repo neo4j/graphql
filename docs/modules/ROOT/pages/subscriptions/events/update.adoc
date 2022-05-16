@@ -12,6 +12,7 @@ A subscription to a type can be made with the top-level subscription `\[type\]Up
 * `event`: The event triggering this subscription, in this case it will always be `"UPDATE"`.
 * `updated\[type\]`: The properties of the updated node, after modification. Only top-level properties, without relationships, are available.
 * `previousState`: The old properties of the node, right before the update event. Only top-level properties are available.
+* `timestamp`: The timestamp in which the mutation was made. Note that multiple events may come with the same timestamp if triggered by the same query.
 
 NOTE: Update events will only be triggered if the properties have changed. An update that leaves the same properties will be ignored.
 
@@ -35,6 +36,7 @@ subscription MovieUpdated {
         updatedMovie {
             title
         }
+        timestamp
     }
 }
 ```

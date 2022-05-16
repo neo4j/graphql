@@ -12,6 +12,7 @@ A subscription to a type can be made with the top-level subscription `\[type\]De
 
 * `event`: The event triggering this subscription, in this case it will always be `"DELETE"`.
 * `deleted\[type\]`: The top-level properties of the deleted node, these will be the properties right before the node was deleted. Relationships are not available.
+* `timestamp`: The timestamp in which the mutation was made. Note that multiple events may come with the same timestamp if triggered by the same query.
 
 === Example
 Considering the following type definitions:
@@ -30,6 +31,7 @@ subscription {
             title
         }
         event
+        timestamp
     }
 }
 ```
