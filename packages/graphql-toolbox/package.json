@@ -67,7 +67,7 @@
         "@types/uuid": "8.3.4",
         "@types/webpack": "5.28.0",
         "autoprefixer": "10.4.7",
-        "compression-webpack-plugin": "9.2.0",
+        "compression-webpack-plugin": "10.0.0",
         "copy-webpack-plugin": "10.2.4",
         "cross-env": "7.0.3",
         "css-loader": "6.7.1",
