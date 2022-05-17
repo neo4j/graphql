@@ -1,10 +1,15 @@
 module.exports = class CanvasApi {
-    constructor(id, pixelScale, onPixelClicked) {
+    constructor(id, pixelScale) {
         this.canvas = document.getElementById(id);
         this.ctx = this.canvas.getContext("2d");
         this.ctx.imageSmoothingEnabled = false;
         this.pixelScale = pixelScale;
-        this.onPixelClicked = onPixelClicked;
+        this.onPixelClickedCallback=()=>{};
+
+    }
+
+    onPixelClicked(cb){
+        this.onPixelClickedCallback = cb;
 
         this.canvas.addEventListener("click", (ev) => this.onClick(ev), false);
     }
@@ -18,8 +23,8 @@ module.exports = class CanvasApi {
     }
 
     onClick(ev) {
-        const pixelClicked = this.getCanvasPixel([event.clientX, event.clientY]);
-        this.onPixelClicked(pixelClicked);
+        const pixelClicked = this.getCanvasPixel([ev.clientX, ev.clientY]);
+        this.onPixelClickedCallback(pixelClicked);
     }
 
     getCanvasPixel(screenPixel) {

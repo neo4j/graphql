@@ -4,7 +4,7 @@
     "description": "Subscriptions example",
     "scripts": {
         "start": "NODE_ENV=production node server.js",
-        "start:dev": "NODE_ENV=development npm run build && node server.js",
+        "start:dev": "NODE_ENV=development concurrently \"parcel client/index.html\" \"node server.js\"",
         "build": "parcel build client/index.html",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
