@@ -3,32 +3,41 @@ body {
     width: 100vw;
     margin: 0;
     padding: 0;
+    font-family: 'Trebuchet MS', sans-serif;
 }
 
 header {
     height: 4rem;
     background-color: #FFF;
-    padding: 0 1rem;
+    padding: 0 2rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid #e6e6e6;
 }
 
+.logo-group {
+    display: flex;
+    align-items: center;
+}
+
+.logo-group span {
+    margin-left: 1.5rem;
+    font-size: 1.2rem;
+    font-weight: 100;
+}
+
 .logo {
+    background: url('./assets/Neo4j-logo-color.svg') no-repeat left top;
     width: 80px;
-    height: 60px;
+    height: 2rem;
     cursor: pointer;
 }
 
-.cog {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-}
+
 
 main {
-    height: 100%;
+    height: calc(100% - 8rem);
     padding: 1rem 0.5rem;
     background-color: rgb(246 247 250);
 }
@@ -51,35 +60,16 @@ main {
     margin-top: 0.5rem;
 }
 
-.button-select {
+.button-class {
     height: 3rem;
     width: 3rem;
     border: 1px solid #e6e6e6;
     border-radius: 5px;
-}
-
-.b-red {
-    background-color: #FF0000;
-}
-
-.b-blue {
-    background-color: #0000FF;
-}
-
-.b-black {
-    background-color: #000000;
-}
-
-.b-green {
-    background-color: #00FF00;
-}
-
-.b-white {
-    background-color: #FFFFFF;
+    cursor: pointer;
 }
 
 .b-selected {
- opacity: 0.5;
+    border: 3px solid #d4d2d2;
 }
 
 footer {
@@ -93,4 +83,24 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: row;
 }
+
+.f-text {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.f-link {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+@media only screen and (max-width: 600px) {
+    footer {
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+  }
