@@ -68,7 +68,7 @@
         "@types/webpack": "5.28.0",
         "autoprefixer": "10.4.7",
         "compression-webpack-plugin": "10.0.0",
-        "copy-webpack-plugin": "10.2.4",
+        "copy-webpack-plugin": "11.0.0",
         "cross-env": "7.0.3",
         "css-loader": "6.7.1",
         "file-loader": "6.2.0",
