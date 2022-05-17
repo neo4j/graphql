@@ -19,7 +19,7 @@ function setupButtons() {
     for (const buttonColor of buttons) {
         const buttonWrapper = document.querySelector(".buttons-wrap");
         const button = document.createElement("button");
-        button.classList.add("button-select")
+        button.classList.add("button-class")
         buttonWrapper.appendChild(button);
         button.style.backgroundColor = buttonColor;
 
