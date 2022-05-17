@@ -71,7 +71,7 @@ describe("Subscriptions Debug Plugin", () => {
         `;
 
         const onEventPromise = new Promise<EventMeta>((resolve) => {
-            plugin.events.once("create", (ev) => {
+            plugin.events.once("create", (ev: EventMeta) => {
                 resolve(ev);
             });
         });
