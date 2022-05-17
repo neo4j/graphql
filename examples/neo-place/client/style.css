@@ -1,0 +1,98 @@
+body {
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    height: 4rem;
+    background-color: #FFF;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.logo {
+    width: 80px;
+    height: 60px;
+    cursor: pointer;
+}
+
+.cog {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+main {
+    height: 100%;
+    padding: 1rem 0.5rem;
+    background-color: rgb(246 247 250);
+}
+
+.canvas-main {
+    height: 300px;
+    width: 300px;
+    background-color: #FFF;
+    image-rendering: pixelated;
+    border: 1px solid #e6e6e6;
+}
+
+.buttons-wrap {
+    width: 300px;
+    border: 1px solid #e6e6e6;
+    border-radius: 5px;
+    background-color: #FFF;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.button-select {
+    height: 3rem;
+    width: 3rem;
+    border: 1px solid #e6e6e6;
+    border-radius: 5px;
+}
+
+.b-red {
+    background-color: #FF0000;
+}
+
+.b-blue {
+    background-color: #0000FF;
+}
+
+.b-black {
+    background-color: #000000;
+}
+
+.b-green {
+    background-color: #00FF00;
+}
+
+.b-white {
+    background-color: #FFFFFF;
+}
+
+.b-selected {
+ opacity: 0.5;
+}
+
+footer {
+    height: 4rem;
+    width: 100%;
+    background-color: #FFF;
+    border-top: 1px solid #bfbfbf;
+    position: absolute;
+    bottom: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

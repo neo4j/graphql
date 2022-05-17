@@ -1,22 +1,42 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Neo/Place</title>
+        <link rel="stylesheet" href="style.css">
+      </head>
+    <body>
+        <header class="header">
+            <a href="https://neo4j.com/" target="_blank">
+                <object data="assets/Neo4j-logo-color.svg" class="logo"> </object>
+            </a>
+            
+            <h3>Neo/Place</h3>
 
-<body>
+            <object data="assets/cogwheel-outline.svg" class="cog"> </object>
+        </header>
 
+        <main>
+            
+            <center>
+                <canvas class="canvas-main" id="place"></canvas>
+            
+                <div class="buttons-wrap">
+                    <div id="red-button" class="button-select b-red" aria-label="red"></div>
+                    <div id="blue-button" class="button-select b-blue" aria-label="blue"></div>
+                    <div id="black-button" class="button-select b-black" aria-label="black"></div>
+                    <div id="green-button" class="button-select b-green" aria-label="green"></div>
+                    <div id="white-button" class="button-select b-white" aria-label="white"></div>
+                </div>
+            </center>
 
-    <h1>Neo/Place</h1>
-    <i>Powered by @neo4j/graphql</i>
-    <center>
-        <canvas id="place" width="300" height="300" style="image-rendering: pixelated;border-style: solid"></canvas>
-    </center>
+        </main>
 
-    <button id="red-button">Red</button>
-    <button id="blue-button">Blue</button>
-    <button id="black-button">Black</button>
-    <button id="green-button">Green</button>
-    <button id="white-button">White</button>
+        <footer>
+            <i>Powered by <a href="https://github.com/neo4j/graphql" target="_blank">&#64;neo4j/graphql</a></i>
+        </footer>
 
-    <script type="module" src="./index.js"></script>
-</body>
-
+        <script type="module" src="./index.js"></script>
+    </body>
 </html>
