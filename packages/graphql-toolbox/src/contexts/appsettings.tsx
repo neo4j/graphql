@@ -27,7 +27,7 @@ export interface State {
     setShowLintMarkers: (v: boolean) => void;
 }
 
-export const AppSettingsContext = React.createContext(null as unknown as State);
+export const AppSettingsContext = React.createContext({} as State);
 
 export function AppSettingsProvider(props: React.PropsWithChildren<any>) {
     let value: State | undefined;

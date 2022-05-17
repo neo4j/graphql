@@ -43,7 +43,7 @@ export interface State {
     setSelectedDatabaseName: (databaseName: string) => void;
 }
 
-export const AuthContext = React.createContext(null as unknown as State);
+export const AuthContext = React.createContext({} as State);
 
 export function AuthProvider(props: any) {
     let value: State | undefined;
