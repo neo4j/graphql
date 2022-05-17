@@ -30,16 +30,24 @@ function isIntegerable(value: unknown): value is number | string | Integer | { l
         return true;
     }
 
-    if (
-        typeof value === "object" &&
-        Object.keys(value).length === 2 &&
-        Object.prototype.hasOwnProperty.call(value, "low") &&
-        Object.prototype.hasOwnProperty.call(value, "high")
-    ) {
+    if (isInt(value)) {
         return true;
     }
 
-    return isInt(value);
+    if (typeof value === "object") {
+        // FIXME: necessary for neo-push tests to pass
+        const castedValue = value as object;
+
+        if (
+            Object.keys(castedValue).length === 2 &&
+            Object.prototype.hasOwnProperty.call(castedValue, "low") &&
+            Object.prototype.hasOwnProperty.call(castedValue, "high")
+        ) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function serializeValue(value) {
