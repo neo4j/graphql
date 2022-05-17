@@ -3,11 +3,12 @@ import GraphQLServerApi from "./graphql-server-api";
 
 let selectedColor = "#FFFFFF";
 const buttons = [
-    ["red-button", "#FF0000"],
-    ["blue-button", "#0000FF"],
-    ["white-button", "#FFFFFF"],
-    ["black-button", "#000000"],
-    ["green-button", "#00FF00"],
+    "#000000",
+    "#FFFFFF",
+    "#CC254B",
+    "#018BFF",
+    "#327D60",
+    "#FFDE63",
 ];
 
 function setupButtons() {
@@ -15,31 +16,37 @@ function setupButtons() {
         selectedColor = newColor;
     }
 
-    for (const buttonAndColor of buttons) {
-        const button = document.getElementById(buttonAndColor[0]);
+    for (const buttonColor of buttons) {
+        const buttonWrapper = document.querySelector(".buttons-wrap");
+        const button = document.createElement("button");
+        button.classList.add("button-select")
+        buttonWrapper.appendChild(button);
+        button.style.backgroundColor = buttonColor;
+
         button.onclick = () => {
-            selectColor(buttonAndColor[1]);
+            selectColor(buttonColor);
         };
     }
 
 }
 
 let wsUrl = "ws://localhost:4000/graphql";
-
+const url = "/graphql"
 if (process.env.NODE_ENV === "production") {
     wsUrl = "ws://team-graphql.uc.r.appspot.com/graphql";
 }
 
-console.log(wsUrl);
+console.log("Url:", url)
+console.log("WS Url:", wsUrl);
 const serverApi = new GraphQLServerApi({
-    url: "/graphql",
+    url,
     wsUrl
 });
 const canvasApi = new CanvasApi("place", 10)
 
 async function setupCanvas() {
     const canvas = await serverApi.getCanvas();
-    console.log(canvas)
+
     let i = 0;
     let j = 0;
     for (const pixel of canvas) {
@@ -52,8 +59,27 @@ async function setupCanvas() {
     }
 }
 
+let eventsBackflow = [];
+let canvasReady = false
+
+serverApi.onPixelUpdate((updatedEvent) => {
+    const updatedPixel = updatedEvent.updatedPixel;
+    eventsBackflow.push(updatedPixel);
+    drawBackflow(eventsBackflow);
+})
+
+function drawBackflow() {
+    if (canvasReady) {
+        for (pixel of pixels) {
+            canvasApi.drawPixel(pixel.position, pixel.color);
+        }
+        eventsBackflow = [];
+    }
+}
+
 setupButtons()
 setupCanvas().then(() => {
+    drawBackflow();
     canvasApi.onPixelClicked((pixelClicked) => {
         canvasApi.drawPixel(pixelClicked, selectedColor);
         serverApi.updatePixel(pixelClicked, selectedColor);
