@@ -17,13 +17,16 @@
  * limitations under the License.
  */
 
-export { default as createResolver } from "./create";
-export { default as cypherResolver } from "./cypher";
-export { default as defaultFieldResolver } from "./defaultField";
-export { default as deleteResolver } from "./delete";
-export { default as findResolver } from "./read";
-export { default as updateResolver } from "./update";
-export { default as aggregateResolver } from "./aggregate";
-export { default as numericalResolver } from "./numerical";
-export { default as idResolver } from "./id";
-export { default as rootConnectionResolver } from "./root-connection";
+import { JwtPayload, Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
+
+export type SubscriptionContext = {
+    plugin: Neo4jGraphQLSubscriptionsPlugin;
+    jwt?: JwtPayload;
+};
+
+export type SubscriptionConnectionContext = {
+    connectionParams?: {
+        authorization?: string;
+    };
+    jwt?: JwtPayload;
+};

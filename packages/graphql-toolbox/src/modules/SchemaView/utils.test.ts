@@ -17,21 +17,15 @@
  * limitations under the License.
  */
 
-import deleteResolver from "./delete";
-import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
+import { getSchemaForLintAndAutocompletion } from "./utils";
 
-describe("Delete resolver", () => {
-    test("should return the correct; type, args and resolve", () => {
-        const node = new NodeBuilder({
-            name: "Movie",
-            relationFields: [],
-        }).instance();
-
-        const result = deleteResolver({ node });
-        expect(result.type).toBe(`DeleteInfo!`);
-        expect(result.resolve).toBeInstanceOf(Function);
-        expect(result.args).toMatchObject({
-            where: `MovieWhere`,
-        });
+describe("getSchemaForLintAndAutocompletion", () => {
+    test("schema has directives", () => {
+        const schema = getSchemaForLintAndAutocompletion();
+        expect(schema.getDirectives()).toBeDefined();
+        expect(schema.getDirectives().length).toBeGreaterThan(15);
+        expect(schema.getDirectives().join(",")).toContain("@callback");
+        expect(schema.getDirectives().join(",")).toContain("@id");
+        expect(schema.getDirectives().join(",")).toContain("@relationship");
     });
 });
