@@ -84,6 +84,7 @@ describe("Update Subscriptions", () => {
                         title
                     }
                     event
+                    timestamp
                 }
             }
         `);
@@ -101,6 +102,7 @@ describe("Update Subscriptions", () => {
                     [typeMovie.fieldNames.subscriptions.updated]: { title: "movie3" },
                     previousState: { title: "movie1" },
                     event: "UPDATE",
+                    timestamp: expect.any(Number),
                 },
             },
             {
@@ -108,6 +110,7 @@ describe("Update Subscriptions", () => {
                     [typeMovie.fieldNames.subscriptions.updated]: { title: "movie4" },
                     previousState: { title: "movie2" },
                     event: "UPDATE",
+                    timestamp: expect.any(Number),
                 },
             },
         ]);

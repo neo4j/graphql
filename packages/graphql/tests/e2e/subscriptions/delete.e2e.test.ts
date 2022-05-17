@@ -72,6 +72,7 @@ describe("Delete Subscription", () => {
                         title
                     }
                     event
+                    timestamp
                 }
             }
         `);
@@ -88,12 +89,14 @@ describe("Delete Subscription", () => {
                 [typeMovie.operations.subscribe.deleted]: {
                     [typeMovie.fieldNames.subscriptions.deleted]: { title: "movie1" },
                     event: "DELETE",
+                    timestamp: expect.any(Number),
                 },
             },
             {
                 [typeMovie.operations.subscribe.deleted]: {
                     [typeMovie.fieldNames.subscriptions.deleted]: { title: "movie2" },
                     event: "DELETE",
+                    timestamp: expect.any(Number),
                 },
             },
         ]);

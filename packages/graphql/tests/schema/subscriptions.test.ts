@@ -79,11 +79,13 @@ describe("Subscriptions", () => {
             type ActorCreatedEvent {
               createdActor: ActorEventPayload!
               event: EventType!
+              timestamp: Float!
             }
 
             type ActorDeletedEvent {
               deletedActor: ActorEventPayload!
               event: EventType!
+              timestamp: Float!
             }
 
             type ActorEdge {
@@ -122,6 +124,7 @@ describe("Subscriptions", () => {
             type ActorUpdatedEvent {
               event: EventType!
               previousState: ActorEventPayload!
+              timestamp: Float!
               updatedActor: ActorEventPayload!
             }
 
@@ -326,6 +329,7 @@ describe("Subscriptions", () => {
             type MovieCreatedEvent {
               createdMovie: MovieEventPayload!
               event: EventType!
+              timestamp: Float!
             }
 
             input MovieDeleteInput {
@@ -335,6 +339,7 @@ describe("Subscriptions", () => {
             type MovieDeletedEvent {
               deletedMovie: MovieEventPayload!
               event: EventType!
+              timestamp: Float!
             }
 
             input MovieDisconnectInput {
@@ -394,6 +399,7 @@ describe("Subscriptions", () => {
             type MovieUpdatedEvent {
               event: EventType!
               previousState: MovieEventPayload!
+              timestamp: Float!
               updatedMovie: MovieEventPayload!
             }
 
@@ -575,6 +581,7 @@ describe("Subscriptions", () => {
 
             type ActorCreatedEvent {
               event: EventType!
+              timestamp: Float!
             }
 
             input ActorDeleteInput {
@@ -583,6 +590,7 @@ describe("Subscriptions", () => {
 
             type ActorDeletedEvent {
               event: EventType!
+              timestamp: Float!
             }
 
             input ActorDisconnectInput {
@@ -748,6 +756,7 @@ describe("Subscriptions", () => {
 
             type ActorUpdatedEvent {
               event: EventType!
+              timestamp: Float!
             }
 
             input ActorWhere {
@@ -930,6 +939,7 @@ describe("Subscriptions", () => {
             type MovieCreatedEvent {
               createdMovie: MovieEventPayload!
               event: EventType!
+              timestamp: Float!
             }
 
             input MovieDeleteInput {
@@ -939,6 +949,7 @@ describe("Subscriptions", () => {
             type MovieDeletedEvent {
               deletedMovie: MovieEventPayload!
               event: EventType!
+              timestamp: Float!
             }
 
             input MovieDisconnectInput {
@@ -998,6 +1009,7 @@ describe("Subscriptions", () => {
             type MovieUpdatedEvent {
               event: EventType!
               previousState: MovieEventPayload!
+              timestamp: Float!
               updatedMovie: MovieEventPayload!
             }
 
