@@ -9,7 +9,7 @@ module.exports.getDriver = async function () {
 
         let NEO4J_URL = "neo4j://localhost:7687";
         const NEO4J_USER = "neo4j";
-        let NEO4J_PASSWORD = "password";
+        let NEO4J_PASSWORD = "dontpanic42";
 
         if (process.env.NODE_ENV === "production") {
             NEO4J_PASSWORD = await getSecret("team-graphql", "NEO_PLACE_DB_PASSWORD");

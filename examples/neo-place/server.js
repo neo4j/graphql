@@ -10,7 +10,7 @@ const { ApolloServerPluginDrainHttpServer } = require("apollo-server-core");
 
 const setupMap = require("./map-setup");
 const { getDriver } = require("./get-driver");
-const { getPlugin } = require("./get-plugin");
+const { createPlugin } = require("./create-plugin");
 
 // Load type definitions
 const typeDefs = fs.readFileSync(path.join(__dirname, "typedefs.graphql"), "utf-8");
@@ -18,7 +18,7 @@ const typeDefs = fs.readFileSync(path.join(__dirname, "typedefs.graphql"), "utf-
 async function main() {
     const driver = await getDriver();
 
-    const plugin = await getPlugin();
+    const plugin = await createPlugin();
 
     const neoSchema = new Neo4jGraphQL({
         typeDefs: typeDefs,

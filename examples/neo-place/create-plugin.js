@@ -2,7 +2,7 @@ const { Neo4jGraphQLSubscriptionsAMQP } = require("@neo4j/graphql-plugin-subscri
 const { EventEmitter } = require("events");
 const { getSecret } = require("./get-secret");
 
-module.exports.getPlugin = async function () {
+module.exports.createPlugin = async function () {
     if (process.env.NODE_ENV === "production") {
         const plugin = new Neo4jGraphQLSubscriptionsAMQP();
 
