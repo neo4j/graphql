@@ -1,7 +1,7 @@
 [[getting-started]]
 = Getting Started With Subscriptions
 
-WARNING: Subscriptions are only available as a beta its API may change in the future. It is not recommended to use subscriptions in production environments.
+WARNING: Subscriptions are only available as a beta, its API may change in the future. It is not recommended to use subscriptions in production environments.
 
 To get started with subscriptions you need a GraphQL server with subscription capabilities.
 
@@ -94,7 +94,7 @@ async function main() {
 main();
 ```
 
-NOTE: The example above uses the **xref::subscriptions/plugins/default.adoc[default plugin]** is not intended for production.
+NOTE: The example above uses the **xref::subscriptions/plugins/default.adoc[default plugin]** and is not intended for production.
 
 === GraphQL subscriptions
 With the previous server running, we have subscriptions available for `Movie` and `Actor`. We can subscribe to new movies created with the following statement:

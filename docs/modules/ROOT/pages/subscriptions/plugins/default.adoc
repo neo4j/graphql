@@ -1,7 +1,7 @@
 [[default]]
 = Default Plugin
 
-WARNING: Subscriptions are only available as a beta its API may change in the future. It is not recommended to use subscriptions in production environments.
+WARNING: Subscriptions are only available as a beta, its API may change in the future. It is not recommended to use subscriptions in production environments.
 
 The `@neo4j/graphql` library provides a zero-dependency default plugin to be use during development to quickly deploy a subscriptions server locally.
 If can be imported directly:
