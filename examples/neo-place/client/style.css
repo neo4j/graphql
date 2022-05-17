@@ -34,6 +34,9 @@ header {
     cursor: pointer;
 }
 
+.places-logo {
+    image-rendering: pixelated;
+}
 
 
 main {
