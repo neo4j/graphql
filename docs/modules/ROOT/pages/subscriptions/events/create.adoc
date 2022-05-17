@@ -3,13 +3,14 @@
 
 WARNING: Subscriptions are only available as a beta, its API may change in the future. It is not recommended to use subscriptions in production environments.
 
-Subscription to `CREATE` events allows listening to newly created nodes. A new event will be triggered for each new node containing its parameters.
+Subscriptions to `CREATE` events will listen to newly created nodes. A new event will be triggered for each new node.
+The event will contain the node's parameters.
 
-NOTE: Only nodes created will trigger this event, new relationships will **not** trigger any event.
+NOTE: Only nodes created will trigger this event, new relationships will **not** trigger the event.
 
 == `CREATE` event
 
-A subscription to a type can be made with the top-level subscription `\[type\]Created`. The subscription will contain the following fields:
+A subscription to a type can be made with the top-level subscription `[type]Created`. The subscription will contain the following fields:
 
 * `event`: The event triggering this subscription, in this case it will always be `"CREATE"`.
 * `created[type]`: The properties of the newly created node, only top-level properties, without relationships, are available.
@@ -30,6 +31,7 @@ subscription {
     movieCreated {
         createdMovie {
             title
+            genre
         }
         event
         timestamp

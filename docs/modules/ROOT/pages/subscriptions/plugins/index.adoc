@@ -62,7 +62,7 @@ const neoSchema = new Neo4jGraphQL({
 });
 ```
 
-Note that, in the previous example, extra properties and methods are often needed to handle connection to the broker. As long as the messages
+Note that, like in the previous example, extra properties and methods are often needed to handle the connection to the broker. As long as the messages
 are sent to the broker in the `publish` method and that these messages are received and then emitted through the `events` property, the subscriptions
 will be properly handled.
 
