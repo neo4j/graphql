@@ -20,24 +20,32 @@
 import ws from "ws";
 import { Client, createClient } from "graphql-ws";
 
-export interface WebSocketClient {
-    events: Array<any>;
-
-    subscribe(query: string): Promise<void>;
-    close(): Promise<void>;
-}
-
-export class WebSocketTestClient implements WebSocketClient {
+export class WebSocketTestClient {
     public events: Array<any> = [];
+    public errors: Array<any> = [];
 
     private path: string;
     private client: Client;
 
-    constructor(path: string) {
+    private onEvent: (() => void) | undefined;
+
+    constructor(path: string, jwt?: string) {
         this.path = path;
         this.client = createClient({
             url: this.path,
             webSocketImpl: ws,
+            connectionParams: {
+                authorization: jwt,
+            },
+        });
+    }
+
+    public waitForNextEvent(): Promise<void> {
+        if (this.onEvent) {
+            return Promise.reject(new Error("Cannot wait for multiple events"));
+        }
+        return new Promise<void>((resolve) => {
+            this.onEvent = resolve;
         });
     }
 
@@ -47,7 +55,12 @@ export class WebSocketTestClient implements WebSocketClient {
                 { query },
                 {
                     next: (value) => {
-                        this.events.push(value.data);
+                        if (value.errors) this.errors = [...this.errors, ...value.errors];
+                        else if (value.data) this.events.push(value.data);
+                        if (this.onEvent) {
+                            this.onEvent();
+                            this.onEvent = undefined;
+                        }
                     },
                     error(err) {
                         reject(err);
@@ -70,6 +83,7 @@ export class WebSocketTestClient implements WebSocketClient {
     public async close(): Promise<void> {
         if (this.client) await this.client?.dispose();
         this.events = [];
+        this.errors = [];
     }
 }
 /* eslint-enable import/no-extraneous-dependencies */

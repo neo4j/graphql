@@ -70,10 +70,10 @@ export interface AuthRule extends BaseAuthRule {
     operations?: AuthOperations[];
 }
 
-export type Auth = {
+export interface Auth {
     rules: AuthRule[];
     type: "JWT";
-};
+}
 
 export type FullTextIndex = {
     name: string;
@@ -266,7 +266,7 @@ export interface InterfaceWhereArg {
     [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
 }
 
-export type AuthOperations = "CREATE" | "READ" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT";
+export type AuthOperations = "CREATE" | "READ" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT" | "SUBSCRIBE";
 
 export type AuthOrders = "pre" | "post";
 
