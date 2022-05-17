@@ -18,12 +18,33 @@
  */
 
 import { GraphQLResolveInfo } from "graphql";
+import { integer, isInt, Integer } from "neo4j-driver";
 import { defaultFieldResolver } from "./defaultField";
-import { isNeoInt } from "../../../utils/utils";
+
+function isIntegerable(value: unknown): value is number | string | Integer | { low: number; high: number } | bigint {
+    if (!value) {
+        return false;
+    }
+
+    if (["number", "string", "bigint"].includes(typeof value)) {
+        return true;
+    }
+
+    if (
+        typeof value === "object" &&
+        Object.keys(value).length === 2 &&
+        Object.prototype.hasOwnProperty.call(value, "low") &&
+        Object.prototype.hasOwnProperty.call(value, "high")
+    ) {
+        return true;
+    }
+
+    return isInt(value);
+}
 
 function serializeValue(value) {
-    if (isNeoInt(value)) {
-        return value.toNumber();
+    if (isIntegerable(value)) {
+        return integer.toNumber(value);
     }
 
     return value;
