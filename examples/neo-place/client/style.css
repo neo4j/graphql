@@ -73,26 +73,6 @@ main {
     cursor: pointer;
 }
 
-.b-red {
-    background-color: #FF0000;
-}
-
-.b-blue {
-    background-color: #0000FF;
-}
-
-.b-black {
-    background-color: #000000;
-}
-
-.b-green {
-    background-color: #00FF00;
-}
-
-.b-white {
-    background-color: #FFFFFF;
-}
-
 .b-selected {
     border: 3px solid #d4d2d2;
 }
