@@ -33,7 +33,6 @@ console.log("WS Url:", wsUrl);
 const serverApi = new GraphQLServerApi({
     url,
     wsUrl,
-    onConnected:()=>{}
 });
 const canvasApi = new CanvasApi("place", 10);
 
@@ -53,34 +52,30 @@ async function setupCanvas() {
 }
 
 let eventsBackflow = [];
-let canvasReady = false;
+let canvasLock = true;
 
 serverApi.onPixelUpdate((updatedEvent) => {
     const updatedPixel = updatedEvent.updatedPixel;
     eventsBackflow.push(updatedPixel);
-    drawBackflow(eventsBackflow);
+    if (!canvasLock) drawBackflow(eventsBackflow);
 });
 
-function drawBackflow() {
-    if (canvasReady) {
-        for (pixel of pixels) {
-            canvasApi.drawPixel(pixel.position, pixel.color);
-        }
-        eventsBackflow = [];
+serverApi.onConnected(async () => {
+    canvasLock = true;
+    await setupCanvas();
+    canvasLock = false;
+    drawBackflow(eventsBackflow);
+})
+
+function drawBackflow(pixels) {
+    for (const pixel of pixels) {
+        canvasApi.drawPixel(pixel.position, pixel.color);
     }
+    eventsBackflow = [];
 }
 
 setupButtons();
-setupCanvas().then(() => {
-    drawBackflow();
-    canvasApi.onPixelClicked((pixelClicked) => {
-        canvasApi.drawPixel(pixelClicked, selectedColor);
-        serverApi.updatePixel(pixelClicked, selectedColor);
-    });
-
-    serverApi.onPixelUpdate((updatedEvent) => {
-        const updatedPixel = updatedEvent.updatedPixel;
-
-        canvasApi.drawPixel(updatedPixel.position, updatedPixel.color);
-    })
-})
+canvasApi.onPixelClicked((pixelClicked) => {
+    canvasApi.drawPixel(pixelClicked, selectedColor);
+    serverApi.updatePixel(pixelClicked, selectedColor);
+});

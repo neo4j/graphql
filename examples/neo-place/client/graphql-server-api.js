@@ -17,11 +17,10 @@ module.exports = class GraphQLServerApi {
     constructor({
         wsUrl,
         url,
-        onConnected
     }) {
         this.wsUrl = wsUrl;
         this.url = url;
-        this._createClients(onConnected);
+        this._createClients();
     }
 
     async getCanvas() {
@@ -60,6 +59,12 @@ module.exports = class GraphQLServerApi {
         return this.client.mutation(updatePixelQuery, params).toPromise();
     }
 
+    onConnected(cb) {
+        this.wsClient.on("connected", () => {
+            cb()
+        })
+    }
+
     onPixelUpdate(cb) {
         const pixelsSubscription = gql`
             subscription Subscription {
@@ -75,19 +80,19 @@ module.exports = class GraphQLServerApi {
         pipe(
             this.client.subscription(pixelsSubscription),
             subscribe((result) => {
-                cb(result.data.pixelUpdated)
+                if (!result.error) {
+                    cb(result.data.pixelUpdated)
+                }
             })
         );
     }
 
-    _createClients(onConnected) {
+    _createClients() {
         this.wsClient = createWSClient({
             url: this.wsUrl,
         });
 
-        this.wsClient.on("connected",()=>{
-            onConnected()
-        })
+
 
         this.client = createClient({
             url: "/graphql",
