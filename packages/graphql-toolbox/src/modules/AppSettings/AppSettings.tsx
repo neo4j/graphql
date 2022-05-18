@@ -78,6 +78,13 @@ export const AppSettings = ({ onClickClose }: Props) => {
                     </div>
                 </div>
             </div>
+            <div className="absolute bottom-2 right-28 font-bold text-xs flex flex-col">
+                <span>Made by Neo4j, Inc</span>
+                <span>Copyright &copy; 2002-2022</span>
+                <div className="flex">
+                    <span>Version:</span>&nbsp;<pre>{process.env.VERSION}</pre>
+                </div>
+            </div>
         </div>
     );
 };
