@@ -1,4 +1,3 @@
-import QRious from 'qrious';
 import CanvasApi from "./canvas-api";
 import GraphQLServerApi from "./graphql-server-api";
 
@@ -41,7 +40,8 @@ console.log("Url:", url)
 console.log("WS Url:", wsUrl);
 const serverApi = new GraphQLServerApi({
     url,
-    wsUrl
+    wsUrl,
+    onConnected:()=>{}
 });
 const canvasApi = new CanvasApi("place", 10)
 
@@ -92,24 +92,3 @@ setupCanvas().then(() => {
         canvasApi.drawPixel(updatedPixel.position, updatedPixel.color);
     })
 })
-
-const link=document.getElementById("link-to-place");
-
-link.href=document.location.href
-link.innerText=document.location.href
-
-try {
-    new QRious({
-        element: document.getElementById("qrcode"),
-        background: '#ffffff',
-        backgroundAlpha: 1,
-        foreground: '#000000',
-        foregroundAlpha: 1,
-        level: 'H',
-        padding: 0,
-        size: 300,
-        value: document.location.href
-    });
-} catch (err) {
-    console.error(err)
-}

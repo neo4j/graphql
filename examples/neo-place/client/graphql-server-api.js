@@ -16,11 +16,12 @@ module.exports = class GraphQLServerApi {
 
     constructor({
         wsUrl,
-        url
+        url,
+        onConnected
     }) {
         this.wsUrl = wsUrl;
         this.url = url;
-        this._createClients();
+        this._createClients(onConnected);
     }
 
     async getCanvas() {
@@ -79,10 +80,14 @@ module.exports = class GraphQLServerApi {
         );
     }
 
-    _createClients() {
+    _createClients(onConnected) {
         this.wsClient = createWSClient({
             url: this.wsUrl,
         });
+
+        this.wsClient.on("connected",()=>{
+            onConnected()
+        })
 
         this.client = createClient({
             url: "/graphql",

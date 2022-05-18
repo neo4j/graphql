@@ -99,11 +99,6 @@ footer {
     align-items: center;
 }
 
-#qrcode {
-    margin: 30px;
-    display: block;
-}
-
 .top-wrapper {
     display: flex;
     align-items: center;
