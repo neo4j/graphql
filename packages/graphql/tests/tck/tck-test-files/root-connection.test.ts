@@ -73,7 +73,8 @@ describe("Root Connection Query tests", () => {
             WITH COLLECT(this) as edges
             WITH edges, size(edges) as totalCount
             UNWIND edges as this
-            RETURN this, totalCount
+            WITH this, totalCount, { } as edges
+            RETURN this, totalCount, edges
             }
             WITH COLLECT({ node: this { .title } }) as edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } as this"
@@ -107,7 +108,8 @@ describe("Root Connection Query tests", () => {
             WITH COLLECT(this) as edges
             WITH edges, size(edges) as totalCount
             UNWIND edges as this
-            RETURN this, totalCount
+            WITH this, totalCount, { } as edges
+            RETURN this, totalCount, edges
             ORDER BY this.title ASC
             LIMIT $this_limit
             }
@@ -145,7 +147,8 @@ describe("Root Connection Query tests", () => {
             WITH COLLECT(this) as edges
             WITH edges, size(edges) as totalCount
             UNWIND edges as this
-            RETURN this, totalCount
+            WITH this, totalCount, { } as edges
+            RETURN this, totalCount, edges
             ORDER BY this.title ASC
             LIMIT $this_limit
             }
@@ -190,7 +193,8 @@ describe("Root Connection Query tests", () => {
             WITH COLLECT(this) as edges
             WITH edges, size(edges) as totalCount
             UNWIND edges as this
-            RETURN this, totalCount
+            WITH this, totalCount, { } as edges
+            RETURN this, totalCount, edges
             ORDER BY this.title ASC
             LIMIT $this_limit
             }
@@ -205,12 +209,12 @@ describe("Root Connection Query tests", () => {
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
-        "{
-            \\"this_limit\\": {
-                \\"low\\": 20,
-                \\"high\\": 0
-            }
-        }"
-    `);
+                    "{
+                        \\"this_limit\\": {
+                            \\"low\\": 20,
+                            \\"high\\": 0
+                        }
+                    }"
+            `);
     });
 });
