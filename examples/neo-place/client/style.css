@@ -34,7 +34,9 @@ header {
     cursor: pointer;
 }
 
-
+.places-logo {
+    image-rendering: pixelated;
+}
 
 main {
     height: calc(100% - 8rem);
@@ -79,7 +81,6 @@ footer {
     border-top: 1px solid #bfbfbf;
     position: absolute;
     bottom: 0;
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -98,9 +99,20 @@ footer {
     align-items: center;
 }
 
+#qrcode {
+    margin: 30px;
+    display: block;
+}
+
+.top-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 @media only screen and (max-width: 600px) {
     footer {
         flex-direction: column;
         justify-content: flex-start;
     }
-  }
+}

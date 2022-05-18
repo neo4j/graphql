@@ -1,53 +1,60 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>neo/place - Team GraphQL - Neo4j</title>
-        <link rel="stylesheet" href="style.css">
-        <link rel="icon" type="image/x-icon" href="assets/favicon.png">
-      </head>
-    <body>
-        <header class="header">
-            <div class="logo-group">
-                <a href="https://neo4j.com/" target="_blank">
-                    <div class="logo"> </div>
-                </a>
 
-                <div class="test"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>neo/place - Team GraphQL - Neo4j</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.png">
+</head>
 
-                <span>neo/place</span>
+<body>
+    <header class="header">
+        <div class="logo-group">
+            <a href="https://neo4j.com/" target="_blank">
+                <div class="logo"> </div>
+            </a>
+
+            <span>neo/place</span>
+        </div>
+
+        <img class="places-logo" src="assets/favicon.png"></img>
+    </header>
+
+    <main>
+
+        <div class="top-wrapper">
+            <div>
+                <center>
+                    <!-- NOTE: height and width properties are not interchangeable with css due to how canvas work -->
+                    <canvas class="canvas-main" id="place" height="300px" width="300px"></canvas>
+                    <div class="buttons-wrap"></div>
+                </center>
             </div>
-
-            <h3>Neo/Place</h3>
-
-            <img src="assets/favicon.png"></img>
-        </header>
-
-        <main>
-
-            <center>
-                <!-- NOTE: height and width properties are not interchangeable with css due to how canvas work -->
-                <canvas class="canvas-main" id="place" height="300px" width="300px"></canvas>
-
-                <div class="buttons-wrap">
-
-                </div>
-            </center>
-
-        </main>
-
-        <footer>
-            <div class="f-text">
-                <span>Powered by&nbsp;</span><pre>&#64;neo4j/graphql</pre>&nbsp;-&nbsp;
+            <div>
+                <center>
+                    <canvas id="qrcode"></canvas>
+                    <a href="" id="link-to-place"></a>
+                </center>
             </div>
-            <div class="f-links">
-                <a href="https://github.com/neo4j/graphql" target="_blank">Github</a>&nbsp;|&nbsp;
-                <a href="https://neo4j.com/docs/graphql-manual/current/" target="_blank">Documentation</a>&nbsp;|&nbsp;
-                <a href="https://discord.com/channels/787399249741479977/818578492723036210" target="_blank">Community</a>
-            </div>
-        </footer>
+        </div>
 
-        <script type="module" src="index.js"></script>
-    </body>
+    </main>
+
+    <footer>
+        <div class="f-text">
+            <span>Powered by&nbsp;</span>
+            <pre>&#64;neo4j/graphql</pre>&nbsp;-&nbsp;
+        </div>
+        <div class="f-links">
+            <a href="https://github.com/neo4j/graphql" target="_blank">Github</a>&nbsp;|&nbsp;
+            <a href="https://neo4j.com/docs/graphql-manual/current/" target="_blank">Documentation</a>&nbsp;|&nbsp;
+            <a href="https://discord.com/channels/787399249741479977/818578492723036210" target="_blank">Community</a>
+        </div>
+    </footer>
+
+    <script type="module" src="index.js"></script>
+</body>
+
 </html>
