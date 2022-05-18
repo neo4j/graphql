@@ -6,10 +6,9 @@ module.exports.createPlugin = async function () {
     if (process.env.NODE_ENV === "production") {
         const plugin = new Neo4jGraphQLSubscriptionsAMQP();
 
-        const password = await getSecret("team-graphql", "NEO_PLACE_RABBITMQ_PASSWORD");
-        const url = await getSecret("team-graphql", "NEO_PLACE_RABBITMQ_URL");
+        const url = await getSecret("team-graphql", "NEO_PLACE_AMQP_URL");
 
-        await plugin.connect(`amqp://rabbit:${password}@${url}`);
+        await plugin.connect(url);
 
         return plugin;
     }

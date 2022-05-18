@@ -1,16 +1,9 @@
-import QRious from 'qrious';
+import QRious from "qrious";
 import CanvasApi from "./canvas-api";
 import GraphQLServerApi from "./graphql-server-api";
 
 let selectedColor = "#FFFFFF";
-const buttons = [
-    "#000000",
-    "#FFFFFF",
-    "#CC254B",
-    "#018BFF",
-    "#327D60",
-    "#FFDE63",
-];
+const buttons = ["#000000", "#FFFFFF", "#CC254B", "#018BFF", "#327D60", "#FFDE63"];
 
 function setupButtons() {
     function selectColor(newColor) {
@@ -20,7 +13,7 @@ function setupButtons() {
     for (const buttonColor of buttons) {
         const buttonWrapper = document.querySelector(".buttons-wrap");
         const button = document.createElement("button");
-        button.classList.add("button-class")
+        button.classList.add("button-class");
         buttonWrapper.appendChild(button);
         button.style.backgroundColor = buttonColor;
 
@@ -28,22 +21,21 @@ function setupButtons() {
             selectColor(buttonColor);
         };
     }
-
 }
 
 let wsUrl = "ws://localhost:4000/graphql";
-const url = "/graphql"
+const url = "/graphql";
 if (process.env.NODE_ENV === "production") {
-    wsUrl = "ws://team-graphql.uc.r.appspot.com/graphql";
+    wsUrl = "wss://team-graphql.uc.r.appspot.com/graphql";
 }
 
-console.log("Url:", url)
+console.log("Url:", url);
 console.log("WS Url:", wsUrl);
 const serverApi = new GraphQLServerApi({
     url,
-    wsUrl
+    wsUrl,
 });
-const canvasApi = new CanvasApi("place", 10)
+const canvasApi = new CanvasApi("place", 10);
 
 async function setupCanvas() {
     const canvas = await serverApi.getCanvas();
@@ -61,13 +53,13 @@ async function setupCanvas() {
 }
 
 let eventsBackflow = [];
-let canvasReady = false
+let canvasReady = false;
 
 serverApi.onPixelUpdate((updatedEvent) => {
     const updatedPixel = updatedEvent.updatedPixel;
     eventsBackflow.push(updatedPixel);
     drawBackflow(eventsBackflow);
-})
+});
 
 function drawBackflow() {
     if (canvasReady) {
@@ -78,38 +70,38 @@ function drawBackflow() {
     }
 }
 
-setupButtons()
+setupButtons();
 setupCanvas().then(() => {
     drawBackflow();
     canvasApi.onPixelClicked((pixelClicked) => {
         canvasApi.drawPixel(pixelClicked, selectedColor);
         serverApi.updatePixel(pixelClicked, selectedColor);
-    })
+    });
 
     serverApi.onPixelUpdate((updatedEvent) => {
         const updatedPixel = updatedEvent.updatedPixel;
 
         canvasApi.drawPixel(updatedPixel.position, updatedPixel.color);
-    })
-})
+    });
+});
 
-const link=document.getElementById("link-to-place");
+const link = document.getElementById("link-to-place");
 
-link.href=document.location.href
-link.innerText=document.location.href
+link.href = document.location.href;
+link.innerText = document.location.href;
 
 try {
     new QRious({
         element: document.getElementById("qrcode"),
-        background: '#ffffff',
+        background: "#ffffff",
         backgroundAlpha: 1,
-        foreground: '#000000',
+        foreground: "#000000",
         foregroundAlpha: 1,
-        level: 'H',
+        level: "H",
         padding: 0,
         size: 300,
-        value: document.location.href
+        value: document.location.href,
     });
 } catch (err) {
-    console.error(err)
+    console.error(err);
 }
