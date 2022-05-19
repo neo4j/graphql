@@ -53,4 +53,24 @@ export class HelpDrawer extends Screen {
         await this.page.click("[data-test-help-drawer-doc-explorer-back-button]");
         await this.page.waitForSelector("[data-test-help-drawer-title]");
     }
+
+    public async displaysKeybindingsInEditorView() {
+        await this.page.waitForSelector("[data-test-help-drawer-keybindings-tile-editor-view]");
+        await this.page.click("[data-test-help-drawer-keybindings-tile-editor-view]");
+        await this.page.waitForSelector("[data-test-help-drawer-keybindings-list]");
+        await this.page.waitForSelector("[data-test-help-drawer-keybindings-back]");
+        await this.page.waitForSelector("[data-test-help-drawer-keybindings-close]");
+        await this.page.click("[data-test-help-drawer-keybindings-back]");
+        await this.page.waitForSelector("[data-test-help-drawer-title]");
+    }
+
+    public async displaysKeybindingsInSchemaView() {
+        await this.page.waitForSelector("[data-test-help-drawer-keybindings-tile-schema-view]");
+        await this.page.click("[data-test-help-drawer-keybindings-tile-schema-view]");
+        await this.page.waitForSelector("[data-test-help-drawer-keybindings-list]");
+        await this.page.waitForSelector("[data-test-help-drawer-keybindings-back]");
+        await this.page.waitForSelector("[data-test-help-drawer-keybindings-close]");
+        await this.page.click("[data-test-help-drawer-keybindings-back]");
+        await this.page.waitForSelector("[data-test-help-drawer-title]");
+    }
 }

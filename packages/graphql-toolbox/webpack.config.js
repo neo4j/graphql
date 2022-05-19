@@ -8,6 +8,8 @@ const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 const WebpackNotifierPlugin = require("webpack-notifier");
+const { DefinePlugin } = require("webpack");
+const packageJson = require("./package.json");
 
 module.exports = {
     mode: "none",
@@ -57,6 +59,9 @@ module.exports = {
         path: path.resolve(__dirname, "dist"),
     },
     plugins: [
+        new DefinePlugin({
+            'process.env.VERSION': JSON.stringify(packageJson.version),
+        }),
         new CopyWebpackPlugin({
             patterns: ["public"],
         }),
