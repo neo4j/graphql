@@ -12,6 +12,9 @@ import {
     createClient as createWSClient
 } from "graphql-ws";
 
+// Low security auth
+const JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.vVUnlsit1z9nnQJXIEwyFAj9NNflBUoeOpHP9MyzlCg";
+
 module.exports = class GraphQLServerApi {
 
     constructor({
@@ -29,10 +32,10 @@ module.exports = class GraphQLServerApi {
                 canvas
             }
         `;
-
         const result = await this.client
             .query(canvasQuery)
             .toPromise()
+        if (result.error) throw new Error(result.error.message)
         return result.data.canvas
     }
 
@@ -66,8 +69,8 @@ module.exports = class GraphQLServerApi {
         })
     }
 
-    onClosed(cb){
-        this.wsClient.on("closed",()=>{
+    onClosed(cb) {
+        this.wsClient.on("closed", () => {
             cb()
         })
     }
@@ -113,6 +116,11 @@ module.exports = class GraphQLServerApi {
                     }),
                 }),
             ],
+            fetchOptions: {
+                headers: {
+                    Authorization: `Bearer ${JWT}`
+                }
+            }
         });
     }
 }

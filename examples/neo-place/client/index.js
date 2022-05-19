@@ -61,7 +61,6 @@ serverApi.onPixelUpdate((updatedEvent) => {
 });
 
 serverApi.onConnected(async () => {
-    console.log("Websocket Connected")
     canvasLock = true;
     await setupCanvas();
     canvasLock = false;
