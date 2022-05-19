@@ -24,13 +24,17 @@ export function addMathOperatorsToITC(itc: InputTypeComposer): InputTypeComposer
     itc.getFieldNames().forEach(fieldName => {
         const fieldType = itc.getFieldTypeName(fieldName);
         if (fieldType === 'Int' || fieldType === 'BigInt') {
-            itc.addFields({[`${fieldName}_INCREMENT`]: { type: fieldType }});
-            itc.addFields({[`${fieldName}_DECREMENT`]: { type: fieldType }});
+            itc.addFields({
+                [`${fieldName}_INCREMENT`]: { type: fieldType },
+                [`${fieldName}_DECREMENT`]: { type: fieldType }
+            });
         } else if (fieldType === 'Float') {
-            itc.addFields({[`${fieldName}_ADD`]: { type: fieldType }});
-            itc.addFields({[`${fieldName}_SUBTRACT`]: { type: fieldType }});
-            itc.addFields({[`${fieldName}_DIVIDE`]: { type: fieldType }});
-            itc.addFields({[`${fieldName}_MULTIPLY`]: { type: fieldType }});
+            itc.addFields({
+                [`${fieldName}_ADD`]: { type: fieldType },
+                [`${fieldName}_SUBTRACT`]: { type: fieldType },
+                [`${fieldName}_DIVIDE`]: { type: fieldType },
+                [`${fieldName}_MULTIPLY`]: { type: fieldType }
+            });
         }
     });
     return itc;
