@@ -24,7 +24,7 @@ import { EventMeta, Neo4jGraphQL, Neo4jGraphQLSubscriptionsSingleInstancePlugin 
 import { generateUniqueType } from "../../utils/graphql-types";
 import neo4j from "../neo4j";
 
-describe("Subscriptions Debug Plugin", () => {
+describe("Subscriptions Single Instance Plugin", () => {
     let driver: Driver;
     let neoSchema: Neo4jGraphQL;
     let plugin: Neo4jGraphQLSubscriptionsSingleInstancePlugin;
@@ -53,7 +53,7 @@ describe("Subscriptions Debug Plugin", () => {
         await driver.close();
     });
 
-    test("simple create with subscriptions enabled with default plugin", async () => {
+    test("simple create with subscriptions enabled with single instance plugin", async () => {
         const query = `
         mutation {
             ${typeMovie.operations.create}(
