@@ -85,10 +85,9 @@ jobs:
       - bump-version
 
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: release/graphql-toolbox/${{ needs.bump-version.outputs.version }}
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
@@ -129,7 +128,7 @@ jobs:
           git config --global user.name 'Neo4j Team GraphQL'
           git config --global user.email 'team-graphql@neotechnology.com'
       - name: git merge
-        run: git merge --no-ff origin/release/graphql-toolbox/${{ needs.bump-version.outputs.version }} --strategy-option theirs
+        run: git merge --no-ff origin/release/toolbox/${{ needs.bump-version.outputs.version }} --strategy-option theirs
       - name: git tag
         run: |
           git tag -a @neo4j/graphql-toolbox@${{ needs.bump-version.outputs.version }} -m "@neo4j/graphql-toolbox@${{ needs.bump-version.outputs.version }}"
@@ -141,7 +140,7 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
       - name: git merge
-        run: git merge --no-ff origin/release/graphql-toolbox/${{ needs.bump-version.outputs.version }} --strategy-option theirs
+        run: git merge --no-ff origin/release/toolbox/${{ needs.bump-version.outputs.version }} --strategy-option theirs
       - name: git push
         run: git push
 
@@ -163,7 +162,7 @@ jobs:
         run: |
           git config --global user.name 'Neo4j Team GraphQL'
           git config --global user.email 'team-graphql@neotechnology.com'
-          git push origin --delete release/graphql-toolbox/${{ needs.bump-version.outputs.version }}
+          git push origin --delete release/toolbox/${{ needs.bump-version.outputs.version }}
 
   changelog:
     needs:
