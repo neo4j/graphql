@@ -17,7 +17,7 @@ If the authentication rules `isAuthenticated` and `allowUnauthenticated` are not
 be sent.
 
 == Roles
-Roles can be set for subscriptions. This roles will only return the events matching the rule, ignoring any other event.
+Roles can be set for subscriptions. Only requests matching the roles set will be accepted.
 
 == Bind
 NOTE: Not Supported

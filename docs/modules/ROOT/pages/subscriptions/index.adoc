@@ -18,4 +18,4 @@ NOTE: Only changes made through `@neo4j/graphql` will trigger events. Changes ma
 will **not** trigger any event.
 
 == Subscriptions with Auth
-Most `auth` clauses can be used with subscriptions. How these work is documented xref::auth/subscriptions.adoc[here]
+Most `auth` clauses can be used with subscriptions. How these work is documented xref::auth/subscriptions.adoc[here].

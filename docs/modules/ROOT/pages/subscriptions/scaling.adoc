@@ -24,7 +24,7 @@ image::subscriptions/diagram2.png[title="Subscriptions with 2 servers"]
 In this case, _Client B_ is subscribed to one server, however, when _Client A_ triggers the mutation, it queries a different server.
 
 The change happens successfully in the database, and any client connected to the same server will receive the subscription event, however, _Client A_
-will **not** receive any update, as the server its connected to will not get notified of any mutation.
+will **not** receive any update, as the server it's connected to will not get notified of any mutation.
 
 This is the behaviour of the xref::subscriptions/plugins/single-instance.adoc[single instance plugin] provided by the library, and it is not intended for production usage.
 

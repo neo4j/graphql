@@ -47,7 +47,7 @@ The following options can be passed to the contructor:
 
 === connect(connectionOptions): Promise<Connection>
 Connects to the broker, creating the required exchanges and queues. Returns the Connection.
-It accepts a single AMQP url string or an configuration object:
+It accepts a single AMQP url string or a configuration object:
 
 * hostname: Hostname to be used, defaults to `localhost`.
 * username: defaults to `guest`.

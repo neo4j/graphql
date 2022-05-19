@@ -14,7 +14,7 @@ The following plugins are supported officially by `@neo4j/graphql`:
 * **xref::subscriptions/plugins/amqp.adoc[AMQP]** - Connect to AMQP brokers such as link:https://www.rabbitmq.com/[RabbitMQ].
 
 == Create a custom plugin
-If none of the existing plugins is valid for your use case, you can create new plugin to connect to any broker you may need. To do this
+If none of the existing plugins is valid for your use case, you can create a new plugin to connect to any broker you may need. To do this
 you need to create a new class defining your plugin. This class needs to contain the following:
 
 * An `EventEmitter` property called `events` that should emit an event everytime the broker sends a message.
@@ -66,7 +66,7 @@ are sent to the broker in the `publish` method and that these messages are recei
 will be properly handled.
 
 == Using Typescript
-If using Typescript, you may import the interface `Neo4jGraphQLSubscriptionsPlugin` to implement you own plugin:
+If using Typescript, you may import the interface `Neo4jGraphQLSubscriptionsPlugin` to implement yourown plugin:
 
 ```typescript
 class CustomRedisPlugin implements Neo4jGraphQLSubscriptionsPlugin {}
@@ -74,4 +74,4 @@ class CustomRedisPlugin implements Neo4jGraphQLSubscriptionsPlugin {}
 
 == Note about event orders
 Events are sent to the plugin in order, however, order is not guaranteed once these events have been broadcasted through a broker.
-For cases when ordering is important, subscriptions payload contain a field `timestamp`.
+For cases when ordering is important, the subscriptions payload contains a field `timestamp`.
