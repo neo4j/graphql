@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql-toolbox",
-    "version": "1.0.0-alpha.1",
+    "version": "1.0.0-alpha.4",
     "description": "Developer UI For Neo4j GraphQL",
     "exports": "./dist/main.js",
     "main": "./dist/main.js",
@@ -31,7 +31,8 @@
         "build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
         "start": "cross-env NODE_ENV=development webpack serve",
         "test-build": "cross-env NODE_ENV=test webpack --config webpack.config.js",
-        "test": "cross-env NODE_ENV=test yarn test-build && jest"
+        "test": "cross-env NODE_ENV=test yarn test-build && jest",
+        "test:unit": "cross-env NODE_ENV=test jest src"
     },
     "author": "Neo4j",
     "dependencies": {
@@ -66,8 +67,8 @@
         "@types/uuid": "8.3.4",
         "@types/webpack": "5.28.0",
         "autoprefixer": "10.4.7",
-        "compression-webpack-plugin": "9.2.0",
-        "copy-webpack-plugin": "10.2.4",
+        "compression-webpack-plugin": "10.0.0",
+        "copy-webpack-plugin": "11.0.0",
         "cross-env": "7.0.3",
         "css-loader": "6.7.1",
         "file-loader": "6.2.0",
@@ -77,9 +78,9 @@
         "html-webpack-plugin": "5.5.0",
         "jest": "28.1.0",
         "node-polyfill-webpack-plugin": "1.1.4",
-        "postcss": "8.4.13",
-        "postcss-loader": "6.2.1",
-        "puppeteer": "14.0.0",
+        "postcss": "8.4.14",
+        "postcss-loader": "7.0.0",
+        "puppeteer": "14.1.0",
         "randomstring": "1.2.2",
         "style-loader": "3.3.1",
         "tailwindcss": "3.0.24",
@@ -94,5 +95,6 @@
         "webpack-cli": "4.9.2",
         "webpack-dev-server": "4.9.0",
         "webpack-notifier": "1.15.0"
-    }
+    },
+    "stableVersion": "1.0.0-alpha.1"
 }
