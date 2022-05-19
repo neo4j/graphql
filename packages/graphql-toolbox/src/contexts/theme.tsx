@@ -31,7 +31,7 @@ export interface State {
     setTheme: (v: Theme) => void;
 }
 
-export const ThemeContext = React.createContext(null as unknown as State);
+export const ThemeContext = React.createContext({} as State);
 
 export function ThemeProvider(props: React.PropsWithChildren<any>) {
     let value: State | undefined;

@@ -32,6 +32,7 @@ import { getSchemaForLintAndAutocompletion } from "./utils";
 import { Extension, FileName } from "../../components/Filename";
 import { ThemeContext, Theme } from "../../contexts/theme";
 import { Storage } from "../../utils/storage";
+import { AppSettingsContext } from "../../contexts/appsettings";
 
 export interface Props {
     loading: boolean;
@@ -40,6 +41,7 @@ export interface Props {
 
 export const SchemaEditor = ({ loading, mirrorRef }: Props) => {
     const theme = useContext(ThemeContext);
+    const appsettings = useContext(AppSettingsContext);
     const ref = useRef<HTMLTextAreaElement | null>(null);
     const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
 
@@ -90,7 +92,11 @@ export const SchemaEditor = ({ loading, mirrorRef }: Props) => {
             jump: {
                 schema: schemaForLintAndAutocompletion,
             },
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            gutters: [
+                "CodeMirror-linenumbers",
+                "CodeMirror-foldgutter",
+                appsettings.showLintMarkers ? "CodeMirror-lint-markers" : "",
+            ],
             extraKeys: {
                 "Cmd-Space": showHint,
                 "Ctrl-Space": showHint,
@@ -133,9 +139,18 @@ export const SchemaEditor = ({ loading, mirrorRef }: Props) => {
         mirror?.setOption("theme", t);
     }, [theme.theme]);
 
+    useEffect(() => {
+        const nextGutters = [
+            "CodeMirror-linenumbers",
+            "CodeMirror-foldgutter",
+            appsettings.showLintMarkers ? "CodeMirror-lint-markers" : "",
+        ];
+        mirror?.setOption("gutters", nextGutters);
+    }, [appsettings.showLintMarkers]);
+
     return (
         <div className="rounded-b-xl" style={{ width: "100%", height: "100%" }}>
-            <FileName extension={Extension.GRAPHQL} name={"schema"}></FileName>
+            <FileName extension={Extension.GRAPHQL} name="type-definitions"></FileName>
             <textarea id={SCHEMA_EDITOR_INPUT} ref={ref} style={{ width: "100%", height: "100%" }} />
         </div>
     );
