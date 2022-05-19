@@ -92,7 +92,7 @@ export const ActionElementsBar = ({
                         onClick={introspect}
                         disabled={loading}
                     >
-                        Generate typeDefs
+                        Generate type definitions
                     </Button>
                 </ProTooltip>
                 <Button

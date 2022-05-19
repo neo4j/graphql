@@ -25,6 +25,7 @@ import { EDITOR_QUERY_INPUT, THEME_EDITOR_DARK, THEME_EDITOR_LIGHT } from "../..
 import { formatCode, handleEditorDisableState, ParserOptions } from "./utils";
 import { Extension, FileName } from "../../components/Filename";
 import { ThemeContext, Theme } from "../../contexts/theme";
+import { AppSettingsContext } from "../../contexts/appsettings";
 
 export interface Props {
     schema: GraphQLSchema;
@@ -46,6 +47,7 @@ export const GraphQLQueryEditor = ({
     onChangeQuery,
 }: Props) => {
     const theme = useContext(ThemeContext);
+    const appsettings = useContext(AppSettingsContext);
     const [mirror, setMirror] = useState<EditorFromTextArea | null>(null);
     const ref = useRef<HTMLTextAreaElement | null>(null);
 
@@ -94,7 +96,11 @@ export const GraphQLQueryEditor = ({
             jump: {
                 schema: schema,
             },
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            gutters: [
+                "CodeMirror-linenumbers",
+                "CodeMirror-foldgutter",
+                appsettings.showLintMarkers ? "CodeMirror-lint-markers" : "",
+            ],
             extraKeys: {
                 "Cmd-Space": showHint,
                 "Ctrl-Space": showHint,
@@ -139,6 +145,15 @@ export const GraphQLQueryEditor = ({
         const t = theme.theme === Theme.LIGHT ? THEME_EDITOR_LIGHT : THEME_EDITOR_DARK;
         mirror?.setOption("theme", t);
     }, [theme.theme]);
+
+    useEffect(() => {
+        const nextGutters = [
+            "CodeMirror-linenumbers",
+            "CodeMirror-foldgutter",
+            appsettings.showLintMarkers ? "CodeMirror-lint-markers" : "",
+        ];
+        mirror?.setOption("gutters", nextGutters);
+    }, [appsettings.showLintMarkers]);
 
     return (
         <div className="rounded-b-xl" style={{ width: "100%", height: "100%" }}>
