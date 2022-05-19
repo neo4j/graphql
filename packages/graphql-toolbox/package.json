@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql-toolbox",
-    "version": "1.0.0-alpha.1",
+    "version": "1.0.0-alpha.4",
     "description": "Developer UI For Neo4j GraphQL",
     "exports": "./dist/main.js",
     "main": "./dist/main.js",
@@ -95,5 +95,6 @@
         "webpack-cli": "4.9.2",
         "webpack-dev-server": "4.9.0",
         "webpack-notifier": "1.15.0"
-    }
+    },
+    "stableVersion": "1.0.0-alpha.1"
 }
