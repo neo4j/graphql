@@ -36,6 +36,7 @@ import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { escapeQuery } from "./utils/escape-query";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
+import { mathOperatorToSymbol } from "./utils/math";
 
 interface Res {
     strs: string[];
@@ -459,7 +460,15 @@ function createUpdateAndParams({
             addCallbackAndSetParam(field, varName, updateInput, callbackBucket, res.strs, "UPDATE")
         );
 
-        const settableField = node.mutableFields.find((x) => x.fieldName === key);
+        const mathFieldRegx = /(\w*)(_INCREMENT|_DECREMENT|_ADD|_SUBTRACT|_DIVIDE|_MULTIPLY)\b/;
+        const mathFieldMatch = key.match(mathFieldRegx);
+        const isMathField = mathFieldMatch && mathFieldMatch.length > 2;
+        let settableFieldComparator = key;
+        if (isMathField) {
+            settableFieldComparator = mathFieldMatch[1];
+        }
+
+        const settableField = node.mutableFields.find((x) => x.fieldName === settableFieldComparator);
         const authableField = node.authableFields.find((x) => x.fieldName === key);
 
         if (settableField) {
@@ -469,12 +478,31 @@ function createUpdateAndParams({
                 } else {
                     res.strs.push(`SET ${varName}.${dbFieldName} = point($${param})`);
                 }
+            } else if (isMathField) {
+                const mathProperty = mathFieldMatch[1];
+                const mathOperatorName = mathFieldMatch[2];
+                const mathSymbol = mathOperatorToSymbol(mathOperatorName);
+                if (mathSymbol === "/" && value === 0) {
+                    throw new Error('Division by zero is not supported');
+                }
+                if (updateInput[mathProperty]) {
+                    throw new Error(`Ambigous property: ${mathProperty}`);
+                }
+
+                const fieldType = settableField.typeMeta.name;
+                const bitSize = fieldType === "Int" ? 32 : 64;
+                // Avoid overflows, for 64 bit overflows, a long overflow is raised anyway by Neo4j
+                res.strs.push(`WITH ${varName} CALL apoc.util.validate(${varName}.${mathProperty} ${mathSymbol} $${param} > 2^${bitSize-1}-1, 'Value returned from operator %s is larger than %s bit', ["${mathOperatorName}", "${bitSize}"])`);
+                const cyperType = fieldType === "Int" || fieldType === "BigInt" ? "INTEGER" : "FLOAT";
+                // Avoid type coercion
+                res.strs.push(`WITH ${varName} CALL apoc.util.validate(apoc.meta.type(${varName}.${mathProperty} ${mathSymbol} $${param}) <> "${cyperType}", 'Value returned from operator %s does not match: %s', ["${mathOperatorName}", "${fieldType}"])`);
+                res.strs.push(`SET ${varName}.${mathProperty} = ${varName}.${mathProperty} ${mathSymbol} $${param}`);
+                
             } else {
                 res.strs.push(`SET ${varName}.${dbFieldName} = $${param}`);
             }
-
             res.params[param] = value;
-        }
+        } 
 
         if (context.subscriptionsEnabled) {
             const eventMeta = createEventMeta({ event: "update", nodeVariable: varName, typename: node.name });

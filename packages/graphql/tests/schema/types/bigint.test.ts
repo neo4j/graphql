@@ -109,6 +109,8 @@ describe("Bigint", () => {
             input FileUpdateInput {
               name: String
               size: BigInt
+              size_DECREMENT: BigInt
+              size_INCREMENT: BigInt
             }
 
             input FileWhere {
