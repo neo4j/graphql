@@ -63,7 +63,6 @@ module.exports = class GraphQLServerApi {
     }
 
     onConnected(cb) {
-
         this.wsClient.on("connected", () => {
             cb();
         })

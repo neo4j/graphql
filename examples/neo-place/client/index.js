@@ -101,8 +101,10 @@ setupButtons();
 canvasApi.onPixelClicked((pixelClicked) => {
     if (!canvasLock) {
         canvasApi.drawPixel(pixelClicked, selectedColor);
-        serverApi.updatePixel(pixelClicked, selectedColor).catch((err) => {
-            handleDisconnect();
-        });
+        serverApi.updatePixel(pixelClicked, selectedColor).then((res)=>{
+            if(res.error){
+                handleDisconnect();
+            }
+        })
     }
 });
