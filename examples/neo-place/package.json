@@ -32,6 +32,7 @@
         "@neo4j/graphql-plugin-subscriptions-amqp": "^0.1.0",
         "apollo-server-core": "^3.7.0",
         "apollo-server-express": "^3.7.0",
+        "dotenv": "^16.0.1",
         "express": "^4.18.1",
         "graphql": "^16.5.0",
         "graphql-ws": "^5.8.2",
