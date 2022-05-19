@@ -79,7 +79,10 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
                         {
                             interface: {
                                 create: {
-                                    node: { ${testChildOne.name}: { name: "childone name" }, ${testChildTwo.name}: { name: "childtwo name" } }
+                                    node: {
+                                        ${testChildOne.name}: { name: "childone name" },
+                                        ${testChildTwo.name}: { name: "childtwo name" }
+                                    }
                                 }
                             }
                         }
@@ -111,5 +114,79 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             `Relation field "interface" cannot have more than one node linked`
         );
         expect(createMutationResults.data as any).toBeNull();
+    });
+
+    test("XXXXXXXX", async () => {
+        const createMutation = `
+            mutation createAbces {
+                ${testAbce.operations.create}(
+                    input: [
+                        {
+                            interface: {
+                                create: {
+                                    node: {
+                                        ${testChildOne.name}: { name: "childone name second round" },
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                ) {
+                    ${testAbce.plural} {
+                        id
+                        name
+                        interface {
+                            id
+                            name
+                            __typename
+                        }
+                    }
+                }
+            }
+        `;
+
+        const createMutationResults = await graphql({
+            schema,
+            source: createMutation,
+            contextValue: {
+                driver,
+            },
+        });
+
+        expect(createMutationResults.errors).toBeUndefined();
+        expect(createMutationResults.data as any).toEqual({
+            [testAbce.plural]: {
+                id: "d",
+                name: "d",
+                interface: {
+                    id: "d",
+                    name: "d",
+                    __typename: testChildOne.name,
+                },
+            },
+        });
+
+        // Update mutation
+
+        // mutation ddfs{
+        //     updateAbces(where:{	id:"23a9cdc4-bf9c-46bf-a51d-343d9c7ef3ab"}
+        //         create:{
+        //             interface:{
+        //                 node:{ChildOne:{
+        //                     name:"childone name2"
+        //                 }}
+        //             }
+        //         }
+        //     ){
+        //         abces{
+        //             id
+        //             interface{
+        //                 id
+        //                 name
+        //                 __typename
+        //             }
+        //         }
+        //     }
+        // }
     });
 });
