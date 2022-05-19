@@ -20,20 +20,20 @@
 import { gql } from "apollo-server";
 import { graphql } from "graphql";
 import { Driver } from "neo4j-driver";
-import { EventMeta, Neo4jGraphQL, Neo4jGraphQLSubscriptionsDefaultPlugin } from "../../../src";
+import { EventMeta, Neo4jGraphQL, Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 import neo4j from "../neo4j";
 
 describe("Subscriptions Debug Plugin", () => {
     let driver: Driver;
     let neoSchema: Neo4jGraphQL;
-    let plugin: Neo4jGraphQLSubscriptionsDefaultPlugin;
+    let plugin: Neo4jGraphQLSubscriptionsSingleInstancePlugin;
 
     const typeMovie = generateUniqueType("Movie");
 
     beforeAll(async () => {
         driver = await neo4j();
-        plugin = new Neo4jGraphQLSubscriptionsDefaultPlugin();
+        plugin = new Neo4jGraphQLSubscriptionsSingleInstancePlugin();
         const typeDefs = gql`
             type ${typeMovie.name} {
                 id: ID!
