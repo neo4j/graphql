@@ -63,17 +63,31 @@ serverApi.onPixelUpdate((updatedEvent) => {
 serverApi.onConnected(async () => {
     canvasLock = true;
     await setupCanvas();
-    canvasLock = false;
     drawBackflow(eventsBackflow);
+    handleConnect();
 });
 
-serverApi.onClosed(async () => {
+function handleDisconnect() {
     canvasLock = true;
     const buttonWrapper = document.querySelector(".buttons-wrap");
     const disconnectedMessage = document.querySelector(".disconnected-message");
-    buttonWrapper.style.display = "none"
+    buttonWrapper.style.display = "none";
     disconnectedMessage.hidden = false;
     canvasApi.grayscale();
+}
+
+function handleConnect(){
+    const buttonWrapper = document.querySelector(".buttons-wrap");
+    const loader = document.querySelector(".loader");
+    const canvas = document.querySelector("#place");
+    buttonWrapper.style.display = "flex"
+    loader.hidden=true;
+    canvas.hidden=false;
+    canvasLock=false
+}
+
+serverApi.onClosed(async () => {
+    handleDisconnect()
 });
 
 function drawBackflow(pixels) {
@@ -87,6 +101,8 @@ setupButtons();
 canvasApi.onPixelClicked((pixelClicked) => {
     if (!canvasLock) {
         canvasApi.drawPixel(pixelClicked, selectedColor);
-        serverApi.updatePixel(pixelClicked, selectedColor);
+        serverApi.updatePixel(pixelClicked, selectedColor).catch((err) => {
+            handleDisconnect();
+        });
     }
 });
