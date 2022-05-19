@@ -18,8 +18,11 @@
  */
 
 import { useContext } from "react";
-import { Radio } from "@neo4j-ndl/react";
+import { Checkbox, Radio } from "@neo4j-ndl/react";
 import { Theme, ThemeContext } from "../../contexts/theme";
+import { LOCAL_STATE_SHOW_LINT_MARKERS } from "../../constants";
+import { Storage } from "../../utils/storage";
+import { AppSettingsContext } from "../..//contexts/appsettings";
 
 interface Props {
     onClickClose: () => void;
@@ -27,10 +30,16 @@ interface Props {
 
 export const AppSettings = ({ onClickClose }: Props) => {
     const theme = useContext(ThemeContext);
+    const appSettings = useContext(AppSettingsContext);
 
     const handleOnChangeEditorTheme = (event: any) => {
         const next = event?.target?.id === Theme.LIGHT.toString() ? Theme.LIGHT : Theme.DARK;
         theme.setTheme(next);
+    };
+
+    const onChangeShowLintMarkersCheckbox = (): void => {
+        appSettings.setShowLintMarkers(!appSettings.showLintMarkers);
+        Storage.store(LOCAL_STATE_SHOW_LINT_MARKERS, Boolean(!appSettings.showLintMarkers).toString());
     };
 
     return (
@@ -58,6 +67,22 @@ export const AppSettings = ({ onClickClose }: Props) => {
                         checked={theme.theme === Theme.DARK}
                         onChange={handleOnChangeEditorTheme}
                     />
+                    <div className="mt-4">
+                        <Checkbox
+                            data-test-show-lint-markers-checkbox
+                            className="m-0"
+                            label="Show lint markers"
+                            checked={appSettings.showLintMarkers}
+                            onChange={onChangeShowLintMarkersCheckbox}
+                        />
+                    </div>
+                </div>
+            </div>
+            <div className="absolute bottom-2 right-28 font-bold text-xs flex flex-col">
+                <span>Made by Neo4j, Inc</span>
+                <span>Copyright &copy; 2002-2022</span>
+                <div className="flex">
+                    <span>Version:</span>&nbsp;<pre>{process.env.VERSION}</pre>
                 </div>
             </div>
         </div>
