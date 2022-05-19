@@ -10,9 +10,8 @@ system with  xref::subscriptions/scaling.adoc[horizontal scaling].
 == Official plugins
 The following plugins are supported officially by `@neo4j/graphql`:
 
-* **xref::subscriptions/plugins/default.adoc[Default]** - A default plugin to use while on development, exported directly from the library.
+* **xref::subscriptions/plugins/single-instance.adoc[Single Instance]** - A plugin for development, exported directly from the library.
 * **xref::subscriptions/plugins/amqp.adoc[AMQP]** - Connect to AMQP brokers such as link:https://www.rabbitmq.com/[RabbitMQ].
-
 
 == Create a custom plugin
 If none of the existing plugins is valid for your use case, you can create new plugin to connect to any broker you may need. To do this

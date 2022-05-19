@@ -27,7 +27,7 @@
 **** xref:subscriptions/events/delete.adoc[Delete]
 *** xref:subscriptions/scaling.adoc[]
 *** xref:subscriptions/plugins/index.adoc[Plugins]
-**** xref:subscriptions/plugins/default.adoc[Default]
+**** xref:subscriptions/plugins/single-instance.adoc[Single Instance]
 **** xref:subscriptions/plugins/amqp.adoc[AMQP]
 ** xref:filtering.adoc[]
 ** xref:sorting.adoc[]
