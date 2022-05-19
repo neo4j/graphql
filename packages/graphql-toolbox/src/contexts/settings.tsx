@@ -26,7 +26,7 @@ export interface State {
     setIsShowHelpDrawer: (v: boolean) => void;
 }
 
-export const SettingsContext = React.createContext(null as unknown as State);
+export const SettingsContext = React.createContext({} as State);
 
 export function SettingsProvider(props: React.PropsWithChildren<any>) {
     let value: State | undefined;
