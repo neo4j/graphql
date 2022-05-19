@@ -34,4 +34,9 @@ module.exports = class CanvasApi {
 
         return [parseInt(x / this.pixelScale), parseInt(y / this.pixelScale)];
     }
+
+    grayscale() {
+        this.ctx.filter = 'grayscale(1)';
+        this.ctx.drawImage(this.canvas, 0, 0);
+    }
 };

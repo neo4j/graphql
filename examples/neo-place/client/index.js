@@ -61,11 +61,21 @@ serverApi.onPixelUpdate((updatedEvent) => {
 });
 
 serverApi.onConnected(async () => {
+    console.log("Websocket Connected")
     canvasLock = true;
     await setupCanvas();
     canvasLock = false;
     drawBackflow(eventsBackflow);
-})
+});
+
+serverApi.onClosed(async () => {
+    canvasLock = true;
+    const buttonWrapper = document.querySelector(".buttons-wrap");
+    const disconnectedMessage = document.querySelector(".disconnected-message");
+    buttonWrapper.style.display = "none"
+    disconnectedMessage.hidden = false;
+    canvasApi.grayscale();
+});
 
 function drawBackflow(pixels) {
     for (const pixel of pixels) {
@@ -76,6 +86,8 @@ function drawBackflow(pixels) {
 
 setupButtons();
 canvasApi.onPixelClicked((pixelClicked) => {
-    canvasApi.drawPixel(pixelClicked, selectedColor);
-    serverApi.updatePixel(pixelClicked, selectedColor);
+    if (!canvasLock) {
+        canvasApi.drawPixel(pixelClicked, selectedColor);
+        serverApi.updatePixel(pixelClicked, selectedColor);
+    }
 });
