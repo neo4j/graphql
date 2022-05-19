@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-// Map Neo4jGraphQL Math operator to Cypher symbol
+/** Maps Neo4jGraphQL Math operator to Cypher symbol */
 const CypherOperatorMapper = new Map<string, string>([
     ["_ADD", "+"],
     ["_SUBTRACT", "-"],
@@ -28,8 +28,7 @@ const CypherOperatorMapper = new Map<string, string>([
 ]);
 
 export function mathOperatorToSymbol(mathOperator: string): string {
-    if (CypherOperatorMapper.has(mathOperator)) {
-        return CypherOperatorMapper.get(mathOperator) as string;
-    }
-    throw new Error(`${mathOperator} is not a valid math operator`);
+    const mathSymbol = CypherOperatorMapper.get(mathOperator)
+    if (!mathSymbol) throw new Error(`${mathOperator} is not a valid math operator`);
+    return mathSymbol; 
 }

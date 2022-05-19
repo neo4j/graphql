@@ -460,7 +460,7 @@ function createUpdateAndParams({
             addCallbackAndSetParam(field, varName, updateInput, callbackBucket, res.strs, "UPDATE")
         );
 
-        const mathFieldRegx = /(\w*)(_INCREMENT|_DECREMENT|_ADD|_SUBTRACT|_DIVIDE|_MULTIPLY)\b/;
+        const mathFieldRegx = /(?<propertyName>\w*)(?<operatorName>_INCREMENT|_DECREMENT|_ADD|_SUBTRACT|_DIVIDE|_MULTIPLY)\b/;
         const mathFieldMatch = key.match(mathFieldRegx);
         const isMathField = mathFieldMatch && mathFieldMatch.length > 2;
         let settableFieldComparator = key;
