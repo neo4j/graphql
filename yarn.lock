@@ -1246,34 +1246,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/batch-execute@npm:8.4.8":
-  version: 8.4.8
-  resolution: "@graphql-tools/batch-execute@npm:8.4.8"
+"@graphql-tools/batch-execute@npm:8.4.9":
+  version: 8.4.9
+  resolution: "@graphql-tools/batch-execute@npm:8.4.9"
   dependencies:
-    "@graphql-tools/utils": 8.6.11
+    "@graphql-tools/utils": 8.6.12
     dataloader: 2.1.0
     tslib: ~2.4.0
     value-or-promise: 1.0.11
   peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: 7a6ac51a5e8388a8bffa91c4ceb09406f3774bbcd4addbc6e39c8c2507f857806e4be1d8b9326e19bdda8d95d5055b341d0c4ba6f3e8fd6a15db6c2e660e869b
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: f1562f9b50f6d8a93c285a647cf7035434c6dd97b44dc79d6ade6d3edd8d5032ec1ddd0f7d3985503e0f34d642fb79457d9ebdf119765023f4dbcae0de063be1
   languageName: node
   linkType: hard
 
-"@graphql-tools/delegate@npm:^8.7.9":
-  version: 8.7.9
-  resolution: "@graphql-tools/delegate@npm:8.7.9"
+"@graphql-tools/delegate@npm:^8.7.10":
+  version: 8.7.10
+  resolution: "@graphql-tools/delegate@npm:8.7.10"
   dependencies:
-    "@graphql-tools/batch-execute": 8.4.8
-    "@graphql-tools/schema": 8.3.12
-    "@graphql-tools/utils": 8.6.11
+    "@graphql-tools/batch-execute": 8.4.9
+    "@graphql-tools/schema": 8.3.13
+    "@graphql-tools/utils": 8.6.12
     dataloader: 2.1.0
     graphql-executor: 0.0.23
     tslib: ~2.4.0
     value-or-promise: 1.0.11
   peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: e727340aafe59560ae15dcfd3fdaad68bd43aa3da20b0023f8d953c0053960629aaea1cc027a48a1dcf23d0a6c9752fa70300c3de7b702e1045dd8eced6ad0a8
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: fdc4d28cc70b2ad8de7a1ba70cf1acdb3639f1f4ccc1719ebb5ca8cc29a9c403c99df871a547fea43d7187910e0e2eb9776749ff5eb0f6b6602d7fc687a8343f
   languageName: node
   linkType: hard
 
@@ -1289,15 +1289,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/merge@npm:8.2.12":
-  version: 8.2.12
-  resolution: "@graphql-tools/merge@npm:8.2.12"
+"@graphql-tools/merge@npm:8.2.13":
+  version: 8.2.13
+  resolution: "@graphql-tools/merge@npm:8.2.13"
   dependencies:
-    "@graphql-tools/utils": 8.6.11
+    "@graphql-tools/utils": 8.6.12
     tslib: ~2.4.0
   peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: a64785a27e3832ff749e23a2238e26dfd97aa952994c997769d239a45e409d5a9e88d1bf998e274f78d72b57efbb4385cb6851e2a65b3c72aa3fd44f7b395882
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 00afcf2e9b278c7a571cc19e656ae20ad68720a5995b6546672ecd19ae3c84bf8bb6d08f21403a56540d82a402223e029009b72105de7c586eb936fc35b5fd54
   languageName: node
   linkType: hard
 
@@ -1367,17 +1367,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/schema@npm:8.3.12, @graphql-tools/schema@npm:^8.3.12":
-  version: 8.3.12
-  resolution: "@graphql-tools/schema@npm:8.3.12"
+"@graphql-tools/schema@npm:8.3.13, @graphql-tools/schema@npm:^8.3.13":
+  version: 8.3.13
+  resolution: "@graphql-tools/schema@npm:8.3.13"
   dependencies:
-    "@graphql-tools/merge": 8.2.12
-    "@graphql-tools/utils": 8.6.11
+    "@graphql-tools/merge": 8.2.13
+    "@graphql-tools/utils": 8.6.12
     tslib: ~2.4.0
     value-or-promise: 1.0.11
   peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: 56f5765545a7ea36a82976f26c0f6aad19baa71f81efd47002efd9a05f57a3744943f7fe0abee145ec8063a925c5ab8f71c2b61e046165ba9e57fafb897e2658
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 13d3da3b08f9c94ce99243950e89e73169c399b93dc0d85f03fd1e36d274f41031525b6ffae479ccfe121e9d376923c3602d8d10799e79ca192002484c6a8cee
   languageName: node
   linkType: hard
 
@@ -1392,14 +1392,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/utils@npm:8.6.11":
-  version: 8.6.11
-  resolution: "@graphql-tools/utils@npm:8.6.11"
+"@graphql-tools/utils@npm:8.6.12":
+  version: 8.6.12
+  resolution: "@graphql-tools/utils@npm:8.6.12"
   dependencies:
     tslib: ~2.4.0
   peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-  checksum: 311678baf160aa0beee385c83ce2c6b854594c7735f8afe85e5c425693aeb5792bc8e518f2c282b0ebb6702d74e64c4b41832e5040d0b2b3780af6552095d190
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 01a560870c7661e353cf0c7a61f2e515d4aa2def415ba8274ec37874e5fc7c21c84a663c0c3d37505975ca06391819b591cf423ddda5449579860d9f70e0d6ce
   languageName: node
   linkType: hard
 
@@ -2037,7 +2037,7 @@ __metadata:
     deep-equal: ^2.0.5
     dot-prop: ^6.0.1
     graphql-compose: ^9.0.6
-    graphql-middleware: 6.1.27
+    graphql-middleware: 6.1.28
     graphql-parse-resolve-info: ^4.12.0
     graphql-relay: ^0.10.0
     graphql-tag: 2.12.6
@@ -8560,15 +8560,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"graphql-middleware@npm:6.1.27":
-  version: 6.1.27
-  resolution: "graphql-middleware@npm:6.1.27"
+"graphql-middleware@npm:6.1.28":
+  version: 6.1.28
+  resolution: "graphql-middleware@npm:6.1.28"
   dependencies:
-    "@graphql-tools/delegate": ^8.7.9
-    "@graphql-tools/schema": ^8.3.12
+    "@graphql-tools/delegate": ^8.7.10
+    "@graphql-tools/schema": ^8.3.13
   peerDependencies:
     graphql: ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
-  checksum: 8ac41df25096532ca04866b60c9fd556b8568d1b2e80872b3f6875a07b8e12e32305aee0600cbf366c93c0814a3e745c27b77f4b625953d5dd2d3f12fe5ad605
+  checksum: d525272713beac11225a5364c6b5a8c952fc83c6739707a2d7a92caa0e8fc9cb22aa85f755c38dc2fe5009fe99a7c66da456cb36e1a22d89de7ef1ea20e5fb64
   languageName: node
   linkType: hard
 
