@@ -19,14 +19,12 @@
 
 import amqp from "amqplib";
 
-export default async function createRabbitMQConnection(): Promise<amqp.Connection> {
+export default function getRabbitConnectionOptions(): amqp.Options.Connect {
     const { RABBITMQ_HOST = "localhost", RABBITMQ_USER = "guest", RABBITMQ_PASSWORD = "guest" } = process.env;
 
-    const connection = await amqp.connect({
+    return {
         hostname: RABBITMQ_HOST,
         username: RABBITMQ_USER,
         password: RABBITMQ_PASSWORD,
-    });
-
-    return connection;
+    };
 }

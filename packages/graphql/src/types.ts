@@ -396,6 +396,9 @@ export interface Neo4jGraphQLSubscriptionsPlugin {
     events: EventEmitter;
 
     publish(eventMeta: SubscriptionsEvent): Promise<void> | void;
+
+    /** To be called, if needed, in getSchema */
+    init?(): Promise<void>;
 }
 
 export interface Neo4jGraphQLPlugins {
