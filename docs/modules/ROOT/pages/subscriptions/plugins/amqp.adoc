@@ -22,12 +22,12 @@ NOTE: AMQP 1.0 is **not** supported by this plugin.
 ```javascript
 const Neo4jGraphQLSubscriptionsAMQP = require("@neo4j/graphql-plugin-subscriptions-amqp");
 
-const plugin = new Neo4jGraphQLSubscriptionsAMQP();
-
-await plugin.connect({
-    hostname: "localhost",
-    username: "guest",
-    password: "guest",
+const plugin = new Neo4jGraphQLSubscriptionsAMQP({
+    connection: {
+        hostname: "localhost",
+        username: "guest",
+        password: "guest",
+    }
 });
 
 const neoSchema = new Neo4jGraphQL({
@@ -42,21 +42,16 @@ const neoSchema = new Neo4jGraphQL({
 == API
 The following options can be passed to the contructor:
 
+* connection: An AMQP uri as a string or a configuration object:
+    * hostname: Hostname to be used, defaults to `localhost`.
+    * username: defaults to `guest`.
+    * password: defaults to `guest`.
+    * port: Port of the AMQP broker, defaults to `5672`.
 * exchange: The exchange to be used in the broker. Defaults to `neo4j.graphql.subscriptions.fx`.
 * version: The AMQP version to be used. Currently only `0-9-1` is supported.
 
-=== connect(connectionOptions): Promise<Connection>
-Connects to the broker, creating the required exchanges and queues. Returns the Connection.
-It accepts a single AMQP url string or a configuration object:
-
-* hostname: Hostname to be used, defaults to `localhost`.
-* username: defaults to `guest`.
-* password: defaults to `guest`.
-* port: Port of the AMQP broker, defaults to `5672`.
-
-Additionally, any option supported by link:https://www.npmjs.com/package/amqplib[amqplib] can be passed to `connect`.
+Additionally, any option supported by link:https://www.npmjs.com/package/amqplib[amqplib] can be passed to `connection`.
 
 
 === close(): Promise<void>
-Closes the channel created and unbinds the event emitter. Note that `close` will **not** close the connection to the broker. You must close it
- through the value returned by `connect`.
+Closes the connection and channel created and unbinds the event emitter.

@@ -19,6 +19,8 @@ you need to create a new class defining your plugin. This class needs to contain
 
 * An `EventEmitter` property called `events` that should emit an event everytime the broker sends a message.
 * A `publish` method that will publish a new event to the broker.
+* Optionally, a `init` method returning a promise, that will be called on `getSchema`. This is useful for setting up the connection to a broker.
+
 For instance, if we wanted to subscribe using link:https://redis.io/[redis]:
 
 ```javascript
@@ -30,7 +32,7 @@ class CustomRedisPlugin {
     }
 
     // This method connects to Redis and sends messages to the eventEmitter when receiving events.
-    async connect(){
+    async init(){
         await this.client.connect();
         this.subscriber = this.client.duplicate()
         this.publisher = this.client.duplicate();
@@ -50,7 +52,6 @@ class CustomRedisPlugin {
 
 const client = createClient(); // From https://www.npmjs.com/package/redis
 const redisSubscriptions = new CustomRedisPlugin(client)
-await redisSubscriptions.connect();
 
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
@@ -66,7 +67,7 @@ are sent to the broker in the `publish` method and that these messages are recei
 will be properly handled.
 
 == Using Typescript
-If using Typescript, you may import the interface `Neo4jGraphQLSubscriptionsPlugin` to implement yourown plugin:
+If using Typescript, you may import the interface `Neo4jGraphQLSubscriptionsPlugin` to implement your own plugin:
 
 ```typescript
 class CustomRedisPlugin implements Neo4jGraphQLSubscriptionsPlugin {}
