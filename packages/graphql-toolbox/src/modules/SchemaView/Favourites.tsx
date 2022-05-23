@@ -63,7 +63,7 @@ const NameComponent = ({ name, saveName, onSelectFavourite }: NameComponentProps
             {editMode ? (
                 <HeroIcon
                     className="h-5 w-5"
-                    iconName="SaveIcon"
+                    iconName="CheckIcon"
                     type="outline"
                     onClick={() => {
                         setEditMode(false);
@@ -91,15 +91,17 @@ export const Favourites = ({ favourites, setFavourites, onSelectFavourite }: Fav
     };
 
     return (
-        <div className="flex flex-col w-full pt-8">
+        <div className="flex flex-col w-full">
             <span className="h5">Favourites</span>
             {favourites?.length ? (
                 <ul className="pt-2">
-                    {favourites.map((favourite) => {
+                    {favourites.map((favourite, idx) => {
                         return (
                             <li
                                 key={favourite.id}
-                                className="flex justify-between p-1 mb-1 cursor-pointer hover:n-bg-neutral-20 rounded"
+                                className={`flex justify-between items-center p-2 mb-1 cursor-pointer hover:n-bg-neutral-40 rounded ${
+                                    idx % 2 === 1 ? "n-bg-neutral-20" : ""
+                                }`}
                             >
                                 <NameComponent
                                     name={favourite.name}

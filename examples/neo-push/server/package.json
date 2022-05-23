@@ -12,8 +12,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@neo4j/graphql": "^3.2.2",
-        "@neo4j/graphql-ogm": "^3.2.2",
+        "@neo4j/graphql": "^3.2.3",
+        "@neo4j/graphql-ogm": "^3.2.3",
         "@neo4j/graphql-plugin-auth": "^1.0.0",
         "apollo-server-express": "^3.6.7",
         "bcrypt": "5.0.1",
@@ -39,7 +39,7 @@
         "nodemon": "2.0.16",
         "randomstring": "1.1.5",
         "ts-jest": "28.0.2",
-        "ts-node": "10.7.0",
+        "ts-node": "10.8.0",
         "tsconfig-paths": "4.0.0",
         "typescript": "4.2.4"
     }

@@ -17,33 +17,14 @@
  * limitations under the License.
  */
 
-export interface LoginPayload {
-    username: string;
-    password: string;
-    url: string;
-}
+import { EventEmitter } from "events";
+import { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "../types";
 
-export interface Favourite {
-    id: string;
-    name: string;
-    typeDefs: string;
-}
+/** Default subscriptions plugin for debug */
+export class Neo4jGraphQLSubscriptionsSingleInstancePlugin implements Neo4jGraphQLSubscriptionsPlugin {
+    public events: EventEmitter = new EventEmitter();
 
-export interface Neo4jDatabase {
-    access: string;
-    address: string;
-    aliases: string[];
-    currentStatus: string;
-    default: boolean;
-    error: string;
-    home: boolean;
-    name: string;
-    requestedStatus: string;
-    role: string;
-}
-
-export enum ConstraintState {
-    check,
-    create,
-    ignore,
+    publish(eventMeta: SubscriptionsEvent): void | Promise<void> {
+        this.events.emit(eventMeta.event, eventMeta);
+    }
 }

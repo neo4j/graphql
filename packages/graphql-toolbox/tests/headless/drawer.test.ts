@@ -47,6 +47,7 @@ describe("drawer", () => {
         const helpDrawer = new HelpDrawer(page);
         await helpDrawer.openHelpDrawer();
         await helpDrawer.displaysSchemaViewContent();
+        await helpDrawer.displaysKeybindingsInSchemaView();
 
         const schemaEditor = new SchemaEditor(page);
         await schemaEditor.setTypeDefs(typeDefs);
@@ -54,6 +55,7 @@ describe("drawer", () => {
 
         await helpDrawer.displaysEditorViewContent();
         await helpDrawer.displaysSchemaDocumentation();
+        await helpDrawer.displaysKeybindingsInEditorView();
         await helpDrawer.closeHelpDrawer();
     });
 });
