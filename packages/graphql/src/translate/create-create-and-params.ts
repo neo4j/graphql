@@ -77,16 +77,6 @@ function createCreateAndParams({
                     refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
             } else if (relationField.interface) {
-                const isInterfaceAnArray = relationField.interface?.typeMeta.array;
-                const inputCreateNodeLength = Object.keys(input?.interface?.create?.node || {}).length;
-                if (!isInterfaceAnArray && inputCreateNodeLength > 1) {
-                    throw new Error(
-                        `Relation field "${
-                            relationField.interface?.dbPropertyName || relationField.interface?.fieldName
-                        }" cannot have more than one node linked`
-                    );
-                }
-
                 relationField.interface?.implementations?.forEach((implementationName) => {
                     refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
                 });
@@ -99,6 +89,16 @@ function createCreateAndParams({
                 const unionTypeName = relationField.union || relationField.interface ? refNode.name : "";
 
                 if (v.create) {
+                    const isInterfaceAnArray = relationField.interface?.typeMeta.array;
+                    const inputCreateNodeLength = Object.keys(v.create.node || {}).length;
+                    if (!isInterfaceAnArray && inputCreateNodeLength > 1) {
+                        throw new Error(
+                            `Relation field "${
+                                relationField.interface?.dbPropertyName || relationField.interface?.fieldName
+                            }" cannot have more than one node linked`
+                        );
+                    }
+
                     const creates = relationField.typeMeta.array ? v.create : [v.create];
                     creates.forEach((create, index) => {
                         if (relationField.interface && !create.node[refNode.name]) {

@@ -155,38 +155,72 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
 
         expect(createMutationResults.errors).toBeUndefined();
         expect(createMutationResults.data as any).toEqual({
-            [testAbce.plural]: {
-                id: "d",
-                name: "d",
-                interface: {
-                    id: "d",
-                    name: "d",
-                    __typename: testChildOne.name,
-                },
+            [testAbce.operations.create]: {
+                [testAbce.plural]: [
+                    {
+                        id: expect.any(String),
+                        name: null,
+                        interface: {
+                            id: expect.any(String),
+                            name: "childone name second round",
+                            __typename: testChildOne.name,
+                        },
+                    },
+                ],
             },
         });
 
-        // Update mutation
+        const abcesId = (createMutationResults.data as any)[testAbce.operations.create][testAbce.plural][0].id;
 
-        // mutation ddfs{
-        //     updateAbces(where:{	id:"23a9cdc4-bf9c-46bf-a51d-343d9c7ef3ab"}
-        //         create:{
-        //             interface:{
-        //                 node:{ChildOne:{
-        //                     name:"childone name2"
-        //                 }}
-        //             }
-        //         }
-        //     ){
-        //         abces{
-        //             id
-        //             interface{
-        //                 id
-        //                 name
-        //                 __typename
-        //             }
-        //         }
-        //     }
-        // }
+        const updateMutation = `
+            mutation ddfs{
+                ${testAbce.operations.update}(where: { id: "${abcesId}" }
+                    create: { interface:{ node: { ${testChildOne.name}: { name: "childone name2" } } } }
+                ){
+                    ${testAbce.plural} {
+                        id
+                        interface {
+                            id
+                            name
+                            __typename
+                        }
+                    }
+                }
+            }
+        `;
+
+        const updateMutationResults = await graphql({
+            schema,
+            source: updateMutation,
+            contextValue: {
+                driver,
+            },
+        });
+
+        console.log(updateMutationResults.data as any);
+
+        expect(updateMutationResults.errors).toBeUndefined();
+        expect(updateMutationResults.data as any).toEqual({
+            [testAbce.operations.update]: {
+                [testAbce.plural]: [
+                    {
+                        id: expect.any(String),
+                        interface: {
+                            id: expect.any(String),
+                            name: "childone name2",
+                            __typename: testChildOne.name,
+                        },
+                    },
+                    {
+                        id: expect.any(String),
+                        interface: {
+                            id: expect.any(String),
+                            name: "childone name second round",
+                            __typename: testChildOne.name,
+                        },
+                    },
+                ],
+            },
+        });
     });
 });
