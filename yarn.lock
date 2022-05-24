@@ -1110,10 +1110,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@faker-js/faker@npm:6.3.1":
-  version: 6.3.1
-  resolution: "@faker-js/faker@npm:6.3.1"
-  checksum: 05071e952248f4565218a95b089ef8f616130c6ff914bb416ba7c891f81d123b637c2abe8aa2eb7b207b5d4b8bd9c75c8c2133019d2d11db4176948737a95813
+"@faker-js/faker@npm:7.0.1":
+  version: 7.0.1
+  resolution: "@faker-js/faker@npm:7.0.1"
+  checksum: 97469da2e61fcc0a2095a0e3031ed6993d487d9509512f3a22d9c35e1842b00b0b17403b96b01d3a0e755a9c275cef7070a39a18c347b1a8cd666dddf04c4120
   languageName: node
   linkType: hard
 
@@ -2016,7 +2016,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
-    "@faker-js/faker": 6.3.1
+    "@faker-js/faker": 7.0.1
     "@graphql-tools/merge": ^8.2.1
     "@graphql-tools/resolvers-composition": ^6.4.1
     "@graphql-tools/schema": ^8.3.1
@@ -12362,7 +12362,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "neo-push-server@workspace:examples/neo-push/server"
   dependencies:
-    "@faker-js/faker": 6.3.1
+    "@faker-js/faker": 7.0.1
     "@neo4j/graphql": ^3.2.3
     "@neo4j/graphql-ogm": ^3.2.3
     "@neo4j/graphql-plugin-auth": ^1.0.0
