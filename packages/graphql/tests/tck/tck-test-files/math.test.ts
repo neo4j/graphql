@@ -102,14 +102,14 @@ describe("Math operators", () => {
 
     test("Simple Float multiply", async () => {
         const query = gql`
-            mutation {
-                updateMovies(update: { revenue_MULTIPLY: 3 }) {
-                    movies {
-                        id
-                        revenue
-                    }
+        mutation {
+            updateMovies(update: { revenue_MULTIPLY: 3 }) {
+                movies {
+                    id
+                    revenue
                 }
             }
+        }
         `;
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {

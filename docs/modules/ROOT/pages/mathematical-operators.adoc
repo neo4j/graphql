@@ -1,0 +1,61 @@
+[[mathematical-operators]]
+= Mathematical operators
+
+On numerical types (`Int`, `Float`, xref::type-definitions/types.adoc#type-definitions-types-bigint[`BigInt`]) Mathematical operators can be used.
+
+== Int/BigInt operators
+For Int and Big int types, the following operators are available:
+
+* `_DECREMENT`
+* `_INCREMENT`
+
+Using the following type definition:
+[source, graphql, indent=0]
+----
+type Video {
+    viewers: Int
+}
+----
+
+Then, the viewers property can be incremented with the following Mutation:
+[source, graphql, indent=0]
+----
+mutation {
+    updateVideos(update: { viewers_INCREMENT: 1 }) {
+        videos {
+            viewers
+        }
+    }
+}
+----
+
+== Float operators
+For the Float type, the following operators are available:
+
+* `_ADD`
+* `_SUBTRACT`
+* `_MULTIPLY`
+* `_DIVIDE`
+
+Using the following type definition:
+[source, graphql, indent=0]
+----
+type Worker {
+    salary: Float
+}
+----
+
+Then, the salary property can be modified with the following Mutation:
+[source, graphql, indent=0]
+----
+mutation {
+    updateWorkers(update: { salary_MULTIPLY: 2 }) {
+        workers {
+            salary
+        }
+    }
+}
+----
+
+== Optional fields
+Operators remains available for optional fields, this mean that if an operators is been used with fields not yet defined then an GraphQL error is raised.

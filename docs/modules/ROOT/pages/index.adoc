@@ -20,7 +20,7 @@ endif::[]
 
 > This is the documentation for the Neo4j GraphQL Library version 3.0, authored by the Neo4j GraphQL Team.
 
-This documentation covers the following topics:
+This documentation covers the following topic:
 
 - xref::introduction.adoc[Introduction] - Introduction to the Neo4j GraphQL Library.
 - xref::getting-started.adoc[Getting Started] - Start here if you want to quickly get up and running with the library.
@@ -31,6 +31,7 @@ This documentation covers the following topics:
 - xref::filtering.adoc[Filtering] - This chapter covers how to filter your data in Queries and Mutations.
 - xref::sorting.adoc[Sorting] - This chapter covers how to sort the data being returned.
 - xref::pagination/index.adoc[Pagination] - This chapter covers the pagination options offered by the Neo4j GraphQL Library.
+- xref::mathematical-operators.adoc[Mathematical operators] - This chapter covers how to use the Mathematical operators.
 - xref::custom-resolvers.adoc[Custom Resolvers] - Learn how to implement custom functionality accessible through your API.
 - xref::auth/index.adoc[Auth] - Covers the authentication and authorisation options offered by this library.
 - xref::directives.adoc[Directives] - An index of all of the directives offered by the Neo4j GraphQL Library.
