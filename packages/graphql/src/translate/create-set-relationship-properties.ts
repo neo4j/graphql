@@ -83,11 +83,10 @@ function createSetRelationshipProperties({
             return;
         }
         
-        const matchedTuple = matchMathField(key);
-        const isMathField = matchedTuple[0];
-        if (isMathField) {
-            const mathFieldMatch = matchedTuple[1] as RegExpMatchArray;
-            const mathDescriptor = mathDescriptorBuilder(value as number, relationship, undefined, mathFieldMatch);
+        const mathMatch = matchMathField(key);
+        const {isMatched} = mathMatch;
+        if (isMatched) {
+            const mathDescriptor = mathDescriptorBuilder(value as number, relationship, undefined, mathMatch);
             if (_properties.find(([_key]) => _key === mathDescriptor.dbName)) {
                 throw new Error(`Ambigous property: ${mathDescriptor.dbName}`);
             }

@@ -171,7 +171,7 @@ describe("Mathematical operations tests", () => {
         }
       });
 
-      test('Should raise an error if the input fields are ambigous', async () => {
+      test('Should raise an error if the input fields are ambiguous', async () => {
         const session = driver.session();
         const initialViewers = int(100);
         const typeDefs = `

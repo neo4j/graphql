@@ -460,15 +460,9 @@ function createUpdateAndParams({
             addCallbackAndSetParam(field, varName, updateInput, callbackBucket, res.strs, "UPDATE")
         );
 
-        const matchedTuple = matchMathField(key);
-        const isMathField = matchedTuple[0];
-        let mathFieldMatch = matchedTuple[1];
-        let settableFieldComparator = key;
-        if (isMathField) {
-            mathFieldMatch = mathFieldMatch as RegExpMatchArray;
-            settableFieldComparator = mathFieldMatch[1];
-        }
-
+        const mathMatch = matchMathField(key);
+        const {isMatched, propertyName} = mathMatch;
+        const settableFieldComparator = isMatched ? propertyName : key;
         const settableField = node.mutableFields.find((x) => x.fieldName === settableFieldComparator);
         const authableField = node.authableFields.find((x) => x.fieldName === key);
 
@@ -479,9 +473,8 @@ function createUpdateAndParams({
                 } else {
                     res.strs.push(`SET ${varName}.${dbFieldName} = point($${param})`);
                 }
-            } else if (isMathField) {
-                mathFieldMatch = mathFieldMatch as RegExpMatchArray;
-                const mathDescriptor = mathDescriptorBuilder(value as number, node, undefined, mathFieldMatch);
+            } else if (isMatched) {
+                const mathDescriptor = mathDescriptorBuilder(value as number, node, undefined, mathMatch);
                 if (updateInput[mathDescriptor.dbName]) {
                     throw new Error(`Ambigous property: ${mathDescriptor.dbName}`);
                 }

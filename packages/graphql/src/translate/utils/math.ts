@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { GraphElement, Node, Relationship } from "../../classes";
 import mapToDbProperty from "../../utils/map-to-db-property";
+import { GraphElement } from "../../classes";
 
-// Map Neo4jGraphQL Math operator to Cypher symbol
+/** Maps Neo4jGraphQL Math operator to Cypher symbol */
 const CypherOperatorMap = new Map<string, string>([
     ["_ADD", "+"],
     ["_SUBTRACT", "-"],
@@ -37,7 +37,7 @@ function mathOperatorToSymbol(mathOperator: string): string {
     throw new Error(`${mathOperator} is not a valid math operator`);
 }
 
-export const MATH_FIELD_REGX = /(\w*)(_INCREMENT|_DECREMENT|_ADD|_SUBTRACT|_DIVIDE|_MULTIPLY)\b/;
+export const MATH_FIELD_REGX = /(?<propertyName>\w*)(?<operatorName>_INCREMENT|_DECREMENT|_ADD|_SUBTRACT|_DIVIDE|_MULTIPLY)\b/;
 
 interface MathDescriptor {
     dbName: string;
@@ -48,38 +48,58 @@ interface MathDescriptor {
     value: number;
 }
 
+interface MathMatch {
+    isMatched: boolean;
+    operatorName: string;
+    propertyName: string;
+}
 // Returns True in case of a valid match and the potential match. 
-export function matchMathField(graphQLFieldName: string): [boolean, RegExpMatchArray | null] {
+export function matchMathField(graphQLFieldName: string): MathMatch {
     const mathFieldMatch = graphQLFieldName.match(MATH_FIELD_REGX);
-    const isMatched = Boolean(mathFieldMatch && mathFieldMatch.length > 2);
-    return [isMatched, isMatched ? mathFieldMatch : null];
+    if (mathFieldMatch && mathFieldMatch.groups) {
+        const operatorName = mathFieldMatch.groups.operatorName;
+        const propertyName = mathFieldMatch.groups.propertyName;
+        const isMatched = Boolean(mathFieldMatch && mathFieldMatch.length > 2 && operatorName && propertyName);
+        return {
+            isMatched,
+            operatorName,
+            propertyName
+        }
+    } 
+    return {
+        isMatched: false,
+        operatorName: "",
+        propertyName: ""
+    }
 }
 
-export function mathDescriptorBuilder(value: number, entity: GraphElement, graphQLFieldName?: string, fieldMatch?: RegExpMatchArray): MathDescriptor {
+export function mathDescriptorBuilder(value: number, entity: GraphElement, graphQLFieldName?: string, fieldMatch?: MathMatch): MathDescriptor {
     if (!fieldMatch && !graphQLFieldName) {
         throw new Error('mathDescriptorBuilder need to be invoked with graphQLFieldName or fieldMatch');
     }
-    let match;
+    let match: MathMatch;
     if (!fieldMatch) {
-        const [isMathField, regMatch] = matchMathField(graphQLFieldName as string);
-        if (!isMathField) {
+        const mathMatch = matchMathField(graphQLFieldName as string);
+        const {isMatched} = mathMatch;
+
+        if (!isMatched) {
             throw new Error(`GraphQL field ${graphQLFieldName} is not a valid Math Field`);
         }
-        match = regMatch;
+        match = mathMatch;
     } else {
         match = fieldMatch;
     }
-    const fieldName =  match[1] as string;
+    const fieldName = match.propertyName;
     const field = entity.primitiveFields.find((x) => x.fieldName === fieldName);
     if (!field) {
         throw new Error(`${fieldName} is not settable`);
     }
     return {
         dbName: mapToDbProperty(entity, fieldName) as string,
-        graphQLType: field .typeMeta.name,
+        graphQLType: field.typeMeta.name,
         fieldName,
-        operationName: match[2],
-        operationSymbol: mathOperatorToSymbol(match[2] as string),
+        operationName: match.operatorName,
+        operationSymbol: mathOperatorToSymbol(match.operatorName as string),
         value
     };
 }
