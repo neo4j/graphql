@@ -21,6 +21,7 @@ import { CallbackBucket } from "../classes/CallbackBucket";
 import { Relationship } from "../classes";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
+import { matchMathField, mathDescriptorBuilder, buildMathStatements } from "./utils/math";
 
 /*
     TODO - lets reuse this function for setting either node or rel properties.
@@ -68,7 +69,7 @@ function createSetRelationshipProperties({
         addCallbackAndSetParam(field, varName, properties, callbackBucket, strs, operation)
     );
 
-    Object.entries(properties).forEach(([key]) => {
+    Object.entries(properties).forEach(([key, value], idx, _properties) => {
         const paramName = `${parameterPrefix}.${key}`;
 
         const pointField = relationship.pointFields.find((x) => x.fieldName === key);
@@ -79,6 +80,20 @@ function createSetRelationshipProperties({
                 strs.push(`SET ${varName}.${pointField.dbPropertyName} = point($${paramName})`);
             }
 
+            return;
+        }
+        
+        const matchedTuple = matchMathField(key);
+        const isMathField = matchedTuple[0];
+        if (isMathField) {
+            const mathFieldMatch = matchedTuple[1] as RegExpMatchArray;
+            const mathDescriptor = mathDescriptorBuilder(value as number, relationship, undefined, mathFieldMatch);
+            if (_properties.find(([_key]) => _key === mathDescriptor.dbName)) {
+                throw new Error(`Ambigous property: ${mathDescriptor.dbName}`);
+            }
+            
+            const mathStatements = buildMathStatements(mathDescriptor, varName, paramName);
+            strs.push(...mathStatements);
             return;
         }
 
