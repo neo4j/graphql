@@ -676,7 +676,6 @@ describe("Mathematical operations tests", () => {
               }
             }
         }
-
         `;
 
         try {
