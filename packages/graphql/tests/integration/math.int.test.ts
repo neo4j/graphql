@@ -312,7 +312,7 @@ describe("Mathematical operations tests", () => {
         type Actor {
             id: ID!
             name: String!
-            worksInProduction: [Movie!]! @relationship(type: "WORKED_IN", direction: OUT)
+            worksInMovies: [Movie!]! @relationship(type: "WORKED_IN", direction: OUT)
         }
         `;
 
@@ -326,7 +326,7 @@ describe("Mathematical operations tests", () => {
         mutation($id: ID, $value: Int) {
             updateActors(where: { id: $id }, 
                 update: {
-                  worksInProduction: [
+                    worksInMovies: [
                     {
                       update: {
                         node: {
@@ -339,7 +339,7 @@ describe("Mathematical operations tests", () => {
               ) {
                 actors {
                     name
-                    worksInProduction {
+                    worksInMovies {
                       viewers
                     }
                 }
@@ -351,7 +351,7 @@ describe("Mathematical operations tests", () => {
             // Create new movie
             await session.run(
                 `
-                CREATE (a:Movie {viewers: $initialViewers}), (b:Actor {id: $id, name: $name}) WITH a,b CREATE (a)<-[worksInProduction: WORKED_IN]-(b) RETURN a, worksInProduction, b
+                CREATE (a:Movie {viewers: $initialViewers}), (b:Actor {id: $id, name: $name}) WITH a,b CREATE (a)<-[worksInMovies: WORKED_IN]-(b) RETURN a, worksInMovies, b
                 `,
                 {
                     id,
@@ -399,7 +399,7 @@ describe("Mathematical operations tests", () => {
         type Actor {
             id: ID!
             name: String!
-            worksInProduction: [Production!]! @relationship(type: "WORKED_IN", direction: OUT)
+            worksInProductions: [Production!]! @relationship(type: "WORKED_IN", direction: OUT)
         }
         `;
 
@@ -413,7 +413,7 @@ describe("Mathematical operations tests", () => {
         mutation($id: ID, $value: Int) {
             updateActors(where: { id: $id }, 
                 update: {
-                  worksInProduction: [
+                  worksInProductions: [
                     {
                       update: {
                         node: {
@@ -426,7 +426,7 @@ describe("Mathematical operations tests", () => {
               ) {
                 actors {
                     name
-                    worksInProduction {
+                    worksInProductions {
                       viewers
                     }
                 }
@@ -438,7 +438,7 @@ describe("Mathematical operations tests", () => {
             // Create new movie
             await session.run(
                 `
-                CREATE (a:Movie {viewers: $initialViewers}), (b:Actor {id: $id, name: $name}) WITH a,b CREATE (a)<-[worksInProduction: WORKED_IN]-(b) RETURN a, worksInProduction, b
+                CREATE (a:Movie {viewers: $initialViewers}), (b:Actor {id: $id, name: $name}) WITH a,b CREATE (a)<-[worksInProductions: WORKED_IN]-(b) RETURN a, worksInProductions, b
                 `,
                 {
                     id,
@@ -486,7 +486,7 @@ describe("Mathematical operations tests", () => {
         type Actor {
             id: ID!
             name: String!
-            worksInProduction: [Production!]! @relationship(type: "WORKED_IN", direction: OUT)
+            worksInProductions: [Production!]! @relationship(type: "WORKED_IN", direction: OUT)
         }
         `;
 
@@ -500,7 +500,7 @@ describe("Mathematical operations tests", () => {
         mutation($id: ID, $value: Int) {
             updateActors(where: { id: $id }, 
                 update: {
-                  worksInProduction: [
+                  worksInProductions: [
                     {
                       update: {
                         node: {
@@ -517,7 +517,7 @@ describe("Mathematical operations tests", () => {
               ) {
                 actors {
                     name
-                    worksInProduction {
+                    worksInProductions {
                       viewers
                     }
                 }
@@ -529,7 +529,7 @@ describe("Mathematical operations tests", () => {
             // Create new movie
             await session.run(
                 `
-                CREATE (a:Movie {viewers: $initialViewers}), (b:Actor {id: $id, name: $name}) WITH a,b CREATE (a)<-[worksInProduction: WORKED_IN]-(b) RETURN a, worksInProduction, b
+                CREATE (a:Movie {viewers: $initialViewers}), (b:Actor {id: $id, name: $name}) WITH a,b CREATE (a)<-[worksInProductions: WORKED_IN]-(b) RETURN a, worksInProductions, b
                 `,
                 {
                     id,
@@ -720,6 +720,7 @@ describe("Mathematical operations tests", () => {
         const typeDefs = `
         type Movie {
             title: String
+            viewers: Int
             actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
         }
         
