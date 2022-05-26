@@ -78,7 +78,7 @@
         "ts-jest": "28.0.3",
         "ts-node": "10.8.0",
         "typescript": "4.7.2",
-        "ws": "8.6.0"
+        "ws": "8.7.0"
     },
     "dependencies": {
         "@graphql-tools/merge": "^8.2.1",
