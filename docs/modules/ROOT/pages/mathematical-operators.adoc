@@ -1,153 +1,103 @@
 [[mathematical-operators]]
 = Mathematical operators
 
-On numerical types (`Int`, `Float`, xref::type-definitions/types.adoc#type-definitions-types-bigint[`BigInt`]) Mathematical operators can be used.
+Mathematical operators are a handy way to update numerical fields in a single roundtrip to the DB.
 
-== Int/BigInt operators
-For Int and Big int types, the following operators are available:
+Specfic operators are available on different numerical types (`Int`, `Float`, xref::type-definitions/types.adoc#type-definitions-types-bigint[`BigInt`]).
+
+We chose to keep operators separated by types as some operators are not available to Natural numbers.
+
+== Supported locations
+Mathematical operators are supported in Update Mutations within these entities:
+
+* `Node`
+* `Nested Nodes`
+* `Relationship properties`
+* `Interfaces`
+
+== Int and BigInt operators
+For `Int` and `BigInt` types, the following operators are available:
 
 * `_DECREMENT`
 * `_INCREMENT`
 
-Using the following type definition:
-[source, graphql, indent=0]
-----
-type Video {
-    viewers: Int
-}
-----
-
-Then, the `viewers` property can be incremented using the following Mutation:
-[source, graphql, indent=0]
-----
-mutation {
-    updateVideos(update: { viewers_INCREMENT: 1 }) {
-        videos {
-            viewers
-        }
-    }
-}
-----
-
 == Float operators
-For the Float type, the following operators are available:
+For `Float` type, the following operators are available:
 
 * `_ADD`
 * `_SUBTRACT`
 * `_MULTIPLY`
 * `_DIVIDE`
 
-Using the following type definition:
+== The social platform schema
+In this section, we use the following GraphQL schema:
+
 [source, graphql, indent=0]
 ----
-type Runner {
-    bestTime: Float
+type Video {
+    id: ID
+    views: Int
+    ownedBy: User @relationship(type: "OWN_VIDEO", properties: "OwnVideo", direction: IN)
+}
+type User {
+    id: ID
+    ownVideo: [Video] @relationship(type: "OWN_VIDEO", properties: "OwnVideo", direction: OUT)
+}
+interface OwnVideo @relationshipProperties {
+    revenue: Float
 }
 ----
 
-Then, the `bestTime` property can be modified using the following Mutation:
+
+=== Simple increment operation
+Let's say that a user visualizes a video, so we want to increment `viewersCount` for that video by 1.
 [source, graphql, indent=0]
 ----
 mutation {
-    updateRunners(update: { bestTime_SUBTRACT: 0.13 }) {
-        runners {
-            bestTime
+    updateVideos(
+		where: { id: "UserID" },
+		update: { viewersCount_INCREMENT: 1 }
+	) 
+    {
+        videos {
+            viewersCount
         }
     }
 }
 ----
 
-== Nested update
-Mathematical operators are not limited to Node updates but are also available in:
+=== Nested example
+Now, let's say that the video platform wants to reward the user with 0.01 dollars for the visualization.
+To do that, we have to update the relationship property `revenue`.
 
-* `Nested Nodes`
-* `Relationship properties`
-* `Interface properties`
-
-Using the following type definition:
-[source, graphql, indent=0]
-----
-type Movie {
-    title: String
-    viewers: Int
-    actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
-}
-
-type Actor {
-    name: String!
-    actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
-}
-
-interface ActedIn @relationshipProperties {
-    pay: Float
-}
-----
-
-Then, the `pay` property can be modified using the following Mutation:
 [source, graphql, indent=0]
 ----
 mutation Mutation {
-    updateActors(
-        where: { name: "Keanu Reeves" },
-         update: {
-            actedIn: [
-            {
-                update: {
-                    edge: {
-                        pay_ADD: 1000000
-                    }
-                }
-            }
-            ]
-        }) {
-        actors {
-        name
-        actedIn {
-            title
-            viewers
-        }
-        actedInConnection {
-            edges {
-                pay
-            }
-        }
-        }
-    }
-}
-----
-
-And to increment the `viewers` property instead:
-[source, graphql, indent=0]
-----
-mutation Mutation {
-    updateActors(
-        where: { name: "Keanu Reeves" },
+    updateUsers(
+        where: { id: "UserID" },
         update: {
-            actedIn: [
-            {
-                update: {
-                    node: {
-                        viewers_INCREMENT: 300
+            ownVideo: [
+                {
+                    update: {
+                        edge: {
+                            revenue_ADD: 0.01
+                        }
                     }
                 }
-            }
             ]
-        }) {
-        actors {
-            name
-            actedIn {
-                title
-                 viewers
         }
-        actedInConnection {
-            edges {
-                pay
+    ) {
+        users {
+            id
+            ownVideoConnection {
+                edges {
+                    revenue
+                }
             }
-        }
         }
     }
 }
 ----
 
 == Optional fields
-Operators remain available for optional fields, this means that if an operator is been used with fields not yet defined then a GraphQL error is raised.
+Operators remain available for optional fields, this means that if a mathematical operator is been used in a field not defined then a GraphQL error is raised.
