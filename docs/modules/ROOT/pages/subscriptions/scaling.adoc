@@ -1,0 +1,47 @@
+[[horizontal-scaling]]
+= Horizontal Scaling
+
+WARNING: Subscriptions are only available as a beta; its API may change in the future. It is not recommended to use subscriptions in production environments.
+
+== The Problem
+Horizontal scaling of any real time system can be tricky. Especially when dealing with long lived connections such as WebSockets.
+Consider the following example, in which _Client A_ is subscribed to a certain event, that is triggered by _Client B_:
+
+image::subscriptions/diagram1.png[title="Simple subscriptions setup"]
+
+
+In the previous example, the server running the GraphQL service, will do the following:
+
+1. Receive the _mutation_ by _Client B_.
+2. Run the Cypher Query on Neo4j.
+3. Trigger the subscription event to _Client A_.
+
+This setup works fine for a single instance of `@neo4j/graphql`. However, when trying to scale horizontally, by adding more GraphQL servers,
+we may encounter the following situation:
+
+image::subscriptions/diagram2.png[title="Subscriptions with 2 servers"]
+
+In this case, _Client B_ is subscribed to one server, however, when _Client A_ triggers the mutation, it queries a different server.
+
+The change happens successfully in the database, and any client connected to the same server will receive the subscription event, however, _Client A_
+will **not** receive any update, as the server it's connected to will not get notified of any mutation.
+
+This is the behaviour of the xref::subscriptions/plugins/single-instance.adoc[single instance plugin] provided by the library, so it is not suitable for use in a horizontally scaled environment.
+
+## Using PubSub
+One solution to this problem, and how `@neo4j/graphql` is intended to work, is to use a PubSub pattern with an external broker to broadcast events through multiple
+instances. This can be achieved through xref::subscriptions/plugins/index.adoc[subscription plugins].
+
+Following the previous example, using an intermediate broker to broadcast the events across all instances, the infrastructure would look like:
+
+image::subscriptions/diagram3.png[title="Subscriptions with 2 servers and message broker"]
+
+In this example, the events are as follow:
+
+1. _Client B_ will query the first server.
+2. The server performs the mutation in the database.
+3. The same server sends an event to the broker.
+4. The broker will then notify every server (broadcast), including the server that originally triggered the event.
+5. Both servers will receive the notification and will trigger any event to their subscribed clients.
+
+NOTE: You can find examples of usage with supported brokers in xref::subscriptions/plugins/index.adoc[plugins].

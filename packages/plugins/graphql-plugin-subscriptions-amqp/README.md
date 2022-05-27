@@ -17,14 +17,14 @@ npm install @neo4j/graphql-plugin-subscriptions-amqp
 ## Usage
 
 ```javascript
-const Neo4jGraphQLSubscriptionsAMQP = require("@neo4j/graphql-plugin-subscriptions-amqp");
+const { Neo4jGraphQLSubscriptionsAMQPPlugin } = require("@neo4j/graphql-plugin-subscriptions-amqp");
 
-const plugin = new Neo4jGraphQLSubscriptionsAMQP();
-
-await plugin.connect({
-    hostname: "localhost",
-    username: "guest",
-    password: "guest",
+const plugin = new Neo4jGraphQLSubscriptionsAMQPPlugin({
+    connection: {
+        hostname: "localhost",
+        username: "guest",
+        password: "guest",
+    },
 });
 
 const neoSchema = new Neo4jGraphQL({
@@ -34,6 +34,12 @@ const neoSchema = new Neo4jGraphQL({
         subscriptions: plugin,
     },
 });
+```
+
+To close the connection with RabbitMQ:
+
+```javascript
+await plugin.close();
 ```
 
 ## Running tests
