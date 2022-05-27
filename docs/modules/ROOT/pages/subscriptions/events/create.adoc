@@ -1,10 +1,10 @@
 [[create]]
 = Create Subscriptions
 
-WARNING: Subscriptions are only available as a beta, its API may change in the future. It is not recommended to use subscriptions in production environments.
+WARNING: Subscriptions are only available as a beta; its API may change in the future. It is not recommended to use subscriptions in production environments.
 
 Subscriptions to `CREATE` events will listen to newly created nodes. A new event will be triggered for each new node.
-The event will contain the node's parameters.
+The event will contain the node's properties.
 
 NOTE: Only nodes created will trigger this event, new relationships will **not** trigger the event.
 
@@ -13,7 +13,7 @@ NOTE: Only nodes created will trigger this event, new relationships will **not**
 A subscription to a type can be made with the top-level subscription `[type]Created`. The subscription will contain the following fields:
 
 * `event`: The event triggering this subscription, in this case it will always be `"CREATE"`.
-* `created[type]`: The properties of the newly created node, only top-level properties, without relationships, are available.
+* `created<typename>`: The properties of the newly created node, only top-level properties, without relationships, are available.
 * `timestamp`: The timestamp in which the mutation was made. Note that multiple events may come with the same timestamp if triggered by the same query.
 
 === Example

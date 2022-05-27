@@ -12,7 +12,7 @@ NOTE: Update events will only be triggered if any of the properties have changed
 A subscription to a type can be made with the top-level subscription `[type]Updated`. The subscription will contain the following fields:
 
 * `event`: The event triggering this subscription, in this case it will always be `"UPDATE"`.
-* `updated\[type\]`: The properties of the updated node, after modification. Only top-level properties, without relationships, are available.
+* `updated<typename>`: The properties of the updated node, after modification. Only top-level properties, without relationships, are available.
 * `previousState`: The old properties of the node, right before the update event. Only top-level properties are available.
 * `timestamp`: The timestamp in which the mutation was made. Note that multiple events may come with the same timestamp if triggered by the same query.
 

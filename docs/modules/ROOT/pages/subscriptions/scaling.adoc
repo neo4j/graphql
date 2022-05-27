@@ -3,7 +3,7 @@
 
 WARNING: Subscriptions are only available as a beta, its API may change in the future. It is not recommended to use subscriptions in production environments.
 
-## The Problem
+== The Problem
 Horizontal scaling of any real time system can be tricky. Especially when dealing with long lived connections such as WebSockets.
 Consider the following example, in which _Client A_ is subscribed to a certain event, that is triggered by _Client B_:
 
@@ -26,7 +26,7 @@ In this case, _Client B_ is subscribed to one server, however, when _Client A_ t
 The change happens successfully in the database, and any client connected to the same server will receive the subscription event, however, _Client A_
 will **not** receive any update, as the server it's connected to will not get notified of any mutation.
 
-This is the behaviour of the xref::subscriptions/plugins/single-instance.adoc[single instance plugin] provided by the library, and it is not intended for production usage.
+This is the behaviour of the xref::subscriptions/plugins/single-instance.adoc[single instance plugin] provided by the library, so it is not suitable for use in a horizontally scaled environment.
 
 ## Using PubSub
 One solution to this problem, and how `@neo4j/graphql` is intended to work, is to use a PubSub pattern with an external broker to broadcast events through multiple
