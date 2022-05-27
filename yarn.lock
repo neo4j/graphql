@@ -1915,13 +1915,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:^0.3.1":
-  version: 0.3.1
-  resolution: "@neo4j-ndl/base@npm:0.3.1"
-  checksum: 191f3babad611b635ced2a9622e854e32bb10b8573ed850cf604cadee8783dfcd677f26a94b72477e4208b2ea593de76e57b4a06175ee33cab42864e2a03178e
-  languageName: node
-  linkType: hard
-
 "@neo4j-ndl/base@npm:^0.4.0":
   version: 0.4.0
   resolution: "@neo4j-ndl/base@npm:0.4.0"
@@ -1929,18 +1922,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:^0.3.0":
-  version: 0.3.1
-  resolution: "@neo4j-ndl/react@npm:0.3.1"
+"@neo4j-ndl/react@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@neo4j-ndl/react@npm:0.4.0"
   dependencies:
     "@heroicons/react": ^1.0.5
-    "@neo4j-ndl/base": ^0.3.1
+    "@neo4j-ndl/base": ^0.4.0
     classnames: ^2.3.1
     react-dropzone: ^12.0.4
     react-table: ^7.7.0
   peerDependencies:
     react: 17.x
-  checksum: 74bfd68a4413c1ee385f0284aa7967eba52334917c837c2f715b1ee89f487966df49823e46f2328a57db00cdfc9ea78c1a290a5739d9235aa69629026cdee6ad
+  checksum: 57769dca859b2010264cad4c5a0ace449702f2c7a6b3e1de98c1f9b46aebe0c1989c124c4a641affa2a919235f68da3d063437a0df0ab296cf9a28bbd08b1a77
   languageName: node
   linkType: hard
 
@@ -2023,7 +2016,7 @@ __metadata:
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
     "@neo4j-ndl/base": ^0.4.0
-    "@neo4j-ndl/react": ^0.3.0
+    "@neo4j-ndl/react": ^0.4.0
     "@neo4j/graphql": ^3.3.0
     "@neo4j/introspector": ^1.0.1
     "@tsconfig/create-react-app": 1.0.2
