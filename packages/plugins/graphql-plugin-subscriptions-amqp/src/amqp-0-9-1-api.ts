@@ -19,7 +19,7 @@
 
 import amqp from "amqplib";
 
-export type ConnectionOptions = amqp.Connection | string;
+export type ConnectionOptions = amqp.Options.Connect | string;
 
 type AmqpApiOptions = {
     exchange: string;
@@ -28,20 +28,16 @@ type AmqpApiOptions = {
 export class AmqpApi<T> {
     private channel: amqp.Channel | undefined;
     private exchange: string;
+    private connection?: amqp.Connection;
 
     constructor({ exchange }: AmqpApiOptions) {
         this.exchange = exchange || "neo4j-graphql";
     }
 
-    public async connect(amqpConnection: ConnectionOptions, cb: (msg: T) => void): Promise<amqp.Connection> {
-        let connection: amqp.Connection;
-        if (typeof amqpConnection === "string") {
-            connection = await amqp.connect(amqpConnection);
-        } else {
-            connection = amqpConnection;
-        }
+    public async connect(amqpConnection: ConnectionOptions, cb: (msg: T) => void): Promise<void> {
+        this.connection = await amqp.connect(amqpConnection);
 
-        this.channel = await this.createChannel(connection);
+        this.channel = await this.createChannel(this.connection);
         const queueName = await this.createQueue(this.channel);
 
         await this.channel.consume(queueName, (msg) => {
@@ -49,7 +45,6 @@ export class AmqpApi<T> {
                 this.consumeMessage(msg, cb);
             }
         });
-        return connection;
     }
 
     public publish(message: T): void {
@@ -58,10 +53,11 @@ export class AmqpApi<T> {
         this.channel.publish(this.exchange, "", Buffer.from(serializedMessage));
     }
 
-    /** Closes the channel used by amqp */
     public async close(): Promise<void> {
         await this.channel?.close();
+        await this.connection?.close();
         this.channel = undefined;
+        this.connection = undefined;
     }
 
     private async createChannel(connection: amqp.Connection): Promise<amqp.Channel> {

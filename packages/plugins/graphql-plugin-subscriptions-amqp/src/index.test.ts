@@ -26,7 +26,9 @@ describe("index", () => {
     });
 
     test("Neo4jGraphQLSubscriptionsAMQP plugin interface", () => {
-        const plugin = new Neo4jGraphQLSubscriptionsAMQP();
+        const plugin = new Neo4jGraphQLSubscriptionsAMQP({
+            connection: "",
+        });
 
         expect(plugin.events).toBeInstanceOf(EventEmitter);
         expect(typeof plugin.publish).toBe("function");
