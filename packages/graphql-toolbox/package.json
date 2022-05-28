@@ -62,7 +62,7 @@
         "@types/crypto-js": "4.1.1",
         "@types/lodash.debounce": "4.0.7",
         "@types/markdown-it": "12.2.3",
-        "@types/prettier": "2.6.1",
+        "@types/prettier": "2.6.2",
         "@types/react-dom": "18.0.5",
         "@types/uuid": "8.3.4",
         "@types/webpack": "5.28.0",
