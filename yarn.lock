@@ -2024,7 +2024,7 @@ __metadata:
     "@types/crypto-js": 4.1.1
     "@types/lodash.debounce": 4.0.7
     "@types/markdown-it": 12.2.3
-    "@types/prettier": 2.6.2
+    "@types/prettier": 2.6.3
     "@types/react-dom": 18.0.5
     "@types/uuid": 8.3.4
     "@types/webpack": 5.28.0
@@ -2901,10 +2901,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prettier@npm:2.6.2":
-  version: 2.6.2
-  resolution: "@types/prettier@npm:2.6.2"
-  checksum: b1b0aadc2a325bcbf0040abd1f75de8cc08dd4a203c43c18dbb209c9e53b3e1c5c72faf82b7868302487f5cd0721c9ec26ee7e3fabd986d8066aba284196bd6d
+"@types/prettier@npm:2.6.3":
+  version: 2.6.3
+  resolution: "@types/prettier@npm:2.6.3"
+  checksum: e1836699ca189fff6d2a73dc22e028b6a6f693ed1180d5998ac29fa197caf8f85aa92cb38db642e4a370e616b451cb5722ad2395dab11c78e025a1455f37d1f0
   languageName: node
   linkType: hard
 
