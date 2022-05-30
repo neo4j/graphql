@@ -1915,13 +1915,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:^0.3.1":
-  version: 0.3.1
-  resolution: "@neo4j-ndl/base@npm:0.3.1"
-  checksum: 191f3babad611b635ced2a9622e854e32bb10b8573ed850cf604cadee8783dfcd677f26a94b72477e4208b2ea593de76e57b4a06175ee33cab42864e2a03178e
-  languageName: node
-  linkType: hard
-
 "@neo4j-ndl/base@npm:^0.4.0":
   version: 0.4.0
   resolution: "@neo4j-ndl/base@npm:0.4.0"
@@ -1929,22 +1922,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:^0.3.0":
-  version: 0.3.1
-  resolution: "@neo4j-ndl/react@npm:0.3.1"
+"@neo4j-ndl/react@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@neo4j-ndl/react@npm:0.4.0"
   dependencies:
     "@heroicons/react": ^1.0.5
-    "@neo4j-ndl/base": ^0.3.1
+    "@neo4j-ndl/base": ^0.4.0
     classnames: ^2.3.1
     react-dropzone: ^12.0.4
     react-table: ^7.7.0
   peerDependencies:
     react: 17.x
-  checksum: 74bfd68a4413c1ee385f0284aa7967eba52334917c837c2f715b1ee89f487966df49823e46f2328a57db00cdfc9ea78c1a290a5739d9235aa69629026cdee6ad
+  checksum: 57769dca859b2010264cad4c5a0ace449702f2c7a6b3e1de98c1f9b46aebe0c1989c124c4a641affa2a919235f68da3d063437a0df0ab296cf9a28bbd08b1a77
   languageName: node
   linkType: hard
 
-"@neo4j/graphql-ogm@^3.2.3, @neo4j/graphql-ogm@workspace:packages/ogm":
+"@neo4j/graphql-ogm@^3.3.0, @neo4j/graphql-ogm@workspace:packages/ogm":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-ogm@workspace:packages/ogm"
   dependencies:
@@ -1952,7 +1945,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^2.3.2
     "@graphql-codegen/typescript": ^2.4.2
     "@graphql-tools/merge": ^8.2.1
-    "@neo4j/graphql": ^3.2.3
+    "@neo4j/graphql": ^3.3.0
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/jest": 27.5.1
     "@types/node": 16.11.36
@@ -1995,7 +1988,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-plugin-subscriptions-amqp@workspace:packages/plugins/graphql-plugin-subscriptions-amqp"
   dependencies:
-    "@neo4j/graphql": ^3.2.3
+    "@neo4j/graphql": ^3.3.0
     "@types/amqplib": 0.8.2
     "@types/debug": 4.1.7
     "@types/jest": 27.5.1
@@ -2014,7 +2007,7 @@ __metadata:
     typescript: 4.7.2
     ws: 8.7.0
   peerDependencies:
-    "@neo4j/graphql": ^3.2.3
+    "@neo4j/graphql": ^3.3.0
   languageName: unknown
   linkType: soft
 
@@ -2023,15 +2016,15 @@ __metadata:
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
     "@neo4j-ndl/base": ^0.4.0
-    "@neo4j-ndl/react": ^0.3.0
-    "@neo4j/graphql": ^3.2.3
+    "@neo4j-ndl/react": ^0.4.0
+    "@neo4j/graphql": ^3.3.0
     "@neo4j/introspector": ^1.0.1
     "@tsconfig/create-react-app": 1.0.2
     "@types/codemirror": 5.60.5
     "@types/crypto-js": 4.1.1
     "@types/lodash.debounce": 4.0.7
     "@types/markdown-it": 12.2.3
-    "@types/prettier": 2.6.1
+    "@types/prettier": 2.6.3
     "@types/react-dom": 18.0.5
     "@types/uuid": 8.3.4
     "@types/webpack": 5.28.0
@@ -2082,7 +2075,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@^3.2.3, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@^3.3.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -2143,7 +2136,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
-    "@neo4j/graphql": ^3.2.3
+    "@neo4j/graphql": ^3.3.0
     "@types/jest": 27.5.1
     "@types/node": 16.11.36
     "@types/pluralize": 0.0.29
@@ -2908,7 +2901,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prettier@npm:2.6.1, @types/prettier@npm:^2.1.5":
+"@types/prettier@npm:2.6.3":
+  version: 2.6.3
+  resolution: "@types/prettier@npm:2.6.3"
+  checksum: e1836699ca189fff6d2a73dc22e028b6a6f693ed1180d5998ac29fa197caf8f85aa92cb38db642e4a370e616b451cb5722ad2395dab11c78e025a1455f37d1f0
+  languageName: node
+  linkType: hard
+
+"@types/prettier@npm:^2.1.5":
   version: 2.6.1
   resolution: "@types/prettier@npm:2.6.1"
   checksum: b25ec46d18129fa40c1a1f42feb7406e8f19901ba5261ba3c71600ad14996ae07b4f4b727a9b83da673948011e59d870fc519166f05b5d49e9ad39db1aea8c93
@@ -7466,9 +7466,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:26.2.2":
-  version: 26.2.2
-  resolution: "eslint-plugin-jest@npm:26.2.2"
+"eslint-plugin-jest@npm:26.4.5":
+  version: 26.4.5
+  resolution: "eslint-plugin-jest@npm:26.4.5"
   dependencies:
     "@typescript-eslint/utils": ^5.10.0
   peerDependencies:
@@ -7479,7 +7479,7 @@ __metadata:
       optional: true
     jest:
       optional: true
-  checksum: c1299a0bb465196d3c8a26ee892e29398b91bb741fe69ac6b19b54096f795142a152355ca520d80c778fb588ba2282a7c625ef204c17fe65ee94709d16970d46
+  checksum: f27b9f57628c424a7a67963cac07d7b7c6093cb5b5f0ac7a33dd384b726f43705d719adc110133ec7f699b4cc4a0a109b7340bb28f97ef7557c557094fee31bb
   languageName: node
   linkType: hard
 
@@ -12109,7 +12109,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "migration@workspace:examples/migration"
   dependencies:
-    "@neo4j/graphql": ^3.2.3
+    "@neo4j/graphql": ^3.3.0
     apollo-server: ^3.6.1
     graphql: 16.5.0
     neo4j-driver: 4.4.5
@@ -12491,8 +12491,8 @@ __metadata:
   resolution: "neo-push-server@workspace:examples/neo-push/server"
   dependencies:
     "@faker-js/faker": 7.1.0
-    "@neo4j/graphql": ^3.2.3
-    "@neo4j/graphql-ogm": ^3.2.3
+    "@neo4j/graphql": ^3.3.0
+    "@neo4j/graphql-ogm": ^3.3.0
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/bcrypt": 5.0.0
     "@types/debug": 4.1.7
@@ -12566,7 +12566,7 @@ __metadata:
     eslint-import-resolver-typescript: 2.7.1
     eslint-plugin-eslint-comments: 3.2.0
     eslint-plugin-import: 2.26.0
-    eslint-plugin-jest: 26.2.2
+    eslint-plugin-jest: 26.4.5
     eslint-plugin-jsx-a11y: 6.5.1
     eslint-plugin-react: 7.30.0
     graphql: 16.5.0

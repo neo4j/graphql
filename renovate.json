@@ -14,6 +14,10 @@
     ],
     "packageRules": [
         {
+            "groupName": "neo4j-ndl",
+            "matchPackagePatterns": ["^@neo4j-ndl/"]
+        },
+        {
             "matchDepTypes": ["dependencies"],
             "matchFiles": ["packages/graphql/package.json"],
             "labels": ["dependency upgrade", "graphql"]

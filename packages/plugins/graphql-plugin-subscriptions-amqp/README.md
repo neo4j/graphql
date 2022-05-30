@@ -17,9 +17,9 @@ npm install @neo4j/graphql-plugin-subscriptions-amqp
 ## Usage
 
 ```javascript
-const Neo4jGraphQLSubscriptionsAMQP = require("@neo4j/graphql-plugin-subscriptions-amqp");
+const { Neo4jGraphQLSubscriptionsAMQPPlugin } = require("@neo4j/graphql-plugin-subscriptions-amqp");
 
-const plugin = new Neo4jGraphQLSubscriptionsAMQP({
+const plugin = new Neo4jGraphQLSubscriptionsAMQPPlugin({
     connection: {
         hostname: "localhost",
         username: "guest",
