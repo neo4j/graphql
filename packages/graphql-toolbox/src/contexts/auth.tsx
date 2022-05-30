@@ -29,6 +29,7 @@ interface LoginOptions {
     username: string;
     password: string;
     url: string;
+    secure?: string;
 }
 
 export interface State {
@@ -86,7 +87,8 @@ export function AuthProvider(props: any) {
     [value, setValue] = useState<State>({
         login: async (options: LoginOptions) => {
             const auth = neo4j.auth.basic(options.username, options.password);
-            const driver = neo4j.driver(options.url, auth);
+            const encrypted = options.secure === "on" ? 'ENCRYPTION_ON' : 'ENCRYPTION_OFF';
+            const driver = neo4j.driver(options.url, auth, { encrypted });
             await driver.verifyConnectivity();
 
             const databases = await getDatabases(driver);
