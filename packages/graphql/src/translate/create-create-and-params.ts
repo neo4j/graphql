@@ -243,6 +243,17 @@ function createCreateAndParams({
             return res;
         }
 
+        // Insert NOT EXISTS() ??
+
+        // if (value === null) {
+        //     res.clauses.push(
+        //         `${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${
+        //             relationField.typeMeta.name
+        //         }))`
+        //     );
+        //     return res;
+        // }
+
         res.creates.push(`SET ${varName}.${dbFieldName} = $${varNameKey}`);
         res.params[varNameKey] = value;
 

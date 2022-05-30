@@ -71,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         await driver.close();
     });
 
-    test("Do not allow more than one implementation for one-to-one relationships", async () => {
+    test("should not allow more than one node for creation of one-to-one relationships", async () => {
         const createMutation = `
             mutation createAbces {
                 ${testAbce.operations.create}(
@@ -116,7 +116,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         expect(createMutationResults.data as any).toBeNull();
     });
 
-    test("XXXXXXXX", async () => {
+    test("should not allow creating a second node to an existing one-to-one relationship", async () => {
         const createMutation = `
             mutation createAbces {
                 ${testAbce.operations.create}(
@@ -175,7 +175,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         const updateMutation = `
             mutation ddfs{
                 ${testAbce.operations.update}(where: { id: "${abcesId}" }
-                    create: { interface:{ node: { ${testChildOne.name}: { name: "childone name2" } } } }
+                    create: { interface: { node: { ${testChildOne.name}: { name: "childone name2" } } } }
                 ){
                     ${testAbce.plural} {
                         id
@@ -197,30 +197,34 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             },
         });
 
-        console.log(updateMutationResults.data as any);
+        expect(updateMutationResults.errors).toHaveLength(1);
+        expect(updateMutationResults.errors?.[0].message).toBe(
+            `Relation field "interface" cannot have more than one node linked`
+        );
+        expect(updateMutationResults.data as any).toBeNull();
 
-        expect(updateMutationResults.errors).toBeUndefined();
-        expect(updateMutationResults.data as any).toEqual({
-            [testAbce.operations.update]: {
-                [testAbce.plural]: [
-                    {
-                        id: expect.any(String),
-                        interface: {
-                            id: expect.any(String),
-                            name: "childone name2",
-                            __typename: testChildOne.name,
-                        },
-                    },
-                    {
-                        id: expect.any(String),
-                        interface: {
-                            id: expect.any(String),
-                            name: "childone name second round",
-                            __typename: testChildOne.name,
-                        },
-                    },
-                ],
-            },
-        });
+        // expect(updateMutationResults.errors).toBeUndefined();
+        // expect(updateMutationResults.data as any).toEqual({
+        //     [testAbce.operations.update]: {
+        //         [testAbce.plural]: [
+        //             {
+        //                 id: expect.any(String),
+        //                 interface: {
+        //                     id: expect.any(String),
+        //                     name: "childone name2",
+        //                     __typename: testChildOne.name,
+        //                 },
+        //             },
+        //             {
+        //                 id: expect.any(String),
+        //                 interface: {
+        //                     id: expect.any(String),
+        //                     name: "childone name second round",
+        //                     __typename: testChildOne.name,
+        //                 },
+        //             },
+        //         ],
+        //     },
+        // });
     });
 });
