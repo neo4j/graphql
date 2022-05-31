@@ -2,25 +2,51 @@
 
 ## Problem
 
-Put the description of the problem here.
+This feature request was raised in [#917](https://github.com/neo4j/graphql/issues/917).
+A once created one-to-one (only?) relationship should, when the `@readonly` directive is present, not be able to be updated anymore.
+This is currently not possible and also prevented by the directive combination check.
 
 ## Proposed Solution
 
-How are you proposing we will solve the problem described above?
+Given the following type definitions:
+```
+type Product {
+    id: ID
+    name: String
+    createdBy: Application! @relationship(type: "CREATED_BY", direction: OUT) @readonly
+}
 
-Feel free to add/remove subheadings below as appropriate:
+type Application {
+    name: String
+}
+```
+One way to achieve it is by removing the ability to update the relationship via the `<type>UpdateInput`.
+The `<type><fieldName>UpdateFieldInput` has to be remove, see below.
+```
+input ProductUpdateInput {
+  createdBy: ProductCreatedByUpdateFieldInput // <- remove this line
+  id: ID
+  name: String
+}
+```
+What about relationship properties, are they still allowed to be updated?
+
+The directive combination `@relationship` and `@readonly` has to be allowed of course.
+
+Note: A readonly relationship, in the example above `createdBy`, can still be deleted.
 
 ### Usage Examples
 
+tbd
+
 ## Risks
 
-What risks might cause us to go over the appetite described above?
+What about many-to-many relationships? 
 
 ### Security consideration
 
-Please take some time to think about potential security issues/considerations for the proposed solution.
-For example: How can a malicious user abuse this? How can we prevent that in such case?
+None
 
 ## Out of Scope
 
-What are we definitely not going to implement in this solution?
+- tbd
