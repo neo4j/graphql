@@ -24,6 +24,7 @@ import Neo4jLogoIcon from "../../assets/Neo4j-logo-color.svg";
 import { AuthContext } from "../../contexts/auth";
 import { SettingsContext } from "../../contexts/settings";
 import { Screen, ScreenContext } from "../../contexts/screen";
+import { CustomSelect } from "../../components/CustomSelect";
 
 export const TopBar = () => {
     const auth = useContext(AuthContext);
@@ -59,23 +60,20 @@ export const TopBar = () => {
                     {auth.databases?.length ? (
                         <Fragment>
                             <span className="mx-2">/</span>
-                            <select
-                                name="databaseselection"
-                                className="w-36 cursor-pointer px-2 py-1 rounded border border-gray-100"
-                                data-test-topbar-database-selection
+                            <CustomSelect
                                 value={auth.selectedDatabaseName}
                                 disabled={screen.view !== Screen.TYPEDEFS}
                                 onChange={(event) => auth.setSelectedDatabaseName(event.target.value)}
+                                testTag="data-test-topbar-database-selection"
                             >
                                 {auth.databases.map((db) => {
                                     return (
                                         <option key={db.name} value={db.name}>
                                             {db.name}
-                                            {/* {db.home ? " - home" : ""} */}
                                         </option>
                                     );
                                 })}
-                            </select>
+                            </CustomSelect>
                         </Fragment>
                     ) : null}
                 </div>
