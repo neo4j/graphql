@@ -57,8 +57,7 @@ interface MathMatch {
 export function matchMathField(graphQLFieldName: string): MathMatch {
     const mathFieldMatch = graphQLFieldName.match(MATH_FIELD_REGX);
     if (mathFieldMatch && mathFieldMatch.groups) {
-        const operatorName = mathFieldMatch.groups.operatorName;
-        const propertyName = mathFieldMatch.groups.propertyName;
+        const { operatorName, propertyName } = mathFieldMatch.groups;
         const isMatched = Boolean(mathFieldMatch && mathFieldMatch.length > 2 && operatorName && propertyName);
         return {
             isMatched,
@@ -75,7 +74,7 @@ export function matchMathField(graphQLFieldName: string): MathMatch {
 
 export function mathDescriptorBuilder(value: number, entity: GraphElement, graphQLFieldName?: string, fieldMatch?: MathMatch): MathDescriptor {
     if (!fieldMatch && !graphQLFieldName) {
-        throw new Error('mathDescriptorBuilder need to be invoked with graphQLFieldName or fieldMatch');
+        throw new Error('mathDescriptorBuilder needs to be invoked with graphQLFieldName or fieldMatch');
     }
     let match: MathMatch;
     if (!fieldMatch) {
