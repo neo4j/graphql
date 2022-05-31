@@ -117,9 +117,9 @@ export function buildMathStatements(mathDescriptor: MathDescriptor, scope: strin
     const bitSize = mathDescriptor.graphQLType === "Int" ? 32 : 64;
     // Avoid overflows, for 64 bit overflows, a long overflow is raised anyway by Neo4j
     statements.push(`CALL apoc.util.validate(${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param} > 2^${bitSize-1}-1, 'Value returned from operator %s is larger than %s bit', ["${mathDescriptor.operationName}", "${bitSize}"])`);
-    const cyperType = mathDescriptor.graphQLType === "Int" || mathDescriptor.graphQLType === "BigInt" ? "INTEGER" : "FLOAT";
+    const cypherType = mathDescriptor.graphQLType === "Int" || mathDescriptor.graphQLType === "BigInt" ? "INTEGER" : "FLOAT";
     // Avoid type coercion
-    statements.push(`CALL apoc.util.validate(apoc.meta.type(${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}) <> "${cyperType}", 'Value returned from operator %s does not match: %s', ["${mathDescriptor.operationName}", "${mathDescriptor.graphQLType}"])`);
+    statements.push(`CALL apoc.util.validate(apoc.meta.type(${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}) <> "${cypherType}", 'Value returned from operator %s does not match: %s', ["${mathDescriptor.operationName}", "${mathDescriptor.graphQLType}"])`);
     statements.push(`SET ${scope}.${mathDescriptor.dbName} = ${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}`);
     statements.push(`}`);
     return statements;
