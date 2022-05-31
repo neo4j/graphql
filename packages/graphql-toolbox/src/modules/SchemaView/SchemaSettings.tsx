@@ -23,6 +23,7 @@ import { ProTooltip } from "../../components/ProTooltip";
 import { Storage } from "src/utils/storage";
 import { LOCAL_STATE_CONSTRAINT, LOCAL_STATE_ENABLE_DEBUG, LOCAL_STATE_ENABLE_REGEX } from "src/constants";
 import { ConstraintState } from "src/types";
+import { CustomSelect } from "src/components/CustomSelect";
 
 interface Props {
     isRegexChecked: string | null;
@@ -143,23 +144,23 @@ export const SchemaSettings = ({
                             width={150}
                         />
                     </div>
-                    <select
-                        name="constraintselection"
-                        className="w-36 mt-2 cursor-pointer px-2 py-1 rounded border border-gray-100"
-                        data-test-schema-settings-selection
-                        value={constraintState || undefined}
-                        onChange={(event) => onChangeConstraintState(event.target.value)}
-                    >
-                        {Object.keys(ConstraintState)
-                            .filter((x) => !isNaN(parseInt(x)))
-                            .map((constraintVal) => {
-                                return (
-                                    <option key={constraintVal} value={constraintVal}>
-                                        {ConstraintState[constraintVal]}
-                                    </option>
-                                );
-                            })}
-                    </select>
+                    <div className="mt-2">
+                        <CustomSelect
+                            value={constraintState || undefined}
+                            onChange={(event) => onChangeConstraintState(event.target.value)}
+                            testTag="data-test-schema-settings-selection"
+                        >
+                            {Object.keys(ConstraintState)
+                                .filter((x) => !isNaN(parseInt(x)))
+                                .map((constraintVal) => {
+                                    return (
+                                        <option key={constraintVal} value={constraintVal}>
+                                            {ConstraintState[constraintVal]}
+                                        </option>
+                                    );
+                                })}
+                        </CustomSelect>
+                    </div>
                 </div>
             </div>
         </React.Fragment>

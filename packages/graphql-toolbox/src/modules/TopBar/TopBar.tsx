@@ -24,6 +24,7 @@ import Neo4jLogoIcon from "../../assets/Neo4j-logo-color.svg";
 import { AuthContext } from "../../contexts/auth";
 import { SettingsContext } from "../../contexts/settings";
 import { Screen, ScreenContext } from "../../contexts/screen";
+import { CustomSelect } from "../../components/CustomSelect";
 
 export const TopBar = () => {
     const auth = useContext(AuthContext);
@@ -45,7 +46,8 @@ export const TopBar = () => {
             <div className="flex-1 flex justify-start">
                 <div className="flex items-center justify-space">
                     <img src={Neo4jLogoIcon} alt="Neo4j logo Icon" className="ml-8 w-24" />
-                    <p className="ml-8 text-base">GraphQL Toolbox</p>
+                    <p className="ml-6 text-base">GraphQL Toolbox</p>
+                    <div className="px-2 py-1 ml-3 rounded n-bg-danger-20 n-text-danger-60 text-sm">beta</div>
                 </div>
             </div>
             <div className="flex-1 flex justify-center">
@@ -58,23 +60,20 @@ export const TopBar = () => {
                     {auth.databases?.length ? (
                         <Fragment>
                             <span className="mx-2">/</span>
-                            <select
-                                name="databaseselection"
-                                className="w-36 cursor-pointer px-2 py-1 rounded border border-gray-100"
-                                data-test-topbar-database-selection
+                            <CustomSelect
                                 value={auth.selectedDatabaseName}
                                 disabled={screen.view !== Screen.TYPEDEFS}
                                 onChange={(event) => auth.setSelectedDatabaseName(event.target.value)}
+                                testTag="data-test-topbar-database-selection"
                             >
                                 {auth.databases.map((db) => {
                                     return (
                                         <option key={db.name} value={db.name}>
                                             {db.name}
-                                            {/* {db.home ? " - home" : ""} */}
                                         </option>
                                     );
                                 })}
-                            </select>
+                            </CustomSelect>
                         </Fragment>
                     ) : null}
                 </div>
