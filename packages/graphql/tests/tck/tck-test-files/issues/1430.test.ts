@@ -28,7 +28,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
 
     beforeAll(() => {
         typeDefs = gql`
-            type Abce {
+            type ABCE {
                 id: ID @id
                 name: String
                 interface: InterfaceMom @relationship(type: "HAS_INTERFACE", direction: OUT)
@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Abce)
+            "MATCH (this:ABCE)
             WHERE this.id = $this_id
             CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)),'Relation field \\"%s\\" cannot have more than one node linked',[\\"interface\\"])
             CREATE (this_create_interface_ChildOne0_node_ChildOne:ChildOne)

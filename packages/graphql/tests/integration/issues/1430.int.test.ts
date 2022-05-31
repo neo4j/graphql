@@ -71,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         await driver.close();
     });
 
-    test("should not allow more than one node for creation of one-to-one relationships", async () => {
+    test("should not allow to create more than one node for a one-to-one relationship", async () => {
         const createMutation = `
             mutation createAbces {
                 ${testAbce.operations.create}(
