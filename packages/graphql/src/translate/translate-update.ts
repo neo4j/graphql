@@ -269,7 +269,7 @@ export default async function translateUpdate({
                     const relTypeStr = `[${relationField.properties ? propertiesName : ""}:${relationField.type}]`;
 
                     if (!relationField.typeMeta.array) {
-                        const s = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'message %d',[42])`;
+                        const s = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relation field "%s" cannot have more than one node linked',["${relationField.fieldName}"])`;
                         createStrs.push(s);
                     }
 

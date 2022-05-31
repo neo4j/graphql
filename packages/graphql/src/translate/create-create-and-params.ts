@@ -90,10 +90,12 @@ function createCreateAndParams({
 
                 if (v.create) {
                     const isInterfaceAnArray = relationField.interface?.typeMeta.array;
-                    const n = Object.keys(v.create.node || {});
-                    const t = refNodes.filter((r) => n.includes(r.name));
-                    // const inputCreateNodeLength = Object.keys(v.create.node || {}).filter(n => refNodes.in);
-                    if (!isInterfaceAnArray && t.length > 1) {
+                    const createNodeInputIsOfTypeRefNode = !!v.create.node?.[refNode.name];
+                    const createNodeInputKeys = createNodeInputIsOfTypeRefNode
+                        ? Object.keys((v.create.node as any[]) || [])
+                        : [];
+                    const isCreatingMultipleNodesForOneToOneRel = !isInterfaceAnArray && createNodeInputKeys.length > 1;
+                    if (isCreatingMultipleNodesForOneToOneRel) {
                         throw new Error(
                             `Relation field "${
                                 relationField.interface?.dbPropertyName || relationField.interface?.fieldName
@@ -244,17 +246,6 @@ function createCreateAndParams({
 
             return res;
         }
-
-        // Insert NOT EXISTS() ??
-
-        // if (value === null) {
-        //     res.clauses.push(
-        //         `${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${
-        //             relationField.typeMeta.name
-        //         }))`
-        //     );
-        //     return res;
-        // }
 
         res.creates.push(`SET ${varName}.${dbFieldName} = $${varNameKey}`);
         res.params[varNameKey] = value;

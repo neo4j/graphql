@@ -198,33 +198,9 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         });
 
         expect(updateMutationResults.errors).toHaveLength(1);
-        expect(updateMutationResults.errors?.[0].message).toBe(
+        expect(updateMutationResults.errors?.[0].message).toContain(
             `Relation field "interface" cannot have more than one node linked`
         );
         expect(updateMutationResults.data as any).toBeNull();
-
-        // expect(updateMutationResults.errors).toBeUndefined();
-        // expect(updateMutationResults.data as any).toEqual({
-        //     [testAbce.operations.update]: {
-        //         [testAbce.plural]: [
-        //             {
-        //                 id: expect.any(String),
-        //                 interface: {
-        //                     id: expect.any(String),
-        //                     name: "childone name2",
-        //                     __typename: testChildOne.name,
-        //                 },
-        //             },
-        //             {
-        //                 id: expect.any(String),
-        //                 interface: {
-        //                     id: expect.any(String),
-        //                     name: "childone name second round",
-        //                     __typename: testChildOne.name,
-        //                 },
-        //             },
-        //         ],
-        //     },
-        // });
     });
 });
