@@ -79,6 +79,7 @@ export function AuthProvider(props: any) {
                     username: loginPayload.username,
                     password: loginPayload.password,
                     url: loginPayload.url,
+                    secure: loginPayload.secure
                 })
                 .catch(() => {});
         }
@@ -87,7 +88,7 @@ export function AuthProvider(props: any) {
     [value, setValue] = useState<State>({
         login: async (options: LoginOptions) => {
             const auth = neo4j.auth.basic(options.username, options.password);
-            const encrypted = options.secure === "on" ? 'ENCRYPTION_ON' : 'ENCRYPTION_OFF';
+            const encrypted = options.secure === "on" ? "ENCRYPTION_ON" : "ENCRYPTION_OFF";
             const driver = neo4j.driver(options.url, auth, { encrypted });
             await driver.verifyConnectivity();
 
@@ -98,6 +99,7 @@ export function AuthProvider(props: any) {
                 username: options.username,
                 password: options.password,
                 url: options.url,
+                secure: options.secure
             } as LoginPayload);
             Storage.storeJSON(LOCAL_STATE_LOGIN, encodedPayload);
 

@@ -19,7 +19,7 @@
 
 import { Screen } from "./Screen";
 
-const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
+const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j", SECURE=false } = process.env;
 
 export class Login extends Screen {
     public async setUsername(username: string) {
@@ -58,6 +58,18 @@ export class Login extends Screen {
         );
     }
 
+    public async setSecure(checked: boolean) {
+        await this.page.waitForSelector("[data-test-login-secure]");
+        await this.page.$eval(
+            "[data-test-login-secure]",
+            (el, injected) => {
+                // @ts-ignore - Find a way to type this
+                el.checked = injected;
+            },
+            checked
+        );
+    }
+
     public async submit() {
         await this.page.waitForSelector("[data-test-login-button]");
         await this.page.click("[data-test-login-button]");
@@ -67,10 +79,11 @@ export class Login extends Screen {
         await this.page.waitForSelector("[data-test-schema-editor-build-button]");
     }
 
-    public async login(username: string = NEO_USER, password: string = NEO_PASSWORD, url: string = NEO_URL) {
+    public async login(username: string = NEO_USER, password: string = NEO_PASSWORD, url: string = NEO_URL, secure: boolean = Boolean(SECURE)) {
         await this.setUsername(username);
         await this.setPassword(password);
         await this.setURL(url);
+        await this.setSecure(secure);
         await this.submit();
         await this.awaitSuccess();
     }
