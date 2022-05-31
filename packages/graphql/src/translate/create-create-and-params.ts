@@ -90,8 +90,10 @@ function createCreateAndParams({
 
                 if (v.create) {
                     const isInterfaceAnArray = relationField.interface?.typeMeta.array;
-                    const inputCreateNodeLength = Object.keys(v.create.node || {}).length;
-                    if (!isInterfaceAnArray && inputCreateNodeLength > 1) {
+                    const n = Object.keys(v.create.node || {});
+                    const t = refNodes.filter((r) => n.includes(r.name));
+                    // const inputCreateNodeLength = Object.keys(v.create.node || {}).filter(n => refNodes.in);
+                    if (!isInterfaceAnArray && t.length > 1) {
                         throw new Error(
                             `Relation field "${
                                 relationField.interface?.dbPropertyName || relationField.interface?.fieldName

@@ -268,6 +268,11 @@ export default async function translateUpdate({
                     const propertiesName = `${baseName}_relationship`;
                     const relTypeStr = `[${relationField.properties ? propertiesName : ""}:${relationField.type}]`;
 
+                    if (!relationField.typeMeta.array) {
+                        const s = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'message %d',[42])`;
+                        createStrs.push(s);
+                    }
+
                     const createAndParams = createCreateAndParams({
                         context,
                         callbackBucket,
