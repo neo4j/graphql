@@ -20,7 +20,7 @@ endif::[]
 
 > This is the documentation for the Neo4j GraphQL Library version 3.0, authored by the Neo4j GraphQL Team.
 
-This documentation covers the following topic:
+This documentation covers the following topics:
 
 - xref::introduction.adoc[Introduction] - Introduction to the Neo4j GraphQL Library.
 - xref::getting-started.adoc[Getting Started] - Start here if you want to quickly get up and running with the library.

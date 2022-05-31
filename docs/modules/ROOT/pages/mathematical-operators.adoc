@@ -3,7 +3,7 @@
 
 Mathematical operators are a handy way to update numerical fields in a single roundtrip to the DB.
 
-Specfic operators are available on different numerical types (`Int`, `Float`, xref::type-definitions/types.adoc#type-definitions-types-bigint[`BigInt`]).
+Specific operators are available on different numerical types (`Int`, `Float`, xref::type-definitions/types.adoc#type-definitions-types-bigint[`BigInt`]).
 
 We chose to keep operators separated by types as some operators are not available to Natural numbers.
 
@@ -50,10 +50,10 @@ interface OwnVideo @relationshipProperties {
 
 
 === Simple increment operation
-Let's say that a user visualizes a video, so we want to increment `viewersCount` for that video by 1.
+Let's say that a user views a video, so we want to increment `viewersCount` for that video by 1.
 [source, graphql, indent=0]
 ----
-mutation {
+mutation incrementViewCountMutation {
   updateVideos(
     where: { id: "VideoID" }
     update: { views_INCREMENT: 1 }
@@ -67,12 +67,12 @@ mutation {
 ----
 
 === Nested example
-Now, let's say that the video platform wants to reward the user with 0.01 dollars for the visualization.
+Now, let's say that the video platform wants to reward the user with 0.01 dollars for viewing the video.
 To do that, we have to update the relationship property `revenue`.
 
 [source, graphql, indent=0]
 ----
-mutation Mutation {
+mutation addRevenueMutation {
   updateUsers(
     where: { id: "UserID" },
     update: { ownVideo: [{ update: { edge: { revenue_ADD: 0.01 } } }] }
@@ -90,4 +90,4 @@ mutation Mutation {
 ----
 
 == Optional fields
-Operators remain available for optional fields, this means that if a mathematical operator is been used in a field not defined then a GraphQL error is raised.
+Operators remain available for optional fields, this means that if a mathematical operator has been used in a field not defined then a GraphQL error is raised.
