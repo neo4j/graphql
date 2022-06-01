@@ -7,45 +7,49 @@ This feature request was raised in [#917](https://github.com/neo4j/graphql/issue
 Users need a way to describe the relationship field as read-only.
 In a real-world scenario the evidence this read-only feature is missing could be: 
 ```cypher
-(Post)-[createdBy:CREATED_BY]->(User)
+(Post)-[createdBy:POST_CREATED_BY]->(User)
 ```
 In this case, it is reasonable to believe that `createdBy` should be immutable.
 
 A once created one-to-one (only?) relationship should, when the `@readonly` directive is present, not be able to be updated anymore.
-This is currently not possible and also prevented by the directive combination check.
+This is currently not possible and prevented by the combination check on the directives.
+In this document we consider the type definition defined as:
+``` graphql
+type Post {
+    id: ID
+    title: String
+    createdBy: User! @relationship(type: "POST_CREATED_BY", direction: OUT) @readonly
+}
+
+type User {
+    name: String
+    posts: [Post!] @relationship(type: "POST_CREATED_BY", direction: IN) 
+}
+```
 
 ## Proposed Solution
 
 Given the following type definitions:
-```
-type Product {
-    id: ID
-    name: String
-    createdBy: Application! @relationship(type: "CREATED_BY", direction: OUT) @readonly
-}
 
-type Application {
-    name: String
+One way to achieve it is by modifying the schema by removing the `createdBy` input field from the following types:  
+`PostUpdateInput`
+`PostConnectInput`
+`PostDisconnectInput`
+`PostRelationInput`
+`PostDeleteInput`
+
+For example, we could expect that the `PostUpdateInput` should look like this:
+``` graphql
+input PostUpdateInput {
+  ... // createdBy is not longer present as it was defined as readonly
+  id: ID 
+  title: String
 }
 ```
-One way to achieve it is by removing the ability to update the relationship via the `<type>UpdateInput`.
-The `<type><fieldName>UpdateFieldInput` has to be remove, see below.
-```
-input ProductUpdateInput {
-  createdBy: ProductCreatedByUpdateFieldInput // <- remove this line
-  id: ID
-  name: String
-}
-```
+
 What about relationship properties, are they still allowed to be updated?
 
-The directive combination `@relationship` and `@readonly` has to be allowed of course.
-
-Note: A readonly relationship, in the example above `createdBy`, can still be deleted.
-
-### Usage Examples
-
-tbd
+The directive combination `@relationship` and `@readonly` has to be allowed.
 
 ## Risks
 
@@ -57,4 +61,4 @@ None
 
 ## Out of Scope
 
-- tbd
+- TBD
