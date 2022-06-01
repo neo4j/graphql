@@ -30,6 +30,55 @@ const schema = await neo4jGraphQL.getSchema();
 
 Additionally, the `Neo4jGraphQL` constructor allows you to pass in a driver instance instead of passing one in the context of each request.
 
+=== Schema Configuration
+
+The `neo4j-graphql-js` library would allow a user to configure the GraphQL schema via the `makeAugmentedSchema()` function to for instance exclude all queries and all mutations. See the example below:
+[source, javascript, indent=0]
+----
+const schema = makeAugmentedSchema({
+  typeDefs,
+  config: {
+    query: false, // exclude all queries
+    mutation: false // exclude all mutations
+  }
+});
+----
+
+Or it would allow to exclude queries for a specific type like so:
+
+[source, javascript, indent=0]
+----
+const schema = makeAugmentedSchema({
+  typeDefs,
+  config: {
+    query: {
+      exclude: ["NameOfTypeToExclude"] // exclude query for type NameOfTypeToExclude
+    },
+    mutation: false // exclude all mutations
+  }
+});
+----
+
+To achieve the same behaviour with the new `@neo4j/graphql` library, the GraphQL schema has to be extended instead. Note, no additional configuration or parameters need to be passed to the `getSchema()` function.
+To follow the example above, in the  `@neo4j/graphql` library this can be achieved the following way for the first case:
+[source, graphql, indent=0]
+----
+type NameOfType @exclude(operations: [CREATE, UPDATE, DELETE]) {
+  name: String
+}
+----
+
+Or like this for the second case:
+
+[source, graphql, indent=0]
+----
+type NameOfTypeToExclude @exclude {
+  name: String
+}
+----
+For more information regarding the above used `@exclude` directive, see xref::type-definitions/access-control.adoc#type-definitions-access-control-exclude[`@exclude`].
+
+
 == Database Configuration
 
 === Driver
