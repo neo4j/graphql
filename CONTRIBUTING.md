@@ -44,7 +44,7 @@ reviewers understand your changes as well as the purpose of the pull request.
 * Don't forget to [link your PR to an issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue)
 if you are solving one.
 * Enable the checkbox to [allow maintainer edits](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/allowing-changes-to-a-pull-request-branch-created-from-a-fork)
-so that maintainers can make any necesssary tweaks and update your branch for merge.
+so that maintainers can make any necessary tweaks and update your branch for merge.
 * Reviewers may ask for changes to be made before a PR can be merged, either using
 [suggested changes](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/incorporating-feedback-in-your-pull-request)
 or normal pull request comments. You can apply suggested changes directly through
