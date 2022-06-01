@@ -120,6 +120,7 @@ export function buildMathStatements(mathDescriptor: MathDescriptor, scope: strin
     // Avoid type coercion
     statements.push(`CALL apoc.util.validate(apoc.meta.type(${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}) <> "${cypherType}", 'Value returned from operator %s does not match: %s', ["${mathDescriptor.operationName}", "${mathDescriptor.graphQLType}"])`);
     statements.push(`SET ${scope}.${mathDescriptor.dbName} = ${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}`);
+    statements.push(`RETURN ${scope} as ${scope}_${mathDescriptor.dbName}_${mathDescriptor.operationName}`);
     statements.push(`}`);
     return statements;
 }

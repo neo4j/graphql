@@ -47,7 +47,7 @@ describe("Mathematical operations tests", () => {
         {initialValue: 10.0, value: 5.0, type: "Float", operation: "MULTIPLY", expected: 50.0},
         {initialValue: 10.0, value: -5.0, type: "Float", operation: "MULTIPLY", expected: -50.0},
         {initialValue: 10.0, value: 5.0, type: "Float", operation: "DIVIDE", expected: 2.0},
-      ])('Test simple operations on numberical fields: on $type, $operation($initialValue, $value) should return $expected',
+      ])('Simple operations on numberical fields: on $type, $operation($initialValue, $value) should return $expected',
        async ({ initialValue, type, value, operation, expected }) => {
         const session = driver.session();
 
