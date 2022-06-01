@@ -3,6 +3,14 @@
 ## Problem
 
 This feature request was raised in [#917](https://github.com/neo4j/graphql/issues/917).
+
+Users need a way to describe the relationship field as read-only.
+In a real-world scenario the evidence this read-only feature is missing could be: 
+```cypher
+(Post)-[createdBy:CREATED_BY]->(User)
+```
+In this case, it is reasonable to believe that `createdBy` should be immutable.
+
 A once created one-to-one (only?) relationship should, when the `@readonly` directive is present, not be able to be updated anymore.
 This is currently not possible and also prevented by the directive combination check.
 
