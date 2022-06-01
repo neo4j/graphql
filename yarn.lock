@@ -1948,7 +1948,7 @@ __metadata:
     "@neo4j/graphql": ^3.3.0
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/jest": 27.5.1
-    "@types/node": 16.11.36
+    "@types/node": 16.11.38
     camelcase: 6.3.0
     graphql-tag: 2.12.6
     jest: 28.1.0
@@ -1974,7 +1974,7 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/jest": 27.5.1
     "@types/jsonwebtoken": 8.5.8
-    "@types/node": 16.11.36
+    "@types/node": 16.11.38
     debug: ^4.3.3
     jest: 28.1.0
     jsonwebtoken: ^8.5.1
@@ -1992,7 +1992,7 @@ __metadata:
     "@types/amqplib": 0.8.2
     "@types/debug": 4.1.7
     "@types/jest": 27.5.1
-    "@types/node": 16.11.36
+    "@types/node": 16.11.38
     amqplib: ^0.9.0
     apollo-server: 3.8.1
     apollo-server-express: 3.8.1
@@ -2070,7 +2070,7 @@ __metadata:
     uuid: ^8.3.2
     webpack: 5.72.1
     webpack-cli: 4.9.2
-    webpack-dev-server: 4.9.0
+    webpack-dev-server: 4.9.1
     webpack-notifier: 1.15.0
   languageName: unknown
   linkType: soft
@@ -2089,7 +2089,7 @@ __metadata:
     "@types/is-uuid": 1.0.0
     "@types/jest": 27.5.1
     "@types/jsonwebtoken": 8.5.8
-    "@types/node": 16.11.36
+    "@types/node": 16.11.38
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
     "@types/semver": 7.3.9
@@ -2138,7 +2138,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": ^3.3.0
     "@types/jest": 27.5.1
-    "@types/node": 16.11.36
+    "@types/node": 16.11.38
     "@types/pluralize": 0.0.29
     camelcase: ^6.2.0
     debug: ^4.3.2
@@ -2866,10 +2866,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:16.11.36":
-  version: 16.11.36
-  resolution: "@types/node@npm:16.11.36"
-  checksum: 878e8e2032869785dd4f73dd862042c7eb588fb9a27199f1b493a7029438ccb58f96e203c35c2e66e08307ca3f9767133cae888958c15e031982f7e9719e5e47
+"@types/node@npm:16.11.38":
+  version: 16.11.38
+  resolution: "@types/node@npm:16.11.38"
+  checksum: 471df020162098602fd77014c458e84f01f7faff3cddcc2b7739312a8b4f103bc0fab3dfc03641233d9f627c47fd82dfabc9b86413ef680e193c36b9aed322e6
   languageName: node
   linkType: hard
 
@@ -11267,9 +11267,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:12.4.3":
-  version: 12.4.3
-  resolution: "lint-staged@npm:12.4.3"
+"lint-staged@npm:12.5.0":
+  version: 12.5.0
+  resolution: "lint-staged@npm:12.5.0"
   dependencies:
     cli-truncate: ^3.1.0
     colorette: ^2.0.16
@@ -11287,7 +11287,7 @@ __metadata:
     yaml: ^1.10.2
   bin:
     lint-staged: bin/lint-staged.js
-  checksum: db5dfd14e9e2bf68ec98752021ed1df9572561f3c2adbe52a775d6866e2e6eacb9c50d176c5cb773ebf01fb497b3a644e8ce80154e7fa9546ada23148cac8979
+  checksum: ac203917be098305bc0aebd5f1a969e88ea0854e8fb2199ebcbbb059d8bce324cf97db8f3d25f7954dd48c0666ae13987fb4db569d5b6fecda06f9fb742278e1
   languageName: node
   linkType: hard
 
@@ -12482,7 +12482,7 @@ __metadata:
     typescript: 4.7.2
     webpack: 5.72.1
     webpack-cli: 4.9.2
-    webpack-dev-server: 4.9.0
+    webpack-dev-server: 4.9.1
   languageName: unknown
   linkType: soft
 
@@ -12500,7 +12500,7 @@ __metadata:
     "@types/express": 4.17.9
     "@types/jest": 27.5.1
     "@types/jsonwebtoken": 8.5.1
-    "@types/node": 16.11.36
+    "@types/node": 16.11.38
     "@types/uuid": 8.3.4
     apollo-server-express: ^3.6.7
     bcrypt: 5.0.1
@@ -12572,7 +12572,7 @@ __metadata:
     graphql: 16.5.0
     husky: 8.0.1
     jest: 28.1.0
-    lint-staged: 12.4.3
+    lint-staged: 12.5.0
     neo4j-driver: 4.4.5
     npm-run-all: 4.1.5
     prettier: 2.6.2
@@ -15953,7 +15953,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sockjs@npm:^0.3.21":
+"sockjs@npm:^0.3.24":
   version: 0.3.24
   resolution: "sockjs@npm:0.3.24"
   dependencies:
@@ -18035,9 +18035,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-dev-server@npm:4.9.0":
-  version: 4.9.0
-  resolution: "webpack-dev-server@npm:4.9.0"
+"webpack-dev-server@npm:4.9.1":
+  version: 4.9.1
+  resolution: "webpack-dev-server@npm:4.9.1"
   dependencies:
     "@types/bonjour": ^3.5.9
     "@types/connect-history-api-fallback": ^1.3.5
@@ -18063,7 +18063,7 @@ __metadata:
     schema-utils: ^4.0.0
     selfsigned: ^2.0.1
     serve-index: ^1.9.1
-    sockjs: ^0.3.21
+    sockjs: ^0.3.24
     spdy: ^4.0.2
     webpack-dev-middleware: ^5.3.1
     ws: ^8.4.2
@@ -18074,7 +18074,7 @@ __metadata:
       optional: true
   bin:
     webpack-dev-server: bin/webpack-dev-server.js
-  checksum: 3ee3fc9650ede7be37440d404fea2420310f3fb6dfdcfdb71b1d9e4675b04f05843832c9be68ecd4bd4e8e2c960e5d9da299990bd29d05702edfd013fef9e8c8
+  checksum: da1b71d45ed52d6f6de3378e925964f489db84393232e8e6880d1a9cecc6c329206e7b36fb32ce8b3b413b20bb7e032ede8a7060368d3cf61b9c64e2e825e697
   languageName: node
   linkType: hard
 
