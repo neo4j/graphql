@@ -20,7 +20,7 @@
 import { getBrowser, getPage, Browser } from "./puppeteer";
 import { Login } from "./pages/Login";
 
-const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
+const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j", SECURE = false } = process.env;
 
 describe("login", () => {
     let browser: Browser;
@@ -40,6 +40,7 @@ describe("login", () => {
         await login.setUsername(NEO_USER);
         await login.setPassword(NEO_PASSWORD);
         await login.setURL(NEO_URL);
+        await login.setSecure(Boolean(SECURE));
         await login.submit();
         await login.awaitSuccess();
     });
