@@ -64,7 +64,7 @@ const schema = makeAugmentedSchema({
 
 To achieve the same behaviour with the new `@neo4j/graphql` library, the GraphQL schema has to be extended instead. Note, no additional configuration or parameters need to be passed to the `getSchema()` function.
 
-To exclude all queries and all mutations:
+To exclude all mutations for a specific type:
 [source, graphql, indent=0]
 ----
 type NameOfType @exclude(operations: [CREATE, UPDATE, DELETE]) {
@@ -72,7 +72,7 @@ type NameOfType @exclude(operations: [CREATE, UPDATE, DELETE]) {
 }
 ----
 
-Or to exclude queries for a specific type like so:
+Or to exclude all queries and all mutations for a specific type like so:
 
 [source, graphql, indent=0]
 ----
