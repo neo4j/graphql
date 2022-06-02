@@ -1993,7 +1993,7 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/jest": 27.5.2
     "@types/node": 16.11.38
-    amqplib: ^0.9.0
+    amqplib: ^0.10.0
     apollo-server: 3.8.1
     apollo-server-express: 3.8.1
     camelcase: 6.3.0
@@ -3745,16 +3745,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"amqplib@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "amqplib@npm:0.9.0"
+"amqplib@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "amqplib@npm:0.10.0"
   dependencies:
     bitsyntax: ~0.1.0
-    bluebird: ^3.7.2
     buffer-more-ints: ~1.0.0
     readable-stream: 1.x >=1.1.9
     url-parse: ~1.5.10
-  checksum: 664be2b75489247e03c9efca6ca6f480764ffc8d8778c2de853b8f5f74497afd5660148b10f2ea803c7a307927823afd808a697a35cf247bad70df4324ca29cd
+  checksum: d4273af395e4fbb0c0c17b9b93ef6f8e64394788a01e9722f785ef17e6062c4caad07824d610e879fcd2e4098e317492a876ae26cd4a08aa956c927050ab6cb3
   languageName: node
   linkType: hard
 
@@ -4732,7 +4731,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bluebird@npm:^3.5.1, bluebird@npm:^3.7.2":
+"bluebird@npm:^3.5.1":
   version: 3.7.2
   resolution: "bluebird@npm:3.7.2"
   checksum: 869417503c722e7dc54ca46715f70e15f4d9c602a423a02c825570862d12935be59ed9c7ba34a9b31f186c017c23cac6b54e35446f8353059c101da73eac22ef
