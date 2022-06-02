@@ -6,9 +6,10 @@ Our users would like to modify arrays inline.
 
 ## Proposed Solution
 
-How are you proposing we will solve the problem described above?
+Add new array methods:
 
-Feel free to add/remove subheadings below as appropriate:
+-   `_PUSH`
+-   `_POP`
 
 ### Usage Examples
 
@@ -31,11 +32,9 @@ type Movie {
 }
 ```
 
-We could 
-
+We could
 
 ## Risks
-
 
 ### Security consideration
 
@@ -43,4 +42,9 @@ N/A
 
 ## Out of Scope
 
-What are we definitely not going to implement in this solution?
+The following array methods will not be included:
+
+-   `_SHIFT`
+-   `_FILTER`
+-   `_FILTER_NOT`
+-   `_SORT`
