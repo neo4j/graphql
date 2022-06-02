@@ -32,7 +32,10 @@ Additionally, the `Neo4jGraphQL` constructor allows you to pass in a driver inst
 
 === Schema Configuration
 
-The `neo4j-graphql-js` library would allow a user to configure the GraphQL schema via the `makeAugmentedSchema()` function to for instance exclude all queries and all mutations. See the example below:
+The `neo4j-graphql-js` library would allow a user to configure the GraphQL schema via the `makeAugmentedSchema()` function.
+
+For example, to exclude all queries and all mutations:
+
 [source, javascript, indent=0]
 ----
 const schema = makeAugmentedSchema({
