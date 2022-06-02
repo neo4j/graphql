@@ -13,26 +13,48 @@ Add new array methods:
 
 ### Usage Examples
 
-An example where POP is used to take the last element from an array... and then use it in a following query?
-
-An example where PUSH is used to add a new element to an array?
-
-Given the following type definitions:
+Given the following type definitions with a middleNames array of strings:
 
 ```gql
-type Actor {
+type Person {
     name: String!
-    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
-}
-
-type Movie {
-    title: String
-    id: ID! @id
-    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+    middleNames: [String]
 }
 ```
 
-We could
+We could perform a POP operation like so, where the update parameter is an empty array:
+
+Note: the implied use case of POP is to remove the last element in an array only, without having the element returned
+
+```
+mutation {
+  updateRecord(
+    where: { name: "Some Person" }
+    update: { middleNames_POP: [] }
+  ) {
+    records {
+      name
+      middleNames
+    }
+  }
+}
+```
+
+We could perform a PUSH operation like so, where the update parameter is an array containing the values to be pushed:
+
+```
+mutation {
+  updateRecord(
+    where: { name: "Some Person" }
+    update: { middleNames_PUSH: ['Emil'] }
+  ) {
+    records {
+      name
+      middleNames
+    }
+  }
+}
+```
 
 ## Risks
 
