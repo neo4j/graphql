@@ -2053,7 +2053,7 @@ __metadata:
     postcss-loader: 7.0.0
     prettier: ^2.6.2
     process: 0.11.10
-    puppeteer: 14.1.2
+    puppeteer: 14.2.0
     randomstring: 1.2.2
     react: 18.1.0
     react-dom: 18.1.0
@@ -6684,10 +6684,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"devtools-protocol@npm:0.0.982423":
-  version: 0.0.982423
-  resolution: "devtools-protocol@npm:0.0.982423"
-  checksum: c144574b9c2092f38a1a9153e5d723f0bf4ad4f4363d9d2ea5bdd3d7e0e1416d1a71a77256120ba0e0dd524bc101845d42aa0b723aaedc0b6b4023137da76cf3
+"devtools-protocol@npm:0.0.1001819":
+  version: 0.0.1001819
+  resolution: "devtools-protocol@npm:0.0.1001819"
+  checksum: 156e7c6703ec6c203e0bc1d68393fcd768de45bf225ca7b2d6bd106d8dc4ab0e8f38c518ce158c73d83a96db8ef32ae06dc9b4edd70e94660253dc2622619947
   languageName: node
   linkType: hard
 
@@ -14549,13 +14549,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"puppeteer@npm:14.1.2":
-  version: 14.1.2
-  resolution: "puppeteer@npm:14.1.2"
+"puppeteer@npm:14.2.0":
+  version: 14.2.0
+  resolution: "puppeteer@npm:14.2.0"
   dependencies:
     cross-fetch: 3.1.5
     debug: 4.3.4
-    devtools-protocol: 0.0.982423
+    devtools-protocol: 0.0.1001819
     extract-zip: 2.0.1
     https-proxy-agent: 5.0.1
     pkg-dir: 4.2.0
@@ -14564,8 +14564,8 @@ __metadata:
     rimraf: 3.0.2
     tar-fs: 2.1.1
     unbzip2-stream: 1.4.3
-    ws: 8.6.0
-  checksum: db74fb7bf042d0a19956442288e09a1b6d67d37cea019a5232ff5bdc2b26358552188b7c1492036cb2a3da807f5ae8b892b15479c3a1a9e3741c6f0737244916
+    ws: 8.7.0
+  checksum: db4c9ef65e14bfda25cccbf104680eddaee04f542d6933be82910b1e31eb439e7a178d640f5ac70ad9e322f019b7945f94f73896bd2c2ff7020464ff6fe91767
   languageName: node
   linkType: hard
 
@@ -18610,21 +18610,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.6.0, ws@npm:^8.4.2":
-  version: 8.6.0
-  resolution: "ws@npm:8.6.0"
-  peerDependencies:
-    bufferutil: ^4.0.1
-    utf-8-validate: ^5.0.2
-  peerDependenciesMeta:
-    bufferutil:
-      optional: true
-    utf-8-validate:
-      optional: true
-  checksum: e2fca82059f1e087d0c78e2f37135e1b8332bc804fce46f83c2db1cb8571685abf9d2c99b964bab3752536ad90b99b46fb8d1428899aed3e560684ab4641bffd
-  languageName: node
-  linkType: hard
-
 "ws@npm:8.7.0":
   version: 8.7.0
   resolution: "ws@npm:8.7.0"
@@ -18652,6 +18637,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 5c1f669a166fb57560b4e07f201375137fa31d9186afde78b1508926345ce546332f109081574ddc4e38cc474c5406b5fc71c18d71eb75f6e2d2245576976cba
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.4.2":
+  version: 8.6.0
+  resolution: "ws@npm:8.6.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ^5.0.2
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: e2fca82059f1e087d0c78e2f37135e1b8332bc804fce46f83c2db1cb8571685abf9d2c99b964bab3752536ad90b99b46fb8d1428899aed3e560684ab4641bffd
   languageName: node
   linkType: hard
 
