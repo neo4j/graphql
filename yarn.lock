@@ -1947,7 +1947,7 @@ __metadata:
     "@graphql-tools/merge": ^8.2.1
     "@neo4j/graphql": ^3.3.0
     "@neo4j/graphql-plugin-auth": ^1.0.0
-    "@types/jest": 27.5.2
+    "@types/jest": 28.1.0
     "@types/node": 16.11.38
     camelcase: 6.3.0
     graphql-tag: 2.12.6
@@ -1972,7 +1972,7 @@ __metadata:
   resolution: "@neo4j/graphql-plugin-auth@workspace:packages/plugins/graphql-plugin-auth"
   dependencies:
     "@types/debug": 4.1.7
-    "@types/jest": 27.5.2
+    "@types/jest": 28.1.0
     "@types/jsonwebtoken": 8.5.8
     "@types/node": 16.11.38
     debug: ^4.3.3
@@ -1991,7 +1991,7 @@ __metadata:
     "@neo4j/graphql": ^3.3.0
     "@types/amqplib": 0.8.2
     "@types/debug": 4.1.7
-    "@types/jest": 27.5.2
+    "@types/jest": 28.1.0
     "@types/node": 16.11.38
     amqplib: ^0.10.0
     apollo-server: 3.8.1
@@ -2087,7 +2087,7 @@ __metadata:
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
-    "@types/jest": 27.5.2
+    "@types/jest": 28.1.0
     "@types/jsonwebtoken": 8.5.8
     "@types/node": 16.11.38
     "@types/pluralize": 0.0.29
@@ -2137,7 +2137,7 @@ __metadata:
   resolution: "@neo4j/introspector@workspace:packages/introspector"
   dependencies:
     "@neo4j/graphql": ^3.3.0
-    "@types/jest": 27.5.2
+    "@types/jest": 28.1.0
     "@types/node": 16.11.38
     "@types/pluralize": 0.0.29
     camelcase: ^6.2.0
@@ -2738,13 +2738,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:27.5.2":
-  version: 27.5.2
-  resolution: "@types/jest@npm:27.5.2"
+"@types/jest@npm:28.1.0":
+  version: 28.1.0
+  resolution: "@types/jest@npm:28.1.0"
   dependencies:
     jest-matcher-utils: ^27.0.0
     pretty-format: ^27.0.0
-  checksum: 7e11c6826aa429ad990dc262e4e4b54aa36573287fddf15773e4137f07d11d3105f0dd9f1baff73252160a057df23f5529bb83b1bf83cd3f45f9460a5ca5c22e
+  checksum: be4d887b2452e8c1367cd19b23906ba4b64af95e22ca871f81c7af5e945bd39b370e124086356aa9380c4543123b1387448bc2c00a604c6f0a92bc3e4a24e9ce
   languageName: node
   linkType: hard
 
@@ -12534,7 +12534,7 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/dotenv": 8.2.0
     "@types/express": 4.17.9
-    "@types/jest": 27.5.2
+    "@types/jest": 28.1.0
     "@types/jsonwebtoken": 8.5.1
     "@types/node": 16.11.38
     "@types/uuid": 8.3.4
