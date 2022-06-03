@@ -49,7 +49,7 @@ export const Login = () => {
                     username,
                     password,
                     url,
-                    secure
+                    secure,
                 });
             } catch (error) {
                 setError((error as Error).message as string);
@@ -107,10 +107,23 @@ export const Login = () => {
                     </div>
                     <div className="mb-4">
                         <label className="text-gray-700 text-sm font-bold mb-2 mr-2">Secure connection:</label>
-                        <input data-test-login-secure="true" type="checkbox" name="secure" checked={secure} onChange={(event) => setSecure(event.currentTarget.checked)}/>
+                        <input
+                            data-test-login-secure="true"
+                            type="checkbox"
+                            name="secure"
+                            checked={secure}
+                            onChange={(event) => setSecure(event.currentTarget.checked)}
+                        />
                     </div>
                     <div className="flex items-center justify-between">
-                        <Button data-test-login-button color="neutral" fill="outlined" type="submit" disabled={loading}>
+                        <Button
+                            data-test-login-button
+                            color="neutral"
+                            fill="outlined"
+                            type="submit"
+                            disabled={loading}
+                            onClick={() => {}} // INFO: To prevent warning in browser console
+                        >
                             {loading ? <>Connecting...</> : <span>Connect</span>}
                         </Button>
                     </div>
