@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import { TextInput } from "@neo4j-ndl/react";
+
 export interface Props {
     name: string;
     label: string;
@@ -36,22 +38,5 @@ export const FormInput = (props: Props) => {
     if (props.testTag) {
         options[props.testTag] = true;
     }
-    return (
-        <div>
-            <label className="block text-gray-700 text-sm font-bold mb-2">{props.label}</label>
-            <input
-                value={props.value}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                name={props.name}
-                type={props.type}
-                placeholder={props.placeholder}
-                required={true}
-                defaultValue={props.defaultValue}
-                disabled={props.disabled}
-                autoComplete={props.autoComplete || ""}
-                onChange={props.onChange}
-                {...options}
-            />
-        </div>
-    );
+    return <TextInput fluid {...props} {...options} />;
 };

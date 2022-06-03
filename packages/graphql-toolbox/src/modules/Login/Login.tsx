@@ -20,7 +20,7 @@
 import { useCallback } from "react";
 import { useContext, useState } from "react";
 import { FormInput } from "./FormInput";
-import { Button } from "@neo4j-ndl/react";
+import { Button, Checkbox } from "@neo4j-ndl/react";
 import { DEFAULT_BOLT_URL } from "../../constants";
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
@@ -49,7 +49,7 @@ export const Login = () => {
                     username,
                     password,
                     url,
-                    secure
+                    secure,
                 });
             } catch (error) {
                 setError((error as Error).message as string);
@@ -67,51 +67,58 @@ export const Login = () => {
                     <img src={Icon} alt="d.s" className="h-12 w-12 mx-auto" />
                     <h2 className="mt-1 text-3xl">Neo4j GraphQL Toolbox</h2>
                 </div>
-                <form onSubmit={onSubmit}>
-                    <div className="mb-4">
-                        <FormInput
-                            testTag="data-test-login-username"
-                            label="Username"
-                            name="username"
-                            placeholder="neo4j"
-                            required={true}
-                            type="text"
-                            disabled={loading}
-                            autoComplete="username"
-                        ></FormInput>
-                    </div>
-                    <div className="mb-6">
-                        <FormInput
-                            testTag="data-test-login-password"
-                            label="Password"
-                            name="password"
-                            placeholder="password"
-                            required={true}
-                            type="password"
-                            disabled={loading}
-                            autoComplete="current-password"
-                        ></FormInput>
-                    </div>
-                    <div className="mb-6">
-                        <FormInput
-                            testTag="data-test-login-url"
-                            label="Connection URI"
-                            name="url"
-                            value={url}
-                            onChange={(event) => setUrl(event.currentTarget.value)}
-                            placeholder={DEFAULT_BOLT_URL}
-                            required={true}
-                            type="text"
-                            disabled={loading}
-                        ></FormInput>
-                    </div>
-                    <div className="mb-4">
-                        <label className="text-gray-700 text-sm font-bold mb-2 mr-2">Secure connection:</label>
-                        <input data-test-login-secure="true" type="checkbox" name="secure" checked={secure} onChange={(event) => setSecure(event.currentTarget.checked)}/>
-                    </div>
+                <form onSubmit={onSubmit} className="flex flex-col gap-4">
+                    <FormInput
+                        testTag="data-test-login-username"
+                        label="Username"
+                        name="username"
+                        placeholder="neo4j"
+                        required={true}
+                        type="text"
+                        disabled={loading}
+                        autoComplete="username"
+                    ></FormInput>
+
+                    <FormInput
+                        testTag="data-test-login-password"
+                        label="Password"
+                        name="password"
+                        placeholder="password"
+                        required={true}
+                        type="password"
+                        disabled={loading}
+                        autoComplete="current-password"
+                    ></FormInput>
+
+                    <FormInput
+                        testTag="data-test-login-url"
+                        label="Connection URI"
+                        name="url"
+                        value={url}
+                        onChange={(event) => setUrl(event.currentTarget.value)}
+                        placeholder={DEFAULT_BOLT_URL}
+                        required={true}
+                        type="text"
+                        disabled={loading}
+                    ></FormInput>
+                    <Checkbox
+                        data-test-login-secure="true"
+                        label="Secure Connection:"
+                        labelBefore
+                        name="secure"
+                        checked={secure}
+                        onChange={(event) => setSecure(event.currentTarget.checked)}
+                    />
                     <div className="flex items-center justify-between">
-                        <Button data-test-login-button color="neutral" fill="outlined" type="submit" disabled={loading}>
-                            {loading ? <>Connecting...</> : <span>Connect</span>}
+                        <Button
+                            data-test-login-button
+                            color="neutral"
+                            fill="outlined"
+                            type="submit"
+                            loading={loading}
+                            disabled={loading}
+                        >
+                            Connect
                         </Button>
                     </div>
 
