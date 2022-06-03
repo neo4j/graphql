@@ -6,7 +6,7 @@ Our users would like to modify arrays inline.
 
 ## Proposed Solution
 
-Add new array methods:
+Add new array methods PUSH and POP:
 
 -   `_PUSH`
 -   `_POP`
@@ -26,15 +26,32 @@ type Person {
 }
 ```
 
-We could perform a POP operation like so, where the update parameter is an empty array:
-
-Note: the implied use case of POP is to remove the last element in an array only, without having the element returned
+We could perform a POP operation like so, where the update parameter is an integer, specifying the number of array elements to pop off the end of the array. Popped off elements would then be returned in `poppedElements` inside the `info` object.
 
 ```
 mutation {
   updateRecord(
     where: { name: "Some Person" }
-    update: { middleNames_POP: [] }
+    update: { middleNames_POP: 1 }
+  ) {
+    records {
+      name
+      middleNames
+    }
+    info {
+      poppedElements: ["Emil"]
+    }
+  }
+}
+```
+
+We could perform a PUSH operation like so, where the update parameter is an array containing the values to be pushed to the end of the array:
+
+```
+mutation {
+  updateRecord(
+    where: { name: "Some Person" }
+    update: { middleNames_PUSH: ["Emil"] }
   ) {
     records {
       name
@@ -44,21 +61,9 @@ mutation {
 }
 ```
 
-We could perform a PUSH operation like so, where the update parameter is an array containing the values to be pushed:
+### Technical considerations
 
-```
-mutation {
-  updateRecord(
-    where: { name: "Some Person" }
-    update: { middleNames_PUSH: ['Emil'] }
-  ) {
-    records {
-      name
-      middleNames
-    }
-  }
-}
-```
+In an update mutation when the POP method is not used, the `info` object will contain the field `poppedElements` with a value of `[]`.
 
 ## Risks
 
