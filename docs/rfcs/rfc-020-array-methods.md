@@ -78,3 +78,5 @@ The following array methods will not be included:
 -   `_FILTER`
 -   `_FILTER_NOT`
 -   `_SORT`
+-   `_SPLICE`
+-   `_SLICE`
