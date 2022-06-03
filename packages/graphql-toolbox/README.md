@@ -45,6 +45,20 @@ Run this command to start the development server. See the output in the console 
 yarn start
 ```
 
+## GraphQL Toolbox URL parameters
+
+The GraphQL Toolbox supports some URL parameters defined in the query component, see below. The query component is preceded by a question mark (?) and contains a query string that is a sequence of key–value pairs separated by an ampersand (&).
+
+| URL parameter | Description                                                                                                        |
+| ------------- | ------------------------------------------------------------------------------------------------------------------ |
+| connectURL    | Used at login, prepulates the Connection URI input with the provided value                                         |
+| username      | Used at login, prepulates the username input with the provided value                                               |
+| db            | Only applicable for multi-database supported Neo4j DBMSs. The provided value is used as the selected database name |
+
+A full example: `http://localhost:4242?connectURL=neo4j%2Bs://xxxx.databases.neo4j.io&username=admin&db=mydatabase`
+
+Note: The plus symbol (+) in the connectURL (here in `neo4j+s`) needs to be URL encoded with `%2B`
+
 ## Licence
 
 [Apache 2.0](https://github.com/neo4j/graphql/blob/master/packages/toolbox/LICENSE.txt)

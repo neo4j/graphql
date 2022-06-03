@@ -21,17 +21,18 @@ import { useCallback } from "react";
 import { useContext, useState } from "react";
 import { FormInput } from "./FormInput";
 import { Button } from "@neo4j-ndl/react";
-import { DEFAULT_BOLT_URL } from "../../constants";
+import { CONNECT_URL_PARAM_NAME, DEFAULT_BOLT_URL, DEFAULT_USERNAME, USERNAME_PARAM_NAME } from "../../constants";
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
 import { AuthContext } from "../../contexts/auth";
-import { getConnectUrlSearchParam } from "src/contexts/utils";
+import { getUrlSearchParam } from "../../contexts/utils";
 
 export const Login = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const auth = useContext(AuthContext);
-    const [url, setUrl] = useState(getConnectUrlSearchParam() || DEFAULT_BOLT_URL);
+    const [url, setUrl] = useState(getUrlSearchParam(CONNECT_URL_PARAM_NAME) || DEFAULT_BOLT_URL);
+    const [username, setUsername] = useState(getUrlSearchParam(USERNAME_PARAM_NAME) || DEFAULT_USERNAME);
     const [secure, setSecure] = useState(true);
 
     const onSubmit = useCallback(
@@ -42,14 +43,13 @@ export const Login = () => {
             try {
                 const data = new FormData(event.currentTarget);
                 const secure = data.get("secure") as string;
-                const username = data.get("username") as string;
                 const password = data.get("password") as string;
 
                 await auth.login({
                     username,
                     password,
                     url,
-                    secure
+                    secure,
                 });
             } catch (error) {
                 setError((error as Error).message as string);
@@ -57,7 +57,7 @@ export const Login = () => {
                 setLoading(false);
             }
         },
-        [url]
+        [url, username]
     );
 
     return (
@@ -73,6 +73,8 @@ export const Login = () => {
                             testTag="data-test-login-username"
                             label="Username"
                             name="username"
+                            value={username}
+                            onChange={(event) => setUsername(event.currentTarget.value)}
                             placeholder="neo4j"
                             required={true}
                             type="text"
@@ -107,7 +109,13 @@ export const Login = () => {
                     </div>
                     <div className="mb-4">
                         <label className="text-gray-700 text-sm font-bold mb-2 mr-2">Secure connection:</label>
-                        <input data-test-login-secure="true" type="checkbox" name="secure" checked={secure} onChange={(event) => setSecure(event.currentTarget.checked)}/>
+                        <input
+                            data-test-login-secure="true"
+                            type="checkbox"
+                            name="secure"
+                            checked={secure}
+                            onChange={(event) => setSecure(event.currentTarget.checked)}
+                        />
                     </div>
                     <div className="flex items-center justify-between">
                         <Button data-test-login-button color="neutral" fill="outlined" type="submit" disabled={loading}>
