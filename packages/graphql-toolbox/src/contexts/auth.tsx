@@ -35,6 +35,7 @@ interface LoginOptions {
 export interface State {
     driver?: neo4j.Driver;
     connectUrl?: string;
+    username?: string;
     isConnected?: boolean;
     isNeo4jDesktop?: boolean;
     databases?: Neo4jDatabase[];
@@ -79,7 +80,7 @@ export function AuthProvider(props: any) {
                     username: loginPayload.username,
                     password: loginPayload.password,
                     url: loginPayload.url,
-                    secure: loginPayload.secure
+                    secure: loginPayload.secure,
                 })
                 .catch(() => {});
         }
@@ -99,7 +100,7 @@ export function AuthProvider(props: any) {
                 username: options.username,
                 password: options.password,
                 url: options.url,
-                secure: options.secure
+                secure: options.secure,
             } as LoginPayload);
             Storage.storeJSON(LOCAL_STATE_LOGIN, encodedPayload);
 
@@ -110,6 +111,7 @@ export function AuthProvider(props: any) {
             setValue((v) => ({
                 ...v,
                 driver,
+                username: options.username,
                 connectUrl: options.url,
                 isConnected: true,
                 databases,

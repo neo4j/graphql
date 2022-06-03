@@ -25,14 +25,14 @@ import { CONNECT_URL_PARAM_NAME, DEFAULT_BOLT_URL, DEFAULT_USERNAME, USERNAME_PA
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
 import { AuthContext } from "../../contexts/auth";
-import { getUrlSearchParam } from "../../contexts/utils";
+import { getSearchParamValue } from "../../contexts/utils";
 
 export const Login = () => {
     const auth = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [url, setUrl] = useState(getUrlSearchParam(CONNECT_URL_PARAM_NAME) || DEFAULT_BOLT_URL);
-    const [username, setUsername] = useState(getUrlSearchParam(USERNAME_PARAM_NAME) || DEFAULT_USERNAME);
+    const [url, setUrl] = useState(getSearchParamValue(CONNECT_URL_PARAM_NAME) || DEFAULT_BOLT_URL);
+    const [username, setUsername] = useState(getSearchParamValue(USERNAME_PARAM_NAME) || DEFAULT_USERNAME);
     const [secure, setSecure] = useState(true);
 
     const onSubmit = useCallback(
@@ -46,9 +46,9 @@ export const Login = () => {
                 const password = data.get("password") as string;
 
                 await auth.login({
-                    username,
+                    username: username as string,
                     password,
-                    url,
+                    url: url as string,
                     secure,
                 });
             } catch (error) {
@@ -73,7 +73,7 @@ export const Login = () => {
                             testTag="data-test-login-username"
                             label="Username"
                             name="username"
-                            value={username}
+                            value={username as string}
                             onChange={(event) => setUsername(event.currentTarget.value)}
                             placeholder="neo4j"
                             required={true}
@@ -99,7 +99,7 @@ export const Login = () => {
                             testTag="data-test-login-url"
                             label="Connection URI"
                             name="url"
-                            value={url}
+                            value={url as string}
                             onChange={(event) => setUrl(event.currentTarget.value)}
                             placeholder={DEFAULT_BOLT_URL}
                             required={true}
