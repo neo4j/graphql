@@ -190,7 +190,10 @@ export const getSearchParamValue = (
         case USERNAME_PARAM_NAME:
             return dbmsParams?.username || getUrlSearchParam(USERNAME_PARAM_NAME);
         case CONNECT_URL_PARAM_NAME:
-            return dbmsParams?.url || getUrlSearchParam(CONNECT_URL_PARAM_NAME);
+            return (
+                (dbmsParams ? `${dbmsParams.protocol}://${dbmsParams.url}` : null) ||
+                getUrlSearchParam(CONNECT_URL_PARAM_NAME)
+            );
         case DBMS_PARAM_NAME:
             return dbmsParams;
         default:
