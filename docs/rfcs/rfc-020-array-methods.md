@@ -28,6 +28,8 @@ type Person {
 
 We could perform a POP operation like so, where the update parameter is an integer, specifying the number of array elements to pop off the end of the array. Popped off elements would then be returned in `poppedElements` inside the `info` object.
 
+The minimum valid value is 1. Values less than 1 would result in an error.
+
 ```
 mutation {
   updateRecord(
