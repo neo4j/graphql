@@ -11,6 +11,10 @@ Add new array methods:
 -   `_PUSH`
 -   `_POP`
 
+### Potential additional methods
+
+SHIFT `_SHIFT` and UNSHIFT `_UNSHIFT` are very similar methods to PUSH and POP so they may be included, if time permits.
+
 ### Usage Examples
 
 Given the following type definitions with a middleNames array of strings:
@@ -66,7 +70,6 @@ N/A
 
 The following array methods will not be included:
 
--   `_SHIFT`
 -   `_FILTER`
 -   `_FILTER_NOT`
 -   `_SORT`
