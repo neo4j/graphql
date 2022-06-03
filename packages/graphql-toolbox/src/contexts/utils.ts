@@ -118,6 +118,12 @@ export const resolveNeo4jDesktopLoginPayload = async (): Promise<LoginPayload | 
     }
 };
 
+export const getDriverEncryptionConfigFromConnectUrl = (connectUrl: string): Record<string, string> | null => {
+    const [protocol] = connectUrl?.split(/:\/\//);
+    if (!protocol) return { encrypted: "ENCRYPTION_ON" };
+    return protocol.includes("+s") ? null : { encrypted: "ENCRYPTION_OFF" };
+};
+
 export const getDatabases = async (driver: neo4j.Driver): Promise<Neo4jDatabase[] | undefined> => {
     const session = driver.session();
 
