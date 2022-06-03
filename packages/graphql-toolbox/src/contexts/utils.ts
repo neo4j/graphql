@@ -119,7 +119,8 @@ export const resolveNeo4jDesktopLoginPayload = async (): Promise<LoginPayload | 
 };
 
 export const getDriverEncryptionConfigFromConnectUrl = (connectUrl: string): Record<string, string> | null => {
-    const [protocol] = connectUrl?.split(/:\/\//);
+    if (!connectUrl) return { encrypted: "ENCRYPTION_ON" };
+    const [protocol] = connectUrl.split(/:\/\//);
     if (!protocol) return { encrypted: "ENCRYPTION_ON" };
     return protocol.includes("+s") ? null : { encrypted: "ENCRYPTION_OFF" };
 };

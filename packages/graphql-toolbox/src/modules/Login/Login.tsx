@@ -33,7 +33,6 @@ export const Login = () => {
     const [error, setError] = useState("");
     const [url, setUrl] = useState(getSearchParamValue(CONNECT_URL_PARAM_NAME) || DEFAULT_BOLT_URL);
     const [username, setUsername] = useState(getSearchParamValue(USERNAME_PARAM_NAME) || DEFAULT_USERNAME);
-    const [secure, setSecure] = useState(true);
 
     const onSubmit = useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {
@@ -42,14 +41,12 @@ export const Login = () => {
 
             try {
                 const data = new FormData(event.currentTarget);
-                const secure = data.get("secure") as string;
                 const password = data.get("password") as string;
 
                 await auth.login({
                     username: username as string,
                     password,
                     url: url as string,
-                    secure,
                 });
             } catch (error) {
                 setError((error as Error).message as string);
@@ -94,7 +91,7 @@ export const Login = () => {
                             autoComplete="current-password"
                         ></FormInput>
                     </div>
-                    <div className="mb-6">
+                    <div className="mb-8">
                         <FormInput
                             testTag="data-test-login-url"
                             label="Connection URI"
@@ -107,16 +104,7 @@ export const Login = () => {
                             disabled={loading}
                         ></FormInput>
                     </div>
-                    <div className="mb-4">
-                        <label className="text-gray-700 text-sm font-bold mb-2 mr-2">Secure connection:</label>
-                        <input
-                            data-test-login-secure="true"
-                            type="checkbox"
-                            name="secure"
-                            checked={secure}
-                            onChange={(event) => setSecure(event.currentTarget.checked)}
-                        />
-                    </div>
+
                     <div className="flex items-center justify-between">
                         <Button data-test-login-button color="neutral" fill="outlined" type="submit" disabled={loading}>
                             {loading ? <>Connecting...</> : <span>Connect</span>}
