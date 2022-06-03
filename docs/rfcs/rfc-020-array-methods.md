@@ -67,6 +67,8 @@ In an update mutation when the POP method is not used, the `info` object will co
 
 ## Risks
 
+There could be confusion about the usage of POP as providing an integer to POP is not universally standard. This can be addressed in documentation.
+
 ### Security consideration
 
 N/A
