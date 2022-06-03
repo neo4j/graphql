@@ -28,9 +28,9 @@ import { AuthContext } from "../../contexts/auth";
 import { getUrlSearchParam } from "../../contexts/utils";
 
 export const Login = () => {
+    const auth = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const auth = useContext(AuthContext);
     const [url, setUrl] = useState(getUrlSearchParam(CONNECT_URL_PARAM_NAME) || DEFAULT_BOLT_URL);
     const [username, setUsername] = useState(getUrlSearchParam(USERNAME_PARAM_NAME) || DEFAULT_USERNAME);
     const [secure, setSecure] = useState(true);

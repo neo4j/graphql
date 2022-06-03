@@ -21,7 +21,14 @@ import { request } from "graphql-request";
 import * as neo4j from "neo4j-driver";
 import { Storage } from "../utils/storage";
 import { LoginPayload, Neo4jDatabase } from "../types";
-import { DATABASE_PARAM_NAME, DEFAULT_DATABASE_NAME, LOCAL_STATE_SELECTED_DATABASE_NAME } from "../constants";
+import {
+    CONNECT_URL_PARAM_NAME,
+    DATABASE_PARAM_NAME,
+    DBMS_PARAM_NAME,
+    DEFAULT_DATABASE_NAME,
+    LOCAL_STATE_SELECTED_DATABASE_NAME,
+    USERNAME_PARAM_NAME,
+} from "../constants";
 
 const GET_DATABASES_QUERY = `
     query {
@@ -140,6 +147,13 @@ export const getDatabases = async (driver: neo4j.Driver): Promise<Neo4jDatabase[
     }
 };
 
+export const getUrlSearchParam = (paramName: string): string | null => {
+    const queryString = window.location.search;
+    if (!queryString) return null;
+    const urlParams = new URLSearchParams(queryString);
+    return urlParams.get(paramName);
+};
+
 export const resolveSelectedDatabaseName = (databases: Neo4jDatabase[]): string => {
     let usedDatabaseName: string | null = null;
 
@@ -160,9 +174,22 @@ export const resolveSelectedDatabaseName = (databases: Neo4jDatabase[]): string 
     return defaultDatabase?.name || DEFAULT_DATABASE_NAME;
 };
 
-export const getUrlSearchParam = (paramName: string): string | null => {
-    const queryString = window.location.search;
-    if (!queryString) return null;
-    const urlParams = new URLSearchParams(queryString);
-    return urlParams.get(paramName);
+export const getElementsFromDbmsParam = (): { url: string; username: string; protocol: string } | null => {
+    const dbmsParam = getUrlSearchParam(DBMS_PARAM_NAME);
+    if (!dbmsParam) return null;
+    const [protocol, username, url] = dbmsParam.split(/:\/\/|@/);
+    if (!protocol || !username || !url) return null;
+    return { protocol, username, url };
+};
+
+export const getSearchParamValue = (
+    paramName: string
+): string | { url: string; username: string; protocol: string } | null => {
+    const dbmsParams = getElementsFromDbmsParam();
+    if (dbmsParams) {
+        if (paramName === USERNAME_PARAM_NAME) return dbmsParams.username;
+        if (paramName === CONNECT_URL_PARAM_NAME) return dbmsParams.url;
+        if (paramName === DBMS_PARAM_NAME) return dbmsParams;
+    }
+    return null;
 };
