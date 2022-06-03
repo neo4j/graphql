@@ -38,7 +38,7 @@
         "jest": "28.1.0",
         "nodemon": "2.0.16",
         "randomstring": "1.1.5",
-        "ts-jest": "28.0.3",
+        "ts-jest": "28.0.4",
         "ts-node": "10.8.0",
         "tsconfig-paths": "4.0.0",
         "typescript": "4.7.2"
