@@ -4,8 +4,8 @@
     "description": "Subscriptions example",
     "scripts": {
         "start": "NODE_ENV=production node server.js",
-        "start:dev": "NODE_ENV=development concurrently \"parcel client/index.html\" \"node server.js\"",
-        "build": "parcel build client/index.html",
+        "start:dev": "NODE_ENV=development concurrently \"parcel client/index.html client/qr.html\" \"node server.js\"",
+        "build": "parcel build client/index.html client/qr.html",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "private": true,
@@ -28,7 +28,7 @@
     "homepage": "https://github.com/neo4j/graphql#readme",
     "dependencies": {
         "@google-cloud/secret-manager": "^3.12.0",
-        "@neo4j/graphql": "^3.2.3",
+        "@neo4j/graphql": "^3.3.0",
         "@neo4j/graphql-plugin-auth": "^1.0.0",
         "@neo4j/graphql-plugin-subscriptions-amqp": "^0.1.0",
         "apollo-server-core": "^3.7.0",

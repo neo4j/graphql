@@ -102,6 +102,9 @@ module.exports = class GraphQLServerApi {
     _createClients() {
         this.wsClient = createWSClient({
             url: this.wsUrl,
+            connectionParams: {
+                authorization: `Bearer ${JWT}`,
+            },
         });
 
 
