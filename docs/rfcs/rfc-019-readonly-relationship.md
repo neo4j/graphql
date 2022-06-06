@@ -6,7 +6,7 @@ This feature request was raised in [#917](https://github.com/neo4j/graphql/issue
 
 Users require a way to describe the relationship field as read-only.
 In a real-world scenario the evidence this read-only feature is missing could be: 
-```cypher
+```
 (Post)-[createdBy:POST_CREATED_BY]->(User)
 ```
 In this case, it is reasonable to believe that `createdBy` should be immutable.
