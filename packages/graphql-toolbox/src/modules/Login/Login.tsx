@@ -32,7 +32,6 @@ export const Login = () => {
     const [error, setError] = useState("");
     const auth = useContext(AuthContext);
     const [url, setUrl] = useState(getConnectUrlSearchParam() || DEFAULT_BOLT_URL);
-    const [secure, setSecure] = useState(true);
 
     const onSubmit = useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {
@@ -41,7 +40,6 @@ export const Login = () => {
 
             try {
                 const data = new FormData(event.currentTarget);
-                const secure = data.get("secure") as string;
                 const username = data.get("username") as string;
                 const password = data.get("password") as string;
 
@@ -49,7 +47,6 @@ export const Login = () => {
                     username,
                     password,
                     url,
-                    secure,
                 });
             } catch (error) {
                 setError((error as Error).message as string);
@@ -100,15 +97,6 @@ export const Login = () => {
                         required={true}
                         type="text"
                         disabled={loading}
-                    />
-
-                    <Checkbox
-                        data-test-login-secure="true"
-                        label="Secure Connection:"
-                        labelBefore
-                        name="secure"
-                        checked={secure}
-                        onChange={(event) => setSecure(event.currentTarget.checked)}
                     />
 
                     <div className="flex items-center justify-between">
