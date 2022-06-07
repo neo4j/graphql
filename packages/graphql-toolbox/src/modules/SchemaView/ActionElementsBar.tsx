@@ -59,7 +59,7 @@ export const ActionElementsBar = ({
             <div className="flex-1 flex justify-end">
                 <ProTooltip tooltipText="Save as Favorite" width={120} left={-35} top={45}>
                     <Button
-                        data-test-schema-editor-favourite-button
+                        data-test-schema-editor-favorite-button
                         className="mr-4"
                         color="neutral"
                         fill="outlined"
