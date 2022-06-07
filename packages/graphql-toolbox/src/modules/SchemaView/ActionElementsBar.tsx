@@ -57,7 +57,7 @@ export const ActionElementsBar = ({
                 </ProTooltip>
             </div>
             <div className="flex-1 flex justify-end gap-2">
-                <ProTooltip tooltipText="Save as Favorite" width={120} left={-35} top={45}>
+                <ProTooltip tooltipText="Save as Favorite" width={120} left={-42} top={45}>
                     <IconButton
                         data-test-schema-editor-favourite-button
                         aria-label="Save as favorite"
@@ -71,7 +71,7 @@ export const ActionElementsBar = ({
                         <HeroIcon iconName="StarIcon" type="outline" />
                     </IconButton>
                 </ProTooltip>
-                <ProTooltip tooltipText="Prettify" width={60} left={-2} top={45}>
+                <ProTooltip tooltipText="Prettify" width={60} left={-12} top={45}>
                     <IconButton
                         data-test-schema-editor-prettify-button
                         aria-label="Prettify code"

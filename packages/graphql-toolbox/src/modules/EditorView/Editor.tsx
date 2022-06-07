@@ -157,7 +157,7 @@ export const Editor = (props: Props) => {
                                     executeQuery={onSubmit}
                                     buttons={
                                         <Fragment>
-                                            <ProTooltip tooltipText="Prettify" width={60} left={-10} top={38}>
+                                            <ProTooltip tooltipText="Prettify" width={60} left={-14} top={38}>
                                                 <IconButton
                                                     aria-label="Prettify code"
                                                     clean
