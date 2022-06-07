@@ -37,7 +37,7 @@
         "@types/jest": "28.1.1",
         "@types/node": "16.11.38",
         "@types/pluralize": "0.0.29",
-        "jest": "28.1.0",
+        "jest": "28.1.1",
         "ts-jest": "28.0.4",
         "typescript": "4.7.3"
     },
