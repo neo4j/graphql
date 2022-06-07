@@ -77,6 +77,9 @@ N/A
 
 ## Out of Scope
 
+
+### Array methods
+
 The following array methods will not be included:
 
 -   `_FILTER`
@@ -84,3 +87,7 @@ The following array methods will not be included:
 -   `_SORT`
 -   `_SPLICE`
 -   `_SLICE`
+
+### Complex types
+
+We will not support complex types in arrays and keep the standard type support. https://neo4j.com/docs/graphql-manual/current/type-definitions/types/
