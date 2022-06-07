@@ -81,7 +81,7 @@ export const TopBar = () => {
             <div className="flex-1 flex justify-end">
                 <div className="flex items-center justify-space text-sm">
                     {!auth.isNeo4jDesktop ? (
-                        <div className="mr-6 pr-2 border-r border-gray-700">
+                        <div className="mr-4 pr-4 border-r border-gray-700">
                             <Button
                                 data-test-topbar-disconnect-button
                                 color="primary"
