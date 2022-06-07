@@ -67,6 +67,37 @@ mutation {
 
 In an update mutation when the POP method is not used, the `info` object will contain the field `poppedElements` with a value of `[]`.
 
+#### Homogenous array types
+
+Since graphql allows union types in an array but cypher only allows homogenous arrays, we could perform type checking in the graphql schema to ensure defined arrays are of the same type.
+
+#### Pushing to undefined properties
+
+When using the PUSH method on an undefined property, we will create the array and add the new elements. This can be achieved in Cypher by always starting with at least an empty array:
+
+```cypher
+SET n.myPushToProperty = coalesce(n.myPushToProperty, []) + n.myPushToProperty
+```
+
+#### Ambiguous property
+In the following mutation body:
+
+```graphql
+updateNodes(
+  where: { id: "e9bc687a-efd1-419d-b208" }
+  update: {
+    middleNames: [],
+    middleNames_PUSH: ["Emil"]
+  }
+)
+```
+
+`middleNames` is ambiguous, and an Error will be raised.
+
+#### Supported types
+
+To be added to documentation, we should make it clear that the supported types for arrays are the same default scalar types we use support in GraphQL today and not more complex types.
+
 ## Risks
 
 There could be confusion about the usage of POP as providing an integer to POP is not universally standard. This can be addressed in documentation.
