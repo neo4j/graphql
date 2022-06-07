@@ -53,7 +53,7 @@ type Post {
 
 type User {
     name: String
-    posts: [Post!] @relationship(type: "POST_CREATED_BY", direction: IN) 
+    posts: [Post!]! @relationship(type: "POST_CREATED_BY", direction: IN) 
 }
 ```
 
