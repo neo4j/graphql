@@ -30,7 +30,7 @@ We could perform a POP operation like so, where the update parameter is an integ
 
 The minimum valid value is 1. Values less than 1 would result in an error.
 
-```
+```graphql
 mutation {
   updateRecord(
     where: { name: "Some Person" }
@@ -49,7 +49,7 @@ mutation {
 
 We could perform a PUSH operation like so, where the update parameter is an array containing the values to be pushed to the end of the array:
 
-```
+```graphql
 mutation {
   updateRecord(
     where: { name: "Some Person" }
