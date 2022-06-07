@@ -74,7 +74,7 @@ export const FileName = ({ extension, name, buttons }: Props) => {
                 <Icon extension={extension}></Icon> <span className="pl-1">{name}</span>
                 <Ending extension={extension}></Ending>
             </div>
-            {buttons ? <div className="flex items-center">{buttons}</div> : null}
+            {buttons ? <div className="flex items-center mr-4">{buttons}</div> : null}
         </div>
     );
 };

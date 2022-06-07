@@ -45,7 +45,7 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
-        "@faker-js/faker": "7.1.0",
+        "@faker-js/faker": "7.2.0",
         "@neo4j/graphql-plugin-auth": "^1.0.0",
         "@types/deep-equal": "1.0.1",
         "@types/is-uuid": "1.0.0",
@@ -64,7 +64,7 @@
         "graphql-tag": "2.12.6",
         "graphql-ws": "5.8.2",
         "is-uuid": "1.0.2",
-        "jest": "28.1.0",
+        "jest": "28.1.1",
         "koa": "2.13.4",
         "koa-jwt": "4.0.3",
         "koa-router": "10.1.1",
