@@ -159,6 +159,7 @@ export const Editor = (props: Props) => {
                                         <Fragment>
                                             <ProTooltip tooltipText="Prettify" width={60} left={-10} top={38}>
                                                 <IconButton
+                                                    aria-label="Prettify code"
                                                     clean
                                                     buttonSize="small"
                                                     onClick={formatTheCode}
@@ -173,6 +174,7 @@ export const Editor = (props: Props) => {
                                             </ProTooltip>
                                             <IconButton
                                                 data-test-editor-query-button
+                                                aria-label="Execute query"
                                                 color="primary"
                                                 clean
                                                 onClick={() => onSubmit()}

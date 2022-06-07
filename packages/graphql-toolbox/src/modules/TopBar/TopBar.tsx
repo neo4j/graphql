@@ -96,10 +96,20 @@ export const TopBar = () => {
                         </div>
                     ) : null}
                     <div className="flex items-center mr-6">
-                        <IconButton data-test-topbar-help-button onClick={handleHelpClick} clean>
+                        <IconButton
+                            data-test-topbar-help-button
+                            aria-label="Help and learn drawer"
+                            onClick={handleHelpClick}
+                            clean
+                        >
                             <HeroIcon iconName="QuestionMarkCircleIcon" type="outline" />
                         </IconButton>
-                        <IconButton clean data-test-topbar-settings-button onClick={handleSettingsClick}>
+                        <IconButton
+                            clean
+                            data-test-topbar-settings-button
+                            aria-label="Application settings"
+                            onClick={handleSettingsClick}
+                        >
                             <HeroIcon iconName="CogIcon" type="outline" />
                         </IconButton>
                     </div>

@@ -60,6 +60,7 @@ export const ActionElementsBar = ({
                 <ProTooltip tooltipText="Save as Favorite" width={120} left={-35} top={45}>
                     <IconButton
                         data-test-schema-editor-favourite-button
+                        aria-label="Save as favorite"
                         // Icon button background should be white, remove bg-white
                         // as soon as it's fixed
                         className="bg-white"
@@ -73,6 +74,7 @@ export const ActionElementsBar = ({
                 <ProTooltip tooltipText="Prettify" width={60} left={-2} top={45}>
                     <IconButton
                         data-test-schema-editor-prettify-button
+                        aria-label="Prettify code"
                         className="bg-white"
                         color="neutral"
                         onClick={formatTheCode}
