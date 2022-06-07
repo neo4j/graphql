@@ -69,7 +69,7 @@ export const Login = () => {
                 </div>
                 <form onSubmit={onSubmit} className="flex flex-col gap-4">
                     <FormInput
-                        testTag="data-test-login-username"
+                        testtag="data-test-login-username"
                         label="Username"
                         name="username"
                         placeholder="neo4j"
@@ -80,7 +80,7 @@ export const Login = () => {
                     ></FormInput>
 
                     <FormInput
-                        testTag="data-test-login-password"
+                        testtag="data-test-login-password"
                         label="Password"
                         name="password"
                         placeholder="password"
@@ -91,7 +91,7 @@ export const Login = () => {
                     ></FormInput>
 
                     <FormInput
-                        testTag="data-test-login-url"
+                        testtag="data-test-login-url"
                         label="Connection URI"
                         name="url"
                         value={url}

@@ -23,7 +23,7 @@ export interface Props {
     name: string;
     label: string;
     type: string;
-    testTag: string;
+    testtag: string;
     value?: string;
     placeholder?: string;
     defaultValue?: string;
@@ -35,8 +35,8 @@ export interface Props {
 
 export const FormInput = (props: Props) => {
     const options = {};
-    if (props.testTag) {
-        options[props.testTag] = true;
+    if (props.testtag) {
+        options[props.testtag] = true;
     }
     return <TextInput fluid {...props} {...options} />;
 };
