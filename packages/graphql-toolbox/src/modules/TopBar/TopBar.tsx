@@ -86,9 +86,7 @@ export const TopBar = () => {
                                 data-test-topbar-disconnect-button
                                 color="primary"
                                 fill="text"
-                                onClick={() => {
-                                    auth?.logout();
-                                }}
+                                onClick={() => auth?.logout()}
                             >
                                 <HeroIcon className="w-full h-full" iconName="LogoutIcon" type="outline" />
                                 <span>Disconnect</span>
@@ -100,6 +98,7 @@ export const TopBar = () => {
                             data-test-topbar-help-button
                             aria-label="Help and learn drawer"
                             onClick={handleHelpClick}
+                            buttonSize="large"
                             clean
                         >
                             <HeroIcon iconName="QuestionMarkCircleIcon" type="outline" />
@@ -109,6 +108,7 @@ export const TopBar = () => {
                             data-test-topbar-settings-button
                             aria-label="Application settings"
                             onClick={handleSettingsClick}
+                            buttonSize="large"
                         >
                             <HeroIcon iconName="CogIcon" type="outline" />
                         </IconButton>
