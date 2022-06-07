@@ -64,7 +64,7 @@ export const Login = () => {
         <div className="grid place-items-center h-screen n-bg-neutral-90">
             <div className="w-login flex flex-col align-center justify-center bg-white shadow-md rounded p-8">
                 <div className="mb-6 text-center">
-                    <img src={Icon} alt="d.s" className="h-12 w-12 mx-auto" />
+                    <img src={Icon} alt="Neo4j Logo" className="h-12 w-12 mx-auto" />
                     <h2 className="mt-1 text-3xl">Neo4j GraphQL Toolbox</h2>
                 </div>
                 <form onSubmit={onSubmit} className="flex flex-col gap-4">
@@ -77,7 +77,7 @@ export const Login = () => {
                         type="text"
                         disabled={loading}
                         autoComplete="username"
-                    ></FormInput>
+                    />
 
                     <FormInput
                         testtag="data-test-login-password"
@@ -88,7 +88,7 @@ export const Login = () => {
                         type="password"
                         disabled={loading}
                         autoComplete="current-password"
-                    ></FormInput>
+                    />
 
                     <FormInput
                         testtag="data-test-login-url"
@@ -100,7 +100,8 @@ export const Login = () => {
                         required={true}
                         type="text"
                         disabled={loading}
-                    ></FormInput>
+                    />
+
                     <Checkbox
                         data-test-login-secure="true"
                         label="Secure Connection:"
@@ -109,6 +110,7 @@ export const Login = () => {
                         checked={secure}
                         onChange={(event) => setSecure(event.currentTarget.checked)}
                     />
+
                     <div className="flex items-center justify-between">
                         <Button
                             data-test-login-button
