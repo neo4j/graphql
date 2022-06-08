@@ -67,7 +67,7 @@ export class Login extends Screen {
         await this.page.waitForSelector("[data-test-schema-editor-build-button]");
     }
 
-    public async login(username: string = NEO_USER, password: string = NEO_PASSWORD, url: string = NEO_URL) {
+    public async login(username: string = NEO_USER, password: string = NEO_PASSWORD, url: string = NEO_URL,) {
         await this.setUsername(username);
         await this.setPassword(password);
         await this.setURL(url);

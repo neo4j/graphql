@@ -20,7 +20,8 @@
 import { useCallback, useState, useRef, useEffect, useContext, Fragment } from "react";
 import { graphql, GraphQLSchema } from "graphql";
 import GraphiQLExplorer from "graphiql-explorer";
-import { Button, HeroIcon } from "@neo4j-ndl/react";
+import { Button, HeroIcon, IconButton } from "@neo4j-ndl/react";
+import tokens from "@neo4j-ndl/base/lib/tokens/js/tokens";
 import { EditorFromTextArea } from "codemirror";
 import debounce from "lodash.debounce";
 import { JSONEditor } from "./JSONEditor";
@@ -156,30 +157,40 @@ export const Editor = (props: Props) => {
                                     executeQuery={onSubmit}
                                     buttons={
                                         <Fragment>
-                                            <ProTooltip tooltipText="Prettify" width={60} left={-10} top={38}>
-                                                <Button
-                                                    className="p-2"
-                                                    color={theme.theme === Theme.DARK ? "success" : "neutral"}
-                                                    fill="text"
+                                            <ProTooltip tooltipText="Prettify" width={60} left={-14} top={38}>
+                                                <IconButton
+                                                    aria-label="Prettify code"
+                                                    clean
                                                     buttonSize="small"
-                                                    style={{ padding: "0.5rem", display: "flex" }}
                                                     onClick={formatTheCode}
                                                     disabled={loading}
                                                 >
-                                                    <HeroIcon className="h-6 w-6" iconName="CodeIcon" type="outline" />
-                                                </Button>
+                                                    <HeroIcon
+                                                        className={theme.theme === Theme.DARK ? "text-white" : ""}
+                                                        iconName="CodeIcon"
+                                                        type="outline"
+                                                    />
+                                                </IconButton>
                                             </ProTooltip>
-                                            <Button
+                                            <IconButton
                                                 data-test-editor-query-button
-                                                className="mr-4 ml-2"
+                                                aria-label="Execute query"
                                                 color="primary"
-                                                fill="text"
-                                                style={{ padding: "0.5rem" }}
+                                                clean
                                                 onClick={() => onSubmit()}
                                                 disabled={!props.schema || loading}
                                             >
-                                                <HeroIcon className="h-7 w-7" iconName="PlayIcon" type="outline" />
-                                            </Button>
+                                                <HeroIcon
+                                                    style={{
+                                                        color:
+                                                            theme.theme === Theme.DARK
+                                                                ? tokens.colors.neutral[10]
+                                                                : tokens.colors.primary[50],
+                                                    }}
+                                                    iconName="PlayIcon"
+                                                    type="outline"
+                                                />
+                                            </IconButton>
                                         </Fragment>
                                     }
                                 />
