@@ -81,6 +81,10 @@ What about relationship properties, are they still allowed to be updated?
 
 The directive combination `@relationship` and `@readonly` has to be allowed.
 
+### Technical considerations
+
+This solution requires removing all the read-only relationship fields from all the update input types. That means that we have new situations where an input type could remains empty. To avoid that, an `_emptyInput` field should be added to these empty inputs.
+
 ## Risks
 
 tbd
