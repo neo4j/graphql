@@ -21,12 +21,7 @@ import React, { Dispatch, useState, SetStateAction, useEffect } from "react";
 import * as neo4j from "neo4j-driver";
 import { encrypt, decrypt } from "../utils/utils";
 import { LOCAL_STATE_LOGIN, LOCAL_STATE_SELECTED_DATABASE_NAME, VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
-import {
-    getDatabases,
-    getDriverEncryptionConfigFromConnectUrl,
-    resolveNeo4jDesktopLoginPayload,
-    resolveSelectedDatabaseName,
-} from "./utils";
+import { getDatabases, resolveNeo4jDesktopLoginPayload, resolveSelectedDatabaseName } from "./utils";
 import { LoginPayload, Neo4jDatabase } from "../types";
 import { Storage } from "../utils/storage";
 
@@ -92,9 +87,12 @@ export function AuthProvider(props: any) {
     [value, setValue] = useState<State>({
         login: async (options: LoginOptions) => {
             const auth = neo4j.auth.basic(options.username, options.password);
-            const encrypted = getDriverEncryptionConfigFromConnectUrl(options.url);
-            const driverConfig = encrypted ? encrypt : {};
-            const driver = neo4j.driver(options.url, auth);
+            const protocol = new URL(options.url).protocol;
+            // Manually set the encryption to off if it's not specified in the Connection URI to avoid implicit encryption in https domain
+            const driver = protocol.includes("+s")
+                ? neo4j.driver(options.url, auth)
+                : neo4j.driver(options.url, auth, { encrypted: "ENCRYPTION_OFF" });
+
             await driver.verifyConnectivity();
 
             const databases = await getDatabases(driver);
