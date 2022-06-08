@@ -21,10 +21,9 @@ export interface LoginPayload {
     username: string;
     password: string;
     url: string;
-    secure?: string;
 }
 
-export interface Favourite {
+export interface Favorite {
     id: string;
     name: string;
     typeDefs: string;

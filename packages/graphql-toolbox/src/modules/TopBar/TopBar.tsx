@@ -18,7 +18,7 @@
  */
 
 import { Fragment, useContext } from "react";
-import { Button, HeroIcon } from "@neo4j-ndl/react";
+import { Button, HeroIcon, IconButton } from "@neo4j-ndl/react";
 // @ts-ignore - SVG Import
 import Neo4jLogoIcon from "../../assets/Neo4j-logo-color.svg";
 import { AuthContext } from "../../contexts/auth";
@@ -81,39 +81,37 @@ export const TopBar = () => {
             <div className="flex-1 flex justify-end">
                 <div className="flex items-center justify-space text-sm">
                     {!auth.isNeo4jDesktop ? (
-                        <div className="mr-6 pr-2 border-r border-gray-700">
+                        <div className="mr-4 pr-4 border-r border-gray-700">
                             <Button
                                 data-test-topbar-disconnect-button
                                 color="primary"
                                 fill="text"
-                                onClick={() => {
-                                    auth?.logout();
-                                }}
+                                onClick={() => auth?.logout()}
                             >
-                                <div className="flex items-center">
-                                    <HeroIcon className="h-7 w-7 mr-3" iconName="LogoutIcon" type="outline" />
-                                    <div className="pt-02">Disconnect</div>
-                                </div>
+                                <HeroIcon className="w-full h-full" iconName="LogoutIcon" type="outline" />
+                                <span>Disconnect</span>
                             </Button>
                         </div>
                     ) : null}
-                    <div className="flex items-center">
-                        <div className="cursor-pointer mr-4">
-                            <HeroIcon
-                                data-test-topbar-help-button
-                                onClick={handleHelpClick}
-                                className="h-7 w-7"
-                                iconName="QuestionMarkCircleIcon"
-                                type="outline"
-                            />
-                        </div>
-                        <div
-                            className="ml-2 mr-6 cursor-pointer"
-                            data-test-topbar-settings-button
-                            onClick={handleSettingsClick}
+                    <div className="flex items-center mr-6">
+                        <IconButton
+                            data-test-topbar-help-button
+                            aria-label="Help and learn drawer"
+                            onClick={handleHelpClick}
+                            buttonSize="large"
+                            clean
                         >
-                            <HeroIcon className="h-7 w-7" iconName="CogIcon" type="outline" />
-                        </div>
+                            <HeroIcon iconName="QuestionMarkCircleIcon" type="outline" />
+                        </IconButton>
+                        <IconButton
+                            clean
+                            data-test-topbar-settings-button
+                            aria-label="Application settings"
+                            onClick={handleSettingsClick}
+                            buttonSize="large"
+                        >
+                            <HeroIcon iconName="CogIcon" type="outline" />
+                        </IconButton>
                     </div>
                 </div>
             </div>
