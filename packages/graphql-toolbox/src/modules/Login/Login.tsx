@@ -44,9 +44,9 @@ export const Login = () => {
                 const password = data.get("password") as string;
 
                 await auth.login({
-                    username: username as string,
+                    username,
                     password,
-                    url: url as string,
+                    url,
                 });
             } catch (error) {
                 setError((error as Error).message as string);

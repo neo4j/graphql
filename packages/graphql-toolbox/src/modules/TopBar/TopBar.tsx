@@ -42,12 +42,12 @@ export const TopBar = () => {
         settings.setIsShowSettingsDrawer(!settings.isShowSettingsDrawer);
     };
 
-    const constructDbmsUrl = (): string => {
+    const constructDbmsUrlWithUsername = (): string => {
         if (!auth || !auth.connectUrl || !auth.username) return DEFAULT_BOLT_URL;
         const { connectUrl, username } = auth;
 
         const modifiedUsername = username.length > 30 ? `${username.substring(0, 28)}...` : username;
-        const { protocol, host } = new URL(connectUrl);
+        const [protocol, host] = connectUrl.split(/:\/\//);
         if (!protocol || !host) return DEFAULT_BOLT_URL;
 
         return `${protocol}://${modifiedUsername}@${host}`;
@@ -65,7 +65,7 @@ export const TopBar = () => {
             <div className="flex-1 flex justify-center">
                 <div className="flex items-center">
                     <p className="mr-2">{auth?.isConnected ? greenDot : redDot} </p>
-                    <div className="flex items-center">{constructDbmsUrl()}</div>
+                    <div className="flex items-center">{constructDbmsUrlWithUsername()}</div>
                     {auth.databases?.length ? (
                         <Fragment>
                             <span className="mx-2">/</span>
