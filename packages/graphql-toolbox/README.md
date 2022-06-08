@@ -50,19 +50,14 @@ yarn start
 The GraphQL Toolbox supports some URL parameters defined in the query component, see below. These URL parameters are optional and can be provided at convenience.
 The query component is preceded by a question mark (?) and contains a query string that is a sequence of key-value pairs separated by an ampersand (&).
 
-| URL parameter | Description                                                                                                                                     | Example                      |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| dbms          | Form: protocol://username@url; Used at login, pre-populates the Connection URI input field and the username input field with the provided value | neo4j://alice@localhost:7687 |
-| connectURL    | Used at login, pre-populates the Connection URI input field with the provided value                                                             | neo4j://localhost:7687       |
-| username      | Used at login, pre-populates the username input field with the provided value                                                                   | alice                        |
-| db            | Only applicable for multi-database supported Neo4j DBMSs. The provided value is used as the selected database name                              | neo4j                        |
+| URL parameter | Description                                                                                                                             | Example                     |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| connectURL    | Form: scheme://username@bolt-url:port; Used at login, pre-populates the Username and Connection URI input field with the provided value | bolt://admin@localhost:7687 |
+| db            | Only applicable for multi-database supported Neo4j DBMSs. The provided value is used as the selected database name                      | neo4j                       |
 
-Please note, the values provided in the URL parameter `dbms` override the `connectURL` and the `username` URL parameters if they are present.
+An example with the URL parameters `connectURL` and `db`: `http://localhost:4242?connectURL=bolt%2Bs://xxxx.databases.neo4j.io&db=mydatabase`
 
-An example with the URL parameters `connectURL`, `username` and `db`: `http://localhost:4242?connectURL=neo4j%2Bs://xxxx.databases.neo4j.io&username=admin&db=mydatabase`
-An example with the URL parameters `dbms` and `db`: `http://localhost:4242?dbms=neo4j%2Bs://admin@localhost:7687&db=mydatabase`
-
-Note: The plus symbol (+) in the connectURL (here in `neo4j+s`) needs to be URL encoded with `%2B`.
+Note: The plus symbol (+) in the connectURL (here in `bolt+s`) needs to be URL encoded with `%2B`.
 
 ## Licence
 

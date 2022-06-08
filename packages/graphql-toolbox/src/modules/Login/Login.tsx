@@ -21,18 +21,19 @@ import { useCallback } from "react";
 import { useContext, useState } from "react";
 import { FormInput } from "./FormInput";
 import { Button } from "@neo4j-ndl/react";
-import { CONNECT_URL_PARAM_NAME, DEFAULT_BOLT_URL, DEFAULT_USERNAME, USERNAME_PARAM_NAME } from "../../constants";
+import { DEFAULT_BOLT_URL, DEFAULT_USERNAME } from "../../constants";
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
 import { AuthContext } from "../../contexts/auth";
-import { getSearchParamValue } from "../../contexts/utils";
+import { getConnectUrlSearchParamValue } from "../../contexts/utils";
 
 export const Login = () => {
     const auth = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [url, setUrl] = useState((getSearchParamValue(CONNECT_URL_PARAM_NAME) as string) || DEFAULT_BOLT_URL);
-    const [username, setUsername] = useState((getSearchParamValue(USERNAME_PARAM_NAME) as string) || DEFAULT_USERNAME);
+    const { url: searchParamUrl, username: searchParamUsername } = getConnectUrlSearchParamValue() || {};
+    const [url, setUrl] = useState(searchParamUrl || DEFAULT_BOLT_URL);
+    const [username, setUsername] = useState(searchParamUsername || DEFAULT_USERNAME);
 
     const onSubmit = useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {

@@ -24,10 +24,8 @@ import { LoginPayload, Neo4jDatabase } from "../types";
 import {
     CONNECT_URL_PARAM_NAME,
     DATABASE_PARAM_NAME,
-    DBMS_PARAM_NAME,
     DEFAULT_DATABASE_NAME,
     LOCAL_STATE_SELECTED_DATABASE_NAME,
-    USERNAME_PARAM_NAME,
 } from "../constants";
 
 const GET_DATABASES_QUERY = `
@@ -154,18 +152,22 @@ const getUrlSearchParam = (paramName: string): string | null => {
     return urlParams.get(paramName);
 };
 
-const getElementsFromDbmsSearchParam = (): { url: string; username: string; protocol: string } | null => {
-    const dbmsParam = getUrlSearchParam(DBMS_PARAM_NAME);
+export const getConnectUrlSearchParamValue = (): {
+    url: string;
+    username: string;
+    protocol: string;
+} | null => {
+    const dbmsParam = getUrlSearchParam(CONNECT_URL_PARAM_NAME as string);
     if (!dbmsParam) return null;
-    const [protocol, username, url] = dbmsParam.split(/:\/\/|@/);
-    if (!protocol || !username || !url) return null;
-    return { protocol, username, url };
+    const [protocol, username, host] = dbmsParam.split(/:\/\/|@/);
+    if (!protocol || !username || !host) return null;
+    return { protocol, username, url: `${protocol}://${host}` };
 };
 
 export const resolveSelectedDatabaseName = (databases: Neo4jDatabase[]): string => {
     let usedDatabaseName: string | null = null;
 
-    const searchParam = getUrlSearchParam(DATABASE_PARAM_NAME);
+    const searchParam = getUrlSearchParam(DATABASE_PARAM_NAME as string);
     if (searchParam) {
         Storage.store(LOCAL_STATE_SELECTED_DATABASE_NAME, searchParam);
         usedDatabaseName = searchParam;
@@ -180,24 +182,4 @@ export const resolveSelectedDatabaseName = (databases: Neo4jDatabase[]): string 
 
     const defaultDatabase = databases?.find((database) => database.default) || undefined;
     return defaultDatabase?.name || DEFAULT_DATABASE_NAME;
-};
-
-export const getSearchParamValue = (
-    paramName: string
-): string | { url: string; username: string; protocol: string } | null => {
-    const dbmsParams = getElementsFromDbmsSearchParam();
-
-    switch (paramName) {
-        case USERNAME_PARAM_NAME:
-            return dbmsParams?.username || getUrlSearchParam(USERNAME_PARAM_NAME);
-        case CONNECT_URL_PARAM_NAME:
-            return (
-                (dbmsParams ? `${dbmsParams.protocol}://${dbmsParams.url}` : null) ||
-                getUrlSearchParam(CONNECT_URL_PARAM_NAME)
-            );
-        case DBMS_PARAM_NAME:
-            return dbmsParams;
-        default:
-            return null;
-    }
 };
