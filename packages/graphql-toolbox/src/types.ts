@@ -23,7 +23,7 @@ export interface LoginPayload {
     url: string;
 }
 
-export interface Favourite {
+export interface Favorite {
     id: string;
     name: string;
     typeDefs: string;
