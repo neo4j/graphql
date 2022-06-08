@@ -64,7 +64,6 @@ export class Login extends Screen {
     }
 
     public async awaitSuccess() {
-        await this.page.screenshot({ path: "test.png" });
         await this.page.waitForSelector("[data-test-schema-editor-build-button]");
     }
 

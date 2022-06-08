@@ -186,6 +186,7 @@ export const getSearchParamValue = (
     paramName: string
 ): string | { url: string; username: string; protocol: string } | null => {
     const dbmsParams = getElementsFromDbmsSearchParam();
+
     switch (paramName) {
         case USERNAME_PARAM_NAME:
             return dbmsParams?.username || getUrlSearchParam(USERNAME_PARAM_NAME);

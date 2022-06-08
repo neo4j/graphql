@@ -31,8 +31,8 @@ export const Login = () => {
     const auth = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [url, setUrl] = useState(getSearchParamValue(CONNECT_URL_PARAM_NAME) || DEFAULT_BOLT_URL);
-    const [username, setUsername] = useState(getSearchParamValue(USERNAME_PARAM_NAME) || DEFAULT_USERNAME);
+    const [url, setUrl] = useState((getSearchParamValue(CONNECT_URL_PARAM_NAME) as string) || DEFAULT_BOLT_URL);
+    const [username, setUsername] = useState((getSearchParamValue(USERNAME_PARAM_NAME) as string) || DEFAULT_USERNAME);
 
     const onSubmit = useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {

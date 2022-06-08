@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import { Fragment, useContext } from "react";
 import { Button, HeroIcon, IconButton } from "@neo4j-ndl/react";
+import { Fragment, useContext } from "react";
+import { DEFAULT_BOLT_URL } from "src/constants";
 // @ts-ignore - SVG Import
 import Neo4jLogoIcon from "../../assets/Neo4j-logo-color.svg";
-import { AuthContext } from "../../contexts/auth";
-import { SettingsContext } from "../../contexts/settings";
-import { Screen, ScreenContext } from "../../contexts/screen";
 import { CustomSelect } from "../../components/CustomSelect";
-import { DEFAULT_BOLT_URL } from "src/constants";
+import { AuthContext } from "../../contexts/auth";
+import { Screen, ScreenContext } from "../../contexts/screen";
+import { SettingsContext } from "../../contexts/settings";
 
 export const TopBar = () => {
     const auth = useContext(AuthContext);
@@ -44,10 +44,13 @@ export const TopBar = () => {
 
     const constructDbmsUrl = (): string => {
         if (!auth || !auth.connectUrl || !auth.username) return DEFAULT_BOLT_URL;
-        const username = auth.username.length > 30 ? `${auth.username.substring(0, 28)}...` : auth.username;
-        const [protocol, url] = auth.connectUrl.split(/:\/\//);
-        if (!protocol || !url) return DEFAULT_BOLT_URL;
-        return `${protocol}://${username}@${url}`;
+        const { connectUrl, username } = auth;
+
+        const modifiedUsername = username.length > 30 ? `${username.substring(0, 28)}...` : username;
+        const { protocol, host } = new URL(connectUrl);
+        if (!protocol || !host) return DEFAULT_BOLT_URL;
+
+        return `${protocol}://${modifiedUsername}@${host}`;
     };
 
     return (
