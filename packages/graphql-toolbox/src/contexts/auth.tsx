@@ -29,7 +29,6 @@ interface LoginOptions {
     username: string;
     password: string;
     url: string;
-    secure?: string;
 }
 
 export interface State {
@@ -79,7 +78,6 @@ export function AuthProvider(props: any) {
                     username: loginPayload.username,
                     password: loginPayload.password,
                     url: loginPayload.url,
-                    secure: loginPayload.secure
                 })
                 .catch(() => {});
         }
@@ -88,8 +86,12 @@ export function AuthProvider(props: any) {
     [value, setValue] = useState<State>({
         login: async (options: LoginOptions) => {
             const auth = neo4j.auth.basic(options.username, options.password);
-            const encrypted = options.secure === "on" ? "ENCRYPTION_ON" : "ENCRYPTION_OFF";
-            const driver = neo4j.driver(options.url, auth, { encrypted });
+            const protocol = new URL(options.url).protocol;
+            // Manually set the encryption to off if it's not specified in the Connection URI to avoid implicit encryption in https domain
+            const driver = protocol.includes("+s") ?
+                neo4j.driver(options.url, auth) :
+                neo4j.driver(options.url, auth, { encrypted: "ENCRYPTION_OFF" });
+            
             await driver.verifyConnectivity();
 
             const databases = await getDatabases(driver);
@@ -98,8 +100,7 @@ export function AuthProvider(props: any) {
             const encodedPayload = encrypt({
                 username: options.username,
                 password: options.password,
-                url: options.url,
-                secure: options.secure
+                url: options.url
             } as LoginPayload);
             Storage.storeJSON(LOCAL_STATE_LOGIN, encodedPayload);
 

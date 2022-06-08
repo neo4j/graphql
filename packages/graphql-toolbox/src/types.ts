@@ -21,7 +21,6 @@ export interface LoginPayload {
     username: string;
     password: string;
     url: string;
-    secure?: string;
 }
 
 export interface Favourite {
