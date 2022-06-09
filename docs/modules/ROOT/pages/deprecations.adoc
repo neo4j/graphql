@@ -14,7 +14,7 @@ The following products and applications are deprecated:
 The GRANDstack starter app has been a marketing and product effort to drive user adoption of the Neo4j GraphQL library at its early stages. 
 Its main value was to show how Apollo client works in the context of React and GraphQL, and it was a great tool to build PoCs.
 It was very appealing to junior developers with very little experience in building applications.
-It was a great channel to bring a new audience to Neo4j, but it unveiled gaps in the developer experience with the overall product where these newbie developers often need more support,
+It was a great channel to bring a new audience to Neo4j, but it unveiled gaps in the developer experience with the overall product where these newer developers often need more support,
 exposing little annoyances that experienced developers can work around which end up being big blockers for junior users who needed more hand holding in understanding the product and the technology.
 These users are not our main target audience, as we're working on other ways to bring new audiences to Neo4j. 
 The downside of this tool is that it needs maintenance of a front-end framework we have little control over and it represents a dependency we don't have the capacity to maintain.
