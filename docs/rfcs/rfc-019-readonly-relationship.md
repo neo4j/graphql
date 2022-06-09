@@ -59,14 +59,11 @@ type User {
 
 ## Proposed Solution
 
-Given the following type definitions:
-
 One way to achieve it is by modifying the schema by removing the `createdBy` input field from the following types:  
 `PostUpdateInput`
 `PostConnectInput`
 `PostDisconnectInput`
 `PostRelationInput`
-`PostDeleteInput`
 
 For example, we could expect that the `PostUpdateInput` should look like this:
 ```graphql
@@ -86,6 +83,33 @@ The directive combination `@relationship` and `@readonly` has to be allowed.
 #### Empty Inputs
 
 This solution requires removing all the read-only relationship fields from all the update input types. That means that we have new situations where an input type could remains empty. To avoid that, an `_emptyInput` field should be added to these empty inputs.
+
+#### Delete Inputs
+
+The read-only feature will **not** remove the ability to delete nested nodes. This means that the following query and parameter will remains valid:
+
+```graphql
+mutation DeletePosts($delete: PostDeleteInput) {
+  deletePosts(delete: $delete) {
+    nodesDeleted
+  }
+}
+```
+
+parameters: 
+```json
+{
+  "delete": {
+    "createdBy": {
+      "where": {
+        "node": {
+          "name": "John"
+        }
+      }
+    }
+  }
+}
+```
 
 ## Risks
 
