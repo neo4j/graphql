@@ -12,7 +12,7 @@ The following products and applications are deprecated:
 == Why have we deprecated the GRANDstack starter app?
 
 The GRANDstack starter app has been a marketing and product effort to drive user adoption of the Neo4j GraphQL library at its early stages. 
-Its main value was to show how Apollo client works in the context of React and GraphQL, and it was a great tool to build PoCs.
+Its main value was to show how the Apollo client works in the context of React and GraphQL, and it was a great tool to build PoCs.
 It was very appealing to junior developers with very little experience in building applications.
 It was a great channel to bring a new audience to Neo4j, but it unveiled gaps in the developer experience with the overall product where these newer developers often need more support,
 exposing little annoyances that experienced developers can work around which end up being big blockers for junior users who needed more hand holding in understanding the product and the technology.
@@ -22,7 +22,7 @@ This is something we don't want to pursue anymore.
 
 The successor of this product will focus on providing an example backend service for users, which is more valuable to our audience of fullstack and frontend developers and to us.
 This might take the shape of a Starter kit for a GraphQL API. 
-There is a need for users who have an existing front end and need a new backend.
+There is a need for users who have an existing front-end and need a new backend.
 They need a way to initiate a server, so we can bring value by providing an opinionated mechanism that can help users get started with Neo4j GraphQL. 
 
 Our aim in Q3 2022 is to provide a "starter kit" set of instructions that potentially is:
@@ -47,21 +47,14 @@ GraphQL Architect was a Graph App for Neo4j Desktop that enabled developers to b
 
 We decided it was time to give this tool a new purpose and expand its potential to attract our target audience. 
 Successor of GraphQL Architect Graph App, the new Neo4j GraphQL Toolbox (the name is a placeholder) will be part of the GraphQL for Neo4j holistic product offering. 
-It is currently available at https://graphql-toolbox.neo4j.io/, however we haven't publicized it yet as we're working on demoing it at GraphConnect, and we're still writing documentation and marketing pieces on it. 
+It is currently available at https://graphql-toolbox.neo4j.io/, however we haven't publicized it yet and we're still writing documentation and marketing pieces on it. 
 
 The vision for this is to build an embeddable tool that we can integrate into the Neo4j workspace which will help onboarding developers into GraphQL. 
-It's meant to be a low code GraphQL solution to get started for developers who are either new to Neo4j, or GraphQL, or both, and they're seeking a way to get started easily and quickly with their project from scratch. 
+It's meant to be a Low-Code GraphQL solution to get started for developers who are either new to Neo4j, or GraphQL, or both, and they're seeking a way to get started easily and quickly with their project from scratch. 
 
 We want to make it easily configurable so that it's at developers' fingertips ready and available for users without requiring them to have credentials to access a live Neo4j instance when they are in a prototyping stage.
-It's also a great way to discover the GraphQL library capabilities.
+It's also a great way to discover the GraphQL library capabilities. It's very useful for debugging errors and problems users may encounter using the library so they can use the GraphQL Toolbox to reproduce the problem in GitHub issues.
 
-We are working with the docs team to see if there is a product opportunity to integrate the GraphQL Toolbox in our documentation to make examples more interactive.
-
-It's very useful for debugging errors and problems users may encounter using the library so they can use the GraphQL Toolbox to reproduce the problem in GitHub issues.
-
-In the future we see this as a key tool to attract new users: this can be a potential entry point for our Neo4j GraphQLaaS by providing a publish API option to integrate with a backend managed service and work with your application in production. 
-
-This can also serve as an educational piece to help developers understand our competitive advantage compared to other players in the market by showcasing the GraphQL and Graph database natural marriage.
 We can communicate to the developers market that there is no mismatch between the API model and the data model (in the database).
 We are graph from top to bottom.
 GraphQL developers already think in graphs about their application data and features, but we need to help them understand that they can store that information in graphs (using a graph DB).  
