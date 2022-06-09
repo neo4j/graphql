@@ -47,8 +47,8 @@ yarn start
 
 ## GraphQL Toolbox URL parameters
 
-The GraphQL Toolbox supports some URL parameters defined in the query component, see below. These URL parameters are optional and can be provided at convenience.
-The query component is preceded by a question mark (?) and contains a query string that is a sequence of key-value pairs separated by an ampersand (&).
+The GraphQL Toolbox supports some URL parameters defined in the query string, see below. These URL parameters are optional and can be provided for convenience.
+The query string is preceded by a question mark (?) and contains key-value pairs separated by an ampersand (&).
 
 | URL parameter | Description                                                                                                                             | Example                     |
 | ------------- | --------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
@@ -57,7 +57,7 @@ The query component is preceded by a question mark (?) and contains a query stri
 
 An example with the URL parameters `connectURL` and `db`: `http://localhost:4242?connectURL=bolt%2Bs://xxxx.databases.neo4j.io&db=mydatabase`
 
-Note: The plus symbol (+) in the connectURL (here in `bolt+s`) needs to be URL encoded with `%2B`.
+Note: The plus symbol (+) in the connectURL needs to be URL encoded to become `%2B`. For example `bolt+s` becomes `bolt%2Bs`.
 
 ## Licence
 
