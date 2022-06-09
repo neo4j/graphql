@@ -2012,7 +2012,7 @@ __metadata:
     apollo-server: 3.8.2
     apollo-server-express: 3.8.2
     camelcase: 6.3.0
-    graphql-ws: 5.8.2
+    graphql-ws: 5.9.0
     jest: 28.1.1
     neo4j-driver: 4.4.5
     pluralize: 8.0.0
@@ -2122,7 +2122,7 @@ __metadata:
     graphql-parse-resolve-info: ^4.12.0
     graphql-relay: ^0.10.0
     graphql-tag: 2.12.6
-    graphql-ws: 5.8.2
+    graphql-ws: 5.9.0
     is-uuid: 1.0.2
     jest: 28.1.1
     koa: 2.13.4
@@ -8855,12 +8855,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-ws@npm:5.8.2":
-  version: 5.8.2
-  resolution: "graphql-ws@npm:5.8.2"
+"graphql-ws@npm:5.9.0":
+  version: 5.9.0
+  resolution: "graphql-ws@npm:5.9.0"
   peerDependencies:
     graphql: ">=0.11 <=16"
-  checksum: 2f7701ffc531f053c47fd42ea1fa4555775195f621f1ff767d668eef41ab1376900c1ef166c0063dbc81aa49a2aabd60becb517b8d1b7bc0b3dd687bd4d319a6
+  checksum: b13abfc4094314940f7ffd1e5c9fa34b6b1a64d477d3f1728740d04edd36e1191c83dcec3c2d7f3d6653995b1ba32edeb75f92921710d716b4cc7fc349d1f276
   languageName: node
   linkType: hard
 
