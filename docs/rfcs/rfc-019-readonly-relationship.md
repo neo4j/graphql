@@ -87,10 +87,14 @@ The directive combination `@relationship` and `@readonly` has to be allowed.
 #### Indirect mutation
 
 In this solution, even if `createdBy` is set as read-only, it's still possible to mutate it by:
-modify the relationship from the `User` node
-delete the `User` node.
+* modify the relationship from the `User` node
+* delete the `User` node.
+
 A more stringent solution will be to enforce that if a @read-only directive is present, then, it should be present on both sides of the relationship.
-In this case, it remains still mutable only by deleting at least one of the two nodes.
+
+#### Directive inheritance
+
+It should be supported and tested against relationship with interface too.
 
 #### Empty Inputs
 
