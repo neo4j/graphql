@@ -846,21 +846,25 @@ function createRelationshipFields({
             });
         }
 
-        nodeUpdateInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldUpdateInputName}!]` : nodeFieldUpdateInputName,
-        });
+        if (!rel.readonly) {
+            nodeUpdateInput.addFields({
+                [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldUpdateInputName}!]` : nodeFieldUpdateInputName,
+            });
 
-        nodeDeleteInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName,
-        });
+            nodeDeleteInput.addFields({
+                [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldDeleteInputName}!]` : nodeFieldDeleteInputName,
+            });
 
-        nodeConnectInput.addFields({
-            [rel.fieldName]: connect,
-        });
+            nodeConnectInput.addFields({
+                [rel.fieldName]: connect,
+            });
 
-        nodeDisconnectInput.addFields({
-            [rel.fieldName]: rel.typeMeta.array ? `[${nodeFieldDisconnectInputName}!]` : nodeFieldDisconnectInputName,
-        });
+            nodeDisconnectInput.addFields({
+                [rel.fieldName]: rel.typeMeta.array
+                    ? `[${nodeFieldDisconnectInputName}!]`
+                    : nodeFieldDisconnectInputName,
+            });
+        }
 
         if (n.uniqueFields.length) {
             createTopLevelConnectOrCreateInput({ schemaComposer, sourceName, rel });

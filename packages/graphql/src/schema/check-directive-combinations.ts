@@ -32,7 +32,7 @@ function checkDirectiveCombinations(directives: readonly DirectiveNode[] = []) {
         computed: ["alias", "auth", "id", "readonly", "relationship", "writeonly"],
         private: [],
         readonly: ["cypher", "computed"],
-        relationship: ["alias", "callback", "coalesce", "cypher", "default", "id", "computed", "readonly"],
+        relationship: ["alias", "callback", "coalesce", "cypher", "default", "id", "computed"],
         timestamp: ["id", "unique"],
         unique: ["cypher", "id", "computed", "relationship", "timestamp"],
         writeonly: ["cypher", "computed"],
