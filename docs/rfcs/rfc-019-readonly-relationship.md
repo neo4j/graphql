@@ -11,6 +11,9 @@ In a real-world scenario the evidence this read-only feature is missing could be
 ```
 In this case, it is reasonable to believe that `createdBy` should be immutable.
 
+As a relationship need two nodes to exist, the @read-only directive will not make the relationship field immutable, as it will be still possible to mutate it indirectly by deleting one of the two nodes or removing the relationship from the other side of the relationship.
+More at: [Indirect Mutation](#indirect-mutation)
+
 ### One-to-many relationships
 
 Given this type defintion:
@@ -43,10 +46,12 @@ It is reasonable to believe that both `founders` and `founderOf` should be immut
 A once created relationship should, when the `@readonly` directive is present, not be updatable anymore.
 This is currently not possible and prevented by the combination check on the directives.
 
-In this document we consider the type definition defined as:
+
+## Proposed Solution
+
+In this solution we consider the type definition defined as:
 ```graphql
 type Post {
-    id: ID
     title: String
     createdBy: User! @relationship(type: "POST_CREATED_BY", direction: OUT) @readonly
 }
@@ -57,19 +62,18 @@ type User {
 }
 ```
 
-## Proposed Solution
-
 One way to achieve it is by modifying the schema by removing the `createdBy` input field from the following types:  
-`PostUpdateInput`
-`PostConnectInput`
-`PostDisconnectInput`
-`PostRelationInput`
+* `PostUpdateInput`
+* `PostConnectInput`
+* `PostDisconnectInput`
+* `PostRelationInput`
+* `PostDeleteInput`
+
 
 For example, we could expect that the `PostUpdateInput` should look like this:
 ```graphql
 input PostUpdateInput {
   ... // the createdBy field is not longer present as it was defined as readonly
-  id: ID 
   title: String
 }
 ```
@@ -80,36 +84,22 @@ The directive combination `@relationship` and `@readonly` has to be allowed.
 
 ### Technical considerations
 
+#### Indirect mutation
+
+In this solution, even if `createdBy` is set as read-only, it's still possible to mutate it by:
+modify the relationship from the `User` node
+delete the `User` node.
+A more stringent solution will be to enforce that if a @read-only directive is present, then, it should be present on both sides of the relationship.
+In this case, it remains still mutable only by deleting at least one of the two nodes.
+
 #### Empty Inputs
 
 This solution requires removing all the read-only relationship fields from all the update input types. That means that we have new situations where an input type could remains empty. To avoid that, an `_emptyInput` field should be added to these empty inputs.
 
-#### Delete Inputs
+#### Cascade Deletes
 
-The read-only feature will **not** remove the ability to delete nested nodes. This means that the following query and parameter will remains valid:
-
-```graphql
-mutation DeletePosts($delete: PostDeleteInput) {
-  deletePosts(delete: $delete) {
-    nodesDeleted
-  }
-}
-```
-
-parameters: 
-```json
-{
-  "delete": {
-    "createdBy": {
-      "where": {
-        "node": {
-          "name": "John"
-        }
-      }
-    }
-  }
-}
-```
+From the type definition above, the type `PostDeleteInput` is shared, as argument, between  the `updatePosts` and the `deletePosts` mutation.
+Remove `createdBy` from it, it will remove the ability to delete in cascade `User` nodes from the `Post` mutations.
 
 ## Risks
 
