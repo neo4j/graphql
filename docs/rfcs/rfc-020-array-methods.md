@@ -136,7 +136,7 @@ In an update mutation when the POP method is not used, the `info` object will co
 
 #### Homogenous array types
 
-Since graphql allows union types in an array but cypher only allows homogenous arrays, we could perform type checking in the graphql schema to ensure defined arrays are of the same type.
+Since graphql allows union types in an array but Cypher only allows homogenous arrays, we could perform type checking in the graphql schema to ensure defined arrays are of the same type.
 
 #### PUSH to undefined properties
 
