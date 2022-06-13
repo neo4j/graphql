@@ -18,9 +18,10 @@
  */
 
 import { on } from "events";
-import { Neo4jGraphQLAuthenticationError, Neo4jGraphQLError } from "../../../classes";
+import ContextParser from "../../../utils/context-parser";
+import { Neo4jGraphQLError } from "../../../classes";
 import Node from "../../../classes/Node";
-import { SubscriptionsEvent } from "../../../types";
+import { AuthRule, Context, SubscriptionsEvent } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
 import { SubscriptionAuth } from "./subscription-auth";
 import { SubscriptionContext } from "./types";
@@ -40,6 +41,7 @@ type SubscriptionArgs = {
 
 export function generateSubscribeMethod(node: Node, type: "create" | "update" | "delete") {
     return (_root: any, args: SubscriptionArgs, context: SubscriptionContext): AsyncIterator<[SubscriptionsEvent]> => {
+        let authWhere = {};
         if (node.auth) {
             const authRules = node.auth.getRules(["SUBSCRIBE"]);
             for (const rule of authRules) {
@@ -50,16 +52,29 @@ export function generateSubscribeMethod(node: Node, type: "create" | "update" | 
                     throw new Error("Error, request not authorized");
                 }
             }
+
+            authWhere = getAuthWhereParameters(authRules, context);
         }
 
         const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);
 
         return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
             const isSubscribedType = data[0].typename === node.name;
-            const matchWhereFilter = subscriptionWhere(args.where, data[0]);
+
+            const whereParams = { ...args.where, ...authWhere };
+            const matchWhereFilter = subscriptionWhere(whereParams, data[0]);
             const matchUpdateDiffFilter = updateDiffFilter(data[0]);
 
             return isSubscribedType && matchWhereFilter && matchUpdateDiffFilter;
         });
     };
+}
+
+function getAuthWhereParameters(authRules: AuthRule[], context: SubscriptionContext): Record<string, any> {
+    return authRules.reduce((acc, rule) => {
+        if (!rule.where || typeof rule.where !== "object") return acc;
+        const properties = ContextParser.replaceProperties(rule.where, context, "jwt");
+        acc = { ...properties, ...acc };
+        return acc;
+    }, {});
 }

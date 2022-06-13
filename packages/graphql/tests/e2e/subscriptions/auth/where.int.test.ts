@@ -30,6 +30,8 @@ import { createJwtHeader } from "../../../utils/create-jwt-request";
 
 describe("Subscription auth where", () => {
     const typeMovie = generateUniqueType("Movie");
+    const typeUser = generateUniqueType("User");
+
     let driver: Driver;
     let jwtToken: string;
     let server: TestGraphQLServer;
@@ -42,7 +44,11 @@ describe("Subscription auth where", () => {
             type ${typeMovie} {
                 title: String!
             }
+            type ${typeUser} {
+                name: String!
+            }
 
+            extend type ${typeUser} @auth(rules: [{ operations: [SUBSCRIBE], where: { name: "arthur" } }])
             extend type ${typeMovie} @auth(rules: [{ operations: [SUBSCRIBE], where: { title: "$jwt.title" } }])
             `;
 
@@ -70,7 +76,34 @@ describe("Subscription auth where", () => {
         await driver.close();
     });
 
-    test("only relevant roles are passed", async () => {
+    test("only return events matching the static where statement", async () => {
+        wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
+        await wsClient.subscribe(`
+            subscription {
+                ${typeUser.operations.subscribe.created} {
+                    ${typeUser.operations.subscribe.payload.created} {
+                        name
+                    }
+                }
+            }
+            `);
+
+        await createUser("user1");
+        await createUser("arthur");
+
+        expect(wsClient.events).toEqual([
+            {
+                [typeUser.operations.subscribe.created]: {
+                    [typeUser.operations.subscribe.payload.created]: {
+                        name: "arthur",
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.errors).toEqual([]);
+    });
+
+    test("only return events matching the jwt where statement", async () => {
         wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
         await wsClient.subscribe(`
             subscription {
@@ -82,8 +115,8 @@ describe("Subscription auth where", () => {
             }
             `);
 
-        await createMovie("movie1", server);
-        await createMovie("movie2", server);
+        await createMovie("movie1");
+        await createMovie("movie2");
 
         expect(wsClient.events).toEqual([
             {
@@ -97,7 +130,7 @@ describe("Subscription auth where", () => {
         expect(wsClient.errors).toEqual([]);
     });
 
-    async function createMovie(title: string, server: TestGraphQLServer): Promise<Response> {
+    async function createMovie(title: string): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
             .set("authorization", jwtToken)
@@ -107,6 +140,24 @@ describe("Subscription auth where", () => {
                         ${typeMovie.operations.create}(input: [{ title: "${title}" }]) {
                             ${typeMovie.plural} {
                                 title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+        return result;
+    }
+    async function createUser(name: string): Promise<Response> {
+        const result = await supertest(server.path)
+            .post("")
+            .set("authorization", jwtToken)
+            .send({
+                query: `
+                    mutation {
+                        ${typeUser.operations.create}(input: [{ name: "${name}" }]) {
+                            ${typeUser.plural} {
+                                name
                             }
                         }
                     }
