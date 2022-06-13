@@ -19,7 +19,7 @@
 
 import { InputTypeComposer } from "graphql-compose";
 
-export function addMathOperatorsToITC(itc: InputTypeComposer): InputTypeComposer {
+export function addMathOperatorsToITC(itc: InputTypeComposer): void {
     // Add mathematical operators for Int/BigInt/Float fields
     itc.getFieldNames().forEach(fieldName => {
         const fieldType = itc.getFieldTypeName(fieldName);
@@ -37,5 +37,4 @@ export function addMathOperatorsToITC(itc: InputTypeComposer): InputTypeComposer
             });
         }
     });
-    return itc;
 }

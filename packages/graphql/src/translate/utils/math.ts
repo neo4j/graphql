@@ -72,33 +72,18 @@ export function matchMathField(graphQLFieldName: string): MathMatch {
     }
 }
 
-export function mathDescriptorBuilder(value: number, entity: GraphElement, graphQLFieldName?: string, fieldMatch?: MathMatch): MathDescriptor {
-    if (!fieldMatch && !graphQLFieldName) {
-        throw new Error('mathDescriptorBuilder needs to be invoked with graphQLFieldName or fieldMatch');
-    }
-    let match: MathMatch;
-    if (!fieldMatch) {
-        const mathMatch = matchMathField(graphQLFieldName as string);
-        const {isMatched} = mathMatch;
-
-        if (!isMatched) {
-            throw new Error(`GraphQL field ${graphQLFieldName} is not a valid Math Field`);
-        }
-        match = mathMatch;
-    } else {
-        match = fieldMatch;
-    }
-    const fieldName = match.propertyName;
+export function mathDescriptorBuilder(value: number, entity: GraphElement, fieldMatch: MathMatch): MathDescriptor {
+    const fieldName = fieldMatch.propertyName;
     const field = entity.primitiveFields.find((x) => x.fieldName === fieldName);
     if (!field) {
         throw new Error(`${fieldName} is not settable`);
     }
     return {
-        dbName: mapToDbProperty(entity, fieldName) as string,
+        dbName: mapToDbProperty(entity, fieldName),
         graphQLType: field.typeMeta.name,
         fieldName,
-        operationName: match.operatorName,
-        operationSymbol: mathOperatorToSymbol(match.operatorName as string),
+        operationName: fieldMatch.operatorName,
+        operationSymbol: mathOperatorToSymbol(fieldMatch.operatorName),
         value
     };
 }

@@ -86,8 +86,8 @@ describe("Math operators", () => {
             CALL {
             WITH this
             CALL apoc.util.validate(apoc.meta.type(this.viewers) = \\"NULL\\", 'Cannot %s %s to Nan', [\\"_INCREMENT\\", $this_update_viewers_INCREMENT])
-            CALL apoc.util.validate(this.viewers + $this_update_viewers_INCREMENT > 2^31-1, 'Value returned from operator %s is larger than %s bit', [\\"_INCREMENT\\", \\"32\\"])
-            CALL apoc.util.validate(apoc.meta.type(this.viewers + $this_update_viewers_INCREMENT) <> \\"INTEGER\\", 'Value returned from operator %s does not match: %s', [\\"_INCREMENT\\", \\"Int\\"])
+            CALL apoc.util.validate(this.viewers + $this_update_viewers_INCREMENT > 2^31-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\"_INCREMENT\\", \\"32\\"])
+            CALL apoc.util.validate(apoc.meta.type(this.viewers + $this_update_viewers_INCREMENT) <> \\"INTEGER\\", 'Type Mismatch: Value returned from operator %s does not match: %s', [\\"_INCREMENT\\", \\"Int\\"])
             SET this.viewers = this.viewers + $this_update_viewers_INCREMENT
             RETURN this as this_viewers__INCREMENT
             }
@@ -127,8 +127,8 @@ describe("Math operators", () => {
             CALL {
             WITH this
             CALL apoc.util.validate(apoc.meta.type(this.revenue) = \\"NULL\\", 'Cannot %s %s to Nan', [\\"_MULTIPLY\\", $this_update_revenue_MULTIPLY])
-            CALL apoc.util.validate(this.revenue * $this_update_revenue_MULTIPLY > 2^63-1, 'Value returned from operator %s is larger than %s bit', [\\"_MULTIPLY\\", \\"64\\"])
-            CALL apoc.util.validate(apoc.meta.type(this.revenue * $this_update_revenue_MULTIPLY) <> \\"FLOAT\\", 'Value returned from operator %s does not match: %s', [\\"_MULTIPLY\\", \\"Float\\"])
+            CALL apoc.util.validate(this.revenue * $this_update_revenue_MULTIPLY > 2^63-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\"_MULTIPLY\\", \\"64\\"])
+            CALL apoc.util.validate(apoc.meta.type(this.revenue * $this_update_revenue_MULTIPLY) <> \\"FLOAT\\", 'Type Mismatch: Value returned from operator %s does not match: %s', [\\"_MULTIPLY\\", \\"Float\\"])
             SET this.revenue = this.revenue * $this_update_revenue_MULTIPLY
             RETURN this as this_revenue__MULTIPLY
             }
@@ -170,8 +170,8 @@ describe("Math operators", () => {
             CALL {
             WITH this_actedIn0
             CALL apoc.util.validate(apoc.meta.type(this_actedIn0.viewers) = \\\\\\"NULL\\\\\\", 'Cannot %s %s to Nan', [\\\\\\"_INCREMENT\\\\\\", $this_update_actedIn0_viewers_INCREMENT])
-            CALL apoc.util.validate(this_actedIn0.viewers + $this_update_actedIn0_viewers_INCREMENT > 2^31-1, 'Value returned from operator %s is larger than %s bit', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"32\\\\\\"])
-            CALL apoc.util.validate(apoc.meta.type(this_actedIn0.viewers + $this_update_actedIn0_viewers_INCREMENT) <> \\\\\\"INTEGER\\\\\\", 'Value returned from operator %s does not match: %s', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"Int\\\\\\"])
+            CALL apoc.util.validate(this_actedIn0.viewers + $this_update_actedIn0_viewers_INCREMENT > 2^31-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"32\\\\\\"])
+            CALL apoc.util.validate(apoc.meta.type(this_actedIn0.viewers + $this_update_actedIn0_viewers_INCREMENT) <> \\\\\\"INTEGER\\\\\\", 'Type Mismatch: Value returned from operator %s does not match: %s', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"Int\\\\\\"])
             SET this_actedIn0.viewers = this_actedIn0.viewers + $this_update_actedIn0_viewers_INCREMENT
             RETURN this_actedIn0 as this_actedIn0_viewers__INCREMENT
             }
@@ -246,8 +246,8 @@ describe("Math operators", () => {
             CALL {
             WITH this_acted_in0_relationship
             CALL apoc.util.validate(apoc.meta.type(this_acted_in0_relationship.pay) = \\\\\\"NULL\\\\\\", 'Cannot %s %s to Nan', [\\\\\\"_ADD\\\\\\", $updateActors.args.update.actedIn[0].update.edge.pay_ADD])
-            CALL apoc.util.validate(this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_ADD > 2^63-1, 'Value returned from operator %s is larger than %s bit', [\\\\\\"_ADD\\\\\\", \\\\\\"64\\\\\\"])
-            CALL apoc.util.validate(apoc.meta.type(this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_ADD) <> \\\\\\"FLOAT\\\\\\", 'Value returned from operator %s does not match: %s', [\\\\\\"_ADD\\\\\\", \\\\\\"Float\\\\\\"])
+            CALL apoc.util.validate(this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_ADD > 2^63-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\\\\\"_ADD\\\\\\", \\\\\\"64\\\\\\"])
+            CALL apoc.util.validate(apoc.meta.type(this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_ADD) <> \\\\\\"FLOAT\\\\\\", 'Type Mismatch: Value returned from operator %s does not match: %s', [\\\\\\"_ADD\\\\\\", \\\\\\"Float\\\\\\"])
             SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_ADD
             RETURN this_acted_in0_relationship as this_acted_in0_relationship_pay__ADD
             }
@@ -315,8 +315,8 @@ describe("Math operators", () => {
             CALL {
             WITH this_marriedWith0
             CALL apoc.util.validate(apoc.meta.type(this_marriedWith0.marriageLength) = \\\\\\"NULL\\\\\\", 'Cannot %s %s to Nan', [\\\\\\"_INCREMENT\\\\\\", $this_update_marriedWith0_marriageLength_INCREMENT])
-            CALL apoc.util.validate(this_marriedWith0.marriageLength + $this_update_marriedWith0_marriageLength_INCREMENT > 2^31-1, 'Value returned from operator %s is larger than %s bit', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"32\\\\\\"])
-            CALL apoc.util.validate(apoc.meta.type(this_marriedWith0.marriageLength + $this_update_marriedWith0_marriageLength_INCREMENT) <> \\\\\\"INTEGER\\\\\\", 'Value returned from operator %s does not match: %s', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"Int\\\\\\"])
+            CALL apoc.util.validate(this_marriedWith0.marriageLength + $this_update_marriedWith0_marriageLength_INCREMENT > 2^31-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"32\\\\\\"])
+            CALL apoc.util.validate(apoc.meta.type(this_marriedWith0.marriageLength + $this_update_marriedWith0_marriageLength_INCREMENT) <> \\\\\\"INTEGER\\\\\\", 'Type Mismatch: Value returned from operator %s does not match: %s', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"Int\\\\\\"])
             SET this_marriedWith0.marriageLength = this_marriedWith0.marriageLength + $this_update_marriedWith0_marriageLength_INCREMENT
             RETURN this_marriedWith0 as this_marriedWith0_marriageLength__INCREMENT
             }
@@ -412,8 +412,8 @@ describe("Math operators", () => {
             CALL {
             WITH this_marriedWith0
             CALL apoc.util.validate(apoc.meta.type(this_marriedWith0.marriageLength) = \\\\\\"NULL\\\\\\", 'Cannot %s %s to Nan', [\\\\\\"_INCREMENT\\\\\\", $this_update_marriedWith0_on_Star_marriageLength_INCREMENT])
-            CALL apoc.util.validate(this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT > 2^31-1, 'Value returned from operator %s is larger than %s bit', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"32\\\\\\"])
-            CALL apoc.util.validate(apoc.meta.type(this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT) <> \\\\\\"INTEGER\\\\\\", 'Value returned from operator %s does not match: %s', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"Int\\\\\\"])
+            CALL apoc.util.validate(this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT > 2^31-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"32\\\\\\"])
+            CALL apoc.util.validate(apoc.meta.type(this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT) <> \\\\\\"INTEGER\\\\\\", 'Type Mismatch: Value returned from operator %s does not match: %s', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"Int\\\\\\"])
             SET this_marriedWith0.marriageLength = this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT
             RETURN this_marriedWith0 as this_marriedWith0_marriageLength__INCREMENT
             }
