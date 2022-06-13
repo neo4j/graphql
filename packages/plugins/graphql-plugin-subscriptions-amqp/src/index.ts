@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { Connection as AmqpConnection } from "amqplib";
 import { EventEmitter } from "events";
 import { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "@neo4j/graphql";
 import { AmqpApi, ConnectionOptions } from "./amqp-0-9-1-api";
@@ -29,27 +28,33 @@ const DEFAULT_VERSION: AmqpVersion = "0-9-1";
 
 type AmqpVersion = "0-9-1";
 
-export type Neo4jGraphQLSubscriptionsAMQPConstructorOptions = { amqpVersion?: AmqpVersion; exchange?: string };
+export type Neo4jGraphQLSubscriptionsAMQPPluginConstructorOptions = {
+    amqpVersion?: AmqpVersion;
+    exchange?: string;
+    connection: ConnectionOptions;
+};
 
-export class Neo4jGraphQLSubscriptionsAMQP implements Neo4jGraphQLSubscriptionsPlugin {
+export class Neo4jGraphQLSubscriptionsAMQPPlugin implements Neo4jGraphQLSubscriptionsPlugin {
     public events: EventEmitter;
     private amqpApi: AmqpApi<SubscriptionsEvent>;
+    private connectionOptions: ConnectionOptions;
 
-    constructor(options: Neo4jGraphQLSubscriptionsAMQPConstructorOptions = {}) {
+    constructor(options: Neo4jGraphQLSubscriptionsAMQPPluginConstructorOptions) {
         const defaultOptions = { exchange: DEFAULT_EXCHANGE, amqpVersion: DEFAULT_VERSION };
         const finalOptions = { ...defaultOptions, ...options };
 
         this.events = new EventEmitter();
         this.amqpApi = new AmqpApi({ exchange: finalOptions.exchange });
+        this.connectionOptions = options.connection;
     }
 
-    public async connect(connectionOptions: ConnectionOptions): Promise<AmqpConnection> {
-        return this.amqpApi.connect(connectionOptions, (message: SubscriptionsEvent) => {
+    public init(): Promise<void> {
+        return this.amqpApi.connect(this.connectionOptions, (message: SubscriptionsEvent) => {
             this.events.emit(message.event as string, message);
         });
     }
 
-    /* Closes the channel created and unbinds the event emitter */
+    /* Closes the connection and unbinds the event emitter */
     public close(): Promise<void> {
         this.events.removeAllListeners();
         return this.amqpApi.close();
