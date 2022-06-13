@@ -98,7 +98,7 @@ It should be supported and tested against relationship with interface too.
 
 #### Empty Inputs
 
-This solution requires removing all the read-only relationship fields from all the update input types. That means that we have new situations where an input type could remains empty. To avoid that, an `_emptyInput` field should be added to these empty inputs.
+This solution requires removing all the read-only relationship fields from all the update input types. That means that we have new situations where an input type could remains empty. To avoid that, an `_emptyInput` field could be added to these empty inputs or that input could be removed.
 
 #### Cascade Deletes
 
