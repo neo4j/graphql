@@ -138,13 +138,19 @@ In an update mutation when the POP method is not used, the `info` object will co
 
 Since graphql allows union types in an array but cypher only allows homogenous arrays, we could perform type checking in the graphql schema to ensure defined arrays are of the same type.
 
-#### Pushing to undefined properties
+#### PUSH to undefined properties
 
-When using the PUSH method on an undefined property, we will create the array and add the new elements. This can be achieved in Cypher by always starting with at least an empty array:
+When using the PUSH method on an undefined property, we will throw an error in all cases unless the `coalesce` directive is used.
+
+If the coalesce directive is used, we will create the array and add the new elements. This can be achieved in Cypher by always starting with at least an empty array:
 
 ```cypher
 SET n.myPushToProperty = coalesce(n.myPushToProperty, []) + n.myPushToProperty
 ```
+
+#### POP on undefined properties
+
+When using the POP method on an undefined property, we will throw an error.
 
 #### Ambiguous property
 In the following mutation body:
