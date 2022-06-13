@@ -154,4 +154,49 @@ describe("Global nodes", () => {
                     }"
                 `);
     });
+    test("it should project the param as an integer when the underlying field is a number (fixes 1560)", async () => {
+        const typeDefs = gql`
+            type Actor {
+                dbId: Int! @id(global: true, autogenerate: false)
+                name: String!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            config: {},
+        });
+
+        const query = gql`
+            query ($where: ActorWhere!) {
+                actors(where: $where) {
+                    id
+                    dbId
+                    name
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+            variableValues: {
+                where: {
+                    id: toGlobalId({ typeName: "Actor", field: "dbId", id: 12345 }),
+                },
+            },
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Actor)
+            WHERE this.dbId = $this_dbId
+            RETURN this { .dbId, .name } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                    "{
+                        \\"this_dbId\\": 12345
+                    }"
+        `);
+    });
 });
