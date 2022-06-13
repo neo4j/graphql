@@ -25,12 +25,14 @@ import express from "express";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { Neo4jGraphQL } from "../../../src";
+import supertest, { Response } from "supertest";
 
 export interface TestGraphQLServer {
     path: string;
     wsPath: string;
     start(port?: number): Promise<void>;
     close(): Promise<void>;
+    runQuery(params: { query: string; jwtToken: string }): Promise<Response>;
 }
 
 export class ApolloTestServer implements TestGraphQLServer {
@@ -52,7 +54,7 @@ export class ApolloTestServer implements TestGraphQLServer {
         return this.path.replace("http://", "ws://");
     }
 
-    async start(): Promise<void> {
+    public async start(): Promise<void> {
         if (this.server) throw new Error(`Server already running on "${this.path}"`);
         const app = express();
         const httpServer = createServer(app);
@@ -103,9 +105,20 @@ export class ApolloTestServer implements TestGraphQLServer {
         });
     }
 
-    async close(): Promise<void> {
+    public async close(): Promise<void> {
         await this.closeWebsocketServer();
         await this.closeHttpServer();
+    }
+
+    public async runQuery({ query, jwtToken }: { query: string; jwtToken: string }): Promise<Response> {
+        const result = await supertest(this.path)
+            .post("")
+            .set("authorization", jwtToken)
+            .send({
+                query: query,
+            })
+            .expect(200);
+        return result;
     }
 
     private closeWebsocketServer(): Promise<void> {

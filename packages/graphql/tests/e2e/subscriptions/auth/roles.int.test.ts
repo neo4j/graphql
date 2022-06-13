@@ -134,21 +134,15 @@ describe("Subscription auth roles", () => {
     });
 
     async function createMovie(title: string, graphQLServer: TestGraphQLServer): Promise<Response> {
-        const result = await supertest(graphQLServer.path)
-            .post("")
-            .set("authorization", jwtToken)
-            .send({
-                query: `
-                    mutation {
+        return graphQLServer.runQuery({
+            query: `mutation {
                         ${typeMovie.operations.create}(input: [{ title: "${title}" }]) {
                             ${typeMovie.plural} {
                                 title
                             }
                         }
-                    }
-                `,
-            })
-            .expect(200);
-        return result;
+                    }`,
+            jwtToken,
+        });
     }
 });

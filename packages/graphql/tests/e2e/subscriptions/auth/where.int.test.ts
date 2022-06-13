@@ -131,39 +131,28 @@ describe("Subscription auth where", () => {
     });
 
     async function createMovie(title: string): Promise<Response> {
-        const result = await supertest(server.path)
-            .post("")
-            .set("authorization", jwtToken)
-            .send({
-                query: `
-                    mutation {
+        return server.runQuery({
+            query: `mutation {
                         ${typeMovie.operations.create}(input: [{ title: "${title}" }]) {
                             ${typeMovie.plural} {
                                 title
                             }
                         }
-                    }
-                `,
-            })
-            .expect(200);
-        return result;
+                    }`,
+            jwtToken,
+        });
     }
+
     async function createUser(name: string): Promise<Response> {
-        const result = await supertest(server.path)
-            .post("")
-            .set("authorization", jwtToken)
-            .send({
-                query: `
-                    mutation {
-                        ${typeUser.operations.create}(input: [{ name: "${name}" }]) {
-                            ${typeUser.plural} {
-                                name
-                            }
+        return server.runQuery({
+            query: `mutation {
+                    ${typeUser.operations.create}(input: [{ name: "${name}" }]) {
+                        ${typeUser.plural} {
+                            name
                         }
                     }
-                `,
-            })
-            .expect(200);
-        return result;
+                }`,
+            jwtToken,
+        });
     }
 });
