@@ -26,7 +26,9 @@ type Person {
 }
 ```
 
-We could perform a POP operation like so, where the update parameter is an integer, specifying the number of array elements to pop off the end of the array. Popped off elements would then be returned in `poppedElements` inside the `info` object.
+#### POP operations
+
+We could perform a POP operation like so, where the update parameter is an integer, specifying the number of array elements to pop off the end of the array. Popped off elements would then be returned in a `poppedElements` object inside the `info` object.
 
 The minimum valid value is 1. Values less than 1 would result in an error.
 
@@ -41,11 +43,59 @@ mutation {
       middleNames
     }
     info {
-      poppedElements: ["Emil"]
+      poppedElements {
+        middleNames
+      }
     }
   }
 }
 ```
+
+Where the response info object has a poppedElements object containing the elements that were popped like:
+
+```json
+"info": {
+    "poppedElements": {
+        "middleNames": ["Emil"]
+    }
+}
+```
+
+Or when updating arrays in the same mutation (supposing there was an additional `otherNames` field):
+
+```graphql
+mutation {
+  updateRecord(
+    where: { name: "Some Person" }
+    update: { middleNames_POP: 1, otherNames_POP: 1  }
+  ) {
+    records {
+      name
+      middleNames
+      otherNames
+    }
+    info {
+      poppedElements: {
+        middleNames
+        otherNames
+      }
+    }
+  }
+}
+```
+
+Where the response info object has a poppedElements object containing the elements that were popped like:
+
+```json
+"info": {
+    "poppedElements": {
+        "middleNames": ["Emil"],
+        "otherNames": ["Michael"],
+    }
+}
+```
+
+#### PUSH operations
 
 We could perform a PUSH operation like so, where the update parameter is an array containing the values to be pushed to the end of the array:
 
@@ -58,6 +108,23 @@ mutation {
     records {
       name
       middleNames
+    }
+  }
+}
+```
+
+Or when updating arrays in the same mutation (supposing there was an additional `otherNames` field):
+
+```graphql
+mutation {
+  updateRecord(
+    where: { name: "Some Person" }
+    update: { middleNames_PUSH: ["Emil"], otherNames_PUSH: ["Michael"]  }
+  ) {
+    records {
+      name
+      middleNames
+      otherNames
     }
   }
 }
