@@ -88,7 +88,7 @@ function createSetRelationshipProperties({
         if (isMatched) {
             const mathDescriptor = mathDescriptorBuilder(value as number, relationship, undefined, mathMatch);
             if (_properties.find(([_key]) => _key === mathDescriptor.dbName)) {
-                throw new Error(`Ambigous property: ${mathDescriptor.dbName}`);
+                throw new Error(`Ambiguous property: ${mathDescriptor.dbName}`);
             }
             
             const mathStatements = buildMathStatements(mathDescriptor, varName, paramName);

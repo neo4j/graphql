@@ -476,7 +476,7 @@ function createUpdateAndParams({
             } else if (isMatched) {
                 const mathDescriptor = mathDescriptorBuilder(value as number, node, undefined, mathMatch);
                 if (updateInput[mathDescriptor.dbName]) {
-                    throw new Error(`Ambigous property: ${mathDescriptor.dbName}`);
+                    throw new Error(`Ambiguous property: ${mathDescriptor.dbName}`);
                 }
                 
                 const mathStatements = buildMathStatements(mathDescriptor, varName, param);

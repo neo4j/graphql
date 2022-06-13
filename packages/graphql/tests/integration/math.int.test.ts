@@ -18,12 +18,11 @@
  */
 
 import { Driver, int } from "neo4j-driver";
-import { graphql } from "graphql";
+import { graphql, GraphQLError } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { generateUniqueType } from "../utils/graphql-types";
-
 
 describe("Mathematical operations tests", () => {
     let driver: Driver;
@@ -133,7 +132,7 @@ describe("Mathematical operations tests", () => {
         { initialValue: 10.0, value: 0.0, type: "Float", operation: "DIVIDE", expectedError: "division by zero" },
     ])(
         "Should raise an error in case of $expectedError on $type, initialValue: $initialValue, value: $value",
-        async ({ initialValue, type, value, operation }) => {
+        async ({ initialValue, type, value, operation, expectedError }) => {
             const session = driver.session();
             const movie = generateUniqueType("Movie");
             const typeDefs = `
@@ -178,8 +177,10 @@ describe("Mathematical operations tests", () => {
                     variableValues: { id, value },
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
-
                 expect(gqlResult.errors).toBeDefined();
+                expect(
+                    (gqlResult.errors as GraphQLError[]).some((el) => el.message.toLowerCase().includes(expectedError))
+                ).toBeTruthy();
                 const storedValue = await session.run(
                     `
                 MATCH (n:${movie.name} {id: $id}) RETURN n.viewers AS viewers
@@ -241,8 +242,10 @@ describe("Mathematical operations tests", () => {
                 variableValues: { id, value: 10 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
-
             expect(gqlResult.errors).toBeDefined();
+            expect(
+                (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Ambiguous property"))
+            ).toBeTruthy();
             const storedValue = await session.run(
                 `
                 MATCH (n:${movie.name} {id: $id}) RETURN n.viewers AS viewers
@@ -596,6 +599,7 @@ describe("Mathematical operations tests", () => {
 
     test("Should throws an error if the property holds Nan values", async () => {
         const session = driver.session();
+        const increment = 10;
         const movie = generateUniqueType("Movie");
         const typeDefs = `
         type ${movie.name} {
@@ -635,11 +639,14 @@ describe("Mathematical operations tests", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                variableValues: { id, value: 10 },
+                variableValues: { id, value: increment },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
             expect(gqlResult.errors).toBeDefined();
+            expect(
+                (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes(`Cannot _INCREMENT ${increment} to Nan`))
+            ).toBeTruthy();
             const storedValue = await session.run(
                 `
                 MATCH (n:${movie.name} {id: $id}) RETURN n.viewers AS viewers
@@ -745,7 +752,7 @@ describe("Mathematical operations tests", () => {
         }
     });
 
-    test("Should raise in case of ambigous properties on relationships", async () => {
+    test("Should raise in case of ambiguous properties on relationships", async () => {
         const session = driver.session();
         const initialPay = 100;
         const payIncrement = 50;
@@ -825,6 +832,9 @@ describe("Mathematical operations tests", () => {
             });
 
             expect(gqlResult.errors).toBeDefined();
+            expect(
+                (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Ambiguous property"))
+            ).toBeTruthy();
             const storedValue = await session.run(
                 `
                 MATCH(b: ${actor.name}{id: $id}) -[c: ACTED_IN]-> (a: ${movie.name}) RETURN c.pay as pay
