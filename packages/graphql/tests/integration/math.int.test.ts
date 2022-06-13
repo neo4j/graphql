@@ -22,6 +22,8 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { generateUniqueType } from "../utils/graphql-types";
+
 
 describe("Mathematical operations tests", () => {
     let driver: Driver;
@@ -37,145 +39,168 @@ describe("Mathematical operations tests", () => {
     });
 
     test.each([
-        {initialValue: int(0), value: 5, type: "Int", operation: "INCREMENT", expected: 5},
-        {initialValue: int(10), value: 5, type: "Int", operation: "DECREMENT", expected: 5},
-        {initialValue: int(0), value: "5", type: "BigInt", operation: "INCREMENT", expected: "5"},
-        {initialValue: int(10), value: "5", type: "BigInt", operation: "DECREMENT", expected: "5"},
-        {initialValue: int(10), value: "-5", type: "BigInt", operation: "DECREMENT", expected: "15"},
-        {initialValue: 0.0, value: 5.0, type: "Float", operation: "ADD", expected: 5.0},
-        {initialValue: 10.0, value: 5.0, type: "Float", operation: "SUBTRACT", expected: 5.0},
-        {initialValue: 10.0, value: 5.0, type: "Float", operation: "MULTIPLY", expected: 50.0},
-        {initialValue: 10.0, value: -5.0, type: "Float", operation: "MULTIPLY", expected: -50.0},
-        {initialValue: 10.0, value: 5.0, type: "Float", operation: "DIVIDE", expected: 2.0},
-      ])('Simple operations on numberical fields: on $type, $operation($initialValue, $value) should return $expected',
-       async ({ initialValue, type, value, operation, expected }) => {
-        const session = driver.session();
+        { initialValue: int(0), value: 5, type: "Int", operation: "INCREMENT", expected: 5 },
+        { initialValue: int(10), value: 5, type: "Int", operation: "DECREMENT", expected: 5 },
+        { initialValue: int(0), value: "5", type: "BigInt", operation: "INCREMENT", expected: "5" },
+        { initialValue: int(10), value: "5", type: "BigInt", operation: "DECREMENT", expected: "5" },
+        { initialValue: int(10), value: "-5", type: "BigInt", operation: "DECREMENT", expected: "15" },
+        { initialValue: 0.0, value: 5.0, type: "Float", operation: "ADD", expected: 5.0 },
+        { initialValue: 10.0, value: 5.0, type: "Float", operation: "SUBTRACT", expected: 5.0 },
+        { initialValue: 10.0, value: 5.0, type: "Float", operation: "MULTIPLY", expected: 50.0 },
+        { initialValue: 10.0, value: -5.0, type: "Float", operation: "MULTIPLY", expected: -50.0 },
+        { initialValue: 10.0, value: 5.0, type: "Float", operation: "DIVIDE", expected: 2.0 },
+    ])(
+        "Simple operations on numberical fields: on $type, $operation($initialValue, $value) should return $expected",
+        async ({ initialValue, type, value, operation, expected }) => {
+            const session = driver.session();
+            const movie = generateUniqueType("Movie");
 
-        const typeDefs = `
-        type Movie {
-            id: ID!
-            viewers: ${type}!
-        }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-        const id = generate({
-            charset: "alphabetic",
-        });
-
-        const query = `
-        mutation($id: ID, $value: ${type}) {
-            updateMovies(where: { id: $id }, update: {viewers_${operation}: $value}) {
-                movies {
-                    id
-                    viewers
-                }
+            const typeDefs = `
+            type ${movie.name} {
+                id: ID!
+                viewers: ${type}!
             }
-        }
-        `;
+            `;
 
-        try {
-            // Create new movie
-            await session.run(
-                `
-                CREATE (:Movie {id: $id, viewers: $initialViewers})
-                `,
-                {
-                    id,
-                    initialViewers: initialValue,
-                }
-            );
-            // Update movie
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                variableValues: { id, value },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            const id = generate({
+                charset: "alphabetic",
             });
 
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect(gqlResult?.data?.updateMovies).toEqual({ movies: [{ id, viewers: expected }] });
-
-        } finally {
-            await session.close();
-        }
-      });
-    
-      test.each([
-        {initialValue: int(largestSafeSigned32BitInteger), value: largestSafeSigned32BitInteger, type: "Int", operation: "INCREMENT", expectedError: "overflow"},
-        {initialValue: int(largestSafeSigned64BitBigInt), value: largestSafeSigned64BitBigInt, type: "BigInt", operation: "INCREMENT", expectedError: "overflow"},
-        {initialValue: Number.MAX_VALUE, value: Number.MAX_VALUE, type: "Float", operation: "ADD", expectedError: "overflow"},
-        {initialValue: 10.0, value: 0.0, type: "Float", operation: "DIVIDE", expectedError: "division by zero"}
-      ])('Should raise an error in case of $expectedError on $type, initialValue: $initialValue, value: $value',
-       async ({ initialValue, type, value, operation }) => {
-        const session = driver.session();
-
-        const typeDefs = `
-        type Movie {
-            id: ID!
-            viewers: ${type}!
-        }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-        const id = generate({
-            charset: "alphabetic",
-        });
-
-        const query = `
-        mutation($id: ID, $value: ${type}) {
-            updateMovies(where: { id: $id }, update: {viewers_${operation}: $value}) {
-                movies {
-                    id
-                    viewers
+            const query = `
+            mutation($id: ID, $value: ${type}) {
+                ${movie.operations.update}(where: { id: $id }, update: {viewers_${operation}: $value}) {
+                    ${movie.plural} {
+                        id
+                        viewers
+                    }
                 }
             }
-        }
-        `;
+            `;
 
-        try {
-            // Create new movie
-            await session.run(
-                `
-                CREATE (:Movie {id: $id, viewers: $initialViewers})
+            try {
+                // Create new movie
+                await session.run(
+                    `
+                CREATE (:${movie.name} {id: $id, viewers: $initialViewers})
                 `,
-                {
-                    id,
-                    initialViewers: initialValue,
-                }
-            );
-            // Update movie
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                variableValues: { id, value },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    {
+                        id,
+                        initialViewers: initialValue,
+                    }
+                );
+                // Update movie
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    variableValues: { id, value },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
+                expect(gqlResult?.data?.[movie.operations.update]).toEqual({
+                    [movie.plural]: [{ id, viewers: expected }],
+                });
+            } finally {
+                await session.close();
+            }
+        }
+    );
+
+    test.each([
+        {
+            initialValue: int(largestSafeSigned32BitInteger),
+            value: largestSafeSigned32BitInteger,
+            type: "Int",
+            operation: "INCREMENT",
+            expectedError: "overflow",
+        },
+        {
+            initialValue: int(largestSafeSigned64BitBigInt),
+            value: largestSafeSigned64BitBigInt,
+            type: "BigInt",
+            operation: "INCREMENT",
+            expectedError: "overflow",
+        },
+        {
+            initialValue: Number.MAX_VALUE,
+            value: Number.MAX_VALUE,
+            type: "Float",
+            operation: "ADD",
+            expectedError: "overflow",
+        },
+        { initialValue: 10.0, value: 0.0, type: "Float", operation: "DIVIDE", expectedError: "division by zero" },
+    ])(
+        "Should raise an error in case of $expectedError on $type, initialValue: $initialValue, value: $value",
+        async ({ initialValue, type, value, operation }) => {
+            const session = driver.session();
+            const movie = generateUniqueType("Movie");
+            const typeDefs = `
+            type ${movie.name} {
+                id: ID!
+                viewers: ${type}!
+            }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            const id = generate({
+                charset: "alphabetic",
             });
 
-            expect(gqlResult.errors).toBeDefined();
-            const storedValue = await session.run(
-                `
-                MATCH (n:Movie {id: $id}) RETURN n.viewers AS viewers
-                `,
-                {
-                    id
+            const query = `
+            mutation($id: ID, $value: ${type}) {
+                ${movie.operations.update}(where: { id: $id }, update: {viewers_${operation}: $value}) {
+                    ${movie.plural} {
+                        id
+                        viewers
+                    }
                 }
-            );
-            expect(storedValue.records[0].get('viewers')).toEqual(initialValue);
+            }
+            `;
 
-        } finally {
-            await session.close();
+            try {
+                // Create new movie
+                await session.run(
+                    `
+                CREATE (:${movie.name} {id: $id, viewers: $initialViewers})
+                `,
+                    {
+                        id,
+                        initialViewers: initialValue,
+                    }
+                );
+                // Update movie
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    variableValues: { id, value },
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                });
+
+                expect(gqlResult.errors).toBeDefined();
+                const storedValue = await session.run(
+                    `
+                MATCH (n:${movie.name} {id: $id}) RETURN n.viewers AS viewers
+                `,
+                    {
+                        id,
+                    }
+                );
+                expect(storedValue.records[0].get("viewers")).toEqual(initialValue);
+            } finally {
+                await session.close();
+            }
         }
-      });
+    );
 
-      test('Should raise an error if the input fields are ambiguous', async () => {
+    test("Should raise an error if the input fields are ambiguous", async () => {
         const session = driver.session();
         const initialViewers = int(100);
+        const movie = generateUniqueType("Movie");
         const typeDefs = `
-        type Movie {
+        type ${movie.name} {
             id: ID!
             viewers: Int!
         }
@@ -189,8 +214,8 @@ describe("Mathematical operations tests", () => {
 
         const query = `
         mutation($id: ID, $value: Int) {
-            updateMovies(where: { id: $id }, update: {viewers: $value, viewers_INCREMENT: $value}) {
-                movies {
+            ${movie.operations.update}(where: { id: $id }, update: {viewers: $value, viewers_INCREMENT: $value}) {
+                ${movie.plural} {
                     id
                     viewers
                 }
@@ -202,7 +227,7 @@ describe("Mathematical operations tests", () => {
             // Create new movie
             await session.run(
                 `
-                CREATE (:Movie {id: $id, viewers: $initialViewers})
+                CREATE (:${movie.name} {id: $id, viewers: $initialViewers})
                 `,
                 {
                     id,
@@ -220,25 +245,25 @@ describe("Mathematical operations tests", () => {
             expect(gqlResult.errors).toBeDefined();
             const storedValue = await session.run(
                 `
-                MATCH (n:Movie {id: $id}) RETURN n.viewers AS viewers
+                MATCH (n:${movie.name} {id: $id}) RETURN n.viewers AS viewers
                 `,
                 {
-                    id
+                    id,
                 }
             );
-            expect(storedValue.records[0].get('viewers')).toEqual(initialViewers);
-
+            expect(storedValue.records[0].get("viewers")).toEqual(initialViewers);
         } finally {
             await session.close();
         }
-      });
+    });
 
-      test('Should be possible to do multiple operations in the same mutation', async () => {
+    test("Should be possible to do multiple operations in the same mutation", async () => {
         const session = driver.session();
         const initialViewers = int(100);
         const initialLength = int(100);
+        const movie = generateUniqueType("Movie");
         const typeDefs = `
-        type Movie {
+        type ${movie.name} {
             id: ID!
             viewers: Int!
             length: Int!
@@ -253,8 +278,8 @@ describe("Mathematical operations tests", () => {
 
         const query = `
         mutation($id: ID, $value: Int) {
-            updateMovies(where: { id: $id }, update: {length_DECREMENT: $value, viewers_INCREMENT: $value}) {
-                movies {
+            ${movie.operations.update}(where: { id: $id }, update: {length_DECREMENT: $value, viewers_INCREMENT: $value}) {
+                ${movie.plural} {
                     id
                     viewers
                     length
@@ -267,12 +292,12 @@ describe("Mathematical operations tests", () => {
             // Create new movie
             await session.run(
                 `
-                CREATE (:Movie {id: $id, viewers: $initialViewers, length: $initialLength})
+                CREATE (:${movie.name} {id: $id, viewers: $initialViewers, length: $initialLength})
                 `,
                 {
                     id,
                     initialViewers,
-                    initialLength
+                    initialLength,
                 }
             );
             // Update movie
@@ -286,33 +311,34 @@ describe("Mathematical operations tests", () => {
             expect(gqlResult.errors).toBeUndefined();
             const storedValue = await session.run(
                 `
-                MATCH (n:Movie {id: $id}) RETURN n.viewers AS viewers, n.length AS length
+                MATCH (n:${movie.name} {id: $id}) RETURN n.viewers AS viewers, n.length AS length
                 `,
                 {
-                    id
+                    id,
                 }
             );
-            expect(storedValue.records[0].get('viewers')).toEqual(int(110));
-            expect(storedValue.records[0].get('length')).toEqual(int(90));
-
+            expect(storedValue.records[0].get("viewers")).toEqual(int(110));
+            expect(storedValue.records[0].get("length")).toEqual(int(90));
         } finally {
             await session.close();
         }
-      });
+    });
 
-      test('Should be possible to update nested nodes', async () => {
+    test("Should be possible to update nested nodes", async () => {
         const session = driver.session();
         const initialViewers = int(100);
         const name = "Luigino";
+        const movie = generateUniqueType("Movie");
+        const actor = generateUniqueType("Actor");
         const typeDefs = `
-        type Movie {
+        type ${movie.name} {
             viewers: Int!
-            workers: [Actor!]! @relationship(type: "WORKED_IN", direction: IN)
+            workers: [${actor.name}!]! @relationship(type: "WORKED_IN", direction: IN)
         }
-        type Actor {
+        type ${actor.name} {
             id: ID!
             name: String!
-            worksInMovies: [Movie!]! @relationship(type: "WORKED_IN", direction: OUT)
+            worksInMovies: [${movie.name}!]! @relationship(type: "WORKED_IN", direction: OUT)
         }
         `;
 
@@ -324,7 +350,7 @@ describe("Mathematical operations tests", () => {
 
         const query = `
         mutation($id: ID, $value: Int) {
-            updateActors(where: { id: $id }, 
+            ${actor.operations.update}(where: { id: $id }, 
                 update: {
                     worksInMovies: [
                     {
@@ -337,7 +363,7 @@ describe("Mathematical operations tests", () => {
                   ]
                 }
               ) {
-                actors {
+                ${actor.plural} {
                     name
                     worksInMovies {
                       viewers
@@ -351,55 +377,58 @@ describe("Mathematical operations tests", () => {
             // Create new movie
             await session.run(
                 `
-                CREATE (a:Movie {viewers: $initialViewers}), (b:Actor {id: $id, name: $name}) WITH a,b CREATE (a)<-[worksInMovies: WORKED_IN]-(b) RETURN a, worksInMovies, b
+                CREATE (a:${movie.name} {viewers: $initialViewers}), (b:${actor.name} {id: $id, name: $name}) WITH a,b CREATE (a)<-[worksInMovies: WORKED_IN]-(b) RETURN a, worksInMovies, b
                 `,
                 {
                     id,
                     initialViewers,
-                    name
+                    name,
                 }
             );
             // Update movie
-             const gqlResult = await graphql({
+            const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, value: 10 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
-            expect(gqlResult.errors).toBeUndefined(); 
+            expect(gqlResult.errors).toBeUndefined();
             const storedValue = await session.run(
                 `
-                MATCH (n:Actor {id: $id})--(m:Movie) RETURN n.name AS name, m.viewers AS viewers
+                MATCH (n:${actor.name} {id: $id})--(m:${movie.name}) RETURN n.name AS name, m.viewers AS viewers
                 `,
                 {
-                    id
+                    id,
                 }
             );
-            expect(storedValue.records[0].get('viewers')).toEqual(int(110));
-            expect(storedValue.records[0].get('name')).toBe(name);
-
+            expect(storedValue.records[0].get("viewers")).toEqual(int(110));
+            expect(storedValue.records[0].get("name")).toBe(name);
         } finally {
             await session.close();
         }
-      });
+    });
 
-      test('Should be possible to update nested nodes using interfaces', async () => {
+    test("Should be possible to update nested nodes using interfaces", async () => {
         const session = driver.session();
         const initialViewers = int(100);
         const name = "Luigino";
+        const movie = generateUniqueType("Movie");
+        const production = generateUniqueType("Production");
+        const actor = generateUniqueType("Actor");
+
         const typeDefs = `
-        interface Production {
+        interface ${production.name} {
             viewers: Int!
         }
-        type Movie implements Production {
+        type ${movie.name} implements ${production.name} {
             viewers: Int!
-            workers: [Actor!]! @relationship(type: "WORKED_IN", direction: IN)
+            workers: [${actor.name}!]! @relationship(type: "WORKED_IN", direction: IN)
         }
-        type Actor {
+        type ${actor.name} {
             id: ID!
             name: String!
-            worksInProductions: [Production!]! @relationship(type: "WORKED_IN", direction: OUT)
+            worksInProductions: [${production.name}!]! @relationship(type: "WORKED_IN", direction: OUT)
         }
         `;
 
@@ -411,7 +440,7 @@ describe("Mathematical operations tests", () => {
 
         const query = `
         mutation($id: ID, $value: Int) {
-            updateActors(where: { id: $id }, 
+            ${actor.operations.update}(where: { id: $id }, 
                 update: {
                   worksInProductions: [
                     {
@@ -424,7 +453,7 @@ describe("Mathematical operations tests", () => {
                   ]
                 }
               ) {
-                actors {
+                ${actor.plural} {
                     name
                     worksInProductions {
                       viewers
@@ -438,55 +467,59 @@ describe("Mathematical operations tests", () => {
             // Create new movie
             await session.run(
                 `
-                CREATE (a:Movie {viewers: $initialViewers}), (b:Actor {id: $id, name: $name}) WITH a,b CREATE (a)<-[worksInProductions: WORKED_IN]-(b) RETURN a, worksInProductions, b
+                CREATE (a:${movie.name} {viewers: $initialViewers}), (b:${actor.name} {id: $id, name: $name}) WITH a,b CREATE (a)<-[worksInProductions: WORKED_IN]-(b) RETURN a, worksInProductions, b
                 `,
                 {
                     id,
                     initialViewers,
-                    name
+                    name,
                 }
             );
             // Update movie
-             const gqlResult = await graphql({
+            const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, value: 10 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
-            expect(gqlResult.errors).toBeUndefined(); 
+            expect(gqlResult.errors).toBeUndefined();
             const storedValue = await session.run(
                 `
-                MATCH (n:Actor {id: $id})--(m:Movie) RETURN n.name AS name, m.viewers AS viewers
+                MATCH (n:${actor.name} {id: $id})--(m:${movie.name}) RETURN n.name AS name, m.viewers AS viewers
                 `,
                 {
-                    id
+                    id,
                 }
             );
-            expect(storedValue.records[0].get('viewers')).toEqual(int(110));
-            expect(storedValue.records[0].get('name')).toBe(name);
-
+            expect(storedValue.records[0].get("viewers")).toEqual(int(110));
+            expect(storedValue.records[0].get("name")).toBe(name);
         } finally {
             await session.close();
         }
-      });
+    });
 
-      test('Should be possible to update nested nodes using interface implementations', async () => {
+    test("Should be possible to update nested nodes using interface implementations", async () => {
         const session = driver.session();
         const initialViewers = int(100);
         const name = "Luigino";
+
+        const movie = generateUniqueType("Movie");
+        const production = generateUniqueType("Production");
+        const actor = generateUniqueType("Actor");
+
         const typeDefs = `
-        interface Production {
+        interface ${production.name} {
             viewers: Int!
         }
-        type Movie implements Production {
+        type ${movie.name} implements ${production.name} {
             viewers: Int!
-            workers: [Actor!]! @relationship(type: "WORKED_IN", direction: IN)
+            workers: [${actor.name}!]! @relationship(type: "WORKED_IN", direction: IN)
         }
-        type Actor {
+        type ${actor.name} {
             id: ID!
             name: String!
-            worksInProductions: [Production!]! @relationship(type: "WORKED_IN", direction: OUT)
+            worksInProductions: [${production.name}!]! @relationship(type: "WORKED_IN", direction: OUT)
         }
         `;
 
@@ -498,14 +531,14 @@ describe("Mathematical operations tests", () => {
 
         const query = `
         mutation($id: ID, $value: Int) {
-            updateActors(where: { id: $id }, 
+            ${actor.operations.update}(where: { id: $id }, 
                 update: {
                   worksInProductions: [
                     {
                       update: {
                         node: {
                             _on: {
-                                Movie: {
+                                ${movie.name}: {
                                   viewers_INCREMENT: $value
                                 }
                               }
@@ -515,7 +548,7 @@ describe("Mathematical operations tests", () => {
                   ]
                 }
               ) {
-                actors {
+                ${actor.plural} {
                     name
                     worksInProductions {
                       viewers
@@ -529,44 +562,43 @@ describe("Mathematical operations tests", () => {
             // Create new movie
             await session.run(
                 `
-                CREATE (a:Movie {viewers: $initialViewers}), (b:Actor {id: $id, name: $name}) WITH a,b CREATE (a)<-[worksInProductions: WORKED_IN]-(b) RETURN a, worksInProductions, b
+                CREATE (a:${movie.name} {viewers: $initialViewers}), (b:${actor.name} {id: $id, name: $name}) WITH a,b CREATE (a)<-[worksInProductions: WORKED_IN]-(b) RETURN a, worksInProductions, b
                 `,
                 {
                     id,
                     initialViewers,
-                    name
+                    name,
                 }
             );
             // Update movie
-             const gqlResult = await graphql({
+            const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, value: 10 },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
-            expect(gqlResult.errors).toBeUndefined(); 
+            expect(gqlResult.errors).toBeUndefined();
             const storedValue = await session.run(
                 `
-                MATCH (n:Actor {id: $id})--(m:Movie) RETURN n.name AS name, m.viewers AS viewers
+                MATCH (n:${actor.name} {id: $id})--(m:${movie.name}) RETURN n.name AS name, m.viewers AS viewers
                 `,
                 {
-                    id
+                    id,
                 }
             );
-            expect(storedValue.records[0].get('viewers')).toEqual(int(110));
-            expect(storedValue.records[0].get('name')).toBe(name);
-
+            expect(storedValue.records[0].get("viewers")).toEqual(int(110));
+            expect(storedValue.records[0].get("name")).toBe(name);
         } finally {
             await session.close();
         }
-      });
+    });
 
-      test('Should throws an error if the property holds Nan values', async () => {
+    test("Should throws an error if the property holds Nan values", async () => {
         const session = driver.session();
-
+        const movie = generateUniqueType("Movie");
         const typeDefs = `
-        type Movie {
+        type ${movie.name} {
             id: ID!
             viewers: Int
         }
@@ -580,8 +612,8 @@ describe("Mathematical operations tests", () => {
 
         const query = `
         mutation($id: ID, $value: Int) {
-            updateMovies(where: { id: $id }, update: {viewers_INCREMENT: $value}) {
-                movies {
+            ${movie.operations.update}(where: { id: $id }, update: {viewers_INCREMENT: $value}) {
+                ${movie.plural} {
                     id
                     viewers
                 }
@@ -593,7 +625,7 @@ describe("Mathematical operations tests", () => {
             // Create new movie
             await session.run(
                 `
-                CREATE (:Movie {id: $id})
+                CREATE (:${movie.name} {id: $id})
                 `,
                 {
                     id,
@@ -610,33 +642,34 @@ describe("Mathematical operations tests", () => {
             expect(gqlResult.errors).toBeDefined();
             const storedValue = await session.run(
                 `
-                MATCH (n:Movie {id: $id}) RETURN n.viewers AS viewers
+                MATCH (n:${movie.name} {id: $id}) RETURN n.viewers AS viewers
                 `,
                 {
-                    id
+                    id,
                 }
             );
-            expect(storedValue.records[0].get('viewers')).toBeNull();
-
+            expect(storedValue.records[0].get("viewers")).toBeNull();
         } finally {
             await session.close();
         }
-      });
+    });
 
-      test('Should be possible to update relationship properties', async () => {
+    test("Should be possible to update relationship properties", async () => {
         const session = driver.session();
         const initialPay = 100;
         const payIncrement = 50;
+        const movie = generateUniqueType("Movie");
+        const actor = generateUniqueType("Actor");
         const typeDefs = `
-        type Movie {
+        type ${movie.name} {
             title: String
-            actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
         }
         
-        type Actor {
+        type ${actor.name} {
             id: ID!
             name: String!
-            actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
         }
 
         interface ActedIn @relationshipProperties {
@@ -652,7 +685,7 @@ describe("Mathematical operations tests", () => {
 
         const query = `
         mutation Mutation($id: ID, $payIncrement: Float) {
-            updateActors(where: { id: $id }, update: {
+            ${actor.operations.update}(where: { id: $id }, update: {
                   actedIn: [
                     {
                       update: {
@@ -663,7 +696,7 @@ describe("Mathematical operations tests", () => {
                     }
                   ]
                 }) {
-              actors {
+              ${actor.plural} {
                 name
                 actedIn {
                   title
@@ -682,52 +715,53 @@ describe("Mathematical operations tests", () => {
             // Create new movie
             await session.run(
                 `
-                CREATE (a:Movie {title: "The Matrix"}), (b:Actor {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ pay: $initialPay }]-(b) RETURN a, actedIn, b
+                CREATE (a:${movie.name} {title: "The Matrix"}), (b:${actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ pay: $initialPay }]-(b) RETURN a, actedIn, b
                 `,
                 {
                     id,
-                    initialPay
+                    initialPay,
                 }
             );
             // Update movie
-             const gqlResult = await graphql({
+            const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, payIncrement },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
-            expect(gqlResult.errors).toBeUndefined(); 
+            expect(gqlResult.errors).toBeUndefined();
             const storedValue = await session.run(
                 `
-                MATCH(b: Actor{id: $id}) -[c: ACTED_IN]-> (a: Movie) RETURN c.pay as pay
+                MATCH(b: ${actor.name}{id: $id}) -[c: ACTED_IN]-> (a: ${movie.name}) RETURN c.pay as pay
                 `,
                 {
-                    id
+                    id,
                 }
             );
-            expect(storedValue.records[0].get('pay')).toEqual(initialPay + payIncrement);
-
+            expect(storedValue.records[0].get("pay")).toEqual(initialPay + payIncrement);
         } finally {
             await session.close();
         }
-      });
+    });
 
-      test('Should raise in case of ambigous properties on relationships', async () => {
+    test("Should raise in case of ambigous properties on relationships", async () => {
         const session = driver.session();
         const initialPay = 100;
         const payIncrement = 50;
+        const movie = generateUniqueType("Movie");
+        const actor = generateUniqueType("Actor");
         const typeDefs = `
-        type Movie {
+        type ${movie.name} {
             title: String
             viewers: Int
-            actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
         }
         
-        type Actor {
+        type ${actor.name} {
             id: ID!
             name: String!
-            actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
         }
 
         interface ActedIn @relationshipProperties {
@@ -743,7 +777,7 @@ describe("Mathematical operations tests", () => {
 
         const query = `
         mutation Mutation($id: ID, $payIncrement: Float) {
-            updateActors(where: { id: $id }, update: {
+            ${actor.operations.update}(where: { id: $id }, update: {
                   actedIn: [
                     {
                       update: {
@@ -755,7 +789,7 @@ describe("Mathematical operations tests", () => {
                     }
                   ]
                 }) {
-              actors {
+              ${actor.plural} {
                 name
                 actedIn {
                   title
@@ -775,35 +809,33 @@ describe("Mathematical operations tests", () => {
             // Create new movie
             await session.run(
                 `
-                CREATE (a:Movie {title: "The Matrix"}), (b:Actor {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ pay: $initialPay }]-(b) RETURN a, actedIn, b
+                CREATE (a:${movie.name} {title: "The Matrix"}), (b:${actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ pay: $initialPay }]-(b) RETURN a, actedIn, b
                 `,
                 {
                     id,
-                    initialPay
+                    initialPay,
                 }
             );
             // Update movie
-             const gqlResult = await graphql({
+            const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, payIncrement },
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
             });
 
-            expect(gqlResult.errors).toBeDefined(); 
+            expect(gqlResult.errors).toBeDefined();
             const storedValue = await session.run(
                 `
-                MATCH(b: Actor{id: $id}) -[c: ACTED_IN]-> (a: Movie) RETURN c.pay as pay
+                MATCH(b: ${actor.name}{id: $id}) -[c: ACTED_IN]-> (a: ${movie.name}) RETURN c.pay as pay
                 `,
                 {
-                    id
+                    id,
                 }
             );
-            expect(storedValue.records[0].get('pay')).toEqual(initialPay);
-
+            expect(storedValue.records[0].get("pay")).toEqual(initialPay);
         } finally {
             await session.close();
         }
-      });
-
+    });
 });
