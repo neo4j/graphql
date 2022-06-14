@@ -175,7 +175,7 @@ describe("Math operators", () => {
             SET this_actedIn0.viewers = this_actedIn0.viewers + $this_update_actedIn0_viewers_INCREMENT
             RETURN this_actedIn0 as this_actedIn0_viewers__INCREMENT
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_viewers_INCREMENT:$this_update_actedIn0_viewers_INCREMENT})
             YIELD value AS _
             RETURN collect(DISTINCT this { .name, actedIn: [ (this)-[:ACTED_IN]->(this_actedIn:Movie)   | this_actedIn { .viewers } ] }) AS data"
@@ -251,7 +251,7 @@ describe("Math operators", () => {
             SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_ADD
             RETURN this_acted_in0_relationship as this_acted_in0_relationship_pay__ADD
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, resolvedCallbacks: $resolvedCallbacks})
             YIELD value AS this_acted_in0_relationship_actedIn0_edge
             WITH this
@@ -328,10 +328,10 @@ describe("Math operators", () => {
             	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDStar.marriedWith must be less than or equal to one', [0])
             	RETURN c AS this_marriedWith0_marriedWith_Actor_unique_ignored
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_marriedWith0:this_marriedWith0, auth:$auth,this_update_marriedWith0_marriageLength_INCREMENT:$this_update_marriedWith0_marriageLength_INCREMENT})
             YIELD value AS _
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             WITH this
             CALL {
@@ -417,10 +417,10 @@ describe("Math operators", () => {
             SET this_marriedWith0.marriageLength = this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT
             RETURN this_marriedWith0 as this_marriedWith0_marriageLength__INCREMENT
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_marriedWith0:this_marriedWith0, auth:$auth,this_update_marriedWith0_on_Star_marriageLength_INCREMENT:$this_update_marriedWith0_on_Star_marriageLength_INCREMENT})
             YIELD value AS _
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             WITH this
             CALL {
