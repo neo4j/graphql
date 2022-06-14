@@ -1,13 +1,11 @@
 [[mathematical-operators]]
 = Mathematical operators
 
-Mathematical operators are a handy way to update numerical fields in a single roundtrip to the DB.
+Mathematical operators are a handy way to update numerical fields based on their original values in a single DB transaction.
 
 Specific operators are available on different numerical types (`Int`, `Float`, xref::type-definitions/types.adoc#type-definitions-types-bigint[`BigInt`]).
 
-We chose to keep operators separated by types as some operators are not available to Natural numbers.
 
-== Supported locations
 Mathematical operators are supported in Update Mutations within these entities:
 
 * `Node`
