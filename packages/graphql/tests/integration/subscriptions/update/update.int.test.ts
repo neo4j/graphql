@@ -54,6 +54,7 @@ describe("Subscriptions update", () => {
             type ${typeMovie.name} {
                 id: ID!
                 name: String
+                tagline: String
                 actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
@@ -297,8 +298,6 @@ describe("Subscriptions update", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-
-        console.log(JSON.stringify(plugin.eventList, null, 4));
 
         expect(plugin.eventList).toHaveLength(5);
         expect(plugin.eventList).toEqual(
@@ -687,5 +686,42 @@ describe("Subscriptions update", () => {
                 },
             ])
         );
+    });
+
+    test("update multiple properties on single node", async () => {
+        const query = `
+            mutation {
+                ${typeMovie.operations.update}(where: { id: "1" }, update: { name: "The Matrix", tagline: "Don't worry about cookies" }) {
+                    ${typeMovie.plural} {
+                        id
+                    }
+                }
+            }
+            `;
+
+        await session.run(`
+                CREATE (:${typeMovie.name} { id: "1", name: "Terminator", tagline: "I'll be back" })
+            `);
+
+        const gqlResult: any = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: { driver },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect(plugin.eventList).toEqual([
+            {
+                id: expect.any(Number),
+                timestamp: expect.any(Number),
+                event: "update",
+                properties: {
+                    old: { id: "1", name: "Terminator", tagline: "I'll be back" },
+                    new: { id: "1", name: "The Matrix", tagline: "Don't worry about cookies" },
+                },
+                typename: typeMovie.name,
+            },
+        ]);
     });
 });

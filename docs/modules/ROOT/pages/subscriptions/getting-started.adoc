@@ -118,3 +118,6 @@ mutation {
     }
 }
 ```
+
+NOTE: This example uses the link:https://www.npmjs.com/package/graphql-ws[graphql-ws] implementation, if you are using Apollo Studio, make sure
+to select "graphql-ws" implementation in connection settings.
