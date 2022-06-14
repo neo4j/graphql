@@ -88,7 +88,7 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE this_disconnect_actedIn0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
@@ -96,7 +96,7 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE this_disconnect_actedIn0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
@@ -164,9 +164,9 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE this_disconnect_actedIn0_actors0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
@@ -182,9 +182,9 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE this_disconnect_actedIn0_actors0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
@@ -263,9 +263,9 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE this_disconnect_actedIn0_actors0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
@@ -273,7 +273,7 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE this_disconnect_actedIn0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
@@ -361,9 +361,9 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE this_disconnect_actedIn0_actors0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
@@ -379,9 +379,9 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE this_disconnect_actedIn0_actors0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
