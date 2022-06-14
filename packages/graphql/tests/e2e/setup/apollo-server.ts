@@ -21,11 +21,11 @@
 import { createServer, Server } from "http";
 import { AddressInfo, WebSocketServer } from "ws";
 import { ApolloServer } from "apollo-server-express";
+import supertest, { Response } from "supertest";
 import express from "express";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { Neo4jGraphQL } from "../../../src";
-import supertest, { Response } from "supertest";
 
 export interface TestGraphQLServer {
     path: string;
@@ -115,7 +115,7 @@ export class ApolloTestServer implements TestGraphQLServer {
             .post("")
             .set("authorization", jwtToken)
             .send({
-                query: query,
+                query,
             })
             .expect(200);
         return result;

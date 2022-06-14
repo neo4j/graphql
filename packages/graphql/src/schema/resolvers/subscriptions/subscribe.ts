@@ -21,7 +21,7 @@ import { on } from "events";
 import ContextParser from "../../../utils/context-parser";
 import { Neo4jGraphQLError } from "../../../classes";
 import Node from "../../../classes/Node";
-import { AuthRule, Context, SubscriptionsEvent } from "../../../types";
+import { AuthRule, SubscriptionsEvent } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
 import { SubscriptionAuth } from "./subscription-auth";
 import { SubscriptionContext } from "./types";
@@ -74,7 +74,6 @@ function getAuthWhereParameters(authRules: AuthRule[], context: SubscriptionCont
     return authRules.reduce((acc, rule) => {
         if (!rule.where || typeof rule.where !== "object") return acc;
         const properties = ContextParser.replaceProperties(rule.where, context, "jwt");
-        acc = { ...properties, ...acc };
-        return acc;
+        return { ...properties, ...acc };
     }, {});
 }

@@ -19,6 +19,7 @@ export default class ContextParser {
         tagName: "context" | "jwt"
     ): Record<string, any> {
         return Object.entries(properties).reduce((acc, [key, value]) => {
+            if (typeof value !== "string") return acc;
             const parsedTag = this.parseTag(value, tagName);
             if (parsedTag) {
                 const parsedProperty = this.getProperty(`${tagName}.${parsedTag}`, context);
