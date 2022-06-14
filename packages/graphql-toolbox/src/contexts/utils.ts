@@ -18,7 +18,10 @@
  */
 
 import { request } from "graphql-request";
-import { LoginPayload } from "./types";
+import * as neo4j from "neo4j-driver";
+import { Storage } from "../utils/storage";
+import { LoginPayload, Neo4jDatabase } from "../types";
+import { DEFAULT_DATABASE_NAME, LOCAL_STATE_SELECTED_DATABASE_NAME } from "../constants";
 
 const GET_DATABASES_QUERY = `
     query {
@@ -49,6 +52,18 @@ const GET_DATABASES_QUERY = `
         }
     }
 `;
+
+const isMultiDbUnsupportedError = (e: Error) => {
+    if (
+        e.message.includes("This is an administration command and it should be executed against the system database") ||
+        e.message.includes("Neo4jError: Unsupported administration command") ||
+        e.message.includes("Neo4jError: Unable to route write operation to leader for database 'system'") ||
+        e.message.includes("Invalid input 'H': expected 't/T' or 'e/E'") // Neo4j 3.5 or older
+    ) {
+        return true;
+    }
+    return false;
+};
 
 export const resolveNeo4jDesktopLoginPayload = async (): Promise<LoginPayload | null> => {
     const url = new URL(window.location.href);
@@ -94,4 +109,50 @@ export const resolveNeo4jDesktopLoginPayload = async (): Promise<LoginPayload | 
         console.log("Error while fetching and processing Neo4jDesktop GraphQL API, e: ", error);
         return null;
     }
+};
+
+export const getDatabases = async (driver: neo4j.Driver): Promise<Neo4jDatabase[] | undefined> => {
+    const session = driver.session();
+
+    try {
+        const result = await session.run("SHOW DATABASES");
+        if (!result || !result.records) return undefined;
+
+        const cleanedDatabases: Neo4jDatabase[] = result.records
+            .map((rec) => rec.toObject())
+            .filter(
+                (rec) =>
+                    rec.access === "read-write" &&
+                    rec.currentStatus === "online" &&
+                    (rec.name || "").toLowerCase() !== "system"
+            ) as Neo4jDatabase[];
+
+        await session.close();
+        return cleanedDatabases;
+    } catch (error) {
+        await session.close();
+        if (error instanceof Error && !isMultiDbUnsupportedError(error)) {
+            // Only log error if it's not a multi-db unsupported error.
+            // eslint-disable-next-line no-console
+            console.error("Error while fetching databases information, e: ", error);
+        }
+        return undefined;
+    }
+};
+
+export const resolveSelectedDatabaseName = (databases: Neo4jDatabase[]): string => {
+    const storedSelectedDatabaseName = Storage.retrieve(LOCAL_STATE_SELECTED_DATABASE_NAME);
+    const isSelectedDBAvailable = databases?.find((database) => database.name === storedSelectedDatabaseName);
+    if (isSelectedDBAvailable && storedSelectedDatabaseName) {
+        return storedSelectedDatabaseName;
+    }
+    const defaultDatabase = databases?.find((database) => database.default) || undefined;
+    return defaultDatabase?.name || DEFAULT_DATABASE_NAME;
+};
+
+export const getConnectUrlSearchParam = (): string | null => {
+    const queryString = window.location.search;
+    if (!queryString) return null;
+    const urlParams = new URLSearchParams(queryString);
+    return urlParams.get("connectURL");
 };

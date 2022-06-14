@@ -85,8 +85,10 @@ describe("Pluralize consistency", () => {
             type Query {
               superFriends(options: super_friendOptions, where: super_friendWhere): [super_friend!]!
               superFriendsAggregate(where: super_friendWhere): super_friendAggregateSelection!
+              superFriendsConnection(after: String, first: Int, sort: [super_friendSort], where: super_friendWhere): SuperFriendsConnection!
               superUsers(options: super_userOptions, where: super_userWhere): [super_user!]!
               superUsersAggregate(where: super_userWhere): super_userAggregateSelection!
+              superUsersConnection(after: String, first: Int, sort: [super_userSort], where: super_userWhere): SuperUsersConnection!
             }
 
             enum SortDirection {
@@ -99,6 +101,18 @@ describe("Pluralize consistency", () => {
             type StringAggregateSelectionNonNullable {
               longest: String!
               shortest: String!
+            }
+
+            type SuperFriendsConnection {
+              edges: [super_friendEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type SuperUsersConnection {
+              edges: [super_userEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type UpdateInfo {
@@ -134,6 +148,11 @@ describe("Pluralize consistency", () => {
 
             input super_friendCreateInput {
               name: String!
+            }
+
+            type super_friendEdge {
+              cursor: String!
+              node: super_friend!
             }
 
             input super_friendOptions {
@@ -198,6 +217,11 @@ describe("Pluralize consistency", () => {
 
             input super_userDisconnectInput {
               my_friend: [super_userMy_friendDisconnectFieldInput!]
+            }
+
+            type super_userEdge {
+              cursor: String!
+              node: super_user!
             }
 
             input super_userMy_friendAggregateInput {

@@ -67,9 +67,18 @@ describe("@readonly directive", () => {
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
             enum SortDirection {
@@ -111,6 +120,11 @@ describe("@readonly directive", () => {
             input UserCreateInput {
               id: ID!
               username: String!
+            }
+
+            type UserEdge {
+              cursor: String!
+              node: User!
             }
 
             input UserOptions {
@@ -157,6 +171,12 @@ describe("@readonly directive", () => {
               username_NOT_IN: [String!]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
+            }
+
+            type UsersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -210,9 +230,18 @@ describe("@readonly directive", () => {
               updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
             enum SortDirection {
@@ -254,6 +283,11 @@ describe("@readonly directive", () => {
             input UserCreateInput {
               id: ID!
               username: String!
+            }
+
+            type UserEdge {
+              cursor: String!
+              node: User!
             }
 
             interface UserInterface {
@@ -305,6 +339,12 @@ describe("@readonly directive", () => {
               username_NOT_IN: [String!]
               username_NOT_STARTS_WITH: String
               username_STARTS_WITH: String
+            }
+
+            type UsersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

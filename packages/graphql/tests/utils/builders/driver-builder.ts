@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import { Driver, Result } from "neo4j-driver";
+import { Driver, Session, Transaction } from "neo4j-driver";
 import { Builder } from "./builder";
 
-type RunMock = jest.Mock<Result, [string, Record<string, any>]>;
+type RunFunction = ((...params) => any) & { calls: Array<Array<any>> };
 
 export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
-    private runFunction: RunMock;
+    public runFunction: RunFunction;
 
     constructor(newOptions: Partial<Driver> = {}) {
         super({
@@ -34,12 +34,12 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
                 };
             },
             ...newOptions,
-        } as any);
+        } as Driver);
 
         this.runFunction = this.addFakeSession();
     }
 
-    public with(newOptions: Partial<Partial<Driver>>): DriverBuilder {
+    public with(newOptions: Partial<Driver>): DriverBuilder {
         this.options = { ...this.options, ...newOptions };
         return this;
     }
@@ -50,15 +50,17 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
         } as Driver;
     }
 
-    public get runMock() {
-        return this.runFunction.mock;
-    }
-
-    private addFakeSession(): RunMock {
+    private addFakeSession(): RunFunction {
         const runMock = this.createRunMock();
         this.with({
             session() {
                 return {
+                    beginTransaction: () => {
+                        return {
+                            run: runMock,
+                            commit() {},
+                        } as unknown as Transaction;
+                    },
                     readTransaction: (cb: any) => {
                         return cb({ run: runMock });
                     },
@@ -67,22 +69,30 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
                     },
                     close() {},
                     lastBookmark() {},
-                };
+                } as unknown as Session;
             },
-        } as any);
+        });
         return runMock;
     }
 
-    private createRunMock() {
-        return jest.fn().mockReturnValue({
-            records: [],
-            summary: {
-                counters: {
-                    updates() {
-                        return "";
+    // Custom mock to support driver outside of jest
+    private createRunMock(): RunFunction {
+        const calls: Array<any> = [];
+        function mockFunc(...params) {
+            calls.push(params);
+            return {
+                records: [],
+                summary: {
+                    counters: {
+                        updates() {
+                            return "";
+                        },
                     },
                 },
-            },
-        });
+            };
+        }
+
+        mockFunc.calls = calls;
+        return mockFunc;
     }
 }

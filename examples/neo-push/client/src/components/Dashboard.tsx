@@ -2,12 +2,11 @@ import React, { useState, useContext, useEffect, useCallback } from "react";
 import { Alert, Spinner, Container, Card, Row, Col, Button, Modal, Form } from "react-bootstrap";
 import { auth, graphql } from "../contexts";
 import constants from "../constants";
-import { Link, useHistory } from "react-router-dom";
+import { Link, NavigateFunction } from "react-router-dom";
 import { USER, CREATE_BLOG, MY_BLOGS, RECENTLY_UPDATED_BLOGS } from "../queries";
 import { BlogInterface } from "./Blog";
 
-function CreateBlog({ close }: { close: () => void }) {
-    const history = useHistory();
+function CreateBlog({ close, navigate }: { close: () => void; navigate: NavigateFunction }) {
     const { mutate } = useContext(graphql.Context);
     const { getId } = useContext(auth.Context);
     const [name, setName] = useState("");
@@ -31,8 +30,8 @@ function CreateBlog({ close }: { close: () => void }) {
                     variables: { name, sub: getId() },
                 });
 
-                history.push(constants.BLOG_PAGE + "/" + response.createBlogs.blogs[0].id);
-            } catch (e) {
+                navigate(constants.BLOG_PAGE + "/" + response.createBlogs.blogs[0].id);
+            } catch (e: any) {
                 setError(e.message);
             }
 
@@ -136,7 +135,7 @@ function MyBlogs() {
 
             setMyBlogsHasMore(Boolean(response.hasNextBlogs.length));
             setBlogs((b) => [...b, ...response.myBlogs]);
-        } catch (e) {}
+        } catch (e: any) {}
 
         setLoading(false);
     }, [offset, blogs, limit]);
@@ -193,7 +192,7 @@ function RecentlyUpdatedBlogs() {
 
             setMyBlogsHasMore(Boolean(response.hasNextBlogs.length));
             setBlogs((b) => [...b, ...response.recentlyUpdatedBlogs]);
-        } catch (e) {}
+        } catch (e: any) {}
 
         setLoading(false);
     }, [offset, blogs]);
@@ -228,7 +227,7 @@ function RecentlyUpdatedBlogs() {
     );
 }
 
-function Dashboard() {
+function Dashboard(navigate: NavigateFunction) {
     const { getId } = useContext(auth.Context);
     const { query } = useContext(graphql.Context);
     const [error, setError] = useState();
@@ -245,7 +244,7 @@ function Dashboard() {
                 });
 
                 setUser(response.users[0]);
-            } catch (e) {
+            } catch (e: any) {
                 setError(e.message);
             }
 
@@ -274,7 +273,7 @@ function Dashboard() {
                 show={creatingBlog}
                 onHide={() => setCreatingBlog((x) => !x)}
             >
-                <CreateBlog close={() => setCreatingBlog(false)}></CreateBlog>
+                <CreateBlog close={() => setCreatingBlog(false)} navigate={navigate}></CreateBlog>
             </Modal>
             <Container>
                 <Card className="mt-3 p-3">

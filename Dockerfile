@@ -1,4 +1,4 @@
-FROM node:17-buster-slim
+FROM node:18-buster-slim
 
 WORKDIR /app
 

@@ -1,13 +1,12 @@
 import React, { useState, useContext, useCallback, useEffect } from "react";
 import { Form, Button, Card, Row, Alert, Spinner, Container } from "react-bootstrap";
 import { auth, graphql } from "../contexts";
-import { useHistory } from "react-router-dom";
+import { NavigateFunction } from "react-router-dom";
 import * as config from "../config";
 import constants from "../constants";
 import { SIGNUP } from "../queries";
 
-function SignUp() {
-    const history = useHistory();
+function SignUp(navigate: NavigateFunction) {
     const { isLoggedIn, getSetValue } = useContext(auth.Context);
     const { mutate } = useContext(graphql.Context);
     const [email, setEmail] = useState("");
@@ -25,7 +24,7 @@ function SignUp() {
     }, [email, password, passwordConfirm, setError]);
 
     const submit = useCallback(
-        async (event) => {
+        async (event: any) => {
             event.preventDefault();
 
             setLoading(true);
@@ -38,8 +37,8 @@ function SignUp() {
 
                 getSetValue()((v: any) => ({ ...v, isLoggedIn: true }));
                 localStorage.setItem(config.JWT_KEY as string, response.signUp);
-                history.push(constants.DASHBOARD_PAGE);
-            } catch (e) {
+                navigate(constants.DASHBOARD_PAGE);
+            } catch (e: any) {
                 setError(e.message);
             }
 
@@ -49,7 +48,7 @@ function SignUp() {
     );
 
     if (isLoggedIn) {
-        history.push(constants.DASHBOARD_PAGE);
+        navigate(constants.DASHBOARD_PAGE);
     }
 
     return (
@@ -102,10 +101,8 @@ function SignUp() {
                         )}
                         <hr />
                         <p>
-                            Go to{" "}
-                            <Alert.Link onClick={() => history.push(constants.SIGN_IN_PAGE)}>
-                                Sign In
-                            </Alert.Link> instead
+                            Go to <Alert.Link onClick={() => navigate(constants.SIGN_IN_PAGE)}>Sign In</Alert.Link>{" "}
+                            instead
                         </p>
                     </Card>
                 </Form>

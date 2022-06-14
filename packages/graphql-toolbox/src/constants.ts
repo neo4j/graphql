@@ -22,26 +22,20 @@ export const LOCAL_STATE_OPTIONS = "neo4j.graphql.options";
 export const LOCAL_STATE_TYPE_LAST_QUERY = "neo4j.graphql.lastQuery";
 export const LOCAL_STATE_TYPE_LAST_PARAMS = "neo4j.graphql.lastParams";
 export const LOCAL_STATE_LOGIN = "neo4j.graphql.login";
-export const LOCAL_STATE_DEBUG = "neo4j.graphql.debug";
+export const LOCAL_STATE_ENABLE_DEBUG = "neo4j.graphql.debug";
 export const LOCAL_STATE_CHECK_CONSTRAINT = "neo4j.graphql.checkConstraint";
 export const LOCAL_STATE_CREATE_CONSTRAINT = "neo4j.graphql.createConstraint";
+export const LOCAL_STATE_CONSTRAINT = "neo4j.graphql.constraint";
 export const LOCAL_STATE_EDITOR_THEME = "neo4j.graphql.editorTheme";
 export const LOCAL_STATE_ENABLE_REGEX = "neo4j.graphql.enable.regex";
-
-export const LOGIN_USERNAME_INPUT = "LOGIN_USERNAME_INPUT";
-export const LOGIN_PASSWORD_INPUT = "LOGIN_PASSWORD_INPUT";
-export const LOGIN_URL_INPUT = "LOGIN_URL_INPUT";
-export const LOGIN_BUTTON = "LOGIN_BUTTON";
+export const LOCAL_STATE_FAVORITES = "neo4j.graphql.favorites";
+export const LOCAL_STATE_SHOW_LINT_MARKERS = "neo4j.graphql.showLintMarkers";
+export const LOCAL_STATE_SELECTED_DATABASE_NAME = "neo4j.graphql.selectedDatabaseName";
 
 export const SCHEMA_EDITOR_INPUT = "SCHEMA_EDITOR_INPUT";
-export const SCHEMA_EDITOR_BUILD_BUTTON = "SCHEMA_EDITOR_BUILD_BUTTON";
-export const SCHEMA_EDITOR_PRETTY_BUTTON = "SCHEMA_EDITOR_PRETTY_BUTTON";
-export const SCHEMA_EDITOR_INTROSPECT_BUTTON = "SCHEMA_EDITOR_INTROSPECT_BUTTON";
-
 export const EDITOR_QUERY_INPUT = "EDITOR_QUERY_INPUT";
 export const EDITOR_PARAMS_INPUT = "EDITOR_PARAMS_INPUT";
 export const EDITOR_RESPONSE_OUTPUT = "EDITOR_RESPONSE_OUTPUT";
-export const EDITOR_QUERY_BUTTON = "EDITOR_QUERY_BUTTON";
 
 export const VERIFY_CONNECTION_INTERVAL_MS = 30000;
 
@@ -69,3 +63,4 @@ query {
 `;
 
 export const DEFAULT_BOLT_URL = "bolt://localhost:7687";
+export const DEFAULT_DATABASE_NAME = "neo4j";

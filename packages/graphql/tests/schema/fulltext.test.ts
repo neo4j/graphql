@@ -79,6 +79,11 @@ describe("@fulltext schema", () => {
               title: String
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieFulltext {
               MovieDescription: MovieMovieDescriptionFulltext
               MovieTitle: MovieMovieTitleFulltext
@@ -86,12 +91,10 @@ describe("@fulltext schema", () => {
 
             input MovieMovieDescriptionFulltext {
               phrase: String!
-              score_EQUAL: Int
             }
 
             input MovieMovieTitleFulltext {
               phrase: String!
-              score_EQUAL: Int
             }
 
             input MovieOptions {
@@ -141,15 +144,30 @@ describe("@fulltext schema", () => {
               title_STARTS_WITH: String
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               movies(fulltext: MovieFulltext, options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(fulltext: MovieFulltext, where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, fulltext: MovieFulltext, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {

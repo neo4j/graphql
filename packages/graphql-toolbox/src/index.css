@@ -28,3 +28,15 @@ li.CodeMirror-hint-active {
     pointer-events: none;
     opacity: 0.85;
 }
+
+.whitespace-break-spaces {
+    white-space: break-spaces;
+}
+
+.max-width-db-name {
+    max-width: 12rem;
+}
+
+.pt-02 {
+    padding-top: 0.2rem;
+}

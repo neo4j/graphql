@@ -17,20 +17,15 @@
  * limitations under the License.
  */
 
-import {
-    LOGIN_BUTTON,
-    LOGIN_PASSWORD_INPUT,
-    LOGIN_URL_INPUT,
-    LOGIN_USERNAME_INPUT,
-    SCHEMA_EDITOR_BUILD_BUTTON,
-} from "../../../src/constants";
 import { Screen } from "./Screen";
+
+const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
 export class Login extends Screen {
     public async setUsername(username: string) {
-        await this.page.waitForSelector(`#${LOGIN_USERNAME_INPUT}`);
+        await this.page.waitForSelector("[data-test-login-username]");
         await this.page.$eval(
-            `#${LOGIN_USERNAME_INPUT}`,
+            "[data-test-login-username]",
             (el, injected) => {
                 // @ts-ignore - Find a way to type this
                 el.value = injected;
@@ -40,9 +35,9 @@ export class Login extends Screen {
     }
 
     public async setPassword(password: string) {
-        await this.page.waitForSelector(`#${LOGIN_PASSWORD_INPUT}`);
+        await this.page.waitForSelector("[data-test-login-password]");
         await this.page.$eval(
-            `#${LOGIN_PASSWORD_INPUT}`,
+            "[data-test-login-password]",
             (el, injected) => {
                 // @ts-ignore - Find a way to type this
                 el.value = injected;
@@ -52,9 +47,9 @@ export class Login extends Screen {
     }
 
     public async setURL(url: string) {
-        await this.page.waitForSelector(`#${LOGIN_URL_INPUT}`);
+        await this.page.waitForSelector("[data-test-login-url]");
         await this.page.$eval(
-            `#${LOGIN_URL_INPUT}`,
+            "[data-test-login-url]",
             (el, injected) => {
                 // @ts-ignore - Find a way to type this
                 el.value = injected;
@@ -64,11 +59,19 @@ export class Login extends Screen {
     }
 
     public async submit() {
-        await this.page.waitForSelector(`#${LOGIN_BUTTON}`);
-        await this.page.click(`#${LOGIN_BUTTON}`);
+        await this.page.waitForSelector("[data-test-login-button]");
+        await this.page.click("[data-test-login-button]");
     }
 
     public async awaitSuccess() {
-        await this.page.waitForSelector(`#${SCHEMA_EDITOR_BUILD_BUTTON}`);
+        await this.page.waitForSelector("[data-test-schema-editor-build-button]");
+    }
+
+    public async login(username: string = NEO_USER, password: string = NEO_PASSWORD, url: string = NEO_URL,) {
+        await this.setUsername(username);
+        await this.setPassword(password);
+        await this.setURL(url);
+        await this.submit();
+        await this.awaitSuccess();
     }
 }

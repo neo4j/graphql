@@ -27,7 +27,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - graphql-plugin-auth
+          - plugins/graphql-plugin-auth
 
     runs-on: ubuntu-latest
 
@@ -43,7 +43,7 @@ jobs:
         run: yarn run test:unit --coverage
         working-directory: packages/${{ matrix.package }}
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/${{ matrix.package }}/coverage/
@@ -200,7 +200,7 @@ jobs:
           echo "::set-output name=version::$version"
       - name: Bump @neo4j/graphql-plugin-auth version
         run: yarn version "${{ steps.get-version.outputs.version }}"
-        working-directory: packages/graphql-plugin-auth
+        working-directory: packages/plugins/graphql-plugin-auth
       - name: Commit and push new version numbers
         run: |
           git config --global user.name 'Neo4j Team GraphQL'
@@ -215,7 +215,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - graphql-plugin-auth
+          - plugins/graphql-plugin-auth
 
     runs-on: ubuntu-latest
 
@@ -340,7 +340,7 @@ jobs:
     strategy:
       matrix:
         package:
-          - graphql-plugin-auth
+          - plugins/graphql-plugin-auth
 
     runs-on: ubuntu-latest
 
@@ -353,7 +353,7 @@ jobs:
           echo "::set-output name=prerelease::$prerelease"
       - name: Build Changelog
         id: github-release
-        uses: mikepenz/release-changelog-builder-action@v2
+        uses: mikepenz/release-changelog-builder-action@v3
         with:
           configuration: "config/release-changelog-builder-action/configuration-plugin-auth.json"
           toTag: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"

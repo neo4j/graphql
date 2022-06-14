@@ -20,9 +20,10 @@
 import React, { Dispatch, useState, SetStateAction, useEffect } from "react";
 import * as neo4j from "neo4j-driver";
 import { encrypt, decrypt } from "../utils/utils";
-import { LOCAL_STATE_LOGIN, VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
-import { resolveNeo4jDesktopLoginPayload } from "./utils";
-import { LoginPayload } from "./types";
+import { LOCAL_STATE_LOGIN, LOCAL_STATE_SELECTED_DATABASE_NAME, VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
+import { getDatabases, resolveNeo4jDesktopLoginPayload, resolveSelectedDatabaseName } from "./utils";
+import { LoginPayload, Neo4jDatabase } from "../types";
+import { Storage } from "../utils/storage";
 
 interface LoginOptions {
     username: string;
@@ -35,23 +36,27 @@ export interface State {
     connectUrl?: string;
     isConnected?: boolean;
     isNeo4jDesktop?: boolean;
+    databases?: Neo4jDatabase[];
+    selectedDatabaseName?: string;
     login: (options: LoginOptions) => Promise<void>;
     logout: () => void;
+    setSelectedDatabaseName: (databaseName: string) => void;
 }
 
-export const AuthContext = React.createContext(null as unknown as State);
+export const AuthContext = React.createContext({} as State);
 
 export function AuthProvider(props: any) {
     let value: State | undefined;
     let setValue: Dispatch<SetStateAction<State>>;
     let intervalId: number;
 
-    const checkConnectivity = async (driver: neo4j.Driver, setValue: any) => {
+    const checkForDatabaseUpdates = async (driver: neo4j.Driver, setValue: any) => {
         try {
             await driver.verifyConnectivity();
-            setValue((v) => ({ ...v, isConnected: true }));
+            const databases = await getDatabases(driver);
+            setValue((values) => ({ ...values, isConnected: true, databases: databases || [] }));
         } catch (err) {
-            setValue((v) => ({ ...v, isConnected: false }));
+            setValue((values) => ({ ...values, isConnected: false }));
         }
     };
 
@@ -61,7 +66,7 @@ export function AuthProvider(props: any) {
             loginPayload = loginPayloadFromDesktop;
             setValue((v) => ({ ...v, isNeo4jDesktop: true }));
         } else {
-            const storedEncryptedPayload = localStorage.getItem(LOCAL_STATE_LOGIN);
+            const storedEncryptedPayload = Storage.retrieve(LOCAL_STATE_LOGIN);
             if (storedEncryptedPayload && typeof storedEncryptedPayload === "string") {
                 const { encryptedPayload, hashKey } = JSON.parse(storedEncryptedPayload as string);
                 loginPayload = decrypt(encryptedPayload, hashKey) as unknown as LoginPayload;
@@ -81,29 +86,48 @@ export function AuthProvider(props: any) {
     [value, setValue] = useState<State>({
         login: async (options: LoginOptions) => {
             const auth = neo4j.auth.basic(options.username, options.password);
-            const driver = neo4j.driver(options.url, auth);
+            const protocol = new URL(options.url).protocol;
+            // Manually set the encryption to off if it's not specified in the Connection URI to avoid implicit encryption in https domain
+            const driver = protocol.includes("+s") ?
+                neo4j.driver(options.url, auth) :
+                neo4j.driver(options.url, auth, { encrypted: "ENCRYPTION_OFF" });
+            
             await driver.verifyConnectivity();
+
+            const databases = await getDatabases(driver);
+            const selectedDatabaseName = resolveSelectedDatabaseName(databases || []);
 
             const encodedPayload = encrypt({
                 username: options.username,
                 password: options.password,
-                url: options.url,
+                url: options.url
             } as LoginPayload);
-            localStorage.setItem(LOCAL_STATE_LOGIN, JSON.stringify(encodedPayload));
+            Storage.storeJSON(LOCAL_STATE_LOGIN, encodedPayload);
 
             intervalId = window.setInterval(() => {
-                checkConnectivity(driver, setValue);
+                checkForDatabaseUpdates(driver, setValue);
             }, VERIFY_CONNECTION_INTERVAL_MS);
 
-            setValue((v) => ({ ...v, driver, connectUrl: options.url, isConnected: true }));
+            setValue((v) => ({
+                ...v,
+                driver,
+                connectUrl: options.url,
+                isConnected: true,
+                databases,
+                selectedDatabaseName,
+            }));
         },
         logout: () => {
-            localStorage.removeItem(LOCAL_STATE_LOGIN);
+            Storage.remove(LOCAL_STATE_LOGIN);
             if (intervalId) {
                 clearInterval(intervalId);
             }
 
             setValue((v) => ({ ...v, driver: undefined, connectUrl: undefined, isConnected: false }));
+        },
+        setSelectedDatabaseName: (databaseName: string) => {
+            Storage.store(LOCAL_STATE_SELECTED_DATABASE_NAME, databaseName);
+            setValue((v) => ({ ...v, selectedDatabaseName: databaseName }));
         },
     });
 

@@ -21,6 +21,8 @@ import { IResolvers, TypeSource } from "@graphql-tools/utils";
 import {
     DefinitionNode,
     DocumentNode,
+    GraphQLID,
+    GraphQLNonNull,
     GraphQLScalarType,
     InterfaceTypeDefinitionNode,
     Kind,
@@ -33,18 +35,17 @@ import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { validateDocument } from "./validation";
 import { BaseField, Neo4jGraphQLCallbacks } from "../types";
-import {
-    aggregateResolver,
-    createResolver,
-    cypherResolver,
-    deleteResolver,
-    findResolver,
-    updateResolver,
-    numericalResolver,
-} from "./resolvers";
+import { cypherResolver } from "./resolvers/field/cypher";
+import { numericalResolver } from "./resolvers/field/numerical";
+import { aggregateResolver } from "./resolvers/query/aggregate";
+import { findResolver } from "./resolvers/query/read";
+import { rootConnectionResolver } from "./resolvers/query/root-connection";
+import { createResolver } from "./resolvers/mutation/create";
+import { deleteResolver } from "./resolvers/mutation/delete";
+import { updateResolver } from "./resolvers/mutation/update";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import * as constants from "../constants";
-import * as Scalars from "./types/scalars";
+import * as Scalars from "../graphql/scalars";
 import { Node } from "../classes";
 import Relationship from "../classes/Relationship";
 import createConnectionFields from "./create-connection-fields";
@@ -61,27 +62,28 @@ import {
 import getUniqueFields from "./get-unique-fields";
 import getWhereFields from "./get-where-fields";
 import { upperFirst } from "../utils/upper-first";
-import { ensureNonEmptyInput } from "./ensureNonEmptyInput";
+import { ensureNonEmptyInput } from "./ensure-non-empty-input";
 import { getDocument } from "./get-document";
 import { getDefinitionNodes } from "./get-definition-nodes";
 import { isRootType } from "../utils/is-root-type";
 
 // GraphQL type imports
-import { CreateInfo } from "./types/objects/CreateInfo";
-import { DeleteInfo } from "./types/objects/DeleteInfo";
-import { UpdateInfo } from "./types/objects/UpdateInfo";
-import { PageInfo } from "./types/objects/PageInfo";
-import { SortDirection } from "./types/enums/SortDirection";
-import { QueryOptions } from "./types/input-objects/QueryOptions";
-import { Point } from "./types/objects/Point";
-import { CartesianPoint } from "./types/objects/CartesianPoint";
-import { PointInput } from "./types/input-objects/PointInput";
-import { CartesianPointInput } from "./types/input-objects/CartesianPointInput";
-import { PointDistance } from "./types/input-objects/PointDistance";
-import { CartesianPointDistance } from "./types/input-objects/CartesianPointDistance";
+import { CreateInfo } from "../graphql/objects/CreateInfo";
+import { DeleteInfo } from "../graphql/objects/DeleteInfo";
+import { UpdateInfo } from "../graphql/objects/UpdateInfo";
+import { PageInfo } from "../graphql/objects/PageInfo";
+import { SortDirection } from "../graphql/enums/SortDirection";
+import { QueryOptions } from "../graphql/input-objects/QueryOptions";
+import { Point } from "../graphql/objects/Point";
+import { CartesianPoint } from "../graphql/objects/CartesianPoint";
+import { PointInput } from "../graphql/input-objects/PointInput";
+import { CartesianPointInput } from "../graphql/input-objects/CartesianPointInput";
+import { PointDistance } from "../graphql/input-objects/PointDistance";
+import { CartesianPointDistance } from "../graphql/input-objects/CartesianPointDistance";
 import getNodes from "./get-nodes";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
+import { addGlobalNodeFields } from "./create-global-nodes";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -152,6 +154,8 @@ function makeAugmentedSchema(
     //
     // These are flags to check whether the types are used and then create them if they are
     let { pointInTypeDefs, cartesianPointInTypeDefs } = getNodesResult;
+
+    const hasGlobalNodes = addGlobalNodeFields(nodes, composer);
 
     const relationshipProperties = interfaceTypes.filter((i) => relationshipPropertyInterfaceNames.has(i.name.value));
     const interfaceRelationships = interfaceTypes.filter((i) => interfaceRelationshipNames.has(i.name.value));
@@ -527,6 +531,19 @@ function makeAugmentedSchema(
             interfaces: node.interfaces.map((x) => x.name.value),
         });
 
+        if (node.isGlobalNode) {
+            composeNode.setField("id", {
+                type: new GraphQLNonNull(GraphQLID),
+                resolve: (src) => {
+                    const field = node.getGlobalIdField();
+                    const value = src[field] as string | number;
+                    return node.toGlobalId(value.toString());
+                },
+            });
+
+            composeNode.addInterface("Node");
+        }
+
         const sortFields = getSortableFields(node).reduce(
             (res, f) => ({
                 ...res,
@@ -583,7 +600,7 @@ function makeAugmentedSchema(
         };
 
         composer.createObjectTC({
-            name: `${node.name}AggregateSelection`,
+            name: node.aggregateTypeNames.selection,
             fields: {
                 count: countField,
                 ...[...node.primitiveFields, ...node.temporalFields].reduce((res, field) => {
@@ -606,7 +623,7 @@ function makeAugmentedSchema(
 
         composer.createInputTC({
             name: `${node.name}Where`,
-            fields: queryFields,
+            fields: node.isGlobalNode ? { id: "ID", ...queryFields } : queryFields,
         });
 
         if (node.fulltextDirective) {
@@ -617,7 +634,6 @@ function makeAugmentedSchema(
                         name: `${node.name}${upperFirst(index.name)}Fulltext`,
                         fields: {
                             phrase: "String!",
-                            score_EQUAL: "Int",
                         },
                     }),
                 }),
@@ -709,6 +725,10 @@ function makeAugmentedSchema(
 
             composer.Query.addFields({
                 [rootTypeFieldNames.aggregate]: aggregateResolver({ node }),
+            });
+
+            composer.Query.addFields({
+                [`${node.plural}Connection`]: rootConnectionResolver({ node, composer }),
             });
         }
 
@@ -809,6 +829,7 @@ function makeAugmentedSchema(
     }
 
     const generatedTypeDefs = composer.toSDL();
+
     let parsedDoc = parse(generatedTypeDefs);
 
     function definionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
@@ -846,6 +867,7 @@ function makeAugmentedSchema(
             }
             return res;
         }, {}),
+        ...(hasGlobalNodes ? { Node: { __resolveType: (root) => root.__resolveType } } : {}),
     };
 
     unionTypes.forEach((union) => {

@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { useContext } from "react";
 import { ThemeContext, Theme } from "../contexts/theme";
 // @ts-ignore - SVG Import
@@ -9,7 +28,7 @@ export enum Extension {
     GRAPHQL,
 }
 
-export interface Props {
+interface Props {
     name: string;
     extension: Extension;
     buttons?: any;
@@ -55,7 +74,7 @@ export const FileName = ({ extension, name, buttons }: Props) => {
                 <Icon extension={extension}></Icon> <span className="pl-1">{name}</span>
                 <Ending extension={extension}></Ending>
             </div>
-            {buttons ? <div className="flex items-center">{buttons}</div> : null}
+            {buttons ? <div className="flex items-center mr-4">{buttons}</div> : null}
         </div>
     );
 };

@@ -108,6 +108,8 @@ describe("@auth allow with interface relationships", () => {
             WITH this
             CALL {
             WITH this
+            CALL {
+            WITH this
             MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
             CALL apoc.util.validate(NOT(EXISTS((this_Comment)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_Comment)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Comment_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN { __resolveType: \\"Comment\\", id: this_Comment.id, content: this_Comment.content } AS content
@@ -117,7 +119,8 @@ describe("@auth allow with interface relationships", () => {
             CALL apoc.util.validate(NOT(EXISTS((this_Post)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN { __resolveType: \\"Post\\", id: this_Post.id, content: this_Post.content } AS content
             }
-            WITH this, collect(content) AS content
+            RETURN collect(content) AS content
+            }
             RETURN this { .id, content: content } as this"
         `);
 
@@ -158,6 +161,8 @@ describe("@auth allow with interface relationships", () => {
             WITH this
             CALL {
             WITH this
+            CALL {
+            WITH this
             MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
             CALL apoc.util.validate(NOT(EXISTS((this_Comment)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_Comment)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Comment_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WHERE this_Comment.id = $this_content.args.where.id
@@ -169,7 +174,8 @@ describe("@auth allow with interface relationships", () => {
             WHERE this_Post.id = $this_content.args.where.id
             RETURN { __resolveType: \\"Post\\", comments: [ (this_Post)-[:HAS_COMMENT]->(this_Post_comments:Comment)  WHERE this_Post_comments.id = $this_Post_comments_id AND apoc.util.validatePredicate(NOT(EXISTS((this_Post_comments)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_Post_comments)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_comments_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_Post_comments { .content } ] } AS content
             }
-            WITH this, collect(content) AS content
+            RETURN collect(content) AS content
+            }
             RETURN this { .id, content: content } as this"
         `);
 
@@ -239,10 +245,10 @@ describe("@auth allow with interface relationships", () => {
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required', [0])
             	RETURN c AS this_content0_post_Post_unique_ignored
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id,this_content0_auth_allow0_creator_id:$this_content0_auth_allow0_creator_id})
             YIELD value AS _
-            RETURN count(*)
+            RETURN count(*) AS _
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
@@ -258,11 +264,13 @@ describe("@auth allow with interface relationships", () => {
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
             	RETURN c AS this_content0_creator_User_unique_ignored
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id,this_content0_auth_allow0_creator_id:$this_content0_auth_allow0_creator_id})
             YIELD value AS _
-            RETURN count(*)
+            RETURN count(*) AS _
             }
+            WITH this
+            CALL {
             WITH this
             CALL {
             WITH this
@@ -275,7 +283,8 @@ describe("@auth allow with interface relationships", () => {
             CALL apoc.util.validate(NOT(EXISTS((this_Post)<-[:HAS_CONTENT]-(:User)) AND ANY(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS content
             }
-            WITH this, collect(content) AS content
+            RETURN collect(content) AS content
+            }
             RETURN collect(DISTINCT this { .id, content: content }) AS data"
         `);
 
@@ -349,7 +358,7 @@ describe("@auth allow with interface relationships", () => {
             WITH this, this_creator0
             CALL apoc.util.validate(NOT(this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0_auth_allow0_id AND this_creator0.id IS NOT NULL AND this_creator0.id = $this_update_creator0_password_auth_allow0_id), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
             SET this_creator0.password = $this_update_creator0_password
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_password:$this_update_creator0_password,this_update_creator0_password_auth_allow0_id:$this_update_creator0_password_auth_allow0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
             YIELD value AS _
             WITH this
@@ -490,7 +499,7 @@ describe("@auth allow with interface relationships", () => {
             FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
@@ -500,7 +509,7 @@ describe("@auth allow with interface relationships", () => {
             FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -570,7 +579,7 @@ describe("@auth allow with interface relationships", () => {
             FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
@@ -590,9 +599,9 @@ describe("@auth allow with interface relationships", () => {
             FOREACH(_ IN CASE this_disconnect_content0_comments0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_comments0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -673,7 +682,7 @@ describe("@auth allow with interface relationships", () => {
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             UNION
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
@@ -685,7 +694,7 @@ describe("@auth allow with interface relationships", () => {
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);

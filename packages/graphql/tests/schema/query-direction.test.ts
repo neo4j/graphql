@@ -74,6 +74,7 @@ describe("Query Direction", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
             enum SortDirection {
@@ -134,6 +135,11 @@ describe("Query Direction", () => {
               friends: [UserFriendsDisconnectFieldInput!]
             }
 
+            type UserEdge {
+              cursor: String!
+              node: User!
+            }
+
             input UserFriendsAggregateInput {
               AND: [UserFriendsAggregateInput!]
               OR: [UserFriendsAggregateInput!]
@@ -293,6 +299,12 @@ describe("Query Direction", () => {
               name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
+            }
+
+            type UsersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -347,6 +359,7 @@ describe("Query Direction", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
             enum SortDirection {
@@ -405,6 +418,11 @@ describe("Query Direction", () => {
 
             input UserDisconnectInput {
               friends: [UserFriendsDisconnectFieldInput!]
+            }
+
+            type UserEdge {
+              cursor: String!
+              node: User!
             }
 
             input UserFriendsAggregateInput {
@@ -566,6 +584,12 @@ describe("Query Direction", () => {
               name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
+            }
+
+            type UsersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });
@@ -620,6 +644,7 @@ describe("Query Direction", () => {
             type Query {
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
             enum SortDirection {
@@ -678,6 +703,11 @@ describe("Query Direction", () => {
 
             input UserDisconnectInput {
               friends: [UserFriendsDisconnectFieldInput!]
+            }
+
+            type UserEdge {
+              cursor: String!
+              node: User!
             }
 
             input UserFriendsAggregateInput {
@@ -839,6 +869,12 @@ describe("Query Direction", () => {
               name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
+            }
+
+            type UsersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

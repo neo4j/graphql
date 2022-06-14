@@ -19,11 +19,20 @@
 
 import { Socket } from "net";
 import { IncomingMessage } from "http";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import jsonwebtoken from "jsonwebtoken";
 
 /** Creates a JWT valid request with the given secret and the extraData in the JWT token */
 
 export function createJwtRequest(secret: string, extraData: Record<string, any> = {}): IncomingMessage {
+    const requestHeader = createJwtHeader(secret, extraData);
+    const socket = new Socket({ readable: true });
+    const req = new IncomingMessage(socket);
+    req.headers.authorization = requestHeader;
+    return req;
+}
+
+export function createJwtHeader(secret: string, extraData: Record<string, any> = {}): string {
     const token = jsonwebtoken.sign(
         {
             roles: [],
@@ -32,8 +41,6 @@ export function createJwtRequest(secret: string, extraData: Record<string, any> 
         secret,
         { noTimestamp: true }
     );
-    const socket = new Socket({ readable: true });
-    const req = new IncomingMessage(socket);
-    req.headers.authorization = `Bearer ${token}`;
-    return req;
+
+    return `Bearer ${token}`;
 }

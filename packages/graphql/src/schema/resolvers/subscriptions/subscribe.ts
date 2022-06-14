@@ -18,17 +18,14 @@
  */
 
 import { on } from "events";
-import { Neo4jGraphQLError } from "../../../classes";
+import { Neo4jGraphQLAuthenticationError, Neo4jGraphQLError } from "../../../classes";
 import Node from "../../../classes/Node";
-import { SubscriptionsEvent } from "../../../subscriptions/subscriptions-event";
-import { Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
+import { SubscriptionsEvent } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
+import { SubscriptionAuth } from "./subscription-auth";
+import { SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where";
-
-export type SubscriptionContext = {
-    plugin: Neo4jGraphQLSubscriptionsPlugin;
-};
 
 export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
     if (!payload) {
@@ -43,6 +40,18 @@ type SubscriptionArgs = {
 
 export function generateSubscribeMethod(node: Node, type: "create" | "update" | "delete") {
     return (_root: any, args: SubscriptionArgs, context: SubscriptionContext): AsyncIterator<[SubscriptionsEvent]> => {
+        if (node.auth) {
+            const authRules = node.auth.getRules(["SUBSCRIBE"]);
+            for (const rule of authRules) {
+                if (!SubscriptionAuth.validateAuthenticationRule(rule, context)) {
+                    throw new Error("Error, request not authenticated");
+                }
+                if (!SubscriptionAuth.validateRolesRule(rule, context)) {
+                    throw new Error("Error, request not authorized");
+                }
+            }
+        }
+
         const iterable: AsyncIterableIterator<[SubscriptionsEvent]> = on(context.plugin.events, type);
 
         return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {

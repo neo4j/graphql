@@ -23,8 +23,8 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
-import { WebSocketClient, WebSocketTestClient } from "../setup/ws-client";
-import neo4j from "../../integration/neo4j";
+import { WebSocketTestClient } from "../setup/ws-client";
+import neo4j from "../setup/neo4j";
 
 describe("Delete Subscription", () => {
     let driver: Driver;
@@ -32,7 +32,7 @@ describe("Delete Subscription", () => {
     const typeMovie = generateUniqueType("Movie");
 
     let server: TestGraphQLServer;
-    let wsClient: WebSocketClient;
+    let wsClient: WebSocketTestClient;
 
     beforeAll(async () => {
         const typeDefs = `
@@ -72,6 +72,7 @@ describe("Delete Subscription", () => {
                         title
                     }
                     event
+                    timestamp
                 }
             }
         `);
@@ -82,17 +83,20 @@ describe("Delete Subscription", () => {
         await deleteMovie("movie1");
         await deleteMovie("movie2");
 
+        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
                     [typeMovie.fieldNames.subscriptions.deleted]: { title: "movie1" },
                     event: "DELETE",
+                    timestamp: expect.any(Number),
                 },
             },
             {
                 [typeMovie.operations.subscribe.deleted]: {
                     [typeMovie.fieldNames.subscriptions.deleted]: { title: "movie2" },
                     event: "DELETE",
+                    timestamp: expect.any(Number),
                 },
             },
         ]);
@@ -115,6 +119,7 @@ describe("Delete Subscription", () => {
         await deleteMovie("movie3");
         await deleteMovie("movie4");
 
+        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {

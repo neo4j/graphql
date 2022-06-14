@@ -1,0 +1,27 @@
+query TopLevelAggregate {
+    peopleAggregate {
+        count
+        name {
+            shortest
+        }
+    }
+}
+
+query NestedAggregation {
+    people {
+        name
+        moviesAggregate {
+            node {
+                title {
+                    longest
+                }
+            }
+        }
+    }
+}
+
+query AggregationWithWhere {
+    people(where: { moviesAggregate: { count: 2 } }) {
+        name
+    }
+}

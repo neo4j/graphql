@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect, useCallback } from "react";
-import { Alert, Spinner, Container, Card, Button, Form, Modal, InputGroup, FormControl } from "react-bootstrap";
+import { Alert, Spinner, Container, Card, Button, Modal, InputGroup, FormControl } from "react-bootstrap";
 import * as markdown from "./Markdown";
 import { EDIT_COMMENT, POST } from "../queries";
 import { graphql, auth } from "../contexts";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, NavigateFunction } from "react-router-dom";
 import constants from "../constants";
 import { POST_COMMENTS, COMMENT_ON_POST, DELETE_COMMENT, EDIT_POST, DELETE_POST } from "../queries";
 
@@ -68,7 +68,7 @@ function CreateComment({ post, onCreate }: { post: string; onCreate: (comment: C
                 canDelete: true,
             });
             setContent("");
-        } catch (e) {
+        } catch (e: any) {
             setError(e.message);
         }
 
@@ -124,7 +124,7 @@ function DeleteComment(props: {
             });
 
             props.setComments((c) => c.filter((x) => x.id !== props.comment.id));
-        } catch (e) {
+        } catch (e: any) {
             setError(e.message);
         }
 
@@ -181,8 +181,7 @@ function DeleteComment(props: {
     );
 }
 
-function DeletePost(props: { post: PostInterface; close: () => void }) {
-    const history = useHistory();
+function DeletePost(props: { post: PostInterface; close: () => void; navigate: NavigateFunction }) {
     const { mutate } = useContext(graphql.Context);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -196,8 +195,8 @@ function DeletePost(props: { post: PostInterface; close: () => void }) {
                 variables: { id: props.post.id },
             });
 
-            history.push(constants.BLOG_PAGE + "/" + props.post?.blog?.id);
-        } catch (e) {
+            props.navigate(constants.BLOG_PAGE + "/" + props.post?.blog?.id);
+        } catch (e: any) {
             setError(e.message);
         }
 
@@ -417,7 +416,7 @@ function PostComments({
             setHasMore(Boolean(response.hasNextComments.length));
 
             setComments((c: Comment[]) => [...c, ...response.postComments]);
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
             setError(e.message);
         }
@@ -470,9 +469,8 @@ function PostComments({
     );
 }
 
-function Post() {
+function Post(navigate: NavigateFunction) {
     const { id } = useParams<{ id: string }>();
-    const history = useHistory();
     const [post, setPost] = useState<PostInterface>({});
     const { query, mutate } = useContext(graphql.Context);
     const { isLoggedIn } = useContext(auth.Context);
@@ -498,12 +496,12 @@ function Post() {
 
                 const foundPost = response.posts[0] as PostInterface;
                 if (!foundPost) {
-                    history.push(constants.DASHBOARD_PAGE);
+                    navigate(constants.DASHBOARD_PAGE);
                 }
 
                 setEditedMarkdown(foundPost?.content as string);
                 setPost(foundPost);
-            } catch (e) {}
+            } catch (e: any) {}
 
             setLoading(false);
         })();
@@ -552,13 +550,15 @@ function Post() {
                 show={deletingPost}
                 onHide={() => setDeletingPost((x) => !x)}
             >
-                <DeletePost post={post} close={() => setDeletingPost(false)}></DeletePost>
+                <DeletePost post={post} close={() => setDeletingPost(false)} navigate={navigate}></DeletePost>
             </Modal>
             <Card className="mt-3 p-3">
                 {isEditing ? (
                     <InputGroup className="mb-3">
+                        {/* @ts-ignore */}
                         <InputGroup.Prepend>
                             <InputGroup.Text id="title">Title</InputGroup.Text>
+                            {/* @ts-ignore */}
                         </InputGroup.Prepend>
                         <FormControl
                             size="lg"

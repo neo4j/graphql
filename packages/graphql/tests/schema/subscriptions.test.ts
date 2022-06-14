@@ -79,11 +79,18 @@ describe("Subscriptions", () => {
             type ActorCreatedEvent {
               createdActor: ActorEventPayload!
               event: EventType!
+              timestamp: Float!
             }
 
             type ActorDeletedEvent {
               deletedActor: ActorEventPayload!
               event: EventType!
+              timestamp: Float!
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
             }
 
             type ActorEventPayload {
@@ -117,6 +124,7 @@ describe("Subscriptions", () => {
             type ActorUpdatedEvent {
               event: EventType!
               previousState: ActorEventPayload!
+              timestamp: Float!
               updatedActor: ActorEventPayload!
             }
 
@@ -133,6 +141,12 @@ describe("Subscriptions", () => {
               name_NOT_IN: [String!]
               name_NOT_STARTS_WITH: String
               name_STARTS_WITH: String
+            }
+
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -315,6 +329,7 @@ describe("Subscriptions", () => {
             type MovieCreatedEvent {
               createdMovie: MovieEventPayload!
               event: EventType!
+              timestamp: Float!
             }
 
             input MovieDeleteInput {
@@ -324,10 +339,16 @@ describe("Subscriptions", () => {
             type MovieDeletedEvent {
               deletedMovie: MovieEventPayload!
               event: EventType!
+              timestamp: Float!
             }
 
             input MovieDisconnectInput {
               actors: [MovieActorsDisconnectFieldInput!]
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
             }
 
             type MovieEventPayload {
@@ -378,6 +399,7 @@ describe("Subscriptions", () => {
             type MovieUpdatedEvent {
               event: EventType!
               previousState: MovieEventPayload!
+              timestamp: Float!
               updatedMovie: MovieEventPayload!
             }
 
@@ -431,6 +453,12 @@ describe("Subscriptions", () => {
               isActive_NOT: Boolean
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
@@ -451,8 +479,10 @@ describe("Subscriptions", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {
@@ -551,6 +581,7 @@ describe("Subscriptions", () => {
 
             type ActorCreatedEvent {
               event: EventType!
+              timestamp: Float!
             }
 
             input ActorDeleteInput {
@@ -559,10 +590,16 @@ describe("Subscriptions", () => {
 
             type ActorDeletedEvent {
               event: EventType!
+              timestamp: Float!
             }
 
             input ActorDisconnectInput {
               movies: [ActorMoviesDisconnectFieldInput!]
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
             }
 
             type ActorMovieMoviesAggregationSelection {
@@ -719,6 +756,7 @@ describe("Subscriptions", () => {
 
             type ActorUpdatedEvent {
               event: EventType!
+              timestamp: Float!
             }
 
             input ActorWhere {
@@ -741,6 +779,12 @@ describe("Subscriptions", () => {
               movies_SINGLE: MovieWhere
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
               movies_SOME: MovieWhere
+            }
+
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }
 
             type CreateActorsMutationResponse {
@@ -895,6 +939,7 @@ describe("Subscriptions", () => {
             type MovieCreatedEvent {
               createdMovie: MovieEventPayload!
               event: EventType!
+              timestamp: Float!
             }
 
             input MovieDeleteInput {
@@ -904,10 +949,16 @@ describe("Subscriptions", () => {
             type MovieDeletedEvent {
               deletedMovie: MovieEventPayload!
               event: EventType!
+              timestamp: Float!
             }
 
             input MovieDisconnectInput {
               actors: [MovieActorsDisconnectFieldInput!]
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
             }
 
             type MovieEventPayload {
@@ -958,6 +1009,7 @@ describe("Subscriptions", () => {
             type MovieUpdatedEvent {
               event: EventType!
               previousState: MovieEventPayload!
+              timestamp: Float!
               updatedMovie: MovieEventPayload!
             }
 
@@ -1011,6 +1063,12 @@ describe("Subscriptions", () => {
               isActive_NOT: Boolean
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
@@ -1031,8 +1089,10 @@ describe("Subscriptions", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, first: Int, where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {

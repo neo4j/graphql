@@ -21,12 +21,12 @@ import React, { Dispatch, useState, SetStateAction } from "react";
 
 export interface State {
     isShowSettingsDrawer: boolean;
-    isShowDocsDrawer: boolean;
+    isShowHelpDrawer: boolean;
     setIsShowSettingsDrawer: (v: boolean) => void;
-    setIsShowDocsDrawer: (v: boolean) => void;
+    setIsShowHelpDrawer: (v: boolean) => void;
 }
 
-export const SettingsContext = React.createContext(null as unknown as State);
+export const SettingsContext = React.createContext({} as State);
 
 export function SettingsProvider(props: React.PropsWithChildren<any>) {
     let value: State | undefined;
@@ -34,21 +34,21 @@ export function SettingsProvider(props: React.PropsWithChildren<any>) {
 
     [value, setValue] = useState<State>({
         isShowSettingsDrawer: false,
-        isShowDocsDrawer: false,
+        isShowHelpDrawer: false,
         setIsShowSettingsDrawer: (isShowSettingsDrawer: boolean) => {
-            setValue((v) => ({
-                ...v,
+            setValue((values) => ({
+                ...values,
                 isShowSettingsDrawer,
-                ...(isShowSettingsDrawer ? { isShowDocsDrawer: false } : { isShowDocsDrawer: v.isShowDocsDrawer }),
+                ...(isShowSettingsDrawer ? { isShowHelpDrawer: false } : { isShowHelpDrawer: values.isShowHelpDrawer }),
             }));
         },
-        setIsShowDocsDrawer: (isShowDocsDrawer: boolean) => {
-            setValue((v) => ({
-                ...v,
-                isShowDocsDrawer,
-                ...(isShowDocsDrawer
+        setIsShowHelpDrawer: (isShowHelpDrawer: boolean) => {
+            setValue((values) => ({
+                ...values,
+                isShowHelpDrawer,
+                ...(isShowHelpDrawer
                     ? { isShowSettingsDrawer: false }
-                    : { isShowSettingsDrawer: v.isShowSettingsDrawer }),
+                    : { isShowSettingsDrawer: values.isShowSettingsDrawer }),
             }));
         },
     });

@@ -40,8 +40,10 @@ import type {
 import Exclude from "./Exclude";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
 import { NodeDirective } from "./NodeDirective";
+import { DecodedGlobalId, fromGlobalId, toGlobalId } from "../utils/global-ids";
 import { QueryOptionsDirective } from "./QueryOptionsDirective";
 import { upperFirst } from "../utils/upper-first";
+import { NodeAuth } from "./NodeAuth";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -65,6 +67,8 @@ export interface NodeConstructor extends GraphElementConstructor {
     nodeDirective?: NodeDirective;
     description?: string;
     queryOptionsDirective?: QueryOptionsDirective;
+    isGlobalNode?: boolean;
+    globalIdField?: string;
 }
 
 type MutableField =
@@ -87,7 +91,7 @@ type AuthableField =
     | PointField
     | CypherField;
 
-type ConstrainableField = PrimitiveField | TemporalField | PointField;
+type ConstrainableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField | PointField;
 
 export type RootTypeFieldNames = {
     create: string;
@@ -100,6 +104,11 @@ export type RootTypeFieldNames = {
         updated: string;
         deleted: string;
     };
+};
+
+export type AggregateTypeNames = {
+    selection: string;
+    input: string;
 };
 
 export type MutationResponseTypeNames = {
@@ -125,11 +134,13 @@ class Node extends GraphElement {
     public exclude?: Exclude;
     public nodeDirective?: NodeDirective;
     public fulltextDirective?: FullText;
-    public auth?: Auth;
+    public auth?: NodeAuth;
     public description?: string;
     public queryOptions?: QueryOptionsDirective;
     public singular: string;
     public plural: string;
+    public isGlobalNode: boolean | undefined;
+    private _idField: string | undefined;
 
     constructor(input: NodeConstructor) {
         super(input);
@@ -144,8 +155,10 @@ class Node extends GraphElement {
         this.exclude = input.exclude;
         this.nodeDirective = input.nodeDirective;
         this.fulltextDirective = input.fulltextDirective;
-        this.auth = input.auth;
+        this.auth = input.auth ? new NodeAuth(input.auth) : undefined;
         this.queryOptions = input.queryOptionsDirective;
+        this.isGlobalNode = input.isGlobalNode;
+        this._idField = input.globalIdField;
         this.singular = this.generateSingular();
         this.plural = this.generatePlural();
     }
@@ -180,7 +193,13 @@ class Node extends GraphElement {
     }
 
     public get constrainableFields(): ConstrainableField[] {
-        return [...this.primitiveFields, ...this.temporalFields, ...this.pointFields];
+        return [
+            ...this.primitiveFields,
+            ...this.scalarFields,
+            ...this.enumFields,
+            ...this.temporalFields,
+            ...this.pointFields,
+        ];
     }
 
     public get uniqueFields(): ConstrainableField[] {
@@ -209,6 +228,13 @@ class Node extends GraphElement {
                 updated: `${this.singular}Updated`,
                 deleted: `${this.singular}Deleted`,
             },
+        };
+    }
+
+    public get aggregateTypeNames(): AggregateTypeNames {
+        return {
+            selection: `${this.name}AggregateSelection`,
+            input: `${this.name}AggregateSelectionInput`,
         };
     }
 
@@ -251,6 +277,25 @@ class Node extends GraphElement {
 
     public getMainLabel(): string {
         return this.nodeDirective?.label || this.name;
+    }
+
+    public getGlobalIdField(): string {
+        if (!this.isGlobalNode || !this._idField) {
+            throw new Error(
+                "The 'global' property needs to be set to true on an @id directive before accessing the unique node id field"
+            );
+        }
+        return this._idField;
+    }
+
+    public toGlobalId(id: string): string {
+        const typeName = this.name;
+        const field = this.getGlobalIdField();
+        return toGlobalId({ typeName, field, id });
+    }
+
+    public fromGlobalId(relayId: string): DecodedGlobalId {
+        return fromGlobalId(relayId);
     }
 
     private generateSingular(): string {
