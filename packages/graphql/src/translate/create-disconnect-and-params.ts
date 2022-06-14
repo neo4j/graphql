@@ -324,7 +324,7 @@ function createDisconnectAndParams({
             params = { ...params, ...postAuth.params };
         }
 
-        subquery.push("RETURN count(*)");
+        subquery.push("RETURN count(*) AS _");
 
         return { subquery: subquery.join("\n"), params };
     }

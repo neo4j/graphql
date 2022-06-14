@@ -345,7 +345,7 @@ describe("Cypher Auth Allow", () => {
             WITH this, this_creator0
             CALL apoc.util.validate(NOT(this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0_auth_allow0_id), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
             SET this_creator0.id = $this_update_creator0_id
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_id:$this_update_creator0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
             YIELD value AS _
             WITH this
@@ -425,7 +425,7 @@ describe("Cypher Auth Allow", () => {
             WITH this, this_creator0
             CALL apoc.util.validate(NOT(this_creator0.id IS NOT NULL AND this_creator0.id = $this_creator0_auth_allow0_id AND this_creator0.id IS NOT NULL AND this_creator0.id = $this_update_creator0_password_auth_allow0_id), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
             SET this_creator0.password = $this_update_creator0_password
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updatePosts: $updatePosts, this_creator0:this_creator0, auth:$auth,this_update_creator0_password:$this_update_creator0_password,this_update_creator0_password_auth_allow0_id:$this_update_creator0_password_auth_allow0_id,this_creator0_auth_allow0_id:$this_creator0_auth_allow0_id})
             YIELD value AS _
             WITH this
@@ -588,7 +588,7 @@ describe("Cypher Auth Allow", () => {
             FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_posts0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -663,9 +663,9 @@ describe("Cypher Auth Allow", () => {
             FOREACH(_ IN CASE this_post0_disconnect0_creator0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_post0_disconnect0_creator0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             WITH this
             CALL {
@@ -748,7 +748,7 @@ describe("Cypher Auth Allow", () => {
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);

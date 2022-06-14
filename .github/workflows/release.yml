@@ -162,6 +162,8 @@ jobs:
     integration-tests-aura:
         needs:
             - aura-teardown
+            
+        continue-on-error: true
 
         strategy:
             matrix:

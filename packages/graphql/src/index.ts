@@ -47,6 +47,8 @@ export {
     Neo4jGraphQLForbiddenError,
 } from "./classes";
 
+export { Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "./classes/Neo4jGraphQLSubscriptionsSingleInstancePlugin";
+
 export * as directives from "./graphql/directives";
 export * as scalars from "./graphql/scalars";
 
