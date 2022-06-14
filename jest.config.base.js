@@ -4,7 +4,6 @@ require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 module.exports = {
     globalSetup: path.join(__dirname, "jest.global-setup.js"),
-    globalTeardown: path.join(__dirname, "jest.global-teardown.js"),
     rootDir: __dirname,
     verbose: true,
     transform: {
