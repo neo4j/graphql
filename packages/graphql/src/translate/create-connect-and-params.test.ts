@@ -111,10 +111,10 @@ describe("createConnectAndParams", () => {
                                 MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node)
                             )
                         )
-                        RETURN count(*)
+                        RETURN count(*) AS _
                     }
 
-                    RETURN count(*)
+                    RETURN count(*) AS _
                 }
             `)
         );
