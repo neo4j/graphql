@@ -46,6 +46,7 @@ describe("Subscription auth where", () => {
             }
             type ${typeUser} {
                 name: String!
+                surname: String
             }
 
             extend type ${typeUser} @auth(rules: [{ operations: [SUBSCRIBE], where: { name: "arthur" } }])
@@ -130,6 +131,63 @@ describe("Subscription auth where", () => {
         expect(wsClient.errors).toEqual([]);
     });
 
+    test("only return events matching the auth where statement and where argument", async () => {
+        wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
+        await wsClient.subscribe(`
+            subscription {
+                ${typeUser.operations.subscribe.created}(where: {surname: "Conan Doyle"}) {
+                    ${typeUser.operations.subscribe.payload.created} {
+                        name
+                        surname
+                    }
+                }
+            }
+            `);
+
+        await createUser("arthur", "Dent");
+        await createUser("arthur", "Conan Doyle");
+        await createUser("Marvin", "Conan Doyle");
+
+        expect(wsClient.events).toEqual([
+            {
+                [typeUser.operations.subscribe.created]: {
+                    [typeUser.operations.subscribe.payload.created]: {
+                        name: "arthur",
+                        surname: "Conan Doyle",
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.errors).toEqual([]);
+    });
+
+    test("where option in auth takes preference over where arg", async () => {
+        wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
+        await wsClient.subscribe(`
+            subscription {
+                ${typeUser.operations.subscribe.created}(where: {name: "Marvin"}) {
+                    ${typeUser.operations.subscribe.payload.created} {
+                        name
+                    }
+                }
+            }
+            `);
+
+        await createUser("arthur");
+        await createUser("Marvin");
+
+        expect(wsClient.events).toEqual([
+            {
+                [typeUser.operations.subscribe.created]: {
+                    [typeUser.operations.subscribe.payload.created]: {
+                        name: "arthur",
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.errors).toEqual([]);
+    });
+
     async function createMovie(title: string): Promise<Response> {
         return server.runQuery({
             query: `mutation {
@@ -143,10 +201,11 @@ describe("Subscription auth where", () => {
         });
     }
 
-    async function createUser(name: string): Promise<Response> {
+    async function createUser(name: string, surname?: string): Promise<Response> {
+        const surnameInput = surname ? `, surname: "${surname}"` : "";
         return server.runQuery({
             query: `mutation {
-                    ${typeUser.operations.create}(input: [{ name: "${name}" }]) {
+                    ${typeUser.operations.create}(input: [{ name: "${name}" ${surnameInput} }]) {
                         ${typeUser.plural} {
                             name
                         }
