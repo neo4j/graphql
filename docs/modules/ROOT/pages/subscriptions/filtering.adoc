@@ -1,0 +1,39 @@
+[[filtering]]
+= Subscriptions Filtering
+
+WARNING: Subscriptions are only available as a beta; its API may change in the future. It is not recommended to use subscriptions in production environments.
+
+Subscriptions, by default, will return events from any node of the given type. However, the events received can be
+filtered using the `where` option.
+
+NOTE: Unlike queries, subscriptions can only filter top-level properties without operations.
+
+== Usage
+
+Considering the following type definitions:
+```graphql
+type Movie {
+    title: String
+    genre: String
+}
+```
+
+We can only receive movies created of a certain genre:
+
+```graphql
+movieCreated(where: {genre: "Drama"}) {
+    createdMovie {
+        title
+    }
+}
+```
+
+This way, only newly created movies with the genre `"Drama"` will trigger events to this subscription.
+
+
+=== Events
+Filtering behaves slightly differently depending on the event type:
+
+* **xref::subscriptions/events/create.adoc[Create]**: Filter against the properties set at the moment of creation.
+* **xref::subscriptions/events/update.adoc[Update]**: Filter against the properties before the update.
+* **xref::subscriptions/events/delete.adoc[Delete]**: Filter against the properties right before the node is deleted.
