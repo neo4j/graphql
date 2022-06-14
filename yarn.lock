@@ -2068,7 +2068,7 @@ __metadata:
     postcss-loader: 7.0.0
     prettier: ^2.6.2
     process: 0.11.10
-    puppeteer: 14.3.0
+    puppeteer: 14.4.0
     randomstring: 1.2.2
     react: 18.1.0
     react-dom: 18.1.0
@@ -14605,9 +14605,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"puppeteer@npm:14.3.0":
-  version: 14.3.0
-  resolution: "puppeteer@npm:14.3.0"
+"puppeteer@npm:14.4.0":
+  version: 14.4.0
+  resolution: "puppeteer@npm:14.4.0"
   dependencies:
     cross-fetch: 3.1.5
     debug: 4.3.4
@@ -14621,7 +14621,7 @@ __metadata:
     tar-fs: 2.1.1
     unbzip2-stream: 1.4.3
     ws: 8.7.0
-  checksum: 72d976f4292a887ab136545549765c87cd1d353b9444e792802fde73bfe2abd1b45826001c8818a8118fa08a7c81d076e8704f8f62b7a13fe9f8fbe3dca3230d
+  checksum: 953f8d4a587d957b142ea49648209b04bbb71e352641f3a45b1af6e46fb4e19c0c395b8b5278aaa2f58ad854ef9bed1dc004b31b8445449b1d7099b3ad7ed8c8
   languageName: node
   linkType: hard
 
