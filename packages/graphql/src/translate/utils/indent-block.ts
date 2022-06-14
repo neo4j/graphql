@@ -23,9 +23,8 @@ export function indentBlock(query: string | string[]): string | string[] {
     if (typeof query === "string") {
         const statements = query.split("\n");
         return indentStatements(statements).join("\n");
-    } else {
-        return indentStatements(query);
     }
+    return indentStatements(query);
 }
 
 function indentStatements(statements: string[]): string[] {
