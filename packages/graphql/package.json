@@ -85,7 +85,7 @@
         "@graphql-tools/resolvers-composition": "^6.4.1",
         "@graphql-tools/schema": "^8.3.1",
         "@graphql-tools/utils": "^8.6.0",
-        "camelcase": "^6.2.0",
+        "camelcase": "^7.0.0",
         "debug": "^4.3.2",
         "deep-equal": "^2.0.5",
         "dot-prop": "^6.0.1",

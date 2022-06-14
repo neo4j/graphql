@@ -46,7 +46,7 @@
         "@neo4j/graphql-plugin-auth": "^1.0.0",
         "@types/jest": "28.1.1",
         "@types/node": "16.11.39",
-        "camelcase": "6.3.0",
+        "camelcase": "7.0.0",
         "graphql-tag": "2.12.6",
         "jest": "28.1.1",
         "jsonwebtoken": "8.5.1",

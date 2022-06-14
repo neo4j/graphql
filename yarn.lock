@@ -1964,7 +1964,7 @@ __metadata:
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/jest": 28.1.1
     "@types/node": 16.11.39
-    camelcase: 6.3.0
+    camelcase: 7.0.0
     graphql-tag: 2.12.6
     jest: 28.1.1
     jsonwebtoken: 8.5.1
@@ -2011,7 +2011,7 @@ __metadata:
     amqplib: ^0.10.0
     apollo-server: 3.8.2
     apollo-server-express: 3.8.2
-    camelcase: 6.3.0
+    camelcase: 7.0.0
     graphql-ws: 5.9.0
     jest: 28.1.1
     neo4j-driver: 4.4.5
@@ -2112,7 +2112,7 @@ __metadata:
     "@types/ws": 8.5.3
     apollo-server: 3.8.2
     apollo-server-express: 3.8.2
-    camelcase: ^6.2.0
+    camelcase: ^7.0.0
     debug: ^4.3.2
     dedent: 0.7.0
     deep-equal: ^2.0.5
@@ -2155,7 +2155,7 @@ __metadata:
     "@types/jest": 28.1.1
     "@types/node": 16.11.39
     "@types/pluralize": 0.0.29
-    camelcase: ^6.2.0
+    camelcase: ^7.0.0
     debug: ^4.3.2
     jest: 28.1.1
     pluralize: ^8.0.0
@@ -5217,10 +5217,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"camelcase@npm:6.3.0, camelcase@npm:^6.2.0, camelcase@npm:^6.3.0":
-  version: 6.3.0
-  resolution: "camelcase@npm:6.3.0"
-  checksum: 8c96818a9076434998511251dcb2761a94817ea17dbdc37f47ac080bd088fc62c7369429a19e2178b993497132c8cbcf5cc1f44ba963e76782ba469c0474938d
+"camelcase@npm:7.0.0, camelcase@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "camelcase@npm:7.0.0"
+  checksum: 162d59607b3b46e910af151348d5e40af579048a5d07f3c06370b096ca0d42ba4a88bd92cf4e3482645ba1ffdd6f744d8273c1b9594e493fc10883d54adf7cbe
   languageName: node
   linkType: hard
 
@@ -5228,6 +5228,13 @@ __metadata:
   version: 5.3.1
   resolution: "camelcase@npm:5.3.1"
   checksum: e6effce26b9404e3c0f301498184f243811c30dfe6d0b9051863bd8e4034d09c8c2923794f280d6827e5aa055f6c434115ff97864a16a963366fb35fd673024b
+  languageName: node
+  linkType: hard
+
+"camelcase@npm:^6.2.0, camelcase@npm:^6.3.0":
+  version: 6.3.0
+  resolution: "camelcase@npm:6.3.0"
+  checksum: 8c96818a9076434998511251dcb2761a94817ea17dbdc37f47ac080bd088fc62c7369429a19e2178b993497132c8cbcf5cc1f44ba963e76782ba469c0474938d
   languageName: node
   linkType: hard
 
