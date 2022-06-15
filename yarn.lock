@@ -2130,7 +2130,7 @@ __metadata:
     koa-router: 10.1.1
     libnpmsearch: 5.0.3
     mock-jwks: 1.0.3
-    nock: 13.2.6
+    nock: 13.2.7
     npm-run-all: 4.1.5
     pluralize: ^8.0.0
     randomstring: 1.2.2
@@ -12681,15 +12681,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nock@npm:13.2.6":
-  version: 13.2.6
-  resolution: "nock@npm:13.2.6"
+"nock@npm:13.2.7":
+  version: 13.2.7
+  resolution: "nock@npm:13.2.7"
   dependencies:
     debug: ^4.1.0
     json-stringify-safe: ^5.0.1
     lodash: ^4.17.21
     propagate: ^2.0.0
-  checksum: d135a8036b2feb41c0696c585682f7252f6cd3232ff686efe54a39f979f063fcc178636dfdf27aba07f653091e2812014db41ed6f5f250fdd2ee2948035a4203
+  checksum: 0d7d3163ca973393d43a0334aafe59677ca6e7eea133338166be9bd06e577667da2dd2d5148046022b9e9dd4339f5ae5d0ef0274abc1462c4e896f8729c24b40
   languageName: node
   linkType: hard
 
