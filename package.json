@@ -25,9 +25,9 @@
     },
     "devDependencies": {
         "@tsconfig/node12": "1.0.10",
-        "@typescript-eslint/eslint-plugin": "5.27.1",
-        "@typescript-eslint/parser": "5.27.1",
-        "concurrently": "7.2.1",
+        "@typescript-eslint/eslint-plugin": "5.28.0",
+        "@typescript-eslint/parser": "5.28.0",
+        "concurrently": "7.2.2",
         "dotenv": "16.0.1",
         "eslint": "8.17.0",
         "eslint-config-airbnb-typescript": "17.0.0",
