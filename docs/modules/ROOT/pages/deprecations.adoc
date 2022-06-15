@@ -11,27 +11,20 @@ The following products and applications are deprecated:
 
 == Why have we deprecated the GRANDstack starter app?
 
-The GRANDstack starter app has been a marketing and product effort to drive user adoption of the Neo4j GraphQL library at its early stages. 
-Its main value was to show how the Apollo client works in the context of React and GraphQL, and it was a great tool to build PoCs.
-It was very appealing to junior developers with very little experience in building applications.
-It was a great channel to bring a new audience to Neo4j, but it unveiled gaps in the developer experience with the overall product where these newer developers often need more support,
-exposing little annoyances that experienced developers can work around which end up being big blockers for junior users who needed more hand holding in understanding the product and the technology.
-These users are not our main target audience, as we're working on other ways to bring new audiences to Neo4j. 
-The downside of this tool is that it needs maintenance of a front-end framework we have little control over and it represents a dependency we don't have the capacity to maintain.
-This is something we don't want to pursue anymore. 
+The GRANDstack starter app has been a marketing and Neo4j Labs effort to drive user adoption of the Neo4j Labs GraphQL library at its early stages. 
 
-The successor of this product will focus on providing an example backend service for users, which is more valuable to our audience of fullstack and frontend developers and to us.
-This might take the shape of a Starter kit for a GraphQL API. 
-There is a need for users who have an existing front-end and need a new backend.
-They need a way to initiate a server, so we can bring value by providing an opinionated mechanism that can help users get started with Neo4j GraphQL. 
+Its main purpose was to demonstrate how the Neo4j Labs GraphQL library could be used in the context of a full-stack application using React and Apollo 
+client. It was extremely useful when building proof of concept applications.
 
-Our aim in Q3 2022 is to provide a "starter kit" set of instructions that potentially is:
+It was very appealing to developers who didn't want to have additional boiler plate when setting up their application, speeding up development time and helped focussing on building the functionality of the application. 
 
-- Compatible with other, more mature, starter apps 
-- Agnostic to other tools 
-- Can support multiple servers
-- Provides optional plugins & features (subscriptions, auth)
+It was also attractive to junior developers with very little experience in building applications, and it was a great channel to bring a new audience to Neo4j. 
 
+Finally, it was helpful for users who had an existing front end and needed a new backend. They needed a way to initiate a server, so the value we offered was by providing an opinionated mechanism that can help users get started with Neo4j with GraphQL. 
+
+Over time, the GRANDstack starter grew to support other frameworks such as Flutter and Angular. With hindsight, this massively increased the support burden and technical debt of the product, and it is time to revisit the scope of the product.
+
+The intention for the future is to replace this Labs project with a new starter application product, which will focus on the backend and the configuration of the GraphQL library, and we will consider options on how we might help developers with their front-end.
 
 == What has happened to the GRANDstack starter app?
 
