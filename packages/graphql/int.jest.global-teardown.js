@@ -30,10 +30,10 @@ module.exports = async function globalTeardown() {
             try {
                 await session.writeTransaction((tx) => tx.run(cypherDetachNodes));
             } catch (err) {
-                console.log(`\nJest Global teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypherDetachNodes}", Error: ${err.message}`); // eslint-disable-line no-console
+                console.log(`\nJest /packages/graphql teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypherDetachNodes}", Error: ${err.message}`); // eslint-disable-line no-console
             }
         } else {
-            console.log(`\nJest Global teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypherDropDb}", Error: ${error.message}`); // eslint-disable-line no-console
+            console.log(`\nJest /packages/graphql teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypherDropDb}", Error: ${error.message}`); // eslint-disable-line no-console
         }
     } finally {
         if (session) await session.close();

@@ -34,12 +34,12 @@ module.exports = async function globalSetup() {
         if (isMultiDbUnsupportedError(error)) {
             try {
                 await session.writeTransaction((tx) => tx.run(cypherDetachNodes));
-                console.log(`\nJest Global setup: Multi-database is not supported. Falling back to default database.`) // eslint-disable-line no-console
+                console.log(`\nJest /packages/graphql setup: Multi-database is not supported. Falling back to default database.`) // eslint-disable-line no-console
             } catch (err) {
-                console.log(`\nJest Global teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypherDetachNodes}", Error: ${err.message}`); // eslint-disable-line no-console
+                console.log(`\nJest /packages/graphql setup: Setup failure on neo4j @ ${NEO_URL}, cypher: "${cypherDetachNodes}", Error: ${err.message}`); // eslint-disable-line no-console
             }
         } else {
-            console.log(`\nJest Global setup: Setup failure on neo4j @ ${NEO_URL}, cypher: "${cypherCreateDb}", Error: ${error.message}`); // eslint-disable-line no-console
+            console.log(`\nJest /packages/graphql setup: Setup failure on neo4j @ ${NEO_URL}, cypher: "${cypherCreateDb}", Error: ${error.message}`); // eslint-disable-line no-console
         }
     } finally {
         if (session) session.close()

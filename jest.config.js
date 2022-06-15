@@ -5,7 +5,6 @@ module.exports = {
     projects: [
         "<rootDir>/examples/neo-push/server/jest.config.js",
         "<rootDir>/packages/*/jest.config.js",
-        "<rootDir>/packages/*/int.jest.config.js",
         "<rootDir>/packages/plugins/*/jest.config.js",
     ],
     coverageDirectory: "<rootDir>/coverage/",
