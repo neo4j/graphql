@@ -37,7 +37,7 @@
         "@types/amqplib": "0.8.2",
         "@types/debug": "4.1.7",
         "@types/jest": "28.1.1",
-        "@types/node": "16.11.40",
+        "@types/node": "16.11.41",
         "apollo-server": "3.8.2",
         "apollo-server-express": "3.8.2",
         "camelcase": "6.3.0",
