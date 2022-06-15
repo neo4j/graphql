@@ -23,7 +23,7 @@ Roles can be set for subscriptions. Only requests matching the roles set will be
 NOTE: Not Supported
 
 == Where
-If the rule `where` is set. The provided arguments will be used on xref::subscriptions/filtering.adoc[subscriptions filtering], regardless
+If the rule `where` is set the provided arguments will be used on xref::subscriptions/filtering.adoc[subscriptions filtering], regardless
 of the arguments provided by the client. Filtering using the `@auth` directive has the same limitations and behaviour as subscriptions filtering.
 
 NOTE: If the same property is used for filtering in auth and in a query, auth filtering will take precedence.

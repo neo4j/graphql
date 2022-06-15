@@ -161,7 +161,7 @@ describe("Subscription auth where", () => {
         expect(wsClient.errors).toEqual([]);
     });
 
-    test("where option in auth takes preference over where arg", async () => {
+    test("where option in auth takes precedence over where arg", async () => {
         wsClient = new WebSocketTestClient(server.wsPath, jwtToken);
         await wsClient.subscribe(`
             subscription {

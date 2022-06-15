@@ -32,7 +32,7 @@ This way, only newly created movies with the genre `"Drama"` will trigger events
 
 
 === Events
-Filtering behaves slightly differently depending on the event type:
+Filtering behaves slightly different depending on the event type:
 
 * **xref::subscriptions/events/create.adoc[Create]**: Filter against the properties set at the moment of creation.
 * **xref::subscriptions/events/update.adoc[Update]**: Filter against the properties before the update.
