@@ -64,6 +64,10 @@ describe("Update Subscriptions", () => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
+    afterEach(() => {
+        wsClient.close();
+    });
+
     afterAll(async () => {
         await server.close();
         await driver.close();

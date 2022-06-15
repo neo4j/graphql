@@ -59,6 +59,10 @@ describe("Delete Subscription", () => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
+    afterEach(() => {
+        wsClient.close();
+    });
+
     afterAll(async () => {
         await server.close();
         await driver.close();
