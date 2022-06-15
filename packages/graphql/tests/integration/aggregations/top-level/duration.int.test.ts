@@ -20,14 +20,16 @@
 import neo4jDriver, { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 
 describe("aggregations-top_level-duration", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -35,7 +37,7 @@ describe("aggregations-top_level-duration", () => {
     });
 
     test("should return the min of node properties", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Movie {
@@ -102,7 +104,7 @@ describe("aggregations-top_level-duration", () => {
     });
 
     test("should return the max of node properties", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Movie {
@@ -169,7 +171,7 @@ describe("aggregations-top_level-duration", () => {
     });
 
     test("should return the min and max of node properties", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Movie {

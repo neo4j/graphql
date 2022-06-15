@@ -20,13 +20,14 @@
 import { gql } from "apollo-server";
 import { Driver, Session, Integer } from "neo4j-driver";
 import { graphql, DocumentNode } from "graphql";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { getQuerySource } from "../../utils/get-query-source";
 
 describe("Update -> ConnectOrCreate Union", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
     let typeDefs: DocumentNode;
 
@@ -37,7 +38,8 @@ describe("Update -> ConnectOrCreate Union", () => {
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         typeDefs = gql`
         type ${typeMovie.name} {
@@ -65,8 +67,8 @@ describe("Update -> ConnectOrCreate Union", () => {
         neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
-    beforeEach(() => {
-        session = driver.session();
+    beforeEach(async () => {
+        session = await neo4j.getSession();
     });
 
     afterEach(async () => {

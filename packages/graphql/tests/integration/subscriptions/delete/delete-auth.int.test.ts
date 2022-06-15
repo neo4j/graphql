@@ -24,18 +24,20 @@ import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src";
 import { generateUniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("Subscriptions delete", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let plugin: TestSubscriptionsPlugin;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         plugin = new TestSubscriptionsPlugin();
     });
 

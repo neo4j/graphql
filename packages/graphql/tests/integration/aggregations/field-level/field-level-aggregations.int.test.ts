@@ -19,12 +19,13 @@
 
 import { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { generateUniqueType } from "../../../utils/graphql-types";
 
 describe("Field Level Aggregations", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
     let typeDefs: string;
 
@@ -34,7 +35,8 @@ describe("Field Level Aggregations", () => {
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         typeDefs = `
         type ${typeMovie.name} {
@@ -56,7 +58,7 @@ describe("Field Level Aggregations", () => {
         `;
 
         neoSchema = new Neo4jGraphQL({ typeDefs });
-        session = driver.session();
+        session = await neo4j.getSession();
 
         await session.run(`
             CREATE (m:${typeMovie.name} { title: "Terminator"})

@@ -21,16 +21,18 @@ import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
 import { graphql, GraphQLSchema } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("cypher", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -40,7 +42,7 @@ describe("cypher", () => {
     describe("Top level cypher", () => {
         describe("Query", () => {
             test("should query custom query and return relationship data", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const movieTitle = generate({
                     charset: "alphabetic",
@@ -95,7 +97,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getDriverContextValues(session),
                         variableValues: { title: movieTitle },
                     });
 
@@ -110,7 +112,7 @@ describe("cypher", () => {
             });
 
             test("should query custom query and return relationship data with custom where on field", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const movieTitle = generate({
                     charset: "alphabetic",
@@ -165,7 +167,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getDriverContextValues(session),
                         variableValues: { title: movieTitle, name: actorName },
                     });
 
@@ -180,7 +182,7 @@ describe("cypher", () => {
             });
 
             test("should query custom query and return relationship data with auth", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const movieTitle = generate({
                     charset: "alphabetic",
@@ -257,7 +259,7 @@ describe("cypher", () => {
             });
 
             test("should query multiple nodes and return relationship data", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const movieTitle1 = generate({
                     charset: "alphabetic",
@@ -324,7 +326,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getDriverContextValues(session),
                         variableValues: { titles: [movieTitle1, movieTitle2, movieTitle3] },
                     });
 
@@ -349,7 +351,7 @@ describe("cypher", () => {
             });
 
             test("should query multiple connection fields on a type", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const title = generate({
                     charset: "alphabetic",
@@ -431,7 +433,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getDriverContextValues(session),
                         variableValues: { title },
                     });
 
@@ -454,7 +456,7 @@ describe("cypher", () => {
 
         describe("Mutation", () => {
             test("should query custom mutation and return relationship data", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const movieTitle = generate({
                     charset: "alphabetic",
@@ -509,7 +511,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getDriverContextValues(session),
                         variableValues: { title: movieTitle },
                     });
 
@@ -524,7 +526,7 @@ describe("cypher", () => {
             });
 
             test("should query custom mutation and return relationship data with custom where on field", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const movieTitle = generate({
                     charset: "alphabetic",
@@ -579,7 +581,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getDriverContextValues(session),
                         variableValues: { title: movieTitle },
                     });
 
@@ -594,7 +596,7 @@ describe("cypher", () => {
             });
 
             test("should query custom mutation and return relationship data with auth", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const movieTitle = generate({
                     charset: "alphabetic",
@@ -649,7 +651,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getDriverContextValues(session),
                         variableValues: { title: movieTitle },
                     });
 
@@ -700,7 +702,7 @@ describe("cypher", () => {
             `;
 
             beforeAll(async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const neoSchemaWithDefaultValue = new Neo4jGraphQL({
                     typeDefs: generateTypeDefs(true),
@@ -718,7 +720,7 @@ describe("cypher", () => {
             });
 
             afterAll(async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
                 await session.run(`MATCH (n:${accountType.name}) DETACH DELETE n`);
                 await session.close();
             });
@@ -800,7 +802,7 @@ describe("cypher", () => {
         describe("Issues", () => {
             // https://github.com/neo4j/graphql/issues/227
             test("227", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const memberId = generate({
                     charset: "alphabetic",
@@ -861,7 +863,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getDriverContextValues(session),
                         variableValues: { id: townId },
                     });
 
@@ -907,7 +909,7 @@ describe("cypher", () => {
             `;
 
             beforeAll(async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const neoSchemaWithDefaultValue = new Neo4jGraphQL({
                     typeDefs: generateTypeDefs(true),
@@ -933,7 +935,7 @@ describe("cypher", () => {
             });
 
             afterAll(async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
                 await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
                 await session.close();
             });
@@ -1049,7 +1051,7 @@ describe("cypher", () => {
             `;
 
             beforeAll(async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const neoSchema = new Neo4jGraphQL({
                     typeDefs,
@@ -1074,7 +1076,7 @@ describe("cypher", () => {
             });
 
             afterAll(async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
                 await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
                 await session.close();
             });

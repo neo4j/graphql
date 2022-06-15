@@ -22,15 +22,17 @@ import { graphql } from "graphql";
 import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("interface relationships", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const typeDefs = gql`
             interface Production {
@@ -68,7 +70,7 @@ describe("interface relationships", () => {
     });
 
     test("should read and return interface relationship fields", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const actorName = generate({
             readable: true,
@@ -119,7 +121,7 @@ describe("interface relationships", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValues(session),
                 variableValues: { name: actorName },
             });
 
@@ -149,7 +151,7 @@ describe("interface relationships", () => {
     });
 
     test("should read and return sorted interface relationship fields", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const actor = {
             name: generate({
@@ -212,7 +214,7 @@ describe("interface relationships", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query.loc!.source,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValues(session),
                 variableValues: { name: actor.name },
             });
 
@@ -232,7 +234,7 @@ describe("interface relationships", () => {
     });
 
     test("should read and return non-array interface relationship fields", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const actorName = generate({
             readable: true,
@@ -300,7 +302,7 @@ describe("interface relationships", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValues(session),
                 variableValues: { name: actorName },
             });
 
@@ -323,7 +325,7 @@ describe("interface relationships", () => {
     });
 
     test("should read and return interface relationship fields with shared where", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const actorName = generate({
             readable: true,
@@ -371,7 +373,7 @@ describe("interface relationships", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValues(session),
                 variableValues: { name: actorName, title: "Apple" },
             });
 
@@ -401,7 +403,7 @@ describe("interface relationships", () => {
     });
 
     test("should read and return interface relationship fields with type specific where", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const actorName = generate({
             readable: true,
@@ -446,7 +448,7 @@ describe("interface relationships", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValues(session),
                 variableValues: { name: actorName, title: "Apple" },
             });
 
@@ -471,7 +473,7 @@ describe("interface relationships", () => {
     });
 
     test("should read and return interface relationship fields with where override", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const actorName = generate({
             readable: true,
@@ -519,7 +521,7 @@ describe("interface relationships", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValues(session),
                 variableValues: { name: actorName, title: "Apple", movieTitle: "Pear" },
             });
 

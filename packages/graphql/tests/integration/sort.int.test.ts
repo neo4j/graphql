@@ -21,7 +21,7 @@ import { Driver } from "neo4j-driver";
 import { graphql, GraphQLSchema } from "graphql";
 import { generate } from "randomstring";
 import { gql } from "apollo-server";
-import neo4j from "./neo4j";
+import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { generateUniqueType } from "../utils/graphql-types";
 
@@ -29,6 +29,7 @@ const testLabel = generate({ charset: "alphabetic" });
 
 describe("sort", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let schema: GraphQLSchema;
 
     const movieType = generateUniqueType("Movie");
@@ -118,8 +119,9 @@ describe("sort", () => {
     ];
 
     beforeAll(async () => {
-        driver = await neo4j();
-        const session = driver.session();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         schema = await neoSchema.getSchema();
@@ -143,7 +145,7 @@ describe("sort", () => {
     });
 
     afterAll(async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
         await session.close();
         await driver.close();

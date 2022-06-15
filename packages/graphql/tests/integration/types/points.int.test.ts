@@ -20,16 +20,18 @@
 import { Driver, int, Session } from "neo4j-driver";
 import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("[Point]", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
         const typeDefs = `
             type Route {
                 id: String!
@@ -39,8 +41,8 @@ describe("[Point]", () => {
         neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
-    beforeEach(() => {
-        session = driver.session();
+    beforeEach(async () => {
+        session = await neo4j.getSession();
     });
 
     afterEach(async () => {
@@ -77,7 +79,7 @@ describe("[Point]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getDriverContextValues(session),
             variableValues: { id, waypoints },
         });
 
@@ -132,7 +134,7 @@ describe("[Point]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getDriverContextValues(session),
             variableValues: { id, waypoints },
         });
 
@@ -218,7 +220,7 @@ describe("[Point]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getDriverContextValues(session),
             variableValues: { id, waypoints: newWaypoints },
         });
 
@@ -306,7 +308,7 @@ describe("[Point]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getDriverContextValues(session),
             variableValues: { id, waypoints: newWaypoints },
         });
 
@@ -376,7 +378,7 @@ describe("[Point]", () => {
         const routesResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: routesQuery,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getDriverContextValues(session),
             variableValues: { waypoints },
         });
 
@@ -404,7 +406,7 @@ describe("[Point]", () => {
         const routesIncludesResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: routesIncludesQuery,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getDriverContextValues(session),
             variableValues: { waypoint: waypoints[0] },
         });
 
@@ -432,7 +434,7 @@ describe("[Point]", () => {
         const routesNotIncludesResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: routesNotIncludesQuery,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getDriverContextValues(session),
             variableValues: {
                 waypoint: {
                     longitude: parseFloat(faker.address.longitude()),
@@ -488,7 +490,7 @@ describe("[Point]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: routesQuery,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getDriverContextValues(session),
             variableValues: { id },
         });
 

@@ -20,16 +20,18 @@
 import { Driver, int, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { faker } from "@faker-js/faker";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("[CartesianPoint]", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
         const typeDefs = `
             type Part {
                 id: String!
@@ -39,8 +41,8 @@ describe("[CartesianPoint]", () => {
         neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
-    beforeEach(() => {
-        session = driver.session();
+    beforeEach(async () => {
+        session = await neo4j.getSession();
     });
 
     afterEach(async () => {
@@ -77,7 +79,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getDriverContextValues(session),
             variableValues: { id, locations },
         });
 
@@ -132,7 +134,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getDriverContextValues(session),
             variableValues: { id, locations },
         });
 
@@ -218,7 +220,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getDriverContextValues(session),
             variableValues: { id, locations: newLocations },
         });
 
@@ -306,7 +308,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getDriverContextValues(session),
             variableValues: { id, locations: newLocations },
         });
 
@@ -374,7 +376,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: partsQuery,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getDriverContextValues(session),
             variableValues: { id },
         });
 
@@ -425,7 +427,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: partsQuery,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getDriverContextValues(session),
             variableValues: { id },
         });
 

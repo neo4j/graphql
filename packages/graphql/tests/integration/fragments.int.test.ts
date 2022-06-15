@@ -28,8 +28,8 @@ import { Neo4jGraphQL } from "../../src/classes";
 const testLabel = generate({ charset: "alphabetic" });
 
 describe("fragments", () => {
-    let neo4j: Neo4j;
     let driver: Driver;
+    let neo4j: Neo4j;
     let schema: GraphQLSchema;
 
     const typeDefs = gql`

@@ -20,12 +20,13 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "./neo4j";
+import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { generateUniqueType } from "../utils/graphql-types";
 
 describe("root-connections", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
 
     const pilotType = generateUniqueType("Pilot");
@@ -45,7 +46,8 @@ describe("root-connections", () => {
         `;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
         neoSchema = new Neo4jGraphQL({ typeDefs, driver });
         await neoSchema.checkNeo4jCompat();
     });
@@ -55,7 +57,7 @@ describe("root-connections", () => {
     });
 
     test("should return an empty array of edges and a totalCount of zero when there are no records", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const query = `
           query {
@@ -76,7 +78,7 @@ describe("root-connections", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             expect(result.errors).toBeFalsy();
@@ -89,7 +91,7 @@ describe("root-connections", () => {
         }
     });
     test("should return an array of edges and the correct totalCount", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const dummyAircrafts = [...Array(20).keys()].map((x) => ({
             id: generate({ charset: "alphabetic " }),
@@ -126,14 +128,14 @@ describe("root-connections", () => {
                 schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: dummyAircrafts },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             expect(result.errors).toBeFalsy();
@@ -154,7 +156,7 @@ describe("root-connections", () => {
         }
     });
     test("should correctly produce edges when sort and limit are used", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const dummyAircrafts = [...Array(20).keys()].map((x) => ({
             id: generate({ charset: "alphabetic", readable: true }),
@@ -201,14 +203,14 @@ describe("root-connections", () => {
                 schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: dummyAircrafts },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             expect(result.errors).toBeFalsy();
@@ -233,7 +235,7 @@ describe("root-connections", () => {
         }
     });
     test("should calculate the correct cursors when the first argument is provided as a parameter", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const dummyAircrafts = [...Array(20).keys()].map((x) => ({
             id: generate({ charset: "alphabetic", readable: true }),
@@ -280,14 +282,14 @@ describe("root-connections", () => {
                 schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: dummyAircrafts },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { first: 10 },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             expect(result.errors).toBeFalsy();

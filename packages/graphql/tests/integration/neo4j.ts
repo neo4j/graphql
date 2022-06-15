@@ -98,6 +98,14 @@ class Neo4j {
             driverConfig: { database, ...(session && { bookmarks: session.lastBookmark() }) },
         };
     }
+
+    public getDriverContextValuesWithBookmarks(bookmarks: string[]): DriverContext {
+        const database = this.hasIntegrationTestDb ? INT_TEST_DB_NAME : "neo4j";
+        return {
+            driver: this.driver,
+            driverConfig: { database, bookmarks },
+        };
+    }
 }
 
 export default Neo4j;

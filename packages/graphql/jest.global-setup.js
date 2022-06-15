@@ -21,6 +21,7 @@ module.exports = async function globalSetup() {
         await session.writeTransaction((tx) => tx.run(cypherCreateDb));
     } catch (error) {
         if (isMultiDbUnsupportedError(error)) {
+            // Delete all nodes in the database
             try {
                 await session.writeTransaction((tx) => tx.run(cypherDetachNodes));
                 console.log(`\nJest /packages/graphql setup: Multi-database is not supported. Falling back to default database.`) // eslint-disable-line no-console

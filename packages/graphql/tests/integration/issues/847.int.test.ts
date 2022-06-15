@@ -19,7 +19,7 @@
 
 import { graphql, GraphQLSchema } from "graphql";
 import { Driver } from "neo4j-driver";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 
@@ -30,9 +30,11 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
 
     let schema: GraphQLSchema;
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const typeDefs = `
             interface Entity {
@@ -61,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
     });
 
     afterAll(async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         await session.run(`MATCH (person:${personType.name}) DETACH DELETE person`);
         await session.run(`MATCH (place:${placeType.name}) DETACH DELETE place`);
         await session.run(`MATCH (interaction:${interactionType.name}) DETACH DELETE interaction`);

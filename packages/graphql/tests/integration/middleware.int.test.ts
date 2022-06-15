@@ -22,13 +22,15 @@ import { graphql } from "graphql";
 import { applyMiddleware } from "graphql-middleware";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
-import neo4j from "./neo4j";
+import Neo4j from "./neo4j";
 
 describe("Middleware Resolvers", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -36,7 +38,7 @@ describe("Middleware Resolvers", () => {
     });
 
     test("should allow middleware Query resolver to modify arguments", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Movie {

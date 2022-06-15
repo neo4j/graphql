@@ -20,7 +20,7 @@
 import { DocumentNode, graphql, GraphQLSchema } from "graphql";
 import { Driver, Session } from "neo4j-driver";
 import { gql } from "apollo-server";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
@@ -30,6 +30,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
     const testOrganization = generateUniqueType("Organization");
     let schema: GraphQLSchema;
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
 
     async function graphqlQuery(query: DocumentNode) {
@@ -43,7 +44,8 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
     }
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const typeDefs = `
         type ${testUser.name} {
@@ -61,8 +63,8 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
         schema = await neoGraphql.getSchema();
     });
 
-    beforeEach(() => {
-        session = driver.session();
+    beforeEach(async () => {
+        session = await neo4j.getSession();
     });
 
     afterEach(async () => {

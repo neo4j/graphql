@@ -21,15 +21,17 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("integration/rfc/autogenerate-properties-node", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -134,7 +136,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
                 }
             `;
 
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             try {
                 await session.run(`
@@ -352,7 +354,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
                 }
             `;
 
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             try {
                 await session.run(`
@@ -512,7 +514,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
                 }
             `;
 
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             try {
                 await session.run(`
@@ -579,7 +581,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
                 }
             `;
 
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             try {
                 await session.run(`
@@ -709,7 +711,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
                 }
             `;
 
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             try {
                 await session.run(`

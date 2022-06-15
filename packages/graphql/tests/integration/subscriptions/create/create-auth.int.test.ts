@@ -21,17 +21,19 @@ import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 
 describe("auth/bind", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     const secret = "secret";
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {

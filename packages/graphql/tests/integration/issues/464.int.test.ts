@@ -21,12 +21,13 @@ import { Driver } from "neo4j-driver";
 import { DocumentNode, graphql } from "graphql";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/464", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     let typeAuthor: UniqueType;
     let typeBook: UniqueType;
@@ -58,10 +59,11 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
     let queryBooks: string;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         typeAuthor = generateUniqueType("Author");
         typeBook = generateUniqueType("Book");
 
@@ -164,7 +166,7 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
     });
 
     test("should run the mutation and commit the result, but not close the session", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         try {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
@@ -209,7 +211,7 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
     });
 
     test("should run the mutation but not commit until it is done explicitly", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         const transaction = session.beginTransaction();
         try {
             const result = await graphql({

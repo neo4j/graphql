@@ -20,15 +20,17 @@
 import { graphql } from "graphql";
 import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 
 const testLabel = generate({ charset: "alphabetic" });
 describe("https://github.com/neo4j/graphql/issues/630", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -69,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
             title: "The Matrix",
         };
 
-        const session = driver.session();
+        const session = await neo4j.getSession();
         try {
             await session.run(
                 `

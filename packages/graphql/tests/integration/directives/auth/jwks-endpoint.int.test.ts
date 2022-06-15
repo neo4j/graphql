@@ -28,23 +28,25 @@ import Router from "koa-router";
 import jwt from "koa-jwt";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import jwksRsa from "jwks-rsa";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 
 describe("https://github.com/neo4j/graphql/issues/564", () => {
     let jwksMock: JWKSMock;
     let server: any;
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
         await driver.close();
     });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         ({ jwksMock, server } = createContext());
     });
 
@@ -53,7 +55,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
     });
 
     test("tests the config path that uses JWKS Endpoint", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type User {
@@ -117,7 +119,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
     });
 
     test("tests the config path that uses JWKS Endpoint with Roles Path enabling read for standard-user", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type User {
@@ -185,7 +187,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
     });
 
     test("show throw forbidden when JWT with JWKS Endpoint verification not on Roles Path", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type User {

@@ -21,13 +21,15 @@ import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
-import neo4j from "./neo4j";
+import Neo4j from "./neo4j";
 
 describe("cypherParams", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -35,7 +37,7 @@ describe("cypherParams", () => {
     });
 
     test("should inject cypherParams on top-level cypher query", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Movie {
@@ -77,7 +79,7 @@ describe("cypherParams", () => {
     });
 
     test("should inject cypherParams on field level nested query", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type CypherParams {
@@ -143,7 +145,7 @@ describe("cypherParams", () => {
     });
 
     test("should inject cypherParams on top-level cypher mutation", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Movie {

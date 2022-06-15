@@ -20,20 +20,22 @@
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { generateUniqueType } from "../../../utils/graphql-types";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("Node directive labels", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
 
     const typeFilm = generateUniqueType("Film");
 
     beforeAll(async () => {
-        driver = await neo4j();
-        session = driver.session();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+        session = await neo4j.getSession();
 
         await session.run(`CREATE (m:${typeFilm.name} {title: "The Matrix",year:1999})`);
     });

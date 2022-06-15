@@ -22,12 +22,13 @@ import { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { graphql } from "graphql";
 import * as neo4jDriver from "neo4j-driver";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 
 describe("@alias directive", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
     const dbName = generate({ charset: "alphabetic" });
@@ -37,7 +38,8 @@ describe("@alias directive", () => {
     const secret = "secret";
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
         const typeDefs = `
             interface AliasInterface {
                 id: ID! @alias(property: "dbId")
@@ -78,7 +80,7 @@ describe("@alias directive", () => {
     });
 
     beforeEach(async () => {
-        session = driver.session();
+        session = await neo4j.getSession();
         await session.run(`MATCH (n:AliasDirectiveTestUser)-[]-(m:AliasDirectiveTestMovie) DETACH DELETE n, m`);
         await session.run(
             `CREATE (:AliasDirectiveTestUser {dbName: $dbName, dbId: "stringId", dbCreatedAt: "1970-01-02"})-[:LIKES {dbComment: $dbComment, dbCreatedAt: "1970-01-02"}]->(:AliasDirectiveTestMovie {dbTitle: $dbTitle, year: $year, dbCreatedAt: "1970-01-02"})

@@ -20,7 +20,7 @@
 import { graphql, GraphQLSchema } from "graphql";
 import { Driver, Session, Integer } from "neo4j-driver";
 import { gql } from "apollo-server";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { Neo4jGraphQL } from "../../../src";
@@ -31,10 +31,12 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
 
     let schema: GraphQLSchema;
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const typeDefs = gql`
             type ${testBlogpost.name} @fulltext(indexes: [{ name: "BlogTitle", fields: ["title"] }]) {
@@ -60,8 +62,8 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
         schema = await neoGraphql.getSchema();
     });
 
-    beforeEach(() => {
-        session = driver.session();
+    beforeEach(async () => {
+        session = await neo4j.getSession();
     });
 
     afterEach(async () => {

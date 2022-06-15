@@ -21,15 +21,17 @@ import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
 import neo4jDriver, { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { parseLocalTime } from "../../../src/graphql/scalars/LocalTime";
 
 describe("LocalTime", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -38,7 +40,7 @@ describe("LocalTime", () => {
 
     describe("create", () => {
         test("should create a movie (with a LocalTime)", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Movie {
@@ -69,7 +71,7 @@ describe("LocalTime", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValues(session),
                     variableValues: { id, time },
                 });
 
@@ -99,7 +101,7 @@ describe("LocalTime", () => {
         });
 
         test("should create a movie (with many Times)", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Movie {
@@ -132,7 +134,7 @@ describe("LocalTime", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValues(session),
                     variableValues: { id, times },
                 });
 
@@ -180,7 +182,7 @@ describe("LocalTime", () => {
 
     describe("update", () => {
         test("should update a movie (with a LocalTime)", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Movie {
@@ -219,7 +221,7 @@ describe("LocalTime", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValues(session),
                     variableValues: { id, time },
                 });
 
@@ -251,7 +253,7 @@ describe("LocalTime", () => {
 
     describe("filter", () => {
         test("should filter based on time equality", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Movie {
@@ -290,7 +292,7 @@ describe("LocalTime", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValues(session),
                     variableValues: { time },
                 });
 
@@ -307,7 +309,7 @@ describe("LocalTime", () => {
         test("should filter based on time comparison", () =>
             Promise.all(
                 ["LT", "LTE", "GT", "GTE"].map(async (filter) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const typeDefs = `
                         type Movie {
@@ -381,7 +383,7 @@ describe("LocalTime", () => {
                         const graphqlResult = await graphql({
                             schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getDriverContextValues(session),
                             variableValues: {
                                 where: { id_IN: [futureId, presentId, pastId], [`time_${filter}`]: present },
                             },
@@ -434,7 +436,7 @@ describe("LocalTime", () => {
         test("should sort based on time", () =>
             Promise.all(
                 ["ASC", "DESC"].map(async (sort) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const typeDefs = `
                         type Movie {
@@ -508,7 +510,7 @@ describe("LocalTime", () => {
                         const graphqlResult = await graphql({
                             schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getDriverContextValues(session),
                             variableValues: {
                                 futureId,
                                 presentId,

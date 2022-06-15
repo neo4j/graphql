@@ -22,15 +22,17 @@ import { graphql } from "graphql";
 import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 
 describe("interface relationships", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const typeDefs = gql`
             type Episode {
@@ -75,7 +77,7 @@ describe("interface relationships", () => {
     });
 
     test("should disconnect using interface relationship fields", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const actorName = generate({
             readable: true,
@@ -160,7 +162,7 @@ describe("interface relationships", () => {
     });
 
     test("should nested disconnect using interface relationship fields", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const actorName1 = generate({
             readable: true,
@@ -263,7 +265,7 @@ describe("interface relationships", () => {
     });
 
     test("should nested disconnect using interface relationship fields using where _on to only disconnect certain types", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const actorName1 = generate({
             readable: true,

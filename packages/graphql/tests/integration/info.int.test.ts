@@ -24,8 +24,8 @@ import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
 describe("info", () => {
-    let neo4j: Neo4j;
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
         neo4j = new Neo4j();

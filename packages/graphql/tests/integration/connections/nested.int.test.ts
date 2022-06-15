@@ -20,11 +20,12 @@
 import { Driver } from "neo4j-driver";
 import { graphql, GraphQLSchema } from "graphql";
 import { gql } from "apollo-server";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("Connections Alias", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let schema: GraphQLSchema;
 
     const movieTitle = "Forrest Gump";
@@ -48,7 +49,8 @@ describe("Connections Alias", () => {
     `;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         schema = await neoSchema.getSchema();
     });
@@ -58,7 +60,7 @@ describe("Connections Alias", () => {
     });
 
     test("should allow nested connections", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const query = `
             {
@@ -103,7 +105,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             expect(result.errors).toBeUndefined();
@@ -128,7 +130,7 @@ describe("Connections Alias", () => {
     });
 
     test("should allow where clause on nested connections", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const query = `
             {
@@ -173,7 +175,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValues(session),
             });
 
             expect(result.errors).toBeUndefined();

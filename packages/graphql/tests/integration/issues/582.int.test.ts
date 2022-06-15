@@ -21,10 +21,11 @@ import { graphql } from "graphql";
 import { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 
 describe("582", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let type;
     let bookmarks: string[];
     let typeDefs: string;
@@ -53,8 +54,9 @@ describe("582", () => {
             }
         `;
 
-        driver = await neo4j();
-        const session = driver.session();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+        const session = await neo4j.getSession();
 
         try {
             await session.run(
@@ -69,7 +71,7 @@ describe("582", () => {
     });
 
     afterAll(async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         try {
             await session.run(
@@ -105,7 +107,7 @@ describe("582", () => {
                     },
                 },
             },
-            contextValue: { driver, driverConfig: { bookmarks } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -141,7 +143,7 @@ describe("582", () => {
                     },
                 },
             },
-            contextValue: { driver, driverConfig: { bookmarks } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
         });
 
         expect(gqlResult.errors).toBeFalsy();

@@ -19,13 +19,14 @@
 
 import { graphql, GraphQLSchema } from "graphql";
 import { Driver } from "neo4j-driver";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/1221", () => {
     let schema: GraphQLSchema;
     let driver: Driver;
+    let neo4j: Neo4j;
     const testMain = generateUniqueType("Main");
     const testSeries = generateUniqueType("Series");
     const testNameDetails = generateUniqueType("NameDetails");
@@ -65,11 +66,12 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
     `;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterEach(async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         try {
             await session.run(`MATCH (o:${testMain}) DETACH DELETE o`);
@@ -92,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         });
         schema = await neoGraphql.getSchema();
 
-        const session = driver.session();
+        const session = await neo4j.getSession();
         try {
             await session.run(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })
@@ -193,7 +195,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         });
         schema = await neoGraphql.getSchema();
 
-        const session = driver.session();
+        const session = await neo4j.getSession();
         try {
             await session.run(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })
@@ -312,7 +314,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         });
         schema = await neoGraphql.getSchema();
 
-        const session = driver.session();
+        const session = await neo4j.getSession();
         try {
             await session.run(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(m:${testMasterData} { current: true, id: "123" })
@@ -433,7 +435,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         });
         schema = await neoGraphql.getSchema();
 
-        const session = driver.session();
+        const session = await neo4j.getSession();
         try {
             await session.run(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1321" })
@@ -552,7 +554,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         });
         schema = await neoGraphql.getSchema();
 
-        const session = driver.session();
+        const session = await neo4j.getSession();
         try {
             await session.run(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(m:${testMasterData} { current: true, id: "123" })

@@ -23,17 +23,19 @@ import { graphql } from "graphql";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 
 describe("auth/is-authenticated", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     const jwtPlugin = new Neo4jGraphQLAuthJWTPlugin({
         secret: "secret",
     });
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
