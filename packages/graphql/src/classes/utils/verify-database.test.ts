@@ -162,41 +162,6 @@ describe("checkNeo4jCompat", () => {
         await expect(checkNeo4jCompat({ driver: fakeDriver })).resolves.not.toThrow();
     });
 
-    test("should throw expected APOC version", async () => {
-        const invalidApocVersion = "2.3.1";
-
-        // @ts-ignore
-        const fakeSession: Session = {
-            // @ts-ignore
-            run: () => ({
-                records: [
-                    {
-                        toObject: () => ({
-                            version: MIN_VERSIONS[0].neo4j,
-                            apocVersion: invalidApocVersion,
-                            functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: REQUIRED_APOC_PROCEDURES,
-                        }),
-                    },
-                ],
-            }),
-            // @ts-ignore
-            close: () => undefined,
-        };
-
-        // @ts-ignore
-        const fakeDriver: Driver = {
-            // @ts-ignore
-            session: () => fakeSession,
-            // @ts-ignore
-            verifyConnectivity: () => undefined,
-        };
-
-        await expect(checkNeo4jCompat({ driver: fakeDriver })).rejects.toThrow(
-            `Encountered the following DBMS compatiblility issues:\nAPOC version does not match Neo4j version '4.2', received: '${invalidApocVersion}'`
-        );
-    });
-
     test("should throw missing APOC functions", async () => {
         const minVersion = MIN_VERSIONS[0];
 
