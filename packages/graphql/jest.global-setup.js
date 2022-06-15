@@ -1,18 +1,7 @@
 const neo4j = require("neo4j-driver");
+const isMultiDbUnsupportedError = require("./tests/utils/is-multi-db-unsupported-error.ts");
 
 const INT_TEST_DB_NAME = 'neo4jgraphqlinttestdatabase'
-
-// TODO: get from utils?
-function isMultiDbUnsupportedError(e) {
-    if (
-        e.message.includes("This is an administration command and it should be executed against the system database") ||
-        e.message.includes("Neo4jError: Unsupported administration command") ||
-        e.message.includes("Neo4jError: Unable to route write operation to leader for database 'system'")
-    ) {
-        return true;
-    }
-    return false;
-}
 
 module.exports = async function globalSetup() {
     process.env.NODE_ENV = "test";
