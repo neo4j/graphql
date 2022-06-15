@@ -303,7 +303,8 @@ function createProjectionAndParams({
                 ...(context.cypherParams ? { cypherParams: context.cypherParams } : {}),
             };
 
-            const expectMultipleValues = referenceNode && cypherField.typeMeta.array ? "true" : "false";
+            const expectMultipleValues =
+                (referenceNode || referenceUnion) && cypherField.typeMeta.array ? "true" : "false";
             const apocWhere = projectionAuthStrs.length
                 ? `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStrs.join(
                       " AND "

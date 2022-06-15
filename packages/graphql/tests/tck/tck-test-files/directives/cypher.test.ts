@@ -402,7 +402,7 @@ describe("Cypher directive", () => {
             "MATCH (this:Actor)
             RETURN this { movieOrTVShow: [this_movieOrTVShow IN apoc.cypher.runFirstColumn(\\"MATCH (n)
             WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
-            RETURN n\\", {this: this, auth: $auth, title: $this_movieOrTVShow_title}, false) WHERE (\\"Movie\\" IN labels(this_movieOrTVShow)) OR (\\"TVShow\\" IN labels(this_movieOrTVShow))  |   [ this_movieOrTVShow IN [this_movieOrTVShow] WHERE (\\"Movie\\" IN labels(this_movieOrTVShow)) | this_movieOrTVShow { __resolveType: \\"Movie\\",  .id, .title, topActor: head([this_movieOrTVShow_topActor IN apoc.cypher.runFirstColumn(\\"MATCH (a:Actor)
+            RETURN n\\", {this: this, auth: $auth, title: $this_movieOrTVShow_title}, true) WHERE (\\"Movie\\" IN labels(this_movieOrTVShow)) OR (\\"TVShow\\" IN labels(this_movieOrTVShow))  |   [ this_movieOrTVShow IN [this_movieOrTVShow] WHERE (\\"Movie\\" IN labels(this_movieOrTVShow)) | this_movieOrTVShow { __resolveType: \\"Movie\\",  .id, .title, topActor: head([this_movieOrTVShow_topActor IN apoc.cypher.runFirstColumn(\\"MATCH (a:Actor)
             RETURN a\\", {this: this_movieOrTVShow, auth: $auth}, false) | this_movieOrTVShow_topActor { .name }]) } ] + [ this_movieOrTVShow IN [this_movieOrTVShow] WHERE (\\"TVShow\\" IN labels(this_movieOrTVShow)) | this_movieOrTVShow { __resolveType: \\"TVShow\\",  .id, .title, topActor: head([this_movieOrTVShow_topActor IN apoc.cypher.runFirstColumn(\\"MATCH (a:Actor)
             RETURN a\\", {this: this_movieOrTVShow, auth: $auth}, false) | this_movieOrTVShow_topActor { .name }]) } ] ] } as this"
         `);
@@ -438,7 +438,7 @@ describe("Cypher directive", () => {
             "MATCH (this:Actor)
             RETURN this { movieOrTVShow: [this_movieOrTVShow IN apoc.cypher.runFirstColumn(\\"MATCH (n)
             WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
-            RETURN n\\", {this: this, auth: $auth, title: $this_movieOrTVShow_title}, false) WHERE (\\"Movie\\" IN labels(this_movieOrTVShow)) OR (\\"TVShow\\" IN labels(this_movieOrTVShow))  |  head( [ this_movieOrTVShow IN [this_movieOrTVShow] WHERE (\\"Movie\\" IN labels(this_movieOrTVShow)) | this_movieOrTVShow { __resolveType: \\"Movie\\" }  ] + [ this_movieOrTVShow IN [this_movieOrTVShow] WHERE (\\"TVShow\\" IN labels(this_movieOrTVShow)) | this_movieOrTVShow { __resolveType: \\"TVShow\\" }  ] )] } as this"
+            RETURN n\\", {this: this, auth: $auth, title: $this_movieOrTVShow_title}, true) WHERE (\\"Movie\\" IN labels(this_movieOrTVShow)) OR (\\"TVShow\\" IN labels(this_movieOrTVShow))  |  head( [ this_movieOrTVShow IN [this_movieOrTVShow] WHERE (\\"Movie\\" IN labels(this_movieOrTVShow)) | this_movieOrTVShow { __resolveType: \\"Movie\\" }  ] + [ this_movieOrTVShow IN [this_movieOrTVShow] WHERE (\\"TVShow\\" IN labels(this_movieOrTVShow)) | this_movieOrTVShow { __resolveType: \\"TVShow\\" }  ] )] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
