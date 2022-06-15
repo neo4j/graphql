@@ -203,4 +203,182 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         );
         expect(updateMutationResults.data as any).toBeNull();
     });
+
+    test("should not allow connecting a second node to an existing one-to-one relationship", async () => {
+        const createMutation = `
+            mutation createAbces {
+                ${testAbce.operations.create}(
+                    input: [
+                        {
+                            interface: {
+                                create: {
+                                    node: {
+                                        ${testChildOne.name}: { name: "childone name connect" },
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                ) {
+                    ${testAbce.plural} {
+                        id
+                        name
+                        interface {
+                            id
+                            name
+                            __typename
+                        }
+                    }
+                }
+            }
+        `;
+
+        const createMutationResults = await graphql({
+            schema,
+            source: createMutation,
+            contextValue: {
+                driver,
+            },
+        });
+
+        expect(createMutationResults.errors).toBeUndefined();
+        expect(createMutationResults.data as any).toEqual({
+            [testAbce.operations.create]: {
+                [testAbce.plural]: [
+                    {
+                        id: expect.any(String),
+                        name: null,
+                        interface: {
+                            id: expect.any(String),
+                            name: "childone name connect",
+                            __typename: testChildOne.name,
+                        },
+                    },
+                ],
+            },
+        });
+
+        const abcesId = (createMutationResults.data as any)[testAbce.operations.create][testAbce.plural][0].id;
+
+        const updateMutation = `
+            mutation {
+                ${testAbce.operations.update}(
+                    where: { id: "${abcesId}" }
+                    connect: { interface: { where: { node: { name: "childone name connect" } } } }
+                ) {
+                    ${testAbce.plural} {
+                        id
+                        interface {
+                            id
+                            name
+                            __typename
+                        }
+                    }
+                }
+            }
+        `;
+
+        const updateMutationResults = await graphql({
+            schema,
+            source: updateMutation,
+            contextValue: {
+                driver,
+            },
+        });
+
+        expect(updateMutationResults.errors).toHaveLength(1);
+        expect(updateMutationResults.errors?.[0].message).toContain(
+            `Relation field "interface" cannot have more than one node linked`
+        );
+        expect(updateMutationResults.data as any).toBeNull();
+    });
+
+    test("should not allow a nested create of a second node to an existing one-to-one relationship", async () => {
+        const createMutation = `
+            mutation createAbces {
+                ${testAbce.operations.create}(
+                    input: [
+                        {
+                            interface: {
+                                create: {
+                                    node: {
+                                        ${testChildOne.name}: { name: "childone name nested create" },
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                ) {
+                    ${testAbce.plural} {
+                        id
+                        name
+                        interface {
+                            id
+                            name
+                            __typename
+                        }
+                    }
+                }
+            }
+        `;
+
+        const createMutationResults = await graphql({
+            schema,
+            source: createMutation,
+            contextValue: {
+                driver,
+            },
+        });
+
+        expect(createMutationResults.errors).toBeUndefined();
+        expect(createMutationResults.data as any).toEqual({
+            [testAbce.operations.create]: {
+                [testAbce.plural]: [
+                    {
+                        id: expect.any(String),
+                        name: null,
+                        interface: {
+                            id: expect.any(String),
+                            name: "childone name nested create",
+                            __typename: testChildOne.name,
+                        },
+                    },
+                ],
+            },
+        });
+
+        const abcesId = (createMutationResults.data as any)[testAbce.operations.create][testAbce.plural][0].id;
+
+        const updateMutation = `
+            mutation {
+                ${testAbce.operations.update}(
+                    where: { id: "${abcesId}" }
+                    create: { interface: { node: { ${testChildOne.name}: { name: "childone anme nested create" } } } }
+                ) {
+                    ${testAbce.plural} {
+                        id
+                        interface {
+                            id
+                            name
+                            __typename
+                        }
+                    }
+                }
+            }
+        `;
+
+        const updateMutationResults = await graphql({
+            schema,
+            source: updateMutation,
+            contextValue: {
+                driver,
+            },
+        });
+
+        expect(updateMutationResults.errors).toHaveLength(1);
+        expect(updateMutationResults.errors?.[0].message).toContain(
+            `Relation field "interface" cannot have more than one node linked`
+        );
+        expect(updateMutationResults.data as any).toBeNull();
+    });
 });

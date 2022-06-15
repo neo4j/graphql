@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         });
     });
 
-    test("should also return node with no relationship in result set", async () => {
+    test("should not allow to create more than one node for a one-to-one relationship", async () => {
         const query = gql`
             mutation ddfs {
                 updateAbces(
@@ -103,6 +103,76 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             "{
                 \\"this_id\\": \\"TestID\\",
                 \\"this_create_interface_ChildOne0_node_ChildOne_name\\": \\"childone name2\\",
+                \\"resolvedCallbacks\\": {}
+            }"
+        `);
+    });
+
+    test("should not allow connecting a second node to an existing one-to-one relationship", async () => {
+        const query = gql`
+            mutation {
+                updateAbces(
+                    where: { id: "TestId" }
+                    connect: { interface: { where: { node: { name: "childone name connect" } } } }
+                ) {
+                    abces {
+                        id
+                        interface {
+                            id
+                            name
+                            __typename
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:ABCE)
+            WHERE this.id = $this_id
+            CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)),'Relation field \\"%s\\" cannot have more than one node linked',[\\"interface\\"])
+            CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildTwo)),'Relation field \\"%s\\" cannot have more than one node linked',[\\"interface\\"])
+            WITH this
+            CALL {
+            	WITH this
+            	OPTIONAL MATCH (this_connect_interface0_node:ChildOne)
+            	WHERE this_connect_interface0_node.name = $this_connect_interface0_node_name
+            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this_connect_interface0_node WHEN NULL THEN [] ELSE [1] END |
+            			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface0_node)
+            		)
+            	)
+            	RETURN count(*)
+            UNION
+            	WITH this
+            	OPTIONAL MATCH (this_connect_interface0_node:ChildTwo)
+            	WHERE this_connect_interface0_node.name = $this_connect_interface0_node_name
+            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this_connect_interface0_node WHEN NULL THEN [] ELSE [1] END |
+            			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface0_node)
+            		)
+            	)
+            	RETURN count(*)
+            }
+            WITH this
+            CALL {
+            WITH this
+            MATCH (this)-[:HAS_INTERFACE]->(this_ChildOne:ChildOne)
+            RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS interface
+            UNION
+            WITH this
+            MATCH (this)-[:HAS_INTERFACE]->(this_ChildTwo:ChildTwo)
+            RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS interface
+            }
+            RETURN collect(DISTINCT this { .id, interface: interface }) AS data"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_id\\": \\"TestId\\",
+                \\"this_connect_interface0_node_name\\": \\"childone name connect\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

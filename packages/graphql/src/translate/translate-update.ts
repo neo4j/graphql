@@ -182,6 +182,15 @@ export default async function translateUpdate({
             }
 
             if (relationField.interface) {
+                if (!relationField.typeMeta.array) {
+                    const inStr = relationField.direction === "IN" ? "<-" : "-";
+                    const outStr = relationField.direction === "OUT" ? "->" : "-";
+                    refNodes.forEach((refNode) => {
+                        const validateRelationshipExistance = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relation field "%s" cannot have more than one node linked',["${relationField.fieldName}"])`;
+                        connectStrs.push(validateRelationshipExistance);
+                    });
+                }
+
                 const connectAndParams = createConnectAndParams({
                     context,
                     callbackBucket,
@@ -269,8 +278,8 @@ export default async function translateUpdate({
                     const relTypeStr = `[${relationField.properties ? propertiesName : ""}:${relationField.type}]`;
 
                     if (!relationField.typeMeta.array) {
-                        const validateRelExistance = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relation field "%s" cannot have more than one node linked',["${relationField.fieldName}"])`;
-                        createStrs.push(validateRelExistance);
+                        const validateRelationshipExistance = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relation field "%s" cannot have more than one node linked',["${relationField.fieldName}"])`;
+                        createStrs.push(validateRelationshipExistance);
                     }
 
                     const createAndParams = createCreateAndParams({
