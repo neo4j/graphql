@@ -5809,14 +5809,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"concurrently@npm:7.2.1":
-  version: 7.2.1
-  resolution: "concurrently@npm:7.2.1"
+"concurrently@npm:7.2.2":
+  version: 7.2.2
+  resolution: "concurrently@npm:7.2.2"
   dependencies:
     chalk: ^4.1.0
     date-fns: ^2.16.1
     lodash: ^4.17.21
-    rxjs: ^6.6.3
+    rxjs: ^7.0.0
     shell-quote: ^1.7.3
     spawn-command: ^0.0.2-1
     supports-color: ^8.1.0
@@ -5824,7 +5824,7 @@ __metadata:
     yargs: ^17.3.1
   bin:
     concurrently: dist/bin/concurrently.js
-  checksum: 384e9f48f2c53a7c46b1bb1143b9dba734953c587e0c080db0c6e71dd4a58f556d096fe4fd9d2d9c601ba7ae8e6c06d452c162bbc2b6a4b16c080c1c4b8e81b4
+  checksum: ae9604032d971a49a11c6797ed057380e53bde0ec79d1dcbd23bdbe578961867289089e9729e802520297d8f410e3085333719a3f7a4ce1c2ed167b68c740247
   languageName: node
   linkType: hard
 
@@ -12631,7 +12631,7 @@ __metadata:
     "@tsconfig/node12": 1.0.10
     "@typescript-eslint/eslint-plugin": 5.28.0
     "@typescript-eslint/parser": 5.28.0
-    concurrently: 7.2.1
+    concurrently: 7.2.2
     dotenv: 16.0.1
     eslint: 8.17.0
     eslint-config-airbnb-typescript: 17.0.0
@@ -15545,7 +15545,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:^7.5.5":
+"rxjs@npm:^7.0.0, rxjs@npm:^7.5.5":
   version: 7.5.5
   resolution: "rxjs@npm:7.5.5"
   dependencies:
