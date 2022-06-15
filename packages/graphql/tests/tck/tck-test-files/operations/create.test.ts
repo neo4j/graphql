@@ -283,7 +283,7 @@ describe("Cypher Create", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN this0
             }
@@ -340,7 +340,7 @@ describe("Cypher Create", () => {
             			MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN this0
             }

@@ -206,7 +206,7 @@ describe("Cypher Union", () => {
             			MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN this0
             }
@@ -257,7 +257,7 @@ describe("Cypher Union", () => {
             WHERE this_search_Genre0.name = $updateMovies.args.update.search.Genre[0].where.node.name
             CALL apoc.do.when(this_search_Genre0 IS NOT NULL, \\"
             SET this_search_Genre0.name = $this_update_search_Genre0_name
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_search_Genre0:this_search_Genre0, auth:$auth,this_update_search_Genre0_name:$this_update_search_Genre0_name})
             YIELD value AS _
             RETURN collect(DISTINCT this { .title }) AS data"
@@ -331,7 +331,7 @@ describe("Cypher Union", () => {
             FOREACH(_ IN CASE this_search_Genre0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_search_Genre0_disconnect0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
@@ -395,7 +395,7 @@ describe("Cypher Union", () => {
             FOREACH(_ IN CASE this_disconnect_search_Genre0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_search_Genre0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
@@ -457,7 +457,7 @@ describe("Cypher Union", () => {
             			MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
