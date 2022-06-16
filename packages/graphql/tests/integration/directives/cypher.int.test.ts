@@ -248,7 +248,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                         variableValues: { title: movieTitle, name: actorName },
                     });
 
@@ -738,7 +738,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: { driver },
+                        contextValue: contextValue: neo4j.getDriverContextValues(),
                     });
 
                 const expectedStartId = `${defaultOffset + 1}`;
@@ -774,7 +774,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: { driver },
+                        contextValue: contextValue: neo4j.getDriverContextValues(),
                         variableValues: { offset, limit },
                     });
 
@@ -954,7 +954,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: { driver },
+                        contextValue: contextValue: neo4j.getDriverContextValues(),
                         variableValues: { id: townId },
                     });
 
@@ -993,7 +993,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: { driver },
+                        contextValue: contextValue: neo4j.getDriverContextValues(),
                         variableValues: { id: townId, caseName: testCaseName },
                     });
 
@@ -1096,7 +1096,7 @@ describe("cypher", () => {
                 const gqlResult = await graphql({
                     schema,
                     source,
-                    contextValue: { driver, req },
+                    contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();

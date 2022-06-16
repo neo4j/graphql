@@ -89,7 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/620", () => {
         const gqlResult: any = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();

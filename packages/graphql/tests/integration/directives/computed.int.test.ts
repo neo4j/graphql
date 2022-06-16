@@ -97,7 +97,7 @@ describe("@computed directive", () => {
             const gqlResult = await graphql({
                 schema,
                 source,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
                 variableValues: { userId: user.id },
             });
 
@@ -121,7 +121,7 @@ describe("@computed directive", () => {
             const gqlResult = await graphql({
                 schema,
                 source,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
                 variableValues: { userId: user.id },
             });
 
@@ -146,7 +146,7 @@ describe("@computed directive", () => {
             const gqlResult = await graphql({
                 schema,
                 source,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
                 variableValues: { userId: user.id },
             });
 
@@ -219,7 +219,7 @@ describe("@computed directive", () => {
             const gqlResult = await graphql({
                 schema,
                 source,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
                 variableValues: { userId: user.id },
             });
 
@@ -243,7 +243,7 @@ describe("@computed directive", () => {
             const gqlResult = await graphql({
                 schema,
                 source,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
                 variableValues: { userId: user.id },
             });
 
@@ -268,7 +268,7 @@ describe("@computed directive", () => {
             const gqlResult = await graphql({
                 schema,
                 source,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
                 variableValues: { userId: user.id },
             });
 

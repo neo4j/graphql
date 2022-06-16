@@ -84,7 +84,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -141,7 +141,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -209,7 +209,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -271,7 +271,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -333,7 +333,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -395,7 +395,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -457,7 +457,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -519,7 +519,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -581,7 +581,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");

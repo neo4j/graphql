@@ -85,7 +85,7 @@ describe("aggregations-where-edge-datetime", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             if (gqlResult.errors) {
@@ -156,7 +156,7 @@ describe("aggregations-where-edge-datetime", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             if (gqlResult.errors) {
@@ -225,7 +225,7 @@ describe("aggregations-where-edge-datetime", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             if (gqlResult.errors) {
@@ -296,7 +296,7 @@ describe("aggregations-where-edge-datetime", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             if (gqlResult.errors) {
@@ -365,7 +365,7 @@ describe("aggregations-where-edge-datetime", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             if (gqlResult.errors) {

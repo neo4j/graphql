@@ -249,7 +249,7 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
             const noBooks = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: queryBooks,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
             });
 
             expect(noBooks.data?.[typeBook.plural]).toEqual([]);
@@ -259,7 +259,7 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
             const books = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: queryBooks,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
             });
 
             expect(books.data?.[typeBook.plural]).toEqual([{ id: bookId, name: bookName }]);

@@ -87,7 +87,7 @@ describe("auth/allow-unauthenticated", () => {
             const req = new IncomingMessage(socket);
 
             const gqlResult = await graphql({
-                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 schema: await neoSchema.getSchema(),
                 source: query,
             });
@@ -143,7 +143,7 @@ describe("auth/allow-unauthenticated", () => {
             const req = new IncomingMessage(socket);
 
             const gqlResult = await graphql({
-                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 schema: await neoSchema.getSchema(),
                 source: query,
             });
@@ -202,7 +202,7 @@ describe("auth/allow-unauthenticated", () => {
             const req = new IncomingMessage(socket);
 
             const gqlResult = await graphql({
-                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 schema: await neoSchema.getSchema(),
                 source: query,
             });
@@ -261,7 +261,7 @@ describe("auth/allow-unauthenticated", () => {
             const req = new IncomingMessage(socket);
 
             const gqlResult = await graphql({
-                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 schema: await neoSchema.getSchema(),
                 source: query,
             });
@@ -317,7 +317,7 @@ describe("auth/allow-unauthenticated", () => {
             const req = new IncomingMessage(socket);
 
             const gqlResult = await graphql({
-                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 schema: await neoSchema.getSchema(),
                 source: query,
             });
@@ -375,7 +375,7 @@ describe("auth/allow-unauthenticated", () => {
             const req = new IncomingMessage(socket);
 
             const gqlResult = await graphql({
-                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 schema: await neoSchema.getSchema(),
                 source: query,
             });
@@ -426,7 +426,7 @@ describe("auth/allow-unauthenticated", () => {
             const req = new IncomingMessage(socket);
 
             const gqlResult = await graphql({
-                contextValue: { driver, req },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
                 schema: await neoSchema.getSchema(),
                 source: query,
             });

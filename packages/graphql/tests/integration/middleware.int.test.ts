@@ -90,7 +90,7 @@ describe("Middleware Resolvers", () => {
             const gqlResult = await graphql({
                 schema: schemaWithMiddleware,
                 source: query,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -151,7 +151,7 @@ describe("Middleware Resolvers", () => {
         const gqlResult = await graphql({
             schema: schemaWithMiddleware,
             source: mutation,
-            contextValue: { driver },
+            contextValue: neo4j.getDriverContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();

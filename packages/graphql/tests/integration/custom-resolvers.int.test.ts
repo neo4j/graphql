@@ -122,7 +122,7 @@ describe("Custom Resolvers", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver },
+            contextValue: neo4j.getDriverContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -164,7 +164,7 @@ describe("Custom Resolvers", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: mutation,
-            contextValue: { driver },
+            contextValue: neo4j.getDriverContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();

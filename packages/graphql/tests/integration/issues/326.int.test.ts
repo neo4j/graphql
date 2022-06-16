@@ -94,7 +94,7 @@ describe("326", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
-                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -158,7 +158,7 @@ describe("326", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
-                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");

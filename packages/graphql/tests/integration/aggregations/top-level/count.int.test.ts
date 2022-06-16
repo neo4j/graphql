@@ -204,7 +204,7 @@ describe("Aggregate -> count", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
             });
 
             expect(result.errors).toBeFalsy();

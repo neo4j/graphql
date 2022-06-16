@@ -81,7 +81,7 @@ describe("auth/custom-resolvers", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -122,7 +122,7 @@ describe("auth/custom-resolvers", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -166,7 +166,7 @@ describe("auth/custom-resolvers", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -214,7 +214,7 @@ describe("auth/custom-resolvers", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, jwt },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ jwt }),
             });
 
             expect(gqlResult.errors).toBeUndefined();

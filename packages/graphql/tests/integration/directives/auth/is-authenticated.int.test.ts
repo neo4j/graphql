@@ -76,7 +76,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -115,7 +115,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -161,7 +161,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -205,7 +205,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -251,7 +251,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -295,7 +295,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -371,7 +371,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -447,7 +447,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -491,7 +491,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -551,7 +551,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -596,7 +596,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -639,7 +639,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -686,7 +686,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -728,7 +728,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, jwt },
+                    contextValue: neo4j.getDriverContextValuesWithOptions({ jwt }),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();

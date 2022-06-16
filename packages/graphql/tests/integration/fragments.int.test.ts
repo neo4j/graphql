@@ -132,7 +132,7 @@ describe("fragments", () => {
         const graphqlResult = await graphql({
             schema,
             source: query.loc!.source,
-            contextValue: neo4j.getDriverContextValues(),
+            contextValue: contextValue: neo4j.getDriverContextValues(),
             variableValues: { actorName },
         });
 
@@ -163,7 +163,7 @@ describe("fragments", () => {
         const graphqlResult = await graphql({
             schema,
             source: query.loc!.source,
-            contextValue: neo4j.getDriverContextValues(),
+            contextValue: contextValue: neo4j.getDriverContextValues(),
             variableValues: { actorName },
         });
 
@@ -206,7 +206,7 @@ describe("fragments", () => {
         const graphqlResult = await graphql({
             schema,
             source: query.loc!.source,
-            contextValue: neo4j.getDriverContextValues(),
+            contextValue: contextValue: neo4j.getDriverContextValues(),
             variableValues: { actorName },
         });
 

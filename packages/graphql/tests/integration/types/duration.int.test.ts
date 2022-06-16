@@ -76,7 +76,7 @@ describe("Duration", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id, duration },
                 });
 
@@ -138,7 +138,7 @@ describe("Duration", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id, durations },
                 });
 
@@ -225,7 +225,7 @@ describe("Duration", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id, duration },
                 });
 
@@ -297,7 +297,7 @@ describe("Duration", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id, duration },
                 });
 
@@ -388,7 +388,7 @@ describe("Duration", () => {
                         const graphqlResult = await graphql({
                             schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
                             variableValues: {
                                 where: { id_IN: [longId, mediumId, shortId], [`duration_${filter}`]: medium },
                             },

@@ -72,7 +72,7 @@ describe("Global node resolution", () => {
                 schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: [{ title: "2001: A Space Odyssey" }] },
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
             })) as {
                 data: Record<string, { [key: string]: { id: string; dbId: string }[] }>;
                 errors: any;
@@ -117,7 +117,7 @@ describe("Global node resolution", () => {
                 schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: [{ title: "2001: A Space Odyssey" }] },
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(mutationResult.errors).toBeUndefined();
@@ -167,13 +167,13 @@ describe("Global node resolution", () => {
                 schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: [{ title: "2001: A Space Odyssey" }] },
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -236,7 +236,7 @@ describe("Global node resolution", () => {
                     },
                 ],
             },
-            contextValue: { driver },
+            contextValue: neo4j.getDriverContextValues(),
             source: mutation,
         });
 
@@ -317,7 +317,7 @@ describe("Global node resolution", () => {
                     },
                 ],
             },
-            contextValue: { driver },
+            contextValue: neo4j.getDriverContextValues(),
             source: mutation,
         });
 
@@ -496,7 +496,7 @@ describe("Global node resolution", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
                 variableValues: { id: toGlobalId({ typeName: typeFilm.name, field: "title", id: filmTitle }) },
             });
 
@@ -550,7 +550,7 @@ describe("Global node resolution", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
                 variableValues: { id: relayId },
             });
 
@@ -608,7 +608,7 @@ describe("Global node resolution", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
                 variableValues: { id: relayId },
             });
 

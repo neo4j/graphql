@@ -78,7 +78,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -142,7 +142,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -220,7 +220,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -296,7 +296,7 @@ describe("auth/where", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                     });
                     expect(gqlResult.errors).toBeUndefined();
                     const posts = (gqlResult.data as any).users[0].content as any[];
@@ -375,7 +375,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
                 expect(gqlResult.errors).toBeUndefined();
                 const posts = (gqlResult.data as any).users[0].contentConnection as {
@@ -433,7 +433,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -482,7 +482,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -551,7 +551,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -612,7 +612,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -679,7 +679,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -744,7 +744,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();

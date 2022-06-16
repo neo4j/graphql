@@ -189,7 +189,7 @@ describe("scalars", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: mutation,
-            contextValue: { driver },
+            contextValue: neo4j.getDriverContextValues(),
             variableValues: {
                 input: [{ integers }],
             },
@@ -228,7 +228,7 @@ describe("scalars", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: mutation,
-            contextValue: { driver },
+            contextValue: neo4j.getDriverContextValues(),
             variableValues: {
                 input: [{ floats }],
             },

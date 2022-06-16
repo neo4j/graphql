@@ -181,7 +181,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: usersQuery,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -218,7 +218,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: usersQuery,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -263,7 +263,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -328,7 +328,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -382,7 +382,7 @@ describe("@alias directive", () => {
         const createResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: { driver },
+            contextValue: neo4j.getDriverContextValues(),
         });
         const { bookmark } = (createResult.data as any).createAliasDirectiveTestUsers.info;
 

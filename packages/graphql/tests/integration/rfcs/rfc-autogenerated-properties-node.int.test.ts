@@ -81,7 +81,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -149,7 +149,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -225,7 +225,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -296,7 +296,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -367,7 +367,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -449,7 +449,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -526,7 +526,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -593,7 +593,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -653,7 +653,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
             });
 
             expect(result.errors).toBeUndefined();
@@ -724,7 +724,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
             });
 
             expect(result.errors).toBeUndefined();

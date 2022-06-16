@@ -1858,7 +1858,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("ALL"),
-                        contextValue: { driver },
+                        contextValue: neo4j.getDriverContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1877,7 +1877,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("NONE"),
-                        contextValue: { driver },
+                        contextValue: neo4j.getDriverContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1896,7 +1896,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("SINGLE"),
-                        contextValue: { driver },
+                        contextValue: neo4j.getDriverContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1915,7 +1915,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("SOME"),
-                        contextValue: { driver },
+                        contextValue: neo4j.getDriverContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1956,7 +1956,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("ALL"),
-                        contextValue: { driver },
+                        contextValue: neo4j.getDriverContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1975,7 +1975,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("NONE"),
-                        contextValue: { driver },
+                        contextValue: neo4j.getDriverContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1994,7 +1994,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("SINGLE"),
-                        contextValue: { driver },
+                        contextValue: neo4j.getDriverContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -2013,7 +2013,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("SOME"),
-                        contextValue: { driver },
+                        contextValue: neo4j.getDriverContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 

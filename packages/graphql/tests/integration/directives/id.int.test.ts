@@ -235,7 +235,7 @@ describe("@id directive", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: { driver },
+                contextValue: neo4j.getDriverContextValues(),
                 variableValues: { title, name },
             });
 

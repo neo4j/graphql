@@ -123,7 +123,7 @@ describe("Create -> ConnectOrCreate Union", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
         });
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeActor.operations.create][typeActor.plural]).toEqual([
@@ -213,7 +213,7 @@ describe("Create -> ConnectOrCreate Union", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
         });
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeActor.operations.create][typeActor.plural]).toEqual([

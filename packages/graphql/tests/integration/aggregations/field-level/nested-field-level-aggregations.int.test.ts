@@ -89,7 +89,7 @@ describe("Nested Field Level Aggregations", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
         });
         expect(gqlResult.errors).toBeUndefined();
         const movies = (gqlResult.data as any)?.actors[0].movies;

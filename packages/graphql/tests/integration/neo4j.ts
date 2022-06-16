@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { IncomingMessage } from "http";
 import * as neo4j from "neo4j-driver";
 import * as util from "util";
 
@@ -99,9 +100,19 @@ class Neo4j {
         };
     }
 
-    public getDriverContextValuesWithBookmarks(bookmarks: string[]): DriverContext {
+    public getDriverContextValuesWithOptions(options?: Record<string, unknown>): DriverContext {
         const database = this.hasIntegrationTestDb ? INT_TEST_DB_NAME : "neo4j";
         return {
+            ...(options || {}),
+            driver: this.driver,
+            driverConfig: { database },
+        };
+    }
+
+    public getDriverContextValuesWithBookmarks(bookmarks: string[], options?: Record<string, unknown>): DriverContext {
+        const database = this.hasIntegrationTestDb ? INT_TEST_DB_NAME : "neo4j";
+        return {
+            ...(options || {}),
             driver: this.driver,
             driverConfig: { database, bookmarks },
         };

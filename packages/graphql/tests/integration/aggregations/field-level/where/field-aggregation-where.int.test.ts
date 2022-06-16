@@ -83,7 +83,7 @@ describe("Field Level Aggregations Where", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -106,7 +106,7 @@ describe("Field Level Aggregations Where", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -127,7 +127,7 @@ describe("Field Level Aggregations Where", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -149,7 +149,7 @@ describe("Field Level Aggregations Where", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -170,7 +170,7 @@ describe("Field Level Aggregations Where", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -191,7 +191,7 @@ describe("Field Level Aggregations Where", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -215,7 +215,7 @@ describe("Field Level Aggregations Where", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -238,7 +238,7 @@ describe("Field Level Aggregations Where", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -261,7 +261,7 @@ describe("Field Level Aggregations Where", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();

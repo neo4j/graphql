@@ -119,7 +119,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
             schema: await neoSchema.getSchema(),
             source: createBs,
             variableValues: { b1, b2 },
-            contextValue: { driver },
+            contextValue: neo4j.getDriverContextValues(),
         });
 
         expect(createBsResult.errors).toBeFalsy();
@@ -129,7 +129,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
             schema: await neoSchema.getSchema(),
             source: createAs,
             variableValues: { a, b1, b2, c },
-            contextValue: { driver },
+            contextValue: neo4j.getDriverContextValues(),
         });
 
         expect(createAsResult.errors).toBeFalsy();
@@ -144,7 +144,7 @@ describe("https://github.com/neo4j/graphql/issues/235", () => {
             schema: await neoSchema.getSchema(),
             source: as,
             variableValues: { a },
-            contextValue: { driver },
+            contextValue: neo4j.getDriverContextValues(),
         });
 
         expect(asResult.errors).toBeFalsy();

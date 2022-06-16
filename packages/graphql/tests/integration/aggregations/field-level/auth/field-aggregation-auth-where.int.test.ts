@@ -92,7 +92,7 @@ describe(`Field Level Auth Where Requests`, () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
         });
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
@@ -112,7 +112,7 @@ describe(`Field Level Auth Where Requests`, () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
         });
         expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
     });
