@@ -69,6 +69,7 @@ export interface NodeConstructor extends GraphElementConstructor {
     queryOptionsDirective?: QueryOptionsDirective;
     isGlobalNode?: boolean;
     globalIdField?: string;
+    globalIdFieldIsInt?: boolean;
 }
 
 type MutableField =
@@ -141,6 +142,7 @@ class Node extends GraphElement {
     public plural: string;
     public isGlobalNode: boolean | undefined;
     private _idField: string | undefined;
+    private _idFieldIsInt?: boolean;
 
     constructor(input: NodeConstructor) {
         super(input);
@@ -159,6 +161,7 @@ class Node extends GraphElement {
         this.queryOptions = input.queryOptionsDirective;
         this.isGlobalNode = input.isGlobalNode;
         this._idField = input.globalIdField;
+        this._idFieldIsInt = input.globalIdFieldIsInt;
         this.singular = this.generateSingular();
         this.plural = this.generatePlural();
     }
@@ -295,7 +298,7 @@ class Node extends GraphElement {
     }
 
     public fromGlobalId(relayId: string): DecodedGlobalId {
-        return fromGlobalId(relayId);
+        return fromGlobalId(relayId, this._idFieldIsInt);
     }
 
     private generateSingular(): string {

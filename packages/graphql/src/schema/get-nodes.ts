@@ -228,8 +228,9 @@ function getNodes(definitionNodes: DefinitionNodes, options: { callbacks?: Neo4j
             fulltextDirective,
             queryOptionsDirective,
             description: definition.description?.value,
-            globalIdField: globalIdField?.fieldName,
             isGlobalNode: Boolean(globalIdField),
+            globalIdField: globalIdField?.fieldName,
+            globalIdFieldIsInt: globalIdField?.typeMeta?.name === "Int",
         });
 
         return node;
