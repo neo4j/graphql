@@ -87,18 +87,18 @@ describe("Create Subscription", () => {
 
     // NOTE: This test **may** be flaky, if so, feel free to remove it
     test("listeners are properly triggered and cleaned up", async () => {
-        expect(plugin.events.getMaxListeners()).toEqual(0);
-        expect(plugin.events.listenerCount("create")).toEqual(0);
+        expect(plugin.events.getMaxListeners()).toBe(0);
+        expect(plugin.events.listenerCount("create")).toBe(0);
 
         await wsClient.subscribe(subscriptionQuery);
         await wsClient2.subscribe(subscriptionQuery);
 
         await delay(50); // Sorry listener count takes a bit to update
-        expect(plugin.events.listenerCount("create")).toEqual(2);
+        expect(plugin.events.listenerCount("create")).toBe(2);
 
         await wsClient2.close();
         await delay(50); // Sorry listener count takes a bit to update
-        expect(plugin.events.listenerCount("create")).toEqual(1);
+        expect(plugin.events.listenerCount("create")).toBe(1);
     });
 
     test("multiple listeners attached to local event plugin", async () => {

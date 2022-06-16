@@ -64,17 +64,13 @@ describe("Update Subscriptions", () => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
-    afterEach(() => {
-        wsClient.close();
+    afterEach(async () => {
+        await wsClient.close();
     });
 
     afterAll(async () => {
         await server.close();
         await driver.close();
-    });
-
-    afterEach(async () => {
-        await wsClient.close();
     });
 
     test("update subscription", async () => {
