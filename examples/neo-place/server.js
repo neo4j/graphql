@@ -24,7 +24,7 @@ async function main() {
 
     const neoSchema = new Neo4jGraphQL({
         typeDefs: typeDefs,
-        driver,
+        driver: driver,
         plugins: {
             subscriptions: plugin,
             auth: new Neo4jGraphQLAuthJWTPlugin({

@@ -1,36 +1,19 @@
-const { Neo4jGraphQLSubscriptionsAMQP } = require("@neo4j/graphql-plugin-subscriptions-amqp");
-const { EventEmitter } = require("events");
-const { getSecret } = require("./get-secret");
+const { Neo4jGraphQLSubscriptionsAMQPPlugin } = require("@neo4j/graphql-plugin-subscriptions-amqp");
+const { Neo4jGraphQLSubscriptionsSingleInstancePlugin } = require('@neo4j/graphql');
+const { getEnvVariable } = require("./get-env-variable");
 
 module.exports.createPlugin = async function () {
-    if (process.env.NODE_ENV === "production") {
-        const plugin = new Neo4jGraphQLSubscriptionsAMQP();
-        plugin.events.setMaxListeners(0);
-        setInterval(()=>{
-            console.log("Events Connections", plugin.events.listenerCount("update"))
-        }, 5000);
+    const AMQP_URL = getEnvVariable("NEO_PLACE_AMQP_URL");
 
-        const url = await getSecret("team-graphql", "NEO_PLACE_AMQP_URL");
-
-        await plugin.connect(url);
-
-        return plugin;
+    let plugin;
+    if(AMQP_URL){
+        plugin = new Neo4jGraphQLSubscriptionsAMQPPlugin({
+            connection: AMQP_URL
+        });
+    } else {
+        plugin = new Neo4jGraphQLSubscriptionsSingleInstancePlugin();
     }
 
-    class SubscriptionsPlugin {
-        constructor() {
-            this.events = new EventEmitter();
-            this.events.setMaxListeners(0);
-            setInterval(()=>{
-                console.log("Events Connections", this.events.listenerCount("update"))
-            }, 5000);
-
-        }
-
-        publish(eventMeta) {
-            this.events.emit(eventMeta.event, eventMeta);
-        }
-    }
-
-    return new SubscriptionsPlugin();
-};
+    plugin.events.setMaxListeners(0);
+    return plugin;
+}

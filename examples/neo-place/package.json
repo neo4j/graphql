@@ -3,8 +3,8 @@
     "version": "0.1.0",
     "description": "Subscriptions example",
     "scripts": {
-        "start": "NODE_ENV=production node server.js",
-        "start:dev": "NODE_ENV=development concurrently \"parcel client/index.html client/qr.html\" \"node server.js\"",
+        "start": "node server.js",
+        "start:dev": "concurrently \"parcel client/index.html client/qr.html\" \"node server.js\"",
         "build": "parcel build client/index.html client/qr.html",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
@@ -27,24 +27,23 @@
     },
     "homepage": "https://github.com/neo4j/graphql#readme",
     "dependencies": {
-        "@google-cloud/secret-manager": "^3.12.0",
         "@neo4j/graphql": "^3.3.0",
         "@neo4j/graphql-plugin-auth": "^1.0.0",
-        "@neo4j/graphql-plugin-subscriptions-amqp": "^0.1.0",
-        "apollo-server-core": "^3.7.0",
-        "apollo-server-express": "^3.7.0",
+        "@neo4j/graphql-plugin-subscriptions-amqp": "^0.2.0",
+        "apollo-server-core": "^3.8.2",
+        "apollo-server-express": "^3.8.2",
         "dotenv": "^16.0.1",
         "express": "^4.18.1",
         "graphql": "^16.5.0",
-        "graphql-ws": "^5.8.2",
-        "neo4j-driver": "^4.4.5",
-        "parcel": "^2.5.0",
-        "urql": "^2.2.0",
+        "graphql-ws": "^5.9.0",
+        "neo4j-driver": "^4.4.6",
+        "parcel": "^2.6.0",
+        "urql": "^2.2.2",
         "wonka": "^4.0.15",
-        "ws": "^8.6.0"
+        "ws": "^8.8.0"
     },
     "devDependencies": {
-        "concurrently": "^7.2.0",
-        "parcel": "^2.5.0"
+        "concurrently": "^7.2.2",
+        "parcel": "^2.6.0"
     }
 }
