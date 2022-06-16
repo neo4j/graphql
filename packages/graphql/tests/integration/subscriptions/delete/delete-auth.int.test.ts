@@ -46,7 +46,7 @@ describe("Subscriptions delete", () => {
     });
 
     test("should throw Forbidden when deleting a node with invalid allow", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
         const typeUser = generateUniqueType("User");
         const typeDefs = `
         type ${typeUser.name} {

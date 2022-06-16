@@ -101,9 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
         const mutationRes = await graphql({
             schema,
             source: mutation,
-            contextValue: {
-                driver,
-            },
+            contextValue: neo4j.getDriverContextValues(),
         });
 
         expect(mutationRes.errors).toBeUndefined();
@@ -141,9 +139,7 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
         const queryRes = await graphql({
             schema,
             source: query,
-            contextValue: {
-                driver,
-            },
+            contextValue: neo4j.getDriverContextValues(),
         });
 
         expect(queryRes.errors).toBeUndefined();

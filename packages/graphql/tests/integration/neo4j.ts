@@ -79,17 +79,17 @@ class Neo4j {
         }
     }
 
-    public async getSession(): Promise<neo4j.Session> {
+    public async getSession(options?: Record<string, unknown>): Promise<neo4j.Session> {
         if (!this.driver) {
             await this.getDriver();
         }
 
-        let options = {};
+        let appliedOptions = options || {};
         if (this.hasIntegrationTestDb) {
-            options = { database: INT_TEST_DB_NAME };
+            appliedOptions = { ...appliedOptions, database: INT_TEST_DB_NAME };
         }
         // @ts-ignore getDriver() has be executed if driver does not exist
-        return this.driver.session(options);
+        return this.driver.session(appliedOptions);
     }
 
     public getDriverContextValues(session?: neo4j.Session): DriverContext {

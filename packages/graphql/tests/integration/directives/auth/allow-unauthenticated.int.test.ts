@@ -69,7 +69,7 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 plugins: {
@@ -125,7 +125,7 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 plugins: {
@@ -183,7 +183,7 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 plugins: {
@@ -243,7 +243,7 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 plugins: {
@@ -299,7 +299,7 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 plugins: {
@@ -356,7 +356,7 @@ describe("auth/allow-unauthenticated", () => {
                 }
             `;
 
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 plugins: {

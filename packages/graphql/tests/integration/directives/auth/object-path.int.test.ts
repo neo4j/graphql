@@ -40,7 +40,7 @@ describe("auth/object-path", () => {
     });
 
     test("should use object path with allow", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type User {
@@ -102,7 +102,7 @@ describe("auth/object-path", () => {
     });
 
     test("should use $context value plucking on auth", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type User {
@@ -165,7 +165,7 @@ describe("auth/object-path", () => {
     });
 
     test("should use object path with roles", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type User {
@@ -222,7 +222,7 @@ describe("auth/object-path", () => {
     });
 
     test("should use object path with JWT endpoint", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type User {

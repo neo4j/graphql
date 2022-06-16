@@ -386,7 +386,7 @@ describe("Global node resolution", () => {
         await graphql({
             schema: await neoSchema.getSchema(),
             variableValues: { input: [{ title: film.title, website: film.website }] },
-            contextValue: { driver, driverConfig: { bookmarks: [] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks([]),
             source: `
                   mutation($input: [${typeFilm.name}CreateInput!]!) {
                     ${typeFilm.operations.create}(input: $input) {
@@ -406,7 +406,7 @@ describe("Global node resolution", () => {
         await graphql({
             schema: await neoSchema.getSchema(),
             variableValues: { input: [{ name: actor.name, hairColor: actor.hairColor }] },
-            contextValue: { driver, driverConfig: { bookmarks: [] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks([]),
             source: `
                   mutation($input: [FilmActorCreateInput!]!) {
                     createFilmActors(input: $input) {
@@ -421,7 +421,7 @@ describe("Global node resolution", () => {
         const filmQueryResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookMarks: [] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks([]),
             variableValues: { id: film.id },
         });
 
@@ -433,7 +433,7 @@ describe("Global node resolution", () => {
         const actorQueryResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookMarks: [] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks([]),
             variableValues: { id: actor.id },
         });
 

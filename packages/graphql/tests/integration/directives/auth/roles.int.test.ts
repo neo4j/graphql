@@ -1049,7 +1049,7 @@ describe("auth/roles", () => {
                 const gqlResultUser = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req: userReq, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req: userReq }),
                 });
 
                 expect(gqlResultUser.data).toEqual({
@@ -1062,7 +1062,7 @@ describe("auth/roles", () => {
                 const gqlResultAdmin = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req: adminReq, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req: adminReq }),
                 });
 
                 expect(gqlResultAdmin.data?.[type.plural]).toHaveLength(2);
@@ -1138,7 +1138,9 @@ describe("auth/roles", () => {
                 const gqlResultUser = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req: nonAdminReq, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), {
+                        req: nonAdminReq,
+                    }),
                 });
 
                 expect((gqlResultUser.errors as any[])[0].message).toBe("Forbidden");
@@ -1152,7 +1154,7 @@ describe("auth/roles", () => {
                 const gqlResultAdmin = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req: adminReq, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req: adminReq }),
                 });
 
                 expect(gqlResultAdmin.data).toEqual({

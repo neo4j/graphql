@@ -41,7 +41,7 @@ describe("auth/bind", () => {
 
     describe("create", () => {
         test("should throw forbidden when creating a node with invalid bind", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -90,7 +90,7 @@ describe("auth/bind", () => {
         });
 
         test("should throw forbidden when creating a nested node with invalid bind", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Post {
@@ -157,7 +157,7 @@ describe("auth/bind", () => {
         });
 
         test("should throw forbidden when creating field with invalid bind", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Post {
@@ -229,7 +229,7 @@ describe("auth/bind", () => {
 
     describe("update", () => {
         test("should throw forbidden when updating a node with invalid bind", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -282,7 +282,7 @@ describe("auth/bind", () => {
         });
 
         test("should throw forbidden when updating a nested node with invalid bind", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Post {
@@ -357,7 +357,7 @@ describe("auth/bind", () => {
         });
 
         test("should throw forbidden when updating a node property with invalid bind", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -417,7 +417,7 @@ describe("auth/bind", () => {
 
     describe("connect", () => {
         test("should throw forbidden when connecting a node property with invalid bind", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -488,7 +488,7 @@ describe("auth/bind", () => {
 
     describe("disconnect", () => {
         test("should throw forbidden when disconnecting a node property with invalid bind", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {

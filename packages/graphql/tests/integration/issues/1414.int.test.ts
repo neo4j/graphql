@@ -37,9 +37,7 @@ describe("https://github.com/neo4j/graphql/issues/1414", () => {
         return graphql({
             schema,
             source: query,
-            contextValue: {
-                driver,
-            },
+            contextValue: neo4j.getDriverContextValues(),
         });
     }
 

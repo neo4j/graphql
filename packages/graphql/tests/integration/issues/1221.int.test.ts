@@ -155,9 +155,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             schema,
             source: query,
             variableValues,
-            contextValue: {
-                driver,
-            },
+            contextValue: neo4j.getDriverContextValues(),
         });
 
         expect(res.errors).toBeUndefined();
@@ -254,9 +252,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             schema,
             source: query,
             variableValues,
-            contextValue: {
-                driver,
-            },
+            contextValue: neo4j.getDriverContextValues(),
         });
 
         expect(res.errors).toBeUndefined();
@@ -374,9 +370,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             schema,
             source: query,
             variableValues,
-            contextValue: {
-                driver,
-            },
+            contextValue: neo4j.getDriverContextValues(),
         });
 
         expect(res.errors).toBeUndefined();
@@ -506,9 +500,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             schema,
             source: query,
             variableValues,
-            contextValue: {
-                driver,
-            },
+            contextValue: neo4j.getDriverContextValues(),
         });
 
         expect(res.errors).toBeUndefined();
@@ -626,9 +618,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             schema,
             source: query,
             variableValues,
-            contextValue: {
-                driver,
-            },
+            contextValue: neo4j.getDriverContextValues(),
         });
 
         expect(res.errors).toBeUndefined();

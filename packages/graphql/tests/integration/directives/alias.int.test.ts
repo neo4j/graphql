@@ -121,7 +121,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: usersQuery,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] }, req },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -154,7 +154,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: protectedUsersQuery,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] }, req },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -415,7 +415,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: { driver, driverConfig: { bookmarks: [bookmark] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks([bookmark]),
         });
 
         expect(gqlResult.errors).toBeFalsy();

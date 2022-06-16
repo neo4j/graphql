@@ -44,7 +44,7 @@ describe("auth/where", () => {
 
     describe("read", () => {
         test("should add $jwt.id to where and return user", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -91,7 +91,7 @@ describe("auth/where", () => {
         });
 
         test("should add $jwt.id to where on a relationship", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -159,7 +159,7 @@ describe("auth/where", () => {
         });
 
         test("should add $jwt.id to where on a relationship(using connection)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -238,7 +238,7 @@ describe("auth/where", () => {
 
         describe("union", () => {
             test("should add $jwt.id to where and return users search", async () => {
-                const session = driver.session({ defaultAccessMode: "WRITE" });
+                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
                 const typeDefs = `
                     union Content = Post
@@ -312,7 +312,7 @@ describe("auth/where", () => {
         });
 
         test("should add $jwt.id to where and return users search(using connections)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 union Content = Post
@@ -394,7 +394,7 @@ describe("auth/where", () => {
 
     describe("update", () => {
         test("should add $jwt.id to where", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -448,7 +448,7 @@ describe("auth/where", () => {
 
     describe("delete", () => {
         test("should add $jwt.id to where", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -502,7 +502,7 @@ describe("auth/where", () => {
 
     describe("connect", () => {
         test("should add jwt.id to where - update update", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -563,7 +563,7 @@ describe("auth/where", () => {
         });
 
         test("should add jwt.id to where - update connect", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -626,7 +626,7 @@ describe("auth/where", () => {
 
     describe("disconnect", () => {
         test("should add $jwt.id to where (update update)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -691,7 +691,7 @@ describe("auth/where", () => {
         });
 
         test("should add $jwt.id to where (update disconnect)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {

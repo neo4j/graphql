@@ -127,7 +127,9 @@ describe("Node directive labels", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, filmLabel: typeFilm.name, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), {
+                filmLabel: typeFilm.name,
+            }),
         });
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data.movies[0]).toEqual({

@@ -44,7 +44,7 @@ describe("auth/is-authenticated", () => {
 
     describe("read", () => {
         test("should throw if not authenticated type definition", async () => {
-            const session = driver.session({ defaultAccessMode: "READ" });
+            const session = await neo4j.getSession({ defaultAccessMode: "READ" });
 
             const typeDefs = `
                 type Product @auth(rules: [{
@@ -86,7 +86,7 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should throw if not authenticated on field definition", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User  {
@@ -127,7 +127,7 @@ describe("auth/is-authenticated", () => {
 
     describe("create", () => {
         test("should throw if not authenticated on type definition", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User @auth(rules: [{
@@ -171,7 +171,7 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should throw if not authenticated on field definition", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -217,7 +217,7 @@ describe("auth/is-authenticated", () => {
 
     describe("update", () => {
         test("should throw if not authenticated on type definition", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User @auth(rules: [{
@@ -261,7 +261,7 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should throw if not authenticated on field definition", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -307,7 +307,7 @@ describe("auth/is-authenticated", () => {
 
     describe("connect", () => {
         test("should throw if not authenticated", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Post {
@@ -383,7 +383,7 @@ describe("auth/is-authenticated", () => {
 
     describe("disconnect", () => {
         test("should throw if not authenticated", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Post {
@@ -459,7 +459,7 @@ describe("auth/is-authenticated", () => {
 
     describe("delete", () => {
         test("should throw if not authenticated on type definition", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User @auth(rules: [{
@@ -501,7 +501,7 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should throw if not authenticated on type definition (with nested delete)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -563,7 +563,7 @@ describe("auth/is-authenticated", () => {
 
     describe("custom-resolvers", () => {
         test("should throw if not authenticated on custom Query with @cypher", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User @exclude {
@@ -606,7 +606,7 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should throw if not authenticated on custom Mutation with @cypher", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -649,7 +649,7 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should throw if not authenticated on Field definition @cypher", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type History {
@@ -696,7 +696,7 @@ describe("auth/is-authenticated", () => {
         });
 
         test("should not throw if decoded JWT passed in context", async () => {
-            const session = driver.session({ defaultAccessMode: "READ" });
+            const session = await neo4j.getSession({ defaultAccessMode: "READ" });
 
             const typeDefs = `
                 type Product @auth(rules: [{

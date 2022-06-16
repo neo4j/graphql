@@ -231,7 +231,9 @@ describe("Field Level Aggregations Auth", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req: invalidReq, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), {
+                        req: invalidReq,
+                    }),
                 });
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             });

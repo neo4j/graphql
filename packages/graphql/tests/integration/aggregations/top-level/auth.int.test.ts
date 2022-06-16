@@ -41,7 +41,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should throw forbidden when incorrect allow on aggregate count", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const randomType = generateUniqueType("Movie");
 
@@ -94,7 +94,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should append auth where to predicate and return post count for this user", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type User {
@@ -157,7 +157,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should throw when invalid allow when aggregating a Int field", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type Movie {
@@ -219,7 +219,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should throw when invalid allow when aggregating a ID field", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type Movie {
@@ -281,7 +281,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should throw when invalid allow when aggregating a String field", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type Movie {
@@ -343,7 +343,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should throw when invalid allow when aggregating a Float field", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type Movie {
@@ -405,7 +405,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should throw when invalid allow when aggregating a BigInt field", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type Movie {
@@ -467,7 +467,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should throw when invalid allow when aggregating a DateTime field", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type Movie {
@@ -529,7 +529,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should throw when invalid allow when aggregating a Duration field", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type Movie {

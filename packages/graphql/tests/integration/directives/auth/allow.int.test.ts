@@ -41,7 +41,7 @@ describe("auth/allow", () => {
 
     describe("read", () => {
         test("should throw forbidden when reading a node with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -92,7 +92,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw forbidden when reading a property with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -145,7 +145,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw forbidden when reading a nested property with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Post {
@@ -209,7 +209,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw forbidden when reading a nested property with invalid allow (using connections)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Post {
@@ -277,7 +277,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw forbidden when reading a node with invalid allow (across a single relationship)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Post {
@@ -343,7 +343,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw forbidden when reading a node with invalid allow (across a single relationship)(using connections)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Post {
@@ -413,7 +413,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw forbidden when reading a node with invalid allow (across multi relationship)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Comment {
@@ -495,7 +495,7 @@ describe("auth/allow", () => {
 
     describe("update", () => {
         test("should throw Forbidden when editing a node with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -549,7 +549,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw Forbidden when editing a property with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -605,7 +605,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw Forbidden when editing a nested node with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Post {
@@ -671,7 +671,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw Forbidden when editing a nested node property with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Post {
@@ -741,7 +741,7 @@ describe("auth/allow", () => {
 
     describe("delete", () => {
         test("should throw Forbidden when deleting a node with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -794,7 +794,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw Forbidden when deleting a nested node with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {

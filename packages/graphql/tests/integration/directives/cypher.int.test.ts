@@ -738,7 +738,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getDriverContextValues(),
                     });
 
                 const expectedStartId = `${defaultOffset + 1}`;
@@ -774,7 +774,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getDriverContextValues(),
                         variableValues: { offset, limit },
                     });
 
@@ -954,7 +954,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getDriverContextValues(),
                         variableValues: { id: townId },
                     });
 
@@ -993,7 +993,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getDriverContextValues(),
                         variableValues: { id: townId, caseName: testCaseName },
                     });
 

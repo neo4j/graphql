@@ -67,7 +67,7 @@ describe("cypherParams", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source,
-                contextValue: { driver, cypherParams: { id } },
+                contextValue: neo4j.getDriverContextValues({ cypherParams: { id } }),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -128,7 +128,7 @@ describe("cypherParams", () => {
                 variableValues: {
                     id: movieId,
                 },
-                contextValue: { driver, cypherParams: { id: cypherParamsId } },
+                contextValue: neo4j.getDriverContextValues({ cypherParams: { id: cypherParamsId } }),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -175,7 +175,7 @@ describe("cypherParams", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source,
-                contextValue: { driver, cypherParams: { id } },
+                contextValue: neo4j.getDriverContextValues({ cypherParams: { id } }),
             });
 
             expect(gqlResult.errors).toBeFalsy();
