@@ -238,7 +238,7 @@ function createUpdateAndParams({
                             if (context.subscriptionsEnabled) {
                                 updateStrs.push(`RETURN ${META_CYPHER_VARIABLE}`);
                             } else {
-                                updateStrs.push("RETURN count(*)");
+                                updateStrs.push("RETURN count(*) AS _");
                             }
                             const apocArgs = `{${withVars.map((withVar) => `${withVar}:${withVar}`).join(", ")}, ${
                                 parameterPrefix?.split(".")[0]
@@ -278,7 +278,7 @@ function createUpdateAndParams({
                                 }${relationField.typeMeta.array ? `[${index}]` : ``}.update.edge`,
                             });
 
-                            const updateStrs = [escapeQuery(setProperties), escapeQuery("RETURN count(*)")];
+                            const updateStrs = [escapeQuery(setProperties), escapeQuery("RETURN count(*) AS _")];
 
                             const apocArgs = `{${relationshipVariable}:${relationshipVariable}, ${
                                 parameterPrefix?.split(".")[0]
@@ -415,7 +415,7 @@ function createUpdateAndParams({
                     }
 
                     if (relationField.interface) {
-                        subquery.push("RETURN count(*)");
+                        subquery.push("RETURN count(*) AS _");
                     }
                 });
 
