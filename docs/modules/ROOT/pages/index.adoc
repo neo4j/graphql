@@ -20,6 +20,8 @@ endif::[]
 
 > This is the documentation for the Neo4j GraphQL Library version 3.0, authored by the Neo4j GraphQL Team.
 
+TIP: Are you a GRANDstack user? We have deprecated the GRANDstack starter app, find more information xref::deprecations.adoc[here].
+
 This documentation covers the following topics:
 
 - xref::introduction.adoc[Introduction] - Introduction to the Neo4j GraphQL Library.
@@ -41,5 +43,6 @@ This documentation covers the following topics:
 - xref::driver-configuration.adoc[Driver Configuration] - How to configure a database driver for use with this library.
 - xref::guides/index.adoc[Guides] - Guides for usage of the library, including migration guides for moving between versions.
 - xref::troubleshooting/index.adoc[Troubleshooting] - Having problems with the library? See if your problem has been found and solved before.
+- xref::deprecations.adoc[Deprecations] - Overview and information regarding deprecated products and applications.
 
 This manual is primarily written for software engineers building an API using the Neo4j GraphQL Library.
