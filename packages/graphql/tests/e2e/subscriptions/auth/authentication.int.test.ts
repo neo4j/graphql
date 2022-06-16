@@ -18,7 +18,7 @@
  */
 
 import { Driver } from "neo4j-driver";
-import supertest, { Response } from "supertest";
+import { Response } from "supertest";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { generateUniqueType } from "../../../utils/graphql-types";
