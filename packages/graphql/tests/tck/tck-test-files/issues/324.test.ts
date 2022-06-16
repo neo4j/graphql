@@ -112,7 +112,7 @@ describe("#324", () => {
             			MERGE (this_car0_manufacturer0)-[:LOGO]->(this_car0_manufacturer0_logo0_connect0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             WITH this, this_car0, this_car0_manufacturer0
             CALL {
@@ -122,7 +122,7 @@ describe("#324", () => {
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDManufacturer.logo required', [0])
             	RETURN c AS this_car0_manufacturer0_logo_Logo_unique_ignored
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_car0:this_car0, updatePeople: $updatePeople, this_car0_manufacturer0:this_car0_manufacturer0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_identifier:$this_car0_manufacturer0_logo0_connect0_node_identifier})
             YIELD value AS _
             WITH this, this_car0
@@ -133,7 +133,7 @@ describe("#324", () => {
             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDCar.manufacturer required', [0])
             	RETURN c AS this_car0_manufacturer_Manufacturer_unique_ignored
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updatePeople: $updatePeople, this_car0:this_car0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_identifier:$this_car0_manufacturer0_logo0_connect0_node_identifier})
             YIELD value AS _
             WITH this

@@ -20,7 +20,7 @@
 import { useCallback } from "react";
 import { useContext, useState } from "react";
 import { FormInput } from "./FormInput";
-import { Button, Checkbox } from "@neo4j-ndl/react";
+import { Button } from "@neo4j-ndl/react";
 import { DEFAULT_BOLT_URL } from "../../constants";
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
@@ -107,6 +107,7 @@ export const Login = () => {
                             type="submit"
                             loading={loading}
                             disabled={loading}
+                            onClick={() => {}} // INFO: To prevent warning in browser console
                         >
                             Connect
                         </Button>

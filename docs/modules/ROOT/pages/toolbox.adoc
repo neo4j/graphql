@@ -24,4 +24,4 @@ Access the Toolbox here: https://graphql-toolbox.neo4j.io/
 == Requirements
 
 1. https://neo4j.com/docs/desktop-manual/current/[Neo4j Desktop] or https://neo4j.com/cloud/[Neo4j AuraDB]
-2. Make sure the database fulfills the requirements stated xref::introduction.adoc#introduction-requirements[here], including the necessary plugins. You must not have `Node.js` installed to use this Toolbox.
+2. Make sure the database fulfills the requirements stated xref::introduction.adoc#introduction-requirements[here], including the necessary plugins.

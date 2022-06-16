@@ -28,7 +28,7 @@ import {
     LOCAL_STATE_CONSTRAINT,
     LOCAL_STATE_ENABLE_DEBUG,
     LOCAL_STATE_ENABLE_REGEX,
-    LOCAL_STATE_FAVOURITES,
+    LOCAL_STATE_FAVORITES,
     LOCAL_STATE_TYPE_DEFS,
 } from "../../constants";
 import { formatCode, ParserOptions } from "../EditorView/utils";
@@ -41,8 +41,8 @@ import { SchemaSettings } from "./SchemaSettings";
 import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
 import { ActionElementsBar } from "./ActionElementsBar";
 import { SchemaEditor } from "./SchemaEditor";
-import { ConstraintState, Favourite } from "src/types";
-import { Favourites } from "./Favourites";
+import { ConstraintState, Favorite } from "src/types";
+import { Favorites } from "./Favorites";
 
 export interface Props {
     hasSchema: boolean;
@@ -58,7 +58,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const [isDebugChecked, setIsDebugChecked] = useState<string | null>(Storage.retrieve(LOCAL_STATE_ENABLE_DEBUG));
     const [isRegexChecked, setIsRegexChecked] = useState<string | null>(Storage.retrieve(LOCAL_STATE_ENABLE_REGEX));
     const [constraintState, setConstraintState] = useState<string | null>(Storage.retrieve(LOCAL_STATE_CONSTRAINT));
-    const [favourites, setFavourites] = useState<Favourite[] | null>(Storage.retrieveJSON(LOCAL_STATE_FAVOURITES));
+    const [favorites, setFavorites] = useState<Favorite[] | null>(Storage.retrieveJSON(LOCAL_STATE_FAVORITES));
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
     const formatTheCode = (): void => {
@@ -66,18 +66,18 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
         formatCode(refForEditorMirror.current, ParserOptions.GRAPH_QL);
     };
 
-    const saveAsFavourite = (): void => {
+    const saveAsFavorite = (): void => {
         const value = refForEditorMirror.current?.getValue();
         if (!value) return;
-        const newFavourites: Favourite[] = [
-            ...(favourites || []),
+        const newFavorites: Favorite[] = [
+            ...(favorites || []),
             { id: new Date().getTime().toString(), name: value.substring(0, 24), typeDefs: value },
         ];
-        setFavourites(newFavourites);
-        Storage.storeJSON(LOCAL_STATE_FAVOURITES, newFavourites);
+        setFavorites(newFavorites);
+        Storage.storeJSON(LOCAL_STATE_FAVORITES, newFavorites);
     };
 
-    const setTypeDefsFromFavourite = (typeDefs: string) => {
+    const setTypeDefsFromFavorite = (typeDefs: string) => {
         if (!typeDefs || !refForEditorMirror) return;
         refForEditorMirror.current?.setValue(typeDefs);
     };
@@ -164,10 +164,10 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                         setConstraintState={setConstraintState}
                     />
                     <hr className="my-8" />
-                    <Favourites
-                        favourites={favourites}
-                        setFavourites={setFavourites}
-                        onSelectFavourite={setTypeDefsFromFavourite}
+                    <Favorites
+                        favorites={favorites}
+                        setFavorites={setFavorites}
+                        onSelectFavorite={setTypeDefsFromFavorite}
                     />
                 </div>
             </div>
@@ -179,7 +179,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                         formatTheCode={formatTheCode}
                         onSubmit={onSubmit}
                         introspect={introspect}
-                        saveAsFavorite={saveAsFavourite}
+                        saveAsFavorite={saveAsFavorite}
                     />
                     <SchemaErrorDisplay error={error} />
                     <SchemaEditor mirrorRef={refForEditorMirror} loading={loading} />
