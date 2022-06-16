@@ -59,6 +59,10 @@ describe("Create Subscription", () => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
+    afterEach(async () => {
+        await wsClient.close();
+    });
+
     afterAll(async () => {
         await server.close();
         await driver.close();
@@ -91,7 +95,7 @@ describe("Create Subscription", () => {
             },
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.fieldNames.subscriptions.created]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
                     event: "CREATE",
                     timestamp: expect.any(Number),
                 },
@@ -103,7 +107,7 @@ describe("Create Subscription", () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { title: "movie1" }) {
-                    ${typeMovie.fieldNames.subscriptions.created} {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
                 }
@@ -117,7 +121,7 @@ describe("Create Subscription", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.fieldNames.subscriptions.created]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
                 },
             },
         ]);
