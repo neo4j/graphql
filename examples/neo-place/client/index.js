@@ -37,12 +37,11 @@ const serverApi = new GraphQLServerApi({
 const canvasApi = new CanvasApi("place", 10);
 
 async function setupCanvas() {
-    const canvas = await serverApi.getCanvas();
+    const canvasState = await serverApi.getCanvas();
 
-    let i = 0;
-    let j = 0;
-    for (const pixel of canvas) {
-        canvasApi.drawPixel([i, j], pixel);
+    let i = 0, j=0;
+    for (const pixelColor of canvasState) {
+        canvasApi.drawPixel([i, j], pixelColor);
         j++;
         if (j === 30) {
             i++;
