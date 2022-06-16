@@ -352,6 +352,12 @@ function createProjectionAndParams({
                 return res;
             }
 
+            if (referenceUnion && cypherField.typeMeta.array) {
+                res.projection.push(`${alias}: apoc.coll.flatten([${apocStr}])`);
+
+                return res;
+            }
+
             if (cypherField.typeMeta.array) {
                 res.projection.push(`${alias}: [${apocStr}]`);
 

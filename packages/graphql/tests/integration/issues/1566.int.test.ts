@@ -97,7 +97,8 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
 
         const cypher = `
             CREATE (c:${testCommunity.name} { id: 4656564 })-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES]->(:${testContent.name} { name: "content" })
-            CREATE (c)-[:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]->(:${testProject.name} { name: "project" })
+            CREATE (c)-[:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]->(:${testProject.name} { name: "project1" })
+            CREATE (c)-[:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]->(:${testProject.name} { name: "project2" })
         `;
 
         const session = driver.session();
@@ -114,18 +115,23 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
             [testCommunity.plural]: [
                 {
                     id: 4656564,
-                    hasFeedItems: [
+                    hasFeedItems: expect.arrayContaining([
                         {
                             __typename: testContent.name,
                             name: "content",
                         },
                         {
                             __typename: testProject.name,
-                            name: "project",
+                            name: "project1",
                         },
-                    ],
+                        {
+                            __typename: testProject.name,
+                            name: "project2",
+                        },
+                    ]),
                 },
             ],
         });
+        expect((result.data as any)[testCommunity.plural][0].hasFeedItems).toHaveLength(3);
     });
 });
