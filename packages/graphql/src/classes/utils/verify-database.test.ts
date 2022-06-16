@@ -100,7 +100,7 @@ describe("checkNeo4jCompat", () => {
         );
     });
 
-    test("should not throw Error that 4.2.10 is less than 4.2.5", async () => {
+    test("should not throw Error that 4.3.10 is less than 4.3.5", async () => {
         // @ts-ignore
         const fakeSession: Session = {
             // @ts-ignore
@@ -108,8 +108,8 @@ describe("checkNeo4jCompat", () => {
                 records: [
                     {
                         toObject: () => ({
-                            version: "4.2.10",
-                            apocVersion: "4.2.0.0",
+                            version: "4.3.10",
+                            apocVersion: "4.3.0.0",
                             functions: REQUIRED_APOC_FUNCTIONS,
                             procedures: REQUIRED_APOC_PROCEDURES,
                         }),
