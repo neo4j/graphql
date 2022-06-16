@@ -146,7 +146,7 @@ describe("Create Subscription", () => {
             },
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.fieldNames.subscriptions.created]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
                     event: "CREATE",
                     timestamp: expect.any(Number),
                 },

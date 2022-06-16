@@ -72,7 +72,7 @@ describe("Delete Subscription", () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.deleted} {
-                    ${typeMovie.fieldNames.subscriptions.deleted} {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
                         title
                     }
                     event
@@ -91,14 +91,14 @@ describe("Delete Subscription", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.fieldNames.subscriptions.deleted]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
                     event: "DELETE",
                     timestamp: expect.any(Number),
                 },
             },
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.fieldNames.subscriptions.deleted]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie2" },
                     event: "DELETE",
                     timestamp: expect.any(Number),
                 },
@@ -110,7 +110,7 @@ describe("Delete Subscription", () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.deleted}(where: { title: "movie3" }) {
-                    ${typeMovie.fieldNames.subscriptions.deleted} {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
                         title
                     }
                 }
@@ -127,7 +127,7 @@ describe("Delete Subscription", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.fieldNames.subscriptions.deleted]: { title: "movie3" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie3" },
                 },
             },
         ]);
