@@ -1,0 +1,57 @@
+name: "@neo4j/graphql-plugin-subscriptions-amqp E2E tests"
+
+on:
+  workflow_call:
+
+jobs:
+  e2e-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
+
+    services:
+      neo4j:
+        image: neo4j:latest
+        env:
+          NEO4J_AUTH: neo4j/mypassword
+          NEO4JLABS_PLUGINS: '["apoc"]'
+        ports:
+          - 7687:7687
+      rabbitmq:
+        image: rabbitmq
+        env:
+          RABBITMQ_DEFAULT_USER: guest
+          RABBITMQ_DEFAULT_PASS: guest
+        ports:
+          - 5672:5672
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
+      - name: Run packages/plugins/graphql-plugin-subscriptions-amqp e2e tests
+        run: yarn run test:e2e --coverage
+        working-directory: packages/plugins/graphql-plugin-subscriptions-amqp
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: mypassword
+          NEO_URL: bolt://localhost:7687
+          RABBITMQ_HOST: localhost
+          RABBITMQ_USER: guest
+          RABBITMQ_PASSWORD: guest
+      - name: Archive coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: e2e-coverage-graphql-plugin-subscriptions-amqp
+          path: packages/plugins/graphql-plugin-subscriptions-amqp/coverage/

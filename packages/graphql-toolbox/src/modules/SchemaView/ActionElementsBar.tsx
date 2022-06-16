@@ -19,7 +19,7 @@
 
 import { ProTooltip } from "../../components/ProTooltip";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
-import { Button, HeroIcon } from "@neo4j-ndl/react";
+import { Button, HeroIcon, IconButton } from "@neo4j-ndl/react";
 
 interface Props {
     hasSchema: boolean;
@@ -56,43 +56,42 @@ export const ActionElementsBar = ({
                     />
                 </ProTooltip>
             </div>
-            <div className="flex-1 flex justify-end">
-                <ProTooltip tooltipText="Save as Favorite" width={120} left={-35} top={45}>
-                    <Button
+            <div className="flex-1 flex justify-end gap-2">
+                <ProTooltip tooltipText="Save as Favorite" width={120} left={-42} top={45}>
+                    <IconButton
                         data-test-schema-editor-favourite-button
-                        className="mr-4"
+                        aria-label="Save as favorite"
+                        // Icon button background should be white, remove bg-white
+                        // as soon as it's fixed
+                        className="bg-white"
                         color="neutral"
-                        fill="outlined"
-                        style={{ padding: "0.75rem" }}
                         onClick={saveAsFavorite}
                         disabled={loading}
                     >
-                        <HeroIcon className="h-6 w-6" iconName="StarIcon" type="outline" />
-                    </Button>
+                        <HeroIcon iconName="StarIcon" type="outline" />
+                    </IconButton>
                 </ProTooltip>
-                <ProTooltip tooltipText="Prettify" width={60} left={-2} top={45}>
-                    <Button
+                <ProTooltip tooltipText="Prettify" width={60} left={-12} top={45}>
+                    <IconButton
                         data-test-schema-editor-prettify-button
-                        className="mr-4"
+                        aria-label="Prettify code"
+                        className="bg-white"
                         color="neutral"
-                        fill="outlined"
-                        style={{ padding: "0.75rem" }}
                         onClick={formatTheCode}
                         disabled={loading}
                     >
-                        <HeroIcon className="h-7 w-7" iconName="CodeIcon" type="outline" />
-                    </Button>
+                        <HeroIcon iconName="CodeIcon" type="outline" />
+                    </IconButton>
                 </ProTooltip>
                 <ProTooltip tooltipText="This will overwrite your current typeDefs!" width={260} left={-40} top={45}>
                     <Button
                         data-test-schema-editor-introspect-button
-                        className="mr-4"
                         color="neutral"
                         fill="outlined"
                         onClick={introspect}
                         disabled={loading}
                     >
-                        Generate typeDefs
+                        Generate type definitions
                     </Button>
                 </ProTooltip>
                 <Button

@@ -65,9 +65,18 @@ export class ApolloTestServer implements TestGraphQLServer {
 
         const schema = await this.schema.getSchema();
 
-        const serverCleanup = useServer({ schema }, wsServer);
+        const serverCleanup = useServer(
+            {
+                schema,
+                context: (ctx) => {
+                    return ctx;
+                },
+            },
+            wsServer
+        );
         const server = new ApolloServer({
             schema,
+            context: ({ req }) => ({ req }),
             plugins: [
                 ApolloServerPluginDrainHttpServer({ httpServer }),
                 {

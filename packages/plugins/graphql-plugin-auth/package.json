@@ -11,7 +11,7 @@
     "bugs": {
         "url": "https://github.com/neo4j/graphql/issues"
     },
-    "homepage": "https://github.com/neo4j/graphql/tree/dev/packages/graphql-plugin-auth",
+    "homepage": "https://github.com/neo4j/graphql/tree/dev/packages/plugins/graphql-plugin-auth",
     "exports": "./dist/index.js",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
@@ -35,11 +35,11 @@
     },
     "devDependencies": {
         "@types/debug": "4.1.7",
-        "@types/jest": "27.5.0",
+        "@types/jest": "28.1.1",
         "@types/jsonwebtoken": "8.5.8",
-        "@types/node": "16.11.33",
-        "jest": "28.1.0",
-        "ts-jest": "28.0.2",
-        "typescript": "4.6.4"
+        "@types/node": "16.11.41",
+        "jest": "28.1.1",
+        "ts-jest": "28.0.5",
+        "typescript": "4.7.3"
     }
 }

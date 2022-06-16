@@ -151,6 +151,7 @@ jobs:
       matrix:
         package:
           - graphql-plugin-auth
+          - graphql-plugin-subscriptions-amqp
         graphql-version:
           - "^15.0.0"
           - "^16.0.0"
@@ -176,6 +177,9 @@ jobs:
           name: unit-coverage-${{ matrix.package }}
           path: packages/plugins/${{ matrix.package }}/coverage/
 
+  e2e-tests-plugins:
+    uses: ./.github/workflows/reusable-subscriptions-plugin-amqp-e2e-test.yml
+
   api-library-tests:
     uses: ./.github/workflows/reusable-api-library-tests.yml
 
@@ -197,8 +201,6 @@ jobs:
           - ogm
           - introspector
         neo4j-version:
-          - 4.2.9
-          - 4.2
           - 4.3.2
           - 4.3
           - 4.4

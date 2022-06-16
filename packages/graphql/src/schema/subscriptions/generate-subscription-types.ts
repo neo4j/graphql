@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 
+import { GraphQLFloat, GraphQLNonNull } from "graphql";
 import { SchemaComposer } from "graphql-compose";
-import { SubscriptionsEvent } from "../../subscriptions/subscriptions-event";
 import { Node } from "../../classes";
 import { EventType } from "../../graphql/enums/EventType";
 import { generateSubscriptionWhereType } from "./generate-subscription-where-type";
 import { generateEventPayloadType } from "./generate-event-payload-type";
 import { generateSubscribeMethod, subscriptionResolve } from "../resolvers/subscriptions/subscribe";
+import { SubscriptionsEvent } from "../../types";
 
 export function generateSubscriptionTypes({
     schemaComposer,
@@ -50,6 +51,10 @@ export function generateSubscriptionTypes({
                     type: eventTypeEnum.NonNull,
                     resolve: () => EventType.getValue("CREATE")?.value,
                 },
+                timestamp: {
+                    type: new GraphQLNonNull(GraphQLFloat),
+                    resolve: (source: SubscriptionsEvent) => source.timestamp,
+                },
             },
         });
 
@@ -60,6 +65,10 @@ export function generateSubscriptionTypes({
                     type: eventTypeEnum.NonNull,
                     resolve: () => EventType.getValue("UPDATE")?.value,
                 },
+                timestamp: {
+                    type: new GraphQLNonNull(GraphQLFloat),
+                    resolve: (source: SubscriptionsEvent) => source.timestamp,
+                },
             },
         });
 
@@ -69,6 +78,10 @@ export function generateSubscriptionTypes({
                 event: {
                     type: eventTypeEnum.NonNull,
                     resolve: () => EventType.getValue("DELETE")?.value,
+                },
+                timestamp: {
+                    type: new GraphQLNonNull(GraphQLFloat),
+                    resolve: (source: SubscriptionsEvent) => source.timestamp,
                 },
             },
         });

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { SubscriptionsEvent } from "../../../subscriptions/subscriptions-event";
+import { SubscriptionsEvent } from "../../../types";
 import { subscriptionWhere } from "./where";
 
 describe("subscriptionWhere", () => {

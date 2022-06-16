@@ -24,11 +24,11 @@ import { GraphQLError, GraphQLSchema } from "graphql";
 import * as neo4j from "neo4j-driver";
 import { EditorFromTextArea } from "codemirror";
 import {
-    LOCAL_STATE_CHECK_CONSTRAINT,
-    LOCAL_STATE_CREATE_CONSTRAINT,
+    DEFAULT_DATABASE_NAME,
+    LOCAL_STATE_CONSTRAINT,
     LOCAL_STATE_ENABLE_DEBUG,
     LOCAL_STATE_ENABLE_REGEX,
-    LOCAL_STATE_FAVOURITES,
+    LOCAL_STATE_FAVORITES,
     LOCAL_STATE_TYPE_DEFS,
 } from "../../constants";
 import { formatCode, ParserOptions } from "../EditorView/utils";
@@ -41,8 +41,8 @@ import { SchemaSettings } from "./SchemaSettings";
 import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
 import { ActionElementsBar } from "./ActionElementsBar";
 import { SchemaEditor } from "./SchemaEditor";
-import { Favourite } from "src/types";
-import { Favourites } from "./Favourites";
+import { ConstraintState, Favorite } from "src/types";
+import { Favorites } from "./Favorites";
 
 export interface Props {
     hasSchema: boolean;
@@ -56,14 +56,9 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const [loading, setLoading] = useState(false);
     const refForEditorMirror = useRef<EditorFromTextArea | null>(null);
     const [isDebugChecked, setIsDebugChecked] = useState<string | null>(Storage.retrieve(LOCAL_STATE_ENABLE_DEBUG));
-    const [isCheckConstraintChecked, setIsCheckConstraintChecked] = useState<string | null>(
-        Storage.retrieve(LOCAL_STATE_CHECK_CONSTRAINT)
-    );
-    const [isCreateConstraintChecked, setIsCreateConstraintChecked] = useState<string | null>(
-        Storage.retrieve(LOCAL_STATE_CREATE_CONSTRAINT)
-    );
     const [isRegexChecked, setIsRegexChecked] = useState<string | null>(Storage.retrieve(LOCAL_STATE_ENABLE_REGEX));
-    const [favourites, setFavourites] = useState<Favourite[] | null>(Storage.retrieveJSON(LOCAL_STATE_FAVOURITES));
+    const [constraintState, setConstraintState] = useState<string | null>(Storage.retrieve(LOCAL_STATE_CONSTRAINT));
+    const [favorites, setFavorites] = useState<Favorite[] | null>(Storage.retrieveJSON(LOCAL_STATE_FAVORITES));
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
     const formatTheCode = (): void => {
@@ -71,18 +66,18 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
         formatCode(refForEditorMirror.current, ParserOptions.GRAPH_QL);
     };
 
-    const saveAsFavourite = (): void => {
+    const saveAsFavorite = (): void => {
         const value = refForEditorMirror.current?.getValue();
         if (!value) return;
-        const newFavourites: Favourite[] = [
-            ...(favourites || []),
+        const newFavorites: Favorite[] = [
+            ...(favorites || []),
             { id: new Date().getTime().toString(), name: value.substring(0, 24), typeDefs: value },
         ];
-        setFavourites(newFavourites);
-        Storage.storeJSON(LOCAL_STATE_FAVOURITES, newFavourites);
+        setFavorites(newFavorites);
+        Storage.storeJSON(LOCAL_STATE_FAVORITES, newFavorites);
     };
 
-    const setTypeDefsFromFavourite = (typeDefs: string) => {
+    const setTypeDefsFromFavorite = (typeDefs: string) => {
         if (!typeDefs || !refForEditorMirror) return;
         refForEditorMirror.current?.setValue(typeDefs);
     };
@@ -100,6 +95,9 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     config: {
                         enableDebug: isDebugChecked === "true",
                         enableRegex: isRegexChecked === "true",
+                        driverConfig: {
+                            database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
+                        },
                     },
                 };
 
@@ -107,11 +105,11 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
 
                 const schema = await neoSchema.getSchema();
 
-                if (isCheckConstraintChecked === "true") {
+                if (constraintState === ConstraintState.check.toString()) {
                     await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: false } });
                 }
 
-                if (isCreateConstraintChecked === "true") {
+                if (constraintState === ConstraintState.create.toString()) {
                     await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: true } });
                 }
 
@@ -122,7 +120,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                 setLoading(false);
             }
         },
-        [isDebugChecked, isCheckConstraintChecked, isCreateConstraintChecked, isRegexChecked]
+        [isDebugChecked, constraintState, isRegexChecked, auth.selectedDatabaseName]
     );
 
     const introspect = useCallback(async () => {
@@ -130,7 +128,10 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
             setLoading(true);
 
             const sessionFactory = () =>
-                auth?.driver?.session({ defaultAccessMode: neo4j.session.READ }) as neo4j.Session;
+                auth?.driver?.session({
+                    defaultAccessMode: neo4j.session.READ,
+                    database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
+                }) as neo4j.Session;
 
             const typeDefs = await toGraphQLTypeDefs(sessionFactory);
 
@@ -141,7 +142,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
         } finally {
             setLoading(false);
         }
-    }, [buildSchema, refForEditorMirror.current]);
+    }, [buildSchema, refForEditorMirror.current, auth.selectedDatabaseName]);
 
     const onSubmit = useCallback(() => {
         const value = refForEditorMirror.current?.getValue();
@@ -157,17 +158,16 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     <SchemaSettings
                         isRegexChecked={isRegexChecked}
                         isDebugChecked={isDebugChecked}
-                        isCheckConstraintChecked={isCheckConstraintChecked}
-                        isCreateConstraintChecked={isCreateConstraintChecked}
+                        constraintState={constraintState}
                         setIsRegexChecked={setIsRegexChecked}
                         setIsDebugChecked={setIsDebugChecked}
-                        setIsCheckConstraintChecked={setIsCheckConstraintChecked}
-                        setIsCreateConstraintChecked={setIsCreateConstraintChecked}
+                        setConstraintState={setConstraintState}
                     />
-                    <Favourites
-                        favourites={favourites}
-                        setFavourites={setFavourites}
-                        onSelectFavourite={setTypeDefsFromFavourite}
+                    <hr className="my-8" />
+                    <Favorites
+                        favorites={favorites}
+                        setFavorites={setFavorites}
+                        onSelectFavorite={setTypeDefsFromFavorite}
                     />
                 </div>
             </div>
@@ -179,7 +179,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                         formatTheCode={formatTheCode}
                         onSubmit={onSubmit}
                         introspect={introspect}
-                        saveAsFavorite={saveAsFavourite}
+                        saveAsFavorite={saveAsFavorite}
                     />
                     <SchemaErrorDisplay error={error} />
                     <SchemaEditor mirrorRef={refForEditorMirror} loading={loading} />

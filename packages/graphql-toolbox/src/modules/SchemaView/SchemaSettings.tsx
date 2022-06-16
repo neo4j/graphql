@@ -18,36 +18,29 @@
  */
 
 import React from "react";
-import { Checkbox, HeroIcon, Radio } from "@neo4j-ndl/react";
+import { Checkbox, HeroIcon } from "@neo4j-ndl/react";
 import { ProTooltip } from "../../components/ProTooltip";
 import { Storage } from "src/utils/storage";
-import {
-    LOCAL_STATE_CHECK_CONSTRAINT,
-    LOCAL_STATE_CREATE_CONSTRAINT,
-    LOCAL_STATE_ENABLE_DEBUG,
-    LOCAL_STATE_ENABLE_REGEX,
-} from "src/constants";
+import { LOCAL_STATE_CONSTRAINT, LOCAL_STATE_ENABLE_DEBUG, LOCAL_STATE_ENABLE_REGEX } from "src/constants";
+import { ConstraintState } from "src/types";
+import { CustomSelect } from "src/components/CustomSelect";
 
 interface Props {
     isRegexChecked: string | null;
     isDebugChecked: string | null;
-    isCheckConstraintChecked: string | null;
-    isCreateConstraintChecked: string | null;
+    constraintState: string | null;
     setIsRegexChecked: React.Dispatch<React.SetStateAction<string | null>>;
     setIsDebugChecked: React.Dispatch<React.SetStateAction<string | null>>;
-    setIsCheckConstraintChecked: React.Dispatch<React.SetStateAction<string | null>>;
-    setIsCreateConstraintChecked: React.Dispatch<React.SetStateAction<string | null>>;
+    setConstraintState: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export const SchemaSettings = ({
     isRegexChecked,
     isDebugChecked,
-    isCheckConstraintChecked,
-    isCreateConstraintChecked,
+    constraintState,
     setIsRegexChecked,
     setIsDebugChecked,
-    setIsCheckConstraintChecked,
-    setIsCreateConstraintChecked,
+    setConstraintState,
 }: Props) => {
     const onChangeRegexCheckbox = (): void => {
         const next = isRegexChecked === "true" ? "false" : "true";
@@ -61,24 +54,9 @@ export const SchemaSettings = ({
         Storage.store(LOCAL_STATE_ENABLE_DEBUG, next);
     };
 
-    const onClickCheckConstraint = (): void => {
-        const nextCheck = isCheckConstraintChecked === "true" ? "false" : "true";
-        if (isCreateConstraintChecked === "true" && nextCheck) {
-            setIsCreateConstraintChecked("false");
-            Storage.store(LOCAL_STATE_CREATE_CONSTRAINT, "false");
-        }
-        setIsCheckConstraintChecked(nextCheck);
-        Storage.store(LOCAL_STATE_CHECK_CONSTRAINT, nextCheck);
-    };
-
-    const onClickCreateConstraint = (): void => {
-        const nextCreate = isCreateConstraintChecked === "true" ? "false" : "true";
-        if (isCheckConstraintChecked === "true" && nextCreate) {
-            setIsCheckConstraintChecked("false");
-            Storage.store(LOCAL_STATE_CHECK_CONSTRAINT, "false");
-        }
-        setIsCreateConstraintChecked(nextCreate);
-        Storage.store(LOCAL_STATE_CREATE_CONSTRAINT, nextCreate);
+    const onChangeConstraintState = (nextConstraintState: string): void => {
+        setConstraintState(nextConstraintState);
+        Storage.store(LOCAL_STATE_CONSTRAINT, nextConstraintState);
     };
 
     const InfoToolTip = ({ text, width }: { text: React.ReactNode; width: number }): JSX.Element => {
@@ -147,53 +125,42 @@ export const SchemaSettings = ({
                         width={360}
                     />
                 </div>
-                <div className="mb-1 flex items-baseline">
-                    <Radio
-                        className="m-0"
-                        label="Check Constraint"
-                        checked={isCheckConstraintChecked === "true"}
-                        onClick={onClickCheckConstraint}
-                        onChange={() => {}}
-                    />
-                    <InfoToolTip
-                        text={
-                            <span>
-                                More information:{" "}
-                                <a
-                                    className="underline"
-                                    href="https://neo4j.com/docs/graphql-manual/current/type-definitions/indexes-and-constraints/#type-definitions-indexes-and-constraints-asserting"
-                                    target="_blank"
-                                >
-                                    here
-                                </a>
-                            </span>
-                        }
-                        width={150}
-                    />
-                </div>
-                <div className="mb-1 flex items-baseline">
-                    <Radio
-                        className="m-0"
-                        label="Create Constraint"
-                        checked={isCreateConstraintChecked === "true"}
-                        onClick={onClickCreateConstraint}
-                        onChange={() => {}}
-                    />
-                    <InfoToolTip
-                        text={
-                            <span>
-                                More information:{" "}
-                                <a
-                                    className="underline"
-                                    href="https://neo4j.com/docs/graphql-manual/current/type-definitions/indexes-and-constraints/#type-definitions-indexes-and-constraints-asserting"
-                                    target="_blank"
-                                >
-                                    here
-                                </a>
-                            </span>
-                        }
-                        width={150}
-                    />
+                <div className="mt-3 flex flex-col">
+                    <div className="flex items-center">
+                        <span className="h6">Constraints</span>{" "}
+                        <InfoToolTip
+                            text={
+                                <span>
+                                    More information:{" "}
+                                    <a
+                                        className="underline"
+                                        href="https://neo4j.com/docs/graphql-manual/current/type-definitions/indexes-and-constraints/#type-definitions-indexes-and-constraints-asserting"
+                                        target="_blank"
+                                    >
+                                        here
+                                    </a>
+                                </span>
+                            }
+                            width={150}
+                        />
+                    </div>
+                    <div className="mt-2">
+                        <CustomSelect
+                            value={constraintState || undefined}
+                            onChange={(event) => onChangeConstraintState(event.target.value)}
+                            testTag="data-test-schema-settings-selection"
+                        >
+                            {Object.keys(ConstraintState)
+                                .filter((x) => !isNaN(parseInt(x)))
+                                .map((constraintVal) => {
+                                    return (
+                                        <option key={constraintVal} value={constraintVal}>
+                                            {ConstraintState[constraintVal]}
+                                        </option>
+                                    );
+                                })}
+                        </CustomSelect>
+                    </div>
                 </div>
             </div>
         </React.Fragment>

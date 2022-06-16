@@ -43,6 +43,7 @@ import { NodeDirective } from "./NodeDirective";
 import { DecodedGlobalId, fromGlobalId, toGlobalId } from "../utils/global-ids";
 import { QueryOptionsDirective } from "./QueryOptionsDirective";
 import { upperFirst } from "../utils/upper-first";
+import { NodeAuth } from "./NodeAuth";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -134,7 +135,7 @@ class Node extends GraphElement {
     public exclude?: Exclude;
     public nodeDirective?: NodeDirective;
     public fulltextDirective?: FullText;
-    public auth?: Auth;
+    public auth?: NodeAuth;
     public description?: string;
     public queryOptions?: QueryOptionsDirective;
     public singular: string;
@@ -156,7 +157,7 @@ class Node extends GraphElement {
         this.exclude = input.exclude;
         this.nodeDirective = input.nodeDirective;
         this.fulltextDirective = input.fulltextDirective;
-        this.auth = input.auth;
+        this.auth = input.auth ? new NodeAuth(input.auth) : undefined;
         this.queryOptions = input.queryOptionsDirective;
         this.isGlobalNode = input.isGlobalNode;
         this._idField = input.globalIdField;
