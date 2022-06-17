@@ -51,8 +51,8 @@
         "neo4j-driver": "4.4.6",
         "prettier": "^2.6.2",
         "process": "0.11.10",
-        "react": "18.1.0",
-        "react-dom": "18.1.0",
+        "react": "18.2.0",
+        "react-dom": "18.2.0",
         "react-resizable": "^3.0.4",
         "uuid": "^8.3.2"
     },
