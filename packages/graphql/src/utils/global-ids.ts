@@ -29,12 +29,13 @@ export function toGlobalId({ typeName, field, id }: DecodedGlobalId): string {
     return base64([typeName, field, GraphQLID.serialize(id)].join(":"));
 }
 
-export function fromGlobalId(id: string): DecodedGlobalId {
+export function fromGlobalId(id: string, isInt?: boolean): DecodedGlobalId {
     const unbasedGlobalId = unbase64(id);
     const [typeName, field, ...rest] = unbasedGlobalId.split(":");
+
     return {
         typeName,
         field,
-        id: rest.join(":"),
+        id: isInt ? parseInt(rest[0], 10) : rest.join(":"),
     };
 }

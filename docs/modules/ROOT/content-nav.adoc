@@ -85,3 +85,4 @@
 *** xref:troubleshooting/security.adoc[]
 ** xref:appendix/index.adoc[]
 *** xref:appendix/preventing-overfetching.adoc[]
+** xref:deprecations.adoc[Deprecations]

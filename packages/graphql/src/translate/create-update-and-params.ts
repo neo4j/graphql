@@ -36,6 +36,7 @@ import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { escapeQuery } from "./utils/escape-query";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
+import { indentBlock } from "./utils/indent-block";
 
 interface Res {
     strs: string[];
@@ -48,7 +49,7 @@ interface UpdateMeta {
     postAuthStrs: string[];
 }
 
-function createUpdateAndParams({
+export default function createUpdateAndParams({
     updateInput,
     varName,
     node,
@@ -238,7 +239,7 @@ function createUpdateAndParams({
                             if (context.subscriptionsEnabled) {
                                 updateStrs.push(`RETURN ${META_CYPHER_VARIABLE}`);
                             } else {
-                                updateStrs.push("RETURN count(*)");
+                                updateStrs.push("RETURN count(*) AS _");
                             }
                             const apocArgs = `{${withVars.map((withVar) => `${withVar}:${withVar}`).join(", ")}, ${
                                 parameterPrefix?.split(".")[0]
@@ -278,7 +279,7 @@ function createUpdateAndParams({
                                 }${relationField.typeMeta.array ? `[${index}]` : ``}.update.edge`,
                             });
 
-                            const updateStrs = [escapeQuery(setProperties), escapeQuery("RETURN count(*)")];
+                            const updateStrs = [escapeQuery(setProperties), escapeQuery("RETURN count(*) AS _")];
 
                             const apocArgs = `{${relationshipVariable}:${relationshipVariable}, ${
                                 parameterPrefix?.split(".")[0]
@@ -364,7 +365,6 @@ function createUpdateAndParams({
                         if (withVars) {
                             subquery.push(`WITH ${withVars.join(", ")}`);
                         }
-
                         const creates = relationField.typeMeta.array ? update.create : [update.create];
                         creates.forEach((create, i) => {
                             const baseName = `${_varName}_create${i}`;
@@ -415,7 +415,7 @@ function createUpdateAndParams({
                     }
 
                     if (relationField.interface) {
-                        subquery.push("RETURN count(*)");
+                        subquery.push("RETURN count(*) AS _");
                     }
                 });
 
@@ -434,11 +434,6 @@ function createUpdateAndParams({
             }
 
             return res;
-        }
-
-        if (context.subscriptionsEnabled) {
-            const oldProps = `WITH ${varName} { .* } AS ${META_OLD_PROPS_CYPHER_VARIABLE}, ${withVars.join(", ")}`;
-            res.strs.push(oldProps);
         }
 
         if (!hasAppliedTimeStamps) {
@@ -463,6 +458,10 @@ function createUpdateAndParams({
         const authableField = node.authableFields.find((x) => x.fieldName === key);
 
         if (settableField) {
+            if (settableField.typeMeta.required && value === null) {
+                throw new Error(`Cannot set non-nullable field ${node.name}.${settableField.fieldName} to null`);
+            }
+
             if (pointField) {
                 if (pointField.typeMeta.array) {
                     res.strs.push(`SET ${varName}.${dbFieldName} = [p in $${param} | point(p)]`);
@@ -474,11 +473,6 @@ function createUpdateAndParams({
             }
 
             res.params[param] = value;
-        }
-
-        if (context.subscriptionsEnabled) {
-            const eventMeta = createEventMeta({ event: "update", nodeVariable: varName, typename: node.name });
-            res.strs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, ${eventMeta}`);
         }
 
         if (authableField) {
@@ -575,10 +569,20 @@ function createUpdateAndParams({
         const apocStr = `CALL apoc.util.validate(NOT(${postAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
         postAuthStr = `${withStr}\n${apocStr}`;
     }
+
+    let statements = strs;
+    if (context.subscriptionsEnabled) {
+        statements = wrapInSubscriptionsMetaCall({
+            withVars,
+            nodeVariable: varName,
+            typename: node.name,
+            statements: strs,
+        });
+    }
     return [
         [
             preAuthStr,
-            ...strs,
+            ...statements,
             postAuthStr,
             ...(relationshipValidationStr ? [withStr, relationshipValidationStr] : []),
         ].join("\n"),
@@ -586,4 +590,25 @@ function createUpdateAndParams({
     ];
 }
 
-export default createUpdateAndParams;
+function wrapInSubscriptionsMetaCall({
+    statements,
+    nodeVariable,
+    typename,
+    withVars,
+}: {
+    statements: string[];
+    nodeVariable: string;
+    typename: string;
+    withVars: string[];
+}): string[] {
+    const updateMetaVariable = "update_meta";
+    const preCallWith = `WITH ${nodeVariable} { .* } AS ${META_OLD_PROPS_CYPHER_VARIABLE}, ${withVars.join(", ")}`;
+
+    const callBlock = ["WITH *", ...statements, `RETURN ${META_CYPHER_VARIABLE} as ${updateMetaVariable}`];
+    const postCallWith = `WITH *, ${updateMetaVariable} as ${META_CYPHER_VARIABLE}`;
+
+    const eventMeta = createEventMeta({ event: "update", nodeVariable, typename });
+    const eventMetaWith = `WITH ${filterMetaVariable(withVars).join(", ")}, ${eventMeta}`;
+
+    return [preCallWith, "CALL {", ...indentBlock(callBlock), "}", postCallWith, eventMetaWith];
+}
