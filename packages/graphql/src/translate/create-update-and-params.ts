@@ -458,6 +458,10 @@ export default function createUpdateAndParams({
         const authableField = node.authableFields.find((x) => x.fieldName === key);
 
         if (settableField) {
+            if (settableField.typeMeta.required && value === null) {
+                throw new Error(`Cannot set non-nullable field ${node.name}.${settableField.fieldName} to null`);
+            }
+
             if (pointField) {
                 if (pointField.typeMeta.array) {
                     res.strs.push(`SET ${varName}.${dbFieldName} = [p in $${param} | point(p)]`);

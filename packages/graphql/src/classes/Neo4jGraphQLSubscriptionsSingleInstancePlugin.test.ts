@@ -16,26 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { GraphQLID } from "graphql";
-import { base64, unbase64 } from "graphql-relay/utils/base64";
 
-export interface DecodedGlobalId {
-    typeName: string;
-    field: string;
-    id: string | number;
-}
+import { EventEmitter } from "events";
+import { Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "./Neo4jGraphQLSubscriptionsSingleInstancePlugin";
 
-export function toGlobalId({ typeName, field, id }: DecodedGlobalId): string {
-    return base64([typeName, field, GraphQLID.serialize(id)].join(":"));
-}
-
-export function fromGlobalId(id: string, isInt?: boolean): DecodedGlobalId {
-    const unbasedGlobalId = unbase64(id);
-    const [typeName, field, ...rest] = unbasedGlobalId.split(":");
-
-    return {
-        typeName,
-        field,
-        id: isInt ? parseInt(rest[0], 10) : rest.join(":"),
-    };
-}
+describe("Neo4jGraphQLSubscriptionsSingleInstancePlugin", () => {
+    test("should construct without arguments", () => {
+        const plugin = new Neo4jGraphQLSubscriptionsSingleInstancePlugin();
+        expect(plugin).toBeInstanceOf(Neo4jGraphQLSubscriptionsSingleInstancePlugin);
+        expect(plugin.events).toBeInstanceOf(EventEmitter);
+    });
+});
