@@ -64,20 +64,20 @@ describe("Update Subscriptions", () => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
+    afterEach(async () => {
+        await wsClient.close();
+    });
+
     afterAll(async () => {
         await server.close();
         await driver.close();
-    });
-
-    afterEach(async () => {
-        await wsClient.close();
     });
 
     test("update subscription", async () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.updated} {
-                    ${typeMovie.fieldNames.subscriptions.updated} {
+                    ${typeMovie.operations.subscribe.payload.updated} {
                         title
                     }
                     previousState {
@@ -99,7 +99,7 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.fieldNames.subscriptions.updated]: { title: "movie3" },
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie3" },
                     previousState: { title: "movie1" },
                     event: "UPDATE",
                     timestamp: expect.any(Number),
@@ -107,7 +107,7 @@ describe("Update Subscriptions", () => {
             },
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.fieldNames.subscriptions.updated]: { title: "movie4" },
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie4" },
                     previousState: { title: "movie2" },
                     event: "UPDATE",
                     timestamp: expect.any(Number),
@@ -120,7 +120,7 @@ describe("Update Subscriptions", () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { title: "movie5" }) {
-                    ${typeMovie.fieldNames.subscriptions.updated} {
+                    ${typeMovie.operations.subscribe.payload.updated} {
                         title
                     }
                 }
@@ -137,7 +137,7 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.fieldNames.subscriptions.updated]: { title: "movie7" },
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie7" },
                 },
             },
         ]);
@@ -147,7 +147,7 @@ describe("Update Subscriptions", () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.updated} {
-                    ${typeMovie.fieldNames.subscriptions.updated} {
+                    ${typeMovie.operations.subscribe.payload.updated} {
                         title
                     }
                     event
@@ -164,7 +164,7 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.fieldNames.subscriptions.updated]: { title: "movie20" },
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie20" },
                     event: "UPDATE",
                 },
             },

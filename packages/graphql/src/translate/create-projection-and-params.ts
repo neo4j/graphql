@@ -410,7 +410,7 @@ function createProjectionAndParams({
                     }
                 }
 
-                res.projection.push(`${field.alias}: ${field.alias}${offsetLimitStr}`);
+                res.projection.push(`${field.alias}: ${field.name}${offsetLimitStr}`);
 
                 return res;
             }
