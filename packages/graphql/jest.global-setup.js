@@ -1,4 +1,8 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+const setTZ = require("set-tz");
 const neo4j = require("neo4j-driver");
+
+const TZ = "Etc/UTC";
 
 const INT_TEST_DB_NAME = 'neo4jgraphqlinttestdatabase'
 
@@ -17,6 +21,8 @@ function isMultiDbUnsupportedError(e) {
 
 module.exports = async function globalSetup() {
     process.env.NODE_ENV = "test";
+
+    setTZ(TZ);
 
     global.INT_TEST_DB_NAME = INT_TEST_DB_NAME
 
