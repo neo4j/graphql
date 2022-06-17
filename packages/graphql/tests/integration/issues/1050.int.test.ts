@@ -147,12 +147,11 @@ describe("https://github.com/neo4j/graphql/issues/1050", () => {
         const result = await graphql({
             schema,
             source: getQuerySource(query),
-            contextValue: {
-                driver,
+            contextValue: neo4j.getDriverContextValuesWithOptions({
                 user: {
                     id: "abc",
                 },
-            },
+            }),
         });
         expect(result.errors).toBeUndefined();
         expect(result.data as any).toEqual({

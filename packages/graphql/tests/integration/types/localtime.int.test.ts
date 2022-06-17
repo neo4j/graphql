@@ -262,7 +262,7 @@ describe("LocalTime", () => {
                 }
             `;
 
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
             const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });

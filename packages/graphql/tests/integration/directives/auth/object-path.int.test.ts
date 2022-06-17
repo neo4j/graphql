@@ -152,7 +152,7 @@ describe("auth/object-path", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req, userId },
+                contextValue: neo4j.getDriverContextValuesWithOptions({ req, userId }),
             });
 
             expect(gqlResult.errors).toBeUndefined();

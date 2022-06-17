@@ -100,15 +100,11 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: {
-                    driver,
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), {
                     request: {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     },
-                    driverConfig: {
-                        bookmarks: session.lastBookmark(),
-                    },
-                },
+                }),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -168,15 +164,11 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: {
-                    driver,
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), {
                     request: {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     },
-                    driverConfig: {
-                        bookmarks: session.lastBookmark(),
-                    },
-                },
+                }),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -236,15 +228,11 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: {
-                    driver,
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), {
                     request: {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     },
-                    driverConfig: {
-                        bookmarks: session.lastBookmark(),
-                    },
-                },
+                }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");

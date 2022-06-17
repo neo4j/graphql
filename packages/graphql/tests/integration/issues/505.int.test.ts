@@ -110,15 +110,11 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             return graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: {
-                    driver,
-                    driverConfig: {
-                        bookmarks: session.lastBookmark(),
-                    },
+                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), {
                     jwt: {
                         sub: userId,
                     },
-                },
+                }),
                 variableValues,
             });
         }
