@@ -61,50 +61,55 @@ export const Login = () => {
         <div className="grid place-items-center h-screen n-bg-neutral-90">
             <div className="w-login flex flex-col align-center justify-center bg-white shadow-md rounded p-8">
                 <div className="mb-6 text-center">
-                    <img src={Icon} alt="d.s" className="h-12 w-12 mx-auto" />
+                    <img src={Icon} alt="Neo4j Logo" className="h-12 w-12 mx-auto" />
                     <h2 className="mt-1 text-3xl">Neo4j GraphQL Toolbox</h2>
                 </div>
-                <form onSubmit={onSubmit}>
-                    <div className="mb-4">
-                        <FormInput
-                            testTag="data-test-login-username"
-                            label="Username"
-                            name="username"
-                            placeholder="neo4j"
-                            required={true}
-                            type="text"
-                            disabled={loading}
-                            autoComplete="username"
-                        ></FormInput>
-                    </div>
-                    <div className="mb-6">
-                        <FormInput
-                            testTag="data-test-login-password"
-                            label="Password"
-                            name="password"
-                            placeholder="password"
-                            required={true}
-                            type="password"
-                            disabled={loading}
-                            autoComplete="current-password"
-                        ></FormInput>
-                    </div>
-                    <div className="mb-8">
-                        <FormInput
-                            testTag="data-test-login-url"
-                            label="Connection URI"
-                            name="url"
-                            value={url}
-                            onChange={(event) => setUrl(event.currentTarget.value)}
-                            placeholder={DEFAULT_BOLT_URL}
-                            required={true}
-                            type="text"
-                            disabled={loading}
-                        ></FormInput>
-                    </div>
+                <form onSubmit={onSubmit} className="flex flex-col gap-4">
+                    <FormInput
+                        testtag="data-test-login-username"
+                        label="Username"
+                        name="username"
+                        placeholder="neo4j"
+                        required={true}
+                        type="text"
+                        disabled={loading}
+                        autoComplete="username"
+                    />
+
+                    <FormInput
+                        testtag="data-test-login-password"
+                        label="Password"
+                        name="password"
+                        placeholder="password"
+                        required={true}
+                        type="password"
+                        disabled={loading}
+                        autoComplete="current-password"
+                    />
+
+                    <FormInput
+                        testtag="data-test-login-url"
+                        label="Connection URI"
+                        name="url"
+                        value={url}
+                        onChange={(event) => setUrl(event.currentTarget.value)}
+                        placeholder={DEFAULT_BOLT_URL}
+                        required={true}
+                        type="text"
+                        disabled={loading}
+                    />
+
                     <div className="flex items-center justify-between">
-                        <Button data-test-login-button color="neutral" fill="outlined" type="submit" disabled={loading}>
-                            {loading ? <>Connecting...</> : <span>Connect</span>}
+                        <Button
+                            data-test-login-button
+                            color="neutral"
+                            fill="outlined"
+                            type="submit"
+                            loading={loading}
+                            disabled={loading}
+                            onClick={() => {}} // INFO: To prevent warning in browser console
+                        >
+                            Connect
                         </Button>
                     </div>
 

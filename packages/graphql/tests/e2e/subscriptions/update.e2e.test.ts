@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
-import { WebSocketClient, WebSocketTestClient } from "../setup/ws-client";
+import { WebSocketTestClient } from "../setup/ws-client";
 import neo4j from "../setup/neo4j";
 
 describe("Update Subscriptions", () => {
@@ -33,7 +33,7 @@ describe("Update Subscriptions", () => {
     const typeActor = generateUniqueType("Actor");
 
     let server: TestGraphQLServer;
-    let wsClient: WebSocketClient;
+    let wsClient: WebSocketTestClient;
 
     beforeAll(async () => {
         const typeDefs = `
@@ -64,26 +64,27 @@ describe("Update Subscriptions", () => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
+    afterEach(async () => {
+        await wsClient.close();
+    });
+
     afterAll(async () => {
         await server.close();
         await driver.close();
-    });
-
-    afterEach(async () => {
-        await wsClient.close();
     });
 
     test("update subscription", async () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.updated} {
-                    ${typeMovie.fieldNames.subscriptions.updated} {
+                    ${typeMovie.operations.subscribe.payload.updated} {
                         title
                     }
                     previousState {
                         title
                     }
                     event
+                    timestamp
                 }
             }
         `);
@@ -94,19 +95,22 @@ describe("Update Subscriptions", () => {
         await updateMovie("movie1", "movie3");
         await updateMovie("movie2", "movie4");
 
+        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.fieldNames.subscriptions.updated]: { title: "movie3" },
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie3" },
                     previousState: { title: "movie1" },
                     event: "UPDATE",
+                    timestamp: expect.any(Number),
                 },
             },
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.fieldNames.subscriptions.updated]: { title: "movie4" },
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie4" },
                     previousState: { title: "movie2" },
                     event: "UPDATE",
+                    timestamp: expect.any(Number),
                 },
             },
         ]);
@@ -116,7 +120,7 @@ describe("Update Subscriptions", () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { title: "movie5" }) {
-                    ${typeMovie.fieldNames.subscriptions.updated} {
+                    ${typeMovie.operations.subscribe.payload.updated} {
                         title
                     }
                 }
@@ -129,56 +133,21 @@ describe("Update Subscriptions", () => {
         await updateMovie("movie5", "movie7");
         await updateMovie("movie6", "movie8");
 
+        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.fieldNames.subscriptions.updated]: { title: "movie7" },
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie7" },
                 },
             },
         ]);
     });
 
-    async function createMovie(title: string): Promise<Response> {
-        const result = await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeMovie.operations.create}(input: [{ title: "${title}" }]) {
-                            ${typeMovie.plural} {
-                                title
-                            }
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-        return result;
-    }
-
-    async function updateMovie(oldTitle: string, newTitle: string): Promise<Response> {
-        const result = await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeMovie.operations.update}(where: { title: "${oldTitle}" }, update: { title: "${newTitle}" }) {
-                            ${typeMovie.plural} {
-                                title
-                            }
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-        return result;
-    }
-
     test("update subscription with same fields after update won't be triggered", async () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.updated} {
-                    ${typeMovie.fieldNames.subscriptions.updated} {
+                    ${typeMovie.operations.subscribe.payload.updated} {
                         title
                     }
                     event
@@ -191,13 +160,50 @@ describe("Update Subscriptions", () => {
         await updateMovie("movie10", "movie20");
         await updateMovie("movie20", "movie20");
 
+        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.fieldNames.subscriptions.updated]: { title: "movie20" },
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie20" },
                     event: "UPDATE",
                 },
             },
         ]);
     });
+
+    async function createMovie(title: string): Promise<Response> {
+        const result = await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                        mutation {
+                            ${typeMovie.operations.create}(input: [{ title: "${title}" }]) {
+                                ${typeMovie.plural} {
+                                    title
+                                }
+                            }
+                        }
+                    `,
+            })
+            .expect(200);
+        return result;
+    }
+
+    async function updateMovie(oldTitle: string, newTitle: string): Promise<Response> {
+        const result = await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                        mutation {
+                            ${typeMovie.operations.update}(where: { title: "${oldTitle}" }, update: { title: "${newTitle}" }) {
+                                ${typeMovie.plural} {
+                                    title
+                                }
+                            }
+                        }
+                    `,
+            })
+            .expect(200);
+        return result;
+    }
 });

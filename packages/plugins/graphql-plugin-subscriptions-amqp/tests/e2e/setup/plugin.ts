@@ -18,14 +18,13 @@
  */
 
 import amqp from "amqplib";
-import { Neo4jGraphQLSubscriptionsAMQP } from "../../../src";
+import { Neo4jGraphQLSubscriptionsAMQPPlugin } from "../../../src";
 
-export default async function createPlugin(connection: amqp.Connection): Promise<Neo4jGraphQLSubscriptionsAMQP> {
-    const plugin = new Neo4jGraphQLSubscriptionsAMQP({
+export default function createPlugin(connection: amqp.Options.Connect): Neo4jGraphQLSubscriptionsAMQPPlugin {
+    const plugin = new Neo4jGraphQLSubscriptionsAMQPPlugin({
         exchange: "neo4j-graphql",
+        connection,
     });
-
-    await plugin.connect(connection);
 
     return plugin;
 }

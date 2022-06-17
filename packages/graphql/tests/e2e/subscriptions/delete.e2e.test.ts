@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
-import { WebSocketClient, WebSocketTestClient } from "../setup/ws-client";
+import { WebSocketTestClient } from "../setup/ws-client";
 import neo4j from "../setup/neo4j";
 
 describe("Delete Subscription", () => {
@@ -32,7 +32,7 @@ describe("Delete Subscription", () => {
     const typeMovie = generateUniqueType("Movie");
 
     let server: TestGraphQLServer;
-    let wsClient: WebSocketClient;
+    let wsClient: WebSocketTestClient;
 
     beforeAll(async () => {
         const typeDefs = `
@@ -59,6 +59,10 @@ describe("Delete Subscription", () => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
+    afterEach(async () => {
+        await wsClient.close();
+    });
+
     afterAll(async () => {
         await server.close();
         await driver.close();
@@ -68,10 +72,11 @@ describe("Delete Subscription", () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.deleted} {
-                    ${typeMovie.fieldNames.subscriptions.deleted} {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
                         title
                     }
                     event
+                    timestamp
                 }
             }
         `);
@@ -82,17 +87,20 @@ describe("Delete Subscription", () => {
         await deleteMovie("movie1");
         await deleteMovie("movie2");
 
+        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.fieldNames.subscriptions.deleted]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
                     event: "DELETE",
+                    timestamp: expect.any(Number),
                 },
             },
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.fieldNames.subscriptions.deleted]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie2" },
                     event: "DELETE",
+                    timestamp: expect.any(Number),
                 },
             },
         ]);
@@ -102,7 +110,7 @@ describe("Delete Subscription", () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.deleted}(where: { title: "movie3" }) {
-                    ${typeMovie.fieldNames.subscriptions.deleted} {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
                         title
                     }
                 }
@@ -115,10 +123,11 @@ describe("Delete Subscription", () => {
         await deleteMovie("movie3");
         await deleteMovie("movie4");
 
+        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.fieldNames.subscriptions.deleted]: { title: "movie3" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie3" },
                 },
             },
         ]);

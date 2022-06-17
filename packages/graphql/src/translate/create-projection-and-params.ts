@@ -47,6 +47,7 @@ interface ProjectionMeta {
     authValidateStrs?: string[];
     connectionFields?: ResolveTree[];
     interfaceFields?: ResolveTree[];
+    rootConnectionCypherSortFields?: { alias: string; apocStr: string }[];
 }
 
 function createNodeWhereAndParams({
@@ -130,6 +131,7 @@ function createProjectionAndParams({
     literalElements,
     resolveType,
     inRelationshipProjection,
+    isRootConnectionField,
 }: {
     resolveTree: ResolveTree;
     node: Node;
@@ -139,6 +141,7 @@ function createProjectionAndParams({
     literalElements?: boolean;
     resolveType?: boolean;
     inRelationshipProjection?: boolean;
+    isRootConnectionField?: boolean;
 }): [string, any, ProjectionMeta?] {
     function reducer(res: Res, field: ResolveTree): Res {
         const alias = field.alias;
@@ -197,6 +200,7 @@ function createProjectionAndParams({
                     context,
                     varName: `${varName}_${alias}`,
                     chainStr: param,
+                    isRootConnectionField,
                     inRelationshipProjection: true,
                 });
                 const [str, p, meta] = recurse;
@@ -225,7 +229,7 @@ function createProjectionAndParams({
                     if (refNode) {
                         const labelsStatements = refNode
                             .getLabels(context)
-                            .map((label) => `"${label}" IN labels(${varName}_${alias})`);
+                            .map((label) => `${varName}_${alias}:\`${label}\``);
                         unionWheres.push(`(${labelsStatements.join("AND")})`);
 
                         const innerHeadStr: string[] = [
@@ -299,7 +303,8 @@ function createProjectionAndParams({
                 ...(context.cypherParams ? { cypherParams: context.cypherParams } : {}),
             };
 
-            const expectMultipleValues = referenceNode && cypherField.typeMeta.array ? "true" : "false";
+            const expectMultipleValues =
+                (referenceNode || referenceUnion) && cypherField.typeMeta.array ? "true" : "false";
             const apocWhere = projectionAuthStrs.length
                 ? `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStrs.join(
                       " AND "
@@ -320,8 +325,35 @@ function createProjectionAndParams({
                 !isProjectionStrEmpty ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ""
             }`;
 
+            // if this is a root connection field, and is also the sort argument
+            // push the fieldName into the projection and stash the apocStr in the
+            // returned meta object
+            if (isRootConnectionField) {
+                const sortInput = context.resolveTree.args.sort as GraphQLSortArg[];
+                const isSortArg = sortInput.find((obj) => Object.keys(obj)[0] === alias);
+                if (isSortArg) {
+                    if (!res.meta.rootConnectionCypherSortFields) {
+                        res.meta.rootConnectionCypherSortFields = [];
+                    }
+
+                    res.meta.rootConnectionCypherSortFields.push({
+                        alias,
+                        apocStr,
+                    });
+                    res.projection.push(`${alias}: edges.${alias}`);
+
+                    return res;
+                }
+            }
+
             if (cypherField.isScalar || cypherField.isEnum) {
                 res.projection.push(`${alias}: ${apocStr}`);
+
+                return res;
+            }
+
+            if (referenceUnion && cypherField.typeMeta.array) {
+                res.projection.push(`${alias}: apoc.coll.flatten([${apocStr}])`);
 
                 return res;
             }
@@ -378,7 +410,7 @@ function createProjectionAndParams({
                     }
                 }
 
-                res.projection.push(`${field.alias}: ${field.alias}${offsetLimitStr}`);
+                res.projection.push(`${field.alias}: ${field.name}${offsetLimitStr}`);
 
                 return res;
             }
@@ -429,6 +461,7 @@ function createProjectionAndParams({
                             node: refNode,
                             context,
                             varName: param,
+                            isRootConnectionField,
                         });
 
                         const nodeWhereAndParams = createNodeWhereAndParams({
@@ -486,6 +519,7 @@ function createProjectionAndParams({
                 varName: `${varName}_${alias}`,
                 chainStr: param,
                 inRelationshipProjection: true,
+                isRootConnectionField,
             });
             [projectionStr] = recurse;
             res.params = { ...res.params, ...recurse[1] };
