@@ -1,7 +1,6 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 const neo4j = require("neo4j-driver");
 
-// TODO: get from utils?
+// Cannot use the function under /tests/utils/ due to failing Aura tests
 function isMultiDbUnsupportedError(e) {
     if (
         e.message.includes("This is an administration command and it should be executed against the system database") ||
@@ -10,6 +9,7 @@ function isMultiDbUnsupportedError(e) {
     ) {
         return true;
     }
+
     return false;
 }
 
@@ -31,10 +31,10 @@ module.exports = async function globalTeardown() {
             try {
                 await session.writeTransaction((tx) => tx.run(cypherDetachNodes));
             } catch (err) {
-                console.log(`\nJest Global teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypherDetachNodes}", Error: ${err.message}`); // eslint-disable-line no-console
+                console.log(`\nJest /packages/graphql teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypherDetachNodes}", Error: ${err.message}`); // eslint-disable-line no-console
             }
         } else {
-            console.log(`\nJest Global teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypherDropDb}", Error: ${error.message}`); // eslint-disable-line no-console
+            console.log(`\nJest /packages/graphql teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypherDropDb}", Error: ${error.message}`); // eslint-disable-line no-console
         }
     } finally {
         if (session) await session.close();
