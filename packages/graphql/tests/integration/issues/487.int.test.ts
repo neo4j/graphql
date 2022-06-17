@@ -130,7 +130,7 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValues(),
+                contextValue: neo4j.getContextValues(),
             });
 
             if (result.errors) {

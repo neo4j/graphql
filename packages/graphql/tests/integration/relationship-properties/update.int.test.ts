@@ -118,7 +118,7 @@ describe("Relationship properties - update", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
             });
 
             expect(result.errors).toBeFalsy();
@@ -191,7 +191,7 @@ describe("Relationship properties - update", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
             });
 
             expect(result.errors).toBeFalsy();
@@ -263,7 +263,7 @@ describe("Relationship properties - update", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
             });
 
             expect(result.errors).toBeFalsy();
@@ -339,7 +339,7 @@ describe("Relationship properties - update", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
             });
 
             expect(result.errors).toBeFalsy();

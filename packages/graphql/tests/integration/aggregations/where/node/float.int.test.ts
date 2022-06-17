@@ -83,7 +83,7 @@ describe("aggregations-where-node-float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             if (gqlResult.errors) {
@@ -151,7 +151,7 @@ describe("aggregations-where-node-float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             if (gqlResult.errors) {
@@ -218,7 +218,7 @@ describe("aggregations-where-node-float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             if (gqlResult.errors) {
@@ -286,7 +286,7 @@ describe("aggregations-where-node-float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             if (gqlResult.errors) {
@@ -353,7 +353,7 @@ describe("aggregations-where-node-float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             if (gqlResult.errors) {

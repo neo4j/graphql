@@ -88,7 +88,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -144,7 +144,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -206,7 +206,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -276,7 +276,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -338,7 +338,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -403,7 +403,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -465,7 +465,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -532,7 +532,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -597,7 +597,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -662,7 +662,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -733,7 +733,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -809,7 +809,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -887,7 +887,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -950,7 +950,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -1013,7 +1013,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -1075,7 +1075,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -1138,7 +1138,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -1191,7 +1191,7 @@ describe("Advanced Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (gqlResult.errors) {
@@ -1240,7 +1240,7 @@ describe("Advanced Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (gqlResult.errors) {
@@ -1315,7 +1315,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getDriverContextValues(session),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
                     if (gqlResult.errors) {
@@ -1379,7 +1379,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getDriverContextValues(session),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
                     if (gqlResult.errors) {
@@ -1451,7 +1451,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getDriverContextValues(session),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
                     if (gqlResult.errors) {
@@ -1523,7 +1523,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getDriverContextValues(session),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
                     if (gqlResult.errors) {
@@ -1604,7 +1604,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getDriverContextValues(session),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
                     if (gqlResult.errors) {
@@ -1679,7 +1679,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getDriverContextValues(session),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
                     if (gqlResult.errors) {
@@ -1761,7 +1761,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: neo4j.getDriverContextValues(session),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
                     if (gqlResult.errors) {
@@ -1858,7 +1858,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("ALL"),
-                        contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1877,7 +1877,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("NONE"),
-                        contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1896,7 +1896,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("SINGLE"),
-                        contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1915,7 +1915,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("SOME"),
-                        contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1956,7 +1956,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("ALL"),
-                        contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1975,7 +1975,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("NONE"),
-                        contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1994,7 +1994,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("SINGLE"),
-                        contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -2013,7 +2013,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("SOME"),
-                        contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -2094,7 +2094,7 @@ describe("Advanced Filtering", () => {
                 const nullResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: nullQuery,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (nullResult.errors) {
@@ -2121,7 +2121,7 @@ describe("Advanced Filtering", () => {
                 const notNullResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: notNullQuery,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (notNullResult.errors) {
@@ -2192,7 +2192,7 @@ describe("Advanced Filtering", () => {
                 const nullResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: nullQuery,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (nullResult.errors) {
@@ -2218,7 +2218,7 @@ describe("Advanced Filtering", () => {
                 const notNullResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: notNullQuery,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (notNullResult.errors) {

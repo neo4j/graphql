@@ -163,7 +163,7 @@ describe("Connections -> Interfaces", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     name: actorName,
                 },
@@ -239,7 +239,7 @@ describe("Connections -> Interfaces", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     name: actorName,
                 },
@@ -301,7 +301,7 @@ describe("Connections -> Interfaces", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     name: actorName,
                 },
@@ -370,7 +370,7 @@ describe("Connections -> Interfaces", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     name: actorName,
                 },
@@ -451,7 +451,7 @@ describe("Connections -> Interfaces", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     name: actorName,
                 },
@@ -491,7 +491,7 @@ describe("Connections -> Interfaces", () => {
             const nextResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     name: actorName,
                     after: (result as any).data[typeActor.plural][0].actedInConnection.pageInfo.endCursor,
@@ -559,7 +559,7 @@ describe("Connections -> Interfaces", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     name: actorName,
                     title: movie1Title,

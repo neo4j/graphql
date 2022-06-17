@@ -116,7 +116,7 @@ describe("Nested unions", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data as any)?.updateMovies.movies[0].title).toEqual(movieTitle);
@@ -180,7 +180,7 @@ describe("Nested unions", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data as any)?.updateMovies.movies).toEqual([
@@ -265,7 +265,7 @@ describe("Nested unions", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data as any)?.updateMovies.movies).toEqual([
@@ -366,7 +366,7 @@ describe("Nested unions", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data as any)?.updateMovies.movies[0].title).toEqual(movieTitle);
@@ -465,7 +465,7 @@ describe("Nested unions", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data as any)?.createMovies.movies[0].title).toEqual(movieTitle);

@@ -99,7 +99,7 @@ describe("Empty fields on unions due to escaped labels", () => {
         const gqlResult: any = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data).toEqual({

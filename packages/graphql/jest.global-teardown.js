@@ -9,23 +9,23 @@ module.exports = async function globalTeardown() {
     const cypherDetachNodes = `MATCH (n) DETACH DELETE n`
     let session = null
 
-    // try {
-    //     await driver.verifyConnectivity();
-    //     session = driver.session()
-    //     await session.writeTransaction((tx) => tx.run(cypherDropDb));
-    // } catch (error) {
-    //     if (isMultiDbUnsupportedError(error)) {
-    //         // Delete all nodes in the database
-    //         try {
-    //             await session.writeTransaction((tx) => tx.run(cypherDetachNodes));
-    //         } catch (err) {
-    //             console.log(`\nJest /packages/graphql teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypherDetachNodes}", Error: ${err.message}`); // eslint-disable-line no-console
-    //         }
-    //     } else {
-    //         console.log(`\nJest /packages/graphql teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypherDropDb}", Error: ${error.message}`); // eslint-disable-line no-console
-    //     }
-    // } finally {
-    //     if (session) await session.close();
-    //     if (driver) await driver.close();
-    // }
+    try {
+        await driver.verifyConnectivity();
+        session = driver.session()
+        await session.writeTransaction((tx) => tx.run(cypherDropDb));
+    } catch (error) {
+        if (isMultiDbUnsupportedError(error)) {
+            // Delete all nodes in the database
+            try {
+                await session.writeTransaction((tx) => tx.run(cypherDetachNodes));
+            } catch (err) {
+                console.log(`\nJest /packages/graphql teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypherDetachNodes}", Error: ${err.message}`); // eslint-disable-line no-console
+            }
+        } else {
+            console.log(`\nJest /packages/graphql teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypherDropDb}", Error: ${error.message}`); // eslint-disable-line no-console
+        }
+    } finally {
+        if (session) await session.close();
+        if (driver) await driver.close();
+    }
 };

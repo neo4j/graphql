@@ -100,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             const mutationResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues,
             });
 
@@ -167,7 +167,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             const mutationResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues,
             });
 

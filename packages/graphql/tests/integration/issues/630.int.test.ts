@@ -111,7 +111,7 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
             const gqlResult = await graphql({
                 schema,
                 source,
-                contextValue: neo4j.getDriverContextValues(),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { actorId: actors[0].id },
             });
 

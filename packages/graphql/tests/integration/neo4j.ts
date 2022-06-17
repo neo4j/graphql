@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { IncomingMessage } from "http";
 import * as neo4j from "neo4j-driver";
 import * as util from "util";
 
@@ -88,16 +87,8 @@ class Neo4j {
         if (this.hasIntegrationTestDb) {
             appliedOptions = { ...appliedOptions, database: INT_TEST_DB_NAME };
         }
-        // @ts-ignore getDriver() has be executed if driver does not exist
+        // @ts-ignore - getDriver() has been executed if driver does not exist
         return this.driver.session(appliedOptions);
-    }
-
-    public getDriverContextValues(session?: neo4j.Session): DriverContext {
-        const database = this.hasIntegrationTestDb ? INT_TEST_DB_NAME : "neo4j";
-        return {
-            driver: this.driver,
-            driverConfig: { database, ...(session && { bookmarks: session.lastBookmark() }) },
-        };
     }
 
     public getContextValues(options?: Record<string, unknown>): DriverContext {
@@ -109,7 +100,7 @@ class Neo4j {
         };
     }
 
-    public getDriverContextValuesWithBookmarks(bookmarks: string[], options?: Record<string, unknown>): DriverContext {
+    public getContextValuesWithBookmarks(bookmarks: string[], options?: Record<string, unknown>): DriverContext {
         const database = this.hasIntegrationTestDb ? INT_TEST_DB_NAME : "neo4j";
         return {
             ...(options || {}),

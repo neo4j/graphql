@@ -85,7 +85,7 @@ describe("query options", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(result.errors).toBeFalsy();

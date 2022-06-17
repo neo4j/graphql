@@ -73,7 +73,7 @@ describe("delete", () => {
                 schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -130,7 +130,7 @@ describe("delete", () => {
                 schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id: "NOT FOUND" },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -202,7 +202,7 @@ describe("delete", () => {
                 schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id, name },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -294,7 +294,7 @@ describe("delete", () => {
                 schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id1, name, id2 },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -385,7 +385,7 @@ describe("delete", () => {
                 schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { name },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();

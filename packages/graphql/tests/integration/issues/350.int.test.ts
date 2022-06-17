@@ -120,7 +120,7 @@ describe("https://github.com/neo4j/graphql/issues/350", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
             expect(result.errors).toBeFalsy();
             expect((result?.data as any)?.posts[0].flaggedComments).toContainEqual({

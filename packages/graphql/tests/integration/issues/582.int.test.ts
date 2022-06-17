@@ -107,7 +107,7 @@ describe("582", () => {
                     },
                 },
             },
-            contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+            contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -143,7 +143,7 @@ describe("582", () => {
                     },
                 },
             },
-            contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+            contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
         });
 
         expect(gqlResult.errors).toBeFalsy();

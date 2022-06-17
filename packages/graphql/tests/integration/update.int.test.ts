@@ -73,7 +73,7 @@ describe("update", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, name: updatedName },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -134,7 +134,7 @@ describe("update", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, name: updatedName },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -207,7 +207,7 @@ describe("update", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { updatedMovieId, actorName },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -269,7 +269,7 @@ describe("update", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id1, id2, name: updatedName },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -352,7 +352,7 @@ describe("update", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { movieId, updatedName, initialName },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -426,7 +426,7 @@ describe("update", () => {
                 schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id, actorName1 },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -500,7 +500,7 @@ describe("update", () => {
                 schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id, actorName1 },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -591,7 +591,7 @@ describe("update", () => {
                 schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { movieId1, actorName1, movieId2 },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -686,7 +686,7 @@ describe("update", () => {
                 schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id, name1, name3 },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -765,7 +765,7 @@ describe("update", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -832,7 +832,7 @@ describe("update", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -911,7 +911,7 @@ describe("update", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { movieId, seriesId },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -983,7 +983,7 @@ describe("update", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -1075,7 +1075,7 @@ describe("update", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -1221,7 +1221,7 @@ describe("update", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -1339,7 +1339,7 @@ describe("update", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -1440,7 +1440,7 @@ describe("update", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();

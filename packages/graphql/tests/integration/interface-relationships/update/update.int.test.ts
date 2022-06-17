@@ -143,7 +143,7 @@ describe("interface relationships", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: {
                     name: actorName,
                     oldTitle: movieTitle,
@@ -251,7 +251,7 @@ describe("interface relationships", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: {
                     name: actorName,
                     newName: actorNewName,
@@ -383,7 +383,7 @@ describe("interface relationships", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: {
                     name: actorName,
                     oldName: actorOldName,
@@ -534,7 +534,7 @@ describe("interface relationships", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: {
                     name: actorName,
                     oldName: actorOldName,

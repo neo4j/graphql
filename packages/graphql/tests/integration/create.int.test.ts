@@ -70,7 +70,7 @@ describe("create", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -150,7 +150,7 @@ describe("create", () => {
             const result = await graphql({
                 schema,
                 source: query,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName },
             });
 
@@ -219,7 +219,7 @@ describe("create", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id1, id2 },
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -369,7 +369,7 @@ describe("create", () => {
                     },
                 ],
             },
-            contextValue: neo4j.getDriverContextValues(session),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeFalsy();

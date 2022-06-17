@@ -157,7 +157,7 @@ describe("sort", () => {
                 graphql({
                     schema,
                     source,
-                    contextValue: neo4j.getDriverContextValues(),
+                    contextValue: neo4j.getContextValues(),
                     variableValues: { movieIds: movies.map(({ id }) => id), direction },
                 });
 
@@ -277,7 +277,7 @@ describe("sort", () => {
                 graphql({
                     schema,
                     source,
-                    contextValue: neo4j.getDriverContextValues(),
+                    contextValue: neo4j.getContextValues(),
                     variableValues: { movieIds: movies.map(({ id }) => id), direction },
                 });
 
@@ -417,7 +417,7 @@ describe("sort", () => {
             graphql({
                 schema,
                 source,
-                contextValue: neo4j.getDriverContextValues(),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieId: movies[1].id, actorIds: actors.map(({ id }) => id), direction },
             });
 
@@ -702,7 +702,7 @@ describe("sort", () => {
                 graphql({
                     schema,
                     source,
-                    contextValue: neo4j.getDriverContextValues(),
+                    contextValue: neo4j.getContextValues(),
                     variableValues: { actorId: actors[0].id, direction },
                 });
             describe("with field in selection set", () => {
@@ -849,7 +849,7 @@ describe("sort", () => {
             graphql({
                 schema,
                 source,
-                contextValue: neo4j.getDriverContextValues(),
+                contextValue: neo4j.getContextValues(),
                 variableValues: { actorId: actors[0].id, direction },
             });
         describe("node", () => {

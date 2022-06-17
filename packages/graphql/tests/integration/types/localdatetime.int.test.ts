@@ -71,7 +71,7 @@ describe("LocalDateTime", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id, localDT },
                 });
 
@@ -135,7 +135,7 @@ describe("LocalDateTime", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id, localDTs },
                 });
 
@@ -224,7 +224,7 @@ describe("LocalDateTime", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id, localDT },
                 });
 
@@ -296,7 +296,7 @@ describe("LocalDateTime", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: query,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { localDT },
                 });
 
@@ -396,7 +396,7 @@ describe("LocalDateTime", () => {
                         const graphqlResult = await graphql({
                             schema,
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                             variableValues: {
                                 where: { id_IN: [futureId, presentId, pastId], [`localDT_${filter}`]: present },
                             },
@@ -532,7 +532,7 @@ describe("LocalDateTime", () => {
                         const graphqlResult = await graphql({
                             schema,
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                             variableValues: {
                                 futureId,
                                 presentId,

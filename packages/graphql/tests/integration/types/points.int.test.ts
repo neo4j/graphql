@@ -79,7 +79,7 @@ describe("[Point]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: neo4j.getDriverContextValues(session),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { id, waypoints },
         });
 
@@ -134,7 +134,7 @@ describe("[Point]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: neo4j.getDriverContextValues(session),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { id, waypoints },
         });
 
@@ -220,7 +220,7 @@ describe("[Point]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getDriverContextValues(session),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { id, waypoints: newWaypoints },
         });
 
@@ -308,7 +308,7 @@ describe("[Point]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getDriverContextValues(session),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { id, waypoints: newWaypoints },
         });
 
@@ -378,7 +378,7 @@ describe("[Point]", () => {
         const routesResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: routesQuery,
-            contextValue: neo4j.getDriverContextValues(session),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { waypoints },
         });
 
@@ -406,7 +406,7 @@ describe("[Point]", () => {
         const routesIncludesResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: routesIncludesQuery,
-            contextValue: neo4j.getDriverContextValues(session),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { waypoint: waypoints[0] },
         });
 
@@ -434,7 +434,7 @@ describe("[Point]", () => {
         const routesNotIncludesResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: routesNotIncludesQuery,
-            contextValue: neo4j.getDriverContextValues(session),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: {
                 waypoint: {
                     longitude: parseFloat(faker.address.longitude()),
@@ -490,7 +490,7 @@ describe("[Point]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: routesQuery,
-            contextValue: neo4j.getDriverContextValues(session),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { id },
         });
 

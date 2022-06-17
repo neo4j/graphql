@@ -99,7 +99,7 @@ describe("Aliasing", () => {
         const gqlResult = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+            contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
             variableValues: { id },
         });
 
@@ -125,7 +125,7 @@ describe("Aliasing", () => {
         const gqlResult = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+            contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
             variableValues: { id },
         });
 
@@ -151,7 +151,7 @@ describe("Aliasing", () => {
         const gqlResult = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+            contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
             variableValues: { id },
         });
 

@@ -71,7 +71,7 @@ describe("Time", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id, time },
                 });
 
@@ -134,7 +134,7 @@ describe("Time", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id, times },
                 });
 
@@ -221,7 +221,7 @@ describe("Time", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id, time },
                 });
 
@@ -292,7 +292,7 @@ describe("Time", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: query,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { time },
                 });
 
@@ -386,7 +386,7 @@ describe("Time", () => {
                         const graphqlResult = await graphql({
                             schema,
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                             variableValues: {
                                 where: { id_IN: [futureId, presentId, pastId], [`time_${filter}`]: present },
                             },
@@ -516,7 +516,7 @@ describe("Time", () => {
                         const graphqlResult = await graphql({
                             schema,
                             source: query,
-                            contextValue: neo4j.getDriverContextValues(session),
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                             variableValues: {
                                 futureId,
                                 presentId,

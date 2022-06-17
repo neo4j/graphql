@@ -71,7 +71,7 @@ describe("integration/rfcs/query-limits", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (gqlResult.errors) {
@@ -133,7 +133,7 @@ describe("integration/rfcs/query-limits", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (gqlResult.errors) {
@@ -197,7 +197,7 @@ describe("integration/rfcs/query-limits", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (gqlResult.errors) {

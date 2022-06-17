@@ -67,7 +67,7 @@ describe("timestamp/time", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: create,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id },
                 });
 
@@ -142,7 +142,7 @@ describe("timestamp/time", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: create,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { title, name, screenTime },
                 });
 
@@ -203,7 +203,7 @@ describe("timestamp/time", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: create,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id },
                 });
 
@@ -281,7 +281,7 @@ describe("timestamp/time", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: update,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { title, screenTime },
                 });
 
@@ -338,7 +338,7 @@ describe("timestamp/time", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: create,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(graphqlResult.errors).toBeFalsy();
@@ -409,7 +409,7 @@ describe("timestamp/time", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: create,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { title, name, screenTime },
                 });
 
@@ -491,7 +491,7 @@ describe("timestamp/time", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: update,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { title, screenTime },
                 });
 
@@ -550,7 +550,7 @@ describe("timestamp/time", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: create,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id },
                 });
 
@@ -603,7 +603,7 @@ describe("timestamp/time", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: create,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(graphqlResult.errors).toBeFalsy();
@@ -673,7 +673,7 @@ describe("timestamp/time", () => {
                 const graphqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: create,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { title, name, screenTime },
                 });
 
@@ -755,7 +755,7 @@ describe("timestamp/time", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: update,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { title, screenTime },
                 });
 
@@ -814,7 +814,7 @@ describe("timestamp/time", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: create,
-                    contextValue: neo4j.getDriverContextValues(session),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id },
                 });
 

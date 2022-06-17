@@ -114,7 +114,7 @@ describe("Connection Resolvers", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -218,7 +218,7 @@ describe("Connection Resolvers", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: {
                     input: [
                         {
@@ -284,7 +284,7 @@ describe("Connection Resolvers", () => {
             const result2 = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: secondQuery,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: {
                     movieId,
                     endCursor: (result?.data as any)?.createMovies.movies[0].actorsConnection.pageInfo.endCursor,
@@ -314,7 +314,7 @@ describe("Connection Resolvers", () => {
             const result3 = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: secondQuery,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: {
                     movieId,
                     endCursor: (result2?.data as any)?.movies[0].actorsConnection.pageInfo.endCursor,
@@ -393,7 +393,7 @@ describe("Connection Resolvers", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieId },
             });
 

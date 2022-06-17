@@ -149,7 +149,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                 },
@@ -221,7 +221,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                 },
@@ -298,7 +298,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                 },
@@ -336,7 +336,7 @@ describe("Connections -> Unions", () => {
             const nextResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     after: (result.data?.authors as any)[0].publicationsConnection.pageInfo.endCursor,
@@ -399,7 +399,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                 },
@@ -466,7 +466,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookTitle: book1Title,
@@ -524,7 +524,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookTitle: book1Title,
@@ -592,7 +592,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookTitle: book1Title,
@@ -670,7 +670,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookTitle: book1Title,
@@ -731,7 +731,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookWordCount: book1WordCount,
@@ -789,7 +789,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookWordCount: book1WordCount,
@@ -857,7 +857,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookWordCount: book1WordCount,
@@ -935,7 +935,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookWordCount: book1WordCount,
@@ -1003,7 +1003,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookWordCount: book1WordCount,

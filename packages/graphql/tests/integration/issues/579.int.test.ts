@@ -108,7 +108,7 @@ describe("579", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();

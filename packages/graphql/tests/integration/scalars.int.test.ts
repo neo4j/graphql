@@ -102,7 +102,7 @@ describe("scalars", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -150,7 +150,7 @@ describe("scalars", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -189,7 +189,7 @@ describe("scalars", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: mutation,
-            contextValue: neo4j.getDriverContextValues(),
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 input: [{ integers }],
             },
@@ -228,7 +228,7 @@ describe("scalars", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: mutation,
-            contextValue: neo4j.getDriverContextValues(),
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 input: [{ floats }],
             },

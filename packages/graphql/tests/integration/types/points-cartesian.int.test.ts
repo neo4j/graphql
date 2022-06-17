@@ -79,7 +79,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: neo4j.getDriverContextValues(session),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { id, locations },
         });
 
@@ -134,7 +134,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: neo4j.getDriverContextValues(session),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { id, locations },
         });
 
@@ -220,7 +220,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getDriverContextValues(session),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { id, locations: newLocations },
         });
 
@@ -308,7 +308,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getDriverContextValues(session),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { id, locations: newLocations },
         });
 
@@ -376,7 +376,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: partsQuery,
-            contextValue: neo4j.getDriverContextValues(session),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { id },
         });
 
@@ -427,7 +427,7 @@ describe("[CartesianPoint]", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: partsQuery,
-            contextValue: neo4j.getDriverContextValues(session),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { id },
         });
 

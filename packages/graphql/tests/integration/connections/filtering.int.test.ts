@@ -86,7 +86,7 @@ describe("Connections Filtering", () => {
             const result = await graphql({
                 schema,
                 source: query,
-                contextValue: neo4j.getDriverContextValues(session),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: {
                     movieTitle,
                 },

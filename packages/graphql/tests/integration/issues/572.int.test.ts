@@ -62,7 +62,7 @@ describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getDriverContextValues(),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();

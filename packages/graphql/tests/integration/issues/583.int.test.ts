@@ -139,7 +139,7 @@ describe("583", () => {
             schema,
             source: query.loc!.source,
             variableValues: { actorId: actor.id },
-            contextValue: neo4j.getDriverContextValues(),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();

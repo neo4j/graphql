@@ -70,7 +70,7 @@ describe("integration/rfc/003", () => {
                 const result = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: mutation,
-                    contextValue: neo4j.getDriverContextValues(),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(result.errors).toBeTruthy();
@@ -118,7 +118,7 @@ describe("integration/rfc/003", () => {
                     const result = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: mutation,
-                        contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getContextValues(),
                     });
 
                     expect(result.errors).toBeTruthy();
@@ -166,7 +166,7 @@ describe("integration/rfc/003", () => {
                     const result = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: mutation,
-                        contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getContextValues(),
                     });
 
                     expect(result.errors).toBeTruthy();
@@ -227,7 +227,7 @@ describe("integration/rfc/003", () => {
                         const result = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: mutation,
-                            contextValue: neo4j.getDriverContextValues(),
+                            contextValue: neo4j.getContextValues(),
                         });
 
                         expect(result.errors).toBeTruthy();
@@ -287,7 +287,7 @@ describe("integration/rfc/003", () => {
                         const result = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: mutation,
-                            contextValue: neo4j.getDriverContextValues(),
+                            contextValue: neo4j.getContextValues(),
                         });
 
                         expect(result.errors).toBeTruthy();
@@ -351,7 +351,7 @@ describe("integration/rfc/003", () => {
                         const result = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: mutation,
-                            contextValue: neo4j.getDriverContextValues(),
+                            contextValue: neo4j.getContextValues(),
                         });
 
                         expect(result.errors).toBeTruthy();
@@ -399,7 +399,7 @@ describe("integration/rfc/003", () => {
                 const result = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: mutation,
-                    contextValue: neo4j.getDriverContextValues(),
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(result.errors).toBeTruthy();
@@ -466,7 +466,7 @@ describe("integration/rfc/003", () => {
                         const result = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: mutation,
-                            contextValue: neo4j.getDriverContextValues(),
+                            contextValue: neo4j.getContextValues(),
                         });
 
                         expect(result.errors).toBeTruthy();
@@ -522,7 +522,7 @@ describe("integration/rfc/003", () => {
                         const result = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: mutation,
-                            contextValue: neo4j.getDriverContextValues(),
+                            contextValue: neo4j.getContextValues(),
                         });
 
                         expect(result.errors).toBeTruthy();
@@ -593,7 +593,7 @@ describe("integration/rfc/003", () => {
                     const result = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: mutation,
-                        contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getContextValues(),
                     });
 
                     expect(result.errors).toBeUndefined();
@@ -669,7 +669,7 @@ describe("integration/rfc/003", () => {
                     const result = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: mutation,
-                        contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getContextValues(),
                     });
 
                     expect(result.errors).toBeUndefined();
@@ -745,7 +745,7 @@ describe("integration/rfc/003", () => {
                     const result = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: mutation,
-                        contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getContextValues(),
                     });
 
                     expect(result.errors).toBeTruthy();

@@ -89,7 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
         const gqlResult: any = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -114,7 +114,7 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
         const gqlResult: any = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();

@@ -71,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/200", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { catOne, catTwo, exampleImageLocations: [] },
-            contextValue: neo4j.getDriverContextValues(),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();

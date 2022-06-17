@@ -93,7 +93,7 @@ describe("Field Level Aggregations Graphql alias", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -131,7 +131,7 @@ describe("Field Level Aggregations Graphql alias", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();

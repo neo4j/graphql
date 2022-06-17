@@ -108,7 +108,7 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
         const res = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getDriverContextValues(),
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(res.errors).toBeUndefined();

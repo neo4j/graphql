@@ -127,7 +127,7 @@ describe("Update -> ConnectOrCreate", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(queryUpdate),
-            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -140,7 +140,7 @@ describe("Update -> ConnectOrCreate", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(queryUpdate),
-            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
         });
         expect(gqlResult.errors).toBeUndefined();
 
@@ -157,7 +157,7 @@ describe("Update -> ConnectOrCreate", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(queryCreate),
-            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
         });
         expect(gqlResult.errors).toBeUndefined();
 

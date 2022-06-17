@@ -72,7 +72,7 @@ describe("Global node resolution", () => {
                 schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: [{ title: "2001: A Space Odyssey" }] },
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             })) as {
                 data: Record<string, { [key: string]: { id: string; dbId: string }[] }>;
                 errors: any;
@@ -117,7 +117,7 @@ describe("Global node resolution", () => {
                 schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: [{ title: "2001: A Space Odyssey" }] },
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(mutationResult.errors).toBeUndefined();
@@ -167,13 +167,13 @@ describe("Global node resolution", () => {
                 schema: await neoSchema.getSchema(),
                 source: create,
                 variableValues: { input: [{ title: "2001: A Space Odyssey" }] },
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -236,7 +236,7 @@ describe("Global node resolution", () => {
                     },
                 ],
             },
-            contextValue: neo4j.getDriverContextValues(),
+            contextValue: neo4j.getContextValues(),
             source: mutation,
         });
 
@@ -317,7 +317,7 @@ describe("Global node resolution", () => {
                     },
                 ],
             },
-            contextValue: neo4j.getDriverContextValues(),
+            contextValue: neo4j.getContextValues(),
             source: mutation,
         });
 
@@ -386,7 +386,7 @@ describe("Global node resolution", () => {
         await graphql({
             schema: await neoSchema.getSchema(),
             variableValues: { input: [{ title: film.title, website: film.website }] },
-            contextValue: neo4j.getDriverContextValuesWithBookmarks([]),
+            contextValue: neo4j.getContextValuesWithBookmarks([]),
             source: `
                   mutation($input: [${typeFilm.name}CreateInput!]!) {
                     ${typeFilm.operations.create}(input: $input) {
@@ -406,7 +406,7 @@ describe("Global node resolution", () => {
         await graphql({
             schema: await neoSchema.getSchema(),
             variableValues: { input: [{ name: actor.name, hairColor: actor.hairColor }] },
-            contextValue: neo4j.getDriverContextValuesWithBookmarks([]),
+            contextValue: neo4j.getContextValuesWithBookmarks([]),
             source: `
                   mutation($input: [FilmActorCreateInput!]!) {
                     createFilmActors(input: $input) {
@@ -421,7 +421,7 @@ describe("Global node resolution", () => {
         const filmQueryResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getDriverContextValuesWithBookmarks([]),
+            contextValue: neo4j.getContextValuesWithBookmarks([]),
             variableValues: { id: film.id },
         });
 
@@ -433,7 +433,7 @@ describe("Global node resolution", () => {
         const actorQueryResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getDriverContextValuesWithBookmarks([]),
+            contextValue: neo4j.getContextValuesWithBookmarks([]),
             variableValues: { id: actor.id },
         });
 

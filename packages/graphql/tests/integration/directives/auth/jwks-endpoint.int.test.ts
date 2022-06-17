@@ -100,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), {
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
                     request: {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     },
@@ -164,7 +164,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), {
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
                     request: {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     },
@@ -228,7 +228,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), {
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
                     request: {
                         headers: { Authorization: `Bearer ${accessToken}` },
                     },

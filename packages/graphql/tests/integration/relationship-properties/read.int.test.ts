@@ -115,7 +115,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
             });
 
             expect(result.errors).toBeFalsy();
@@ -183,7 +183,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
             });
 
             expect(result.errors).toBeFalsy();
@@ -244,7 +244,7 @@ describe("Relationship properties - read", () => {
             const ascResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: { nameSort: "ASC" },
             });
 
@@ -285,7 +285,7 @@ describe("Relationship properties - read", () => {
             const descResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: { nameSort: "DESC" },
             });
 
@@ -361,7 +361,7 @@ describe("Relationship properties - read", () => {
             const ascResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: { nameSort: "ASC" },
             });
 
@@ -396,7 +396,7 @@ describe("Relationship properties - read", () => {
             const descResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: { nameSort: "DESC" },
             });
 
@@ -462,7 +462,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
             });
 
             expect(result.errors).toBeFalsy();
@@ -526,7 +526,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
             });
 
             expect(result.errors).toBeFalsy();

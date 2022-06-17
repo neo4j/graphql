@@ -118,7 +118,7 @@ describe("Connections Alias", () => {
         const result = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(result.errors).toBeUndefined();
@@ -182,7 +182,7 @@ describe("Connections Alias", () => {
         const result = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark()),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(result.errors).toBeUndefined();

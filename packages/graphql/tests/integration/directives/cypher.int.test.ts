@@ -97,7 +97,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getDriverContextValues(session),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { title: movieTitle },
                     });
 
@@ -167,7 +167,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getDriverContextValues(session),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { title: movieTitle, name: actorName },
                     });
 
@@ -248,7 +248,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getDriverContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                         variableValues: { title: movieTitle, name: actorName },
                     });
 
@@ -326,7 +326,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getDriverContextValues(session),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { titles: [movieTitle1, movieTitle2, movieTitle3] },
                     });
 
@@ -433,7 +433,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getDriverContextValues(session),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { title },
                     });
 
@@ -511,7 +511,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getDriverContextValues(session),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { title: movieTitle },
                     });
 
@@ -581,7 +581,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getDriverContextValues(session),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { title: movieTitle },
                     });
 
@@ -651,7 +651,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getDriverContextValues(session),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { title: movieTitle },
                     });
 
@@ -738,7 +738,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getContextValues(),
                     });
 
                 const expectedStartId = `${defaultOffset + 1}`;
@@ -774,7 +774,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { offset, limit },
                     });
 
@@ -863,7 +863,7 @@ describe("cypher", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source,
-                        contextValue: neo4j.getDriverContextValues(session),
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         variableValues: { id: townId },
                     });
 
@@ -954,7 +954,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { id: townId },
                     });
 
@@ -993,7 +993,7 @@ describe("cypher", () => {
                     graphql({
                         schema,
                         source,
-                        contextValue: neo4j.getDriverContextValues(),
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { id: townId, caseName: testCaseName },
                     });
 

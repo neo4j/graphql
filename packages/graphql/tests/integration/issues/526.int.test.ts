@@ -104,7 +104,7 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getDriverContextValuesWithBookmarks(bookmarks),
+            contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
         });
 
         expect(result.errors).toBeFalsy();
