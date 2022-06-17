@@ -100,7 +100,7 @@ class Neo4j {
         };
     }
 
-    public getDriverContextValuesWithOptions(options?: Record<string, unknown>): DriverContext {
+    public getContextValues(options?: Record<string, unknown>): DriverContext {
         const database = this.hasIntegrationTestDb ? INT_TEST_DB_NAME : "neo4j";
         return {
             ...(options || {}),

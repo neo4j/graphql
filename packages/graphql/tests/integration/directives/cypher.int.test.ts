@@ -1096,7 +1096,7 @@ describe("cypher", () => {
                 const gqlResult = await graphql({
                     schema,
                     source,
-                    contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
+                    contextValue: neo4j.getContextValues({ req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();

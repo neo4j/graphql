@@ -100,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             const result = await graphql({
                 schema,
                 source: getQuerySource(query),
-                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
+                contextValue: neo4j.getContextValues({ req }),
             });
             expect((result.errors as any[])[0].message).toBe("Forbidden");
         });
@@ -160,7 +160,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             const result = await graphql({
                 schema,
                 source: getQuerySource(query),
-                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
+                contextValue: neo4j.getContextValues({ req }),
             });
             expect(result.errors).toBeUndefined();
             expect(result.data as any).toEqual({
@@ -231,7 +231,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             const result = await graphql({
                 schema,
                 source: getQuerySource(query),
-                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
+                contextValue: neo4j.getContextValues({ req }),
             });
             expect((result.errors as any[])[0].message).toBe("Forbidden");
         });
@@ -290,7 +290,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             const result = await graphql({
                 schema,
                 source: getQuerySource(query),
-                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
+                contextValue: neo4j.getContextValues({ req }),
             });
             expect(result.errors).toBeUndefined();
             expect(result.data as any).toEqual({

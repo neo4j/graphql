@@ -728,7 +728,7 @@ describe("auth/is-authenticated", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getDriverContextValuesWithOptions({ jwt }),
+                    contextValue: neo4j.getContextValues({ jwt }),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();

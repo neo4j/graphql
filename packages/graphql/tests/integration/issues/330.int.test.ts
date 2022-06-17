@@ -71,7 +71,7 @@ describe("unauthenticated-requests", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
+            contextValue: neo4j.getContextValues({ req }),
         });
 
         expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -108,7 +108,7 @@ describe("unauthenticated-requests", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
+            contextValue: neo4j.getContextValues({ req }),
         });
 
         expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -147,7 +147,7 @@ describe("unauthenticated-requests", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
+            contextValue: neo4j.getContextValues({ req }),
         });
 
         expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");

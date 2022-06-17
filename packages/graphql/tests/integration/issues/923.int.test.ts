@@ -105,7 +105,7 @@ describe("https://github.com/neo4j/graphql/issues/923", () => {
         const result = await graphql({
             schema,
             source: getQuerySource(query),
-            contextValue: neo4j.getDriverContextValuesWithOptions({
+            contextValue: neo4j.getContextValues({
                 jwt: {
                     sub: "test",
                 },

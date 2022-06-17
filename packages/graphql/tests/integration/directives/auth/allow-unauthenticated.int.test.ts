@@ -426,7 +426,7 @@ describe("auth/allow-unauthenticated", () => {
             const req = new IncomingMessage(socket);
 
             const gqlResult = await graphql({
-                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
+                contextValue: neo4j.getContextValues({ req }),
                 schema: await neoSchema.getSchema(),
                 source: query,
             });

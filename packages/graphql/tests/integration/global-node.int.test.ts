@@ -496,7 +496,7 @@ describe("Global node resolution", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
+                contextValue: neo4j.getContextValues({ req }),
                 variableValues: { id: toGlobalId({ typeName: typeFilm.name, field: "title", id: filmTitle }) },
             });
 
@@ -550,7 +550,7 @@ describe("Global node resolution", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
+                contextValue: neo4j.getContextValues({ req }),
                 variableValues: { id: relayId },
             });
 
@@ -608,7 +608,7 @@ describe("Global node resolution", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: neo4j.getDriverContextValuesWithOptions({ req }),
+                contextValue: neo4j.getContextValues({ req }),
                 variableValues: { id: relayId },
             });
 
