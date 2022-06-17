@@ -37,7 +37,7 @@ describe("Subscriptions delete", () => {
         driver = await neo4j.getDriver();
     });
 
-    beforeEach(async () => {
+    beforeEach(() => {
         plugin = new TestSubscriptionsPlugin();
     });
 
