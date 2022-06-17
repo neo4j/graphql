@@ -22,9 +22,12 @@ import { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
+import { generateUniqueType } from "../../utils/graphql-types";
 
-const testLabel = generate({ charset: "alphabetic" });
 describe("https://github.com/neo4j/graphql/issues/630", () => {
+    const testLabel = generate({ charset: "alphabetic" });
+    const typeMovie = generateUniqueType("Movie");
+    const typeActor = generateUniqueType("Actor");
     let driver: Driver;
     let neo4j: Neo4j;
 
@@ -39,16 +42,16 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
 
     test("should query nested connection", async () => {
         const typeDefs = `
-        type Actor {
+        type ${typeActor} {
             id: ID!
             name: String!
-            movies: [Movie!]! @cypher(statement: "MATCH (this)-[:ACTED_IN]->(m:Movie) RETURN m")
+            movies: [${typeMovie}!]! @cypher(statement: "MATCH (this)-[:ACTED_IN]->(m:${typeMovie}) RETURN m")
         }
 
-        type Movie {
+        type ${typeMovie} {
             id: ID!
             title: String!
-            actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+            actors: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN)
         }
     `;
 
@@ -75,9 +78,9 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
         try {
             await session.run(
                 `
-            CREATE (movie:Movie:${testLabel}) SET movie = $movie
-            CREATE (actor1:Actor:${testLabel}) SET actor1 = $actors[0]
-            CREATE (actor2:Actor:${testLabel}) SET actor2 = $actors[1]
+            CREATE (movie:${typeMovie}:${testLabel}) SET movie = $movie
+            CREATE (actor1:${typeActor}:${testLabel}) SET actor1 = $actors[0]
+            CREATE (actor2:${typeActor}:${testLabel}) SET actor2 = $actors[1]
             MERGE (actor1)-[:ACTED_IN]->(movie)<-[:ACTED_IN]-(actor2)
         `,
                 { actors, movie }
@@ -85,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
 
             const source = `
             query($actorId: ID!) {
-                actors(where: { id: $actorId }) {
+                ${typeActor.plural}(where: { id: $actorId }) {
                     id
                     name
                     movies {
@@ -114,7 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            const gqlActor = (gqlResult.data as any)?.actors[0];
+            const gqlActor = (gqlResult.data as any)[typeActor.plural][0];
 
             expect(gqlActor).toBeDefined();
             expect(gqlActor).toEqual({

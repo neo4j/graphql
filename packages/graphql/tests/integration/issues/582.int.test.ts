@@ -20,16 +20,16 @@
 import { graphql } from "graphql";
 import { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
 
 describe("582", () => {
     let driver: Driver;
-    let neo4j: Neo4j;
-    let type;
+    let type: UniqueType;
     let bookmarks: string[];
     let typeDefs: string;
     let query: string;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
         type = generateUniqueType("Entity");
