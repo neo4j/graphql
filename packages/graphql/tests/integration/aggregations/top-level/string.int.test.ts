@@ -43,9 +43,9 @@ describe("aggregations-top_level-string", () => {
         driver = await neo4j.getDriver();
     });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         typeMovie = generateUniqueType("Movie");
-        session = driver.session();
+        session = await neo4j.getSession();
     });
 
     afterEach(async () => {
@@ -57,8 +57,6 @@ describe("aggregations-top_level-string", () => {
     });
 
     test("should return the shortest of node properties", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type ${typeMovie} {
                 testId: ID
@@ -115,8 +113,6 @@ describe("aggregations-top_level-string", () => {
     });
 
     test("should return the longest of node properties", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type ${typeMovie} {
                 testId: ID
@@ -173,8 +169,6 @@ describe("aggregations-top_level-string", () => {
     });
 
     test("should return the shortest and longest of node properties", async () => {
-        const session = await neo4j.getSession();
-
         const typeDefs = `
             type ${typeMovie} {
                 testId: ID

@@ -72,7 +72,7 @@ describe("interface relationships", () => {
         `;
     });
 
-    beforeEach(async () => {
+    beforeEach(() => {
         subscriptionsPlugin = new TestSubscriptionsPlugin();
         neoSchema = new Neo4jGraphQL({
             typeDefs,

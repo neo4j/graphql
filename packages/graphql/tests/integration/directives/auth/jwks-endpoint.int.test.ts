@@ -46,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/564", () => {
         await driver.close();
     });
 
-    beforeEach(async () => {
+    beforeEach(() => {
         ({ jwksMock, server } = createContext());
     });
 

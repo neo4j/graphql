@@ -44,7 +44,7 @@ module.exports = async function globalSetup() {
             console.log(`\nJest /packages/graphql setup: Setup failure on neo4j @ ${NEO_URL}, cypher: "${cypherCreateDb}", Error: ${error.message}`); // eslint-disable-line no-console
         }
     } finally {
-        if (session) session.close()
-        driver.close()
+        if (session) await session.close()
+        if (driver) await driver.close()
     }
 };

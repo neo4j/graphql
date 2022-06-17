@@ -63,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
         driver = await neo4j.getDriver();
     });
 
-    beforeEach(async () => {
+    beforeEach(() => {
         typeAuthor = generateUniqueType("Author");
         typeBook = generateUniqueType("Book");
 

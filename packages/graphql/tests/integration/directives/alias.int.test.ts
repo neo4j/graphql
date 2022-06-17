@@ -415,7 +415,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks([bookmark]),
+            contextValue: neo4j.getContextValuesWithBookmarks([bookmark] as string[]),
         });
 
         expect(gqlResult.errors).toBeFalsy();
