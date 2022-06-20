@@ -27,7 +27,9 @@ For `Float` type, the following operators are available:
 * `_MULTIPLY`
 * `_DIVIDE`
 
-== The social platform schema
+== Examples
+
+=== The social platform schema
 In this section, we use the following GraphQL schema:
 
 [source, graphql, indent=0]

@@ -49,7 +49,7 @@ interface MathDescriptor {
 }
 
 interface MathMatch {
-    isMatched: boolean;
+    hasMatched: boolean;
     operatorName: string;
     propertyName: string;
 }
@@ -58,15 +58,15 @@ export function matchMathField(graphQLFieldName: string): MathMatch {
     const mathFieldMatch = graphQLFieldName.match(MATH_FIELD_REGX);
     if (mathFieldMatch && mathFieldMatch.groups) {
         const { operatorName, propertyName } = mathFieldMatch.groups;
-        const isMatched = Boolean(mathFieldMatch && mathFieldMatch.length > 2 && operatorName && propertyName);
+        const hasMatched = Boolean(mathFieldMatch && mathFieldMatch.length > 2 && operatorName && propertyName);
         return {
-            isMatched,
+            hasMatched,
             operatorName,
             propertyName
         }
     } 
     return {
-        isMatched: false,
+        hasMatched: false,
         operatorName: "",
         propertyName: ""
     }

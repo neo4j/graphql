@@ -69,7 +69,7 @@ function createSetRelationshipProperties({
         addCallbackAndSetParam(field, varName, properties, callbackBucket, strs, operation)
     );
 
-    Object.entries(properties).forEach(([key, value], _idx, _properties) => {
+    Object.entries(properties).forEach(([key, value], _idx, propertiesEntries) => {
         const paramName = `${parameterPrefix}.${key}`;
 
         const pointField = relationship.pointFields.find((x) => x.fieldName === key);
@@ -82,15 +82,15 @@ function createSetRelationshipProperties({
 
             return;
         }
-        
+
         const mathMatch = matchMathField(key);
-        const {isMatched} = mathMatch;
-        if (isMatched) {
+        const { hasMatched } = mathMatch;
+        if (hasMatched) {
             const mathDescriptor = mathDescriptorBuilder(value as number, relationship, mathMatch);
-            if (_properties.find(([_key]) => _key === mathDescriptor.dbName)) {
+            if (propertiesEntries.find(([entryKey]) => entryKey === mathDescriptor.dbName)) {
                 throw new Error(`Ambiguous property: ${mathDescriptor.dbName}`);
             }
-            
+
             const mathStatements = buildMathStatements(mathDescriptor, varName, paramName);
             strs.push(...mathStatements);
             return;

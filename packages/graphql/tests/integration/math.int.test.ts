@@ -364,40 +364,36 @@ describe("Mathematical operations tests", () => {
         }
         `;
 
-        try {
-            // Create new movie
-            await session.run(
-                `
+        // Create new movie
+        await session.run(
+            `
                 CREATE (a:${movie.name} {viewers: $initialViewers}), (b:${actor.name} {id: $id, name: $name}) WITH a,b CREATE (a)<-[worksInMovies: WORKED_IN]-(b) RETURN a, worksInMovies, b
                 `,
-                {
-                    id,
-                    initialViewers,
-                    name,
-                }
-            );
-            // Update movie
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                variableValues: { id, value: 10 },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-            });
+            {
+                id,
+                initialViewers,
+                name,
+            }
+        );
+        // Update movie
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            variableValues: { id, value: 10 },
+            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+        });
 
-            expect(gqlResult.errors).toBeUndefined();
-            const storedValue = await session.run(
-                `
+        expect(gqlResult.errors).toBeUndefined();
+        const storedValue = await session.run(
+            `
                 MATCH (n:${actor.name} {id: $id})--(m:${movie.name}) RETURN n.name AS name, m.viewers AS viewers
                 `,
-                {
-                    id,
-                }
-            );
-            expect(storedValue.records[0].get("viewers")).toEqual(int(110));
-            expect(storedValue.records[0].get("name")).toBe(name);
-        } finally {
-            await session.close();
-        }
+            {
+                id,
+            }
+        );
+        expect(storedValue.records[0].get("viewers")).toEqual(int(110));
+        expect(storedValue.records[0].get("name")).toBe(name);
     });
 
     test("Should be possible to update nested nodes using interfaces", async () => {

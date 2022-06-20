@@ -461,8 +461,8 @@ function createUpdateAndParams({
         );
 
         const mathMatch = matchMathField(key);
-        const { isMatched, propertyName } = mathMatch;
-        const settableFieldComparator = isMatched ? propertyName : key;
+        const { hasMatched, propertyName } = mathMatch;
+        const settableFieldComparator = hasMatched ? propertyName : key;
         const settableField = node.mutableFields.find((x) => x.fieldName === settableFieldComparator);
         const authableField = node.authableFields.find((x) => x.fieldName === key);
 
@@ -473,7 +473,7 @@ function createUpdateAndParams({
                 } else {
                     res.strs.push(`SET ${varName}.${dbFieldName} = point($${param})`);
                 }
-            } else if (isMatched) {
+            } else if (hasMatched) {
                 const mathDescriptor = mathDescriptorBuilder(value as number, node, mathMatch);
                 if (updateInput[mathDescriptor.dbName]) {
                     throw new Error(`Ambiguous property: ${mathDescriptor.dbName}`);
