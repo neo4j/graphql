@@ -362,32 +362,63 @@ describe("Cypher WHERE", () => {
         `);
     });
 
-    test("Simple IN", async () => {
-        const query = gql`
-            {
-                movies(where: { title_IN: ["some title"] }) {
-                    title
+    describe("Where clauses", () => {
+        test("Simple IN", async () => {
+            const query = gql`
+                {
+                    movies(where: { title_IN: ["some title"] }) {
+                        title
+                    }
                 }
-            }
-        `;
+            `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
-        });
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
 
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:\`Movie\`)
             WHERE this0.title IN $param0
             RETURN this { .title } as this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": [
                     \\"some title\\"
                 ]
             }"
         `);
+        });
+
+        test("Simple NOT IN", async () => {
+            const query = gql`
+                {
+                    movies(where: { title_NOT_IN: ["some title"] }) {
+                        title
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this0:\`Movie\`)
+            WHERE NOT (this0.title IN $param0)
+            RETURN this { .title } as this"
+        `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": [
+                    \\"some title\\"
+                ]
+            }"
+        `);
+        });
     });
 });
