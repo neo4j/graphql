@@ -23,9 +23,10 @@ import { Node } from "../references/Node";
 import { Param } from "../references/Param";
 import { Query } from "./Query";
 import { ReturnStatement } from "./Return";
+import { WhereClause } from "./where-clauses";
 import { and, WhereOperator } from "./where-operators";
 
-type Params = Record<string, Param<any>>;
+type Params = Record<string, Param<any> | WhereClause>;
 
 type WhereInput = Array<[MatchableElement, Params] | WhereOperator>;
 

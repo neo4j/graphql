@@ -377,14 +377,14 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title IN $this_title_IN
+            "MATCH (this0:\`Movie\`)
+            WHERE this0.title IN $param0
             RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title_IN\\": [
+                \\"param0\\": [
                     \\"some title\\"
                 ]
             }"

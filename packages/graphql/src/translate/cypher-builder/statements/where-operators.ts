@@ -20,8 +20,9 @@
 import { CypherContext } from "../CypherContext";
 import { MatchableElement } from "../MatchPattern";
 import { Param } from "../references/Param";
+import { WhereClause } from "./where-clauses";
 
-type Params = Record<string, Param<any>>;
+type Params = Record<string, Param<any> | WhereClause>;
 type WhereInput = Array<[MatchableElement, Params] | WhereOperator>;
 
 type Operation = "OR" | "AND";
@@ -51,12 +52,17 @@ export class WhereOperator {
         return `${operationsStr}`;
     }
 
+    // TODO: move somewhere else
     private composeWhere(context: CypherContext, input: [MatchableElement, Params]): string {
         const [matchableElement, params] = input;
         const nodeAlias = context.getVariableId(matchableElement);
 
         const paramsStrs = Object.entries(params).map(([key, value]) => {
-            return `${nodeAlias}.${key} = ${value instanceof Param ? value.getCypher(context) : value}`;
+            if (value instanceof WhereClause) {
+                return `${nodeAlias}.${key} ${value.getCypher(context)}`;
+            }
+
+            return `${nodeAlias}.${key} = ${value.getCypher(context)}`;
         });
 
         return `${paramsStrs.join("\nAND ")}`;

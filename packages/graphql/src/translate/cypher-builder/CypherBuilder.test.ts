@@ -183,6 +183,33 @@ describe("CypherBuilder", () => {
                 }
             `);
         });
+
+        describe("Where clauses", () => {
+            test("Match node with IN", () => {
+                const titleParam = new CypherBuilder.Param(["my-name"]);
+
+                const movieNode = new CypherBuilder.Node({
+                    labels: ["Movie"],
+                });
+
+                const matchQuery = new CypherBuilder.Match(movieNode)
+                    .where([movieNode, { title: CypherBuilder.in(titleParam) }])
+                    .return(movieNode);
+
+                const queryResult = matchQuery.build();
+                expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "MATCH (this:Movie)
+                WHERE this.title IN $param0
+                RETURN this { .title } as this"
+            `);
+
+                expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "my-name",
+                }
+            `);
+            });
+        });
     });
 
     describe("Create", () => {

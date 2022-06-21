@@ -17,19 +17,13 @@
  * limitations under the License.
  */
 
-import { mergeDeep } from "@graphql-tools/utils";
 import { GraphQLWhereArg, Context } from "../../types";
-import { Node, Relationship } from "../../classes";
-import createConnectionWhereAndParams from "./create-connection-where-and-params";
+import { Node } from "../../classes";
 import mapToDbProperty from "../../utils/map-to-db-property";
-import createAggregateWhereAndParams from "../create-aggregate-where-and-params";
-import createWhereClause from "./create-where-clause";
-import { getListPredicate, whereRegEx, WhereRegexGroups } from "./utils";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { MatchableElement } from "../cypher-builder/MatchPattern";
-import { WHERE_AGGREGATION_OPERATORS } from "src/constants";
-import { stringAggregationQuery } from "../field-aggregations/aggregation-sub-queries";
 import { WhereOperator } from "../cypher-builder/statements/where-operators";
+import { whereRegEx, WhereRegexGroups } from "./utils";
 
 export function addWhereToStatement<T extends MatchableElement>({
     targetElement,
@@ -44,13 +38,6 @@ export function addWhereToStatement<T extends MatchableElement>({
     context: Context;
     node: Node;
 }): CypherBuilder.Match<T> {
-    // if (!Object.keys(whereInput).length) {
-    //     return ["", {}];
-    // }
-
-    // const mappedFields = mapProperties(node, whereInput);
-    // matchStatement.where(mappedFields);
-
     const mappedProperties = mapAllProperties({
         whereInput,
         targetElement,
@@ -58,36 +45,6 @@ export function addWhereToStatement<T extends MatchableElement>({
     });
 
     matchStatement.where(...mappedProperties);
-    // if (whereField[0] === "AND") {
-    //     console.log(whereField);
-    //     const properties: Array<Record<string, any>> = whereField[1];
-    //     const allProperties = properties
-    //         .map((p) => mapProperties(node, p))
-    //         .map((p) => [targetElement, p] as [MatchableElement, Record<string, CypherBuilder.Param>]);
-
-    //     const andOperator = CypherBuilder.and(...allProperties);
-    //     matchStatement.where(andOperator);
-    // } else {
-    //     addWhereField({
-    //         node,
-    //         whereField,
-    //         matchStatement,
-    //         targetElement,
-    //     });
-    // }
-    // }
-
-    // const { clauses, params } = Object.entries(whereInput).reduce(reducer, { clauses: [], params: {} });
-
-    // let where = `${!recursing ? "WHERE " : ""}`;
-    // where += clauses.join(" AND ").replace(/INNER_WHERE/gi, "WHERE");
-
-    // return [where, params];
-    //
-    // return {
-    //     cypher: "",
-    //     params: {},
-    // };
 
     return matchStatement;
 }
@@ -100,8 +57,8 @@ function mapAllProperties<T extends MatchableElement>({
     whereInput: Record<string, any>;
     node: Node;
     targetElement: T;
-}): Array<[T, Record<string, CypherBuilder.Param>] | WhereOperator> {
-    const resultArray: Array<[T, Record<string, CypherBuilder.Param>] | WhereOperator> = [];
+}): Array<[T, Record<string, CypherBuilder.Param | CypherBuilder.WhereClause>] | WhereOperator> {
+    const resultArray: Array<[T, Record<string, CypherBuilder.Param | CypherBuilder.WhereClause>] | WhereOperator> = [];
     const whereFields = Object.entries(whereInput);
 
     const leafProperties = whereFields.filter(([key, value]) => key !== "OR" && key !== "AND");
@@ -134,100 +91,54 @@ function mapAllProperties<T extends MatchableElement>({
             }
         }
     }
+
+    /* TO IMPLEMENT
+        * coalesce
+        * Relationship fields
+        * Connection Fields
+        * where clauses (NOT, LG)...
+
+    */
+
     return resultArray;
 }
 
-// function mapWhereParameters(
-//     node: Node,
-//     properties: Record<string, any>,
-//     targetElement: MatchableElement
-// ): Array<[MatchableElement, Record<string, CypherBuilder.Param>] | WhereOperator> {
-//     return Object.entries(properties).map((prev, [key, value]) => {
-//         if (key === "OR") {
-//             // mapProperties(value, node)
-//             // const nested = value.map((nestedProperties: Record<string, any>) => {
-//             //     return mapProperties(node, nestedProperties);
-//             // });
-
-//             // return CypherBuilder.or(...nested);
-//         }
-//         else {
-
-//         }
-//         prev[mapToDbProperty(node, key)] = new CypherBuilder.Param(value);
-//     }});
-// }
-
-function mapProperties(properties: Array<[string, any]>, node: Node): Record<string, CypherBuilder.Param> {
+function mapProperties(
+    properties: Array<[string, any]>,
+    node: Node
+): Record<string, CypherBuilder.Param | CypherBuilder.WhereClause> {
     return properties.reduce((acc, [key, value]) => {
-        acc[mapToDbProperty(node, key)] = new CypherBuilder.Param(value);
+        const match = whereRegEx.exec(key);
+
+        const { fieldName, isAggregate, operator } = match?.groups as WhereRegexGroups;
+        const coalesceValue = [...node.primitiveFields, ...node.temporalFields, ...node.enumFields].find(
+            (f) => fieldName === f.fieldName
+        )?.coalesceValue;
+
+        const param = new CypherBuilder.Param(value);
+        const dbFieldName = mapToDbProperty(node, fieldName);
+
+        if (operator) {
+            let whereClause: CypherBuilder.WhereClause;
+            switch (operator) {
+                case "IN":
+                    whereClause = CypherBuilder.in(param);
+                    break;
+                default:
+                    throw new Error(`Invalid operator ${operator}`);
+            }
+            acc[dbFieldName] = whereClause;
+        } else {
+            acc[dbFieldName] = param;
+        }
+
+        return acc;
+
+        // const property =
+        //     coalesceValue !== undefined
+        //         ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
+        //         : `${varName}.${dbFieldName}`;
 
         return acc;
     }, {});
-}
-
-function addWhereField<T extends MatchableElement>({
-    matchStatement,
-    whereField,
-    node,
-    targetElement,
-}: {
-    matchStatement: CypherBuilder.Match<T>;
-    whereField: [string, any];
-    node: Node;
-    targetElement: T;
-}) {
-    const [key, value] = whereField;
-    const match = whereRegEx.exec(key);
-
-    const { fieldName, isAggregate, operator } = match?.groups as WhereRegexGroups;
-    const isNot = operator?.startsWith("NOT") ?? false; //
-
-    const dbFieldName = mapToDbProperty(node, fieldName);
-
-    const coalesceValue = [...node.primitiveFields, ...node.temporalFields, ...node.enumFields].find(
-        (f) => fieldName === f.fieldName
-    )?.coalesceValue;
-
-    // Recurse if using AND/OR
-
-    // if (["AND", "OR"].includes(key)) {
-    //     const innerClauses: string[] = [];
-    //
-    //     value.forEach((v: any, i) => {
-    //         const recurse = createWhereAndParams({
-    //             whereInput: v,
-    //             varName,
-    //             chainStr: `${param}${i > 0 ? i : ""}`,
-    //             node,
-    //             context,
-    //             recursing: true,
-    //         });
-    //         if (recurse[0]) {
-    //             innerClauses.push(`${recurse[0]}`);
-    //             res.params = mergeDeep([res.params, recurse[1]]);
-    //         }
-    //     });
-    //
-    //     if (innerClauses.length) {
-    //         res.clauses.push(`(${innerClauses.join(` ${key} `)})`);
-    //     }
-    //
-    //     return res;
-    // }
-
-    // const property =
-    //     coalesceValue !== undefined
-    //         ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
-    //         : `${varName}.${dbFieldName}`;
-    // res.clauses.push(createWhereClause({ param, property, operator, isNot, pointField, durationField }));
-    matchStatement.where([
-        targetElement,
-        {
-            [dbFieldName]: new CypherBuilder.Param(value),
-        },
-    ]);
-    // matchStatement.where(targetElement, {
-    //     [dbFieldName]: new CypherBuilder.Param(value),
-    // });
 }
