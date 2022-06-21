@@ -129,7 +129,11 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: createMutation,
-            contextValue: { executionContext: driver },
+            contextValue: {
+                ...neo4j.getContextValues(),
+                driver: null,
+                executionContext: driver,
+            },
             variableValues: {
                 id: bookId,
                 name: bookName,
@@ -159,7 +163,11 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
         const books = await graphql({
             schema: await neoSchema.getSchema(),
             source: queryBooks,
-            contextValue: { executionContext: driver },
+            contextValue: {
+                ...neo4j.getContextValues(),
+                driver: null,
+                executionContext: driver,
+            },
         });
 
         expect(books.data?.[typeBook.plural]).toEqual([{ id: bookId, name: bookName }]);
@@ -171,7 +179,7 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: createMutation,
-                contextValue: { driver, executionContext: session },
+                contextValue: { ...neo4j.getContextValues(), executionContext: session },
                 variableValues: {
                     id: bookId,
                     name: bookName,
@@ -201,7 +209,7 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
             const books = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: queryBooks,
-                contextValue: { driver, executionContext: session },
+                contextValue: { ...neo4j.getContextValues(), executionContext: session },
             });
 
             expect(books.data?.[typeBook.plural]).toEqual([{ id: bookId, name: bookName }]);
@@ -217,7 +225,7 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: createMutation,
-                contextValue: { driver, executionContext: transaction },
+                contextValue: { ...neo4j.getContextValues(), executionContext: transaction },
                 variableValues: {
                     id: bookId,
                     name: bookName,

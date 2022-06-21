@@ -71,7 +71,8 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
     });
 
     test("should not throw on multiple connectOrCreate with auth", async () => {
-        await runCypher(driver, `CREATE (:${parentType})<-[:HAS]-(:${childType} {tcId: "123"})`);
+        const session = await neo4j.getSession();
+        await runCypher(session, `CREATE (:${parentType})<-[:HAS]-(:${childType} {tcId: "123"})`);
 
         const req = createJwtRequest("secret", { roles: ["upstream"] });
         const query = `
@@ -100,10 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
         const res = await graphql({
             schema,
             source: query,
-            contextValue: {
-                driver,
-                req,
-            },
+            contextValue: neo4j.getContextValues({ req }),
         });
 
         expect(res.errors).toBeUndefined();

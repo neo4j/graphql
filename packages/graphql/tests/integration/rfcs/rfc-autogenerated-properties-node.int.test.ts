@@ -789,7 +789,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: mutation,
-                contextValue: { driver, testValue },
+                contextValue: neo4j.getContextValues({ testValue }),
             });
 
             expect(result.errors).toBeUndefined();
