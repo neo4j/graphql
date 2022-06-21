@@ -30,6 +30,8 @@
         "test:tck:watch": "jest tck --watchAll -c jest.minimal.config.js",
         "test:int": "jest tests/integration",
         "test:int:watch": "jest int --watch",
+        "test:e2e": "jest tests/e2e",
+        "test:e2e:watch": "jest e2e --watch",
         "test:schema": "jest tests/schema -c jest.minimal.config.js",
         "test:schema:watch": "jest tests/schema --watch -c jest.minimal.config.js",
         "remove:graphql-plugin-auth": "node -p \"JSON.stringify({...require('./package.json')}, (k,v) => k === '@neo4j/graphql-plugin-auth' ? undefined : v, 2)\" > ./package.json.new && rm package.json && mv package.json.new package.json",

@@ -39,6 +39,10 @@ class Neo4j {
         this.hasIntegrationTestDb = false;
     }
 
+    public getIntegrationDatabaseName(): string {
+        return INT_TEST_DB_NAME;
+    }
+
     public async getDriver(): Promise<neo4j.Driver> {
         if (this.driver) {
             return this.driver;

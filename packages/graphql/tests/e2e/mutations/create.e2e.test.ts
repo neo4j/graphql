@@ -22,7 +22,7 @@ import supertest, { Response } from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
-import Neo4j from "../../integration/neo4j";
+import Neo4j from "../setup/neo4j";
 
 describe("Create", () => {
     let neo4j: Neo4j;
@@ -45,6 +45,11 @@ describe("Create", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
+            config: {
+                driverConfig: {
+                    database: neo4j.getIntegrationDatabaseName(),
+                },
+            },
         });
 
         server = new ApolloTestServer(neoSchema);
