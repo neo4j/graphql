@@ -27,6 +27,7 @@ import createWhereClause from "./create-where-clause";
 import { getListPredicate, whereRegEx, WhereRegexGroups } from "./utils";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { MatchableElement } from "../cypher-builder/MatchPattern";
+import { WHERE_AGGREGATION_OPERATORS } from "src/constants";
 
 export function addWhereToStatement<T extends MatchableElement>({
     targetElement,
@@ -48,12 +49,24 @@ export function addWhereToStatement<T extends MatchableElement>({
     const whereFields = Object.entries(whereInput);
 
     for (const whereField of whereFields) {
-        addWhereField({
-            node,
-            whereField,
-            matchStatement,
-            targetElement,
-        });
+        if (whereField[0] === "AND")  {
+            const mappedProperties = Object.entries(whereField[1] as Record<string, any>).reduce((prev, [key, value]) => {
+                prev[mapToDbProperty(node, key)] = new CypherBuilder.Param(value);
+                return prev;
+            }, {});
+            const andOperator = CypherBuilder.and([targetElement, mappedProperties]);
+            matchStatement.where(andOperator);
+
+        } else {
+            addWhereField({
+                node,
+                whereField,
+                matchStatement,
+                targetElement,
+            });
+
+        }
+
     }
 
     // const { clauses, params } = Object.entries(whereInput).reduce(reducer, { clauses: [], params: {} });
@@ -85,7 +98,7 @@ function addWhereField<T extends MatchableElement>({
     const match = whereRegEx.exec(key);
 
     const { fieldName, isAggregate, operator } = match?.groups as WhereRegexGroups;
-    const isNot = operator?.startsWith("NOT") ?? false;
+    const isNot = operator?.startsWith("NOT") ?? false; //
 
     const dbFieldName = mapToDbProperty(node, fieldName);
 
