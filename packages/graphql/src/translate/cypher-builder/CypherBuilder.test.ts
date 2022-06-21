@@ -31,7 +31,7 @@ describe("CypherBuilder", () => {
             });
 
             const matchQuery = new CypherBuilder.Match(movieNode, { test: new CypherBuilder.Param("test-value") })
-                .where(movieNode, { id: idParam, name: nameParam, age: ageParam })
+                .where([movieNode, { id: idParam, name: nameParam, age: ageParam }])
                 .return(movieNode);
 
             const queryResult = matchQuery.build();
@@ -62,7 +62,7 @@ describe("CypherBuilder", () => {
             });
 
             const matchQuery = new CypherBuilder.Match(movieNode, { test: new CypherBuilder.Param("test-value") })
-                .where(movieNode, { id: idParam, name: nameParam })
+                .where([movieNode, { id: idParam, name: nameParam }])
                 .return(movieNode, ["name"], "myAlias");
 
             const queryResult = matchQuery.build();
@@ -78,6 +78,46 @@ describe("CypherBuilder", () => {
                   "param0": "test-value",
                   "param1": "my-id",
                   "param2": "my-name",
+                }
+            `);
+        });
+
+        test("Match node with and and or in where", () => {
+            const idParam = new CypherBuilder.Param("my-id");
+            const nameParam = new CypherBuilder.Param("my-name");
+            const ageParam = new CypherBuilder.Param(5);
+            const descriptionParam = new CypherBuilder.Param("A description");
+
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+            });
+
+            const matchQuery = new CypherBuilder.Match(movieNode)
+                .where(
+                    CypherBuilder.and(
+                        [movieNode, { id: idParam }],
+                        CypherBuilder.or([movieNode, { name: nameParam }], [movieNode, { age: ageParam }])
+                    ),
+                    [movieNode, { description: descriptionParam }]
+                )
+                .return(movieNode);
+
+            const queryResult = matchQuery.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "MATCH (this0:\`Movie\`)
+                WHERE (this0.id = $param0
+                AND (this0.name = $param1
+                OR this0.age = $param2))
+                AND this0.description = $param3
+                RETURN this0"
+            `);
+
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "my-id",
+                  "param1": "my-name",
+                  "param2": 5,
+                  "param3": "A description",
                 }
             `);
         });

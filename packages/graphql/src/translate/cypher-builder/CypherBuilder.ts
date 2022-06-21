@@ -29,3 +29,5 @@ export { Param, RawParam } from "./references/Param";
 export { Relationship } from "./references/Relationship";
 
 export { CypherResult } from "./types";
+
+export { or, and } from "./statements/where-operators";

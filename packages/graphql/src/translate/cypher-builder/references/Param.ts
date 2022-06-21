@@ -20,7 +20,6 @@
 import { CypherContext } from "../CypherContext";
 import { CypherParameter } from "./References";
 
-
 export class Param<T = any> implements CypherParameter {
     public readonly prefix: string = "param";
     public readonly value: T;
@@ -34,6 +33,7 @@ export class Param<T = any> implements CypherParameter {
     }
 }
 
+/* Careful, this could lead to Cypher Injection */
 export class RawParam<T> extends Param<T> {
     public getCypher(_context: CypherContext): string {
         return `${this.value}`;

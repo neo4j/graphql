@@ -23,27 +23,31 @@ import { Node } from "../references/Node";
 import { Param } from "../references/Param";
 import { Query } from "./Query";
 import { ReturnStatement } from "./Return";
+import { and, WhereOperator } from "./where-operators";
 
 type Params = Record<string, Param<any>>;
 
-type Where = Map<MatchableElement, Params>;
+type WhereInput = Array<[MatchableElement, Params] | WhereOperator>;
 
 export class Match<T extends MatchableElement> extends Query {
     private matchPattern: MatchPattern<T>;
-    private whereParams: Where;
+    private whereParams: Array<WhereOperator>;
 
-    // parameters cast required due to neo-push
-    // TODO: Remove this cast once neo-push has been fixed
-    constructor(variable: T, parameters: MatchParams<T> = {} as MatchParams<T>, parent?: Query) {
+    constructor(variable: T, parameters: MatchParams<T> = {}, parent?: Query) {
         super(parent);
         this.matchPattern = new MatchPattern(variable).withParams(parameters);
-        this.whereParams = new Map<MatchableElement, Params>();
+        this.whereParams = [];
     }
 
-    public where(variable: MatchableElement, params: Params): this {
-        const oldParams = this.whereParams.get(variable) || {};
-
-        this.whereParams.set(variable, { ...oldParams, ...params });
+    public where(...input: WhereInput): this {
+        for (const operation of input) {
+            if (operation instanceof WhereOperator) {
+                this.whereParams.push(operation);
+            } else {
+                const formattedOperation = and(operation);
+                this.whereParams.push(formattedOperation);
+            }
+        }
         return this;
     }
 
@@ -58,23 +62,12 @@ export class Match<T extends MatchableElement> extends Query {
         return this;
     }
 
-    public and(variable: MatchableElement, params: Params): this {
-        return this.where(variable, params);
-    }
-
     private composeWhere(context: CypherContext): string {
-        const whereStatements: string[][] = [];
-        this.whereParams.forEach((params, variable) => {
-            const nodeAlias = context.getVariableId(variable);
-            const paramsStrs = Object.entries(params).map(([key, value]) => {
-                return `${nodeAlias}.${key} = ${value instanceof Param ? value.getCypher(context) : value}`;
-            });
-            whereStatements.push(paramsStrs);
+        const whereStatements = this.whereParams.map((operation) => {
+            return operation.getCypher(context);
         });
 
-        const whereParams = whereStatements.flat();
-
-        if (whereParams.length === 0) return "";
-        return `WHERE ${whereParams.join("\nAND ")}`;
+        if (whereStatements.length === 0) return "";
+        return `WHERE ${whereStatements.join("\nAND ")}`;
     }
 }

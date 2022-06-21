@@ -17,6 +17,10 @@
  * limitations under the License.
  */
 
+import { Node } from "./Node";
+import { Param } from "./Param";
+import { Relationship } from "./Relationship";
+
 // These interfaces are mainly to avoid coupling and circular dependencies between context and statements
 
 /** Represents a Cypher Variable Reference <https://neo4j.com/docs/cypher-manual/current/syntax/variables/> */
@@ -29,4 +33,12 @@ export interface CypherVariable {
 export interface CypherParameter {
     readonly prefix: string;
     value: any;
+}
+
+export type WhereParams = Record<string, Param<any>>;
+export type WhereDTO = { element: Node | Relationship; params: WhereParams };
+
+/** Represents an element that can be used in where */
+export interface WhereElement {
+    where(params: WhereParams): WhereDTO;
 }

@@ -19,7 +19,7 @@
 
 import { escapeLabel } from "../utils";
 import { Node } from "./Node";
-import { CypherVariable } from "./References";
+import { CypherVariable, WhereElement, WhereParams } from "./References";
 
 export type RelationshipInput = {
     source: Node;
@@ -28,7 +28,7 @@ export type RelationshipInput = {
     directed?: boolean;
 };
 
-export class Relationship implements CypherVariable {
+export class Relationship implements CypherVariable, WhereElement {
     public readonly prefix: string = "this";
     public readonly source: Node;
     public readonly target: Node;
@@ -45,5 +45,12 @@ export class Relationship implements CypherVariable {
 
     public getTypeString(): string {
         return this.type ? `:${escapeLabel(this.type)}` : "";
+    }
+
+    public where(params: WhereParams): { element: Relationship; params: WhereParams } {
+        return {
+            element: this,
+            params,
+        };
     }
 }

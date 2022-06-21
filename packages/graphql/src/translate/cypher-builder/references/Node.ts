@@ -18,13 +18,13 @@
  */
 
 import { escapeLabel } from "../utils";
-import { CypherVariable } from "./References";
+import { CypherVariable, WhereElement, WhereParams } from "./References";
 
 type NodeInput = {
     labels?: Array<string>;
 };
 
-export class Node implements CypherVariable {
+export class Node implements CypherVariable, WhereElement {
     public readonly prefix = "this";
     public readonly labels: Array<string>;
 
@@ -36,6 +36,13 @@ export class Node implements CypherVariable {
         const escapedLabels = this.labels.map(escapeLabel);
         if (escapedLabels.length === 0) return "";
         return `:${escapedLabels.join(":")}`;
+    }
+
+    public where(params: WhereParams): { element: Node; params: WhereParams } {
+        return {
+            element: this,
+            params,
+        };
     }
 }
 

@@ -133,8 +133,21 @@ WHERE this0.id = $param1
 RETURN this0
 ```
 
-Note that parameters may be passed to the matching pattern, in the constructor, or as part of the `where` statement.
-In the where statement, parameters can be set to match any variable
+### Using AND/OR in where
+
+```typescript
+const idParam = new CypherBuilder.Param("my-id");
+const movieNode = new CypherBuilder.Node({
+    labels: ["Movie"],
+});
+
+// [movieNode.where({ id: idParam }), movieNode.where({ id2: idParam }), OR([movieNode.where({ id2: idParam })])];
+//
+// AndWhere([{ movieNode }, {}]);
+// OrWhere([]);
+
+const matchQuery = new CypherBuilder.Match(movieNode).where(movieNode, { id: idParam }).return(movieNode);
+```
 
 ### Relationships
 

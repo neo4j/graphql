@@ -64,20 +64,21 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title AND this.isFavorite = $this_isFavorite
+            "MATCH (this0:\`Movie\`)
+            WHERE this0.title = $param0
+            AND this0.isFavorite = $param1
             RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"some title\\",
-                \\"this_isFavorite\\": true
+                \\"param0\\": \\"some title\\",
+                \\"param1\\": true
             }"
         `);
     });
 
-    test("Simple AND", async () => {
+    test.only("Simple AND", async () => {
         const query = gql`
             {
                 movies(where: { AND: [{ title: "some title" }] }) {
@@ -100,6 +101,34 @@ describe("Cypher WHERE", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_AND_title\\": \\"some title\\"
+            }"
+        `);
+    });
+
+    test("Simple AND with multiple parameters", async () => {
+        const query = gql`
+            {
+                movies(where: { AND: [{ title: "some title" }, { isFavorite: true }] }) {
+                    title
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE (this.title = $this_AND_title AND this.isFavorite = $this_AND1_isFavorite)
+            RETURN this { .title } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_AND_title\\": \\"some title\\",
+                \\"this_AND1_isFavorite\\": true
             }"
         `);
     });
