@@ -28,6 +28,8 @@ import { getListPredicate, whereRegEx, WhereRegexGroups } from "./utils";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { MatchableElement } from "../cypher-builder/MatchPattern";
 import { WHERE_AGGREGATION_OPERATORS } from "src/constants";
+import { stringAggregationQuery } from "../field-aggregations/aggregation-sub-queries";
+import { WhereOperator } from "../cypher-builder/statements/where-operators";
 
 export function addWhereToStatement<T extends MatchableElement>({
     targetElement,
@@ -46,28 +48,34 @@ export function addWhereToStatement<T extends MatchableElement>({
     //     return ["", {}];
     // }
 
-    const whereFields = Object.entries(whereInput);
+    // const mappedFields = mapProperties(node, whereInput);
+    // matchStatement.where(mappedFields);
 
-    for (const whereField of whereFields) {
-        if (whereField[0] === "AND")  {
-            const mappedProperties = Object.entries(whereField[1] as Record<string, any>).reduce((prev, [key, value]) => {
-                prev[mapToDbProperty(node, key)] = new CypherBuilder.Param(value);
-                return prev;
-            }, {});
-            const andOperator = CypherBuilder.and([targetElement, mappedProperties]);
-            matchStatement.where(andOperator);
+    const mappedProperties = mapAllProperties({
+        whereInput,
+        targetElement,
+        node,
+    });
 
-        } else {
-            addWhereField({
-                node,
-                whereField,
-                matchStatement,
-                targetElement,
-            });
+    matchStatement.where(...mappedProperties);
+    // if (whereField[0] === "AND") {
+    //     console.log(whereField);
+    //     const properties: Array<Record<string, any>> = whereField[1];
+    //     const allProperties = properties
+    //         .map((p) => mapProperties(node, p))
+    //         .map((p) => [targetElement, p] as [MatchableElement, Record<string, CypherBuilder.Param>]);
 
-        }
-
-    }
+    //     const andOperator = CypherBuilder.and(...allProperties);
+    //     matchStatement.where(andOperator);
+    // } else {
+    //     addWhereField({
+    //         node,
+    //         whereField,
+    //         matchStatement,
+    //         targetElement,
+    //     });
+    // }
+    // }
 
     // const { clauses, params } = Object.entries(whereInput).reduce(reducer, { clauses: [], params: {} });
 
@@ -80,7 +88,82 @@ export function addWhereToStatement<T extends MatchableElement>({
     //     cypher: "",
     //     params: {},
     // };
+
     return matchStatement;
+}
+
+function mapAllProperties<T extends MatchableElement>({
+    whereInput,
+    node,
+    targetElement,
+}: {
+    whereInput: Record<string, any>;
+    node: Node;
+    targetElement: T;
+}): Array<[T, Record<string, CypherBuilder.Param>] | WhereOperator> {
+    const resultArray: Array<[T, Record<string, CypherBuilder.Param>] | WhereOperator> = [];
+    const whereFields = Object.entries(whereInput);
+
+    const leafProperties = whereFields.filter(([key, value]) => key !== "OR" && key !== "AND");
+    if (leafProperties.length > 0) {
+        const mappedProperties = mapProperties(leafProperties, node);
+
+        resultArray.push([targetElement, mappedProperties]);
+    }
+
+    // matchStatement.where([targetElement, mappedProperties]);
+
+    // const operatorFields = whereFields.filter(([key, value]) => key === "OR");
+    for (const [key, value] of whereFields) {
+        if (key === "OR" || key === "AND") {
+            // value is an array
+            const nestedResult: any[] = [];
+            for (const nestedValue of value) {
+                const mapNested = mapAllProperties({ whereInput: nestedValue, node, targetElement });
+                nestedResult.push(...mapNested);
+            }
+            // const nestedProperties = value.map((v) => mapAllProperties({ whereInput: v, node, targetElement }));
+
+            if (key === "OR") {
+                const orOperation = CypherBuilder.or(...nestedResult);
+                resultArray.push(orOperation);
+            }
+            if (key === "AND") {
+                const andOperation = CypherBuilder.and(...nestedResult);
+                resultArray.push(andOperation);
+            }
+        }
+    }
+    return resultArray;
+}
+
+// function mapWhereParameters(
+//     node: Node,
+//     properties: Record<string, any>,
+//     targetElement: MatchableElement
+// ): Array<[MatchableElement, Record<string, CypherBuilder.Param>] | WhereOperator> {
+//     return Object.entries(properties).map((prev, [key, value]) => {
+//         if (key === "OR") {
+//             // mapProperties(value, node)
+//             // const nested = value.map((nestedProperties: Record<string, any>) => {
+//             //     return mapProperties(node, nestedProperties);
+//             // });
+
+//             // return CypherBuilder.or(...nested);
+//         }
+//         else {
+
+//         }
+//         prev[mapToDbProperty(node, key)] = new CypherBuilder.Param(value);
+//     }});
+// }
+
+function mapProperties(properties: Array<[string, any]>, node: Node): Record<string, CypherBuilder.Param> {
+    return properties.reduce((acc, [key, value]) => {
+        acc[mapToDbProperty(node, key)] = new CypherBuilder.Param(value);
+
+        return acc;
+    }, {});
 }
 
 function addWhereField<T extends MatchableElement>({

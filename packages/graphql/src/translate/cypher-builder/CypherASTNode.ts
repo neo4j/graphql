@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { isGeneratorFunction } from "util/types";
 import { CypherContext } from "./CypherContext";
 import { Param } from "./references/Param";
 

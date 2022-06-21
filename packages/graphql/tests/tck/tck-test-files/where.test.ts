@@ -78,7 +78,7 @@ describe("Cypher WHERE", () => {
         `);
     });
 
-    test.only("Simple AND", async () => {
+    test("Simple AND", async () => {
         const query = gql`
             {
                 movies(where: { AND: [{ title: "some title" }] }) {
@@ -93,14 +93,14 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE (this.title = $this_AND_title)
+            "MATCH (this0:\`Movie\`)
+            WHERE this0.title = $param0
             RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_AND_title\\": \\"some title\\"
+                \\"param0\\": \\"some title\\"
             }"
         `);
     });
@@ -120,15 +120,16 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE (this.title = $this_AND_title AND this.isFavorite = $this_AND1_isFavorite)
+            "MATCH (this0:\`Movie\`)
+            WHERE (this0.title = $param0
+            AND this0.isFavorite = $param1)
             RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_AND_title\\": \\"some title\\",
-                \\"this_AND1_isFavorite\\": true
+                \\"param0\\": \\"some title\\",
+                \\"param1\\": true
             }"
         `);
     });
@@ -148,14 +149,74 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE ((this.title = $this_AND_AND_title))
+            "MATCH (this0:\`Movie\`)
+            WHERE this0.title = $param0
             RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_AND_AND_title\\": \\"some title\\"
+                \\"param0\\": \\"some title\\"
+            }"
+        `);
+    });
+
+    test("Nested AND with multiple properties", async () => {
+        const query = gql`
+            {
+                movies(where: { AND: [{ AND: [{ title: "some title" }, { title: "another title" }] }] }) {
+                    title
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this0:\`Movie\`)
+            WHERE (this0.title = $param0
+            AND this0.title = $param1)
+            RETURN this { .title } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"some title\\",
+                \\"param1\\": \\"another title\\"
+            }"
+        `);
+    });
+
+    test("Nested AND and OR", async () => {
+        const query = gql`
+            {
+                movies(where: { AND: [{ OR: [{ title: "some title" }, { isFavorite: true }], id: 2 }] }) {
+                    title
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this0:\`Movie\`)
+            WHERE (this0.id = $param0
+            AND (this0.title = $param1
+            OR this0.isFavorite = $param2))
+            RETURN this { .title } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"2\\",
+                \\"param1\\": \\"some title\\",
+                \\"param2\\": true
             }"
         `);
     });
@@ -175,14 +236,14 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE (((this.title = $this_AND_AND_AND_title)))
+            "MATCH (this0:\`Movie\`)
+            WHERE this0.title = $param0
             RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_AND_AND_AND_title\\": \\"some title\\"
+                \\"param0\\": \\"some title\\"
             }"
         `);
     });
@@ -202,14 +263,14 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE (this.title = $this_OR_title)
+            "MATCH (this0:\`Movie\`)
+            WHERE this0.title = $param0
             RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_OR_title\\": \\"some title\\"
+                \\"param0\\": \\"some title\\"
             }"
         `);
     });
@@ -229,14 +290,14 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE ((this.title = $this_OR_OR_title))
+            "MATCH (this0:\`Movie\`)
+            WHERE this0.title = $param0
             RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_OR_OR_title\\": \\"some title\\"
+                \\"param0\\": \\"some title\\"
             }"
         `);
     });
@@ -256,14 +317,47 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE (((this.title = $this_OR_OR_OR_title)))
+            "MATCH (this0:\`Movie\`)
+            WHERE this0.title = $param0
             RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_OR_OR_OR_title\\": \\"some title\\"
+                \\"param0\\": \\"some title\\"
+            }"
+        `);
+    });
+
+    test("OR and default and", async () => {
+        const query = gql`
+            query {
+                movies(where: { isFavorite: true, id: 2, OR: [{ title: "title1" }, { title: "title2" }] }) {
+                    title
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this0:\`Movie\`)
+            WHERE this0.id = $param0
+            AND this0.isFavorite = $param1
+            AND (this0.title = $param2
+            OR this0.title = $param3)
+            RETURN this { .title } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"2\\",
+                \\"param1\\": true,
+                \\"param2\\": \\"title1\\",
+                \\"param3\\": \\"title2\\"
             }"
         `);
     });
