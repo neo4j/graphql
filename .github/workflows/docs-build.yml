@@ -1,12 +1,17 @@
-name: "Documentation Pub"
+name: "Documentation Build"
 
 on:
   pull_request:
     branches:
-      - fix/gha-doc-publish
+      - dev
+      - master
+    paths:
+      - docs/antora.yml
+      - docs/package.json
+      - "docs/modules/ROOT/**"
 
 jobs:
-  publish-docs:
+  build-docs:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,21 +20,15 @@ jobs:
         with:
           node-version: lts/*
       - name: Build documentation
+        env:
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           yarn
           yarn build
+          echo $PULL_REQUEST_NUMBER > ./build/prnumber
         working-directory: docs/
-      - name: Publish documentation
-        run: |
-          npm install -g surge
-          surge ./site neo4j-graphql-docs-${{ github.event.pull_request.number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
-        working-directory: docs/
-      - name: Comment on PR
-        uses: marocchino/sticky-pull-request-comment@v2
+      - name: Archive documentation
+        uses: actions/upload-artifact@v3
         with:
-          number: ${{ github.event.pull_request.number }}
-          message: |
-            Looks like you've updated the documentation!
-
-            Check out your changes at https://neo4j-graphql-docs-${{ github.event.pull_request.number }}.surge.sh
-          GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+          name: documentation
+          path: docs/build/
