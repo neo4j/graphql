@@ -61,7 +61,12 @@ class Neo4j {
             await this.driver.verifyConnectivity({ database: INT_TEST_DB_NAME });
             this.hasIntegrationTestDb = true;
         } catch (error: any) {
-            if (error.message.includes("Could not perform discovery. No routing servers available.")) {
+            if (
+                error.message.includes("Could not perform discovery. No routing servers available.") ||
+                error.message.includes(
+                    `Unable to get a routing table for database '${INT_TEST_DB_NAME}' because this database does not exist`
+                )
+            ) {
                 await this.checkConnectivityToDefaultDatabase(this.driver, NEO_URL);
             } else {
                 throw new Error(
