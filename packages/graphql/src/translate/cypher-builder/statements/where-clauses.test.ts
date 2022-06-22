@@ -46,4 +46,56 @@ describe("Where clauses", () => {
             }
         `);
     });
+
+    test("Match node with GT", () => {
+        const length = new CypherBuilder.Param(5);
+
+        const movieNode = new CypherBuilder.Node({
+            labels: ["Movie"],
+        });
+
+        const matchQuery = new CypherBuilder.Match(movieNode)
+            .where([movieNode, { length: CypherBuilder.gt(length) }])
+            .return(movieNode);
+
+        const queryResult = matchQuery.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "MATCH (this0:\`Movie\`)
+            WHERE this0.length > $param0
+            RETURN this0"
+        `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": 5,
+            }
+        `);
+    });
+
+    test("Match node with STARTS_WITH", () => {
+        const titleStartWith = new CypherBuilder.Param("The M");
+
+        const movieNode = new CypherBuilder.Node({
+            labels: ["Movie"],
+        });
+
+        const matchQuery = new CypherBuilder.Match(movieNode)
+            .where([movieNode, { title: CypherBuilder.startsWith(titleStartWith) }])
+            .return(movieNode);
+
+        const queryResult = matchQuery.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "MATCH (this0:\`Movie\`)
+            WHERE this0.title STARTS WITH $param0
+            RETURN this0"
+        `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": "The M",
+            }
+        `);
+    });
+
+    // TODO: Add tests for all operators
 });
