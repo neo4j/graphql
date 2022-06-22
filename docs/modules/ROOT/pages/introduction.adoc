@@ -43,7 +43,7 @@ There are a variety of front-end frameworks with clients for interacting with Gr
 
 == Deployment
 
-There are a variety of methods for deploying GraphQL APIs, the details of which will not be in this documentation.
+There are a variety of methods for deploying GraphQL APIs, the details of which will not be in this documentation!
 
 However, Apollo has documented a subset in their https://www.apollographql.com/docs/apollo-server/deployment[Deployment] documentation, which will be a good starting point.
 

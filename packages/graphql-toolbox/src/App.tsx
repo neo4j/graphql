@@ -26,6 +26,7 @@ import { AppSettingsProvider } from "./contexts/appsettings";
 import "@neo4j-ndl/base/lib/neo4j-ds-styles.css";
 import "./index.css";
 
+// Just a comment
 export const App = () => {
     return (
         <AuthProvider>
