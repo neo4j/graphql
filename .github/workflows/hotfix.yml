@@ -208,8 +208,8 @@ jobs:
       - name: Archive coverage report
         uses: actions/upload-artifact@v3
         with:
-          name: integration-coverage-${{ matrix.package }}
-          path: packages/${{ matrix.package }}/coverage-aura-${{ matrix.aura-instance }}/
+          name: integration-coverage-${{ matrix.packages.package }}
+          path: packages/${{ matrix.packages.package }}/coverage-aura-${{ matrix.aura-instance }}/
 
   upload-integration-coverage:
     needs:
