@@ -38,9 +38,9 @@ describe("CypherBuilder", () => {
             const queryResult = matchQuery.build();
             expect(queryResult.cypher).toMatchInlineSnapshot(`
                 "MATCH (this0:\`Movie\` { test: $param0 })
-                WHERE this0.id = $param1
+                WHERE (this0.id = $param1
                 AND this0.name = $param2
-                AND this0.age = $param3
+                AND this0.age = $param3)
                 RETURN this0"
             `);
 
@@ -69,8 +69,8 @@ describe("CypherBuilder", () => {
             const queryResult = matchQuery.build();
             expect(queryResult.cypher).toMatchInlineSnapshot(`
                 "MATCH (this0:\`Movie\` { test: $param0 })
-                WHERE this0.id = $param1
-                AND this0.name = $param2
+                WHERE (this0.id = $param1
+                AND this0.name = $param2)
                 RETURN this0 {.name} AS myAlias"
             `);
 
@@ -184,7 +184,7 @@ describe("CypherBuilder", () => {
             `);
         });
 
-        test.only("Match node with simple NOT", () => {
+        test("Match node with simple NOT", () => {
             const nameParam = new CypherBuilder.Param("my-name");
 
             const movieNode = new CypherBuilder.Node({
@@ -210,7 +210,113 @@ describe("CypherBuilder", () => {
             `);
         });
 
-        
+        test("Match node with NOT and default AND", () => {
+            const nameParam = new CypherBuilder.Param("my-name");
+            const ageParam = new CypherBuilder.Param(5);
+
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+            });
+
+            const matchQuery = new CypherBuilder.Match(movieNode)
+                .where(CypherBuilder.not([movieNode, { name: nameParam, age: ageParam }]))
+                .return(movieNode);
+
+            const queryResult = matchQuery.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "MATCH (this0:\`Movie\`)
+                WHERE 
+                NOT ((this0.name = $param0
+                AND this0.age = $param1))
+                RETURN this0"
+            `);
+
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "my-name",
+                  "param1": 5,
+                }
+            `);
+        });
+
+        test("Match node with NOT and OR operator", () => {
+            const nameParam = new CypherBuilder.Param("my-name");
+            const ageParam = new CypherBuilder.Param(5);
+
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+            });
+
+            const matchQuery = new CypherBuilder.Match(movieNode)
+                .where(
+                    CypherBuilder.not(
+                        CypherBuilder.or(
+                            [movieNode, { age: ageParam }],
+                            [movieNode, { name: nameParam, age: ageParam }]
+                        )
+                    )
+                )
+                .return(movieNode);
+
+            const queryResult = matchQuery.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "MATCH (this0:\`Movie\`)
+                WHERE 
+                NOT (this0.age = $param0
+                OR (this0.name = $param1
+                AND this0.age = $param0))
+                RETURN this0"
+            `);
+
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": 5,
+                  "param1": "my-name",
+                }
+            `);
+        });
+
+        test("Complex match with multiple operations", () => {
+            const nameParam = new CypherBuilder.Param("my-name");
+            const ageParam = new CypherBuilder.Param(5);
+
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+            });
+
+            const matchQuery = new CypherBuilder.Match(movieNode)
+                .where(
+                    CypherBuilder.not([movieNode, { age: ageParam }]),
+                    CypherBuilder.or([movieNode, { age: ageParam }], [movieNode, { name: nameParam, age: ageParam }]),
+                    CypherBuilder.not(CypherBuilder.or([movieNode, { age: ageParam }])),
+                    [movieNode, { age: ageParam }]
+                )
+                .where([movieNode, { name: nameParam }])
+                .return(movieNode);
+
+            const queryResult = matchQuery.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "MATCH (this0:\`Movie\`)
+                WHERE 
+                NOT (this0.age = $param0)
+                AND (this0.age = $param0
+                OR (this0.name = $param1
+                AND this0.age = $param0))
+                AND 
+                NOT this0.age = $param0
+                AND this0.age = $param0
+                AND this0.name = $param1
+                RETURN this0"
+            `);
+
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": 5,
+                  "param1": "my-name",
+                }
+            `);
+        });
+
         describe("Where clauses", () => {
             test("Match node with IN", () => {
                 const titleParam = new CypherBuilder.Param(["my-name"]);

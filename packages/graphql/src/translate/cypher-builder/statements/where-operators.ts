@@ -65,7 +65,13 @@ export class WhereOperator {
             return `${nodeAlias}.${key} = ${value.getCypher(context)}`;
         });
 
-        return `${paramsStrs.join("\nAND ")}`;
+        const joinedParamsStr = paramsStrs.join("\nAND ");
+
+        if (paramsStrs.length > 1) {
+            return `(${joinedParamsStr})`;
+        }
+
+        return `${joinedParamsStr}`;
     }
 }
 
@@ -81,22 +87,19 @@ export function not(item: [MatchableElement, Params] | WhereOperator): WhereOper
     return new NotWhereOperator(item);
 }
 
-
 class NotWhereOperator extends WhereOperator {
-
     constructor(input: [MatchableElement, Params] | WhereOperator) {
         super("NOT", [input]);
     }
 
     public getCypher(context: CypherContext): string {
         const inputOperator = this.whereInput[0];
-        let composedWhere;
         if (inputOperator instanceof WhereOperator) {
-            composedWhere = inputOperator.getCypher(context);
-        } else {
-            composedWhere = this.composeWhere(context, inputOperator);
+            const composedWhere = inputOperator.getCypher(context);
+            return `\n${this.operation} ${composedWhere}`;
         }
-        
+
+        const composedWhere = this.composeWhere(context, inputOperator);
         return `\n${this.operation} (${composedWhere})`;
     }
 }
