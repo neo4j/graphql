@@ -69,6 +69,7 @@ export class Match<T extends MatchableElement> extends Query {
         });
 
         if (whereStatements.length === 0) return "";
+        if (whereStatements.length > 1) return `WHERE (${whereStatements.join("\nAND ")})`;
         return `WHERE ${whereStatements.join("\nAND ")}`;
     }
 }

@@ -63,9 +63,10 @@ function mapAllProperties<T extends MatchableElement>({
 
     const leafProperties = whereFields.filter(([key, value]) => key !== "OR" && key !== "AND");
     if (leafProperties.length > 0) {
-        const mappedProperties = mapProperties(leafProperties, node);
+        const mappedProperties = mapProperties(leafProperties, node, targetElement);
 
-        resultArray.push([targetElement, mappedProperties]);
+        // resultArray.push([targetElement, mappedProperties]);
+        resultArray.push(...mappedProperties);
     }
 
     // matchStatement.where([targetElement, mappedProperties]);
@@ -79,7 +80,6 @@ function mapAllProperties<T extends MatchableElement>({
                 const mapNested = mapAllProperties({ whereInput: nestedValue, node, targetElement });
                 nestedResult.push(...mapNested);
             }
-            // const nestedProperties = value.map((v) => mapAllProperties({ whereInput: v, node, targetElement }));
 
             if (key === "OR") {
                 const orOperation = CypherBuilder.or(...nestedResult);
@@ -103,11 +103,12 @@ function mapAllProperties<T extends MatchableElement>({
     return resultArray;
 }
 
-function mapProperties(
+function mapProperties<T extends MatchableElement>(
     properties: Array<[string, any]>,
-    node: Node
-): Record<string, CypherBuilder.Param | CypherBuilder.WhereClause> {
-    return properties.reduce((acc, [key, value]) => {
+    node: Node,
+    targetElement: T
+): Array<[T, Record<string, CypherBuilder.Param | CypherBuilder.WhereClause>] | WhereOperator> {
+    return properties.map(([key, value]) => {
         const match = whereRegEx.exec(key);
 
         const { fieldName, isAggregate, operator } = match?.groups as WhereRegexGroups;
@@ -124,21 +125,20 @@ function mapProperties(
                 case "IN":
                     whereClause = CypherBuilder.in(param);
                     break;
+                case "NOT_IN":
+                    return CypherBuilder.not([targetElement, { [dbFieldName]: CypherBuilder.in(param) }]);
                 default:
                     throw new Error(`Invalid operator ${operator}`);
             }
-            acc[dbFieldName] = whereClause;
-        } else {
-            acc[dbFieldName] = param;
+            return [targetElement, { [dbFieldName]: whereClause }];
         }
+        return [targetElement, { [dbFieldName]: param }];
 
-        return acc;
+        // return acc;
 
         // const property =
         //     coalesceValue !== undefined
         //         ? `coalesce(${varName}.${dbFieldName}, ${coalesceValue})`
         //         : `${varName}.${dbFieldName}`;
-
-        return acc;
-    }, {});
+    });
 }

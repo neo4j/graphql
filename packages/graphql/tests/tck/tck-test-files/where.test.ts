@@ -346,9 +346,9 @@ describe("Cypher WHERE", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this0:\`Movie\`)
             WHERE (this0.id = $param0
-            AND this0.isFavorite = $param1)
+            AND this0.isFavorite = $param1
             AND (this0.title = $param2
-            OR this0.title = $param3)
+            OR this0.title = $param3))
             RETURN this { .title } as this"
         `);
 
@@ -407,10 +407,11 @@ describe("Cypher WHERE", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                            "MATCH (this0:\`Movie\`)
-                            WHERE NOT (this0.title IN $param0)
-                            RETURN this { .title } as this"
-                    `);
+                "MATCH (this0:\`Movie\`)
+                WHERE
+                NOT (this0.title IN $param0)
+                RETURN this { .title } as this"
+            `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                             "{
