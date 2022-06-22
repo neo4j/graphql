@@ -37,8 +37,8 @@ type UniqueTypeOperations = {
         payload: {
             created: string;
             updated: string;
-            deleted: string
-        }
+            deleted: string;
+        };
     };
 };
 
@@ -68,7 +68,7 @@ export class UniqueType {
     public get operations(): UniqueTypeOperations {
         const pascalCasePlural = upperFirst(this.plural);
         const singular = camelcase(this.name);
-        const pascalCaseSingular=upperFirst(singular)
+        const pascalCaseSingular = upperFirst(singular);
 
         return {
             create: `create${pascalCasePlural}`,
@@ -84,19 +84,7 @@ export class UniqueType {
                     created: `created${pascalCaseSingular}`,
                     updated: `updated${pascalCaseSingular}`,
                     deleted: `deleted${pascalCaseSingular}`,
-                }
-            },
-        };
-    }
-
-    public get fieldNames(): UniqueTypeFieldNames {
-        const singular = upperFirst(camelcase(this.name));
-
-        return {
-            subscriptions: {
-                created: `created${singular}`,
-                updated: `updated${singular}`,
-                deleted: `deleted${singular}`,
+                },
             },
         };
     }
