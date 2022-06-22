@@ -222,7 +222,7 @@ function createAuthAndParams({
         const quotes = escapeQuotes ? '\\"' : '"';
         if (!skipIsAuthenticated && (authRule.isAuthenticated === true || authRule.isAuthenticated === false)) {
             thisPredicates.push(
-                `apoc.util.validatePredicate(NOT($auth.isAuthenticated = ${Boolean(
+                `apoc.util.validatePredicate(NOT ($auth.isAuthenticated = ${Boolean(
                     authRule.isAuthenticated
                 )}), ${quotes}${AUTH_UNAUTHENTICATED_ERROR}${quotes}, [0])`
             );
