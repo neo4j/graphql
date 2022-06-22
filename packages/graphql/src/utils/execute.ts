@@ -124,13 +124,67 @@ function getExecutor(input: { defaultAccessMode: SessionMode; context: Context }
     return { transaction: executionContext, openedTransaction: false, openedSession: false };
 }
 
-async function execute(input: {
+function newGetExecutor(input: {
+    defaultAccessMode: SessionMode;
+    context: Context;
+}): (cypher: string, params: Record<string, any>) => Promise<QueryResult> {
+    const executionContext = input.context.executionContext;
+
+    if (isDriverLike(executionContext)) {
+        const session = executionContext.session(getSessionParams(input));
+        return (cypher: string, params: Record<string, any>) =>
+            session[`${input.defaultAccessMode.toLowerCase()}Transaction`]((tx: Transaction) => tx.run(cypher, params));
+    }
+
+    if (isSessionLike(executionContext)) {
+        return (cypher: string, params: Record<string, any>) =>
+            executionContext[`${input.defaultAccessMode.toLowerCase()}Transaction`]((tx: Transaction) =>
+                tx.run(cypher, params)
+            );
+    }
+
+    return (cypher: string, params: Record<string, any>) => executionContext.run(cypher, params);
+}
+
+async function getQueryResult({
+    cypher,
+    params,
+    defaultAccessMode,
+    context,
+}: {
+    cypher: string;
+    params: Record<string, any>;
+    defaultAccessMode: SessionMode;
+    context: Context;
+}): Promise<QueryResult> {
+    const executionContext = context.executionContext;
+
+    if (isDriverLike(executionContext)) {
+        const session = executionContext.session(getSessionParams({ defaultAccessMode, context }));
+        const result = await session[`${defaultAccessMode.toLowerCase()}Transaction`]((tx: Transaction) =>
+            tx.run(cypher, params)
+        );
+        const bookmark = session.lastBookmark();
+        await session.close();
+        return result;
+    }
+
+    if (isSessionLike(executionContext)) {
+        return executionContext[`${defaultAccessMode.toLowerCase()}Transaction`]((tx: Transaction) =>
+            tx.run(cypher, params)
+        );
+    }
+
+    return executionContext.run(cypher, params);
+}
+
+async function execute({
     cypher: string;
     params: any;
     defaultAccessMode: SessionMode;
     context: Context;
 }): Promise<ExecuteResult> {
-    const executor = getExecutor(input);
+    // const executor = getExecutor(input);
 
     // Its really difficult to know when users are using the `auth` param. For Simplicity it better to do the check here
     if (
@@ -151,14 +205,11 @@ async function execute(input: {
     try {
         debug("%s", `About to execute Cypher:\nCypher:\n${cypher}\nParams:\n${JSON.stringify(input.params, null, 2)}`);
 
-        const result: QueryResult | undefined = await executor.transaction.run(cypher, input.params);
+        // const result: QueryResult | undefined = await executor.transaction.run(cypher, input.params);
+        const result: QueryResult | undefined = await getQueryResult({ ...input, cypher, params: input.params });
 
         if (!result) {
             throw new Error("Unable to execute query against Neo4j database");
-        }
-
-        if (executor.openedTransaction) {
-            await executor.transaction.commit();
         }
 
         const records = result.records.map((r) => r.toObject());
@@ -197,10 +248,6 @@ async function execute(input: {
         debug("%s", error);
 
         throw error;
-    } finally {
-        if (executor.openedSession && executor.session) {
-            await executor.session.close();
-        }
     }
 }
 
