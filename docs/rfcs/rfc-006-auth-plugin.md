@@ -80,7 +80,7 @@ const neoSchema = new Neo4jGraphQL({
     typeDefs,
     driver,
     plugins: {
-        auth: new Neo4jGraphQLAuthJWKSPlugin({ jwksEndpoint: "https://YOUR_DOMAIN/well-known/jwks.json"; }),
+        auth: new Neo4jGraphQLAuthJWKSPlugin({ jwksEndpoint: "https://YOUR_DOMAIN/.well-known/jwks.json"; }),
     },
 });
 ```
