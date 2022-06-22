@@ -200,7 +200,7 @@ jobs:
         run: |
           yarn test:int -t '^(?!delete should delete a movie, a single nested actor and another movie they act in|update should delete a nested actor and one of their nested movies, within an update block)' --shard=${{ matrix.packages.shard }} --coverage
           mv coverage coverage-aura-${{ matrix.aura-instance }}
-        working-directory: packages/${{ matrix.package }}
+        working-directory: packages/${{ matrix.packages.package }}
         env:
           NEO_USER: neo4j
           NEO_PASSWORD: ${{ secrets[env.AURA_PASSWORD_SECRET] }}
