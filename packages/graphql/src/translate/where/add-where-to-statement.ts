@@ -119,7 +119,7 @@ function mapProperties<T extends MatchableElement>(
         const param = new CypherBuilder.Param(value);
         const dbFieldName = mapToDbProperty(node, fieldName);
         if (value === null) {
-            // create CYPHER IS NULL operator 
+            // create CYPHER IS NULL operator
         }
         if (operator) {
             let whereClause: CypherBuilder.WhereClause;
@@ -147,7 +147,7 @@ function mapProperties<T extends MatchableElement>(
                     whereClause = CypherBuilder.startsWith(param);
                     break;
                 case "NOT_STARTS_WITH":
-                    return CypherBuilder.not([targetElement, { [dbFieldName]: CypherBuilder.contains(param) }]);
+                    return CypherBuilder.not([targetElement, { [dbFieldName]: CypherBuilder.startsWith(param) }]);
                 case "MATCHES":
                     whereClause = CypherBuilder.match(param);
                     break;

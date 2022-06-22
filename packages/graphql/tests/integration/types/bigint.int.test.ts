@@ -142,6 +142,57 @@ describe("BigInt", () => {
                 await session.close();
             }
         });
+
+        test("should successfully query an node with a BigInt property using in where", async () => {
+            const session = driver.session();
+
+            const typeDefs = `
+                type File {
+                  name: String!
+                  size: BigInt!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            const name = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                query {
+                    files(where: { size: 8323372036854775807 }) {
+                        name
+                        size
+                    }
+                }
+            `;
+
+            try {
+                await session.run(`
+                   CREATE (f:File)
+                   SET f.name = "${name}"
+                   SET f.size = 8323372036854775807
+               `);
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                });
+
+                expect(gqlResult.errors).toBeFalsy();
+
+                expect((gqlResult?.data as any)?.files[0]).toEqual({
+                    name,
+                    size: "8323372036854775807",
+                });
+            } finally {
+                await session.close();
+            }
+        });
     });
 
     describe("@cypher directive", () => {
