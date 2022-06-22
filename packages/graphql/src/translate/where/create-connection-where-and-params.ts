@@ -20,6 +20,7 @@
 import { Node, Relationship } from "../../classes";
 import { ConnectionWhereArg, Context } from "../../types";
 import createElementWhereAndParams from "./create-element-where-and-params";
+import { ListPredicate } from "./utils";
 
 function createConnectionWhereAndParams({
     whereInput,
@@ -38,7 +39,7 @@ function createConnectionWhereAndParams({
     relationship: Relationship;
     relationshipVariable: string;
     parameterPrefix: string;
-    listPredicates?: string[];
+    listPredicates?: ListPredicate[];
 }): [string, any] {
     const reduced = Object.entries(whereInput).reduce<{ whereStrs: string[]; params: any }>(
         (res, [k, v]) => {
