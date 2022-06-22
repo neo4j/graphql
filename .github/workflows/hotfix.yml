@@ -72,7 +72,7 @@ jobs:
 
     strategy:
       matrix:
-        package:
+        packages:
           [
             { package: "ogm", shard: 1/1 },
             { package: "graphql", shard: 1/4 },
