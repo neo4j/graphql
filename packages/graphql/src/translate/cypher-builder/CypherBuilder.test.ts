@@ -315,6 +315,28 @@ describe("CypherBuilder", () => {
                 }
             `);
         });
+
+        test("Match with null values", () => {
+            const nameParam = new CypherBuilder.Param(null);
+            const testParam = new CypherBuilder.Param(null);
+
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+            });
+
+            const matchQuery = new CypherBuilder.Match(movieNode, { test: testParam })
+                .where([movieNode, { name: nameParam }])
+                .return(movieNode);
+
+            const queryResult = matchQuery.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "MATCH (this0:\`Movie\` { test: NULL })
+                WHERE this0.name IS NULL
+                RETURN this0"
+            `);
+
+            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+        });
     });
 
     describe("Create", () => {
@@ -342,6 +364,36 @@ describe("CypherBuilder", () => {
                 Object {
                   "param0": "test-value",
                   "param1": "my-id",
+                }
+            `);
+        });
+
+        test.only("Create Node with null property", () => {
+            const idParam = new CypherBuilder.Param(null);
+            const testParam = new CypherBuilder.Param(null);
+            const nullStringParam = new CypherBuilder.Param("null");
+
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+            });
+
+            const createQuery = new CypherBuilder.Create(movieNode, {
+                id: idParam,
+            })
+                .set({ test: testParam, nullStr: nullStringParam })
+                .return(movieNode);
+
+            const queryResult = createQuery.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "CREATE (this0:\`Movie\` { id: NULL })
+                SET this0.test = NULL,
+                this0.nullStr = $param0
+                RETURN this0"
+            `);
+
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "null",
                 }
             `);
         });

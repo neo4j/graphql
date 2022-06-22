@@ -62,6 +62,10 @@ export class WhereOperator {
                 return `${nodeAlias}.${key} ${value.getCypher(context)}`;
             }
 
+            if (value.isNull) {
+                return `${nodeAlias}.${key} IS ${value.getCypher(context)}`;
+            }
+
             return `${nodeAlias}.${key} = ${value.getCypher(context)}`;
         });
 

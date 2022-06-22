@@ -89,8 +89,6 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-
-
                         expect(gqlResult.errors).toBeUndefined();
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
                         expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value);
@@ -142,8 +140,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
-
-
 
                         expect(gqlResult.errors).toBeUndefined();
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -202,8 +198,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
-
-
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -271,8 +265,6 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -330,8 +322,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
-
-
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -394,8 +384,6 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -453,8 +441,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
-
-
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -519,8 +505,6 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -582,8 +566,6 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
@@ -644,8 +626,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
-
-
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -713,8 +693,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
-
-
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -787,8 +765,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
-
-
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -864,8 +840,6 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -924,8 +898,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
-
-
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -986,8 +958,6 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
@@ -1045,8 +1015,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
-
-
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -1107,8 +1075,6 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
@@ -1158,8 +1124,6 @@ describe("Advanced Filtering", () => {
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                
-
                 expect(gqlResult.errors).toBeUndefined();
 
                 expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -1204,8 +1168,6 @@ describe("Advanced Filtering", () => {
                     source: query,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
-
-                
 
                 expect(gqlResult.errors).toBeUndefined();
 
@@ -1278,8 +1240,6 @@ describe("Advanced Filtering", () => {
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
 
-
-
                     expect(gqlResult.errors).toBeUndefined();
 
                     expect((gqlResult.data as any)[randomType1.plural]).toHaveLength(1);
@@ -1339,8 +1299,6 @@ describe("Advanced Filtering", () => {
                         source: query,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
-
-
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -1410,8 +1368,6 @@ describe("Advanced Filtering", () => {
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
 
-
-
                     expect(gqlResult.errors).toBeUndefined();
 
                     expect((gqlResult.data as any).movies).toHaveLength(1);
@@ -1479,8 +1435,6 @@ describe("Advanced Filtering", () => {
                         source: query,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
-
-
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -1559,8 +1513,6 @@ describe("Advanced Filtering", () => {
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
 
-
-
                     expect(gqlResult.errors).toBeUndefined();
 
                     expect((gqlResult.data as any)[randomType1.plural]).toHaveLength(1);
@@ -1631,8 +1583,6 @@ describe("Advanced Filtering", () => {
                         source: query,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
-
-
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -1711,8 +1661,6 @@ describe("Advanced Filtering", () => {
                         source: query,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
-
-
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -2043,8 +1991,6 @@ describe("Advanced Filtering", () => {
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-
-
                 expect(nullResult.errors).toBeUndefined();
 
                 expect((nullResult.data as any)[randomType1.plural]).toHaveLength(1);
@@ -2068,8 +2014,6 @@ describe("Advanced Filtering", () => {
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                
-
                 expect(notNullResult.errors).toBeUndefined();
 
                 expect((notNullResult.data as any)[randomType1.plural]).toHaveLength(1);
@@ -2083,7 +2027,8 @@ describe("Advanced Filtering", () => {
     });
 
     describe("NULL Filtering", () => {
-        test.only("should work for existence and non-existence", async () => {
+        // TODO: split in 2 tests
+        test("should work for existence and non-existence", async () => {
             const session = driver.session();
 
             const randomType = generateUniqueType("Movie");
@@ -2137,8 +2082,6 @@ describe("Advanced Filtering", () => {
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-
-
                 expect(nullResult.errors).toBeUndefined();
 
                 expect((nullResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -2160,8 +2103,6 @@ describe("Advanced Filtering", () => {
                     source: notNullQuery,
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
-
-                
 
                 expect(notNullResult.errors).toBeUndefined();
 

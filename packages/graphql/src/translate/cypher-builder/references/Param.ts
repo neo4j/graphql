@@ -29,7 +29,15 @@ export class Param<T = any> implements CypherParameter {
     }
 
     public getCypher(context: CypherContext): string {
+        if (this.isNull) {
+            return "NULL";
+        }
+
         return `$${context.getParamId(this)}`;
+    }
+
+    public get isNull(): boolean {
+        return this.value === null;
     }
 }
 

@@ -421,6 +421,7 @@ describe("Cypher WHERE", () => {
                             }"
                     `);
         });
+
         test("Simple Match with GT operator", async () => {
             const query = gql`
                 {
@@ -449,6 +450,53 @@ describe("Cypher WHERE", () => {
                                 ]
                             }"
                     `);
+        });
+
+        test("Match with NULL in where", async () => {
+            const query = gql`
+                {
+                    movies(where: { title: null }) {
+                        title
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Movie\`)
+                WHERE this.title IS NULL
+                RETURN this { .title } as this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        });
+
+        test("Match with not NULL in where", async () => {
+            const query = gql`
+                {
+                    movies(where: { title_NOT: null }) {
+                        title
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Movie\`)
+                WHERE
+                NOT (this.title IS NULL)
+                RETURN this { .title } as this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
         });
     });
 });
