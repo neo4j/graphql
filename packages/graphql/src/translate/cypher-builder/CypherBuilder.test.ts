@@ -184,6 +184,33 @@ describe("CypherBuilder", () => {
             `);
         });
 
+        test.only("Match node with simple NOT", () => {
+            const nameParam = new CypherBuilder.Param("my-name");
+
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+            });
+
+            const matchQuery = new CypherBuilder.Match(movieNode)
+                .where(CypherBuilder.not([movieNode, { name: nameParam }]))
+                .return(movieNode);
+
+            const queryResult = matchQuery.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "MATCH (this0:\`Movie\`)
+                WHERE 
+                NOT (this0.name = $param0)
+                RETURN this0"
+            `);
+
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "my-name",
+                }
+            `);
+        });
+
+        
         describe("Where clauses", () => {
             test("Match node with IN", () => {
                 const titleParam = new CypherBuilder.Param(["my-name"]);

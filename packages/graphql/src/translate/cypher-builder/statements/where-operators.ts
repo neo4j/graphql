@@ -25,11 +25,11 @@ import { WhereClause } from "./where-clauses";
 type Params = Record<string, Param<any> | WhereClause>;
 type WhereInput = Array<[MatchableElement, Params] | WhereOperator>;
 
-type Operation = "OR" | "AND";
-
+type Operation = "OR" | "AND" | "NOT";
+// TODO: make it as an abstract class
 export class WhereOperator {
-    private whereInput: WhereInput;
-    private operation: Operation;
+    protected whereInput: WhereInput;
+    protected operation: Operation;
 
     constructor(operation: Operation, input: WhereInput) {
         this.whereInput = input;
@@ -53,7 +53,7 @@ export class WhereOperator {
     }
 
     // TODO: move somewhere else
-    private composeWhere(context: CypherContext, input: [MatchableElement, Params]): string {
+    protected composeWhere(context: CypherContext, input: [MatchableElement, Params]): string {
         const [matchableElement, params] = input;
         const nodeAlias = context.getVariableId(matchableElement);
 
@@ -75,4 +75,28 @@ export function and(...items: WhereInput): WhereOperator {
 
 export function or(...items: WhereInput): WhereOperator {
     return new WhereOperator("OR", items);
+}
+
+export function not(item: [MatchableElement, Params] | WhereOperator): WhereOperator {
+    return new NotWhereOperator(item);
+}
+
+
+class NotWhereOperator extends WhereOperator {
+
+    constructor(input: [MatchableElement, Params] | WhereOperator) {
+        super("NOT", [input]);
+    }
+
+    public getCypher(context: CypherContext): string {
+        const inputOperator = this.whereInput[0];
+        let composedWhere;
+        if (inputOperator instanceof WhereOperator) {
+            composedWhere = inputOperator.getCypher(context);
+        } else {
+            composedWhere = this.composeWhere(context, inputOperator);
+        }
+        
+        return `\n${this.operation} (${composedWhere})`;
+    }
 }

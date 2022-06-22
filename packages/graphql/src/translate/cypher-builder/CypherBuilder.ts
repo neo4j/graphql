@@ -30,5 +30,5 @@ export { Relationship } from "./references/Relationship";
 
 export { CypherResult } from "./types";
 
-export { or, and } from "./statements/where-operators";
+export { or, and, not } from "./statements/where-operators";
 export { inClause as in, WhereClause } from "./statements/where-clauses";
