@@ -20,10 +20,11 @@
 import { CypherContext } from "../CypherContext";
 import { MatchableElement } from "../MatchPattern";
 import { Param } from "../references/Param";
+import { PredicateFunction } from "./predicate-functions";
 import { WhereClause } from "./where-clauses";
 
 type Params = Record<string, Param<any> | WhereClause>;
-type WhereInput = Array<[MatchableElement, Params] | WhereOperator>;
+type WhereInput = Array<[MatchableElement, Params] | WhereOperator | PredicateFunction>;
 
 type Operation = "OR" | "AND" | "NOT";
 // TODO: make it as an abstract class
@@ -39,6 +40,7 @@ export class WhereOperator {
     public getCypher(context: CypherContext): string {
         const nestedOperationsCypher = this.whereInput.map((input) => {
             if (input instanceof WhereOperator) return input.getCypher(context);
+            if (input instanceof PredicateFunction) return input.getCypher(context);
             return this.composeWhere(context, input);
         });
 
@@ -98,7 +100,7 @@ class NotWhereOperator extends WhereOperator {
 
     public getCypher(context: CypherContext): string {
         const inputOperator = this.whereInput[0];
-        if (inputOperator instanceof WhereOperator) {
+        if (inputOperator instanceof WhereOperator || inputOperator instanceof PredicateFunction) {
             const composedWhere = inputOperator.getCypher(context);
             return `\n${this.operation} ${composedWhere}`;
         }

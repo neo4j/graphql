@@ -43,7 +43,11 @@ export class Merge<T extends MatchableElement> extends Query {
         this.element = element;
 
         const addLabels = element instanceof Node;
-        this.matchPattern = new MatchPattern(element, { labels: addLabels }).withParams(params);
+        const addLabelsOption = { labels: addLabels };
+        this.matchPattern = new MatchPattern(element, {
+            source: addLabelsOption,
+            target: addLabelsOption,
+        }).withParams(params);
     }
 
     public cypher(context: CypherContext, childrenCypher: string): string {

@@ -18,7 +18,6 @@
  */
 
 import { CypherContext } from "../CypherContext";
-import { MatchableElement } from "../MatchPattern";
 import { Param } from "../references/Param";
 
 // type Params = Record<string, Param<any>>;

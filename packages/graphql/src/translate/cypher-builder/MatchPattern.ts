@@ -27,9 +27,16 @@ import { padLeft } from "./utils";
 
 export type MatchableElement = Node | Relationship;
 
+type ItemOption = { labels?: boolean; variable?: boolean };
+
+// TODO: improve options
 type MatchPatternOptions = {
-    labels?: boolean;
-    relationshipTypes?: boolean;
+    source?: ItemOption;
+    target?: ItemOption;
+    relationship?: {
+        type?: boolean;
+        variable?: boolean;
+    };
 };
 
 type ParamsRecord = Record<string, Param<any>>;
@@ -45,13 +52,34 @@ export type MatchParams<T extends MatchableElement> = T extends Node ? ParamsRec
 export class MatchPattern<T extends MatchableElement> extends CypherASTNode {
     private matchElement: T;
     private parameters: MatchParams<T>;
-    private options: MatchPatternOptions;
+    private options: MatchPatternOptions; // TODO: fix typings, this is not undefined
 
     constructor(input: T, options?: MatchPatternOptions) {
         super();
         this.matchElement = input;
         this.parameters = {} as MatchParams<T>; // Cast required due to neo-push
-        this.options = { labels: true, relationshipTypes: true, ...options };
+
+        const sourceOptions = {
+            labels: true,
+            variable: true,
+            ...(options?.source || {}),
+        };
+        const targetOptions = {
+            labels: true,
+            variable: true,
+            ...(options?.target || {}),
+        };
+        const relationshipOption = {
+            type: true,
+            variable: true,
+            ...(options?.relationship || {}),
+        };
+
+        this.options = {
+            source: sourceOptions,
+            target: targetOptions,
+            relationship: relationshipOption,
+        };
     }
 
     public withParams(parameters: MatchParams<T>): MatchPattern<T> {
@@ -71,7 +99,7 @@ export class MatchPattern<T extends MatchableElement> extends CypherASTNode {
     }
 
     private getRelationshipCypher(context: CypherContext, relationship: Relationship): string {
-        const referenceId = context.getVariableId(relationship);
+        const referenceId = this.options?.relationship?.variable ? context.getVariableId(relationship) : "";
 
         const parameterOptions = this.parameters as MatchParams<Relationship>;
         const parameterStrs = {
@@ -80,22 +108,13 @@ export class MatchPattern<T extends MatchableElement> extends CypherASTNode {
             target: this.serializeParameters(parameterOptions.target || {}, context),
         };
 
-        const labelsStr = {
-            source: "",
-            relationship: this.options.relationshipTypes ? relationship.getTypeString() : "",
-            target: "",
-        };
+        const relationshipType = this.options.relationship?.type ? relationship.getTypeString() : "";
 
-        if (this.options.labels) {
-            labelsStr.source = relationship.source.getLabelsString();
-            labelsStr.target = relationship.target.getLabelsString();
-        }
-
-        const sourceStr = `(${context.getVariableId(relationship.source)}${labelsStr.source}${parameterStrs.source})`;
-        const targetStr = `(${context.getVariableId(relationship.target)}${labelsStr.target}${parameterStrs.target})`;
+        const sourceStr = this.getNodeCypher(context, relationship.source, "source");
+        const targetStr = this.getNodeCypher(context, relationship.target, "target");
         const arrowStr = this.getRelationshipArrow(relationship);
 
-        const relationshipStr = `${referenceId || ""}${labelsStr.relationship}${parameterStrs.relationship}`;
+        const relationshipStr = `${referenceId}${relationshipType}${parameterStrs.relationship}`;
 
         return `${sourceStr}-[${relationshipStr}]${arrowStr}${targetStr}`;
     }
@@ -104,10 +123,12 @@ export class MatchPattern<T extends MatchableElement> extends CypherASTNode {
         return relationship.directed ? "->" : "-";
     }
 
-    private getNodeCypher(context: CypherContext, node: Node): string {
-        const referenceId = context.getVariableId(node);
+    private getNodeCypher(context: CypherContext, node: Node, item: "source" | "target" = "source"): string {
+        const nodeOptions = this.options[item] as ItemOption;
+
+        const referenceId = nodeOptions.variable ? context.getVariableId(node) : "";
         const parametersStr = this.serializeParameters(this.parameters as MatchParams<Node>, context);
-        const nodeLabelString = this.options.labels ? node.getLabelsString() : "";
+        const nodeLabelString = nodeOptions.labels ? node.getLabelsString() : "";
 
         return `(${referenceId}${nodeLabelString}${parametersStr})`;
     }

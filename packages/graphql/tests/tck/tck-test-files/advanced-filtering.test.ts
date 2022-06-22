@@ -583,7 +583,7 @@ describe("Cypher Advanced Filtering", () => {
     });
 
     describe("Relationships", () => {
-        test("equality", async () => {
+        test.only("equality", async () => {
             const query = gql`
                 {
                     movies(where: { genres: { name: "some genre" } }) {

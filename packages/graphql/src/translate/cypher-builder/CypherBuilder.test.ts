@@ -37,9 +37,9 @@ describe("CypherBuilder", () => {
             const queryResult = matchQuery.build();
             expect(queryResult.cypher).toMatchInlineSnapshot(`
                 "MATCH (this0:\`Movie\` { test: $param0 })
-                WHERE this0.id = $param1
+                WHERE (this0.id = $param1
                 AND this0.name = $param2
-                AND this0.age = $param3
+                AND this0.age = $param3)
                 RETURN this0"
             `);
 
@@ -68,8 +68,8 @@ describe("CypherBuilder", () => {
             const queryResult = matchQuery.build();
             expect(queryResult.cypher).toMatchInlineSnapshot(`
                 "MATCH (this0:\`Movie\` { test: $param0 })
-                WHERE this0.id = $param1
-                AND this0.name = $param2
+                WHERE (this0.id = $param1
+                AND this0.name = $param2)
                 RETURN this0 {.name} AS myAlias"
             `);
 
@@ -105,10 +105,10 @@ describe("CypherBuilder", () => {
             const queryResult = matchQuery.build();
             expect(queryResult.cypher).toMatchInlineSnapshot(`
                 "MATCH (this0:\`Movie\`)
-                WHERE (this0.id = $param0
+                WHERE ((this0.id = $param0
                 AND (this0.name = $param1
                 OR this0.age = $param2))
-                AND this0.description = $param3
+                AND this0.description = $param3)
                 RETURN this0"
             `);
 
@@ -225,8 +225,8 @@ describe("CypherBuilder", () => {
             expect(queryResult.cypher).toMatchInlineSnapshot(`
                 "MATCH (this0:\`Movie\`)
                 WHERE 
-                NOT (this0.name = $param0
-                AND this0.age = $param1)
+                NOT ((this0.name = $param0
+                AND this0.age = $param1))
                 RETURN this0"
             `);
 
@@ -261,9 +261,9 @@ describe("CypherBuilder", () => {
             expect(queryResult.cypher).toMatchInlineSnapshot(`
                 "MATCH (this0:\`Movie\`)
                 WHERE 
-                NOT ((this0.age = $param0
+                NOT (this0.age = $param0
                 OR (this0.name = $param1
-                AND this0.age = $param0)))
+                AND this0.age = $param0))
                 RETURN this0"
             `);
 
@@ -296,7 +296,7 @@ describe("CypherBuilder", () => {
             const queryResult = matchQuery.build();
             expect(queryResult.cypher).toMatchInlineSnapshot(`
                 "MATCH (this0:\`Movie\`)
-                WHERE 
+                WHERE (
                 NOT (this0.age = $param0)
                 AND (this0.age = $param0
                 OR (this0.name = $param1
@@ -304,7 +304,7 @@ describe("CypherBuilder", () => {
                 AND 
                 NOT this0.age = $param0
                 AND this0.age = $param0
-                AND this0.name = $param1
+                AND this0.name = $param1)
                 RETURN this0"
             `);
 
@@ -368,7 +368,7 @@ describe("CypherBuilder", () => {
             `);
         });
 
-        test.only("Create Node with null property", () => {
+        test("Create Node with null property", () => {
             const idParam = new CypherBuilder.Param(null);
             const testParam = new CypherBuilder.Param(null);
             const nullStringParam = new CypherBuilder.Param("null");

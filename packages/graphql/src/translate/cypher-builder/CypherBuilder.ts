@@ -43,3 +43,5 @@ export {
     match,
     WhereClause,
 } from "./statements/where-clauses";
+
+export { exists } from "./statements/predicate-functions";

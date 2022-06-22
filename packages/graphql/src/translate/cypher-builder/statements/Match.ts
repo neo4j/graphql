@@ -25,10 +25,11 @@ import { Query } from "./Query";
 import { ReturnStatement } from "./Return";
 import { WhereClause } from "./where-clauses";
 import { and, WhereOperator } from "./where-operators";
+import { PredicateFunction } from "./predicate-functions";
 
 type Params = Record<string, Param<any> | WhereClause>;
 
-type WhereInput = Array<[MatchableElement, Params] | WhereOperator>;
+type WhereInput = Array<[MatchableElement, Params] | WhereOperator | PredicateFunction>;
 
 export class Match<T extends MatchableElement> extends Query {
     private matchPattern: MatchPattern<T>;
