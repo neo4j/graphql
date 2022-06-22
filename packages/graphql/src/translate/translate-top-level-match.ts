@@ -43,7 +43,7 @@ function translateTopLevelMatch({
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
     const whereStrs: string[] = [];
 
-    const matchNode = new CypherBuilder.Node({ labels: node.getLabels(context) });
+    const matchNode = new CypherBuilder.NamedNode(varName, { labels: node.getLabels(context) });
     const matchQuery = new CypherBuilder.Match(matchNode);
 
     // if (!Object.entries(fulltextInput).length) {

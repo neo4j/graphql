@@ -89,9 +89,7 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
+
 
                         expect(gqlResult.errors).toBeUndefined();
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -145,9 +143,7 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
+
 
                         expect(gqlResult.errors).toBeUndefined();
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -207,9 +203,7 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
+
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -277,9 +271,7 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
+
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -339,9 +331,7 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
+
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -404,9 +394,7 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
+
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -466,9 +454,7 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
+
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -533,9 +519,7 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
+
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -598,9 +582,7 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
+
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -663,9 +645,7 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
+
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -734,9 +714,7 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
+
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -810,9 +788,7 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
+
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -888,9 +864,7 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
+
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -951,9 +925,7 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
+
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -1014,9 +986,7 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
+
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -1076,9 +1046,7 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
+
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -1139,9 +1107,7 @@ describe("Advanced Filtering", () => {
                             contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
+
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -1192,9 +1158,7 @@ describe("Advanced Filtering", () => {
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
+                
 
                 expect(gqlResult.errors).toBeUndefined();
 
@@ -1241,9 +1205,7 @@ describe("Advanced Filtering", () => {
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
+                
 
                 expect(gqlResult.errors).toBeUndefined();
 
@@ -1316,9 +1278,7 @@ describe("Advanced Filtering", () => {
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
 
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
+
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -1380,9 +1340,7 @@ describe("Advanced Filtering", () => {
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
 
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
+
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -1452,9 +1410,7 @@ describe("Advanced Filtering", () => {
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
 
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
+
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -1524,9 +1480,7 @@ describe("Advanced Filtering", () => {
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
 
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
+
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -1605,9 +1559,7 @@ describe("Advanced Filtering", () => {
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
 
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
+
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -1680,9 +1632,7 @@ describe("Advanced Filtering", () => {
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
 
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
+
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -1762,9 +1712,7 @@ describe("Advanced Filtering", () => {
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                     });
 
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
+
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -2095,9 +2043,7 @@ describe("Advanced Filtering", () => {
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                if (nullResult.errors) {
-                    console.log(JSON.stringify(nullResult.errors, null, 2));
-                }
+
 
                 expect(nullResult.errors).toBeUndefined();
 
@@ -2122,9 +2068,7 @@ describe("Advanced Filtering", () => {
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                if (notNullResult.errors) {
-                    console.log(JSON.stringify(notNullResult.errors, null, 2));
-                }
+                
 
                 expect(notNullResult.errors).toBeUndefined();
 
@@ -2139,7 +2083,7 @@ describe("Advanced Filtering", () => {
     });
 
     describe("NULL Filtering", () => {
-        test("should work for existence and non-existence", async () => {
+        test.only("should work for existence and non-existence", async () => {
             const session = driver.session();
 
             const randomType = generateUniqueType("Movie");
@@ -2193,9 +2137,7 @@ describe("Advanced Filtering", () => {
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                if (nullResult.errors) {
-                    console.log(JSON.stringify(nullResult.errors, null, 2));
-                }
+
 
                 expect(nullResult.errors).toBeUndefined();
 
@@ -2219,9 +2161,7 @@ describe("Advanced Filtering", () => {
                     contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 });
 
-                if (notNullResult.errors) {
-                    console.log(JSON.stringify(notNullResult.errors, null, 2));
-                }
+                
 
                 expect(notNullResult.errors).toBeUndefined();
 

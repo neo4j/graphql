@@ -118,10 +118,44 @@ function mapProperties<T extends MatchableElement>(
 
         const param = new CypherBuilder.Param(value);
         const dbFieldName = mapToDbProperty(node, fieldName);
-
+        if (value === null) {
+            // create CYPHER IS NULL operator 
+        }
         if (operator) {
             let whereClause: CypherBuilder.WhereClause;
             switch (operator) {
+                case "LT":
+                    whereClause = CypherBuilder.lt(param);
+                    break;
+                case "LTE":
+                    whereClause = CypherBuilder.lte(param);
+                    break;
+                case "GT":
+                    whereClause = CypherBuilder.gt(param);
+                    break;
+                case "GTE":
+                    whereClause = CypherBuilder.gte(param);
+                    break;
+                case "NOT":
+                    return CypherBuilder.not([targetElement, { [dbFieldName]: param }]);
+                case "ENDS_WITH":
+                    whereClause = CypherBuilder.endsWith(param);
+                    break;
+                case "NOT_ENDS_WITH":
+                    return CypherBuilder.not([targetElement, { [dbFieldName]: CypherBuilder.endsWith(param) }]);
+                case "STARTS_WITH":
+                    whereClause = CypherBuilder.startsWith(param);
+                    break;
+                case "NOT_STARTS_WITH":
+                    return CypherBuilder.not([targetElement, { [dbFieldName]: CypherBuilder.contains(param) }]);
+                case "MATCHES":
+                    whereClause = CypherBuilder.match(param);
+                    break;
+                case "CONTAINS":
+                    whereClause = CypherBuilder.contains(param);
+                    break;
+                case "NOT_CONTAINS":
+                    return CypherBuilder.not([targetElement, { [dbFieldName]: CypherBuilder.contains(param) }]);
                 case "IN":
                     whereClause = CypherBuilder.in(param);
                     break;

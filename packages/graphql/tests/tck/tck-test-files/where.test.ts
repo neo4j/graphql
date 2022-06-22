@@ -64,9 +64,9 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:\`Movie\`)
-            WHERE (this0.title = $param0
-            AND this0.isFavorite = $param1)
+            "MATCH (this:\`Movie\`)
+            WHERE (this.title = $param0
+            AND this.isFavorite = $param1)
             RETURN this { .title } as this"
         `);
 
@@ -93,8 +93,8 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:\`Movie\`)
-            WHERE this0.title = $param0
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             RETURN this { .title } as this"
         `);
 
@@ -120,9 +120,9 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:\`Movie\`)
-            WHERE (this0.title = $param0
-            AND this0.isFavorite = $param1)
+            "MATCH (this:\`Movie\`)
+            WHERE (this.title = $param0
+            AND this.isFavorite = $param1)
             RETURN this { .title } as this"
         `);
 
@@ -149,8 +149,8 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:\`Movie\`)
-            WHERE this0.title = $param0
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             RETURN this { .title } as this"
         `);
 
@@ -176,9 +176,9 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:\`Movie\`)
-            WHERE (this0.title = $param0
-            AND this0.title = $param1)
+            "MATCH (this:\`Movie\`)
+            WHERE (this.title = $param0
+            AND this.title = $param1)
             RETURN this { .title } as this"
         `);
 
@@ -205,10 +205,10 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:\`Movie\`)
-            WHERE (this0.id = $param0
-            AND (this0.title = $param1
-            OR this0.isFavorite = $param2))
+            "MATCH (this:\`Movie\`)
+            WHERE (this.id = $param0
+            AND (this.title = $param1
+            OR this.isFavorite = $param2))
             RETURN this { .title } as this"
         `);
 
@@ -236,8 +236,8 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:\`Movie\`)
-            WHERE this0.title = $param0
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             RETURN this { .title } as this"
         `);
 
@@ -263,8 +263,8 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:\`Movie\`)
-            WHERE this0.title = $param0
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             RETURN this { .title } as this"
         `);
 
@@ -290,8 +290,8 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:\`Movie\`)
-            WHERE this0.title = $param0
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             RETURN this { .title } as this"
         `);
 
@@ -317,8 +317,8 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:\`Movie\`)
-            WHERE this0.title = $param0
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             RETURN this { .title } as this"
         `);
 
@@ -344,11 +344,11 @@ describe("Cypher WHERE", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:\`Movie\`)
-            WHERE (this0.id = $param0
-            AND this0.isFavorite = $param1
-            AND (this0.title = $param2
-            OR this0.title = $param3))
+            "MATCH (this:\`Movie\`)
+            WHERE (this.id = $param0
+            AND this.isFavorite = $param1
+            AND (this.title = $param2
+            OR this.title = $param3))
             RETURN this { .title } as this"
         `);
 
@@ -378,10 +378,10 @@ describe("Cypher WHERE", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                            "MATCH (this0:\`Movie\`)
-                            WHERE this0.title IN $param0
-                            RETURN this { .title } as this"
-                    `);
+                "MATCH (this:\`Movie\`)
+                WHERE this.title IN $param0
+                RETURN this { .title } as this"
+            `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                             "{
@@ -407,9 +407,38 @@ describe("Cypher WHERE", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this0:\`Movie\`)
+                "MATCH (this:\`Movie\`)
                 WHERE
-                NOT (this0.title IN $param0)
+                NOT (this.title IN $param0)
+                RETURN this { .title } as this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                            "{
+                                \\"param0\\": [
+                                    \\"some title\\"
+                                ]
+                            }"
+                    `);
+        });
+        test("Simple Match with GT operator", async () => {
+            const query = gql`
+                {
+                    movies(where: { title_NOT_IN: ["some title"] }) {
+                        title
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Movie\`)
+                WHERE
+                NOT (this.title IN $param0)
                 RETURN this { .title } as this"
             `);
 
