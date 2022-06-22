@@ -196,6 +196,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        shard: [1, 2, 3, 4]
         package:
           - graphql
           - ogm
@@ -233,7 +234,7 @@ jobs:
         run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
-          yarn test:int --coverage
+          yarn test:int --shard=${{ matrix.shard }}/4 --coverage
           mv coverage coverage-${{ matrix.neo4j-version }}
         working-directory: packages/${{ matrix.package }}
         env:
