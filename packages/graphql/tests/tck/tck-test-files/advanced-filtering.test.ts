@@ -593,7 +593,7 @@ describe("Cypher Advanced Filtering", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
-                WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND any(this_genres IN [(this)-[:IN_GENRE]->(this_genres:Genre) | this_genres] WHERE this_genres.name = $this_genres_name)
+                WHERE EXISTS { (this)-[:IN_GENRE]->(:Genre) } AND any(this_genres IN [(this)-[:IN_GENRE]->(this_genres:Genre) | this_genres] WHERE this_genres.name = $this_genres_name)
                 RETURN this { .actorCount } as this"
             `);
 
@@ -620,7 +620,7 @@ describe("Cypher Advanced Filtering", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
-                WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND none(this_genres_NOT IN [(this)-[:IN_GENRE]->(this_genres_NOT:Genre) | this_genres_NOT] WHERE this_genres_NOT.name = $this_genres_NOT_name)
+                WHERE EXISTS { (this)-[:IN_GENRE]->(:Genre) } AND none(this_genres_NOT IN [(this)-[:IN_GENRE]->(this_genres_NOT:Genre) | this_genres_NOT] WHERE this_genres_NOT.name = $this_genres_NOT_name)
                 RETURN this { .actorCount } as this"
             `);
 
@@ -650,7 +650,7 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:Movie)
-                    WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND all(this_genres_ALL IN [(this)-[:IN_GENRE]->(this_genres_ALL:Genre) | this_genres_ALL] WHERE this_genres_ALL.name = $this_genres_ALL_name)
+                    WHERE EXISTS { (this)-[:IN_GENRE]->(:Genre) } AND all(this_genres_ALL IN [(this)-[:IN_GENRE]->(this_genres_ALL:Genre) | this_genres_ALL] WHERE this_genres_ALL.name = $this_genres_ALL_name)
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -667,7 +667,7 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:Movie)
-                    WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND none(this_genres_NONE IN [(this)-[:IN_GENRE]->(this_genres_NONE:Genre) | this_genres_NONE] WHERE this_genres_NONE.name = $this_genres_NONE_name)
+                    WHERE EXISTS { (this)-[:IN_GENRE]->(:Genre) } AND none(this_genres_NONE IN [(this)-[:IN_GENRE]->(this_genres_NONE:Genre) | this_genres_NONE] WHERE this_genres_NONE.name = $this_genres_NONE_name)
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -684,7 +684,7 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:Movie)
-                    WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND single(this_genres_SINGLE IN [(this)-[:IN_GENRE]->(this_genres_SINGLE:Genre) | this_genres_SINGLE] WHERE this_genres_SINGLE.name = $this_genres_SINGLE_name)
+                    WHERE EXISTS { (this)-[:IN_GENRE]->(:Genre) } AND single(this_genres_SINGLE IN [(this)-[:IN_GENRE]->(this_genres_SINGLE:Genre) | this_genres_SINGLE] WHERE this_genres_SINGLE.name = $this_genres_SINGLE_name)
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -701,7 +701,7 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:Movie)
-                    WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND any(this_genres_SOME IN [(this)-[:IN_GENRE]->(this_genres_SOME:Genre) | this_genres_SOME] WHERE this_genres_SOME.name = $this_genres_SOME_name)
+                    WHERE EXISTS { (this)-[:IN_GENRE]->(:Genre) } AND any(this_genres_SOME IN [(this)-[:IN_GENRE]->(this_genres_SOME:Genre) | this_genres_SOME] WHERE this_genres_SOME.name = $this_genres_SOME_name)
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`

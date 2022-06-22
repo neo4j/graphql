@@ -517,7 +517,7 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE exists((this)<-[:ACTED_IN]-(:\`Person\`)) AND any(this_actors IN [(this)<-[:ACTED_IN]-(this_actors:\`Person\`) | this_actors] WHERE this_actors.name = $this_actors_name)
+            WHERE EXISTS { (this)<-[:ACTED_IN]-(:\`Person\`) } AND any(this_actors IN [(this)<-[:ACTED_IN]-(this_actors:\`Person\`) | this_actors] WHERE this_actors.name = $this_actors_name)
             DETACH DELETE this"
         `);
 

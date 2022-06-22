@@ -112,15 +112,15 @@ function createElementWhereAndParams({
 
                 if (value === null) {
                     res.clauses.push(
-                        `${isNot ? "" : "NOT "}exists((${varName})${inStr}${relTypeStr}${outStr}(:${
+                        `${isNot ? "" : "NOT "}EXISTS { (${varName})${inStr}${relTypeStr}${outStr}(:${
                             relationField.typeMeta.name
-                        }))`
+                        }) }`
                     );
                     return res;
                 }
 
                 let resultStr = [
-                    `exists((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
+                    `EXISTS { (${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}) }`,
                     `AND ${getListPredicate(
                         operator
                     )}(${relatedNodeVariable} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relatedNodeVariable}${labels}) | ${relatedNodeVariable}] INNER_WHERE `,

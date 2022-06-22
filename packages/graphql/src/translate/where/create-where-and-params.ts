@@ -152,12 +152,14 @@ function createWhereAndParams({
             const relTypeStr = `[:${relationField.type}]`;
 
             if (value === null) {
-                res.clauses.push(`${isNot ? "" : "NOT "}exists((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
+                res.clauses.push(
+                    `${isNot ? "" : "NOT "}EXISTS { (${varName})${inStr}${relTypeStr}${outStr}(${labels}) }`
+                );
                 return res;
             }
 
             let resultStr = [
-                `exists((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
+                `EXISTS { (${varName})${inStr}${relTypeStr}${outStr}(${labels}) }`,
                 `AND ${listPredicate}(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}${labels}) | ${param}] INNER_WHERE `,
             ].join(" ");
 
