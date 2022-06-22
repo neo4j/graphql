@@ -198,16 +198,18 @@ describe("CypherBuilder", () => {
 
                 const queryResult = matchQuery.build();
                 expect(queryResult.cypher).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
-                WHERE this.title IN $param0
-                RETURN this { .title } as this"
-            `);
+                    "MATCH (this0:\`Movie\`)
+                    WHERE this0.title IN $param0
+                    RETURN this0"
+                `);
 
                 expect(queryResult.params).toMatchInlineSnapshot(`
-                Object {
-                  "param0": "my-name",
-                }
-            `);
+                    Object {
+                      "param0": Array [
+                        "my-name",
+                      ],
+                    }
+                `);
             });
         });
     });
