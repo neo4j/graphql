@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { whereRegEx } from "../where/utils";
 import * as CypherBuilder from "./CypherBuilder";
 
 describe("CypherBuilder", () => {
@@ -315,35 +314,6 @@ describe("CypherBuilder", () => {
                   "param1": "my-name",
                 }
             `);
-        });
-
-        describe("Where clauses", () => {
-            test("Match node with IN", () => {
-                const titleParam = new CypherBuilder.Param(["my-name"]);
-
-                const movieNode = new CypherBuilder.Node({
-                    labels: ["Movie"],
-                });
-
-                const matchQuery = new CypherBuilder.Match(movieNode)
-                    .where([movieNode, { title: CypherBuilder.in(titleParam) }])
-                    .return(movieNode);
-
-                const queryResult = matchQuery.build();
-                expect(queryResult.cypher).toMatchInlineSnapshot(`
-                    "MATCH (this0:\`Movie\`)
-                    WHERE this0.title IN $param0
-                    RETURN this0"
-                `);
-
-                expect(queryResult.params).toMatchInlineSnapshot(`
-                    Object {
-                      "param0": Array [
-                        "my-name",
-                      ],
-                    }
-                `);
-            });
         });
     });
 

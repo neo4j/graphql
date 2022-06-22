@@ -24,7 +24,32 @@ import { Param } from "../references/Param";
 // type Params = Record<string, Param<any>>;
 // type WhereInput = Array<[MatchableElement, Params] | WhereOperator>;
 
-type Operation = "IN";
+export const operationsMap = {
+    // NOT: "=",
+    // Numerical
+    GT: ">",
+    GTE: ">=",
+    LT: "<",
+    LTE: "<=",
+    // Distance
+    // DISTANCE: "=",
+    // String
+    // NOT_CONTAINS: "CONTAINS",
+    CONTAINS: "CONTAINS",
+    // NOT_STARTS_WITH: "STARTS WITH",
+    STARTS_WITH: "STARTS WITH",
+    // NOT_ENDS_WITH: "ENDS WITH",
+    ENDS_WITH: "ENDS WITH",
+    // Regex
+    MATCHES: "=~",
+    // Array
+    // NOT_IN: "IN",
+    IN: "IN",
+    // NOT_INCLUDES: "IN",
+    // INCLUDES: "IN",
+};
+
+type Operation = keyof typeof operationsMap;
 
 export class WhereClause {
     private input: Param<any>;
@@ -37,12 +62,37 @@ export class WhereClause {
 
     public getCypher(context: CypherContext): string {
         const paramCypher = this.input.getCypher(context);
-        const operationStr = this.operation;
+        const operationStr = operationsMap[this.operation];
 
         return `${operationStr} ${paramCypher}`;
     }
 }
 
+// Named inClause doe to in being reserved word
 export function inClause(param: Param): WhereClause {
     return new WhereClause("IN", param);
+}
+export function gt(param: Param): WhereClause {
+    return new WhereClause("GT", param);
+}
+export function gte(param: Param): WhereClause {
+    return new WhereClause("GTE", param);
+}
+export function lt(param: Param): WhereClause {
+    return new WhereClause("LT", param);
+}
+export function lte(param: Param): WhereClause {
+    return new WhereClause("LTE", param);
+}
+export function contains(param: Param): WhereClause {
+    return new WhereClause("CONTAINS", param);
+}
+export function startsWith(param: Param): WhereClause {
+    return new WhereClause("STARTS_WITH", param);
+}
+export function endsWith(param: Param): WhereClause {
+    return new WhereClause("ENDS_WITH", param);
+}
+export function match(param: Param): WhereClause {
+    return new WhereClause("MATCHES", param);
 }
