@@ -24,6 +24,7 @@ import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
+import { delay } from "../../../src/utils/utils";
 
 describe("assertIndexesAndConstraints/unique", () => {
     let driver: Driver;
@@ -43,8 +44,7 @@ describe("assertIndexesAndConstraints/unique", () => {
             await session.run(cypher);
             await session.close();
 
-            // eslint-disable-next-line no-promise-executor-return
-            await new Promise((x) => setTimeout(x, 5000));
+            await delay(5000);
         }
     });
 
