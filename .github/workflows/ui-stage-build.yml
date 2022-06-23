@@ -24,7 +24,7 @@ jobs:
         run: |
           yarn
           yarn build
-          echo $PULL_REQUEST_NUMBER > ./dist/prnumber
+          echo "$PULL_REQUEST_NUMBER" > ./dist/prnumber
         working-directory: packages/graphql-toolbox
       - name: Archive UI
         uses: actions/upload-artifact@v3

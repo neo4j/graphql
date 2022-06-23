@@ -25,7 +25,7 @@ jobs:
         run: |
           yarn
           yarn build
-          echo $PULL_REQUEST_NUMBER > ./build/prnumber
+          echo "$PULL_REQUEST_NUMBER" > ./build/prnumber
         working-directory: docs/
       - name: Archive documentation
         uses: actions/upload-artifact@v3
