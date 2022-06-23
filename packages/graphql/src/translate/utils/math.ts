@@ -93,7 +93,6 @@ export function buildMathStatements(mathDescriptor: MathDescriptor, scope: strin
         throw new Error('Division by zero is not supported');
     }
     const statements: string[] = [];
-    //statements.push(`WITH *`);
     statements.push(`CALL {`);
     statements.push(`WITH ${scope}`);
     // Raise for operations with NAN
