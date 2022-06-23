@@ -25,6 +25,7 @@ import mapToDbProperty from "../../utils/map-to-db-property";
 import createAggregateWhereAndParams from "../create-aggregate-where-and-params";
 import createWhereClause from "./create-where-clause";
 import { getListPredicate, whereRegEx, WhereRegexGroups } from "./utils";
+import { listPredicateToClause } from "./list-predicate-to-clause";
 
 interface Res {
     clauses: string[];
@@ -151,17 +152,12 @@ function createWhereAndParams({
             const outStr = relationField.direction === "OUT" ? "->" : "-";
             const relTypeStr = `[:${relationField.type}]`;
 
+            const matchPattern = `(${varName})${inStr}${relTypeStr}${outStr}(${param}${labels})`;
+
             if (value === null) {
-                res.clauses.push(
-                    `${isNot ? "" : "NOT "}EXISTS { (${varName})${inStr}${relTypeStr}${outStr}(${labels}) }`
-                );
+                res.clauses.push(`${isNot ? "" : "NOT "}EXISTS { ${matchPattern} }`);
                 return res;
             }
-
-            let resultStr = [
-                `EXISTS { (${varName})${inStr}${relTypeStr}${outStr}(${labels}) }`,
-                `AND ${listPredicate}(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}${labels}) | ${param}] INNER_WHERE `,
-            ].join(" ");
 
             const recurse = createWhereAndParams({
                 whereInput: value,
@@ -173,9 +169,8 @@ function createWhereAndParams({
             });
 
             if (recurse[0]) {
-                resultStr += recurse[0];
-                resultStr += ")"; // close predicate
-                res.clauses.push(resultStr);
+                const clause = listPredicateToClause(listPredicate, matchPattern, recurse[0]);
+                res.clauses.push(clause);
                 res.params = { ...res.params, ...recurse[1] };
             }
 
