@@ -186,7 +186,7 @@ function createAuthStatement({
     if (!auth[0]) return undefined;
 
     const query = new CypherBuilder.Apoc.Validate({
-        predicate: `NOT(${auth[0]})`,
+        predicate: `NOT (${auth[0]})`,
         message: AUTH_FORBIDDEN_ERROR,
     });
     query.addNamedParams(convertToCypherParams(auth[1] as Record<string, any>));

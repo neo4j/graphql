@@ -79,7 +79,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Relationship", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE EXISTS((this_actor)-[:ACTED_IN]->(:Movie)) AND ANY(this_actor_movies IN [(this_actor)-[:ACTED_IN]->(this_actor_movies:Movie) | this_actor_movies] WHERE this_actor_movies.title = $this_actorsConnection.args.where.node.movies.title)
+            WHERE exists((this_actor)-[:ACTED_IN]->(:Movie)) AND any(this_actor_movies IN [(this_actor)-[:ACTED_IN]->(this_actor_movies:Movie) | this_actor_movies] WHERE this_actor_movies.title = $this_actorsConnection.args.where.node.movies.title)
             WITH collect({ node: { name: this_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
