@@ -82,7 +82,6 @@ describe("Math operators", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            WITH *
             CALL {
             WITH this
             CALL apoc.util.validate(apoc.meta.type(this.viewers) = \\"NULL\\", 'Cannot %s %s to Nan', [\\"_INCREMENT\\", $this_update_viewers_INCREMENT])
@@ -123,7 +122,6 @@ describe("Math operators", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            WITH *
             CALL {
             WITH this
             CALL apoc.util.validate(apoc.meta.type(this.revenue) = \\"NULL\\", 'Cannot %s %s to Nan', [\\"_MULTIPLY\\", $this_update_revenue_MULTIPLY])
@@ -166,7 +164,6 @@ describe("Math operators", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
-            WITH *
             CALL {
             WITH this_actedIn0
             CALL apoc.util.validate(apoc.meta.type(this_actedIn0.viewers) = \\\\\\"NULL\\\\\\", 'Cannot %s %s to Nan', [\\\\\\"_INCREMENT\\\\\\", $this_update_actedIn0_viewers_INCREMENT])
@@ -242,7 +239,6 @@ describe("Math operators", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
-            WITH *
             CALL {
             WITH this_acted_in0_relationship
             CALL apoc.util.validate(apoc.meta.type(this_acted_in0_relationship.pay) = \\\\\\"NULL\\\\\\", 'Cannot %s %s to Nan', [\\\\\\"_ADD\\\\\\", $updateActors.args.update.actedIn[0].update.edge.pay_ADD])
@@ -311,7 +307,6 @@ describe("Math operators", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)
             CALL apoc.do.when(this_marriedWith0 IS NOT NULL, \\"
-            WITH *
             CALL {
             WITH this_marriedWith0
             CALL apoc.util.validate(apoc.meta.type(this_marriedWith0.marriageLength) = \\\\\\"NULL\\\\\\", 'Cannot %s %s to Nan', [\\\\\\"_INCREMENT\\\\\\", $this_update_marriedWith0_marriageLength_INCREMENT])
@@ -408,7 +403,6 @@ describe("Math operators", () => {
             	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDStar.marriedWith must be less than or equal to one', [0])
             	RETURN c AS this_marriedWith0_marriedWith_Actor_unique_ignored
             }
-            WITH *
             CALL {
             WITH this_marriedWith0
             CALL apoc.util.validate(apoc.meta.type(this_marriedWith0.marriageLength) = \\\\\\"NULL\\\\\\", 'Cannot %s %s to Nan', [\\\\\\"_INCREMENT\\\\\\", $this_update_marriedWith0_on_Star_marriageLength_INCREMENT])
