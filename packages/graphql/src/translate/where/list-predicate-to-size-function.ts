@@ -19,23 +19,22 @@
 
 import { ListPredicate } from "./utils";
 
-export function listPredicateToClause(listPredicate: ListPredicate, matchPattern: string, where: string): string {
+// TODO: Temporary function whilst filtering is performed in projections
+// To be superseded by list-predicate-to-clause.ts when moved to subqueries
+export function listPredicateToSizeFunction(listPredicate: ListPredicate, matchPattern: string, where: string): string {
     let clause: string;
 
     switch (listPredicate) {
         case "all":
-            // This one is not as expressive as we would like
-            // ALL == NOT ANY WHERE NOT
-            clause = `NOT EXISTS { ${matchPattern} WHERE NOT ${where} }`;
+            clause = `size([${matchPattern} WHERE NOT ${where} | 1]) = 0`;
             break;
         case "any":
-            clause = `EXISTS { ${matchPattern} WHERE ${where} }`;
+            clause = `size([${matchPattern} WHERE ${where} | 1]) > 0`;
             break;
         case "none":
-            clause = `NOT EXISTS { ${matchPattern} WHERE ${where} }`;
+            clause = `size([${matchPattern} WHERE ${where} | 1]) = 0`;
             break;
         case "single":
-            // Sadly no expressive way to check for single match
             clause = `size([${matchPattern} WHERE ${where} | 1]) = 1`;
             break;
         // no default

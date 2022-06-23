@@ -26,6 +26,7 @@ import createAggregateWhereAndParams from "../create-aggregate-where-and-params"
 import createWhereClause from "./create-where-clause";
 import { getListPredicate, whereRegEx, WhereRegexGroups } from "./utils";
 import { listPredicateToClause } from "./list-predicate-to-clause";
+import { listPredicateToSizeFunction } from "./list-predicate-to-size-function";
 
 interface Res {
     clauses: string[];
@@ -201,20 +202,13 @@ function createWhereAndParams({
                 const labels = refNode.getLabelString(context);
                 const collectedMap = `${thisParam}_map`;
 
+                const matchPattern = `(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${thisParam}${labels})`;
+
                 if (value === null) {
-                    res.clauses.push(
-                        `${isNot ? "" : "NOT "}exists((${varName})${inStr}[:${
-                            connectionField.relationship.type
-                        }]${outStr}(${labels}))`
-                    );
+                    // TODO: Change to EXISTS when filtering no longer in projection
+                    res.clauses.push(`${isNot ? "" : "NOT "}exists(${matchPattern})`);
                     return;
                 }
-
-                let resultStr = [
-                    `exists((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
-                    `AND ${listPredicate}(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${thisParam}${labels})`,
-                    ` | { node: ${thisParam}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
-                ].join(" ");
 
                 const parameterPrefix = recursing
                     ? `${chainStr || varName}_${context.resolveTree.name}.where.${key}`
@@ -224,16 +218,29 @@ function createWhereAndParams({
                     whereInput: entry[1] as any,
                     context,
                     node: refNode,
-                    nodeVariable: `${collectedMap}.node`,
+                    nodeVariable: thisParam,
                     relationship,
-                    relationshipVariable: `${collectedMap}.relationship`,
+                    relationshipVariable: relationshipVariable,
                     parameterPrefix,
                     listPredicates: [listPredicate],
                 });
 
-                resultStr += connectionWhere[0];
-                resultStr += ")"; // close ALL
-                res.clauses.push(resultStr);
+                if (connectionWhere[0]) {
+                    const clause = listPredicateToSizeFunction(listPredicate, matchPattern, connectionWhere[0]);
+                    res.clauses.push(clause);
+                    res.params = { ...res.params, ...connectionWhere[1] };
+                }
+
+                // TODO: Change to EXISTS when filtering no longer in projection
+                // let resultStr = [
+                //     `exists(${matchPattern})`,
+                //     `AND ${listPredicate}(${collectedMap} IN [${matchPattern}`,
+                //     ` | { node: ${thisParam}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
+                // ].join(" ");
+
+                // resultStr += connectionWhere[0];
+                // resultStr += ")"; // close ALL
+                // res.clauses.push(resultStr);
 
                 const whereKeySuffix = operator ? `_${operator}` : "";
                 const resolveTreeParams = recursing
