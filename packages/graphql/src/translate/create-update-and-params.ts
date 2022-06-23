@@ -572,12 +572,12 @@ export default function createUpdateAndParams({
     const forbiddenString = `"${AUTH_FORBIDDEN_ERROR}"`;
 
     if (preAuthStrs.length) {
-        const apocStr = `CALL apoc.util.validate(NOT(${preAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
+        const apocStr = `CALL apoc.util.validate(NOT (${preAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
         preAuthStr = `${withStr}\n${apocStr}`;
     }
 
     if (postAuthStrs.length) {
-        const apocStr = `CALL apoc.util.validate(NOT(${postAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
+        const apocStr = `CALL apoc.util.validate(NOT (${postAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
         postAuthStr = `${withStr}\n${apocStr}`;
     }
 
