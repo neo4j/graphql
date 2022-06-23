@@ -220,7 +220,7 @@ function createWhereAndParams({
                     node: refNode,
                     nodeVariable: thisParam,
                     relationship,
-                    relationshipVariable: relationshipVariable,
+                    relationshipVariable,
                     parameterPrefix,
                     listPredicates: [listPredicate],
                 });
