@@ -109,13 +109,13 @@ function createNodeWhereAndParams({
         },
     });
     if (preAuth[0]) {
-        whereStrs.push(`apoc.util.validatePredicate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        whereStrs.push(`apoc.util.validatePredicate(NOT (${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         params = { ...params, ...preAuth[1] };
     }
 
     if (authValidateStrs?.length) {
         whereStrs.push(
-            `apoc.util.validatePredicate(NOT(${authValidateStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+            `apoc.util.validatePredicate(NOT (${authValidateStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
         );
     }
 
@@ -306,7 +306,7 @@ function createProjectionAndParams({
             const expectMultipleValues =
                 (referenceNode || referenceUnion) && cypherField.typeMeta.array ? "true" : "false";
             const apocWhere = projectionAuthStrs.length
-                ? `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStrs.join(
+                ? `WHERE apoc.util.validatePredicate(NOT (${projectionAuthStrs.join(
                       " AND "
                   )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
                 : "";
