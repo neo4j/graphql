@@ -53,12 +53,12 @@ describe("https://github.com/neo4j/graphql/issues/1614", () => {
 
         const relationship = neoSchema.relationships.find(r => r.name === "CrewMemberMoviesRelationship");
         expect(relationship).toBeDefined();
-        expect(relationship?.enumFields?.length).toEqual(1);
-        expect(relationship?.properties).toEqual("CrewPosition");
+        expect(relationship?.enumFields?.length).toBe(1);
+        expect(relationship?.properties).toBe("CrewPosition");
 
         const enumField = relationship?.enumFields[0];
-        expect(enumField?.kind).toEqual("Enum");
-        expect(enumField?.fieldName).toEqual("position");
-        expect(enumField?.typeMeta?.name).toEqual("CrewPositionType");
+        expect(enumField?.kind).toBe("Enum");
+        expect(enumField?.fieldName).toBe("position");
+        expect(enumField?.typeMeta?.name).toBe("CrewPositionType");
     });
 });
