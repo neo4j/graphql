@@ -2081,7 +2081,7 @@ __metadata:
     lodash.debounce: ^4.0.8
     markdown-it: ^13.0.0
     neo4j-driver: 4.4.6
-    node-polyfill-webpack-plugin: 1.1.4
+    node-polyfill-webpack-plugin: 2.0.0
     postcss: 8.4.14
     postcss-loader: 7.0.0
     prettier: ^2.6.2
@@ -3624,6 +3624,15 @@ __metadata:
   version: 1.1.1
   resolution: "abbrev@npm:1.1.1"
   checksum: a4a97ec07d7ea112c517036882b2ac22f3109b7b19077dc656316d07d308438aac28e4d9746dc4d84bf6b1e75b4a7b0a5f3cb30592419f128ca9a8cee3bcfa17
+  languageName: node
+  linkType: hard
+
+"abort-controller@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "abort-controller@npm:3.0.0"
+  dependencies:
+    event-target-shim: ^5.0.0
+  checksum: 170bdba9b47b7e65906a28c8ce4f38a7a369d78e2271706f020849c1bfe0ee2067d4261df8bbb66eb84f79208fd5b710df759d64191db58cfba7ce8ef9c54b75
   languageName: node
   linkType: hard
 
@@ -6917,7 +6926,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"domain-browser@npm:^4.19.0":
+"domain-browser@npm:^4.22.0":
   version: 4.22.0
   resolution: "domain-browser@npm:4.22.0"
   checksum: e7ce1c19073e17dec35cfde050a3ddaac437d3ba8b870adabf9d5682e665eab3084df05de432dedf25b34303f0a2c71ac30f1cdba61b1aea018047b10de3d988
@@ -7767,6 +7776,13 @@ __metadata:
   version: 1.8.1
   resolution: "etag@npm:1.8.1"
   checksum: 571aeb3dbe0f2bbd4e4fadbdb44f325fc75335cd5f6f6b6a091e6a06a9f25ed5392f0863c5442acb0646787446e816f13cbfc6edce5b07658541dff573cab1ff
+  languageName: node
+  linkType: hard
+
+"event-target-shim@npm:^5.0.0":
+  version: 5.0.1
+  resolution: "event-target-shim@npm:5.0.1"
+  checksum: 1ffe3bb22a6d51bdeb6bf6f7cf97d2ff4a74b017ad12284cc9e6a279e727dc30a5de6bb613e5596ff4dc3e517841339ad09a7eec44266eccb1aa201a30448166
   languageName: node
   linkType: hard
 
@@ -12767,9 +12783,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-polyfill-webpack-plugin@npm:1.1.4":
-  version: 1.1.4
-  resolution: "node-polyfill-webpack-plugin@npm:1.1.4"
+"node-polyfill-webpack-plugin@npm:2.0.0":
+  version: 2.0.0
+  resolution: "node-polyfill-webpack-plugin@npm:2.0.0"
   dependencies:
     assert: ^2.0.0
     browserify-zlib: ^0.2.0
@@ -12777,7 +12793,7 @@ __metadata:
     console-browserify: ^1.2.0
     constants-browserify: ^1.0.0
     crypto-browserify: ^3.12.0
-    domain-browser: ^4.19.0
+    domain-browser: ^4.22.0
     events: ^3.3.0
     filter-obj: ^2.0.2
     https-browserify: ^1.0.0
@@ -12786,18 +12802,19 @@ __metadata:
     process: ^0.11.10
     punycode: ^2.1.1
     querystring-es3: ^0.2.1
-    readable-stream: ^3.6.0
+    readable-stream: ^4.0.0
     stream-browserify: ^3.0.0
     stream-http: ^3.2.0
     string_decoder: ^1.3.0
     timers-browserify: ^2.0.12
     tty-browserify: ^0.0.1
+    type-fest: ^2.14.0
     url: ^0.11.0
     util: ^0.12.4
     vm-browserify: ^1.1.2
   peerDependencies:
     webpack: ">=5"
-  checksum: 2b15727a26af606d54659c7732d170fddf24e90a6f2b08f0897317a1b2055582fb0e79048e384b7d9c77074837362d90c383c513db8f4649d87a7afb3f531ce4
+  checksum: 51841c4467c147323cdf3d4dd33e9e40e312c04bf7283e66e046893822e9bd150ad7de14e5b8a76e4707ef78a170e0f6465d54c7054193de48c3a543f819192a
   languageName: node
   linkType: hard
 
@@ -15102,6 +15119,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"readable-stream@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "readable-stream@npm:4.0.0"
+  dependencies:
+    abort-controller: ^3.0.0
+  checksum: 761528b35e5c63accff558bc050bbb030520995ab2649cca3bd6be64cf4ddff5f85b104f5a8b61294bc21393bf2d25f3b850f170d225670084e8046298a685ec
+  languageName: node
+  linkType: hard
+
 "readdirp@npm:~3.6.0":
   version: 3.6.0
   resolution: "readdirp@npm:3.6.0"
@@ -17373,6 +17399,13 @@ __metadata:
   version: 1.4.0
   resolution: "type-fest@npm:1.4.0"
   checksum: b011c3388665b097ae6a109a437a04d6f61d81b7357f74cbcb02246f2f5bd72b888ae33631b99871388122ba0a87f4ff1c94078e7119ff22c70e52c0ff828201
+  languageName: node
+  linkType: hard
+
+"type-fest@npm:^2.14.0":
+  version: 2.14.0
+  resolution: "type-fest@npm:2.14.0"
+  checksum: 6c152126418fef3caef573ece729c89b7b949c6e53ba6f6b8606b309061011e005b12b5c707b23825a4c6a0b4293017dd998bad221693a03554789be8a9030db
   languageName: node
   linkType: hard
 
