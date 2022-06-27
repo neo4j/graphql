@@ -89,12 +89,12 @@ export function or(...items: WhereInput): WhereOperator {
     return new WhereOperator("OR", items);
 }
 
-export function not(item: [MatchableElement, Params] | WhereOperator): WhereOperator {
+export function not(item: WhereInput[0]): WhereOperator {
     return new NotWhereOperator(item);
 }
 
 class NotWhereOperator extends WhereOperator {
-    constructor(input: [MatchableElement, Params] | WhereOperator) {
+    constructor(input: WhereInput[0]) {
         super("NOT", [input]);
     }
 

@@ -20,6 +20,7 @@
 import { CypherASTNode } from "../CypherASTNode";
 import { CypherContextInterface } from "../CypherContext";
 import { CypherResult } from "../types";
+import { WhereInput, WhereStatement } from "./Where";
 
 /** Represents a statement to be defined by the user, adding build method to the cypher ast */
 export class Query extends CypherASTNode {
@@ -31,6 +32,13 @@ export class Query extends CypherASTNode {
         if (query) {
             this.addStatement(query);
         }
+        return this;
+    }
+
+    // TODO: fix this
+    public where(...input: WhereInput): this {
+        const whereStatement = new WhereStatement(this, input);
+        this.addStatement(whereStatement);
         return this;
     }
 

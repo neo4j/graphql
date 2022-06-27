@@ -24,10 +24,12 @@ import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { MatchableElement } from "../cypher-builder/MatchPattern";
 import { WhereOperator } from "../cypher-builder/statements/where-operators";
 import { whereRegEx, WhereRegexGroups } from "./utils";
+import { PredicateFunction } from "../cypher-builder/statements/predicate-functions";
 
 type CypherPropertyValue<T extends MatchableElement> =
     | [T, Record<string, CypherBuilder.Param | CypherBuilder.WhereClause>]
-    | WhereOperator;
+    | WhereOperator
+    | PredicateFunction;
 
 export function addWhereToStatement<T extends MatchableElement>({
     targetElement,
@@ -125,6 +127,8 @@ function mapProperties<T extends MatchableElement>({
         const match = whereRegEx.exec(key);
 
         const { fieldName, isAggregate, operator } = match?.groups as WhereRegexGroups;
+
+        const isNot = operator?.startsWith("NOT") ?? false;
         const coalesceValue = [...node.primitiveFields, ...node.temporalFields, ...node.enumFields].find(
             (f) => fieldName === f.fieldName
         )?.coalesceValue;
@@ -134,10 +138,13 @@ function mapProperties<T extends MatchableElement>({
         const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
         if (relationField) {
             // Relation
-            createRelationProperty({
+            return createRelationProperty({
                 relationField,
                 context,
                 parentNode: targetElement as CypherBuilder.Node,
+                operator,
+                value,
+                isNot,
             });
         }
         return createPrimitiveProperty({
@@ -213,10 +220,16 @@ function createRelationProperty({
     relationField,
     context,
     parentNode,
+    operator,
+    value,
+    isNot,
 }: {
     relationField: RelationField;
     context: Context;
     parentNode: CypherBuilder.Node;
+    operator: string | undefined;
+    value: GraphQLWhereArg;
+    isNot: boolean;
 }) {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
@@ -229,6 +242,35 @@ function createRelationProperty({
         type: relationField.type,
     });
 
+    const exists = CypherBuilder.exists(relationship);
+
+    if (value === null) {
+        if (!isNot) {
+            // Bit confusing, but basically checking for not null is the same as checking for relationship exists
+            return CypherBuilder.not(exists);
+        }
+        // res.clauses.push(`${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
+        // return res;
+        return exists;
+    }
+
+    const subquery = new CypherBuilder.Query();
+    const anyPredicate = CypherBuilder.any(relationship, subquery);
+
+    const mappedProperties = mapAllProperties({
+        whereInput: value,
+        targetElement: childNode,
+        node: refNode,
+        context,
+    });
+
+    // TODO: improve this
+    subquery.where(...mappedProperties);
+
+    return CypherBuilder.and(exists, anyPredicate); // NESTED WHERE HERE
+
+    // ANY(this_genres IN [(this)-[:IN_GENRE]->(this_genres:Genre) | this_genres] WHERE this_genres.name = $this_genres_name)
+
     // if (value === null) {
     //     res.clauses.push(`${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
     //     return res;
@@ -236,12 +278,12 @@ function createRelationProperty({
 
     // exists
 
-    let resultStr = [
-        `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
-        `AND ${listPredicate}(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}${labels}) | ${param}] INNER_WHERE `,
-    ].join(" ");
+    // let resultStr = [
+    //     `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
+    //     `AND ${listPredicate}(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}${labels}) | ${param}] INNER_WHERE `,
+    // ].join(" ");
 
-    console.log(relationField);
+    // console.log(relationField);
 
     // TODO: predicates (NONE, ALL...)
 }

@@ -17,31 +17,67 @@
  * limitations under the License.
  */
 
-import { Relationship } from "../CypherBuilder";
+import { Query, Relationship } from "../CypherBuilder";
 import { CypherContext } from "../CypherContext";
 import { MatchPattern } from "../MatchPattern";
 
-type PredicateInput = Relationship;
+export abstract class PredicateFunction {
+    public abstract getCypher(context: CypherContext): string;
+}
 
-export class PredicateFunction {
+export class ExistsPredicate extends PredicateFunction {
     private matchPattern: MatchPattern<Relationship>;
-    private functionName: string;
 
-    constructor(functionName: string, target: PredicateInput) {
+    constructor(target: Relationship) {
+        super();
         this.matchPattern = new MatchPattern(target, {
             source: { labels: false },
             relationship: { variable: false },
             target: { variable: false },
         });
-        this.functionName = functionName;
     }
 
     getCypher(context: CypherContext): string {
         const targetCypher = this.matchPattern.getCypher(context);
-        return `${this.functionName}(${targetCypher})`;
+        return `exists(${targetCypher})`;
     }
 }
 
-export function exists(target: PredicateInput): PredicateFunction {
-    return new PredicateFunction("exists", target);
+export class AnyPredicate extends PredicateFunction {
+    private matchPattern: MatchPattern<Relationship>;
+    private targetRelationship: Relationship;
+
+    private innerStatement: Query | undefined;
+
+    constructor(target: Relationship, query?: Query) {
+        super();
+        this.targetRelationship = target;
+        this.matchPattern = new MatchPattern(target, {
+            source: { labels: false },
+            relationship: { variable: false },
+            target: { variable: true },
+        });
+        this.innerStatement = query;
+    }
+
+    getCypher(context: CypherContext): string {
+        const matchPatternCypher = this.matchPattern.getCypher(context);
+        const relationshipTargetVariable = context.getVariableId(this.targetRelationship.target);
+
+        let innerQuery = "";
+        if (this.innerStatement) {
+            innerQuery = this.innerStatement.getCypher(context); // TODO: this is a hack, should be part of AST
+        }
+
+        return `any(${relationshipTargetVariable} IN [${matchPatternCypher} | ${relationshipTargetVariable}]
+            ${innerQuery})`;
+    }
+}
+
+export function exists(target: Relationship): ExistsPredicate {
+    return new ExistsPredicate(target);
+}
+
+export function any(target: Relationship, query?: Query): AnyPredicate {
+    return new AnyPredicate(target, query);
 }

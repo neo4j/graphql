@@ -36,19 +36,19 @@ describe("CypherBuilder", () => {
 
             const queryResult = matchQuery.build();
             expect(queryResult.cypher).toMatchInlineSnapshot(`
-                "MATCH (this0:\`Movie\` { test: $param0 })
-                WHERE (this0.id = $param1
-                AND this0.name = $param2
-                AND this0.age = $param3)
+                "MATCH (this0:\`Movie\` { test: $param3 })
+                WHERE (this0.id = $param0
+                AND this0.name = $param1
+                AND this0.age = $param2)
                 RETURN this0"
             `);
 
             expect(queryResult.params).toMatchInlineSnapshot(`
                 Object {
-                  "param0": "test-value",
-                  "param1": "my-id",
-                  "param2": "my-name",
-                  "param3": 5,
+                  "param0": "my-id",
+                  "param1": "my-name",
+                  "param2": 5,
+                  "param3": "test-value",
                 }
             `);
         });
@@ -67,17 +67,17 @@ describe("CypherBuilder", () => {
 
             const queryResult = matchQuery.build();
             expect(queryResult.cypher).toMatchInlineSnapshot(`
-                "MATCH (this0:\`Movie\` { test: $param0 })
-                WHERE (this0.id = $param1
-                AND this0.name = $param2)
+                "MATCH (this0:\`Movie\` { test: $param2 })
+                WHERE (this0.id = $param0
+                AND this0.name = $param1)
                 RETURN this0 {.name} AS myAlias"
             `);
 
             expect(queryResult.params).toMatchInlineSnapshot(`
                 Object {
-                  "param0": "test-value",
-                  "param1": "my-id",
-                  "param2": "my-name",
+                  "param0": "my-id",
+                  "param1": "my-name",
+                  "param2": "test-value",
                 }
             `);
         });

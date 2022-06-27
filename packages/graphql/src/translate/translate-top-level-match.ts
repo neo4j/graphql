@@ -89,7 +89,6 @@ function translateTopLevelMatch({
         //     whereStrs.push(where[0]);
         //     cypherParams = { ...cypherParams, ...where[1] };
         // }
-
         const matchWhereQuery = addWhereToStatement({
             whereInput,
             node,

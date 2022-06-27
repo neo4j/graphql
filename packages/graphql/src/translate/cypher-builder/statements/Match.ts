@@ -20,57 +20,39 @@
 import { CypherContext } from "../CypherContext";
 import { MatchableElement, MatchParams, MatchPattern } from "../MatchPattern";
 import { Node } from "../references/Node";
-import { Param } from "../references/Param";
 import { Query } from "./Query";
 import { ReturnStatement } from "./Return";
-import { WhereClause } from "./where-clauses";
-import { and, WhereOperator } from "./where-operators";
-import { PredicateFunction } from "./predicate-functions";
-
-type Params = Record<string, Param<any> | WhereClause>;
-
-type WhereInput = Array<[MatchableElement, Params] | WhereOperator | PredicateFunction>;
+import { WhereInput, WhereStatement } from "./Where";
 
 export class Match<T extends MatchableElement> extends Query {
     private matchPattern: MatchPattern<T>;
-    private whereParams: Array<WhereOperator>;
+    private whereStatement: WhereStatement | undefined;
 
     constructor(variable: T, parameters: MatchParams<T> = {}, parent?: Query) {
         super(parent);
         this.matchPattern = new MatchPattern(variable).withParams(parameters);
-        this.whereParams = [];
     }
 
     public where(...input: WhereInput): this {
-        for (const operation of input) {
-            if (operation instanceof WhereOperator) {
-                this.whereParams.push(operation);
-            } else {
-                const formattedOperation = and(operation);
-                this.whereParams.push(formattedOperation);
-            }
+        if (!this.whereStatement) {
+            const whereStatement = new WhereStatement(this, input);
+            this.addStatement(whereStatement);
+            this.whereStatement = whereStatement;
+        } else {
+            // Avoids adding unneeded where statements
+            this.whereStatement.addWhereParams(input);
         }
         return this;
     }
 
     public cypher(context: CypherContext, childrenCypher: string): string {
         const nodeCypher = this.matchPattern.getCypher(context);
-        return `MATCH ${nodeCypher}\n${this.composeWhere(context)}\n${childrenCypher}`;
+        return `MATCH ${nodeCypher}\n${childrenCypher}`;
     }
 
     public return(node: Node, fields?: string[], alias?: string): this {
         const returnStatement = new ReturnStatement(this, [node, fields, alias]);
         this.addStatement(returnStatement);
         return this;
-    }
-
-    private composeWhere(context: CypherContext): string {
-        const whereStatements = this.whereParams.map((operation) => {
-            return operation.getCypher(context);
-        });
-
-        if (whereStatements.length === 0) return "";
-        if (whereStatements.length > 1) return `WHERE (${whereStatements.join("\nAND ")})`;
-        return `WHERE ${whereStatements.join("\nAND ")}`;
     }
 }

@@ -20,31 +20,34 @@
 import * as CypherBuilder from "../CypherBuilder";
 
 describe("Predicate functions", () => {
-    test("exists on relationships", () => {
-        const movieNode = new CypherBuilder.Node({
-            labels: ["Movie"],
-        });
-        const actorNode = new CypherBuilder.Node({
-            labels: ["Movie"],
-        });
+    describe("exists", () => {
+        test("exists on relationships", () => {
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+            });
+            const actorNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+            });
 
-        const relationship = new CypherBuilder.Relationship({
-            source: movieNode,
-            target: actorNode,
-            type: "ACTED_IN",
-        });
+            const relationship = new CypherBuilder.Relationship({
+                source: movieNode,
+                target: actorNode,
+                type: "ACTED_IN",
+            });
 
-        const matchQuery = new CypherBuilder.Match(movieNode)
-            .where(CypherBuilder.exists(relationship))
-            .return(movieNode);
+            const matchQuery = new CypherBuilder.Match(movieNode)
+                .where(CypherBuilder.exists(relationship))
+                .return(movieNode);
 
-        const queryResult = matchQuery.build();
-        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            const queryResult = matchQuery.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
             "MATCH (this0:\`Movie\`)
             WHERE exists((this0)-[:\`ACTED_IN\`]->(:\`Movie\`))
             RETURN this0"
         `);
 
-        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+        });
     });
+    describe("any", () => {});
 });
