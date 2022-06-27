@@ -444,9 +444,24 @@ function createConnectionAndParams({
         ];
     } else if (!firstInput && !afterInput) {
         if (connection.edges || connection.pageInfo) {
-            returnValues.push("edges: edges");
+            if (elementsToCollect.length > 0) {
+                subquery.push("UNWIND edges as edge");
+                returnValues.push("edges: collect(edge)");
+            } else {
+                returnValues.push("edges: edges");
+            }
         }
         returnValues.push("totalCount: size(edges)");
+        if (sortInput.length && elementsToCollect.length > 0) {
+            subquery.push("WITH *");
+            const sort = sortInput.map((s) =>
+                [
+                    ...Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`),
+                    ...Object.entries(s.node || []).map(([f, direction]) => `edge.node.${f} ${direction}`),
+                ].join(", ")
+            );
+            subquery.push(`ORDER BY ${sort.join(", ")}`);
+        }
         subquery.push(`RETURN { ${returnValues.join(", ")} } AS ${resolveTree.alias}`);
     } else {
         subquery = [

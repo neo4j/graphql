@@ -114,16 +114,22 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
                     moviesConnection: {
                         edges: [
                             {
-                                title: "B Movie",
-                                actorsCount: 2,
+                                node: {
+                                    title: "B Movie",
+                                    actorsCount: 2,
+                                },
                             },
                             {
-                                title: "A Movie",
-                                actorsCount: 1,
+                                node: {
+                                    title: "A Movie",
+                                    actorsCount: 1,
+                                },
                             },
                             {
-                                title: "C Movie",
-                                actorsCount: 0,
+                                node: {
+                                    title: "C Movie",
+                                    actorsCount: 0,
+                                },
                             },
                         ],
                     },
