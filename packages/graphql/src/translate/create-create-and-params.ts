@@ -283,14 +283,14 @@ function createCreateAndParams({
         });
         if (bindAndParams[0]) {
             creates.push(`WITH ${withVars.join(", ")}`);
-            creates.push(`CALL apoc.util.validate(NOT(${bindAndParams[0]}), ${forbiddenString}, [0])`);
+            creates.push(`CALL apoc.util.validate(NOT (${bindAndParams[0]}), ${forbiddenString}, [0])`);
             params = { ...params, ...bindAndParams[1] };
         }
     }
 
     if (meta?.authStrs.length) {
         creates.push(`WITH ${withVars.join(", ")}`);
-        creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);
+        creates.push(`CALL apoc.util.validate(NOT (${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);
     }
 
     if (includeRelationshipValidation) {

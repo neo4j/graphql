@@ -152,12 +152,12 @@ function createWhereAndParams({
             const relTypeStr = `[:${relationField.type}]`;
 
             if (value === null) {
-                res.clauses.push(`${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
+                res.clauses.push(`${isNot ? "" : "NOT "}exists((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
                 return res;
             }
 
             let resultStr = [
-                `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
+                `exists((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
                 `AND ${listPredicate}(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}${labels}) | ${param}] INNER_WHERE `,
             ].join(" ");
 
@@ -206,7 +206,7 @@ function createWhereAndParams({
 
                 if (value === null) {
                     res.clauses.push(
-                        `${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}[:${
+                        `${isNot ? "" : "NOT "}exists((${varName})${inStr}[:${
                             connectionField.relationship.type
                         }]${outStr}(${labels}))`
                     );
@@ -214,7 +214,7 @@ function createWhereAndParams({
                 }
 
                 let resultStr = [
-                    `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
+                    `exists((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
                     `AND ${listPredicate}(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${thisParam}${labels})`,
                     ` | { node: ${thisParam}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
                 ].join(" ");
