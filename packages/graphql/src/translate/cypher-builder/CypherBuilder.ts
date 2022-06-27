@@ -44,4 +44,6 @@ export {
     WhereClause,
 } from "./statements/where-clauses";
 
-export { exists, any } from "./statements/predicate-functions";
+export { exists, any, none, single, all } from "./statements/predicate-functions";
+
+export { MatchPattern } from "./MatchPattern";

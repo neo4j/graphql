@@ -242,20 +242,46 @@ function createRelationProperty({
         type: relationField.type,
     });
 
-    const exists = CypherBuilder.exists(relationship);
+    const matchPattern1 = new CypherBuilder.MatchPattern(relationship, {
+        source: relationField.direction === "IN" ? { variable: false } : { labels: false },
+        target: relationField.direction === "IN" ? { labels: false } : { variable: false },
+        relationship: { variable: false },
+    });
+    const exists = CypherBuilder.exists(matchPattern1);
+
+    const matchPattern2 = new CypherBuilder.MatchPattern(relationship, {
+        source: relationField.direction === "IN" ? { variable: true } : { labels: false },
+        target: relationField.direction === "IN" ? { labels: false } : { variable: true },
+        relationship: { variable: false },
+    });
 
     if (value === null) {
         if (!isNot) {
             // Bit confusing, but basically checking for not null is the same as checking for relationship exists
             return CypherBuilder.not(exists);
         }
-        // res.clauses.push(`${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
-        // return res;
         return exists;
     }
 
     const subquery = new CypherBuilder.Query();
-    const anyPredicate = CypherBuilder.any(relationship, subquery);
+
+    let listPredicate: PredicateFunction;
+    switch (operator) {
+        case "ALL":
+            listPredicate = CypherBuilder.all(matchPattern2, childNode, subquery);
+            break;
+        case "NOT":
+        case "NONE":
+            listPredicate = CypherBuilder.none(matchPattern2, childNode, subquery);
+            break;
+        case "SINGLE":
+            listPredicate = CypherBuilder.single(matchPattern2, childNode, subquery);
+            break;
+        case "SOME":
+        default:
+            listPredicate = CypherBuilder.any(matchPattern2, childNode, subquery);
+            break;
+    }
 
     const mappedProperties = mapAllProperties({
         whereInput: value,
@@ -264,10 +290,10 @@ function createRelationProperty({
         context,
     });
 
-    // TODO: improve this
+    // TODO: improve this, shouldn't use a root query
     subquery.where(...mappedProperties);
 
-    return CypherBuilder.and(exists, anyPredicate); // NESTED WHERE HERE
+    return CypherBuilder.and(exists, listPredicate); // NESTED WHERE HERE
 
     // ANY(this_genres IN [(this)-[:IN_GENRE]->(this_genres:Genre) | this_genres] WHERE this_genres.name = $this_genres_name)
 

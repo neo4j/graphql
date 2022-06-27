@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Query, Relationship } from "../CypherBuilder";
+import { Query, Relationship, Node } from "../CypherBuilder";
 import { CypherContext } from "../CypherContext";
 import { MatchPattern } from "../MatchPattern";
 
@@ -28,13 +28,14 @@ export abstract class PredicateFunction {
 export class ExistsPredicate extends PredicateFunction {
     private matchPattern: MatchPattern<Relationship>;
 
-    constructor(target: Relationship) {
+    constructor(target: MatchPattern<Relationship>) {
         super();
-        this.matchPattern = new MatchPattern(target, {
-            source: { labels: false },
-            relationship: { variable: false },
-            target: { variable: false },
-        });
+        this.matchPattern = target;
+        // this.matchPattern = new MatchPattern(target, {
+        //     source: { labels: false },
+        //     relationship: { variable: false },
+        //     target: { variable: false },
+        // });
     }
 
     getCypher(context: CypherContext): string {
@@ -43,41 +44,55 @@ export class ExistsPredicate extends PredicateFunction {
     }
 }
 
-export class AnyPredicate extends PredicateFunction {
+type ListPredicateName = "ANY" | "NONE" | "ALL" | "SINGLE";
+
+export class ListPredicate extends PredicateFunction {
     private matchPattern: MatchPattern<Relationship>;
-    private targetRelationship: Relationship;
+    private matchTarget: Node;
 
     private innerStatement: Query | undefined;
 
-    constructor(target: Relationship, query?: Query) {
+    private predicate: ListPredicateName;
+
+    constructor(predicate: ListPredicateName, pattern: MatchPattern<Relationship>, target: Node, query?: Query) {
         super();
-        this.targetRelationship = target;
-        this.matchPattern = new MatchPattern(target, {
-            source: { labels: false },
-            relationship: { variable: false },
-            target: { variable: true },
-        });
+        this.matchPattern = pattern;
+        this.matchTarget = target;
+
         this.innerStatement = query;
+        this.predicate = predicate;
     }
 
     getCypher(context: CypherContext): string {
         const matchPatternCypher = this.matchPattern.getCypher(context);
-        const relationshipTargetVariable = context.getVariableId(this.targetRelationship.target);
+        const relationshipTargetVariable = context.getVariableId(this.matchTarget);
 
         let innerQuery = "";
         if (this.innerStatement) {
             innerQuery = this.innerStatement.getCypher(context); // TODO: this is a hack, should be part of AST
         }
 
-        return `any(${relationshipTargetVariable} IN [${matchPatternCypher} | ${relationshipTargetVariable}]
+        return `${this.predicate}(${relationshipTargetVariable} IN [${matchPatternCypher} | ${relationshipTargetVariable}]
             ${innerQuery})`;
     }
 }
 
-export function exists(target: Relationship): ExistsPredicate {
-    return new ExistsPredicate(target);
+export function exists(pattern: MatchPattern<Relationship>): ExistsPredicate {
+    return new ExistsPredicate(pattern);
 }
 
-export function any(target: Relationship, query?: Query): AnyPredicate {
-    return new AnyPredicate(target, query);
+export function any(pattern: MatchPattern<Relationship>, target: Node, query?: Query): ListPredicate {
+    return new ListPredicate("ANY", pattern, target, query);
+}
+
+export function none(pattern: MatchPattern<Relationship>, target: Node, query?: Query): ListPredicate {
+    return new ListPredicate("NONE", pattern, target, query);
+}
+
+export function single(pattern: MatchPattern<Relationship>, target: Node, query?: Query): ListPredicate {
+    return new ListPredicate("SINGLE", pattern, target, query);
+}
+
+export function all(pattern: MatchPattern<Relationship>, target: Node, query?: Query): ListPredicate {
+    return new ListPredicate("ALL", pattern, target, query);
 }

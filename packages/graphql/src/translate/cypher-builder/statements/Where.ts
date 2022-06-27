@@ -60,10 +60,3 @@ export class WhereStatement extends CypherASTNode {
         return `${this.whereClause} ${whereStatements.join("\nAND ")}`;
     }
 }
-
-export class InnerWhereStatement extends WhereStatement {
-    constructor(parent: CypherASTNode, whereInput: WhereInput) {
-        super(parent, whereInput);
-        this.whereClause = "INNER WHERE";
-    }
-}
