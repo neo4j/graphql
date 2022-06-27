@@ -97,7 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             	WITH this
             	MATCH (this)-[this_activeOrganization_Organization_unique:ACTIVELY_MANAGING]->(:Organization)
             	WITH count(this_activeOrganization_Organization_unique) as c
-            	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDUser.activeOrganization must be less than or equal to one', [0])
+            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDUser.activeOrganization must be less than or equal to one', [0])
             	RETURN c AS this_activeOrganization_Organization_unique_ignored
             }
             RETURN collect(DISTINCT this { id: this._id }) AS data"

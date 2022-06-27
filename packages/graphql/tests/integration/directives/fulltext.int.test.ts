@@ -25,39 +25,30 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { delay } from "../../../src/utils/utils";
-import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
 
 describe("@fulltext directive", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let databaseName: string;
-    let MULTIDB_SUPPORT = true;
+    let MULTIDB_SUPPORT: boolean;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
 
-        databaseName = generate({ readable: true, charset: "alphabetic" });
+        MULTIDB_SUPPORT = await driver.supportsMultiDb();
 
-        const cypher = `CREATE DATABASE ${databaseName}`;
-        const session = await neo4j.getSession();
+        if (MULTIDB_SUPPORT) {
+            databaseName = generate({ readable: true, charset: "alphabetic" });
 
-        try {
+            const cypher = `CREATE DATABASE ${databaseName}`;
+            const session = driver.session();
+
             await session.run(cypher);
-        } catch (e) {
-            if (e instanceof Error) {
-                if (isMultiDbUnsupportedError(e)) {
-                    // No multi-db support, so we skip tests
-                    MULTIDB_SUPPORT = false;
-                } else {
-                    throw e;
-                }
-            }
-        } finally {
             await session.close();
-        }
 
-        await delay(5000);
+            await delay(5000);
+        }
     });
 
     afterAll(async () => {

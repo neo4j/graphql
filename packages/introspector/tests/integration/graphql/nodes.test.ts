@@ -25,38 +25,26 @@ import createDriver from "../neo4j";
 describe("GraphQL - Infer Schema nodes basic tests", () => {
     const dbName = "introspectToNeo4jGrahqlTypeDefsITDb";
     let driver: neo4j.Driver;
-    let MULTIDB_SUPPORT = true;
+    let MULTIDB_SUPPORT: boolean;
 
     const sessionFactory = (bm: string[]) => () =>
         driver.session({ defaultAccessMode: neo4j.session.READ, bookmarks: bm, database: dbName });
 
     beforeAll(async () => {
         driver = await createDriver();
-        const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
-        try {
+        MULTIDB_SUPPORT = await driver.supportsMultiDb();
+
+        if (MULTIDB_SUPPORT) {
+            const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
             await cSession.writeTransaction((tx) => tx.run(`CREATE DATABASE ${dbName}`));
-        } catch (e) {
-            if (e instanceof Error) {
-                if (
-                    e.message.includes("should be executed against the system database") ||
-                    e.message.includes("Unsupported administration command")
-                ) {
-                    // No multi-db support, so we skip tests
-                    MULTIDB_SUPPORT = false;
-                } else {
-                    throw e;
-                }
-            } else {
-                throw e;
-            }
+            const waitSession = driver.session({
+                defaultAccessMode: neo4j.session.READ,
+                database: dbName,
+                bookmarks: cSession.lastBookmark(),
+            });
+            await cSession.close();
+            await waitSession.close();
         }
-        const waitSession = driver.session({
-            defaultAccessMode: neo4j.session.READ,
-            database: dbName,
-            bookmarks: cSession.lastBookmark(),
-        });
-        await cSession.close();
-        await waitSession.close();
     });
     afterEach(async () => {
         if (MULTIDB_SUPPORT) {
