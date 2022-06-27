@@ -88,11 +88,13 @@ export function mathDescriptorBuilder(value: number, entity: GraphElement, field
     };
 }
 
-export function buildMathStatements(mathDescriptor: MathDescriptor, scope: string, param: string): Array<string> {
+export function buildMathStatements(mathDescriptor: MathDescriptor, scope: string, withVars: string[], param: string): Array<string> {
     if (mathDescriptor.operationSymbol === "/" && mathDescriptor.value === 0) {
         throw new Error('Division by zero is not supported');
     }
     const statements: string[] = [];
+    const mathScope = Array.from(new Set([scope, ...withVars]));
+    statements.push(`WITH ${mathScope.join(", ")}`);
     statements.push(`CALL {`);
     statements.push(`WITH ${scope}`);
     // Raise for operations with NAN

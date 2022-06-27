@@ -31,6 +31,7 @@ import { matchMathField, mathDescriptorBuilder, buildMathStatements } from "./ut
 function createSetRelationshipProperties({
     properties,
     varName,
+    withVars,
     relationship,
     operation,
     callbackBucket,
@@ -38,6 +39,7 @@ function createSetRelationshipProperties({
 }: {
     properties: Record<string, unknown>;
     varName: string;
+    withVars: string[];
     relationship: Relationship;
     operation: "CREATE" | "UPDATE";
     callbackBucket: CallbackBucket;
@@ -91,7 +93,7 @@ function createSetRelationshipProperties({
                 throw new Error(`Ambiguous property: ${mathDescriptor.dbName}`);
             }
 
-            const mathStatements = buildMathStatements(mathDescriptor, varName, paramName);
+            const mathStatements = buildMathStatements(mathDescriptor, varName, withVars, paramName);
             strs.push(...mathStatements);
             return;
         }

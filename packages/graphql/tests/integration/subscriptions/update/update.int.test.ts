@@ -732,6 +732,7 @@ describe("Subscriptions update", () => {
                 ${typeMovie.operations.update}(where: { id: "1" }, update: { length_INCREMENT: 1 }) {
                     ${typeMovie.plural} {
                         id
+                        length
                     }
                 }
             }
@@ -749,6 +750,10 @@ describe("Subscriptions update", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
+        expect(gqlResult.data[typeMovie.operations.update]).toEqual({
+            [typeMovie.plural]: [{ id: "1", length: 1 }],
+        });
+
         expect(plugin.eventList).toEqual([
             {
                 id: expect.any(Number),
@@ -756,7 +761,123 @@ describe("Subscriptions update", () => {
                 event: "update",
                 properties: {
                     old: { id: "1", length: 0 },
-                    new: { id: "1", length: 1 } ,
+                    new: { id: "1", length: 1 },
+                },
+                typename: typeMovie.name,
+            },
+        ]);
+    });
+
+    test("update multiple properties using mathematical operator", async () => {
+        const query = `
+            mutation {
+                ${typeMovie.operations.update}(where: { id: "1" }, update: { name: "It's not Matrix", length_INCREMENT: 1 }) {
+                    ${typeMovie.plural} {
+                        id
+                        name
+                        length
+                    }
+                }
+            }
+            `;
+
+        await session.run(`
+                CREATE (:${typeMovie.name} { id: "1", name: "The Matrix", length: 0 })
+            `);
+
+        const gqlResult: any = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: { driver },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect(gqlResult.data[typeMovie.operations.update]).toEqual({
+            [typeMovie.plural]: [{ id: "1", name: "It's not Matrix", length: 1 }],
+        });
+
+        expect(plugin.eventList).toEqual([
+            {
+                id: expect.any(Number),
+                timestamp: expect.any(Number),
+                event: "update",
+                properties: {
+                    old: { id: "1", name: "The Matrix", length: 0 },
+                    new: { id: "1", name: "It's not Matrix", length: 1 },
+                },
+                typename: typeMovie.name,
+            },
+        ]);
+    });
+
+    test("update nested properties using mathematical operator", async () => {
+        const query = `
+        mutation {
+            ${typeMovie.operations.update}(
+                where: { id: "1" }
+                update: {
+                    name: "The Matrix"
+                    length_INCREMENT: 10
+                    actors: [
+                        {
+                            where: { node: { name: "Keanu_wrong" } }
+                            update: {
+                                node: {
+                                    name: "Keanu"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ) {
+                ${typeMovie.plural} {
+                    id
+                    name
+                    length
+                    actors {
+                        name
+                    }
+                }
+            }
+        }
+        `;
+
+        await session.run(`
+            CREATE(m1:${typeMovie.name} { id: "1", length: 0, name: "The wrong Matrix" })
+            CREATE(a1:${typeActor.name} {name: "Keanu_wrong"})-[:ACTED_IN]->(m1)
+        `);
+
+        const gqlResult: any = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: { driver },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect(gqlResult.data[typeMovie.operations.update]).toEqual({
+            [typeMovie.plural]: [{ id: "1", name: "The Matrix", length: 10, actors: [{ name: "Keanu" }] }],
+        });
+
+        expect(plugin.eventList).toEqual([
+            {
+                id: expect.any(Number),
+                timestamp: expect.any(Number),
+                event: "update",
+                properties: {
+                    old: { name: "Keanu_wrong" },
+                    new: { name: "Keanu" },
+                },
+                typename: typeActor.name,
+            },
+            {
+                id: expect.any(Number),
+                timestamp: expect.any(Number),
+                event: "update",
+                properties: {
+                    old: { id: "1", length: 0, name: "The wrong Matrix" },
+                    new: { id: "1", length: 10, name: "The Matrix" },
                 },
                 typename: typeMovie.name,
             },

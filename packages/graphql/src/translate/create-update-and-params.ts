@@ -272,6 +272,7 @@ export default function createUpdateAndParams({
                             const setProperties = createSetRelationshipProperties({
                                 properties: update.update.edge,
                                 varName: relationshipVariable,
+                                withVars,
                                 relationship,
                                 callbackBucket,
                                 operation: "UPDATE",
@@ -281,8 +282,8 @@ export default function createUpdateAndParams({
                             });
 
                             const updateStrs = [escapeQuery(setProperties), escapeQuery("RETURN count(*) AS _")];
-
-                            const apocArgs = `{${relationshipVariable}:${relationshipVariable}, ${
+                            const varsAsArgument = withVars.map(variable => `${variable}:${variable}`);
+                            const apocArgs = `{${varsAsArgument.join(", ")}, ${relationshipVariable}:${relationshipVariable}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}, resolvedCallbacks: $resolvedCallbacks}`;
 
@@ -393,6 +394,7 @@ export default function createUpdateAndParams({
                                 const setA = createSetRelationshipProperties({
                                     properties: create.edge,
                                     varName: propertiesName,
+                                    withVars,
                                     relationship,
                                     callbackBucket,
                                     operation: "CREATE",
@@ -478,7 +480,7 @@ export default function createUpdateAndParams({
                     throw new Error(`Ambiguous property: ${mathDescriptor.dbName}`);
                 }
 
-                const mathStatements = buildMathStatements(mathDescriptor, varName, param);
+                const mathStatements = buildMathStatements(mathDescriptor, varName, withVars, param);
                 res.strs.push(...mathStatements);
             } else {
                 res.strs.push(`SET ${varName}.${dbFieldName} = $${param}`);
