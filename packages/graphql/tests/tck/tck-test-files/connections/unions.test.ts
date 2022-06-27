@@ -100,7 +100,8 @@ describe("Cypher -> Connections -> Unions", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS publicationsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
@@ -158,7 +159,8 @@ describe("Cypher -> Connections -> Unions", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS publicationsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
@@ -232,7 +234,8 @@ describe("Cypher -> Connections -> Unions", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS publicationsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
@@ -315,7 +318,8 @@ describe("Cypher -> Connections -> Unions", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS publicationsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
@@ -398,7 +402,10 @@ describe("Cypher -> Connections -> Unions", () => {
             }
             WITH edge ORDER BY edge.words ASC
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS publicationsConnection
+            UNWIND edges as edge
+            WITH *
+            ORDER BY edge.words ASC
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
