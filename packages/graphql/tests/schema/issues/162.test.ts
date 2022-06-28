@@ -531,6 +531,8 @@ describe("162", () => {
 
             input TigerUpdateInput {
               x: Int
+              x_DECREMENT: Int
+              x_INCREMENT: Int
             }
 
             input TigerWhere {
