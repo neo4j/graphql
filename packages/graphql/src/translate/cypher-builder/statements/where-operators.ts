@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Variable } from "../CypherBuilder";
+import { RawCypher, Variable } from "../CypherBuilder";
 import { CypherContext } from "../CypherContext";
 import { MatchableElement } from "../MatchPattern";
 import { Param } from "../references/Param";
@@ -42,6 +42,7 @@ export class WhereOperator {
         const nestedOperationsCypher = this.whereInput.map((input) => {
             if (input instanceof WhereOperator) return input.getCypher(context);
             if (input instanceof PredicateFunction) return input.getCypher(context);
+            if (input instanceof RawCypher) return input.getCypher(context);
             return this.composeWhere(context, input);
         });
 
@@ -101,7 +102,11 @@ class NotWhereOperator extends WhereOperator {
 
     public getCypher(context: CypherContext): string {
         const inputOperator = this.whereInput[0];
-        if (inputOperator instanceof WhereOperator || inputOperator instanceof PredicateFunction) {
+        if (
+            inputOperator instanceof WhereOperator ||
+            inputOperator instanceof PredicateFunction ||
+            inputOperator instanceof RawCypher
+        ) {
             const composedWhere = inputOperator.getCypher(context);
             return `\n${this.operation} ${composedWhere}`;
         }

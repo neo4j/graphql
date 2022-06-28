@@ -32,6 +32,7 @@ export interface CypherVariable {
 /** Represents a CypherParam */
 export interface CypherParameter {
     readonly prefix: string;
+    id?: string;
     value: any;
 }
 

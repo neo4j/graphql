@@ -136,6 +136,14 @@ function mapProperties({
         const dbFieldName = mapToDbProperty(node, fieldName);
 
         const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
+
+        // if (isAggregate) {
+        //     if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
+
+        //     return createAggregateProperty();
+
+        // }
+
         if (relationField) {
             // Relation
             return createRelationProperty({
@@ -528,4 +536,29 @@ function mapConnectionProperties({
     });
 
     return [...mappedPropertiesNode, ...mappedPropertiesEdge];
+}
+
+function createAggregateProperty(): Array<CypherPropertyValue> {
+    //     const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+    //     const relationship = context.relationships.find(
+    //         (x) => x.properties === relationField.properties
+    //     ) as Relationship;
+
+    //     const aggregateWhereAndParams = createAggregateWhereAndParams({
+    //         node: refNode,
+    //         chainStr: param,
+    //         context,
+    //         field: relationField,
+    //         varName,
+    //         aggregation: value,
+    //         relationship,
+    //     });
+    //     if (aggregateWhereAndParams[0]) {
+    //         res.clauses.push(aggregateWhereAndParams[0]);
+    //         res.params = { ...res.params, ...aggregateWhereAndParams[1] };
+    //     }
+
+    //     return res;
+
+    return [];
 }

@@ -22,11 +22,12 @@ import { Param, Variable } from "../CypherBuilder";
 import { CypherContext } from "../CypherContext";
 import { MatchableElement } from "../MatchPattern";
 import { PredicateFunction } from "./predicate-functions";
+import { RawCypher } from "./RawCypher";
 import { WhereClause } from "./where-clauses";
 import { WhereOperator, and } from "./where-operators";
 
 type Params = Record<string, Param<any> | WhereClause>;
-export type WhereInput = Array<[MatchableElement | Variable, Params] | WhereOperator | PredicateFunction>;
+export type WhereInput = Array<[MatchableElement | Variable, Params] | WhereOperator | PredicateFunction | RawCypher>;
 
 export class WhereStatement extends CypherASTNode {
     private whereParams: Array<WhereOperator>;

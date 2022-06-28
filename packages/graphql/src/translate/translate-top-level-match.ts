@@ -45,7 +45,6 @@ function translateTopLevelMatch({
 
     const matchNode = new CypherBuilder.NamedNode(varName, { labels: node.getLabels(context) });
     const matchQuery = new CypherBuilder.Match(matchNode);
-
     // if (!Object.entries(fulltextInput).length) {
     //     cyphers.push(`MATCH (${varName}${node.getLabelString(context)})`);
     // } else {
@@ -89,32 +88,36 @@ function translateTopLevelMatch({
         //     whereStrs.push(where[0]);
         //     cypherParams = { ...cypherParams, ...where[1] };
         // }
-        const matchWhereQuery = addWhereToStatement({
+        addWhereToStatement({
             whereInput,
             node,
             context,
             matchStatement: matchQuery,
             targetElement: matchNode,
         });
-        const result = matchWhereQuery.build();
-        cyphers.push(result.cypher);
-        cypherParams = { ...cypherParams, ...result.params };
     }
 
-    // const whereAuth = createAuthAndParams({
-    //     operations: operation,
-    //     entity: node,
-    //     context,
-    //     where: { varName, node },
-    // });
-    // if (whereAuth[0]) {
-    //     whereStrs.push(whereAuth[0]);
-    //     cypherParams = { ...cypherParams, ...whereAuth[1] };
-    // }
+    const whereAuth = createAuthAndParams({
+        operations: operation,
+        entity: node,
+        context,
+        where: { varName, node },
+    });
+    if (whereAuth[0]) {
+        const authQuery = new CypherBuilder.RawCypher(whereAuth[0], whereAuth[1] as Record<string, any>);
+        matchQuery.where(authQuery);
+        // whereStrs.push(whereAuth[0]);
+        // cypherParams = { ...cypherParams, ...whereAuth[1] };
+    }
+
+    console.log(whereAuth[0]);
     //
     // if (whereStrs.length) {
     //     cyphers.push(`WHERE ${whereStrs.join(" AND ")}`);
     // }
+    const result = matchQuery.build();
+    cyphers.push(result.cypher);
+    cypherParams = { ...cypherParams, ...result.params };
 
     return [cyphers.join("\n"), cypherParams];
 }
