@@ -282,8 +282,8 @@ export default function createUpdateAndParams({
                             });
 
                             const updateStrs = [escapeQuery(setProperties), escapeQuery("RETURN count(*) AS _")];
-                            const varsAsArgument = withVars.map(variable => `${variable}:${variable}`);
-                            const apocArgs = `{${varsAsArgument.join(", ")}, ${relationshipVariable}:${relationshipVariable}, ${
+                            const varsAsArgumentString = withVars.map(variable => `${variable}:${variable}`).join(", ");
+                            const apocArgs = `{${varsAsArgumentString}, ${relationshipVariable}:${relationshipVariable}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}, resolvedCallbacks: $resolvedCallbacks}`;
 
