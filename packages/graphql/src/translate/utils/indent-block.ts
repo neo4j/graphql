@@ -17,14 +17,16 @@
  * limitations under the License.
  */
 
-export function isMultiDbUnsupportedError(e: Error) {
-    if (
-        e.message.includes("This is an administration command and it should be executed against the system database") ||
-        e.message.includes("Neo4jError: Unsupported administration command") ||
-        e.message.includes("Neo4jError: Unable to route write operation to leader for database 'system'")
-    ) {
-        return true;
+export function indentBlock(query: string): string;
+export function indentBlock(query: string[]): string[];
+export function indentBlock(query: string | string[]): string | string[] {
+    if (typeof query === "string") {
+        const statements = query.split("\n");
+        return indentStatements(statements).join("\n");
     }
+    return indentStatements(query);
+}
 
-    return false;
+function indentStatements(statements: string[]): string[] {
+    return statements.map((s) => `\t${s}`);
 }

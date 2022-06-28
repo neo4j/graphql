@@ -69,7 +69,7 @@ describe("#190", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WHERE EXISTS((this)-[:HAS_DEMOGRAPHIC]->(:UserDemographics)) AND ANY(this_demographics IN [(this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics) | this_demographics] WHERE this_demographics.type = $this_demographics_type AND this_demographics.value = $this_demographics_value)
+            WHERE exists((this)-[:HAS_DEMOGRAPHIC]->(:UserDemographics)) AND any(this_demographics IN [(this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics) | this_demographics] WHERE this_demographics.type = $this_demographics_type AND this_demographics.value = $this_demographics_value)
             RETURN this { .uid, demographics: [ (this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics)   | this_demographics { .type, .value } ] } as this"
         `);
 
@@ -105,7 +105,7 @@ describe("#190", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WHERE EXISTS((this)-[:HAS_DEMOGRAPHIC]->(:UserDemographics)) AND ANY(this_demographics IN [(this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics) | this_demographics] WHERE (this_demographics.type = $this_demographics_OR_type AND this_demographics.value = $this_demographics_OR_value OR this_demographics.type = $this_demographics_OR1_type OR this_demographics.type = $this_demographics_OR2_type))
+            WHERE exists((this)-[:HAS_DEMOGRAPHIC]->(:UserDemographics)) AND any(this_demographics IN [(this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics) | this_demographics] WHERE (this_demographics.type = $this_demographics_OR_type AND this_demographics.value = $this_demographics_OR_value OR this_demographics.type = $this_demographics_OR1_type OR this_demographics.type = $this_demographics_OR2_type))
             RETURN this { .uid, demographics: [ (this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics)   | this_demographics { .type, .value } ] } as this"
         `);
 

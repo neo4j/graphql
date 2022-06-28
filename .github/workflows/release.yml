@@ -76,8 +76,6 @@ jobs:
                     - graphql
                     - ogm
                 neo4j-version:
-                    - 4.2.9
-                    - 4.2
                     - 4.3.2
                     - 4.3
                     - 4.4
@@ -162,7 +160,7 @@ jobs:
     integration-tests-aura:
         needs:
             - aura-teardown
-            
+
         continue-on-error: true
 
         strategy:
@@ -445,7 +443,7 @@ jobs:
                   configuration: "config/release-changelog-builder-action/configuration-${{ steps.get-label.outputs.label }}.json"
                   toTag: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
             - name: Release
               uses: softprops/action-gh-release@v1
               with:

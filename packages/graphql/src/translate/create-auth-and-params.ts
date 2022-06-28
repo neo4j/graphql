@@ -48,7 +48,7 @@ function createRolesStr({ roles, escapeQuotes }: { roles: string[]; escapeQuotes
 
     const joined = roles.map((r) => `${quote}${r}${quote}`).join(", ");
 
-    return `ANY(r IN [${joined}] WHERE ANY(rr IN $auth.roles WHERE r = rr))`;
+    return `any(r IN [${joined}] WHERE any(rr IN $auth.roles WHERE r = rr))`;
 }
 
 function createAuthPredicate({
@@ -134,9 +134,9 @@ function createAuthPredicate({
                 const relationVarName = relationField.fieldName;
                 const labels = refNode.getLabelString(context);
                 let resultStr = [
-                    `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
+                    `exists((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
                     `AND ${
-                        kind === "allow" ? "ANY" : "ALL"
+                        kind === "allow" ? "any" : "all"
                     }(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}${labels}) | ${relationVarName}] WHERE `,
                 ].join(" ");
 
@@ -222,7 +222,7 @@ function createAuthAndParams({
         const quotes = escapeQuotes ? '\\"' : '"';
         if (!skipIsAuthenticated && (authRule.isAuthenticated === true || authRule.isAuthenticated === false)) {
             thisPredicates.push(
-                `apoc.util.validatePredicate(NOT($auth.isAuthenticated = ${Boolean(
+                `apoc.util.validatePredicate(NOT ($auth.isAuthenticated = ${Boolean(
                     authRule.isAuthenticated
                 )}), ${quotes}${AUTH_UNAUTHENTICATED_ERROR}${quotes}, [0])`
             );

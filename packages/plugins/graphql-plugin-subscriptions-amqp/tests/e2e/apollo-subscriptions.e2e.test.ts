@@ -102,7 +102,7 @@ describe("Apollo and RabbitMQ Subscription", () => {
             },
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.fieldNames.subscriptions.created]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
                     event: "CREATE",
                 },
             },
@@ -113,7 +113,7 @@ describe("Apollo and RabbitMQ Subscription", () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { title: "movie1" }) {
-                    ${typeMovie.fieldNames.subscriptions.created} {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
                 }
@@ -129,7 +129,7 @@ describe("Apollo and RabbitMQ Subscription", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.fieldNames.subscriptions.created]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
                 },
             },
         ]);

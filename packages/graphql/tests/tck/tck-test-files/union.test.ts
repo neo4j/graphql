@@ -81,7 +81,7 @@ describe("Cypher Union", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             WHERE this.title = $this_title
-            RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search) WHERE (\\"Genre\\" IN labels(this_search)) OR (\\"Movie\\" IN labels(this_search)) | head( [ this_search IN [this_search] WHERE (\\"Genre\\" IN labels(this_search)) AND this_search.name = $this_search_Genre_name AND apoc.util.validatePredicate(NOT(this_search.name IS NOT NULL AND this_search.name = $this_search_Genre_auth_allow0_name), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"Movie\\" IN labels(this_search)) AND this_search.title = $this_search_Movie_title | this_search { __resolveType: \\"Movie\\",  .title } ] ) ] WHERE this_search IS NOT NULL] [1..11]  } as this"
+            RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search) WHERE (\\"Genre\\" IN labels(this_search)) OR (\\"Movie\\" IN labels(this_search)) | head( [ this_search IN [this_search] WHERE (\\"Genre\\" IN labels(this_search)) AND this_search.name = $this_search_Genre_name AND apoc.util.validatePredicate(NOT (this_search.name IS NOT NULL AND this_search.name = $this_search_Genre_auth_allow0_name), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"Movie\\" IN labels(this_search)) AND this_search.title = $this_search_Movie_title | this_search { __resolveType: \\"Movie\\",  .title } ] ) ] WHERE this_search IS NOT NULL] [1..11]  } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -206,7 +206,7 @@ describe("Cypher Union", () => {
             			MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN this0
             }
@@ -257,7 +257,7 @@ describe("Cypher Union", () => {
             WHERE this_search_Genre0.name = $updateMovies.args.update.search.Genre[0].where.node.name
             CALL apoc.do.when(this_search_Genre0 IS NOT NULL, \\"
             SET this_search_Genre0.name = $this_update_search_Genre0_name
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_search_Genre0:this_search_Genre0, auth:$auth,this_update_search_Genre0_name:$this_update_search_Genre0_name})
             YIELD value AS _
             RETURN collect(DISTINCT this { .title }) AS data"
@@ -331,7 +331,7 @@ describe("Cypher Union", () => {
             FOREACH(_ IN CASE this_search_Genre0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_search_Genre0_disconnect0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
@@ -395,7 +395,7 @@ describe("Cypher Union", () => {
             FOREACH(_ IN CASE this_disconnect_search_Genre0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_search_Genre0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
@@ -457,7 +457,7 @@ describe("Cypher Union", () => {
             			MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .title }) AS data"
         `);

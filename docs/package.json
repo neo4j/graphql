@@ -35,7 +35,7 @@
         }
     },
     "devDependencies": {
-        "cheerio": "1.0.0-rc.11",
+        "cheerio": "1.0.0-rc.12",
         "express": "4.18.1",
         "hyperlink": "5.0.4",
         "npm-watch": "0.11.0"

@@ -91,20 +91,20 @@ describe("Interface Relationships - Update update", () => {
             WHERE this_actedIn0.title = $updateActors.args.update.actedIn[0].where.node.title
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
             SET this_actedIn0.title = $this_update_actedIn0_title
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_title:$this_update_actedIn0_title})
             YIELD value AS _
-            RETURN count(*)
+            RETURN count(*) AS _
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
             WHERE this_actedIn0.title = $updateActors.args.update.actedIn[0].where.node.title
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
             SET this_actedIn0.title = $this_update_actedIn0_title
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_title:$this_update_actedIn0_title})
             YIELD value AS _
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
@@ -176,13 +176,13 @@ describe("Interface Relationships - Update update", () => {
             OPTIONAL MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
             CALL apoc.do.when(this_actedIn0_actors0 IS NOT NULL, \\\\\\"
             SET this_actedIn0_actors0.name = $this_update_actedIn0_actors0_name
-            RETURN count(*)
+            RETURN count(*) AS _
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
             YIELD value AS _
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
             YIELD value AS _
-            RETURN count(*)
+            RETURN count(*) AS _
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
@@ -192,13 +192,13 @@ describe("Interface Relationships - Update update", () => {
             OPTIONAL MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
             CALL apoc.do.when(this_actedIn0_actors0 IS NOT NULL, \\\\\\"
             SET this_actedIn0_actors0.name = $this_update_actedIn0_actors0_name
-            RETURN count(*)
+            RETURN count(*) AS _
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
             YIELD value AS _
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
             YIELD value AS _
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
@@ -280,22 +280,22 @@ describe("Interface Relationships - Update update", () => {
             OPTIONAL MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
             CALL apoc.do.when(this_actedIn0_actors0 IS NOT NULL, \\\\\\"
             SET this_actedIn0_actors0.name = $this_update_actedIn0_on_Movie_actors0_name
-            RETURN count(*)
+            RETURN count(*) AS _
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_on_Movie_actors0_name:$this_update_actedIn0_on_Movie_actors0_name})
             YIELD value AS _
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_on_Movie_actors0_name:$this_update_actedIn0_on_Movie_actors0_name})
             YIELD value AS _
-            RETURN count(*)
+            RETURN count(*) AS _
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
             WHERE this_actedIn0.title = $updateActors.args.update.actedIn[0].where.node.title
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth})
             YIELD value AS _
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
@@ -384,13 +384,13 @@ describe("Interface Relationships - Update update", () => {
             OPTIONAL MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
             CALL apoc.do.when(this_actedIn0_actors0 IS NOT NULL, \\\\\\"
             SET this_actedIn0_actors0.name = $this_update_actedIn0_on_Movie_actors0_name
-            RETURN count(*)
+            RETURN count(*) AS _
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_on_Movie_actors0_name:$this_update_actedIn0_on_Movie_actors0_name})
             YIELD value AS _
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_on_Movie_actors0_name:$this_update_actedIn0_on_Movie_actors0_name})
             YIELD value AS _
-            RETURN count(*)
+            RETURN count(*) AS _
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
@@ -400,13 +400,13 @@ describe("Interface Relationships - Update update", () => {
             OPTIONAL MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
             CALL apoc.do.when(this_actedIn0_actors0 IS NOT NULL, \\\\\\"
             SET this_actedIn0_actors0.name = $this_update_actedIn0_actors0_name
-            RETURN count(*)
+            RETURN count(*) AS _
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_actedIn0:this_actedIn0, updateActors: $updateActors, this_actedIn0_actors0:this_actedIn0_actors0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
             YIELD value AS _
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_actors0_name:$this_update_actedIn0_actors0_name})
             YIELD value AS _
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .name }) AS data"
         `);

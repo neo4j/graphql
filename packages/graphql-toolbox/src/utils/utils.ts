@@ -41,6 +41,8 @@ import "codemirror-graphql/mode";
 import "codemirror/addon/lint/lint.css";
 import "codemirror/theme/dracula.css";
 import "codemirror/theme/neo.css";
+import "codemirror/lib/codemirror.css";
+import "codemirror/addon/hint/show-hint.css";
 
 // @ts-ignore - Needed for the tests
 document.CodeMirror = CodeMirror;

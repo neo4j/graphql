@@ -231,6 +231,8 @@ describe("Alias", () => {
             input ActorActedInPropsUpdateInput {
               character: String
               screenTime: Int
+              screenTime_DECREMENT: Int
+              screenTime_INCREMENT: Int
             }
 
             input ActorActedInPropsWhere {
@@ -477,6 +479,10 @@ describe("Alias", () => {
 
             input MovieUpdateInput {
               rating: Float
+              rating_ADD: Float
+              rating_DIVIDE: Float
+              rating_MULTIPLY: Float
+              rating_SUBTRACT: Float
               title: String
             }
 

@@ -76,7 +76,7 @@ function createInterfaceProjectionAndParams({
         });
         if (allowAndParams[0]) {
             globalParams = { ...globalParams, ...allowAndParams[1] };
-            subquery.push(`CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+            subquery.push(`CALL apoc.util.validate(NOT (${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         }
 
         const whereStrs: string[] = [];

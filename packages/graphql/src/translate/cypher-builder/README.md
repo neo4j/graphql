@@ -249,7 +249,7 @@ CALL {
     CREATE (this0:\`Movie\`)
     SET this0.id = $param0
     RETURN this0
-    RETURN COUNT(*)
+    RETURN COUNT(*) AS _
 }
 ```
 
@@ -267,7 +267,7 @@ Generates an `apoc.validate` statement
 
 ```typescript
 const query = new CypherBuilder.Apoc.Validate({
-    predicate: `NOT(my_statement)`,
+    predicate: `NOT (my_statement)`,
     message: AUTH_FORBIDDEN_ERROR,
 });
 ```
