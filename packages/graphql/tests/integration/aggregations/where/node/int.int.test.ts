@@ -101,7 +101,7 @@ describe("aggregations-where-node-int", () => {
         }
     });
 
-    test("should return posts where a like Float is GT than", async () => {
+    test("should return posts where a like Int is GT than", async () => {
         const session = driver.session();
 
         const typeDefs = `

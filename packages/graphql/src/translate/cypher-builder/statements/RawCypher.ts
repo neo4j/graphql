@@ -40,3 +40,26 @@ export class RawCypher extends Query {
         return this.query;
     }
 }
+
+type RawCypherCallback = (c: CypherContext) => [string, Record<string, any>];
+
+export class RawCypherWithCallback extends Query {
+    private callback: RawCypherCallback;
+
+    constructor(callback: RawCypherCallback, parent?: Query) {
+        super(parent);
+        this.callback = callback;
+    }
+
+    cypher(context: CypherContext, childrenCypher: string): string {
+        if (childrenCypher) throw new Error("Raw query does not support children");
+        const [query, params] = this.callback(context);
+
+        const cypherParams = convertToCypherParams(params);
+
+        Object.entries(cypherParams).forEach(([key, param]) => {
+            context.addNamedParamReference(key, param);
+        });
+        return query;
+    }
+}

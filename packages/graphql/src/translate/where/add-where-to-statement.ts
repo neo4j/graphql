@@ -25,11 +25,13 @@ import { MatchableElement } from "../cypher-builder/MatchPattern";
 import { WhereOperator } from "../cypher-builder/statements/where-operators";
 import { whereRegEx, WhereRegexGroups } from "./utils";
 import { PredicateFunction } from "../cypher-builder/statements/predicate-functions";
+import createAggregateWhereAndParams from "../create-aggregate-where-and-params";
+import { WhereInput } from "../cypher-builder/statements/Where";
 
-type CypherPropertyValue =
-    | [MatchableElement | CypherBuilder.Variable, Record<string, CypherBuilder.Param | CypherBuilder.WhereClause>]
-    | WhereOperator
-    | PredicateFunction;
+// type CypherPropertyValue =
+//     | [MatchableElement | CypherBuilder.Variable, Record<string, CypherBuilder.Param | CypherBuilder.WhereClause>]
+//     | WhereOperator
+//     | PredicateFunction;
 
 export function addWhereToStatement<T extends MatchableElement>({
     targetElement,
@@ -66,8 +68,8 @@ function mapAllProperties({
     node: Node;
     targetElement: MatchableElement | CypherBuilder.Variable;
     context: Context;
-}): Array<CypherPropertyValue> {
-    const resultArray: Array<CypherPropertyValue> = [];
+}): WhereInput {
+    const resultArray: WhereInput = [];
     const whereFields = Object.entries(whereInput);
 
     const leafProperties = whereFields.filter(([key, value]) => key !== "OR" && key !== "AND");
@@ -122,7 +124,7 @@ function mapProperties({
     node: Node;
     targetElement: MatchableElement | CypherBuilder.Variable;
     context: Context;
-}): Array<CypherPropertyValue> {
+}): WhereInput {
     return properties.map(([key, value]) => {
         const match = whereRegEx.exec(key);
 
@@ -137,12 +139,18 @@ function mapProperties({
 
         const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
 
-        // if (isAggregate) {
-        //     if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
+        if (isAggregate) {
+            if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
 
-        //     return createAggregateProperty();
+            const nestedAggregate = createAggregateProperty({
+                relationField,
+                context,
+                value,
+                parentNode: targetElement as CypherBuilder.Node,
+            });
 
-        // }
+            return nestedAggregate;
+        }
 
         if (relationField) {
             // Relation
@@ -186,7 +194,7 @@ function createPrimitiveProperty({
     operator: string | undefined;
     dbFieldName: string;
     value: any;
-}): CypherPropertyValue {
+}): WhereInput[0] {
     const param = new CypherBuilder.Param(value);
     if (operator) {
         let whereClause: CypherBuilder.WhereClause;
@@ -505,7 +513,7 @@ function mapConnectionProperties({
     node: Node;
     targetVariable: CypherBuilder.Variable;
     context: Context;
-}): Array<CypherPropertyValue> {
+}): WhereInput {
     const nodeProperties = (whereInput.node || {}) as Record<string, any>;
 
     const parsedProperties = Object.entries(nodeProperties).reduce((acc, [key, value]) => {
@@ -538,27 +546,44 @@ function mapConnectionProperties({
     return [...mappedPropertiesNode, ...mappedPropertiesEdge];
 }
 
-function createAggregateProperty(): Array<CypherPropertyValue> {
-    //     const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-    //     const relationship = context.relationships.find(
-    //         (x) => x.properties === relationField.properties
-    //     ) as Relationship;
+function createAggregateProperty({
+    relationField,
+    context,
+    value,
+    parentNode,
+}: {
+    relationField: RelationField;
+    context: Context;
+    value: any;
+    parentNode: CypherBuilder.Node;
+}): CypherBuilder.RawCypherWithCallback {
+    // MISSING VARNAME
+    const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+    const relationship = context.relationships.find((x) => x.properties === relationField.properties) as Relationship;
 
-    //     const aggregateWhereAndParams = createAggregateWhereAndParams({
-    //         node: refNode,
-    //         chainStr: param,
-    //         context,
-    //         field: relationField,
-    //         varName,
-    //         aggregation: value,
-    //         relationship,
-    //     });
-    //     if (aggregateWhereAndParams[0]) {
-    //         res.clauses.push(aggregateWhereAndParams[0]);
-    //         res.params = { ...res.params, ...aggregateWhereAndParams[1] };
-    //     }
+    const aggregateStatement = new CypherBuilder.RawCypherWithCallback((cypherContext: CypherBuilder.CypherContext) => {
+        const varName = cypherContext.getVariableId(parentNode);
+
+        const aggregateWhereAndParams = createAggregateWhereAndParams({
+            node: refNode,
+            chainStr: "", //param,
+            context,
+            field: relationField,
+            varName,
+            aggregation: value,
+            relationship,
+        });
+
+        return aggregateWhereAndParams;
+    });
+
+    // if (aggregateWhereAndParams[0]) {
+    //     console.log(aggregateWhereAndParams);
+    //     // res.clauses.push(aggregateWhereAndParams[0]);
+    //     // res.params = { ...res.params, ...aggregateWhereAndParams[1] };
+    // }
 
     //     return res;
 
-    return [];
+    return aggregateStatement;
 }

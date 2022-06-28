@@ -23,12 +23,13 @@ export { Merge } from "./statements/Merge";
 export { Apoc } from "./statements/Apoc";
 export { Call } from "./statements/Call";
 export { Match } from "./statements/Match";
-export { RawCypher } from "./statements/RawCypher";
+export { RawCypher, RawCypherWithCallback } from "./statements/RawCypher";
 
 export { Node, NamedNode } from "./references/Node";
 export { Param, RawParam } from "./references/Param";
 export { Relationship } from "./references/Relationship";
 export { Variable } from "./references/Variable";
+export { CypherContext } from "./CypherContext";
 
 export { CypherResult } from "./types";
 

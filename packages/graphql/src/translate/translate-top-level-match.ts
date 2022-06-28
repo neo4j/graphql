@@ -45,36 +45,34 @@ function translateTopLevelMatch({
 
     const matchNode = new CypherBuilder.NamedNode(varName, { labels: node.getLabels(context) });
     const matchQuery = new CypherBuilder.Match(matchNode);
-    // if (!Object.entries(fulltextInput).length) {
-    //     cyphers.push(`MATCH (${varName}${node.getLabelString(context)})`);
-    // } else {
-    //     // THIS is only for fulltext search
-    //     if (Object.entries(fulltextInput).length > 1) {
-    //         throw new Error("Can only call one search at any given time");
-    //     }
-    //
-    //     const [indexName, indexInput] = Object.entries(fulltextInput)[0];
-    //     const baseParamName = `${varName}_fulltext_${indexName}`;
-    //     const paramPhraseName = `${baseParamName}_phrase`;
-    //     cypherParams[paramPhraseName] = indexInput.phrase;
-    //
-    //     cyphers.push(
-    //         dedent(`
-    //             CALL db.index.fulltext.queryNodes(
-    //                 "${indexName}",
-    //                 $${paramPhraseName}
-    //             ) YIELD node as this
-    //         `)
-    //     );
-    //
-    //     if (node.nodeDirective?.additionalLabels?.length) {
-    //         node.getLabels(context).forEach((label) => {
-    //             whereStrs.push(`"${label}" IN labels(${varName})`);
-    //         });
-    //     } else {
-    //         whereStrs.push(`"${node.getMainLabel()}" IN labels(${varName})`);
-    //     }
-    // }
+    if (Object.entries(fulltextInput).length) {
+        // THIS is only for fulltext search
+        if (Object.entries(fulltextInput).length > 1) {
+            throw new Error("Can only call one search at any given time");
+        }
+        // TODO: add fulltext search
+        // const [indexName, indexInput] = Object.entries(fulltextInput)[0];
+        // const baseParamName = `${varName}_fulltext_${indexName}`;
+        // const paramPhraseName = `${baseParamName}_phrase`;
+        // cypherParams[paramPhraseName] = indexInput.phrase;
+
+        // cyphers.push(
+        //     dedent(`
+        //         CALL db.index.fulltext.queryNodes(
+        //             "${indexName}",
+        //             $${paramPhraseName}
+        //         ) YIELD node as this
+        //     `)
+        // );
+
+        // if (node.nodeDirective?.additionalLabels?.length) {
+        //     node.getLabels(context).forEach((label) => {
+        //         whereStrs.push(`"${label}" IN labels(${varName})`);
+        //     });
+        // } else {
+        //     whereStrs.push(`"${node.getMainLabel()}" IN labels(${varName})`);
+        // }
+    }
 
     if (whereInput) {
         // const where = createWhereAndParams({
