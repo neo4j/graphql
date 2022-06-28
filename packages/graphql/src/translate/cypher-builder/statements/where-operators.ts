@@ -22,6 +22,7 @@ import { CypherContext } from "../CypherContext";
 import { MatchableElement } from "../MatchPattern";
 import { Param } from "../references/Param";
 import { PredicateFunction } from "./predicate-functions";
+import { ScalarFunction } from "./scalar-functions";
 import { WhereInput } from "./Where";
 import { WhereClause } from "./where-clauses";
 
@@ -43,7 +44,8 @@ export class WhereOperator {
             if (input instanceof WhereOperator) return input.getCypher(context);
             if (input instanceof PredicateFunction) return input.getCypher(context);
             if (input instanceof RawCypher || input instanceof RawCypherWithCallback) return input.getCypher(context);
-            return this.composeWhere(context, input);
+
+            return this.composeWhere(context, input as [MatchableElement | Variable, Params]);
         });
 
         const operationStr = `\n${this.operation} `;
@@ -56,21 +58,22 @@ export class WhereOperator {
         return `${operationsStr}`;
     }
 
-    // TODO: move somewhere else
-    protected composeWhere(context: CypherContext, input: [MatchableElement | Variable, Params]): string {
+    protected composeWhere(
+        context: CypherContext,
+        input: [MatchableElement | Variable | ScalarFunction, Params]
+    ): string {
         const [matchableElement, params] = input;
-        const nodeAlias = context.getVariableId(matchableElement);
 
         const paramsStrs = Object.entries(params).map(([key, value]) => {
-            if (value instanceof WhereClause) {
-                return `${nodeAlias}.${key} ${value.getCypher(context)}`;
-            }
+            let property: string;
+            if (matchableElement instanceof ScalarFunction) {
+                property = matchableElement.getCypher(context);
+            } else {
+                const nodeAlias = context.getVariableId(matchableElement);
 
-            if (value.isNull) {
-                return `${nodeAlias}.${key} IS ${value.getCypher(context)}`;
+                property = `${nodeAlias}.${key}`;
             }
-
-            return `${nodeAlias}.${key} = ${value.getCypher(context)}`;
+            return this.generateWhereField({ value, property, context });
         });
 
         const joinedParamsStr = paramsStrs.join("\nAND ");
@@ -80,6 +83,26 @@ export class WhereOperator {
         }
 
         return `${joinedParamsStr}`;
+    }
+
+    protected generateWhereField({
+        value,
+        property,
+        context,
+    }: {
+        value: Param<any> | WhereClause;
+        property: string;
+        context: CypherContext;
+    }): string {
+        if (value instanceof WhereClause) {
+            return `${property} ${value.getCypher(context)}`;
+        }
+
+        if (value.isNull) {
+            return `${property} IS ${value.getCypher(context)}`;
+        }
+
+        return `${property} = ${value.getCypher(context)}`;
     }
 }
 

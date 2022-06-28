@@ -23,12 +23,17 @@ import { CypherContext } from "../CypherContext";
 import { MatchableElement } from "../MatchPattern";
 import { PredicateFunction } from "./predicate-functions";
 import { RawCypher, RawCypherWithCallback } from "./RawCypher";
+import { ScalarFunction } from "./scalar-functions";
 import { WhereClause } from "./where-clauses";
 import { WhereOperator, and } from "./where-operators";
 
 type Params = Record<string, Param<any> | WhereClause>;
 export type WhereInput = Array<
-    [MatchableElement | Variable, Params] | WhereOperator | PredicateFunction | RawCypher | RawCypherWithCallback
+    | [MatchableElement | Variable | ScalarFunction, Params]
+    | WhereOperator
+    | PredicateFunction
+    | RawCypher
+    | RawCypherWithCallback
 >;
 
 export class WhereStatement extends CypherASTNode {

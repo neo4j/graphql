@@ -27,6 +27,7 @@ import { whereRegEx, WhereRegexGroups } from "./utils";
 import { PredicateFunction } from "../cypher-builder/statements/predicate-functions";
 import createAggregateWhereAndParams from "../create-aggregate-where-and-params";
 import { WhereInput } from "../cypher-builder/statements/Where";
+import { ScalarFunction } from "../cypher-builder/statements/scalar-functions";
 
 // type CypherPropertyValue =
 //     | [MatchableElement | CypherBuilder.Variable, Record<string, CypherBuilder.Param | CypherBuilder.WhereClause>]
@@ -133,7 +134,8 @@ function mapProperties({
         const isNot = operator?.startsWith("NOT") ?? false;
         const coalesceValue = [...node.primitiveFields, ...node.temporalFields, ...node.enumFields].find(
             (f) => fieldName === f.fieldName
-        )?.coalesceValue;
+        )?.coalesceValue as string | undefined;
+
         // TODO: deal with coalesce
         const dbFieldName = mapToDbProperty(node, fieldName);
 
@@ -180,6 +182,7 @@ function mapProperties({
             operator,
             dbFieldName,
             value,
+            coalesceValue,
         });
     });
 }
@@ -189,13 +192,21 @@ function createPrimitiveProperty({
     operator,
     dbFieldName,
     value,
+    coalesceValue,
 }: {
     targetElement: MatchableElement | CypherBuilder.Variable;
     operator: string | undefined;
     dbFieldName: string;
     value: any;
+    coalesceValue: string | undefined;
 }): WhereInput[0] {
     const param = new CypherBuilder.Param(value);
+
+    let targetElementOrCoalesce: MatchableElement | CypherBuilder.Variable | ScalarFunction = targetElement;
+    if (coalesceValue) {
+        targetElementOrCoalesce = CypherBuilder.coalesce(targetElement, dbFieldName, coalesceValue);
+    }
+
     if (operator) {
         let whereClause: CypherBuilder.WhereClause;
         switch (operator) {
@@ -212,17 +223,17 @@ function createPrimitiveProperty({
                 whereClause = CypherBuilder.gte(param);
                 break;
             case "NOT":
-                return CypherBuilder.not([targetElement, { [dbFieldName]: param }]);
+                return CypherBuilder.not([targetElementOrCoalesce, { [dbFieldName]: param }]);
             case "ENDS_WITH":
                 whereClause = CypherBuilder.endsWith(param);
                 break;
             case "NOT_ENDS_WITH":
-                return CypherBuilder.not([targetElement, { [dbFieldName]: CypherBuilder.endsWith(param) }]);
+                return CypherBuilder.not([targetElementOrCoalesce, { [dbFieldName]: CypherBuilder.endsWith(param) }]);
             case "STARTS_WITH":
                 whereClause = CypherBuilder.startsWith(param);
                 break;
             case "NOT_STARTS_WITH":
-                return CypherBuilder.not([targetElement, { [dbFieldName]: CypherBuilder.startsWith(param) }]);
+                return CypherBuilder.not([targetElementOrCoalesce, { [dbFieldName]: CypherBuilder.startsWith(param) }]);
             case "MATCHES":
                 whereClause = CypherBuilder.match(param);
                 break;
@@ -230,18 +241,18 @@ function createPrimitiveProperty({
                 whereClause = CypherBuilder.contains(param);
                 break;
             case "NOT_CONTAINS":
-                return CypherBuilder.not([targetElement, { [dbFieldName]: CypherBuilder.contains(param) }]);
+                return CypherBuilder.not([targetElementOrCoalesce, { [dbFieldName]: CypherBuilder.contains(param) }]);
             case "IN":
                 whereClause = CypherBuilder.in(param);
                 break;
             case "NOT_IN":
-                return CypherBuilder.not([targetElement, { [dbFieldName]: CypherBuilder.in(param) }]);
+                return CypherBuilder.not([targetElementOrCoalesce, { [dbFieldName]: CypherBuilder.in(param) }]);
             default:
                 throw new Error(`Invalid operator ${operator}`);
         }
-        return [targetElement, { [dbFieldName]: whereClause }];
+        return [targetElementOrCoalesce, { [dbFieldName]: whereClause }];
     }
-    return [targetElement, { [dbFieldName]: param }];
+    return [targetElementOrCoalesce, { [dbFieldName]: param }];
 }
 
 function createRelationProperty({

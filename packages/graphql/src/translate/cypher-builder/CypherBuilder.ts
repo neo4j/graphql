@@ -34,6 +34,7 @@ export { CypherContext } from "./CypherContext";
 export { CypherResult } from "./types";
 
 export { or, and, not } from "./statements/where-operators";
+export { coalesce } from "./statements/scalar-functions";
 export {
     inClause as in,
     gt,
