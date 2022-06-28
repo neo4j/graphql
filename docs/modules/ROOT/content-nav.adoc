@@ -34,6 +34,7 @@
 ** xref:pagination/index.adoc[]
 *** xref:pagination/offset-based.adoc[]
 *** xref:pagination/cursor-based.adoc[]
+** xref::mathematical-operators.adoc[Mathematical operators]
 ** xref:custom-resolvers.adoc[]
 ** xref:auth/index.adoc[]
 *** xref:auth/setup.adoc[]

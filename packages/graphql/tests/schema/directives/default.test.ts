@@ -227,7 +227,13 @@ describe("@default directive", () => {
               location: Location
               name: String
               numberOfFriends: Int
+              numberOfFriends_DECREMENT: Int
+              numberOfFriends_INCREMENT: Int
               rating: Float
+              rating_ADD: Float
+              rating_DIVIDE: Float
+              rating_MULTIPLY: Float
+              rating_SUBTRACT: Float
               toBeOverridden: String
               verified: Boolean
               verifiedDate: DateTime
