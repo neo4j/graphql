@@ -60,7 +60,7 @@
         "apollo-server": "3.9.0",
         "apollo-server-express": "3.9.0",
         "dedent": "0.7.0",
-        "graphql-middleware": "6.1.29",
+        "graphql-middleware": "6.1.31",
         "graphql-tag": "2.12.6",
         "graphql-ws": "5.9.0",
         "is-uuid": "1.0.2",
