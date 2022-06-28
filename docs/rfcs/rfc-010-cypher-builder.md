@@ -179,7 +179,7 @@ const mergeRelationStatement = buildMergeStatement({
 	context,
 });
 
-const authStatement = joinStatements(["CALL apoc.util.validate(NOT(", auth, `), "${AUTH_FORBIDDEN_ERROR}", [0])`], "")
+const authStatement = joinStatements(["CALL apoc.util.validate(NOT (", auth, `), "${AUTH_FORBIDDEN_ERROR}", [0])`], "")
 
 return joinStatements([authStatement, mergeRelatedNodeStatement, mergeRelationStatement]);
 

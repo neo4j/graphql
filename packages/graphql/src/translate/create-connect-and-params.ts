@@ -195,7 +195,7 @@ function createConnectAndParams({
             const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}`);
             subquery.push(
-                `\tCALL apoc.util.validate(NOT(${preAuth.connects.join(
+                `\tCALL apoc.util.validate(NOT (${preAuth.connects.join(
                     " AND "
                 )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
             );
@@ -396,7 +396,7 @@ function createConnectAndParams({
             const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}`);
             subquery.push(
-                `\tCALL apoc.util.validate(NOT(${postAuth.connects.join(
+                `\tCALL apoc.util.validate(NOT (${postAuth.connects.join(
                     " AND "
                 )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
             );

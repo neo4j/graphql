@@ -80,7 +80,7 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
             SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
             RETURN count(*) AS _
-            \\", \\"\\", {this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies, resolvedCallbacks: $resolvedCallbacks})
+            \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies, resolvedCallbacks: $resolvedCallbacks})
             YIELD value AS this_acted_in0_relationship_actors0_edge
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
@@ -156,7 +156,7 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
             SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
             RETURN count(*) AS _
-            \\", \\"\\", {this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies, resolvedCallbacks: $resolvedCallbacks})
+            \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies, resolvedCallbacks: $resolvedCallbacks})
             YIELD value AS this_acted_in0_relationship_actors0_edge
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
