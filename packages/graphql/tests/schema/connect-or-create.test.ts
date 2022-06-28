@@ -493,6 +493,8 @@ describe("Connect Or Create", () => {
             input ActedInUpdateInput {
               characterName: String
               screentime: Int
+              screentime_DECREMENT: Int
+              screentime_INCREMENT: Int
             }
 
             input ActedInWhere {
