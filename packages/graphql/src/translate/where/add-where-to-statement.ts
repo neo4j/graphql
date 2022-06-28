@@ -329,28 +329,9 @@ function createRelationProperty({
         context,
     });
 
-    // TODO: improve this, shouldn't use a root query
     subquery.where(...mappedProperties);
 
-    return CypherBuilder.and(exists, listPredicate); // NESTED WHERE HERE
-
-    // ANY(this_genres IN [(this)-[:IN_GENRE]->(this_genres:Genre) | this_genres] WHERE this_genres.name = $this_genres_name)
-
-    // if (value === null) {
-    //     res.clauses.push(`${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
-    //     return res;
-    // }
-
-    // exists
-
-    // let resultStr = [
-    //     `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
-    //     `AND ${listPredicate}(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}${labels}) | ${param}] INNER_WHERE `,
-    // ].join(" ");
-
-    // console.log(relationField);
-
-    // TODO: predicates (NONE, ALL...)
+    return CypherBuilder.and(exists, listPredicate);
 }
 
 function createConnectionProperty({
@@ -376,19 +357,11 @@ function createConnectionProperty({
 
     const operations = Object.entries(nodeEntries).map((entry) => {
         const refNode = context.nodes.find((x) => x.name === entry[0]) as Node;
-        const relationshipContext = context.relationships.find(
-            (x) => x.name === connectionField.relationshipTypeName
-        ) as Relationship;
+        // const relationshipContext = context.relationships.find(
+        //     (x) => x.name === connectionField.relationshipTypeName
+        // ) as Relationship;
 
         const relationField = connectionField.relationship;
-        //         if (value === null) {
-        //             res.clauses.push(
-        //                 `${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}[:${
-        //                     connectionField.relationship.type
-        //                 }]${outStr}(${labels}))`
-        //             );
-        //             return;
-        //         }
 
         const childNode = new CypherBuilder.Node({ labels: refNode.getLabels(context) });
         const relationship = new CypherBuilder.Relationship({
@@ -443,75 +416,14 @@ function createConnectionProperty({
             context,
         });
 
-        // TODO: improve this, shouldn't use a root query
         subquery.where(...mappedProperties);
 
         return CypherBuilder.and(exists, listPredicate);
-        //         let resultStr = [
-        //             `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
-        //             `AND ${listPredicate}(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${thisParam}${labels})`,
-        //             ` | { node: ${thisParam}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
-        //         ].join(" ");
     });
 
     return operations.reduce((prev, current) => {
         return CypherBuilder.and(prev, current);
     });
-
-    //     Object.entries(nodeEntries).forEach((entry) => {
-    //         const refNode = context.nodes.find((x) => x.name === entry[0]) as Node;
-    //         const relationship = context.relationships.find(
-    //             (x) => x.name === connectionField.relationshipTypeName
-    //         ) as Relationship;
-    //         const thisParam = `${param}_${refNode.name}`;
-    //         const relationshipVariable = `${thisParam}_${connectionField.relationshipTypeName}`;
-    //         const inStr = connectionField.relationship.direction === "IN" ? "<-" : "-";
-    //         const outStr = connectionField.relationship.direction === "OUT" ? "->" : "-";
-    //         const labels = refNode.getLabelString(context);
-    //         const collectedMap = `${thisParam}_map`;
-    //         if (value === null) {
-    //             res.clauses.push(
-    //                 `${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}[:${
-    //                     connectionField.relationship.type
-    //                 }]${outStr}(${labels}))`
-    //             );
-    //             return;
-    //         }
-    //         let resultStr = [
-    //             `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
-    //             `AND ${listPredicate}(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${thisParam}${labels})`,
-    //             ` | { node: ${thisParam}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
-    //         ].join(" ");
-    //         const parameterPrefix = recursing
-    //             ? `${chainStr || varName}_${context.resolveTree.name}.where.${key}`
-    //             : `${varName}_${context.resolveTree.name}.where.${key}`;
-    //         const connectionWhere = createConnectionWhereAndParams({
-    //             whereInput: entry[1] as any,
-    //             context,
-    //             node: refNode,
-    //             nodeVariable: `${collectedMap}.node`,
-    //             relationship,
-    //             relationshipVariable: `${collectedMap}.relationship`,
-    //             parameterPrefix,
-    //             listPredicates: [listPredicate],
-    //         });
-    //         resultStr += connectionWhere[0];
-    //         resultStr += ")"; // close ALL
-    //         res.clauses.push(resultStr);
-    //         const whereKeySuffix = operator ? `_${operator}` : "";
-    //         const resolveTreeParams = recursing
-    //             ? {
-    //                   [`${chainStr || varName}_${context.resolveTree.name}`]: {
-    //                       where: { [`${connectionField.fieldName}${whereKeySuffix}`]: connectionWhere[1] },
-    //                   },
-    //               }
-    //             : { [`${varName}_${context.resolveTree.name}`]: context.resolveTree.args };
-    //         res.params = {
-    //             ...res.params,
-    //             ...resolveTreeParams,
-    //         };
-    //     });
-    //     return res;
 }
 
 function mapConnectionProperties({
@@ -577,7 +489,7 @@ function createAggregateProperty({
 
         const aggregateWhereAndParams = createAggregateWhereAndParams({
             node: refNode,
-            chainStr: "", //param,
+            chainStr: "",
             context,
             field: relationField,
             varName,
@@ -587,14 +499,6 @@ function createAggregateProperty({
 
         return aggregateWhereAndParams;
     });
-
-    // if (aggregateWhereAndParams[0]) {
-    //     console.log(aggregateWhereAndParams);
-    //     // res.clauses.push(aggregateWhereAndParams[0]);
-    //     // res.params = { ...res.params, ...aggregateWhereAndParams[1] };
-    // }
-
-    //     return res;
 
     return aggregateStatement;
 }
