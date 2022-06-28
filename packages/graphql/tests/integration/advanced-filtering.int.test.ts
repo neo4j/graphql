@@ -1312,7 +1312,7 @@ describe("Advanced Filtering", () => {
                 }
             });
 
-            test.only("should find using equality on relationship using connection", async () => {
+            test("should find using equality on relationship using connection", async () => {
                 const session = driver.session();
                 const typeDefs = `
                         type Movie {

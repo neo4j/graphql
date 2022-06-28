@@ -506,11 +506,26 @@ function mapConnectionProperties({
     }, {});
 
     // SAME with relationship (edge)
-    return mapAllProperties({
+    const mappedPropertiesNode = mapAllProperties({
         whereInput: parsedProperties,
         node,
         targetElement: targetVariable,
         context,
     });
-    return [];
+
+    const edgeProperties = (whereInput.edge || {}) as Record<string, any>;
+
+    const parsedEdgeProperties = Object.entries(edgeProperties).reduce((acc, [key, value]) => {
+        acc[`relationship.${key}`] = value;
+        return acc;
+    }, {});
+
+    const mappedPropertiesEdge = mapAllProperties({
+        whereInput: parsedEdgeProperties,
+        node,
+        targetElement: targetVariable,
+        context,
+    });
+
+    return [...mappedPropertiesNode, ...mappedPropertiesEdge];
 }
