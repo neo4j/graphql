@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Query, Relationship, Node } from "../CypherBuilder";
+import { Query, Relationship, Node, Variable } from "../CypherBuilder";
 import { CypherContext } from "../CypherContext";
 import { MatchPattern } from "../MatchPattern";
 
@@ -48,13 +48,18 @@ type ListPredicateName = "ANY" | "NONE" | "ALL" | "SINGLE";
 
 export class ListPredicate extends PredicateFunction {
     private matchPattern: MatchPattern<Relationship>;
-    private matchTarget: Node;
+    private matchTarget: Node | Variable;
 
     private innerStatement: Query | undefined;
 
     private predicate: ListPredicateName;
 
-    constructor(predicate: ListPredicateName, pattern: MatchPattern<Relationship>, target: Node, query?: Query) {
+    constructor(
+        predicate: ListPredicateName,
+        pattern: MatchPattern<Relationship>,
+        target: Node | Variable,
+        query?: Query
+    ) {
         super();
         this.matchPattern = pattern;
         this.matchTarget = target;
@@ -65,14 +70,21 @@ export class ListPredicate extends PredicateFunction {
 
     getCypher(context: CypherContext): string {
         const matchPatternCypher = this.matchPattern.getCypher(context);
-        const relationshipTargetVariable = context.getVariableId(this.matchTarget);
+        const targetVariableId = context.getVariableId(this.matchTarget);
+
+        let projectionVariable: string;
+        if (this.matchTarget instanceof Node) {
+            projectionVariable = targetVariableId;
+        } else {
+            projectionVariable = this.matchTarget.getCypher(context);
+        }
 
         let innerQuery = "";
         if (this.innerStatement) {
             innerQuery = this.innerStatement.getCypher(context); // TODO: this is a hack, should be part of AST
         }
 
-        return `${this.predicate}(${relationshipTargetVariable} IN [${matchPatternCypher} | ${relationshipTargetVariable}]
+        return `${this.predicate}(${targetVariableId} IN [${matchPatternCypher} | ${projectionVariable}]
             ${innerQuery})`;
     }
 }
@@ -81,18 +93,18 @@ export function exists(pattern: MatchPattern<Relationship>): ExistsPredicate {
     return new ExistsPredicate(pattern);
 }
 
-export function any(pattern: MatchPattern<Relationship>, target: Node, query?: Query): ListPredicate {
+export function any(pattern: MatchPattern<Relationship>, target: Node | Variable, query?: Query): ListPredicate {
     return new ListPredicate("ANY", pattern, target, query);
 }
 
-export function none(pattern: MatchPattern<Relationship>, target: Node, query?: Query): ListPredicate {
+export function none(pattern: MatchPattern<Relationship>, target: Node | Variable, query?: Query): ListPredicate {
     return new ListPredicate("NONE", pattern, target, query);
 }
 
-export function single(pattern: MatchPattern<Relationship>, target: Node, query?: Query): ListPredicate {
+export function single(pattern: MatchPattern<Relationship>, target: Node | Variable, query?: Query): ListPredicate {
     return new ListPredicate("SINGLE", pattern, target, query);
 }
 
-export function all(pattern: MatchPattern<Relationship>, target: Node, query?: Query): ListPredicate {
+export function all(pattern: MatchPattern<Relationship>, target: Node | Variable, query?: Query): ListPredicate {
     return new ListPredicate("ALL", pattern, target, query);
 }

@@ -17,14 +17,15 @@
  * limitations under the License.
  */
 
+import { Variable } from "../CypherBuilder";
 import { CypherContext } from "../CypherContext";
 import { MatchableElement } from "../MatchPattern";
 import { Param } from "../references/Param";
 import { PredicateFunction } from "./predicate-functions";
+import { WhereInput } from "./Where";
 import { WhereClause } from "./where-clauses";
 
 type Params = Record<string, Param<any> | WhereClause>;
-type WhereInput = Array<[MatchableElement, Params] | WhereOperator | PredicateFunction>;
 
 type Operation = "OR" | "AND" | "NOT";
 // TODO: make it as an abstract class
@@ -55,7 +56,7 @@ export class WhereOperator {
     }
 
     // TODO: move somewhere else
-    protected composeWhere(context: CypherContext, input: [MatchableElement, Params]): string {
+    protected composeWhere(context: CypherContext, input: [MatchableElement | Variable, Params]): string {
         const [matchableElement, params] = input;
         const nodeAlias = context.getVariableId(matchableElement);
 

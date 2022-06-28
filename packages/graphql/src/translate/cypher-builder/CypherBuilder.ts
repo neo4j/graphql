@@ -27,6 +27,7 @@ export { Match } from "./statements/Match";
 export { Node, NamedNode } from "./references/Node";
 export { Param, RawParam } from "./references/Param";
 export { Relationship } from "./references/Relationship";
+export { Variable } from "./references/Variable";
 
 export { CypherResult } from "./types";
 

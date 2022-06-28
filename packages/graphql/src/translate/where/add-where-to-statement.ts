@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { GraphQLWhereArg, Context, RelationField } from "../../types";
-import { Node } from "../../classes";
+import { GraphQLWhereArg, Context, RelationField, ConnectionField } from "../../types";
+import { Node, Relationship } from "../../classes";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { MatchableElement } from "../cypher-builder/MatchPattern";
@@ -26,8 +26,8 @@ import { WhereOperator } from "../cypher-builder/statements/where-operators";
 import { whereRegEx, WhereRegexGroups } from "./utils";
 import { PredicateFunction } from "../cypher-builder/statements/predicate-functions";
 
-type CypherPropertyValue<T extends MatchableElement> =
-    | [T, Record<string, CypherBuilder.Param | CypherBuilder.WhereClause>]
+type CypherPropertyValue =
+    | [MatchableElement | CypherBuilder.Variable, Record<string, CypherBuilder.Param | CypherBuilder.WhereClause>]
     | WhereOperator
     | PredicateFunction;
 
@@ -56,7 +56,7 @@ export function addWhereToStatement<T extends MatchableElement>({
     return matchStatement;
 }
 
-function mapAllProperties<T extends MatchableElement>({
+function mapAllProperties({
     whereInput,
     node,
     targetElement,
@@ -64,10 +64,10 @@ function mapAllProperties<T extends MatchableElement>({
 }: {
     whereInput: Record<string, any>;
     node: Node;
-    targetElement: T;
+    targetElement: MatchableElement | CypherBuilder.Variable;
     context: Context;
-}): Array<CypherPropertyValue<T>> {
-    const resultArray: Array<CypherPropertyValue<T>> = [];
+}): Array<CypherPropertyValue> {
+    const resultArray: Array<CypherPropertyValue> = [];
     const whereFields = Object.entries(whereInput);
 
     const leafProperties = whereFields.filter(([key, value]) => key !== "OR" && key !== "AND");
@@ -112,7 +112,7 @@ function mapAllProperties<T extends MatchableElement>({
     return resultArray;
 }
 
-function mapProperties<T extends MatchableElement>({
+function mapProperties({
     properties,
     node,
     targetElement,
@@ -120,9 +120,9 @@ function mapProperties<T extends MatchableElement>({
 }: {
     properties: Array<[string, any]>;
     node: Node;
-    targetElement: T;
+    targetElement: MatchableElement | CypherBuilder.Variable;
     context: Context;
-}): Array<CypherPropertyValue<T>> {
+}): Array<CypherPropertyValue> {
     return properties.map(([key, value]) => {
         const match = whereRegEx.exec(key);
 
@@ -147,6 +147,18 @@ function mapProperties<T extends MatchableElement>({
                 isNot,
             });
         }
+
+        const connectionField = node.connectionFields.find((x) => x.fieldName === fieldName);
+        if (connectionField) {
+            return createConnectionProperty({
+                value,
+                connectionField,
+                context,
+                parentNode: targetElement as CypherBuilder.Node,
+                operator,
+            });
+        }
+
         return createPrimitiveProperty({
             targetElement,
             operator,
@@ -156,17 +168,17 @@ function mapProperties<T extends MatchableElement>({
     });
 }
 
-function createPrimitiveProperty<T extends MatchableElement>({
+function createPrimitiveProperty({
     targetElement,
     operator,
     dbFieldName,
     value,
 }: {
-    targetElement: T;
+    targetElement: MatchableElement | CypherBuilder.Variable;
     operator: string | undefined;
     dbFieldName: string;
     value: any;
-}): CypherPropertyValue<T> {
+}): CypherPropertyValue {
     const param = new CypherBuilder.Param(value);
     if (operator) {
         let whereClause: CypherBuilder.WhereClause;
@@ -230,7 +242,7 @@ function createRelationProperty({
     operator: string | undefined;
     value: GraphQLWhereArg;
     isNot: boolean;
-}) {
+}): WhereOperator | PredicateFunction {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
 
@@ -312,4 +324,193 @@ function createRelationProperty({
     // console.log(relationField);
 
     // TODO: predicates (NONE, ALL...)
+}
+
+function createConnectionProperty({
+    connectionField,
+    value,
+    context,
+    parentNode,
+    operator,
+}: {
+    connectionField: ConnectionField;
+    value: any;
+    context: Context;
+    parentNode: CypherBuilder.Node;
+    operator: string | undefined;
+}): WhereOperator {
+    let nodeEntries: Record<string, any>;
+
+    if (!connectionField?.relationship.union) {
+        nodeEntries = { [connectionField.relationship.typeMeta.name]: value };
+    } else {
+        nodeEntries = value;
+    }
+
+    const operations = Object.entries(nodeEntries).map((entry) => {
+        const refNode = context.nodes.find((x) => x.name === entry[0]) as Node;
+        const relationshipContext = context.relationships.find(
+            (x) => x.name === connectionField.relationshipTypeName
+        ) as Relationship;
+
+        const relationField = connectionField.relationship;
+        //         if (value === null) {
+        //             res.clauses.push(
+        //                 `${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}[:${
+        //                     connectionField.relationship.type
+        //                 }]${outStr}(${labels}))`
+        //             );
+        //             return;
+        //         }
+
+        const childNode = new CypherBuilder.Node({ labels: refNode.getLabels(context) });
+        const relationship = new CypherBuilder.Relationship({
+            source: relationField.direction === "IN" ? childNode : parentNode,
+            target: relationField.direction === "IN" ? parentNode : childNode,
+            type: relationField.type,
+        });
+
+        const matchPattern1 = new CypherBuilder.MatchPattern(relationship, {
+            source: relationField.direction === "IN" ? { variable: false } : { labels: false },
+            target: relationField.direction === "IN" ? { labels: false } : { variable: false },
+            relationship: { variable: false },
+        });
+        const exists = CypherBuilder.exists(matchPattern1);
+
+        const matchPattern2 = new CypherBuilder.MatchPattern(relationship, {
+            source: relationField.direction === "IN" ? { variable: true } : { labels: false },
+            target: relationField.direction === "IN" ? { labels: false } : { variable: true },
+            relationship: { variable: true },
+        });
+
+        const subquery = new CypherBuilder.Query();
+
+        // TODO: remove duplicate
+        let listPredicate: PredicateFunction;
+        const projectionVariable = new CypherBuilder.Variable({
+            node: childNode,
+            relationship,
+        });
+
+        switch (operator) {
+            case "ALL":
+                listPredicate = CypherBuilder.all(matchPattern2, projectionVariable, subquery);
+                break;
+            case "NOT":
+            case "NONE":
+                listPredicate = CypherBuilder.none(matchPattern2, projectionVariable, subquery);
+                break;
+            case "SINGLE":
+                listPredicate = CypherBuilder.single(matchPattern2, projectionVariable, subquery);
+                break;
+            case "SOME":
+            default:
+                listPredicate = CypherBuilder.any(matchPattern2, projectionVariable, subquery);
+                break;
+        }
+
+        const mappedProperties = mapConnectionProperties({
+            whereInput: value,
+            targetVariable: projectionVariable,
+            node: refNode,
+            context,
+        });
+
+        // TODO: improve this, shouldn't use a root query
+        subquery.where(...mappedProperties);
+
+        return CypherBuilder.and(exists, listPredicate);
+        //         let resultStr = [
+        //             `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
+        //             `AND ${listPredicate}(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${thisParam}${labels})`,
+        //             ` | { node: ${thisParam}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
+        //         ].join(" ");
+    });
+
+    return operations.reduce((prev, current) => {
+        return CypherBuilder.and(prev, current);
+    });
+
+    //     Object.entries(nodeEntries).forEach((entry) => {
+    //         const refNode = context.nodes.find((x) => x.name === entry[0]) as Node;
+    //         const relationship = context.relationships.find(
+    //             (x) => x.name === connectionField.relationshipTypeName
+    //         ) as Relationship;
+    //         const thisParam = `${param}_${refNode.name}`;
+    //         const relationshipVariable = `${thisParam}_${connectionField.relationshipTypeName}`;
+    //         const inStr = connectionField.relationship.direction === "IN" ? "<-" : "-";
+    //         const outStr = connectionField.relationship.direction === "OUT" ? "->" : "-";
+    //         const labels = refNode.getLabelString(context);
+    //         const collectedMap = `${thisParam}_map`;
+    //         if (value === null) {
+    //             res.clauses.push(
+    //                 `${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}[:${
+    //                     connectionField.relationship.type
+    //                 }]${outStr}(${labels}))`
+    //             );
+    //             return;
+    //         }
+    //         let resultStr = [
+    //             `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
+    //             `AND ${listPredicate}(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${thisParam}${labels})`,
+    //             ` | { node: ${thisParam}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
+    //         ].join(" ");
+    //         const parameterPrefix = recursing
+    //             ? `${chainStr || varName}_${context.resolveTree.name}.where.${key}`
+    //             : `${varName}_${context.resolveTree.name}.where.${key}`;
+    //         const connectionWhere = createConnectionWhereAndParams({
+    //             whereInput: entry[1] as any,
+    //             context,
+    //             node: refNode,
+    //             nodeVariable: `${collectedMap}.node`,
+    //             relationship,
+    //             relationshipVariable: `${collectedMap}.relationship`,
+    //             parameterPrefix,
+    //             listPredicates: [listPredicate],
+    //         });
+    //         resultStr += connectionWhere[0];
+    //         resultStr += ")"; // close ALL
+    //         res.clauses.push(resultStr);
+    //         const whereKeySuffix = operator ? `_${operator}` : "";
+    //         const resolveTreeParams = recursing
+    //             ? {
+    //                   [`${chainStr || varName}_${context.resolveTree.name}`]: {
+    //                       where: { [`${connectionField.fieldName}${whereKeySuffix}`]: connectionWhere[1] },
+    //                   },
+    //               }
+    //             : { [`${varName}_${context.resolveTree.name}`]: context.resolveTree.args };
+    //         res.params = {
+    //             ...res.params,
+    //             ...resolveTreeParams,
+    //         };
+    //     });
+    //     return res;
+}
+
+function mapConnectionProperties({
+    whereInput,
+    node,
+    targetVariable,
+    context,
+}: {
+    whereInput: Record<string, any>;
+    node: Node;
+    targetVariable: CypherBuilder.Variable;
+    context: Context;
+}): Array<CypherPropertyValue> {
+    const nodeProperties = (whereInput.node || {}) as Record<string, any>;
+
+    const parsedProperties = Object.entries(nodeProperties).reduce((acc, [key, value]) => {
+        acc[`node.${key}`] = value;
+        return acc;
+    }, {});
+
+    // SAME with relationship (edge)
+    return mapAllProperties({
+        whereInput: parsedProperties,
+        node,
+        targetElement: targetVariable,
+        context,
+    });
+    return [];
 }
