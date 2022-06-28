@@ -108,7 +108,7 @@ describe("Interface Relationships - Create connect", () => {
             SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             UNION
             	WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect0_node:Series)
@@ -119,10 +119,12 @@ describe("Interface Relationships - Create connect", () => {
             SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN this0
             }
+            WITH this0
+            CALL {
             WITH this0
             CALL {
             WITH this0
@@ -133,7 +135,8 @@ describe("Interface Relationships - Create connect", () => {
             MATCH (this0)-[:ACTED_IN]->(this0_Series:Series)
             RETURN { __resolveType: \\"Series\\", episodes: this0_Series.episodes, title: this0_Series.title } AS actedIn
             }
-            WITH this0, collect(actedIn) AS actedIn
+            RETURN collect(actedIn) AS actedIn
+            }
             RETURN [
             this0 { .name, actedIn: actedIn }] AS data"
         `);
@@ -145,7 +148,8 @@ describe("Interface Relationships - Create connect", () => {
                 \\"this0_actedIn_connect0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

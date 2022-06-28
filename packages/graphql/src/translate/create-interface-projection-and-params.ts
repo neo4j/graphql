@@ -25,7 +25,7 @@ import filterInterfaceNodes from "../utils/filter-interface-nodes";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
-import { getRelationshipDirection } from "./cypher-builder/get-relationship-direction";
+import { getRelationshipDirection } from "../utils/get-relationship-direction";
 import createElementWhereAndParams from "./where/create-element-where-and-params";
 
 function createInterfaceProjectionAndParams({
@@ -76,7 +76,7 @@ function createInterfaceProjectionAndParams({
         });
         if (allowAndParams[0]) {
             globalParams = { ...globalParams, ...allowAndParams[1] };
-            subquery.push(`CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+            subquery.push(`CALL apoc.util.validate(NOT (${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         }
 
         const whereStrs: string[] = [];
@@ -184,6 +184,7 @@ function createInterfaceProjectionAndParams({
         }
 
         if (recurse[2]?.interfaceFields?.length) {
+            const prevRelationshipFields: string[] = [];
             recurse[2].interfaceFields.forEach((interfaceResolveTree) => {
                 const relationshipField = refNode.relationFields.find(
                     (x) => x.fieldName === interfaceResolveTree.name
@@ -193,7 +194,9 @@ function createInterfaceProjectionAndParams({
                     field: relationshipField,
                     context,
                     nodeVariable: param,
+                    withVars: prevRelationshipFields,
                 });
+                prevRelationshipFields.push(relationshipField.dbPropertyName || relationshipField.fieldName);
                 subquery.push(interfaceProjection.cypher);
                 params = { ...params, ...interfaceProjection.params };
             });
@@ -207,10 +210,16 @@ function createInterfaceProjectionAndParams({
 
         return subquery.join("\n");
     });
-    const interfaceProjection = [`WITH ${fullWithVars.join(", ")}`, "CALL {", subqueries.join("\nUNION\n"), "}"];
+    let interfaceProjection = [`WITH ${fullWithVars.join(", ")}`, "CALL {", subqueries.join("\nUNION\n"), "}"];
 
     if (field.typeMeta.array) {
-        interfaceProjection.push(`WITH ${fullWithVars.join(", ")}, collect(${field.fieldName}) AS ${field.fieldName}`);
+        interfaceProjection = [
+            `WITH ${fullWithVars.join(", ")}`,
+            "CALL {",
+            ...interfaceProjection,
+            `RETURN collect(${field.fieldName}) AS ${field.fieldName}`,
+            "}",
+        ];
     }
 
     if (Object.keys(whereArgs).length) {

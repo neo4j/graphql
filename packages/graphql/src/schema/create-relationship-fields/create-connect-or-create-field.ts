@@ -21,6 +21,7 @@ import { SchemaComposer, InputTypeComposer } from "graphql-compose";
 import { Node } from "../../classes";
 import { RelationField } from "../../types";
 import { upperFirst } from "../../utils/upper-first";
+import { ensureNonEmptyInput } from "../ensure-non-empty-input";
 import { objectFieldsToCreateInputFields } from "../to-compose";
 
 export function createConnectOrCreateField({
@@ -119,8 +120,14 @@ function getOnCreateFields({
     schemaComposer: SchemaComposer;
 }): { node: string } | { node: string; edge: string } {
     const nodeCreateInput = schemaComposer.getOrCreateITC(`${node.name}OnCreateInput`, (tc) => {
-        const nodeFields = objectFieldsToCreateInputFields([...node.primitiveFields, ...node.scalarFields], true);
+        const nodeFields = objectFieldsToCreateInputFields([
+            ...node.primitiveFields,
+            ...node.scalarFields,
+            ...node.pointFields,
+            ...node.temporalFields,
+        ]);
         tc.addFields(nodeFields);
+        ensureNonEmptyInput(schemaComposer, tc);
     });
     const nodeCreateInputFieldName = `${nodeCreateInput.getTypeName()}!`;
 

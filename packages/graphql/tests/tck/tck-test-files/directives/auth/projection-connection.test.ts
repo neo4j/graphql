@@ -80,11 +80,11 @@ describe("Cypher Auth Projection On Connections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
             WITH this
             MATCH (this)-[this_has_post_relationship:HAS_POST]->(this_post:Post)
-            CALL apoc.util.validate(NOT(EXISTS((this_post)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (exists((this_post)<-[:HAS_POST]-(:User)) AND any(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { content: this_post.content } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS postsConnection
             }
@@ -129,15 +129,15 @@ describe("Cypher Auth Projection On Connections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
             WITH this
             MATCH (this)-[this_has_post_relationship:HAS_POST]->(this_post:Post)
-            CALL apoc.util.validate(NOT(EXISTS((this_post)<-[:HAS_POST]-(:User)) AND ANY(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (exists((this_post)<-[:HAS_POST]-(:User)) AND any(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
             WITH this_post
             MATCH (this_post)<-[this_post_has_post_relationship:HAS_POST]-(this_post_user:User)
-            CALL apoc.util.validate(NOT(this_post_user.id IS NOT NULL AND this_post_user.id = $this_post_user_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (this_post_user.id IS NOT NULL AND this_post_user.id = $this_post_user_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { name: this_post_user.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS creatorConnection
             }

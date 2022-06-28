@@ -37,7 +37,7 @@ import { stringifyObject } from "../utils/stringify-object";
 import { serializeParamsForApocRun, wrapInApocRunFirstColumn } from "../utils/apoc-run";
 import { FieldAggregationSchemaTypes } from "../../schema/aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
-import { getRelationshipDirection } from "../cypher-builder/get-relationship-direction";
+import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 
 const subqueryNodeAlias = "n";
 const subqueryRelationAlias = "r";
@@ -88,7 +88,7 @@ export function createFieldAggregation({
         node: referenceNode,
         context,
         recursing: true,
-        chainStr: `${nodeLabel}_${field.name}_${subqueryNodeAlias}`,
+        chainStr: `${nodeLabel}_${field.alias}_${subqueryNodeAlias}`,
     });
 
     const targetPattern = createTargetPattern({

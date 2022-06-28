@@ -91,11 +91,11 @@ describe("#601", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Stakeholder)
-            CALL apoc.util.validate(NOT(ANY(r IN [\\"view\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { documents: [ (this)-[:REQUIRES]->(this_documents:Document)  WHERE apoc.util.validatePredicate(NOT(ANY(r IN [\\"view\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_documents { customerContactConnection: apoc.cypher.runFirstColumn(\\"CALL {
+            CALL apoc.util.validate(NOT (any(r IN [\\"view\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            RETURN this { documents: [ (this)-[:REQUIRES]->(this_documents:Document)  WHERE apoc.util.validatePredicate(NOT (any(r IN [\\"view\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_documents { customerContactConnection: apoc.cypher.runFirstColumn(\\"CALL {
             WITH this_documents
             MATCH (this_documents)<-[this_documents_uploaded_relationship:UPLOADED]-(this_documents_customercontact:CustomerContact)
-            CALL apoc.util.validate(NOT(ANY(r IN [\\\\\\"view\\\\\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
+            CALL apoc.util.validate(NOT (any(r IN [\\\\\\"view\\\\\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
             WITH collect({ fileId: this_documents_uploaded_relationship.fileId, uploadedAt: apoc.date.convertFormat(toString(this_documents_uploaded_relationship.uploadedAt), \\\\\\"iso_zoned_date_time\\\\\\", \\\\\\"iso_offset_date_time\\\\\\") }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS customerContactConnection
             } RETURN customerContactConnection\\", { this_documents: this_documents, auth: $auth }, false) } ] } as this"

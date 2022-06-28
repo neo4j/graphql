@@ -95,7 +95,7 @@ describe("Relationship Properties Connect Cypher", () => {
             SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN this0
             }
@@ -115,7 +115,8 @@ describe("Relationship Properties Connect Cypher", () => {
                 \\"this0_actors_connect0_relationship_screenTime\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -166,7 +167,7 @@ describe("Relationship Properties Connect Cypher", () => {
             SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN this0
             }
@@ -187,7 +188,8 @@ describe("Relationship Properties Connect Cypher", () => {
                 \\"this0_actors_connect0_relationship_screenTime\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -229,7 +231,7 @@ describe("Relationship Properties Connect Cypher", () => {
             SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             WITH this
             CALL {
@@ -247,7 +249,8 @@ describe("Relationship Properties Connect Cypher", () => {
                 \\"this_connect_actors0_relationship_screenTime\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -293,7 +296,7 @@ describe("Relationship Properties Connect Cypher", () => {
             SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             WITH this
             CALL {
@@ -312,7 +315,8 @@ describe("Relationship Properties Connect Cypher", () => {
                 \\"this_connect_actors0_relationship_screenTime\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

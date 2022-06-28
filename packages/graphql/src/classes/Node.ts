@@ -40,8 +40,10 @@ import type {
 import Exclude from "./Exclude";
 import { GraphElement, GraphElementConstructor } from "./GraphElement";
 import { NodeDirective } from "./NodeDirective";
+import { DecodedGlobalId, fromGlobalId, toGlobalId } from "../utils/global-ids";
 import { QueryOptionsDirective } from "./QueryOptionsDirective";
 import { upperFirst } from "../utils/upper-first";
+import { NodeAuth } from "./NodeAuth";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -65,6 +67,9 @@ export interface NodeConstructor extends GraphElementConstructor {
     nodeDirective?: NodeDirective;
     description?: string;
     queryOptionsDirective?: QueryOptionsDirective;
+    isGlobalNode?: boolean;
+    globalIdField?: string;
+    globalIdFieldIsInt?: boolean;
 }
 
 type MutableField =
@@ -87,7 +92,7 @@ type AuthableField =
     | PointField
     | CypherField;
 
-type ConstrainableField = PrimitiveField | TemporalField | PointField;
+type ConstrainableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField | PointField;
 
 export type RootTypeFieldNames = {
     create: string;
@@ -95,11 +100,27 @@ export type RootTypeFieldNames = {
     update: string;
     delete: string;
     aggregate: string;
+    subscribe: {
+        created: string;
+        updated: string;
+        deleted: string;
+    };
+};
+
+export type AggregateTypeNames = {
+    selection: string;
+    input: string;
 };
 
 export type MutationResponseTypeNames = {
     create: string;
     update: string;
+};
+
+export type SubscriptionEvents = {
+    create: string;
+    update: string;
+    delete: string;
 };
 
 class Node extends GraphElement {
@@ -114,10 +135,14 @@ class Node extends GraphElement {
     public exclude?: Exclude;
     public nodeDirective?: NodeDirective;
     public fulltextDirective?: FullText;
-    public auth?: Auth;
+    public auth?: NodeAuth;
     public description?: string;
     public queryOptions?: QueryOptionsDirective;
+    public singular: string;
     public plural: string;
+    public isGlobalNode: boolean | undefined;
+    private _idField: string | undefined;
+    private _idFieldIsInt?: boolean;
 
     constructor(input: NodeConstructor) {
         super(input);
@@ -132,21 +157,13 @@ class Node extends GraphElement {
         this.exclude = input.exclude;
         this.nodeDirective = input.nodeDirective;
         this.fulltextDirective = input.fulltextDirective;
-        this.auth = input.auth;
+        this.auth = input.auth ? new NodeAuth(input.auth) : undefined;
         this.queryOptions = input.queryOptionsDirective;
+        this.isGlobalNode = input.isGlobalNode;
+        this._idField = input.globalIdField;
+        this._idFieldIsInt = input.globalIdFieldIsInt;
+        this.singular = this.generateSingular();
         this.plural = this.generatePlural();
-    }
-
-    private generatePlural(): string {
-        const name = this.nodeDirective?.plural || this.name;
-
-        const re = /^(_+).+/;
-        const match = re.exec(name);
-        const leadingUnderscores = match?.[1] || "";
-
-        const plural = this.nodeDirective?.plural ? camelcase(name) : pluralize(camelcase(name));
-
-        return `${leadingUnderscores}${plural}`;
     }
 
     // Fields you can set in a create or update mutation
@@ -179,11 +196,21 @@ class Node extends GraphElement {
     }
 
     public get constrainableFields(): ConstrainableField[] {
-        return [...this.primitiveFields, ...this.temporalFields, ...this.pointFields];
+        return [
+            ...this.primitiveFields,
+            ...this.scalarFields,
+            ...this.enumFields,
+            ...this.temporalFields,
+            ...this.pointFields,
+        ];
     }
 
     public get uniqueFields(): ConstrainableField[] {
         return this.constrainableFields.filter((field) => field.unique);
+    }
+
+    private get pascalCaseSingular(): string {
+        return upperFirst(this.singular);
     }
 
     private get pascalCasePlural(): string {
@@ -199,6 +226,18 @@ class Node extends GraphElement {
             update: `update${pascalCasePlural}`,
             delete: `delete${pascalCasePlural}`,
             aggregate: `${this.plural}Aggregate`,
+            subscribe: {
+                created: `${this.singular}Created`,
+                updated: `${this.singular}Updated`,
+                deleted: `${this.singular}Deleted`,
+            },
+        };
+    }
+
+    public get aggregateTypeNames(): AggregateTypeNames {
+        return {
+            selection: `${this.name}AggregateSelection`,
+            input: `${this.name}AggregateSelectionInput`,
         };
     }
 
@@ -208,6 +247,26 @@ class Node extends GraphElement {
         return {
             create: `Create${pascalCasePlural}MutationResponse`,
             update: `Update${pascalCasePlural}MutationResponse`,
+        };
+    }
+
+    public get subscriptionEventTypeNames(): SubscriptionEvents {
+        const pascalCaseSingular = this.pascalCaseSingular;
+
+        return {
+            create: `${pascalCaseSingular}CreatedEvent`,
+            update: `${pascalCaseSingular}UpdatedEvent`,
+            delete: `${pascalCaseSingular}DeletedEvent`,
+        };
+    }
+
+    public get subscriptionEventPayloadFieldNames(): SubscriptionEvents {
+        const pascalCaseSingular = this.pascalCaseSingular;
+
+        return {
+            create: `created${pascalCaseSingular}`,
+            update: `updated${pascalCaseSingular}`,
+            delete: `deleted${pascalCaseSingular}`,
         };
     }
 
@@ -221,6 +280,44 @@ class Node extends GraphElement {
 
     public getMainLabel(): string {
         return this.nodeDirective?.label || this.name;
+    }
+
+    public getGlobalIdField(): string {
+        if (!this.isGlobalNode || !this._idField) {
+            throw new Error(
+                "The 'global' property needs to be set to true on an @id directive before accessing the unique node id field"
+            );
+        }
+        return this._idField;
+    }
+
+    public toGlobalId(id: string): string {
+        const typeName = this.name;
+        const field = this.getGlobalIdField();
+        return toGlobalId({ typeName, field, id });
+    }
+
+    public fromGlobalId(relayId: string): DecodedGlobalId {
+        return fromGlobalId(relayId, this._idFieldIsInt);
+    }
+
+    private generateSingular(): string {
+        const singular = camelcase(this.name);
+
+        return `${this.leadingUnderscores(this.name)}${singular}`;
+    }
+
+    private generatePlural(): string {
+        const name = this.nodeDirective?.plural || this.name;
+        const plural = this.nodeDirective?.plural ? camelcase(name) : pluralize(camelcase(name));
+
+        return `${this.leadingUnderscores(name)}${plural}`;
+    }
+
+    private leadingUnderscores(name: string): string {
+        const re = /^(_+).+/;
+        const match = re.exec(name);
+        return match?.[1] || "";
     }
 }
 

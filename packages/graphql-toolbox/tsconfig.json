@@ -1,0 +1,21 @@
+{
+    "extends": "@tsconfig/create-react-app/tsconfig.json",
+    "compilerOptions": {
+        "declarationMap": false,
+        "sourceMap": false,
+        "noImplicitAny": false,
+        "rootDir": "src",
+        "baseUrl": ".",
+        "outDir": "dist",
+        "noEmit": false,
+        "paths": {
+            "@neo4j/graphql": ["../graphql/src"],
+            "@neo4j/introspector": ["../introspector/src"]
+        }
+    },
+    "include": ["src/**/*"],
+    "references": [
+        { "path": "../graphql/src/tsconfig.production.json" },
+        { "path": "../introspector/tsconfig.production.json" }
+    ]
+}

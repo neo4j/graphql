@@ -135,6 +135,11 @@ describe("Null", () => {
               names: [String!]!
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -158,8 +163,14 @@ describe("Null", () => {
 
             input MovieUpdateInput {
               actorCount: Int
+              actorCount_DECREMENT: Int
+              actorCount_INCREMENT: Int
               actorCounts: [Int!]
               averageRating: Float
+              averageRating_ADD: Float
+              averageRating_DIVIDE: Float
+              averageRating_MULTIPLY: Float
+              averageRating_SUBTRACT: Float
               averageRatings: [Float!]
               createdAt: DateTime
               createdAts: [DateTime!]
@@ -256,10 +267,24 @@ describe("Null", () => {
               names_NOT_INCLUDES: String
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
             }
 
             type Point {
@@ -285,6 +310,7 @@ describe("Null", () => {
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {

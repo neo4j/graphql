@@ -1,0 +1,17 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "rootDir": ".",
+        "baseUrl": ".",
+        "outDir": "dist",
+        "paths": {
+            "@neo4j/graphql": ["../graphql/src"],
+            "@neo4j/graphql-plugin-auth": ["../plugin/auth/graphql-plugin-auth/src"]
+        }
+    },
+    "include": ["src/**/*", "tests/**/*"],
+    "references": [
+        { "path": "../graphql/tsconfig.json" },
+        { "path": "../plugin/auth/graphql-plugin-auth/tsconfig.json" }
+    ]
+}

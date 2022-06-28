@@ -42,6 +42,7 @@ visit the [Contributing Guide](./CONTRIBUTING.md).
    interactions with the database
 3. [`@neo4j/introspector`](./packages/introspector) - Introspect schema from an existing Neo4j database
 4. [`@neo4j/graphql-plugin-auth`](./packages/graphql-plugin-auth) - Auth decode plugins for @neo4j/graphql
+5. [`@neo4j/graphql-toolbox`](./packages/graphql-toolbox) - Experiment with your Neo4j GraphQL API on Neo4j Desktop.
 
 ## Media
 

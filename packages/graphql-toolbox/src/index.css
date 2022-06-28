@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global settings for ALL CodeMirror editors */
+.CodeMirror {
+    height: 100%;
+    font-size: 1rem;
+    font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono,
+        Courier New;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
+
+.CodeMirror-hints {
+    font-size: 1rem;
+    font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono,
+        Courier New;
+    color: #282a36;
+}
+
+li.CodeMirror-hint-active {
+    background-color: #282a36;
+    color: #ffffff;
+}
+
+.code-mirror-disabled-state {
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+.whitespace-break-spaces {
+    white-space: break-spaces;
+}
+
+.max-width-db-name {
+    max-width: 12rem;
+}
+
+.pt-02 {
+    padding-top: 0.2rem;
+}

@@ -77,6 +77,11 @@ describe("Connect Or Create", () => {
               movies: [ActorMoviesDisconnectFieldInput!]
             }
 
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
+            }
+
             type ActorMovieMoviesAggregationSelection {
               count: Int!
               node: ActorMovieMoviesNodeAggregateSelection
@@ -267,6 +272,12 @@ describe("Connect Or Create", () => {
               name_STARTS_WITH: String
             }
 
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -313,9 +324,14 @@ describe("Connect Or Create", () => {
               title: String!
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOnCreateInput {
-              isan: String
-              title: String
+              isan: String!
+              title: String!
             }
 
             input MovieOptions {
@@ -369,6 +385,12 @@ describe("Connect Or Create", () => {
               title_STARTS_WITH: String
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
@@ -389,8 +411,10 @@ describe("Connect Or Create", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {
@@ -469,6 +493,8 @@ describe("Connect Or Create", () => {
             input ActedInUpdateInput {
               characterName: String
               screentime: Int
+              screentime_DECREMENT: Int
+              screentime_INCREMENT: Int
             }
 
             input ActedInWhere {
@@ -525,6 +551,11 @@ describe("Connect Or Create", () => {
 
             input ActorDisconnectInput {
               movies: [ActorMoviesDisconnectFieldInput!]
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
             }
 
             type ActorMovieMoviesAggregationSelection {
@@ -783,6 +814,12 @@ describe("Connect Or Create", () => {
               name_STARTS_WITH: String
             }
 
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -836,9 +873,14 @@ describe("Connect Or Create", () => {
               title: String!
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOnCreateInput {
-              isan: String
-              title: String
+              isan: String!
+              title: String!
             }
 
             input MovieOptions {
@@ -892,6 +934,12 @@ describe("Connect Or Create", () => {
               title_STARTS_WITH: String
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
@@ -912,8 +960,10 @@ describe("Connect Or Create", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {

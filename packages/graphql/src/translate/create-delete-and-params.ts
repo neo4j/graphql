@@ -144,7 +144,7 @@ function createDeleteAndParams({
                         const quote = insideDoWhen ? `\\"` : `"`;
                         res.strs.push(`WITH ${[...withVars, _varName].join(", ")}`);
                         res.strs.push(
-                            `CALL apoc.util.validate(NOT(${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                            `CALL apoc.util.validate(NOT (${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
                         );
                         res.params = { ...res.params, ...allowAuth[1] };
                     }
@@ -219,6 +219,7 @@ function createDeleteAndParams({
                         const metaObjectStr = createEventMetaObject({
                             event: "delete",
                             nodeVariable: "n",
+                            typename: refNode.name,
                         });
                         const reduceStr = `REDUCE(m=${META_CYPHER_VARIABLE}, n IN ${nodeToDelete} | m + ${metaObjectStr}) AS ${META_CYPHER_VARIABLE}`;
                         res.strs.push(

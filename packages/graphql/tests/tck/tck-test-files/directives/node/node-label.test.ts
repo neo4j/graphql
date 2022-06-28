@@ -164,7 +164,8 @@ describe("Label in Node directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"1\\"
+                \\"this0_id\\": \\"1\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -219,7 +220,8 @@ describe("Label in Node directive", () => {
                 \\"this0_id\\": \\"1\\",
                 \\"this0_actors0_node_name\\": \\"actor 1\\",
                 \\"this1_id\\": \\"2\\",
-                \\"this1_actors0_node_name\\": \\"actor 2\\"
+                \\"this1_actors0_node_name\\": \\"actor 2\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -250,7 +252,8 @@ describe("Label in Node directive", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"1\\",
-                \\"this_update_id\\": \\"2\\"
+                \\"this_update_id\\": \\"2\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -284,7 +287,7 @@ describe("Label in Node directive", () => {
             WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
             CALL apoc.do.when(this_actors0 IS NOT NULL, \\"
             SET this_actors0.name = $this_update_actors0_name
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
             YIELD value AS _
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -320,7 +323,8 @@ describe("Label in Node directive", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -354,7 +358,7 @@ describe("Label in Node directive", () => {
             			MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -362,7 +366,8 @@ describe("Label in Node directive", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_id\\": \\"1\\",
-                \\"this_connect_actors0_node_name\\": \\"Daniel\\"
+                \\"this_connect_actors0_node_name\\": \\"Daniel\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -394,7 +399,7 @@ describe("Label in Node directive", () => {
             FOREACH(_ IN CASE this_disconnect_actors0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actors0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -416,7 +421,8 @@ describe("Label in Node directive", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -511,7 +517,7 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE EXISTS((this)<-[:ACTED_IN]-(:\`Person\`)) AND ANY(this_actors IN [(this)<-[:ACTED_IN]-(this_actors:\`Person\`) | this_actors] WHERE this_actors.name = $this_actors_name)
+            WHERE exists((this)<-[:ACTED_IN]-(:\`Person\`)) AND any(this_actors IN [(this)<-[:ACTED_IN]-(this_actors:\`Person\`) | this_actors] WHERE this_actors.name = $this_actors_name)
             DETACH DELETE this"
         `);
 

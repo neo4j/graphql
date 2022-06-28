@@ -141,7 +141,8 @@ describe("Cypher Time", () => {
                     \\"second\\": 15,
                     \\"nanosecond\\": 555000000,
                     \\"timeZoneOffsetSeconds\\": -3600
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -177,7 +178,48 @@ describe("Cypher Time", () => {
                     \\"second\\": 40,
                     \\"nanosecond\\": 845512000,
                     \\"timeZoneOffsetSeconds\\": 23400
+                },
+                \\"resolvedCallbacks\\": {}
+            }"
+        `);
+    });
+
+    test("Create with HH:MM format", async () => {
+        const query = gql`
+            mutation {
+                createMovies(input: [{ time: "22:00" }]) {
+                    movies {
+                        time
+                    }
                 }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            CREATE (this0:Movie)
+            SET this0.time = $this0_time
+            RETURN this0
+            }
+            RETURN [
+            this0 { .time }] AS data"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this0_time\\": {
+                    \\"hour\\": 22,
+                    \\"minute\\": 0,
+                    \\"second\\": 0,
+                    \\"nanosecond\\": 0,
+                    \\"timeZoneOffsetSeconds\\": 0
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

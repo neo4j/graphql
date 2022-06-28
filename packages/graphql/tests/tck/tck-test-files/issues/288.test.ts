@@ -77,7 +77,8 @@ describe("#288", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_USERID\\": \\"userid\\",
-                \\"this0_COMPANYID\\": \\"companyid\\"
+                \\"this0_COMPANYID\\": \\"companyid\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -109,7 +110,8 @@ describe("#288", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_USERID\\": \\"userid\\",
-                \\"this_update_COMPANYID\\": \\"companyid2\\"
+                \\"this_update_COMPANYID\\": \\"companyid2\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

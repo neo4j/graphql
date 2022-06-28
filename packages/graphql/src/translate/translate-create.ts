@@ -25,12 +25,20 @@ import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import { filterTruthy } from "../utils/utils";
+import { CallbackBucket } from "../classes/CallbackBucket";
 
-export default function translateCreate({ context, node }: { context: Context; node: Node }): [string, any] {
+export default async function translateCreate({
+    context,
+    node,
+}: {
+    context: Context;
+    node: Node;
+}): Promise<[string, any]> {
     const { resolveTree } = context;
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
     const projectionWith: string[] = [];
+    const callbackBucket: CallbackBucket = new CallbackBucket(context);
 
     let connectionParams: any;
     let interfaceParams: any;
@@ -60,6 +68,7 @@ export default function translateCreate({ context, node }: { context: Context; n
                 withVars,
                 includeRelationshipValidation: true,
                 topLevelNodeVariable: varName,
+                callbackBucket,
             });
 
             create.push(`${createAndParams[0]}`);
@@ -101,7 +110,7 @@ export default function translateCreate({ context, node }: { context: Context; n
             varName: "REPLACE_ME",
         });
         if (projection[2]?.authValidateStrs?.length) {
-            projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
+            projAuth = `CALL apoc.util.validate(NOT (${projection[2].authValidateStrs.join(
                 " AND "
             )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
         }
@@ -146,6 +155,7 @@ export default function translateCreate({ context, node }: { context: Context; n
         }
 
         if (projection[2]?.interfaceFields?.length) {
+            const prevRelationshipFields: string[] = [];
             projection[2].interfaceFields.forEach((interfaceResolveTree) => {
                 const relationshipField = node.relationFields.find(
                     (x) => x.fieldName === interfaceResolveTree.name
@@ -155,8 +165,9 @@ export default function translateCreate({ context, node }: { context: Context; n
                     field: relationshipField,
                     context,
                     nodeVariable: "REPLACE_ME",
-                    withVars,
+                    withVars: [...withVars, ...prevRelationshipFields],
                 });
+                prevRelationshipFields.push(relationshipField.dbPropertyName || relationshipField.fieldName);
                 interfaceStrs.push(interfaceProjection.cypher);
                 if (!interfaceParams) interfaceParams = {};
                 interfaceParams = { ...interfaceParams, ...interfaceProjection.params };
@@ -209,18 +220,30 @@ export default function translateCreate({ context, node }: { context: Context; n
     const returnStatement = generateCreateReturnStatement(projectionStr, context.subscriptionsEnabled);
     const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
 
-    const cypher = filterTruthy([
+    let cypher = filterTruthy([
         `${createStrs.join("\n")}`,
         projectionWithStr,
         authCalls,
         ...replacedConnectionStrs,
         ...replacedInterfaceStrs,
         returnStatement,
-    ]);
+    ])
+        .filter(Boolean)
+        .join("\n");
+
+    let resolvedCallbacks = {};
+
+    ({ cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({ cypher }));
 
     return [
-        cypher.filter(Boolean).join("\n"),
-        { ...params, ...replacedProjectionParams, ...replacedConnectionParams, ...replacedInterfaceParams },
+        cypher,
+        {
+            ...params,
+            ...replacedProjectionParams,
+            ...replacedConnectionParams,
+            ...replacedInterfaceParams,
+            resolvedCallbacks,
+        },
     ];
 }
 

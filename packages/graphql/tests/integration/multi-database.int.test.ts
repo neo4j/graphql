@@ -28,13 +28,15 @@ describe("multi-database", () => {
     const id = generate({
         charset: "alphabetic",
     });
-    let MULTIDB_SUPPORT = true;
+    let MULTIDB_SUPPORT: boolean;
     const dbName = "non-default-db-name";
 
     beforeAll(async () => {
         driver = await neo4j();
 
-        try {
+        MULTIDB_SUPPORT = await driver.supportsMultiDb();
+
+        if (MULTIDB_SUPPORT) {
             // Create DB
             const createSession = driver.session();
             await createSession.writeTransaction((tx) => tx.run(`CREATE DATABASE \`${dbName}\``));
@@ -49,22 +51,6 @@ describe("multi-database", () => {
             const waitSession = driver.session({ database: dbName, bookmarks: writeSession.lastBookmark() });
             await waitSession.readTransaction((tx) => tx.run("MATCH (m:Movie) RETURN COUNT(m)"));
             await waitSession.close();
-        } catch (e) {
-            if (e instanceof Error) {
-                if (
-                    e.message.includes(
-                        "This is an administration command and it should be executed against the system database"
-                    ) ||
-                    e.message.includes("Unsupported administration command")
-                ) {
-                    // No multi-db support, so we skip tests
-                    MULTIDB_SUPPORT = false;
-                } else {
-                    throw e;
-                }
-            } else {
-                throw e;
-            }
         }
     });
 

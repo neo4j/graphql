@@ -114,8 +114,13 @@ function createDisconnectAndParams({
             subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
         }
 
-        const preAuth = [parentNode, relatedNode].reduce(
-            (result: Res, node, i) => {
+        const nodeMatrix: { node: Node; name: string }[] = [
+            { node: parentNode, name: parentVar },
+            { node: relatedNode, name: _varName },
+        ];
+
+        const preAuth = nodeMatrix.reduce(
+            (result: Res, { node, name }, i) => {
                 if (!node.auth) {
                     return result;
                 }
@@ -125,7 +130,7 @@ function createDisconnectAndParams({
                     operations: "DISCONNECT",
                     context,
                     escapeQuotes: Boolean(insideDoWhen),
-                    allow: { parentNode: node, varName: _varName, chainStr: `${_varName}${node.name}${i}_allow` },
+                    allow: { parentNode: node, varName: name, chainStr: `${name}${node.name}${i}_allow` },
                 });
 
                 if (!str) {
@@ -144,7 +149,7 @@ function createDisconnectAndParams({
             const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`WITH ${[...withVars, _varName, relVarName].join(", ")}`);
             subquery.push(
-                `CALL apoc.util.validate(NOT(${preAuth.disconnects.join(
+                `CALL apoc.util.validate(NOT (${preAuth.disconnects.join(
                     " AND "
                 )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
             );
@@ -312,14 +317,14 @@ function createDisconnectAndParams({
             const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`WITH ${[...withVars, _varName].join(", ")}`);
             subquery.push(
-                `CALL apoc.util.validate(NOT(${postAuth.disconnects.join(
+                `CALL apoc.util.validate(NOT (${postAuth.disconnects.join(
                     " AND "
                 )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
             );
             params = { ...params, ...postAuth.params };
         }
 
-        subquery.push("RETURN count(*)");
+        subquery.push("RETURN count(*) AS _");
 
         return { subquery: subquery.join("\n"), params };
     }

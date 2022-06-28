@@ -173,6 +173,11 @@ describe("Aggregations", () => {
               title: String
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -203,10 +208,18 @@ describe("Aggregations", () => {
               createdAt: DateTime
               id: ID
               imdbRating: Float
+              imdbRating_ADD: Float
+              imdbRating_DIVIDE: Float
+              imdbRating_MULTIPLY: Float
+              imdbRating_SUBTRACT: Float
               isbn: String
               screenTime: Duration
               someBigInt: BigInt
+              someBigInt_DECREMENT: BigInt
+              someBigInt_INCREMENT: BigInt
               someInt: Int
+              someInt_DECREMENT: Int
+              someInt_INCREMENT: Int
               someLocalDateTime: LocalDateTime
               someLocalTime: LocalTime
               someTime: Time
@@ -312,15 +325,30 @@ describe("Aggregations", () => {
               title_STARTS_WITH: String
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
             type Query {
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {
@@ -515,11 +543,19 @@ describe("Aggregations", () => {
 
             input LikesUpdateInput {
               someBigInt: BigInt
+              someBigInt_DECREMENT: BigInt
+              someBigInt_INCREMENT: BigInt
               someDateTime: DateTime
               someDuration: Duration
               someFloat: Float
+              someFloat_ADD: Float
+              someFloat_DIVIDE: Float
+              someFloat_MULTIPLY: Float
+              someFloat_SUBTRACT: Float
               someId: ID
               someInt: Int
+              someInt_DECREMENT: Int
+              someInt_INCREMENT: Int
               someLocalDateTime: LocalDateTime
               someLocalTime: LocalTime
               someString: String
@@ -677,6 +713,11 @@ describe("Aggregations", () => {
 
             input PostDisconnectInput {
               likes: [PostLikesDisconnectFieldInput!]
+            }
+
+            type PostEdge {
+              cursor: String!
+              node: Post!
             }
 
             input PostLikesAggregateInput {
@@ -1214,11 +1255,19 @@ describe("Aggregations", () => {
               title_STARTS_WITH: String
             }
 
+            type PostsConnection {
+              edges: [PostEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               posts(options: PostOptions, where: PostWhere): [Post!]!
               postsAggregate(where: PostWhere): PostAggregateSelection!
+              postsConnection(after: String, first: Int, sort: [PostSort], where: PostWhere): PostsConnection!
               users(options: UserOptions, where: UserWhere): [User!]!
               usersAggregate(where: UserWhere): UserAggregateSelection!
+              usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
             }
 
             enum SortDirection {
@@ -1303,6 +1352,11 @@ describe("Aggregations", () => {
               someTime: Time
             }
 
+            type UserEdge {
+              cursor: String!
+              node: User!
+            }
+
             input UserOptions {
               limit: Int
               offset: Int
@@ -1330,11 +1384,19 @@ describe("Aggregations", () => {
 
             input UserUpdateInput {
               someBigInt: BigInt
+              someBigInt_DECREMENT: BigInt
+              someBigInt_INCREMENT: BigInt
               someDateTime: DateTime
               someDuration: Duration
               someFloat: Float
+              someFloat_ADD: Float
+              someFloat_DIVIDE: Float
+              someFloat_MULTIPLY: Float
+              someFloat_SUBTRACT: Float
               someId: ID
               someInt: Int
+              someInt_DECREMENT: Int
+              someInt_INCREMENT: Int
               someLocalDateTime: LocalDateTime
               someLocalTime: LocalTime
               someString: String
@@ -1428,6 +1490,12 @@ describe("Aggregations", () => {
               someTime_LTE: Time
               someTime_NOT: Time
               someTime_NOT_IN: [Time]
+            }
+
+            type UsersConnection {
+              edges: [UserEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
             }"
         `);
     });

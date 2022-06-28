@@ -17,8 +17,11 @@
  * limitations under the License.
  */
 
+import { CallbackBucket } from "../classes/CallbackBucket";
 import { Relationship } from "../classes";
 import mapToDbProperty from "../utils/map-to-db-property";
+import { addCallbackAndSetParam } from "./utils/callback-utils";
+import { matchMathField, mathDescriptorBuilder, buildMathStatements } from "./utils/math";
 
 /*
     TODO - lets reuse this function for setting either node or rel properties.
@@ -28,14 +31,18 @@ import mapToDbProperty from "../utils/map-to-db-property";
 function createSetRelationshipProperties({
     properties,
     varName,
+    withVars,
     relationship,
     operation,
+    callbackBucket,
     parameterPrefix,
 }: {
     properties: Record<string, unknown>;
     varName: string;
+    withVars: string[];
     relationship: Relationship;
     operation: "CREATE" | "UPDATE";
+    callbackBucket: CallbackBucket;
     parameterPrefix: string;
 }): string {
     const strs: string[] = [];
@@ -60,7 +67,11 @@ function createSetRelationshipProperties({
         }
     });
 
-    Object.entries(properties).forEach(([key]) => {
+    relationship.primitiveFields.forEach((field) =>
+        addCallbackAndSetParam(field, varName, properties, callbackBucket, strs, operation)
+    );
+
+    Object.entries(properties).forEach(([key, value], _idx, propertiesEntries) => {
         const paramName = `${parameterPrefix}.${key}`;
 
         const pointField = relationship.pointFields.find((x) => x.fieldName === key);
@@ -71,6 +82,19 @@ function createSetRelationshipProperties({
                 strs.push(`SET ${varName}.${pointField.dbPropertyName} = point($${paramName})`);
             }
 
+            return;
+        }
+
+        const mathMatch = matchMathField(key);
+        const { hasMatched } = mathMatch;
+        if (hasMatched) {
+            const mathDescriptor = mathDescriptorBuilder(value as number, relationship, mathMatch);
+            if (propertiesEntries.find(([entryKey]) => entryKey === mathDescriptor.dbName)) {
+                throw new Error(`Ambiguous property: ${mathDescriptor.dbName}`);
+            }
+
+            const mathStatements = buildMathStatements(mathDescriptor, varName, withVars, paramName);
+            strs.push(...mathStatements);
             return;
         }
 

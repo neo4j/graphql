@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-/* eslint-disable no-underscore-dangle */
 import { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../classes";
 import {
@@ -31,7 +30,6 @@ import {
     CypherUpdateStrategy,
 } from "../types";
 import execute from "./execute";
-import environment from "../environment";
 import { trimmer } from ".";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 
@@ -65,9 +63,11 @@ describe("execute", () => {
 
                                 return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
                             },
+                            commit() {},
                         };
 
                         return {
+                            beginTransaction: () => tx,
                             readTransaction: (fn) => {
                                 // @ts-ignore
                                 return fn(tx);
@@ -97,17 +97,11 @@ describe("execute", () => {
                     context: new ContextBuilder({
                         driverConfig: { database, bookmarks },
                         neoSchema,
-                        driver,
+                        executionContext: driver,
                     }).instance(),
                 });
 
                 expect(executeResult.records).toEqual([{ title }]);
-                // @ts-ignore
-                expect(driver._userAgent).toBe(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
-                // @ts-ignore
-                expect(driver._config.userAgent).toBe(
-                    `${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`
-                );
             })
         );
     });
@@ -140,9 +134,11 @@ describe("execute", () => {
 
                             return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
                         },
+                        commit() {},
                     };
 
                     return {
+                        beginTransaction: () => tx,
                         readTransaction: (fn) => {
                             // @ts-ignore
                             return fn(tx);
@@ -172,16 +168,12 @@ describe("execute", () => {
                 context: new ContextBuilder({
                     driverConfig: { database, bookmarks },
                     neoSchema,
-                    driver,
+                    executionContext: driver,
                     queryOptions: {},
                 }).instance(),
             });
 
             expect(executeResult.records).toEqual([{ title }]);
-            // @ts-ignore
-            expect(driver._userAgent).toBe(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
-            // @ts-ignore
-            expect(driver._config.userAgent).toBe(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
         });
 
         test("one of each query option", async () => {
@@ -217,9 +209,11 @@ describe("execute", () => {
 
                             return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
                         },
+                        commit() {},
                     };
 
                     return {
+                        beginTransaction: () => tx,
                         readTransaction: (fn) => {
                             // @ts-ignore
                             return fn(tx);
@@ -249,7 +243,7 @@ describe("execute", () => {
                 context: new ContextBuilder({
                     driverConfig: { database, bookmarks },
                     neoSchema,
-                    driver,
+                    executionContext: driver,
                     queryOptions: {
                         runtime: CypherRuntime.INTERPRETED,
                         planner: CypherPlanner.COST,
@@ -264,10 +258,6 @@ describe("execute", () => {
             });
 
             expect(executeResult.records).toEqual([{ title }]);
-            // @ts-ignore
-            expect(driver._userAgent).toBe(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
-            // @ts-ignore
-            expect(driver._config.userAgent).toBe(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
         });
     });
 });

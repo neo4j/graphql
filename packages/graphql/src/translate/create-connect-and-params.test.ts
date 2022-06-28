@@ -19,6 +19,7 @@
 
 import createConnectAndParams from "./create-connect-and-params";
 import { trimmer } from "../utils";
+import { CallbackBucket } from "../classes/CallbackBucket";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { RelationshipQueryDirectionOption } from "../constants";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
@@ -84,6 +85,7 @@ describe("createConnectAndParams", () => {
             context,
             refNodes: [node],
             parentNode: node,
+            callbackBucket: new CallbackBucket(context),
         });
 
         expect(trimmer(result[0])).toEqual(
@@ -109,10 +111,10 @@ describe("createConnectAndParams", () => {
                                 MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node)
                             )
                         )
-                        RETURN count(*)
+                        RETURN count(*) AS _
                     }
 
-                    RETURN count(*)
+                    RETURN count(*) AS _
                 }
             `)
         );

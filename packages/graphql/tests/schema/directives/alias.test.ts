@@ -231,6 +231,8 @@ describe("Alias", () => {
             input ActorActedInPropsUpdateInput {
               character: String
               screenTime: Int
+              screenTime_DECREMENT: Int
+              screenTime_INCREMENT: Int
             }
 
             input ActorActedInPropsWhere {
@@ -299,6 +301,11 @@ describe("Alias", () => {
 
             input ActorDisconnectInput {
               actedIn: [ActorActedInDisconnectFieldInput!]
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
             }
 
             type ActorMovieActedInAggregationSelection {
@@ -386,6 +393,12 @@ describe("Alias", () => {
               name_STARTS_WITH: String
             }
 
+            type ActorsConnection {
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type CreateActorsMutationResponse {
               actors: [Actor!]!
               info: CreateInfo!
@@ -442,6 +455,11 @@ describe("Alias", () => {
               title: String!
             }
 
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
             input MovieOptions {
               limit: Int
               offset: Int
@@ -461,6 +479,10 @@ describe("Alias", () => {
 
             input MovieUpdateInput {
               rating: Float
+              rating_ADD: Float
+              rating_DIVIDE: Float
+              rating_MULTIPLY: Float
+              rating_SUBTRACT: Float
               title: String
             }
 
@@ -487,6 +509,12 @@ describe("Alias", () => {
               title_STARTS_WITH: String
             }
 
+            type MoviesConnection {
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Mutation {
               createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
@@ -507,8 +535,10 @@ describe("Alias", () => {
             type Query {
               actors(options: ActorOptions, where: ActorWhere): [Actor!]!
               actorsAggregate(where: ActorWhere): ActorAggregateSelection!
+              actorsConnection(after: String, first: Int, sort: [ActorSort], where: ActorWhere): ActorsConnection!
               movies(options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort], where: MovieWhere): MoviesConnection!
             }
 
             enum SortDirection {

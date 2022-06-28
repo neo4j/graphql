@@ -249,6 +249,7 @@ function createConnectionFields({
                       temporalFields: relFields.temporalFields,
                       scalarFields: relFields.scalarFields,
                       primitiveFields: relFields.primitiveFields,
+                      enumFields: relFields.enumFields,
                       pointFields: relFields.pointFields,
                       computedFields: relFields.computedFields,
                   }

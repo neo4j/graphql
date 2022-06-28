@@ -50,7 +50,7 @@ function createWhereAndParams({
         return ["", {}];
     }
 
-    function reducer(res: Res, [key, value]: [string, GraphQLWhereArg]): Res {
+    function reducer(res: Res, [key, value]: [string, any | GraphQLWhereArg | GraphQLWhereArg[]]): Res {
         let param = "";
         if (chainStr) {
             param = `${chainStr}_${key}`;
@@ -105,6 +105,17 @@ function createWhereAndParams({
 
         const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
 
+        if (node.isGlobalNode && key === "id") {
+            const { field, id } = node.fromGlobalId(value as string);
+            param = param.replace(key, field);
+
+            // get the dbField from the returned property fieldName
+            const dbField = mapToDbProperty(node, field);
+            res.clauses.push(`${varName}.${dbField} = $${param}`);
+            res.params = { ...res.params, [param]: id };
+            return res;
+        }
+
         if (isAggregate) {
             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
             const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
@@ -141,12 +152,12 @@ function createWhereAndParams({
             const relTypeStr = `[:${relationField.type}]`;
 
             if (value === null) {
-                res.clauses.push(`${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
+                res.clauses.push(`${isNot ? "" : "NOT "}exists((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`);
                 return res;
             }
 
             let resultStr = [
-                `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
+                `exists((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
                 `AND ${listPredicate}(${param} IN [(${varName})${inStr}${relTypeStr}${outStr}(${param}${labels}) | ${param}] INNER_WHERE `,
             ].join(" ");
 
@@ -195,7 +206,7 @@ function createWhereAndParams({
 
                 if (value === null) {
                     res.clauses.push(
-                        `${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}[:${
+                        `${isNot ? "" : "NOT "}exists((${varName})${inStr}[:${
                             connectionField.relationship.type
                         }]${outStr}(${labels}))`
                     );
@@ -203,7 +214,7 @@ function createWhereAndParams({
                 }
 
                 let resultStr = [
-                    `EXISTS((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
+                    `exists((${varName})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`,
                     `AND ${listPredicate}(${collectedMap} IN [(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${thisParam}${labels})`,
                     ` | { node: ${thisParam}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
                 ].join(" ");
@@ -220,6 +231,7 @@ function createWhereAndParams({
                     relationship,
                     relationshipVariable: `${collectedMap}.relationship`,
                     parameterPrefix,
+                    listPredicates: [listPredicate],
                 });
 
                 resultStr += connectionWhere[0];

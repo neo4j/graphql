@@ -25,7 +25,6 @@ import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher NULL", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -117,7 +116,7 @@ describe("Cypher NULL", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            WHERE NOT EXISTS((this)<-[:ACTED_IN]-(:Actor))
+            WHERE NOT exists((this)<-[:ACTED_IN]-(:Actor))
             RETURN this { .title } as this"
         `);
 
@@ -140,7 +139,7 @@ describe("Cypher NULL", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            WHERE EXISTS((this)<-[:ACTED_IN]-(:Actor))
+            WHERE exists((this)<-[:ACTED_IN]-(:Actor))
             RETURN this { .title } as this"
         `);
 

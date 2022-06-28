@@ -55,7 +55,7 @@ export default function translateDelete({ context, node }: { context: Context; n
     });
     if (allowAuth[0]) {
         cypherParams = { ...cypherParams, ...allowAuth[1] };
-        allowStr = `WITH ${withVars.join(", ")}\nCALL apoc.util.validate(NOT(${
+        allowStr = `WITH ${withVars.join(", ")}\nCALL apoc.util.validate(NOT (${
             allowAuth[0]
         }), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
@@ -80,7 +80,7 @@ export default function translateDelete({ context, node }: { context: Context; n
         };
     }
 
-    const eventMeta = createEventMeta({ event: "delete", nodeVariable: varName });
+    const eventMeta = createEventMeta({ event: "delete", nodeVariable: varName, typename: node.name });
 
     const cypher = [
         ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
