@@ -20,9 +20,9 @@
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
-import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/549", () => {
     let driver: Driver;
@@ -35,317 +35,53 @@ describe("https://github.com/neo4j/graphql/issues/549", () => {
         await driver.close();
     });
 
-    test("should throw error when creating a node without a (single) relationship", async () => {
-        const typeDefs = gql`
-            type Director {
-                id: ID!
-            }
-
-            type Movie {
-                id: ID!
-                director: Director! @relationship(type: "DIRECTED", direction: IN)
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-        const movieId = generate({
-            charset: "alphabetic",
-        });
-
-        const mutation = `
-            mutation {
-                createMovies(input: [{id: "${movieId}"}]) {
-                    info {
-                        nodesCreated
-                    }
-                }
-            }
-        `;
-
-        const result = await graphql({
-            schema: neoSchema.schema,
-            source: mutation,
-            contextValue: { driver },
-        });
-
-        expect(result.errors).toBeTruthy();
-        expect((result.errors as any[])[0].message).toEqual("Movie.director required");
-    });
-
-    test("should throw error when creating a node without a (array) relationship", async () => {
-        const typeDefs = gql`
-            type Director {
-                id: ID!
-            }
-
-            type Movie {
-                id: ID!
-                directors: [Director!] @relationship(type: "DIRECTED", direction: IN)
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-        const movieId = generate({
-            charset: "alphabetic",
-        });
-
-        const mutation = `
-            mutation {
-                createMovies(input: [{id: "${movieId}"}]) {
-                    info {
-                        nodesCreated
-                    }
-                }
-            }
-        `;
-
-        const result = await graphql({
-            schema: neoSchema.schema,
-            source: mutation,
-            contextValue: { driver },
-        });
-
-        expect(result.errors).toBeTruthy();
-        expect((result.errors as any[])[0].message).toEqual("Movie.directors required");
-    });
-
-    test("should throw error when updating a node (top level) without a (single) relationship", async () => {
+    test("should throw when creating a node without a mandatory relationship", async () => {
         const session = driver.session();
 
+        const testPerson = generateUniqueType("Person");
+        const testMovie = generateUniqueType("Movie");
+
         const typeDefs = gql`
-            type Director {
-                id: ID!
+            type ${testPerson.name} {
+                name: String!
+                born: Int!
+                actedInMovies: [${testMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+                directedMovies: [${testMovie.name}!]! @relationship(type: "DIRECTED", direction: OUT)
             }
 
-            type Movie {
-                id: ID!
-                director: Director! @relationship(type: "DIRECTED", direction: IN)
+            type ${testMovie.name} {
+                title: String!
+                released: Int!
+                actors: [${testPerson.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+                director: ${testPerson.name}! @relationship(type: "DIRECTED", direction: IN)
+            }
+
+            interface ActedIn @relationshipProperties {
+                roles: [String!]
             }
         `;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        const movieId = generate({
-            charset: "alphabetic",
-        });
-
-        const mutation = `
+        const query = `
             mutation {
-                updateMovies(where: {id: "${movieId}"}, update: { id: "${movieId}" }) {
-                    info {
-                        nodesCreated
-                    }
+                ${testMovie.operations.create}(input: [{title: "Test", released: 2022}]) {
+                  ${testMovie.plural} {
+                    title
+                  }
                 }
             }
         `;
 
         try {
-            await session.run(`
-                CREATE (:Movie {id: "${movieId}"})
-            `);
-
             const result = await graphql({
-                schema: neoSchema.schema,
-                source: mutation,
+                schema: await neoSchema.getSchema(),
+                source: query,
                 contextValue: { driver },
             });
 
             expect(result.errors).toBeTruthy();
-            expect((result.errors as any[])[0].message).toEqual("Movie.director required");
-        } finally {
-            await session.close();
-        }
-    });
-
-    test("should throw error when updating a node (top level) without a (array) relationship", async () => {
-        const session = driver.session();
-
-        const typeDefs = gql`
-            type Director {
-                id: ID!
-            }
-
-            type Movie {
-                id: ID!
-                directors: [Director!] @relationship(type: "DIRECTED", direction: IN)
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-        const movieId = generate({
-            charset: "alphabetic",
-        });
-
-        const mutation = `
-            mutation {
-                updateMovies(where: {id: "${movieId}"}, update: { id: "${movieId}" }) {
-                    info {
-                        nodesCreated
-                    }
-                }
-            }
-        `;
-
-        try {
-            await session.run(`
-                CREATE (:Movie {id: "${movieId}"})
-            `);
-
-            const result = await graphql({
-                schema: neoSchema.schema,
-                source: mutation,
-                contextValue: { driver },
-            });
-
-            expect(result.errors).toBeTruthy();
-            expect((result.errors as any[])[0].message).toEqual("Movie.directors required");
-        } finally {
-            await session.close();
-        }
-    });
-
-    test("should throw error when updating a node (field level) without a (single) relationship", async () => {
-        const session = driver.session();
-
-        const typeDefs = gql`
-            type Director {
-                id: ID!
-                directed: [Movie!] @relationship(type: "DIRECTED", direction: OUT)
-            }
-
-            type Movie {
-                id: ID!
-                director: Director! @relationship(type: "DIRECTED", direction: IN)
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-        const movieId = generate({
-            charset: "alphabetic",
-        });
-
-        const directorId = generate({
-            charset: "alphabetic",
-        });
-
-        const mutation = `
-            mutation {
-                updateDirectors(
-                    where: { id: "${directorId}" }, 
-                    update: { 
-                        directed: {
-                            update: { ## <---------------------------------------- 👀 The test is making sure the validation gets called here
-                                node: {
-                                    director: {
-                                        disconnect: {
-                                            where: {
-                                                node: {
-                                                    id: "${directorId}"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                ) {
-                    info {
-                        nodesCreated
-                    }
-                }
-            }
-        `;
-
-        try {
-            await session.run(`
-                CREATE (:Director {id: "${directorId}"})-[:DIRECTED]->(:Movie {id: "${movieId}"})
-            `);
-
-            const result = await graphql({
-                schema: neoSchema.schema,
-                source: mutation,
-                contextValue: { driver },
-            });
-
-            expect(result.errors).toBeTruthy();
-            expect((result.errors as any[])[0].message).toEqual("Movie.director required");
-        } finally {
-            await session.close();
-        }
-    });
-
-    test("should throw error when updating a node (field level) without a (array) relationship", async () => {
-        const session = driver.session();
-
-        const typeDefs = gql`
-            type Director {
-                id: ID!
-                directed: [Movie!] @relationship(type: "DIRECTED", direction: OUT)
-            }
-
-            type Movie {
-                id: ID!
-                directors: [Director!]! @relationship(type: "DIRECTED", direction: IN)
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-        const movieId = generate({
-            charset: "alphabetic",
-        });
-
-        const directorId = generate({
-            charset: "alphabetic",
-        });
-
-        const mutation = `
-            mutation {
-                updateDirectors(
-                    where: { id: "${directorId}" }, 
-                    update: { 
-                        directed: {
-                            update: { ## <---------------------------------------- 👀 The test is making sure the validation gets called here
-                                node: {
-                                    directors: {
-                                        disconnect: {
-                                            where: {
-                                                node: {
-                                                    id: "${directorId}"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                ) {
-                    info {
-                        nodesCreated
-                    }
-                }
-            }
-        `;
-
-        try {
-            await session.run(`
-                CREATE (:Director {id: "${directorId}"})-[:DIRECTED]->(:Movie {id: "${movieId}"})
-            `);
-
-            const result = await graphql({
-                schema: neoSchema.schema,
-                source: mutation,
-                contextValue: { driver },
-            });
-
-            expect(result.errors).toBeTruthy();
-            expect((result.errors as any[])[0].message).toEqual("Movie.directors required");
+            expect((result.errors as any[])[0].message).toBe(`${testMovie.name}.director required`);
         } finally {
             await session.close();
         }

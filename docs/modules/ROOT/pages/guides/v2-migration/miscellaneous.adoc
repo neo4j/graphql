@@ -57,7 +57,7 @@ You can still achieve identical filters through different routes. For example, i
 ----
 type Movie {
     title: String!
-    director: Director @relationship(type: "DIRECTED", direction: IN)
+    director: Director! @relationship(type: "DIRECTED", direction: IN)
 }
 
 type Director {

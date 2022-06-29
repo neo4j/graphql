@@ -20,37 +20,42 @@
 import { ResolveTree } from "graphql-parse-resolve-info";
 import { offsetToCursor } from "graphql-relay";
 import dedent from "dedent";
-import { mocked } from "ts-jest/utils";
 import { ConnectionField, Context } from "../../types";
 import createConnectionAndParams from "./create-connection-and-params";
 import Neo4jGraphQL from "../../classes/Neo4jGraphQL";
-import { NodeBuilder } from "../../utils/test/builders/node-builder";
+import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
+import { RelationshipQueryDirectionOption } from "../../constants";
 
 jest.mock("../../classes/Neo4jGraphQL");
 
 describe("createConnectionAndParams", () => {
     test("Returns entry with no args", () => {
         // @ts-ignore
-        const mockedNeo4jGraphQL = mocked(new Neo4jGraphQL(), true);
-        mockedNeo4jGraphQL.nodes = [
+        const mockedNeo4jGraphQL = jest.mocked(new Neo4jGraphQL(), true);
+
+        const nodes = [
             // @ts-ignore
             new NodeBuilder({
                 name: "Actor",
             }).instance(),
         ];
-        // @ts-ignore
-        mockedNeo4jGraphQL.relationships = [
+        const relationships = [
             // @ts-ignore
             {
                 name: "MovieActorsRelationship",
                 temporalFields: [],
                 enumFields: [],
-                ignoredFields: [],
+                computedFields: [],
                 pointFields: [],
                 primitiveFields: [],
                 scalarFields: [],
             },
         ];
+
+        // @ts-ignore
+        mockedNeo4jGraphQL.nodes = nodes;
+        // @ts-ignore
+        mockedNeo4jGraphQL.relationships = relationships;
 
         const resolveTree: ResolveTree = {
             alias: "actorsConnection",
@@ -92,6 +97,7 @@ describe("createConnectionAndParams", () => {
                 fieldName: "actors",
                 type: "ACTED_IN",
                 direction: "IN",
+                queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
                 // @ts-ignore
                 typeMeta: {
                     name: "Actor",
@@ -100,7 +106,7 @@ describe("createConnectionAndParams", () => {
         };
 
         // @ts-ignore
-        const context: Context = { neoSchema: mockedNeo4jGraphQL };
+        const context: Context = { neoSchema: mockedNeo4jGraphQL, nodes, relationships };
 
         const entry = createConnectionAndParams({ resolveTree, field, context, nodeVariable: "this" });
 
@@ -114,26 +120,31 @@ describe("createConnectionAndParams", () => {
 
     test("Returns entry with sort arg", () => {
         // @ts-ignore
-        const mockedNeo4jGraphQL = mocked(new Neo4jGraphQL(), true);
-        mockedNeo4jGraphQL.nodes = [
+        const mockedNeo4jGraphQL = jest.mocked(new Neo4jGraphQL(), true);
+        const nodes = [
             // @ts-ignore
             new NodeBuilder({
                 name: "Actor",
             }).instance(),
         ];
         // @ts-ignore
-        mockedNeo4jGraphQL.relationships = [
+        const relationships = [
             // @ts-ignore
             {
                 name: "MovieActorsRelationship",
                 temporalFields: [],
                 enumFields: [],
-                ignoredFields: [],
+                computedFields: [],
                 pointFields: [],
                 primitiveFields: [],
                 scalarFields: [],
             },
         ];
+
+        // @ts-ignore
+        mockedNeo4jGraphQL.nodes = nodes;
+        // @ts-ignore
+        mockedNeo4jGraphQL.relationships = relationships;
 
         const resolveTree: ResolveTree = {
             alias: "actorsConnection",
@@ -185,6 +196,7 @@ describe("createConnectionAndParams", () => {
             relationship: {
                 fieldName: "actors",
                 type: "ACTED_IN",
+                queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
                 direction: "IN",
                 // @ts-ignore
                 typeMeta: {
@@ -194,7 +206,7 @@ describe("createConnectionAndParams", () => {
         };
 
         // @ts-ignore
-        const context: Context = { neoSchema: mockedNeo4jGraphQL };
+        const context: Context = { neoSchema: mockedNeo4jGraphQL, nodes, relationships };
 
         const entry = createConnectionAndParams({ resolveTree, field, context, nodeVariable: "this" });
 
@@ -210,27 +222,32 @@ describe("createConnectionAndParams", () => {
 
     test("Returns an entry with offset and limit args", () => {
         // @ts-ignore
-        const mockedNeo4jGraphQL = mocked(new Neo4jGraphQL(), true);
+        const mockedNeo4jGraphQL = jest.mocked(new Neo4jGraphQL(), true);
         // @ts-ignore
-        mockedNeo4jGraphQL.nodes = [
+        const nodes = [
             // @ts-ignore
             new NodeBuilder({
                 name: "Actor",
             }).instance(),
         ];
         // @ts-ignore
-        mockedNeo4jGraphQL.relationships = [
+        const relationships = [
             // @ts-ignore
             {
                 name: "MovieActorsRelationship",
                 temporalFields: [],
                 enumFields: [],
-                ignoredFields: [],
+                computedFields: [],
                 pointFields: [],
                 primitiveFields: [],
                 scalarFields: [],
             },
         ];
+
+        // @ts-ignore
+        mockedNeo4jGraphQL.nodes = nodes;
+        // @ts-ignore
+        mockedNeo4jGraphQL.relationships = relationships;
 
         const resolveTree: ResolveTree = {
             alias: "actorsConnection",
@@ -273,6 +290,7 @@ describe("createConnectionAndParams", () => {
             relationship: {
                 fieldName: "actors",
                 type: "ACTED_IN",
+                queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
                 direction: "IN",
                 // @ts-ignore
                 typeMeta: {
@@ -282,7 +300,7 @@ describe("createConnectionAndParams", () => {
         };
 
         // @ts-ignore
-        const context: Context = { neoSchema: mockedNeo4jGraphQL };
+        const context: Context = { neoSchema: mockedNeo4jGraphQL, nodes, relationships };
 
         const entry = createConnectionAndParams({ resolveTree, field, context, nodeVariable: "this" });
 

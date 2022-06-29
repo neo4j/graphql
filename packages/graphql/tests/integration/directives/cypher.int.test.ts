@@ -17,12 +17,14 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
+import { graphql, GraphQLSchema } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { createJwtRequest } from "../../../src/utils/test/utils";
+import { createJwtRequest } from "../../utils/create-jwt-request";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("cypher", () => {
     let driver: Driver;
@@ -50,12 +52,12 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Movie {
                         title: String!
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
                     type Actor {
                         name: String!
-                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
                     type Query {
@@ -91,7 +93,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
@@ -120,12 +122,12 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Movie {
                         title: String!
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
                     type Actor {
                         name: String!
-                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
                     type Query {
@@ -161,7 +163,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle, name: actorName },
@@ -190,12 +192,12 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Movie {
                         title: String!
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
                     type Actor @auth(rules: [{operations: [READ], roles: ["admin"]}]) {
                         name: String!
-                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
                     type Query {
@@ -208,7 +210,14 @@ describe("cypher", () => {
 
                 const secret = "secret";
 
-                const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+                const neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    plugins: {
+                        auth: new Neo4jGraphQLAuthJWTPlugin({
+                            secret: "secret",
+                        }),
+                    },
+                });
 
                 const source = `
                     query($title: String!, $name: String) {
@@ -235,13 +244,13 @@ describe("cypher", () => {
                     const req = createJwtRequest(secret);
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle, name: actorName },
                     });
 
-                    expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                    expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
                 } finally {
                     await session.close();
                 }
@@ -267,12 +276,12 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Movie {
                         title: String!
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
                     type Actor {
                         name: String!
-                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
                     type Query {
@@ -313,7 +322,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { titles: [movieTitle1, movieTitle2, movieTitle3] },
@@ -356,18 +365,18 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Movie {
                         title: String!
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
-                        directors: [Director] @relationship(type: "DIRECTED", direction: IN)
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                        directors: [Director!]! @relationship(type: "DIRECTED", direction: IN)
                     }
 
                     type Actor {
                         name: String!
-                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
                     type Director {
                         name: String!
-                        movies: [Movie] @relationship(type: "DIRECTED", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
                     }
 
                     type Query {
@@ -420,7 +429,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title },
@@ -457,12 +466,12 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Movie {
                         title: String!
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
                     type Actor {
                         name: String!
-                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
                     type Mutation {
@@ -498,7 +507,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
@@ -527,12 +536,12 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Movie {
                         title: String!
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
                     type Actor {
                         name: String!
-                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
                     type Mutation {
@@ -568,7 +577,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
@@ -597,12 +606,12 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Movie {
                         title: String!
-                        actors: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+                        actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                     }
 
                     type Actor @auth(rules: [{operations: [READ], roles: ["admin"]}]) {
                         name: String!
-                        movies: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+                        movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
                     }
 
                     type Mutation {
@@ -638,16 +647,153 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { title: movieTitle },
                     });
 
-                    expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+                    expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
                 } finally {
                     await session.close();
                 }
+            });
+        });
+
+        // Reproduces https://github.com/neo4j/graphql/issues/595 with missing value test
+        describe("Null Values", () => {
+            let schemaWithDefaultValue: GraphQLSchema;
+            let schemaWithMissingValue: GraphQLSchema;
+
+            const accountType = generateUniqueType("Account");
+
+            const defaultOffset = 0;
+            const defaultLimit = 30;
+
+            const offset = 5;
+            const limit = 10;
+
+            const generateTypeDefs = (withDefaultValue: boolean) => `
+                type ${accountType.name} {
+                    id: ID!
+                    name: String!
+                }
+
+                input ListAccountOptions {
+                    offset: Int
+                    limit: Int
+                }
+
+                type Query {
+                    listAccounts(options: ListAccountOptions${withDefaultValue ? "= null" : ""}): [${
+                accountType.name
+            }!]!
+                        @cypher(
+                            statement: """
+                                MATCH (accounts:${accountType.name})
+                                RETURN accounts
+                                SKIP coalesce($options.offset, toInteger(${defaultOffset}))
+                                LIMIT coalesce($options.limit, toInteger(${defaultLimit}))
+                            """
+                        )
+                }
+            `;
+
+            beforeAll(async () => {
+                const session = driver.session();
+
+                const neoSchemaWithDefaultValue = new Neo4jGraphQL({
+                    typeDefs: generateTypeDefs(true),
+                });
+                const neoSchemaWithMissingValue = new Neo4jGraphQL({
+                    typeDefs: generateTypeDefs(false),
+                });
+
+                schemaWithDefaultValue = await neoSchemaWithDefaultValue.getSchema();
+                schemaWithMissingValue = await neoSchemaWithMissingValue.getSchema();
+
+                // Create 50 Account nodes with ids 1, 2, 3...
+                await session.run(`FOREACH (x in range(1,50) | CREATE (:${accountType.name} {id: x}))`);
+                await session.close();
+            });
+
+            afterAll(async () => {
+                const session = driver.session();
+                await session.run(`MATCH (n:${accountType.name}) DETACH DELETE n`);
+                await session.close();
+            });
+
+            test("should return default value", async () => {
+                const source = `
+                        query {
+                            listAccounts {
+                                id
+                            }
+                        }
+                `;
+
+                const gqlResult = (schema: GraphQLSchema) =>
+                    graphql({
+                        schema,
+                        source,
+                        contextValue: { driver },
+                    });
+
+                const expectedStartId = `${defaultOffset + 1}`;
+                const expectedAccountListLength = defaultLimit;
+
+                // Schema with default value
+                const gqlResultWithDefaultValue = await gqlResult(schemaWithDefaultValue);
+
+                expect(gqlResultWithDefaultValue.errors).toBeFalsy();
+
+                expect((gqlResultWithDefaultValue.data as any)?.listAccounts[0].id).toBe(expectedStartId);
+                expect(gqlResultWithDefaultValue.data?.listAccounts).toHaveLength(expectedAccountListLength);
+
+                // Schema with missing value
+                const gqlResultWithMissingValue = await gqlResult(schemaWithMissingValue);
+
+                expect(gqlResultWithMissingValue.errors).toBeFalsy();
+
+                expect((gqlResultWithDefaultValue.data as any)?.listAccounts[0].id).toBe(expectedStartId);
+                expect(gqlResultWithMissingValue.data?.listAccounts).toHaveLength(expectedAccountListLength);
+            });
+
+            test("should return test value", async () => {
+                const source = `
+                        query($offset: Int, $limit: Int) {
+                            listAccounts(options: { offset: $offset, limit: $limit }) {
+                                id
+                            }
+                        }
+                `;
+
+                const gqlResult = (schema: GraphQLSchema) =>
+                    graphql({
+                        schema,
+                        source,
+                        contextValue: { driver },
+                        variableValues: { offset, limit },
+                    });
+
+                const expectedStartId = `${offset + 1}`;
+                const expectedAccountListLength = limit;
+
+                // Schema with default value
+                const gqlResultWithDefaultValue = await gqlResult(schemaWithDefaultValue);
+
+                expect(gqlResultWithDefaultValue.errors).toBeFalsy();
+
+                expect((gqlResultWithDefaultValue.data as any)?.listAccounts[0].id).toBe(expectedStartId);
+                expect(gqlResultWithDefaultValue.data?.listAccounts).toHaveLength(expectedAccountListLength);
+
+                // Schema with missing value
+                const gqlResultWithMissingValue = await gqlResult(schemaWithMissingValue);
+
+                expect(gqlResultWithMissingValue.errors).toBeFalsy();
+
+                expect((gqlResultWithDefaultValue.data as any)?.listAccounts[0].id).toBe(expectedStartId);
+                expect(gqlResultWithMissingValue.data?.listAccounts).toHaveLength(expectedAccountListLength);
             });
         });
 
@@ -669,7 +815,7 @@ describe("cypher", () => {
                 const typeDefs = `
                     type Member {
                         id: ID!
-                        gender: Gender @relationship(type: "HAS_GENDER", direction: OUT)
+                        gender: Gender! @relationship(type: "HAS_GENDER", direction: OUT)
                     }
 
                     type Gender {
@@ -713,7 +859,7 @@ describe("cypher", () => {
                     );
 
                     const gqlResult = await graphql({
-                        schema: neoSchema.schema,
+                        schema: await neoSchema.getSchema(),
                         source,
                         contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                         variableValues: { id: townId },
@@ -725,6 +871,244 @@ describe("cypher", () => {
                 } finally {
                     await session.close();
                 }
+            });
+        });
+    });
+
+    describe("Field level cypher", () => {
+        // Reproduces https://github.com/neo4j/graphql/issues/444 with default value test
+        describe("Null Values", () => {
+            let schemaWithDefaultValue: GraphQLSchema;
+            let schemaWithMissingValue: GraphQLSchema;
+
+            const testLabel = generate({ charset: "alphabetic" });
+
+            const townId = generate({ charset: "alphabetic" });
+            const destinationId = generate({ charset: "alphabetic" });
+
+            const defaultPreposition = generate({ charset: "alphabetic" });
+            const testCaseName = generate({ charset: "alphabetic" });
+
+            const generateTypeDefs = (withDefaultValue: boolean) => `
+                type Destination {
+                    id: ID!
+                    preposition(caseName: String${
+                        withDefaultValue ? "= null" : ""
+                    }): String! @cypher(statement: "RETURN coalesce($caseName, '${defaultPreposition}')")
+                }
+
+                type Query {
+                    townDestinationList(id: ID!): [Destination] @cypher(statement: """
+                        MATCH (town:Town {id:$id})
+                        OPTIONAL MATCH (town)<-[:BELONGS_TO]-(destination:Destination)
+                        RETURN destination
+                    """)
+                }
+            `;
+
+            beforeAll(async () => {
+                const session = driver.session();
+
+                const neoSchemaWithDefaultValue = new Neo4jGraphQL({
+                    typeDefs: generateTypeDefs(true),
+                });
+                const neoSchemaWithMissingValue = new Neo4jGraphQL({
+                    typeDefs: generateTypeDefs(false),
+                });
+
+                schemaWithDefaultValue = await neoSchemaWithDefaultValue.getSchema();
+                schemaWithMissingValue = await neoSchemaWithMissingValue.getSchema();
+
+                await session.run(
+                    `
+                        CREATE (t:Town:${testLabel} {id: $townId})
+                        MERGE (t)<-[:BELONGS_TO]-(:Destination:${testLabel} {id: $destinationId})
+                    `,
+                    {
+                        townId,
+                        destinationId,
+                    }
+                );
+                await session.close();
+            });
+
+            afterAll(async () => {
+                const session = driver.session();
+                await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
+                await session.close();
+            });
+
+            test("should return default value", async () => {
+                const source = `
+                        query($id: ID!) {
+                            townDestinationList(id: $id) {
+                                id
+                                preposition
+                            }
+                        }
+                `;
+
+                const gqlResult = (schema: GraphQLSchema) =>
+                    graphql({
+                        schema,
+                        source,
+                        contextValue: { driver },
+                        variableValues: { id: townId },
+                    });
+
+                const expectedTownDestinationList = [{ id: destinationId, preposition: defaultPreposition }];
+
+                // Schema with default value
+                const gqlResultWithDefaultValue = await gqlResult(schemaWithDefaultValue);
+
+                expect(gqlResultWithDefaultValue.errors).toBeFalsy();
+
+                expect((gqlResultWithDefaultValue?.data as any).townDestinationList).toEqual(
+                    expectedTownDestinationList
+                );
+
+                // Schema with missing value
+                const gqlResultWithMissingValue = await gqlResult(schemaWithMissingValue);
+
+                expect(gqlResultWithMissingValue.errors).toBeFalsy();
+
+                expect((gqlResultWithMissingValue?.data as any).townDestinationList).toEqual(
+                    expectedTownDestinationList
+                );
+            });
+
+            test("should return test value", async () => {
+                const source = `
+                        query($id: ID!, $caseName: String) {
+                            townDestinationList(id: $id) {
+                                id
+                                preposition(caseName: $caseName)
+                            }
+                        }
+                    `;
+
+                const gqlResult = (schema: GraphQLSchema) =>
+                    graphql({
+                        schema,
+                        source,
+                        contextValue: { driver },
+                        variableValues: { id: townId, caseName: testCaseName },
+                    });
+
+                const expectedTownDestinationList = [{ id: destinationId, preposition: testCaseName }];
+
+                // Schema with default value
+                const gqlResultWithDefaultValue = await gqlResult(schemaWithDefaultValue);
+
+                expect(gqlResultWithDefaultValue.errors).toBeFalsy();
+
+                expect((gqlResultWithDefaultValue?.data as any).townDestinationList).toEqual(
+                    expectedTownDestinationList
+                );
+
+                // Schema with missing value
+                const gqlResultWithMissingValue = await gqlResult(schemaWithMissingValue);
+
+                expect(gqlResultWithMissingValue.errors).toBeFalsy();
+
+                expect((gqlResultWithMissingValue?.data as any).townDestinationList).toEqual(
+                    expectedTownDestinationList
+                );
+            });
+        });
+
+        describe("Union type", () => {
+            let schema: GraphQLSchema;
+            const secret = "secret";
+
+            const testLabel = generate({ charset: "alphabetic" });
+            const userId = generate({ charset: "alphabetic" });
+
+            const typeDefs = `
+                union PostMovieUser = Post | Movie | User
+
+                type Post {
+                    name: String
+                }
+
+                type Movie {
+                    name: String
+                }
+
+                type User {
+                    id: ID @id
+                    updates: [PostMovieUser!]!
+                        @cypher(
+                            statement: """
+                            MATCH (this:User)-[:WROTE]->(wrote:Post)
+                            RETURN wrote
+                            LIMIT 5
+                            """
+                        )
+                }
+            `;
+
+            beforeAll(async () => {
+                const session = driver.session();
+
+                const neoSchema = new Neo4jGraphQL({
+                    typeDefs,
+                    plugins: {
+                        auth: new Neo4jGraphQLAuthJWTPlugin({
+                            secret,
+                        }),
+                    },
+                });
+                schema = await neoSchema.getSchema();
+
+                await session.run(
+                    `
+                        CREATE (p:Post:${testLabel} {name: "Postname"})
+                        CREATE (m:Movie:${testLabel} {name: "Moviename"})
+                        CREATE (u:User:${testLabel} {id: "${userId}"})
+                        CREATE (u)-[:WROTE]->(p)
+                        CREATE (u)-[:WATCHED]->(m)
+                    `
+                );
+                await session.close();
+            });
+
+            afterAll(async () => {
+                const session = driver.session();
+                await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
+                await session.close();
+            });
+
+            test("should return __typename", async () => {
+                const source = `
+                        query {
+                            users (where: { id: "${userId}" }) {
+                                updates {
+                                    __typename
+                                }
+                            }
+                        }
+                `;
+
+                const req = createJwtRequest(secret, {});
+                const gqlResult = await graphql({
+                    schema,
+                    source,
+                    contextValue: { driver, req },
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
+                expect(gqlResult?.data as any).toEqual({
+                    users: [
+                        {
+                            updates: [
+                                {
+                                    __typename: "Post",
+                                },
+                            ],
+                        },
+                    ],
+                });
             });
         });
     });

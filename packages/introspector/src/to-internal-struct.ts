@@ -23,6 +23,7 @@ import Property from "./classes/Property";
 import Relationship from "./classes/Relationship";
 import { Neo4jStruct, NodeMap, PropertyRecord, RelationshipMap } from "./types";
 import cleanTypeName from "./utils/clean-type-name";
+import nodeKey from "./utils/node-key";
 
 interface NodeTypePropertiesRecord extends PropertyRecord {
     nodeType: string;
@@ -33,8 +34,8 @@ interface RelationshipTypePropertiesRecord extends PropertyRecord {
 }
 
 type RelationshipRecord = {
-    from: string;
-    to: string;
+    from: string[];
+    to: string[];
     relType: string;
 };
 
@@ -144,7 +145,7 @@ async function introspectRelationships(sessionFactory: () => Session): Promise<R
         const { relType } = paths[0];
         const typeOnly = cleanTypeName(relType);
         const relationship = rels[typeOnly];
-        paths.forEach(({ from, to }) => relationship.addPath(from, to));
+        paths.forEach(({ from, to }) => relationship.addPath(nodeKey(from), nodeKey(to)));
     });
 
     return rels;

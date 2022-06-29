@@ -17,11 +17,9 @@
  * limitations under the License.
  */
 
-/* eslint-disable no-underscore-dangle */
 import { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../classes";
 import {
-    Context,
     CypherConnectComponentsPlanner,
     CypherExpressionEngine,
     CypherInterpretedPipesFallback,
@@ -32,8 +30,8 @@ import {
     CypherUpdateStrategy,
 } from "../types";
 import execute from "./execute";
-import environment from "../environment";
 import { trimmer } from ".";
+import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 
 describe("execute", () => {
     test("should execute return records.toObject", async () => {
@@ -65,9 +63,11 @@ describe("execute", () => {
 
                                 return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
                             },
+                            commit() {},
                         };
 
                         return {
+                            beginTransaction: () => tx,
                             readTransaction: (fn) => {
                                 // @ts-ignore
                                 return fn(tx);
@@ -94,16 +94,14 @@ describe("execute", () => {
                     cypher,
                     params,
                     defaultAccessMode,
-                    context: { driverConfig: { database, bookmarks }, neoSchema, driver } as Context,
+                    context: new ContextBuilder({
+                        driverConfig: { database, bookmarks },
+                        neoSchema,
+                        executionContext: driver,
+                    }).instance(),
                 });
 
                 expect(executeResult.records).toEqual([{ title }]);
-                // @ts-ignore
-                expect(driver._userAgent).toEqual(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
-                // @ts-ignore
-                expect(driver._config.userAgent).toEqual(
-                    `${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`
-                );
             })
         );
     });
@@ -136,9 +134,11 @@ describe("execute", () => {
 
                             return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
                         },
+                        commit() {},
                     };
 
                     return {
+                        beginTransaction: () => tx,
                         readTransaction: (fn) => {
                             // @ts-ignore
                             return fn(tx);
@@ -165,21 +165,15 @@ describe("execute", () => {
                 cypher,
                 params,
                 defaultAccessMode,
-                context: {
+                context: new ContextBuilder({
                     driverConfig: { database, bookmarks },
                     neoSchema,
-                    driver,
+                    executionContext: driver,
                     queryOptions: {},
-                } as Context,
+                }).instance(),
             });
 
             expect(executeResult.records).toEqual([{ title }]);
-            // @ts-ignore
-            expect(driver._userAgent).toEqual(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
-            // @ts-ignore
-            expect(driver._config.userAgent).toEqual(
-                `${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`
-            );
         });
 
         test("one of each query option", async () => {
@@ -215,9 +209,11 @@ describe("execute", () => {
 
                             return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
                         },
+                        commit() {},
                     };
 
                     return {
+                        beginTransaction: () => tx,
                         readTransaction: (fn) => {
                             // @ts-ignore
                             return fn(tx);
@@ -244,10 +240,10 @@ describe("execute", () => {
                 cypher: inputCypher,
                 params,
                 defaultAccessMode,
-                context: {
+                context: new ContextBuilder({
                     driverConfig: { database, bookmarks },
                     neoSchema,
-                    driver,
+                    executionContext: driver,
                     queryOptions: {
                         runtime: CypherRuntime.INTERPRETED,
                         planner: CypherPlanner.COST,
@@ -258,16 +254,10 @@ describe("execute", () => {
                         interpretedPipesFallback: CypherInterpretedPipesFallback.ALL,
                         replan: CypherReplanning.DEFAULT,
                     },
-                } as Context,
+                }).instance(),
             });
 
             expect(executeResult.records).toEqual([{ title }]);
-            // @ts-ignore
-            expect(driver._userAgent).toEqual(`${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`);
-            // @ts-ignore
-            expect(driver._config.userAgent).toEqual(
-                `${environment.NPM_PACKAGE_NAME}/${environment.NPM_PACKAGE_VERSION}`
-            );
         });
     });
 });

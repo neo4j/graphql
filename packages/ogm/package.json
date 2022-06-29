@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/graphql-ogm",
-    "version": "2.5.2",
+    "version": "3.4.0",
     "description": "GraphQL powered OGM for Neo4j and Javascript applications",
     "keywords": [
         "neo4j",
@@ -11,12 +11,18 @@
     "bugs": {
         "url": "https://github.com/neo4j/graphql/issues"
     },
-    "homepage": "https://github.com/neo4j/graphql/tree/master/packages/ogm",
+    "homepage": "https://github.com/neo4j/graphql/tree/dev/packages/ogm",
     "exports": "./dist/index.js",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**/*.ts",
+        "dist/**/*.ts.map",
+        "dist/**/*.js",
+        "dist/**/*.js.map"
+    ],
     "scripts": {
-        "build": "tsc --project src/",
+        "build": "tsc --build tsconfig.production.json",
         "test": "jest",
         "test:unit": "jest src/**/*.test.ts",
         "test:unit:watch": "jest src --watch",
@@ -25,29 +31,31 @@
     },
     "author": "Neo4j Inc.",
     "dependencies": {
-        "@graphql-codegen/core": "2.0.0",
-        "@graphql-codegen/plugin-helpers": "2.0.0",
-        "@graphql-codegen/typescript": "2.0.0",
-        "@graphql-tools/merge": "6.2.14",
-        "@neo4j/graphql": "^2.5.2",
-        "camelcase": "^6.2.0",
-        "pluralize": "^8.0.0",
-        "prettier": "2.3.2"
+        "@graphql-codegen/core": "^2.4.0",
+        "@graphql-codegen/plugin-helpers": "^2.3.2",
+        "@graphql-codegen/typescript": "^2.4.2",
+        "@graphql-tools/merge": "^8.2.1",
+        "@neo4j/graphql": "^3.4.0",
+        "prettier": "^2.5.1"
     },
     "peerDependencies": {
-        "graphql": "^15.0.0",
+        "graphql": "^16.0.0",
         "neo4j-driver": "^4.1.0"
     },
     "devDependencies": {
-        "@types/jest": "26.0.8",
-        "@types/node": "14.0.27",
-        "graphql-tag": "2.11.0",
-        "jest": "26.2.2",
-        "libnpmsearch": "3.1.0",
-        "npm-run-all": "^4.1.5",
-        "randomstring": "1.1.5",
-        "semver": "7.3.5",
-        "ts-jest": "26.1.4",
-        "typescript": "3.9.7"
+        "@neo4j/graphql-plugin-auth": "^1.0.0",
+        "@types/jest": "28.1.1",
+        "@types/node": "16.11.41",
+        "camelcase": "6.3.0",
+        "graphql-tag": "2.12.6",
+        "jest": "28.1.1",
+        "jsonwebtoken": "8.5.1",
+        "libnpmsearch": "5.0.3",
+        "npm-run-all": "4.1.5",
+        "pluralize": "8.0.0",
+        "randomstring": "1.2.2",
+        "semver": "7.3.7",
+        "ts-jest": "28.0.5",
+        "typescript": "4.7.3"
     }
 }

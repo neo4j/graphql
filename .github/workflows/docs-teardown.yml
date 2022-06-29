@@ -3,9 +3,12 @@ name: "Documentation Teardown"
 on:
   pull_request_target:
     branches:
+      - dev
       - master
     paths:
-      - "docs/**"
+      - docs/antora.yml
+      - docs/package.json
+      - "docs/modules/ROOT/**"
     types:
       - closed
 
@@ -14,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
       - name: Teardown documentation

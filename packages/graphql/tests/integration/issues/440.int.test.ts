@@ -29,12 +29,12 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
     const typeDefs = gql`
         type Video {
             id: ID! @id(autogenerate: false)
-            categories: [Category] @relationship(type: "IS_CATEGORIZED_AS", direction: OUT)
+            categories: [Category!]! @relationship(type: "IS_CATEGORIZED_AS", direction: OUT)
         }
 
         type Category {
             id: ID! @id(autogenerate: false)
-            videos: [Video] @relationship(type: "IS_CATEGORIZED_AS", direction: IN)
+            videos: [Video!]! @relationship(type: "IS_CATEGORIZED_AS", direction: IN)
         }
     `;
 
@@ -96,7 +96,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             await neoSchema.checkNeo4jCompat();
 
             const mutationResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues,
@@ -104,10 +104,10 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
 
             expect(mutationResult.errors).toBeFalsy();
 
-            expect(mutationResult?.data?.updateVideos?.videos).toHaveLength(1);
-            expect(mutationResult?.data?.updateVideos?.videos[0].id).toEqual(videoID);
-            expect(mutationResult?.data?.updateVideos?.videos[0].categories).toHaveLength(1);
-            expect(mutationResult?.data?.updateVideos?.videos[0].categories[0].id).toEqual(catIDs[2]);
+            expect((mutationResult?.data as any)?.updateVideos?.videos).toHaveLength(1);
+            expect((mutationResult?.data as any)?.updateVideos?.videos[0].id).toEqual(videoID);
+            expect((mutationResult?.data as any)?.updateVideos?.videos[0].categories).toHaveLength(1);
+            expect((mutationResult?.data as any)?.updateVideos?.videos[0].categories[0].id).toEqual(catIDs[2]);
         } finally {
             await session.close();
         }
@@ -163,7 +163,7 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
             await neoSchema.checkNeo4jCompat();
 
             const mutationResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: mutation,
                 contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
                 variableValues,
@@ -171,10 +171,10 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
 
             expect(mutationResult.errors).toBeFalsy();
 
-            expect(mutationResult?.data?.updateVideos?.videos).toHaveLength(1);
-            expect(mutationResult?.data?.updateVideos?.videos[0].id).toEqual(videoID);
-            expect(mutationResult?.data?.updateVideos?.videos[0].categories).toHaveLength(1);
-            expect(mutationResult?.data?.updateVideos?.videos[0].categories[0].id).toEqual(catIDs[2]);
+            expect((mutationResult?.data as any)?.updateVideos?.videos).toHaveLength(1);
+            expect((mutationResult?.data as any)?.updateVideos?.videos[0].id).toEqual(videoID);
+            expect((mutationResult?.data as any)?.updateVideos?.videos[0].categories).toHaveLength(1);
+            expect((mutationResult?.data as any)?.updateVideos?.videos[0].categories[0].id).toEqual(catIDs[2]);
         } finally {
             await session.close();
         }

@@ -3,46 +3,52 @@
 
 == Configuration
 
-If you want the Neo4j GraphQL Library to perform JWT decoding and verification for you, you must pass the configuration option `jwt` into the `Neo4jGraphQL` or `OGM` constructor, which has EITHER of the following arguments:
-
-- `jwksEndpoint` (recommended) - The OpenID Public Key Set Endpoint that verifies the JWT. The https://auth0.com/docs/security/tokens/json-web-tokens/json-web-key-sets[JSON Web Key Sets] used under the OpenID Configuration are typically stored at an endpoint similar to \https://YOUR_DOMAIN/.well-known/jwks.json
-- `secret` - The secret to be used to decode and verify JWTs. Either the secret or the PEM encoded public key used to verify the JWT.
-
-Optional arguments:
-
-- `noVerify` (optional) - Disable verification of JWTs, defaults to _false_
-- `rolesPath` (optional) - A string key to specify where to find roles in the JWT, defaults to "roles"
-
-The recommended construction of a `Neo4jGraphQL` instance would be:
+To get started with auth you need an instance of an auth plugin for the Neo4j GraphQL Library. For most use cases you will only need to use our provided plugins at `@neo4j/graphql-plugin-auth`. Below is a basic example using the `Neo4jGraphQLAuthJWTPlugin` class:
 
 [source, javascript, indent=0]
 ----
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
+
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
-    config: {
-        jwt: {
-            jwksEndpoint: "https://YOUR_DOMAIN/.well-known/jwks.json"
-        }
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWTPlugin({
+            secret: "super-secret"
+        })
     }
 });
 ----
 
-Another valid construction could be:
+If you would like to use JWKS decoding then use the `Neo4jGraphQLAuthJWKSPlugin` class:
 
 [source, javascript, indent=0]
 ----
+import { Neo4jGraphQL } from "@neo4j/graphql";
+import { Neo4jGraphQLAuthJWKSPlugin } from "@neo4j/graphql-plugin-auth";
+
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
-    config: {
-        jwt: {
-            secret
-        }
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWKSPlugin({
+            jwksEndpoint: "https://YOUR_DOMAIN/well-known/jwks.json",
+        })
     }
 });
 ----
 
+If you need to create your own auth plugin then ensure it adheres to the following interface:
 
-It is also possible to pass in JWTs which have already been decoded, in which case the `jwt` option is _not necessary_. This is covered in the section xref::auth/setup.adoc#auth-setup-passing-in[Passing in JWTs] below.
+[source, javascript, indent=0]
+----
+interface Neo4jGraphQLAuthPlugin {
+    rolesPath?: string;
+
+    decode<T>(token: string | any): Promise<T | undefined>;
+}
+----
+
+It is also possible to pass in JWTs which have already been decoded, in which case the `jwt` option is _not necessary_. This is covered in the section xref::auth/setup.adoc#auth-setup-passing-in[Passing in JWTs] below. Note that the plugin's base decode method only supports HS256 and RS256 algorithms.
 
 === Auth Roles Object Paths
 
@@ -63,14 +69,16 @@ In order to make use of this, you must pass it in as a "dot path" into the `role
 ----
 const neoSchema = new Neo4jGraphQL({
     typeDefs,
-    config: {
-        jwt: {
-            jwksEndpoint: "https://YOUR_DOMAIN/.well-known/jwks.json",
-            rolesPath: "https://YOUR_DOMAIN/claims\\.https://YOUR_DOMAIN/claims/roles"
-        }
+    plugins: {
+        auth: new Neo4jGraphQLAuthJWKSPlugin({
+            jwksEndpoint: "https://YOUR_DOMAIN/well-known/jwks.json",
+            rolesPath: "https://auth0\\.mysite\\.com/claims.https://auth0\\.mysite\\.com/claims/roles"
+        })
     }
 });
 ----
+
+Note that `.` characters within a key of the JWT must be escaped with `\\`, whilst a `.` character indicating traversal into a value must not be escaped.
 
 [[auth-setup-passing-in]]
 == Passing in JWTs
@@ -90,9 +98,11 @@ Then, using Apollo Server as an example, you must include the request in the Gra
 
 [source, javascript, indent=0]
 ----
-const server = new ApolloServer({
-    schema: neoSchema.schema,
-    context: ({ req }) => ({ req }),
+neoSchema.getSchema().then((schema) => {
+    const server = new ApolloServer({
+        schema,
+        context: ({ req }) => ({ req }),
+    });
 });
 ----
 
@@ -125,9 +135,11 @@ For example, you might have a function `decodeJWT` which returns a decoded JWT:
 ----
 const decodedJWT = decodeJWT(encodedJWT)
 
-const server = new ApolloServer({
-    schema: neoSchema.schema,
-    context: { jwt: decodedJWT.payload },
+neoSchema.getSchema().then((schema) => {
+    const server = new ApolloServer({
+        schema,
+        context: { jwt: decodedJWT.payload },
+    });
 });
 ----
 

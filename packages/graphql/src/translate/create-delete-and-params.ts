@@ -21,7 +21,9 @@ import { Node, Relationship } from "../classes";
 import { Context } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
+import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
+import { createEventMetaObject } from "./subscriptions/create-event-meta";
+import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 
 interface Res {
     strs: string[];
@@ -57,20 +59,20 @@ function createDeleteAndParams({
         if (relationField) {
             const refNodes: Node[] = [];
 
-            const relationship = (context.neoSchema.relationships.find(
+            const relationship = context.relationships.find(
                 (x) => x.properties === relationField.properties
-            ) as unknown) as Relationship;
+            ) as unknown as Relationship;
 
             if (relationField.union) {
                 Object.keys(value).forEach((unionTypeName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
             } else if (relationField.interface) {
                 relationField.interface.implementations?.forEach((implementationName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
                 });
             } else {
-                refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+                refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
             const inStr = relationField.direction === "IN" ? "<-" : "-";
@@ -208,10 +210,25 @@ function createDeleteAndParams({
                         }
                     }
 
+                    const nodeToDelete = `${_varName}_to_delete`;
                     res.strs.push(
-                        `WITH ${[...withVars, `collect(DISTINCT ${_varName}) as ${_varName}_to_delete`].join(", ")}`
+                        `WITH ${[...withVars, `collect(DISTINCT ${_varName}) as ${nodeToDelete}`].join(", ")}`
                     );
+
+                    if (context.subscriptionsEnabled) {
+                        const metaObjectStr = createEventMetaObject({
+                            event: "delete",
+                            nodeVariable: "n",
+                            typename: refNode.name,
+                        });
+                        const reduceStr = `REDUCE(m=${META_CYPHER_VARIABLE}, n IN ${nodeToDelete} | m + ${metaObjectStr}) AS ${META_CYPHER_VARIABLE}`;
+                        res.strs.push(
+                            `WITH ${[...filterMetaVariable(withVars), nodeToDelete].join(", ")}, ${reduceStr}`
+                        );
+                    }
+
                     res.strs.push(`FOREACH(x IN ${_varName}_to_delete | DETACH DELETE x)`);
+                    // TODO - relationship validation
                 });
             });
 

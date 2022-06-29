@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../../src";
-import { createJwtRequest } from "../../../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../../../utils/tck-test-utils";
 
 describe("Cypher Auth Where", () => {
@@ -35,14 +36,14 @@ describe("Cypher Auth Where", () => {
             type User {
                 id: ID
                 name: String
-                posts: [Post] @relationship(type: "HAS_POST", direction: OUT)
-                content: [Search] @relationship(type: "HAS_POST", direction: OUT) # something to test unions
+                posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                content: [Search!]! @relationship(type: "HAS_POST", direction: OUT) # something to test unions
             }
 
             type Post {
                 id: ID
                 content: String
-                creator: User @relationship(type: "HAS_POST", direction: IN)
+                creator: User! @relationship(type: "HAS_POST", direction: IN)
             }
 
             extend type User
@@ -69,7 +70,12 @@ describe("Cypher Auth Where", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -352,8 +358,8 @@ describe("Cypher Auth Where", () => {
             WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS contentConnection
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS contentConnection
             }
             RETURN this { .id, contentConnection } as this"
         `);
@@ -401,8 +407,8 @@ describe("Cypher Auth Where", () => {
             WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
             RETURN edge
             }
-            WITH collect(edge) as edges, count(edge) as totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS contentConnection
+            WITH collect(edge) as edges
+            RETURN { edges: edges, totalCount: size(edges) } AS contentConnection
             }
             RETURN this { .id, contentConnection } as this"
         `);
@@ -446,13 +452,14 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:User)
             WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
             SET this.name = $this_update_name
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"this_update_name\\": \\"Bob\\"
+                \\"this_update_name\\": \\"Bob\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -477,14 +484,15 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:User)
             WHERE this.name = $this_name AND this.id IS NOT NULL AND this.id = $this_auth_where0_id
             SET this.name = $this_update_name
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_name\\": \\"bob\\",
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"this_update_name\\": \\"Bob\\"
+                \\"this_update_name\\": \\"Bob\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -516,10 +524,18 @@ describe("Cypher Auth Where", () => {
             WHERE EXISTS((this_posts0)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_auth_where0_creator_id)
             CALL apoc.do.when(this_posts0 IS NOT NULL, \\"
             SET this_posts0.id = $this_update_posts0_id
-            RETURN count(*)
+            WITH this, this_posts0
+            CALL {
+            	WITH this_posts0
+            	MATCH (this_posts0)<-[this_posts0_creator_User_unique:HAS_POST]-(:User)
+            	WITH count(this_posts0_creator_User_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	RETURN c AS this_posts0_creator_User_unique_ignored
+            }
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_posts0:this_posts0, auth:$auth,this_update_posts0_id:$this_update_posts0_id})
-            YIELD value as _
-            RETURN this { .id, posts: [ (this)-[:HAS_POST]->(this_posts:Post)  WHERE EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts_auth_where0_creator_id) | this_posts { .id } ] } AS this"
+            YIELD value AS _
+            RETURN collect(DISTINCT this { .id, posts: [ (this)-[:HAS_POST]->(this_posts:Post)  WHERE EXISTS((this_posts)<-[:HAS_POST]-(:User)) AND ALL(creator IN [(this_posts)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts_auth_where0_creator_id) | this_posts { .id } ] }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -554,7 +570,8 @@ describe("Cypher Auth Where", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -683,12 +700,12 @@ describe("Cypher Auth Where", () => {
             			MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -696,7 +713,8 @@ describe("Cypher Auth Where", () => {
                 \\"this0_id\\": \\"123\\",
                 \\"this0_name\\": \\"Bob\\",
                 \\"this0_password\\": \\"password\\",
-                \\"this0_posts_connect0_node_auth_where0_creator_id\\": \\"id-01\\"
+                \\"this0_posts_connect0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -742,12 +760,12 @@ describe("Cypher Auth Where", () => {
             			MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -756,7 +774,8 @@ describe("Cypher Auth Where", () => {
                 \\"this0_name\\": \\"Bob\\",
                 \\"this0_password\\": \\"password\\",
                 \\"this0_posts_connect0_node_id\\": \\"post-id\\",
-                \\"this0_posts_connect0_node_auth_where0_creator_id\\": \\"id-01\\"
+                \\"this0_posts_connect0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -792,15 +811,16 @@ describe("Cypher Auth Where", () => {
             			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"this_posts0_connect0_node_auth_where0_creator_id\\": \\"id-01\\"
+                \\"this_posts0_connect0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -836,16 +856,17 @@ describe("Cypher Auth Where", () => {
             			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
                 \\"this_posts0_connect0_node_id\\": \\"new-id\\",
-                \\"this_posts0_connect0_node_auth_where0_creator_id\\": \\"id-01\\"
+                \\"this_posts0_connect0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -881,15 +902,16 @@ describe("Cypher Auth Where", () => {
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"this_connect_posts0_node_auth_where0_creator_id\\": \\"id-01\\"
+                \\"this_connect_posts0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -925,16 +947,17 @@ describe("Cypher Auth Where", () => {
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
                 \\"this_connect_posts0_node_id\\": \\"some-id\\",
-                \\"this_connect_posts0_node_auth_where0_creator_id\\": \\"id-01\\"
+                \\"this_connect_posts0_node_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -968,15 +991,16 @@ describe("Cypher Auth Where", () => {
             FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_posts0_disconnect0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"this_posts0_disconnect0_auth_where0_creator_id\\": \\"id-01\\"
+                \\"this_posts0_disconnect0_auth_where0_creator_id\\": \\"id-01\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -1010,9 +1034,9 @@ describe("Cypher Auth Where", () => {
             FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_posts0_disconnect0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1037,7 +1061,8 @@ describe("Cypher Auth Where", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -1071,9 +1096,9 @@ describe("Cypher Auth Where", () => {
             FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_posts0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1090,7 +1115,8 @@ describe("Cypher Auth Where", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -1124,9 +1150,9 @@ describe("Cypher Auth Where", () => {
             FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_posts0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN this { .id } AS this"
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1147,7 +1173,8 @@ describe("Cypher Auth Where", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

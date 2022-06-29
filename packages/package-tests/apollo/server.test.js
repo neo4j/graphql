@@ -17,8 +17,7 @@
  * limitations under the License.
  */
 
-const fetch = require("node-fetch");
-// eslint-disable-next-line import/no-unresolved
+const fetch = require("cross-fetch");
 const { getIntrospectionQuery, buildClientSchema, printSchema } = require("graphql");
 const server = require("./server");
 
@@ -56,11 +55,12 @@ async function main() {
         if (!generatedTypeDefsMatch.test(printed)) {
             throw new Error(`${generatedTypeDefsMatch} was not found in generated typeDefs`);
         }
-
+        // eslint-disable-next-line no-console
         console.log("Passed");
 
         server.stop();
     } catch (error) {
+        // eslint-disable-next-line no-console
         console.error(error);
         process.exit(1);
     }

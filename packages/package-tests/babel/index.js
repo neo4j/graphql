@@ -24,10 +24,12 @@ import { printSchema } from "graphql";
 const typeDefs = `type Movie{ id: ID!}`;
 const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-// A "Movies" query should have been generated
-const generatedTypeDefsMatch = /movies/;
+neoSchema.getSchema().then((schema) => {
+    // A "Movies" query should have been generated
+    const generatedTypeDefsMatch = /movies/;
 
-// If not, throw to exit process with 1 and include stack trace
-if (!generatedTypeDefsMatch.test(printSchema(neoSchema.schema))) {
-    throw new Error(`${generatedTypeDefsMatch} was not found in generated typeDefs`);
-}
+    // If not, throw to exit process with 1 and include stack trace
+    if (!generatedTypeDefsMatch.test(printSchema(schema))) {
+        throw new Error(`${generatedTypeDefsMatch} was not found in generated typeDefs`);
+    }
+});

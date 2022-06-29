@@ -32,49 +32,134 @@ describe("@default directive", () => {
         await driver.close();
     });
 
-    test("on non-primitive field should throw an error", () => {
-        const typeDefs = `
-            type User {
-                name: String!
-                location: Point! @default(value: "default")
-            }
-        `;
+    describe("with primitive fields", () => {
+        test("on non-primitive field should throw an error", async () => {
+            const typeDefs = `
+                type User {
+                    name: String!
+                    location: Point! @default(value: "default")
+                }
+            `;
 
-        expect(
-            () =>
-                new Neo4jGraphQL({
-                    typeDefs,
-                })
-        ).toThrow("@default directive can only be used on primitive type fields");
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            await expect(neoSchema.getSchema()).rejects.toThrow(
+                "@default directive can only be used on primitive type fields"
+            );
+        });
+
+        test("with an argument with a type which doesn't match the field should throw an error", async () => {
+            const typeDefs = `
+                type User {
+                    name: String! @default(value: 2)
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            await expect(neoSchema.getSchema()).rejects.toThrow(
+                "Default value for User.name does not have matching type String"
+            );
+        });
+
+        test("on a DateTime with an invalid value should throw an error", async () => {
+            const typeDefs = `
+                type User {
+                    verifiedAt: DateTime! @default(value: "Not a date")
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            await expect(neoSchema.getSchema()).rejects.toThrow(
+                "Default value for User.verifiedAt is not a valid DateTime"
+            );
+        });
+
+        test("on primitive field should not throw an error", async () => {
+            const typeDefs = `
+                type User {
+                    name: String!
+                    location: String! @default(value: "somewhere")
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            await expect(neoSchema.getSchema()).resolves.not.toThrow();
+        });
     });
 
-    test("with an argument with a type which doesn't match the field should throw an error", () => {
-        const typeDefs = `
-            type User {
-                name: String! @default(value: 2)
-            }
-        `;
+    describe("with enum fields", () => {
+        test("on enum field with incorrect value should throw an error", async () => {
+            const typeDefs = `
+                type User {
+                    name: String!
+                    location: Location! @default(value: DIFFERENT)
+                }
 
-        expect(
-            () =>
-                new Neo4jGraphQL({
-                    typeDefs,
-                })
-        ).toThrow("Default value for User.name does not have matching type String");
-    });
+                enum Location {
+                    HERE
+                    THERE
+                    EVERYWHERE
+                }
+            `;
 
-    test("on a DateTime with an invalid value should throw an error", () => {
-        const typeDefs = `
-            type User {
-                verifiedAt: DateTime! @default(value: "Not a date")
-            }
-        `;
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
 
-        expect(
-            () =>
-                new Neo4jGraphQL({
-                    typeDefs,
-                })
-        ).toThrow("Default value for User.verifiedAt is not a valid DateTime");
+            await expect(neoSchema.getSchema()).rejects.toThrow('Enum "Location" cannot represent value: "DIFFERENT"');
+        });
+
+        test("on enum field with incorrect type should throw an error", async () => {
+            const typeDefs = `
+                type User {
+                    name: String!
+                    location: Location! @default(value: 2)
+                }
+
+                enum Location {
+                    HERE
+                    THERE
+                    EVERYWHERE
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            await expect(neoSchema.getSchema()).rejects.toThrow("@default value on enum fields must be an enum value");
+        });
+
+        test("on enum field should not throw an error", async () => {
+            const typeDefs = `
+                type User {
+                    name: String!
+                    location: Location! @default(value: HERE)
+                }
+
+                enum Location {
+                    HERE
+                    THERE
+                    EVERYWHERE
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            await expect(neoSchema.getSchema()).resolves.not.toThrow();
+        });
     });
 });

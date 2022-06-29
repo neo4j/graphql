@@ -20,11 +20,10 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher Points", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -38,7 +37,7 @@ describe("Cypher Points", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -425,12 +424,12 @@ describe("Cypher Points", () => {
             SET this0.point = point($this0_point)
             RETURN this0
             }
-            RETURN
+            RETURN [
             this0 { point: apoc.cypher.runFirstColumn('RETURN
             CASE this0.point IS NOT NULL
             	WHEN true THEN { point: this0.point, crs: this0.point.crs }
             	ELSE NULL
-            END AS result',{ this0: this0 },false) } AS this0"
+            END AS result',{ this0: this0 },false) }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -438,7 +437,8 @@ describe("Cypher Points", () => {
                 \\"this0_point\\": {
                     \\"longitude\\": 1,
                     \\"latitude\\": 2
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -467,11 +467,11 @@ describe("Cypher Points", () => {
             "MATCH (this:PointContainer)
             WHERE this.id = $this_id
             SET this.point = point($this_update_point)
-            RETURN this { point: apoc.cypher.runFirstColumn('RETURN
+            RETURN collect(DISTINCT this { point: apoc.cypher.runFirstColumn('RETURN
             CASE this.point IS NOT NULL
             	WHEN true THEN { point: this.point, crs: this.point.crs }
             	ELSE NULL
-            END AS result',{ this: this },false) } AS this"
+            END AS result',{ this: this },false) }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -480,7 +480,8 @@ describe("Cypher Points", () => {
                 \\"this_update_point\\": {
                     \\"longitude\\": 1,
                     \\"latitude\\": 2
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

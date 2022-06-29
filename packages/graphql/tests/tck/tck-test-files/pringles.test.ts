@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../../src/utils/test/utils";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher Create Pringles", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -33,9 +33,9 @@ describe("Cypher Create Pringles", () => {
             type Product {
                 id: ID!
                 name: String
-                sizes: [Size] @relationship(type: "HAS_SIZE", direction: OUT)
-                colors: [Color] @relationship(type: "HAS_COLOR", direction: OUT)
-                photos: [Photo] @relationship(type: "HAS_PHOTO", direction: OUT)
+                sizes: [Size!]! @relationship(type: "HAS_SIZE", direction: OUT)
+                colors: [Color!]! @relationship(type: "HAS_COLOR", direction: OUT)
+                photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
             }
 
             type Size {
@@ -46,20 +46,25 @@ describe("Cypher Create Pringles", () => {
             type Color {
                 id: ID!
                 name: String!
-                photos: [Photo] @relationship(type: "OF_COLOR", direction: IN)
+                photos: [Photo!]! @relationship(type: "OF_COLOR", direction: IN)
             }
 
             type Photo {
                 id: ID!
                 description: String!
                 url: String!
-                color: Color @relationship(type: "OF_COLOR", direction: OUT)
+                color: Color! @relationship(type: "OF_COLOR", direction: OUT)
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
         });
     });
 
@@ -144,6 +149,14 @@ describe("Cypher Create Pringles", () => {
             SET this0_photos0_node.description = $this0_photos0_node_description
             SET this0_photos0_node.url = $this0_photos0_node_url
             MERGE (this0)-[:HAS_PHOTO]->(this0_photos0_node)
+            WITH this0, this0_photos0_node
+            CALL {
+            	WITH this0_photos0_node
+            	MATCH (this0_photos0_node)-[this0_photos0_node_color_Color_unique:OF_COLOR]->(:Color)
+            	WITH count(this0_photos0_node_color_Color_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
+            	RETURN c AS this0_photos0_node_color_Color_unique_ignored
+            }
             WITH this0
             CREATE (this0_photos1_node:Photo)
             SET this0_photos1_node.id = $this0_photos1_node_id
@@ -159,9 +172,17 @@ describe("Cypher Create Pringles", () => {
             			MERGE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             MERGE (this0)-[:HAS_PHOTO]->(this0_photos1_node)
+            WITH this0, this0_photos1_node
+            CALL {
+            	WITH this0_photos1_node
+            	MATCH (this0_photos1_node)-[this0_photos1_node_color_Color_unique:OF_COLOR]->(:Color)
+            	WITH count(this0_photos1_node_color_Color_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
+            	RETURN c AS this0_photos1_node_color_Color_unique_ignored
+            }
             WITH this0
             CREATE (this0_photos2_node:Photo)
             SET this0_photos2_node.id = $this0_photos2_node_id
@@ -177,13 +198,21 @@ describe("Cypher Create Pringles", () => {
             			MERGE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             MERGE (this0)-[:HAS_PHOTO]->(this0_photos2_node)
+            WITH this0, this0_photos2_node
+            CALL {
+            	WITH this0_photos2_node
+            	MATCH (this0_photos2_node)-[this0_photos2_node_color_Color_unique:OF_COLOR]->(:Color)
+            	WITH count(this0_photos2_node_color_Color_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
+            	RETURN c AS this0_photos2_node_color_Color_unique_ignored
+            }
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -208,7 +237,8 @@ describe("Cypher Create Pringles", () => {
                 \\"this0_photos2_node_id\\": \\"107\\",
                 \\"this0_photos2_node_description\\": \\"Red photo\\",
                 \\"this0_photos2_node_url\\": \\"r.png\\",
-                \\"this0_photos2_node_color_connect0_node_id\\": \\"100\\"
+                \\"this0_photos2_node_color_connect0_node_id\\": \\"100\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -263,7 +293,7 @@ describe("Cypher Create Pringles", () => {
             FOREACH(_ IN CASE this_photos0_color0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_photos0_color0_disconnect0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             WITH this, this_photos0
             CALL {
@@ -275,12 +305,20 @@ describe("Cypher Create Pringles", () => {
             			MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
-            RETURN count(*)
+            WITH this, this_photos0
+            CALL {
+            	WITH this_photos0
+            	MATCH (this_photos0)-[this_photos0_color_Color_unique:OF_COLOR]->(:Color)
+            	WITH count(this_photos0_color_Color_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
+            	RETURN c AS this_photos0_color_Color_unique_ignored
+            }
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateProducts: $updateProducts, this_photos0:this_photos0, auth:$auth,this_update_photos0_description:$this_update_photos0_description,this_photos0_color0_connect0_node_name:$this_photos0_color0_connect0_node_name})
-            YIELD value as _
-            RETURN this { .id } AS this"
+            YIELD value AS _
+            RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -330,7 +368,8 @@ describe("Cypher Create Pringles", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

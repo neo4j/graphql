@@ -1,4 +1,4 @@
-import gql from "graphql-tag";
+import { gql } from "@apollo/client";
 
 export const SIGNIN = gql`
     mutation signIn($email: String!, $password: String!) {
@@ -21,7 +21,7 @@ export const USER = gql`
 `;
 
 export const CREATE_BLOG = gql`
-    mutation($name: String!, $sub: ID) {
+    mutation ($name: String!, $sub: ID) {
         createBlogs(input: [{ name: $name, creator: { connect: { where: { node: { id: $sub } } } } }]) {
             blogs {
                 id
@@ -73,7 +73,7 @@ export const RECENTLY_UPDATED_BLOGS = gql`
 `;
 
 export const BLOG = gql`
-    query($id: ID) {
+    query ($id: ID) {
         blogs(where: { id: $id }) {
             id
             name

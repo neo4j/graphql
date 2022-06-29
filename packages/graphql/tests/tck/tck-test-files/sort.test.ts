@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../../src/utils/test/utils";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher sort tests", () => {
@@ -33,7 +34,7 @@ describe("Cypher sort tests", () => {
             type Movie {
                 id: ID
                 title: String
-                genres: [Genre] @relationship(type: "HAS_GENRE", direction: OUT)
+                genres: [Genre!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 totalGenres: Int!
                     @cypher(
                         statement: """
@@ -58,31 +59,86 @@ describe("Cypher sort tests", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
-    test("Simple Sort", async () => {
-        const query = gql`
-            {
-                movies(options: { sort: [{ id: DESC }] }) {
-                    title
+    describe("Simple Sort", () => {
+        test("with field in selection set", async () => {
+            const query = gql`
+                {
+                    movies(options: { sort: [{ id: DESC }] }) {
+                        id
+                        title
+                    }
                 }
-            }
-        `;
+            `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:Movie)
+                RETURN this { .id, .title } as this
+                ORDER BY this.id DESC"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
         });
 
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            RETURN this { .title } as this
-            ORDER BY this.id DESC"
-        `);
+        test("with field aliased in selection set", async () => {
+            const query = gql`
+                {
+                    movies(options: { sort: [{ id: DESC }] }) {
+                        aliased: id
+                        title
+                    }
+                }
+            `;
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:Movie)
+                RETURN this { aliased: this.id, .title, .id } as this
+                ORDER BY this.id DESC"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        });
+
+        test("with field not in selection set", async () => {
+            const query = gql`
+                {
+                    movies(options: { sort: [{ id: DESC }] }) {
+                        title
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:Movie)
+                RETURN this { .title, .id } as this
+                ORDER BY this.id DESC"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        });
     });
 
     test("Simple Sort On Cypher Field", async () => {
@@ -123,6 +179,7 @@ describe("Cypher sort tests", () => {
         const query = gql`
             {
                 movies(options: { sort: [{ id: DESC }, { title: ASC }] }) {
+                    id
                     title
                 }
             }
@@ -135,7 +192,7 @@ describe("Cypher sort tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            RETURN this { .title } as this
+            RETURN this { .id, .title } as this
             ORDER BY this.id DESC, this.title ASC"
         `);
 
@@ -144,11 +201,12 @@ describe("Cypher sort tests", () => {
 
     test("Sort with offset limit & with other variables", async () => {
         const query = gql`
-            query($title: String, $offset: Int, $limit: Int) {
+            query ($title: String, $offset: Int, $limit: Int) {
                 movies(
                     options: { sort: [{ id: DESC }, { title: ASC }], offset: $offset, limit: $limit }
                     where: { title: $title }
                 ) {
+                    id
                     title
                 }
             }
@@ -161,12 +219,15 @@ describe("Cypher sort tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CALL {
+            MATCH (this:Movie)
             WHERE this.title = $this_title
-            RETURN this { .title } as this
+            RETURN this
             ORDER BY this.id DESC, this.title ASC
             SKIP $this_offset
-            LIMIT $this_limit"
+            LIMIT $this_limit
+            }
+            RETURN this { .id, .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

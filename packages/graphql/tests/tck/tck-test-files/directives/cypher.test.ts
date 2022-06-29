@@ -20,11 +20,10 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher directive", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -109,7 +108,7 @@ describe("Cypher directive", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -139,11 +138,8 @@ describe("Cypher directive", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 }
             }"
         `);
@@ -171,11 +167,80 @@ describe("Cypher directive", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
+                }
+            }"
+        `);
+    });
+
+    test("LIMIT happens before custom Cypher if not sorting on the custom Cypher field", async () => {
+        const query = gql`
+            {
+                actors(options: { limit: 10 }) {
+                    randomNumber
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            MATCH (this:Actor)
+            RETURN this
+            LIMIT $this_limit
+            }
+            RETURN this { randomNumber:  apoc.cypher.runFirstColumn(\\"RETURN rand()\\", {this: this, auth: $auth}, false) } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_limit\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                },
+                \\"auth\\": {
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
+                }
+            }"
+        `);
+    });
+
+    test("LIMIT happens after custom Cypher if sorting on the custom Cypher field", async () => {
+        const query = gql`
+            {
+                actors(options: { limit: 10, sort: [{ randomNumber: ASC }] }) {
+                    randomNumber
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Actor)
+            RETURN this { randomNumber:  apoc.cypher.runFirstColumn(\\"RETURN rand()\\", {this: this, auth: $auth}, false) } as this
+            ORDER BY this.randomNumber ASC
+            LIMIT $this_limit"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_limit\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                },
+                \\"auth\\": {
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 }
             }"
         `);
@@ -212,11 +277,8 @@ describe("Cypher directive", () => {
             "{
                 \\"this_topActor_movies_title\\": \\"some title\\",
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 }
             }"
         `);
@@ -262,11 +324,8 @@ describe("Cypher directive", () => {
                 \\"this_topActor_movies_topActor_movies_title\\": \\"another title\\",
                 \\"this_topActor_movies_title\\": \\"some title\\",
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 }
             }"
         `);
@@ -303,11 +362,8 @@ describe("Cypher directive", () => {
             "{
                 \\"this_topActor_movies_title\\": \\"some title\\",
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
-                    }
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 }
             }"
         `);
@@ -344,22 +400,53 @@ describe("Cypher directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Actor)
-            RETURN this { movieOrTVShow: [this_movieOrTVShow IN apoc.cypher.runFirstColumn(\\"MATCH (n)
+            RETURN this { movieOrTVShow: apoc.coll.flatten([this_movieOrTVShow IN apoc.cypher.runFirstColumn(\\"MATCH (n)
             WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
-            RETURN n\\", {this: this, auth: $auth, title: $this_movieOrTVShow_title}, false) WHERE (\\"Movie\\" IN labels(this_movieOrTVShow)) OR (\\"TVShow\\" IN labels(this_movieOrTVShow))  |   [ this_movieOrTVShow IN [this_movieOrTVShow] WHERE (\\"Movie\\" IN labels(this_movieOrTVShow)) | this_movieOrTVShow { __resolveType: \\"Movie\\",  .id, .title, topActor: head([this_movieOrTVShow_topActor IN apoc.cypher.runFirstColumn(\\"MATCH (a:Actor)
-            RETURN a\\", {this: this_movieOrTVShow, auth: $auth}, false) | this_movieOrTVShow_topActor { .name }]) } ] + [ this_movieOrTVShow IN [this_movieOrTVShow] WHERE (\\"TVShow\\" IN labels(this_movieOrTVShow)) | this_movieOrTVShow { __resolveType: \\"TVShow\\",  .id, .title, topActor: head([this_movieOrTVShow_topActor IN apoc.cypher.runFirstColumn(\\"MATCH (a:Actor)
-            RETURN a\\", {this: this_movieOrTVShow, auth: $auth}, false) | this_movieOrTVShow_topActor { .name }]) } ] ] } as this"
+            RETURN n\\", {this: this, auth: $auth, title: $this_movieOrTVShow_title}, true) WHERE (this_movieOrTVShow:\`Movie\`) OR (this_movieOrTVShow:\`TVShow\`)  |   [ this_movieOrTVShow IN [this_movieOrTVShow] WHERE (this_movieOrTVShow:\`Movie\`) | this_movieOrTVShow { __resolveType: \\"Movie\\",  .id, .title, topActor: head([this_movieOrTVShow_topActor IN apoc.cypher.runFirstColumn(\\"MATCH (a:Actor)
+            RETURN a\\", {this: this_movieOrTVShow, auth: $auth}, false) | this_movieOrTVShow_topActor { .name }]) } ] + [ this_movieOrTVShow IN [this_movieOrTVShow] WHERE (this_movieOrTVShow:\`TVShow\`) | this_movieOrTVShow { __resolveType: \\"TVShow\\",  .id, .title, topActor: head([this_movieOrTVShow_topActor IN apoc.cypher.runFirstColumn(\\"MATCH (a:Actor)
+            RETURN a\\", {this: this_movieOrTVShow, auth: $auth}, false) | this_movieOrTVShow_topActor { .name }]) } ] ]) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_movieOrTVShow_title\\": \\"some title\\",
                 \\"auth\\": {
-                    \\"isAuthenticated\\": true,
-                    \\"roles\\": [],
-                    \\"jwt\\": {
-                        \\"roles\\": []
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
+                }
+            }"
+        `);
+    });
+
+    test("Union directive - querying only __typename", async () => {
+        const query = gql`
+            {
+                actors {
+                    movieOrTVShow(title: "some title") {
+                        __typename
                     }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Actor)
+            RETURN this { movieOrTVShow: apoc.coll.flatten([this_movieOrTVShow IN apoc.cypher.runFirstColumn(\\"MATCH (n)
+            WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
+            RETURN n\\", {this: this, auth: $auth, title: $this_movieOrTVShow_title}, true) WHERE (this_movieOrTVShow:\`Movie\`) OR (this_movieOrTVShow:\`TVShow\`)  |  head( [ this_movieOrTVShow IN [this_movieOrTVShow] WHERE (this_movieOrTVShow:\`Movie\`) | this_movieOrTVShow { __resolveType: \\"Movie\\" }  ] + [ this_movieOrTVShow IN [this_movieOrTVShow] WHERE (this_movieOrTVShow:\`TVShow\`) | this_movieOrTVShow { __resolveType: \\"TVShow\\" }  ] )]) } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_movieOrTVShow_title\\": \\"some title\\",
+                \\"auth\\": {
+                    \\"isAuthenticated\\": false,
+                    \\"roles\\": []
                 }
             }"
         `);

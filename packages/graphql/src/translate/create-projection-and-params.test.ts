@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
+import { ResolveTree } from "graphql-parse-resolve-info";
 import createProjectionAndParams from "./create-projection-and-params";
-import { Neo4jGraphQL } from "../classes";
-import { Context } from "../types";
-import { NodeBuilder } from "../utils/test/builders/node-builder";
+import { ContextBuilder } from "../../tests/utils/builders/context-builder";
+import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 
 describe("createProjectionAndParams", () => {
     test("should be a function", () => {
@@ -28,15 +28,20 @@ describe("createProjectionAndParams", () => {
     });
 
     test("should return the correct projection with 1 selection", () => {
-        const fieldsByTypeName = {
-            Movie: {
-                title: {
-                    name: "title",
-                    alias: "title",
-                    args: {},
-                    fieldsByTypeName: {},
+        const resolveTree: ResolveTree = {
+            alias: "movies",
+            name: "movies",
+            fieldsByTypeName: {
+                Movie: {
+                    title: {
+                        name: "title",
+                        alias: "title",
+                        args: {},
+                        fieldsByTypeName: {},
+                    },
                 },
             },
+            args: {},
         };
 
         const node = new NodeBuilder({
@@ -65,17 +70,68 @@ describe("createProjectionAndParams", () => {
             ],
         }).instance();
 
-        // @ts-ignore
-        const neoSchema: Neo4jGraphQL = {
-            nodes: [node],
+        const context = new ContextBuilder({
+            neoSchema: { nodes: [node] },
+            resolveTree,
+        }).instance();
+
+        const result = createProjectionAndParams({ resolveTree, node, context, varName: "this" });
+
+        expect(result[0]).toBe(`{ .title }`);
+        expect(result[1]).toMatchObject({});
+    });
+    test("should return the correct projection when querying for a global with id in the selection set", () => {
+        const resolveTree: ResolveTree = {
+            alias: "movies",
+            name: "movies",
+            fieldsByTypeName: {
+                Movie: {
+                    id: {
+                        name: "id",
+                        alias: "id",
+                        args: {},
+                        fieldsByTypeName: {},
+                    },
+                },
+            },
+            args: {},
         };
 
-        // @ts-ignore
-        const context: Context = { neoSchema };
+        const node = new NodeBuilder({
+            name: "Movie",
 
-        const result = createProjectionAndParams({ fieldsByTypeName, node, context, varName: "this" });
+            primitiveFields: [
+                {
+                    fieldName: "title",
+                    typeMeta: {
+                        name: "String",
+                        array: false,
+                        required: true,
+                        pretty: "String",
+                        input: {
+                            where: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                            create: { type: "String", pretty: "String" },
+                            update: { type: "String", pretty: "String" },
+                        },
+                    },
+                    otherDirectives: [],
+                    arguments: [],
+                    isGlobalIdField: true,
+                },
+            ],
+            isGlobalNode: true,
+            globalIdField: "title",
+        }).instance();
 
-        expect(result[0]).toEqual(`{ .title }`);
-        expect(result[1]).toMatchObject({});
+        const context = new ContextBuilder({
+            neoSchema: { nodes: [node] },
+            resolveTree,
+        }).instance();
+
+        const result = createProjectionAndParams({ resolveTree, node, context, varName: "this" });
+        expect(result[0]).toBe(`{ .title }`);
     });
 });

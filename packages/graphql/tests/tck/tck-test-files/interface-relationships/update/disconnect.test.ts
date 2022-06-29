@@ -20,11 +20,10 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Interface Relationships - Update disconnect", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -59,7 +58,7 @@ describe("Interface Relationships - Update disconnect", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -89,7 +88,7 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE this_disconnect_actedIn0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
@@ -97,9 +96,9 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE this_disconnect_actedIn0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -118,7 +117,8 @@ describe("Interface Relationships - Update disconnect", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -164,9 +164,9 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE this_disconnect_actedIn0_actors0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
@@ -182,11 +182,11 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE this_disconnect_actedIn0_actors0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -216,7 +216,8 @@ describe("Interface Relationships - Update disconnect", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -262,9 +263,9 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE this_disconnect_actedIn0_actors0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
@@ -272,9 +273,9 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE this_disconnect_actedIn0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -310,7 +311,8 @@ describe("Interface Relationships - Update disconnect", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -359,9 +361,9 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE this_disconnect_actedIn0_actors0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
@@ -377,11 +379,11 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE this_disconnect_actedIn0_actors0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -426,7 +428,8 @@ describe("Interface Relationships - Update disconnect", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

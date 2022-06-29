@@ -23,7 +23,8 @@ import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import mapToDbProperty from "../utils/map-to-db-property";
 import joinPredicates, { isPredicateJoin, PREDICATE_JOINS } from "../utils/join-predicates";
 import ContextParser from "../utils/context-parser";
-import { isString, asArray, haveSharedElement } from "../utils/utils";
+import { isString } from "../utils/utils";
+import { NodeAuth } from "../classes/NodeAuth";
 
 interface Res {
     strs: string[];
@@ -126,7 +127,7 @@ function createAuthPredicate({
 
             const relationField = node.relationFields.find((x) => key === x.fieldName);
             if (relationField) {
-                const refNode = context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+                const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
                 const inStr = relationField.direction === "IN" ? "<-" : "-";
                 const outStr = relationField.direction === "OUT" ? "->" : "-";
                 const relTypeStr = `[:${relationField.type}]`;
@@ -191,44 +192,15 @@ function createAuthAndParams({
         return ["", {}];
     }
 
-    let authRules: AuthRule[] = [];
-    if (operations) {
-        const operationsList = asArray(operations);
-        authRules = entity?.auth.rules.filter(
-            (r) => !r.operations || haveSharedElement(operationsList, r.operations || [])
-        );
-    } else {
-        authRules = entity?.auth.rules;
-    }
+    /** FIXME: this is required to keep compatibility with BaseField type */
+    const nodeAuth = new NodeAuth(entity.auth);
+    const authRules = nodeAuth.getRules(operations);
 
-    if (where) {
-        const subPredicates = authRules.reduce(
-            (res: Res, authRule: AuthRule, index): Res => {
-                if (!authRule.where) {
-                    return res;
-                }
+    const hasWhere = (rule: BaseAuthRule): boolean =>
+        !!(rule.where || rule.AND?.some(hasWhere) || rule.OR?.some(hasWhere));
 
-                const authWhere = createAuthPredicate({
-                    rule: {
-                        where: authRule.where,
-                        allowUnauthenticated: authRule.allowUnauthenticated,
-                    },
-                    context,
-                    node: where.node,
-                    varName: where.varName,
-                    chainStr: `${where.chainStr || where.varName}_auth_where${index}`,
-                    kind: "where",
-                });
-
-                return {
-                    strs: [...res.strs, authWhere[0]],
-                    params: { ...res.params, ...authWhere[1] },
-                };
-            },
-            { strs: [], params: {} }
-        );
-
-        return [joinPredicates(subPredicates.strs, "OR"), subPredicates.params];
+    if (where && !authRules.some(hasWhere)) {
+        return ["", [{}]];
     }
 
     function createSubPredicate({
@@ -299,6 +271,21 @@ function createAuthAndParams({
             thisPredicates.push(joinPredicates(predicates, key));
             thisParams = { ...thisParams, ...predicateParams };
         });
+
+        if (where && authRule.where) {
+            const whereAndParams = createAuthPredicate({
+                context,
+                node: where.node,
+                varName: where.varName,
+                rule: authRule,
+                chainStr: `${where.chainStr || where.varName}${chainStr || ""}_auth_where${index}`,
+                kind: "where",
+            });
+            if (whereAndParams[0]) {
+                thisPredicates.push(whereAndParams[0]);
+                thisParams = { ...thisParams, ...whereAndParams[1] };
+            }
+        }
 
         if (bind && authRule.bind) {
             const allowAndParams = createAuthPredicate({

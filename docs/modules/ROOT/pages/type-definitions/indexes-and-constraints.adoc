@@ -1,5 +1,5 @@
 [[type-definitions-indexes-and-constraints]]
-= Indexes Constraints
+= Indexes and Constraints
 
 [[type-definitions-constraints-unique]]
 == Unique node property constraints
@@ -69,7 +69,6 @@ You can use the `@fulltext` directive to add a https://neo4j.com/docs/cypher-man
 input FullTextInput {
   name: String!
   fields: [String]!
-  defaultThreshold: Int
 }
 
 """
@@ -88,7 +87,7 @@ The directive can be used on nodes. Here we add a Fulltext index, called 'Produc
 ----
 type Product @fulltext(indexes: [{ name: "ProductName", fields: ["name"] }]) {
     name: String!
-    color: Color @relationship(type: "OF_COLOR", direction: OUT)
+    color: Color! @relationship(type: "OF_COLOR", direction: OUT)
 }
 ----
 
@@ -118,17 +117,6 @@ query {
 }
 ----
 
-You can also, optionally, specify the score for matching:
-
-[source, graphql, indent=0]
-----
-query {
-    products(fulltext: { ProductName: { phrase: "beer OR cerveza", score_EQUAL: 10 } }) {
-        name
-    }
-}
-----
-
 > Note that you can only query one Fulltext index at once and that the fulltext key is only available on 'Top Level' queries.
 
 
@@ -147,7 +135,7 @@ const typeDefs = gql`
 
     type Product @fulltext(indexes: [{ name: "ProductName", fields: ["name"] }]) {
         name: String!
-        color: Color @relationship(type: "OF_COLOR", direction: OUT)
+        color: Color! @relationship(type: "OF_COLOR", direction: OUT)
     }
 `;
 

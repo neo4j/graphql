@@ -17,9 +17,8 @@
  * limitations under the License.
  */
 
-import { Node, Relationship } from "../classes";
+import { GraphElement, Node, Relationship } from "../classes";
 import { RelationField, Context, BaseField } from "../types";
-import { GraphElement } from "../classes/GraphElement";
 
 type Operator = "=" | "<" | "<=" | ">" | ">=";
 
@@ -70,7 +69,7 @@ function aggregate({
         if (["AND", "OR"].includes(key)) {
             const innerClauses: string[] = [];
 
-            ((value as unknown) as any[]).forEach((v: any, i) => {
+            (value as unknown as any[]).forEach((v: any, i) => {
                 const recurse = aggregate({
                     chainStr: `${chainStr}_${key}_${i}`,
                     inputValue: v,
@@ -219,7 +218,7 @@ function createPredicate({
         if (["AND", "OR"].includes(key)) {
             const innerClauses: string[] = [];
 
-            ((value as unknown) as any[]).forEach((v: any, i) => {
+            (value as unknown as any[]).forEach((v: any, i) => {
                 const recurse = createPredicate({
                     node,
                     chainStr: `${chainStr}_${key}_${i}`,

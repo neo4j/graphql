@@ -20,11 +20,10 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Interface Relationships - Create create", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -56,7 +55,7 @@ describe("Interface Relationships - Create create", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -112,6 +111,8 @@ describe("Interface Relationships - Create create", () => {
             WITH this0
             CALL {
             WITH this0
+            CALL {
+            WITH this0
             MATCH (this0)-[:ACTED_IN]->(this0_Movie:Movie)
             RETURN { __resolveType: \\"Movie\\", runtime: this0_Movie.runtime, title: this0_Movie.title } AS actedIn
             UNION
@@ -119,8 +120,10 @@ describe("Interface Relationships - Create create", () => {
             MATCH (this0)-[:ACTED_IN]->(this0_Series:Series)
             RETURN { __resolveType: \\"Series\\", episodes: this0_Series.episodes, title: this0_Series.title } AS actedIn
             }
-            RETURN
-            this0 { .name, actedIn: collect(actedIn) } AS this0"
+            RETURN collect(actedIn) AS actedIn
+            }
+            RETURN [
+            this0 { .name, actedIn: actedIn }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -134,7 +137,8 @@ describe("Interface Relationships - Create create", () => {
                 \\"this0_actedInMovie0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

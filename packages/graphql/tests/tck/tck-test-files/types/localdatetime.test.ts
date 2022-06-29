@@ -20,11 +20,10 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher LocalDateTime", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -38,7 +37,7 @@ describe("Cypher LocalDateTime", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -134,8 +133,8 @@ describe("Cypher LocalDateTime", () => {
             SET this0.localDT = $this0_localDT
             RETURN this0
             }
-            RETURN
-            this0 { .localDT } AS this0"
+            RETURN [
+            this0 { .localDT }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -148,7 +147,8 @@ describe("Cypher LocalDateTime", () => {
                     \\"minute\\": 0,
                     \\"second\\": 15,
                     \\"nanosecond\\": 555000000
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -173,7 +173,7 @@ describe("Cypher LocalDateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             SET this.localDT = $this_update_localDT
-            RETURN this { .id, .localDT } AS this"
+            RETURN collect(DISTINCT this { .id, .localDT }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -186,7 +186,8 @@ describe("Cypher LocalDateTime", () => {
                     \\"minute\\": 24,
                     \\"second\\": 40,
                     \\"nanosecond\\": 845512000
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

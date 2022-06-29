@@ -23,7 +23,7 @@ import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../../src/utils/test/graphql-types";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/560", () => {
     let driver: Driver;
@@ -75,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/560", () => {
             `);
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver },
             });
@@ -138,7 +138,7 @@ describe("https://github.com/neo4j/graphql/issues/560", () => {
             `);
 
             const result = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver },
             });

@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../../src/utils/test/utils";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher pagination tests", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -38,7 +38,12 @@ describe("Cypher pagination tests", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
         });
     });
 
@@ -139,7 +144,7 @@ describe("Cypher pagination tests", () => {
 
     test("Skip + Limit as variables", async () => {
         const query = gql`
-            query($offset: Int, $limit: Int) {
+            query ($offset: Int, $limit: Int) {
                 movies(options: { limit: $limit, offset: $offset }) {
                     title
                 }
@@ -175,7 +180,7 @@ describe("Cypher pagination tests", () => {
 
     test("Skip + Limit with other variables", async () => {
         const query = gql`
-            query($offset: Int, $limit: Int, $title: String) {
+            query ($offset: Int, $limit: Int, $title: String) {
                 movies(options: { limit: $limit, offset: $offset }, where: { title: $title }) {
                     title
                 }

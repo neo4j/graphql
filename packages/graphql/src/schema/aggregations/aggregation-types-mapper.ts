@@ -18,7 +18,8 @@
  */
 
 import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
-import { numericalResolver, idResolver } from "../resolvers";
+import { idResolver } from "../resolvers/field/id";
+import { numericalResolver } from "../resolvers/field/numerical";
 
 export class AggregationTypesMapper {
     private requiredAggregationSelectionTypes: Record<string, ObjectTypeComposer<unknown, unknown>>;
@@ -145,8 +146,7 @@ export class AggregationTypesMapper {
         fields?: Record<string, any>;
     }): ObjectTypeComposer<any, any> {
         const typeName = this.makeNullable(name, nullable);
-        const nullableStr = "";
-        // const nullableStr = nullable ? "Nullable" : "NonNullable"; // TODO: #605 Breaking change, uncomment for 3.0
+        const nullableStr = nullable ? "Nullable" : "NonNullable";
 
         return composer.getOrCreateOTC(`${name}AggregateSelection${nullableStr}`, (tc) => {
             tc.addFields(fields ?? { min: typeName, max: typeName });
@@ -154,7 +154,6 @@ export class AggregationTypesMapper {
     }
 
     private makeNullable(typeStr: string, isNullable: boolean) {
-        return `${typeStr}${isNullable ? "" : ""}`;
-        // return `${typeStr}${isNullable ? "" : "!"}`; // TODO: #605 Breaking change, uncomment for 3.0
+        return `${typeStr}${isNullable ? "" : "!"}`;
     }
 }

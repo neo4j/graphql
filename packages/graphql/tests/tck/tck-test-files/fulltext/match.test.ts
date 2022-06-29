@@ -53,7 +53,8 @@ describe("Cypher -> fulltext -> Match", () => {
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
                 $this_fulltext_MovieTitle_phrase
-            ) YIELD node as this, score as score
+            ) YIELD node as this
+            WHERE \\"Movie\\" IN labels(this)
             RETURN this { .title } as this"
         `);
 
@@ -82,8 +83,8 @@ describe("Cypher -> fulltext -> Match", () => {
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
                 $this_fulltext_MovieTitle_phrase
-            ) YIELD node as this, score as score
-            WHERE this.title = $this_title
+            ) YIELD node as this
+            WHERE \\"Movie\\" IN labels(this) AND this.title = $this_title
             RETURN this { .title } as this"
         `);
 

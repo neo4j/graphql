@@ -20,11 +20,10 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher Connect", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -33,9 +32,9 @@ describe("Cypher Connect", () => {
             type Product {
                 id: ID!
                 name: String
-                sizes: [Size] @relationship(type: "HAS_SIZE", direction: OUT)
-                colors: [Color] @relationship(type: "HAS_COLOR", direction: OUT)
-                photos: [Photo] @relationship(type: "HAS_PHOTO", direction: OUT)
+                sizes: [Size!]! @relationship(type: "HAS_SIZE", direction: OUT)
+                colors: [Color!]! @relationship(type: "HAS_COLOR", direction: OUT)
+                photos: [Photo!]! @relationship(type: "HAS_PHOTO", direction: OUT)
             }
 
             type Size {
@@ -46,20 +45,20 @@ describe("Cypher Connect", () => {
             type Color {
                 id: ID!
                 name: String!
-                photos: [Photo] @relationship(type: "OF_COLOR", direction: IN)
+                photos: [Photo!]! @relationship(type: "OF_COLOR", direction: IN)
             }
 
             type Photo {
                 id: ID!
                 description: String!
                 url: String!
-                color: Color @relationship(type: "OF_COLOR", direction: OUT)
+                color: Color! @relationship(type: "OF_COLOR", direction: OUT)
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -138,6 +137,14 @@ describe("Cypher Connect", () => {
             			MERGE (this0_colors_connect0_node)<-[:OF_COLOR]-(this0_colors_connect0_node_photos0_node)
             		)
             	)
+            	WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node
+            CALL {
+            	WITH this0_colors_connect0_node_photos0_node
+            	MATCH (this0_colors_connect0_node_photos0_node)-[this0_colors_connect0_node_photos0_node_color_Color_unique:OF_COLOR]->(:Color)
+            	WITH count(this0_colors_connect0_node_photos0_node_color_Color_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
+            	RETURN c AS this0_colors_connect0_node_photos0_node_color_Color_unique_ignored
+            }
             WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node
             CALL {
             	WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node
@@ -148,11 +155,19 @@ describe("Cypher Connect", () => {
             			MERGE (this0_colors_connect0_node_photos0_node)-[:OF_COLOR]->(this0_colors_connect0_node_photos0_node_color0_node)
             		)
             	)
-            	RETURN count(*)
+            	WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node, this0_colors_connect0_node_photos0_node_color0_node
+            CALL {
+            	WITH this0_colors_connect0_node_photos0_node
+            	MATCH (this0_colors_connect0_node_photos0_node)-[this0_colors_connect0_node_photos0_node_color_Color_unique:OF_COLOR]->(:Color)
+            	WITH count(this0_colors_connect0_node_photos0_node_color_Color_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
+            	RETURN c AS this0_colors_connect0_node_photos0_node_color_Color_unique_ignored
             }
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
-            	RETURN count(*)
+            	RETURN count(*) AS _
+            }
+            	RETURN count(*) AS _
             }
             WITH this0
             CALL {
@@ -174,9 +189,17 @@ describe("Cypher Connect", () => {
             			MERGE (this0_photos_connect0_node)-[:OF_COLOR]->(this0_photos_connect0_node_color0_node)
             		)
             	)
-            	RETURN count(*)
+            	WITH this0, this0_photos_connect0_node, this0_photos_connect0_node_color0_node
+            CALL {
+            	WITH this0_photos_connect0_node
+            	MATCH (this0_photos_connect0_node)-[this0_photos_connect0_node_color_Color_unique:OF_COLOR]->(:Color)
+            	WITH count(this0_photos_connect0_node_color_Color_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
+            	RETURN c AS this0_photos_connect0_node_color_Color_unique_ignored
             }
-            	RETURN count(*)
+            	RETURN count(*) AS _
+            }
+            	RETURN count(*) AS _
             }
             WITH this0
             CALL {
@@ -198,14 +221,22 @@ describe("Cypher Connect", () => {
             			MERGE (this0_photos_connect1_node)-[:OF_COLOR]->(this0_photos_connect1_node_color0_node)
             		)
             	)
-            	RETURN count(*)
+            	WITH this0, this0_photos_connect1_node, this0_photos_connect1_node_color0_node
+            CALL {
+            	WITH this0_photos_connect1_node
+            	MATCH (this0_photos_connect1_node)-[this0_photos_connect1_node_color_Color_unique:OF_COLOR]->(:Color)
+            	WITH count(this0_photos_connect1_node_color_Color_unique) as c
+            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
+            	RETURN c AS this0_photos_connect1_node_color_Color_unique_ignored
             }
-            	RETURN count(*)
+            	RETURN count(*) AS _
+            }
+            	RETURN count(*) AS _
             }
             RETURN this0
             }
-            RETURN
-            this0 { .id } AS this0"
+            RETURN [
+            this0 { .id }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -218,7 +249,8 @@ describe("Cypher Connect", () => {
                 \\"this0_photos_connect0_node_id\\": \\"321\\",
                 \\"this0_photos_connect0_node_color0_node_name\\": \\"Green\\",
                 \\"this0_photos_connect1_node_id\\": \\"33211\\",
-                \\"this0_photos_connect1_node_color0_node_name\\": \\"Red\\"
+                \\"this0_photos_connect1_node_color0_node_name\\": \\"Red\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

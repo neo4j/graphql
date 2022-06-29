@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Create or connect with unions", () => {
@@ -54,7 +55,12 @@ describe("Create or connect with unions", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -107,46 +113,53 @@ describe("Create or connect with unions", () => {
             "CALL {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
-            MERGE (this0_actedIn_Movie_connectOrCreate0:Movie { isan: $this0_actedIn_Movie_connectOrCreate0_node_isan })
-            ON CREATE
-            SET
-            this0_actedIn_Movie_connectOrCreate0.title = $this0_actedIn_Movie_connectOrCreate0_on_create_title,
-            this0_actedIn_Movie_connectOrCreate0.isan = $this0_actedIn_Movie_connectOrCreate0_on_create_isan
-            MERGE (this0)-[this0_relationship_this0_actedIn_Movie_connectOrCreate0:ACTED_IN]->(this0_actedIn_Movie_connectOrCreate0)
-            ON CREATE
-            SET
-            this0_relationship_this0_actedIn_Movie_connectOrCreate0.screentime = $this0_relationship_this0_actedIn_Movie_connectOrCreate0_on_create_screentime
-            MERGE (this0_actedIn_Series_connectOrCreate0:Series { isan: $this0_actedIn_Series_connectOrCreate0_node_isan })
-            ON CREATE
-            SET
-            this0_actedIn_Series_connectOrCreate0.title = $this0_actedIn_Series_connectOrCreate0_on_create_title,
-            this0_actedIn_Series_connectOrCreate0.isan = $this0_actedIn_Series_connectOrCreate0_on_create_isan
-            MERGE (this0)-[this0_relationship_this0_actedIn_Series_connectOrCreate0:ACTED_IN]->(this0_actedIn_Series_connectOrCreate0)
-            ON CREATE
-            SET
-            this0_relationship_this0_actedIn_Series_connectOrCreate0.screentime = $this0_relationship_this0_actedIn_Series_connectOrCreate0_on_create_screentime
+            	WITH this0
+            CALL {
+            	WITH this0
+            	MERGE (this0_actedIn_Movie_connectOrCreate_this2:\`Movie\` { isan: $this0_actedIn_Movie_connectOrCreate_param1 })
+            ON CREATE SET
+                    this0_actedIn_Movie_connectOrCreate_this2.title = $this0_actedIn_Movie_connectOrCreate_param2,
+            this0_actedIn_Movie_connectOrCreate_this2.isan = $this0_actedIn_Movie_connectOrCreate_param3
+            MERGE (this0)-[this0_actedIn_Movie_connectOrCreate_this0:\`ACTED_IN\`]->(this0_actedIn_Movie_connectOrCreate_this2)
+            ON CREATE SET
+                    this0_actedIn_Movie_connectOrCreate_this0.screentime = $this0_actedIn_Movie_connectOrCreate_param0
+            	RETURN COUNT(*) AS _
+            }
+            	WITH this0
+            CALL {
+            	WITH this0
+            	MERGE (this0_actedIn_Series_connectOrCreate_this2:\`Series\` { isan: $this0_actedIn_Series_connectOrCreate_param1 })
+            ON CREATE SET
+                    this0_actedIn_Series_connectOrCreate_this2.title = $this0_actedIn_Series_connectOrCreate_param2,
+            this0_actedIn_Series_connectOrCreate_this2.isan = $this0_actedIn_Series_connectOrCreate_param3
+            MERGE (this0)-[this0_actedIn_Series_connectOrCreate_this0:\`ACTED_IN\`]->(this0_actedIn_Series_connectOrCreate_this2)
+            ON CREATE SET
+                    this0_actedIn_Series_connectOrCreate_this0.screentime = $this0_actedIn_Series_connectOrCreate_param0
+            	RETURN COUNT(*) AS _
+            }
             RETURN this0
             }
-            RETURN
-            this0 { .name } AS this0"
+            RETURN [
+            this0 { .name }] AS data"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_name\\": \\"Tom Hanks\\",
-                \\"this0_actedIn_Movie_connectOrCreate0_node_isan\\": \\"0000-0000-03B6-0000-O-0000-0006-P\\",
-                \\"this0_actedIn_Movie_connectOrCreate0_on_create_title\\": \\"Forrest Gump\\",
-                \\"this0_actedIn_Movie_connectOrCreate0_on_create_isan\\": \\"0000-0000-03B6-0000-O-0000-0006-P\\",
-                \\"this0_relationship_this0_actedIn_Movie_connectOrCreate0_on_create_screentime\\": {
+                \\"this0_actedIn_Movie_connectOrCreate_param0\\": {
                     \\"low\\": 105,
                     \\"high\\": 0
                 },
-                \\"this0_actedIn_Series_connectOrCreate0_node_isan\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
-                \\"this0_actedIn_Series_connectOrCreate0_on_create_title\\": \\"Band of Brothers\\",
-                \\"this0_actedIn_Series_connectOrCreate0_on_create_isan\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
-                \\"this0_relationship_this0_actedIn_Series_connectOrCreate0_on_create_screentime\\": {
+                \\"this0_actedIn_Movie_connectOrCreate_param1\\": \\"0000-0000-03B6-0000-O-0000-0006-P\\",
+                \\"this0_actedIn_Movie_connectOrCreate_param2\\": \\"Forrest Gump\\",
+                \\"this0_actedIn_Movie_connectOrCreate_param3\\": \\"0000-0000-03B6-0000-O-0000-0006-P\\",
+                \\"this0_actedIn_Series_connectOrCreate_param0\\": {
                     \\"low\\": 126,
                     \\"high\\": 0
-                }
+                },
+                \\"this0_actedIn_Series_connectOrCreate_param1\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
+                \\"this0_actedIn_Series_connectOrCreate_param2\\": \\"Band of Brothers\\",
+                \\"this0_actedIn_Series_connectOrCreate_param3\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -196,55 +209,52 @@ describe("Create or connect with unions", () => {
             "MATCH (this:Actor)
             WHERE this.name = $this_name
             SET this.name = $this_update_name
-            WITH this
+            	WITH this
             CALL {
             	WITH this
-            	MERGE (this_actedIn_Movie0_connectOrCreate0:Movie { isan: $this_actedIn_Movie0_connectOrCreate0_node_isan })
-            ON CREATE
-            SET
-            this_actedIn_Movie0_connectOrCreate0.title = $this_actedIn_Movie0_connectOrCreate0_on_create_title,
-            this_actedIn_Movie0_connectOrCreate0.isan = $this_actedIn_Movie0_connectOrCreate0_on_create_isan
-            MERGE (this)-[this_relationship_this_actedIn_Movie0_connectOrCreate0:ACTED_IN]->(this_actedIn_Movie0_connectOrCreate0)
-            ON CREATE
-            SET
-            this_relationship_this_actedIn_Movie0_connectOrCreate0.screentime = $this_relationship_this_actedIn_Movie0_connectOrCreate0_on_create_screentime
-            	RETURN COUNT(*)
+            	MERGE (this_actedIn_Movie0_connectOrCreate_this2:\`Movie\` { isan: $this_actedIn_Movie0_connectOrCreate_param1 })
+            ON CREATE SET
+                    this_actedIn_Movie0_connectOrCreate_this2.title = $this_actedIn_Movie0_connectOrCreate_param2,
+            this_actedIn_Movie0_connectOrCreate_this2.isan = $this_actedIn_Movie0_connectOrCreate_param3
+            MERGE (this)-[this_actedIn_Movie0_connectOrCreate_this0:\`ACTED_IN\`]->(this_actedIn_Movie0_connectOrCreate_this2)
+            ON CREATE SET
+                    this_actedIn_Movie0_connectOrCreate_this0.screentime = $this_actedIn_Movie0_connectOrCreate_param0
+            	RETURN COUNT(*) AS _
             }
-            WITH this
+            	WITH this
             CALL {
             	WITH this
-            	MERGE (this_actedIn_Series0_connectOrCreate0:Series { isan: $this_actedIn_Series0_connectOrCreate0_node_isan })
-            ON CREATE
-            SET
-            this_actedIn_Series0_connectOrCreate0.title = $this_actedIn_Series0_connectOrCreate0_on_create_title,
-            this_actedIn_Series0_connectOrCreate0.isan = $this_actedIn_Series0_connectOrCreate0_on_create_isan
-            MERGE (this)-[this_relationship_this_actedIn_Series0_connectOrCreate0:ACTED_IN]->(this_actedIn_Series0_connectOrCreate0)
-            ON CREATE
-            SET
-            this_relationship_this_actedIn_Series0_connectOrCreate0.screentime = $this_relationship_this_actedIn_Series0_connectOrCreate0_on_create_screentime
-            	RETURN COUNT(*)
+            	MERGE (this_actedIn_Series0_connectOrCreate_this2:\`Series\` { isan: $this_actedIn_Series0_connectOrCreate_param1 })
+            ON CREATE SET
+                    this_actedIn_Series0_connectOrCreate_this2.title = $this_actedIn_Series0_connectOrCreate_param2,
+            this_actedIn_Series0_connectOrCreate_this2.isan = $this_actedIn_Series0_connectOrCreate_param3
+            MERGE (this)-[this_actedIn_Series0_connectOrCreate_this0:\`ACTED_IN\`]->(this_actedIn_Series0_connectOrCreate_this2)
+            ON CREATE SET
+                    this_actedIn_Series0_connectOrCreate_this0.screentime = $this_actedIn_Series0_connectOrCreate_param0
+            	RETURN COUNT(*) AS _
             }
-            RETURN this { .name } AS this"
+            RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_name\\": \\"Tom Hanks evil twin\\",
                 \\"this_update_name\\": \\"Tom Hanks\\",
-                \\"this_actedIn_Movie0_connectOrCreate0_node_isan\\": \\"0000-0000-03B6-0000-O-0000-0006-P\\",
-                \\"this_actedIn_Movie0_connectOrCreate0_on_create_title\\": \\"Forrest Gump\\",
-                \\"this_actedIn_Movie0_connectOrCreate0_on_create_isan\\": \\"0000-0000-03B6-0000-O-0000-0006-P\\",
-                \\"this_relationship_this_actedIn_Movie0_connectOrCreate0_on_create_screentime\\": {
+                \\"this_actedIn_Movie0_connectOrCreate_param0\\": {
                     \\"low\\": 105,
                     \\"high\\": 0
                 },
-                \\"this_actedIn_Series0_connectOrCreate0_node_isan\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
-                \\"this_actedIn_Series0_connectOrCreate0_on_create_title\\": \\"Band of Brothers\\",
-                \\"this_actedIn_Series0_connectOrCreate0_on_create_isan\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
-                \\"this_relationship_this_actedIn_Series0_connectOrCreate0_on_create_screentime\\": {
+                \\"this_actedIn_Movie0_connectOrCreate_param1\\": \\"0000-0000-03B6-0000-O-0000-0006-P\\",
+                \\"this_actedIn_Movie0_connectOrCreate_param2\\": \\"Forrest Gump\\",
+                \\"this_actedIn_Movie0_connectOrCreate_param3\\": \\"0000-0000-03B6-0000-O-0000-0006-P\\",
+                \\"this_actedIn_Series0_connectOrCreate_param0\\": {
                     \\"low\\": 126,
                     \\"high\\": 0
-                }
+                },
+                \\"this_actedIn_Series0_connectOrCreate_param1\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
+                \\"this_actedIn_Series0_connectOrCreate_param2\\": \\"Band of Brothers\\",
+                \\"this_actedIn_Series0_connectOrCreate_param3\\": \\"0000-0001-ECC5-0000-8-0000-0001-B\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

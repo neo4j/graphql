@@ -18,14 +18,18 @@
  */
 
 import { Node, Relationship } from "../classes";
+import { CallbackBucket } from "../classes/CallbackBucket";
 import { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
-import createRelationshipValidationStr from "./create-relationship-validation-str";
-import { createConnectOrCreateAndParams } from "./connect-or-create/create-connect-or-create-and-params";
+import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
+import createRelationshipValidationStr from "./create-relationship-validation-string";
+import { createEventMeta } from "./subscriptions/create-event-meta";
+import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
+import { addCallbackAndSetParam } from "./utils/callback-utils";
 
 interface Res {
     creates: string[];
@@ -42,42 +46,42 @@ function createCreateAndParams({
     varName,
     node,
     context,
+    callbackBucket,
     withVars,
     insideDoWhen,
+    includeRelationshipValidation,
+    topLevelNodeVariable,
 }: {
     input: any;
     varName: string;
     node: Node;
     context: Context;
+    callbackBucket: CallbackBucket;
     withVars: string[];
     insideDoWhen?: boolean;
+    includeRelationshipValidation?: boolean;
+    topLevelNodeVariable?: string;
 }): [string, any] {
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const varNameKey = `${varName}_${key}`;
         const relationField = node.relationFields.find((x) => key === x.fieldName);
         const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
         const pointField = node.pointFields.find((x) => key === x.fieldName);
-
         const dbFieldName = mapToDbProperty(node, key);
 
         if (relationField) {
             const refNodes: Node[] = [];
-            // let unionTypeName = "";
 
             if (relationField.union) {
-                // [unionTypeName] = key.split(`${relationField.fieldName}_`).join("").split("_");
-
                 Object.keys(value).forEach((unionTypeName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
                 });
-
-                // refNode = context.neoSchema.nodes.find((x) => x.name === unionTypeName) as Node;
             } else if (relationField.interface) {
                 relationField.interface?.implementations?.forEach((implementationName) => {
-                    refNodes.push(context.neoSchema.nodes.find((x) => x.name === implementationName) as Node);
+                    refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
                 });
             } else {
-                refNodes.push(context.neoSchema.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
+                refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
             refNodes.forEach((refNode) => {
@@ -91,7 +95,9 @@ function createCreateAndParams({
                             return;
                         }
 
-                        res.creates.push(`\nWITH ${withVars.join(", ")}`);
+                        if (!context.subscriptionsEnabled) {
+                            res.creates.push(`\nWITH ${withVars.join(", ")}`);
+                        }
 
                         const baseName = `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}${index}`;
                         const nodeName = `${baseName}_node`;
@@ -100,9 +106,12 @@ function createCreateAndParams({
                         const recurse = createCreateAndParams({
                             input: relationField.interface ? create.node[refNode.name] : create.node,
                             context,
+                            callbackBucket,
                             node: refNode,
                             varName: nodeName,
                             withVars: [...withVars, nodeName],
+                            includeRelationshipValidation: false,
+                            topLevelNodeVariable,
                         });
                         res.creates.push(recurse[0]);
                         res.params = { ...res.params, ...recurse[1] };
@@ -113,18 +122,29 @@ function createCreateAndParams({
                         res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
                         if (relationField.properties) {
-                            const relationship = (context.neoSchema.relationships.find(
+                            const relationship = context.relationships.find(
                                 (x) => x.properties === relationField.properties
-                            ) as unknown) as Relationship;
+                            ) as unknown as Relationship;
 
                             const setA = createSetRelationshipPropertiesAndParams({
                                 properties: create.edge ?? {},
                                 varName: propertiesName,
                                 relationship,
                                 operation: "CREATE",
+                                callbackBucket,
                             });
                             res.creates.push(setA[0]);
                             res.params = { ...res.params, ...setA[1] };
+                        }
+
+                        const relationshipValidationStr = createRelationshipValidationStr({
+                            node: refNode,
+                            context,
+                            varName: nodeName,
+                        });
+                        if (relationshipValidationStr) {
+                            res.creates.push(`WITH ${[...withVars, nodeName].join(", ")}`);
+                            res.creates.push(relationshipValidationStr);
                         }
                     });
                 }
@@ -137,6 +157,7 @@ function createCreateAndParams({
                         parentVar: varName,
                         relationField,
                         context,
+                        callbackBucket,
                         refNodes: [refNode],
                         labelOverride: unionTypeName,
                         parentNode: node,
@@ -147,16 +168,17 @@ function createCreateAndParams({
                 }
 
                 if (v.connectOrCreate) {
-                    const [connectOrCreateQuery, connectOrCreateParams] = createConnectOrCreateAndParams({
+                    const { cypher, params } = createConnectOrCreateAndParams({
                         input: v.connectOrCreate,
                         varName: `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}_connectOrCreate`,
                         parentVar: varName,
                         relationField,
                         refNode,
                         context,
+                        withVars,
                     });
-                    res.creates.push(connectOrCreateQuery);
-                    res.params = { ...res.params, ...connectOrCreateParams };
+                    res.creates.push(cypher);
+                    res.params = { ...res.params, ...params };
                 }
             });
 
@@ -168,6 +190,7 @@ function createCreateAndParams({
                     parentVar: varName,
                     relationField,
                     context,
+                    callbackBucket,
                     refNodes,
                     labelOverride: "",
                     parentNode: node,
@@ -227,6 +250,10 @@ function createCreateAndParams({
         initial.push(`SET ${varName}.${field.dbPropertyName} = ${field.typeMeta.name.toLowerCase()}()`);
     });
 
+    node.primitiveFields.forEach((field) =>
+        addCallbackAndSetParam(field, varName, input, callbackBucket, initial, "CREATE")
+    );
+
     const autogeneratedIdFields = node.primitiveFields.filter((x) => x.autogenerate);
     autogeneratedIdFields.forEach((f) => {
         initial.push(`SET ${varName}.${f.dbPropertyName} = randomUUID()`);
@@ -237,6 +264,12 @@ function createCreateAndParams({
         creates: initial,
         params: {},
     });
+
+    if (context.subscriptionsEnabled) {
+        const eventWithMetaStr = createEventMeta({ event: "create", nodeVariable: varName, typename: node.name });
+        const withStrs = [eventWithMetaStr];
+        creates.push(`WITH ${withStrs.join(", ")}, ${filterMetaVariable(withVars).join(", ")}`);
+    }
 
     const forbiddenString = insideDoWhen ? `\\"${AUTH_FORBIDDEN_ERROR}\\"` : `"${AUTH_FORBIDDEN_ERROR}"`;
 
@@ -260,10 +293,13 @@ function createCreateAndParams({
         creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);
     }
 
-    const relationshipValidationStr = createRelationshipValidationStr({ node, context, varName });
-    if (relationshipValidationStr) {
-        creates.push(`WITH ${withVars.join(", ")}`);
-        creates.push(relationshipValidationStr);
+    if (includeRelationshipValidation) {
+        const str = createRelationshipValidationStr({ node, context, varName });
+
+        if (str) {
+            creates.push(`WITH ${withVars.join(", ")}`);
+            creates.push(str);
+        }
     }
 
     return [creates.join("\n"), params];

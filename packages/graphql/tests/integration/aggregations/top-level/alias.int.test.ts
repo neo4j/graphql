@@ -17,17 +17,29 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
 
 describe("aggregations-top_level-alias", () => {
     let driver: Driver;
+    let typeMovie: UniqueType;
+    let session: Session;
 
     beforeAll(async () => {
         driver = await neo4j();
+    });
+
+    beforeEach(() => {
+        typeMovie = generateUniqueType("Movie");
+        session = driver.session();
+    });
+
+    afterEach(async () => {
+        await session.close();
     });
 
     afterAll(async () => {
@@ -38,7 +50,7 @@ describe("aggregations-top_level-alias", () => {
         const session = driver.session();
 
         const typeDefs = `
-            type Movie {
+            type ${typeMovie} {
                 testString: ID!
                 id: ID!
                 title: String!
@@ -62,16 +74,16 @@ describe("aggregations-top_level-alias", () => {
         try {
             await session.run(
                 `
-                    CREATE (:Movie {testString: "${testString}", id: "1", title: "1", imdbRating: 1, createdAt: datetime("${minDate.toISOString()}")})
-                    CREATE (:Movie {testString: "${testString}", id: "22", title: "22", imdbRating: 2, createdAt: datetime()})
-                    CREATE (:Movie {testString: "${testString}", id: "333", title: "333", imdbRating: 3, createdAt: datetime()})
-                    CREATE (:Movie {testString: "${testString}", id: "4444", title: "4444", imdbRating: 4, createdAt: datetime("${maxDate.toISOString()}")})
+                    CREATE (:${typeMovie} {testString: "${testString}", id: "1", title: "1", imdbRating: 1, createdAt: datetime("${minDate.toISOString()}")})
+                    CREATE (:${typeMovie} {testString: "${testString}", id: "22", title: "22", imdbRating: 2, createdAt: datetime()})
+                    CREATE (:${typeMovie} {testString: "${testString}", id: "333", title: "333", imdbRating: 3, createdAt: datetime()})
+                    CREATE (:${typeMovie} {testString: "${testString}", id: "4444", title: "4444", imdbRating: 4, createdAt: datetime("${maxDate.toISOString()}")})
                 `
             );
 
             const query = `
                 {
-                    moviesAggregate(where: { testString: "${testString}" }) {
+                    ${typeMovie.operations.aggregate}(where: { testString: "${testString}" }) {
                         _count: count
                         _id: id {
                             _shortest: shortest
@@ -95,7 +107,7 @@ describe("aggregations-top_level-alias", () => {
             `;
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
             });
@@ -106,7 +118,7 @@ describe("aggregations-top_level-alias", () => {
 
             expect(gqlResult.errors).toBeUndefined();
 
-            expect((gqlResult.data as any).moviesAggregate).toEqual({
+            expect((gqlResult.data as any)[typeMovie.operations.aggregate]).toEqual({
                 _count: 4,
                 _id: {
                     _shortest: "1",

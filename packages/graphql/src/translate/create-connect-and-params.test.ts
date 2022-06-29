@@ -18,14 +18,14 @@
  */
 
 import createConnectAndParams from "./create-connect-and-params";
-import { Neo4jGraphQL } from "../classes";
-import { Context } from "../types";
 import { trimmer } from "../utils";
-import { NodeBuilder } from "../utils/test/builders/node-builder";
+import { CallbackBucket } from "../classes/CallbackBucket";
+import { NodeBuilder } from "../../tests/utils/builders/node-builder";
+import { RelationshipQueryDirectionOption } from "../constants";
+import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 
 describe("createConnectAndParams", () => {
     test("should return the correct connection", () => {
-        // @ts-ignore
         const node = new NodeBuilder({
             name: "Movie",
             enumFields: [],
@@ -36,6 +36,7 @@ describe("createConnectAndParams", () => {
                     direction: "OUT",
                     type: "SIMILAR",
                     fieldName: "similarMovies",
+                    queryDirection: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
                     inherited: false,
                     typeMeta: {
                         name: "Movie",
@@ -68,13 +69,7 @@ describe("createConnectAndParams", () => {
             objectFields: [],
         }).instance();
 
-        // @ts-ignore
-        const neoSchema: Neo4jGraphQL = {
-            nodes: [node],
-        };
-
-        // @ts-ignore
-        const context: Context = { neoSchema };
+        const context = new ContextBuilder({ nodes: [node] }).instance();
 
         const result = createConnectAndParams({
             withVars: ["this"],
@@ -90,6 +85,7 @@ describe("createConnectAndParams", () => {
             context,
             refNodes: [node],
             parentNode: node,
+            callbackBucket: new CallbackBucket(context),
         });
 
         expect(trimmer(result[0])).toEqual(
@@ -115,10 +111,10 @@ describe("createConnectAndParams", () => {
                                 MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node)
                             )
                         )
-                        RETURN count(*)
+                        RETURN count(*) AS _
                     }
 
-                    RETURN count(*)
+                    RETURN count(*) AS _
                 }
             `)
         );

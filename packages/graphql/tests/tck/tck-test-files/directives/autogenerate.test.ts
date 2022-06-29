@@ -20,11 +20,10 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher autogenerate directive", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -38,7 +37,7 @@ describe("Cypher autogenerate directive", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -66,13 +65,14 @@ describe("Cypher autogenerate directive", () => {
             SET this0.name = $this0_name
             RETURN this0
             }
-            RETURN
-            this0 { .id, .name } AS this0"
+            RETURN [
+            this0 { .id, .name }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_name\\": \\"dan\\"
+                \\"this0_name\\": \\"dan\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -97,12 +97,13 @@ describe("Cypher autogenerate directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             SET this.name = $this_update_name
-            RETURN this { .id, .name } AS this"
+            RETURN collect(DISTINCT this { .id, .name }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_name\\": \\"dan\\"
+                \\"this_update_name\\": \\"dan\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

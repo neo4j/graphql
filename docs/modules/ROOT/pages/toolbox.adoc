@@ -1,0 +1,27 @@
+[[Toolbox]]
+
+= Toolbox
+
+Experiment with your Neo4j GraphQL API using the purpose-built web IDE.
+
+> This is for development purposes only!
+
+== Example
+
+image::toolbox-editor-view.png[title="Editor view"]
+
+== Link
+
+Access the Toolbox here: https://graphql-toolbox.neo4j.io/
+
+== Usage
+
+1. Connect to the database with your credentials
+2. Define (or Introspect) Typedefs
+3. Build the Neo4j GraphQL schema
+4. Experiment and play
+
+== Requirements
+
+1. https://neo4j.com/docs/desktop-manual/current/[Neo4j Desktop] or https://neo4j.com/cloud/[Neo4j AuraDB]
+2. Make sure the database fulfills the requirements stated xref::introduction.adoc#introduction-requirements[here], including the necessary plugins.

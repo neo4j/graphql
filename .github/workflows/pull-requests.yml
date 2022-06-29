@@ -3,74 +3,47 @@ name: "Pull Request"
 on:
   pull_request:
     branches:
+      - dev
       - master
+    paths-ignore:
+      - "docs/**"
 
 jobs:
   cache-dependencies:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
 
-  unit-tests:
-    needs:
-      - cache-dependencies
-
-    strategy:
-      matrix:
-        package:
-          - graphql
-          - ogm
-          - introspector
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Run packages/${{ matrix.package }} unit tests
-        run: yarn run test:unit --coverage
-        working-directory: packages/${{ matrix.package }}
-      - name: Archive coverage report
-        uses: actions/upload-artifact@v2
-        with:
-          name: unit-coverage-${{ matrix.package }}
-          path: packages/${{ matrix.package }}/coverage/
-
-  schema-tests:
+  reviewdog-eslint:
     needs:
       - cache-dependencies
 
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - name: Run Schema tests
-        run: yarn --cwd packages/graphql run test:schema --coverage
-      - name: Archive coverage report
-        uses: actions/upload-artifact@v2
+      - uses: reviewdog/action-eslint@v1
         with:
-          name: schema-coverage-graphql
-          path: packages/graphql/coverage/
+          fail_on_error: true
+          eslint_flags: "."
 
-  nextjs-app-setup:
+  package-tests:
+    uses: ./.github/workflows/reusable-package-tests.yml
+
+  neo-push-tests:
     needs:
       - cache-dependencies
 
@@ -80,59 +53,141 @@ jobs:
       neo4j:
         image: neo4j:latest
         env:
-          NEO4J_AUTH: neo4j/mypassword
+          NEO4J_AUTH: neo4j/password
           NEO4JLABS_PLUGINS: '["apoc"]'
         ports:
           - 7687:7687
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable && yarn build
-      - name: Setup Nextjs app
-        run: chmod +x docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh && cd packages && ../docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh
-      - name: Install dependencies
-        run: |
-          cd packages/neo4j-graphql-nextjs
-          chmod +x ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh && ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh
-      - name: Copy .env file
-        run: cp docs/modules/ROOT/examples/code-partials/nextjs/env.example packages/neo4j-graphql-nextjs/.env.local
-      - name: Create GraphQL endpoint
-        run: cp docs/modules/ROOT/examples/code-partials/nextjs/graphql.js packages/neo4j-graphql-nextjs/pages/api/graphql.js
-      - name: Start server
-        run: cd packages/neo4j-graphql-nextjs && yarn dev &
-      - name: Query the API and assert that there are no errors
-        run: |
-          sleep 10 &&
-          RES=$(curl 'http://localhost:3000/api/graphql' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: http://localhost:3000' --data-binary '{"query":"{\n  movies {\n    title\n  }\n}"}' --compressed --silent)
-          echo "$RES"
-          echo "$RES" | grep -qv "error"
-
-  tck-tests:
-    needs:
-      - cache-dependencies
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - name: Run TCK tests
-        run: yarn --cwd packages/graphql run test:tck --coverage
-      - name: Archive coverage report
-        uses: actions/upload-artifact@v2
+      - name: Run neo-push tests
+        run: yarn --cwd examples/neo-push/server run test
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: password
+          NEO_URL: bolt://localhost:7687
+
+  typescript-changes:
+    runs-on: ubuntu-latest
+
+    outputs:
+      typescript: ${{ steps.filter.outputs.typescript }}
+      typescript_files: ${{ steps.filter.outputs.typescript_files }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: filter
         with:
-          name: tck-coverage-graphql
-          path: packages/graphql/coverage/
+          list-files: shell
+          filters: |
+            typescript:
+              - added|modified: 'packages/**/*.ts'
+
+  license-header-check:
+    needs: typescript-changes
+    if: ${{ needs.typescript-changes.outputs.typescript == 'true' }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "^1.17.0"
+      - name: Install addlicense
+        run: go install github.com/google/addlicense@latest
+      - name: Run addlicense
+        run: addlicense -f ./addlicense -check ${{ needs.typescript-changes.outputs.typescript_files }}
+
+  unit-tests:
+    needs:
+      - cache-dependencies
+
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - graphql
+          - ogm
+          - introspector
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
+      - name: Run packages/${{ matrix.package }} unit tests
+        run: yarn run test:unit --coverage
+        working-directory: packages/${{ matrix.package }}
+      - name: Archive coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: unit-coverage-${{ matrix.package }}
+          path: packages/${{ matrix.package }}/coverage/
+
+  unit-tests-plugins:
+    needs:
+      - cache-dependencies
+
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - graphql-plugin-auth
+          - graphql-plugin-subscriptions-amqp
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
+      - name: Run packages/plugins/${{ matrix.package }} unit tests
+        run: yarn run test:unit --coverage
+        working-directory: packages/plugins/${{ matrix.package }}
+      - name: Archive coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: unit-coverage-${{ matrix.package }}
+          path: packages/plugins/${{ matrix.package }}/coverage/
+
+  e2e-tests-plugins:
+    uses: ./.github/workflows/reusable-subscriptions-plugin-amqp-e2e-test.yml
+
+  api-library-tests:
+    uses: ./.github/workflows/reusable-api-library-tests.yml
+
+  # nextjs-app-setup:
+  #   uses: ./.github/workflows/reusable-nextjs-app-setup.yml
+
+  toolbox-tests:
+    uses: ./.github/workflows/reusable-toolbox-tests.yml
 
   integration-tests-on-prem:
     needs:
@@ -146,12 +201,12 @@ jobs:
           - ogm
           - introspector
         neo4j-version:
-          - 4.1.5
-          - 4.1
-          - 4.2.9
-          - 4.2
           - 4.3.2
           - 4.3
+          - 4.4
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
 
     runs-on: ubuntu-latest
 
@@ -167,13 +222,15 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --coverage
@@ -184,7 +241,7 @@ jobs:
           NEO_PASSWORD: password
           NEO_URL: bolt://localhost:7687
       - name: Archive coverage report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: integration-coverage-${{ matrix.package }}
           path: packages/${{ matrix.package }}/coverage-${{ matrix.neo4j-version }}/

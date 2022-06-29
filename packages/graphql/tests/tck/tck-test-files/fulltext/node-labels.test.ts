@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher -> fulltext -> Additional Labels", () => {
@@ -50,7 +51,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
                 $this_fulltext_MovieTitle_phrase
-            ) YIELD node as this, score as score
+            ) YIELD node as this
             WHERE \\"Movie\\" IN labels(this) AND \\"AnotherLabel\\" IN labels(this)
             RETURN this { .title } as this"
         `);
@@ -77,10 +78,10 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: {
-                jwt: {
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
                     secret,
-                },
+                }),
             },
         });
 
@@ -101,7 +102,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
                 $this_fulltext_MovieTitle_phrase
-            ) YIELD node as this, score as score
+            ) YIELD node as this
             WHERE \\"Movie\\" IN labels(this) AND \\"some-label\\" IN labels(this)
             RETURN this { .title } as this"
         `);

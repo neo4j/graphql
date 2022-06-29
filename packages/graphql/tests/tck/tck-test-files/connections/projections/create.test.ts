@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
-import { createJwtRequest } from "../../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
 
 describe("Cypher -> Connections -> Projections -> Create", () => {
@@ -47,7 +48,12 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -79,8 +85,6 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            WITH this0
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this0
             }
             CALL {
@@ -89,13 +93,14 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN
-            this0 { .title, actorsConnection } AS this0"
+            RETURN [
+            this0 { .title, actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_title\\": \\"Forrest Gump\\"
+                \\"this0_title\\": \\"Forrest Gump\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -128,15 +133,11 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            WITH this0
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this0
             }
             CALL {
             CREATE (this1:Movie)
             SET this1.title = $this1_title
-            WITH this1
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this1)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this1
             }
             CALL {
@@ -151,15 +152,16 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             WITH collect({ screenTime: this1_acted_in_relationship.screenTime, node: { name: this1_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN
-            this0 { .title, actorsConnection } AS this0,
-            this1 { .title, actorsConnection } AS this1"
+            RETURN [
+            this0 { .title, actorsConnection },
+            this1 { .title, actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_title\\": \\"Forrest Gump\\",
-                \\"this1_title\\": \\"Toy Story\\"
+                \\"this1_title\\": \\"Toy Story\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -192,15 +194,11 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             "CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
-            WITH this0
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this0)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this0
             }
             CALL {
             CREATE (this1:Movie)
             SET this1.title = $this1_title
-            WITH this1
-            CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(EXISTS((this1)<-[:ACTED_IN]-(:Actor))), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.actors required', [0])), '@neo4j/graphql/RELATIONSHIP-REQUIRED', [0])
             RETURN this1
             }
             CALL {
@@ -217,9 +215,9 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             WITH collect({ screenTime: this1_acted_in_relationship.screenTime, node: { name: this1_actor.name } }) AS edges
             RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
             }
-            RETURN
-            this0 { .title, actorsConnection } AS this0,
-            this1 { .title, actorsConnection } AS this1"
+            RETURN [
+            this0 { .title, actorsConnection },
+            this1 { .title, actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -243,7 +241,8 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import faker from "faker";
 import { graphql } from "graphql";
 import neo4jDriver, { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { parseDuration } from "../../../src/schema/scalars/Duration";
+import { parseDuration } from "../../../src/graphql/scalars/Duration";
 
 describe("Duration", () => {
     let driver: Driver;
@@ -47,17 +46,17 @@ describe("Duration", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
-            const years = faker.random.number({ min: -6, max: 6 });
-            const months = faker.random.number({ min: -10, max: 10 });
-            const days = faker.random.number({ min: -50, max: 50 });
-            const minutes = faker.random.float();
+            const years = 3;
+            const months = 6;
+            const days = 12;
+            const hours = 2;
+            const minutes = 30;
 
-            const duration = `P${years}Y${months}M${days}DT${minutes}M`;
+            const duration = `P${years}Y${months}M${days}DT${hours}H${minutes}M`;
             const parsedDuration = parseDuration(duration);
 
             try {
@@ -81,7 +80,8 @@ describe("Duration", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { id: string; duration: string } = graphqlResult.data?.createMovies.movies[0];
+                const graphqlMovie: { id: string; duration: string } = (graphqlResult.data as any)?.createMovies
+                    .movies[0];
                 expect(graphqlMovie).toBeDefined();
                 expect(graphqlMovie.id).toBe(id);
                 expect(parseDuration(graphqlMovie.duration)).toStrictEqual(parsedDuration);
@@ -94,7 +94,7 @@ describe("Duration", () => {
                     { id }
                 );
 
-                const neo4jMovie: { id: string; duration: any } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; duration: object } = neo4jResult.records[0].toObject().movie;
                 expect(neo4jMovie).toBeDefined();
                 expect(neo4jMovie.id).toEqual(id);
                 expect(neo4jDriver.isDuration(neo4jMovie.duration)).toBe(true);
@@ -114,9 +114,8 @@ describe("Duration", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const durations = ["P34Y4M2DT23.44H", "P-34W", "P19980314T120000", "P4Y-5M-3.75D"];
@@ -143,7 +142,8 @@ describe("Duration", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { id: string; durations: string[] } = graphqlResult.data?.createMovies.movies[0];
+                const graphqlMovie: { id: string; durations: string[] } = (graphqlResult.data as any)?.createMovies
+                    .movies[0];
                 expect(graphqlMovie).toBeDefined();
                 expect(graphqlMovie.id).toBe(id);
                 expect(graphqlMovie.durations).toHaveLength(durations.length);
@@ -193,9 +193,8 @@ describe("Duration", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const duration = "-P5Y6M";
@@ -230,7 +229,8 @@ describe("Duration", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { id: string; duration: string } = graphqlResult.data?.updateMovies.movies[0];
+                const graphqlMovie: { id: string; duration: string } = (graphqlResult.data as any)?.updateMovies
+                    .movies[0];
                 expect(graphqlMovie).toBeDefined();
                 expect(graphqlMovie.id).toEqual(id);
                 expect(parseDuration(graphqlMovie.duration)).toStrictEqual(parsedDuration);
@@ -265,9 +265,8 @@ describe("Duration", () => {
                 }
             `;
 
-            const { schema } = new Neo4jGraphQL({
-                typeDefs,
-            });
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
 
             const id = generate({ readable: false });
             const days = 4;
@@ -302,7 +301,7 @@ describe("Duration", () => {
 
                 expect(graphqlResult.errors).toBeFalsy();
 
-                const graphqlMovie: { id: string; duration: string } = graphqlResult.data?.movies[0];
+                const graphqlMovie: { id: string; duration: string } = (graphqlResult.data as any)?.movies[0];
                 expect(graphqlMovie).toBeDefined();
                 expect(graphqlMovie.id).toEqual(id);
                 expect(parseDuration(graphqlMovie.duration)).toStrictEqual(parsedDuration);
@@ -322,7 +321,8 @@ describe("Duration", () => {
                         }
                     `;
 
-                    const { schema } = new Neo4jGraphQL({ typeDefs });
+                    const neoSchema = new Neo4jGraphQL({ typeDefs });
+                    const schema = await neoSchema.getSchema();
 
                     const longId = generate({ readable: false });
                     const long = "P2Y";
@@ -394,7 +394,7 @@ describe("Duration", () => {
 
                         expect(graphqlResult.errors).toBeUndefined();
 
-                        const graphqlMovies: { id: string; duration: string }[] = graphqlResult.data?.movies;
+                        const graphqlMovies: { id: string; duration: string }[] = (graphqlResult.data as any)?.movies;
                         expect(graphqlMovies).toBeDefined();
 
                         /* eslint-disable jest/no-conditional-expect */

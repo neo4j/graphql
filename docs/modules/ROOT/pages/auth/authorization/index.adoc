@@ -7,3 +7,5 @@ You specify authorization rules inside the `@auth` directive. This section looks
 - xref::auth/authorization/bind.adoc[Bind]
 - xref::auth/authorization/roles.adoc[Roles]
 - xref::auth/authorization/where.adoc[Where]
+
+NOTE: Note that authorization rules are not supported when applied over nested xref::type-definitions/unions.adoc[unions] or xref::type-definitions/interfaces.adoc[interfaces].

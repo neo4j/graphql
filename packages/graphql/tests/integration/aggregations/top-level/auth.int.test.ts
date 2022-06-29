@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import pluralize from "pluralize";
-import camelCase from "camelcase";
 import neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
+import { generateUniqueType } from "../../../utils/graphql-types";
 
 describe("aggregations-top_level-auth", () => {
     let driver: Driver;
@@ -41,19 +41,14 @@ describe("aggregations-top_level-auth", () => {
     test("should throw forbidden when incorrect allow on aggregate count", async () => {
         const session = driver.session({ defaultAccessMode: "WRITE" });
 
-        const randomType = `${generate({
-            charset: "alphabetic",
-            readable: true,
-        })}Movie`;
-
-        const pluralRandomType = pluralize(camelCase(randomType));
+        const randomType = generateUniqueType("Movie");
 
         const typeDefs = `
-            type ${randomType} {
+            type ${randomType.name} {
                 id: ID
             }
 
-            extend type ${randomType} @auth(rules: [{ allow: { id: "$jwt.sub" } }])
+            extend type ${randomType.name} @auth(rules: [{ allow: { id: "$jwt.sub" } }])
         `;
 
         const userId = generate({
@@ -62,28 +57,35 @@ describe("aggregations-top_level-auth", () => {
 
         const query = `
             {
-                ${pluralRandomType}Aggregate {
+                ${randomType.operations.aggregate} {
                     count
                 }
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
-                CREATE (:${randomType} {id: "${userId}"})
+                CREATE (:${randomType.name} {id: "${userId}"})
             `);
 
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
@@ -95,12 +97,12 @@ describe("aggregations-top_level-auth", () => {
         const typeDefs = `
             type User {
                 id: ID
-                posts: [Post] @relationship(type: "POSTED", direction: OUT)
+                posts: [Post!]! @relationship(type: "POSTED", direction: OUT)
             }
 
             type Post {
                 content: String
-                creator: User @relationship(type: "POSTED", direction: IN)
+                creator: User! @relationship(type: "POSTED", direction: IN)
             }
 
             extend type Post @auth(rules: [{ where: { creator: { id: "$jwt.sub" } } }])
@@ -118,7 +120,14 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -128,7 +137,7 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: userId });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
@@ -151,7 +160,7 @@ describe("aggregations-top_level-auth", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                director: Person @relationship(type: "DIRECTED", direction: IN)
+                director: Person! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingInt: Int @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
             }
 
@@ -179,7 +188,14 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -189,12 +205,12 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
@@ -206,7 +222,7 @@ describe("aggregations-top_level-auth", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                director: Person @relationship(type: "DIRECTED", direction: IN)
+                director: Person! @relationship(type: "DIRECTED", direction: IN)
                 someId: ID @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
             }
 
@@ -234,7 +250,14 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -244,12 +267,12 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
@@ -261,7 +284,7 @@ describe("aggregations-top_level-auth", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                director: Person @relationship(type: "DIRECTED", direction: IN)
+                director: Person! @relationship(type: "DIRECTED", direction: IN)
                 someString: String @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
             }
 
@@ -289,7 +312,14 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -299,12 +329,12 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
@@ -316,7 +346,7 @@ describe("aggregations-top_level-auth", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                director: Person @relationship(type: "DIRECTED", direction: IN)
+                director: Person! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingFloat: Float @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
             }
 
@@ -344,7 +374,14 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -354,12 +391,12 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
@@ -371,7 +408,7 @@ describe("aggregations-top_level-auth", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                director: Person @relationship(type: "DIRECTED", direction: IN)
+                director: Person! @relationship(type: "DIRECTED", direction: IN)
                 imdbRatingBigInt: BigInt @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
             }
 
@@ -399,7 +436,14 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -409,12 +453,12 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
@@ -426,7 +470,7 @@ describe("aggregations-top_level-auth", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                director: Person @relationship(type: "DIRECTED", direction: IN)
+                director: Person! @relationship(type: "DIRECTED", direction: IN)
                 createdAt: DateTime @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
             }
 
@@ -454,7 +498,14 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -464,12 +515,12 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }
@@ -481,7 +532,7 @@ describe("aggregations-top_level-auth", () => {
         const typeDefs = `
             type Movie {
                 id: ID
-                director: Person @relationship(type: "DIRECTED", direction: IN)
+                director: Person! @relationship(type: "DIRECTED", direction: IN)
                 screenTime: Duration @auth(rules: [{ allow: { director: { id: "$jwt.sub" } } }])
             }
 
@@ -509,7 +560,14 @@ describe("aggregations-top_level-auth", () => {
             }
         `;
 
-        const neoSchema = new Neo4jGraphQL({ typeDefs, config: { jwt: { secret } } });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
 
         try {
             await session.run(`
@@ -519,12 +577,12 @@ describe("aggregations-top_level-auth", () => {
             const req = createJwtRequest(secret, { sub: "invalid" });
 
             const gqlResult = await graphql({
-                schema: neoSchema.schema,
+                schema: await neoSchema.getSchema(),
                 source: query,
                 contextValue: { driver, req },
             });
 
-            expect((gqlResult.errors as any[])[0].message).toEqual("Forbidden");
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         } finally {
             await session.close();
         }

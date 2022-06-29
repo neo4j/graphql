@@ -20,11 +20,10 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("#583", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -41,7 +40,7 @@ describe("#583", () => {
             type Actor implements Awardable {
                 name: String
                 awardsGiven: Int!
-                actedIn: [Show!] @relationship(type: "ACTED_IN", direction: OUT)
+                actedIn: [Show!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie implements Show & Awardable {
@@ -61,7 +60,7 @@ describe("#583", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -91,6 +90,8 @@ describe("#583", () => {
             WITH this
             CALL {
             WITH this
+            CALL {
+            WITH this
             MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
             RETURN { __resolveType: \\"Movie\\", title: this_Movie.title, awardsGiven: this_Movie.awardsGiven } AS actedIn
             UNION
@@ -102,7 +103,9 @@ describe("#583", () => {
             MATCH (this)-[:ACTED_IN]->(this_ShortFilm:ShortFilm)
             RETURN { __resolveType: \\"ShortFilm\\", title: this_ShortFilm.title } AS actedIn
             }
-            RETURN this { .name, actedIn: collect(actedIn) } as this"
+            RETURN collect(actedIn) AS actedIn
+            }
+            RETURN this { .name, actedIn: actedIn } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

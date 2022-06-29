@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "apollo-server";
@@ -5,7 +24,7 @@ import { Neo4jGraphQL } from "../../../src";
 
 describe("Node Directive", () => {
     describe("Plural option", () => {
-        test("Partial types with plural", () => {
+        test("Partial types with plural", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Techs") {
                     name: String
@@ -16,7 +35,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -47,10 +66,18 @@ describe("Node Directive", () => {
                   updateTechs(update: TechUpdateInput, where: TechWhere): UpdateTechsMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   techs(options: TechOptions, where: TechWhere): [Tech!]!
                   techsAggregate(where: TechWhere): TechAggregateSelection!
-                  techsCount(where: TechWhere): Int!
+                  techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechsConnection!
                 }
 
                 enum SortDirection {
@@ -60,7 +87,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
+                type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
                 }
@@ -72,8 +99,8 @@ describe("Node Directive", () => {
 
                 type TechAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelection!
-                  value: StringAggregateSelection!
+                  name: StringAggregateSelectionNullable!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input TechCreateInput {
@@ -81,14 +108,23 @@ describe("Node Directive", () => {
                   value: String
                 }
 
+                type TechEdge {
+                  cursor: String!
+                  node: Tech!
+                }
+
                 input TechOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more TechSort objects to sort Teches by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-                  sort: [TechSort]
+                  \\"\\"\\"
+                  Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [TechSort!]
                 }
 
-                \\"\\"\\"Fields to sort Teches by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.
+                \\"\\"\\"
                 input TechSort {
                   name: SortDirection
                   value: SortDirection
@@ -124,6 +160,12 @@ describe("Node Directive", () => {
                   value_STARTS_WITH: String
                 }
 
+                type TechsConnection {
+                  edges: [TechEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 type UpdateInfo {
                   bookmark: String
                   nodesCreated: Int!
@@ -135,12 +177,11 @@ describe("Node Directive", () => {
                 type UpdateTechsMutationResponse {
                   info: UpdateInfo!
                   techs: [Tech!]!
-                }
-                "
+                }"
             `);
         });
 
-        test("Partial types with same plural in both", () => {
+        test("Partial types with same plural in both", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Techs") {
                     name: String
@@ -151,7 +192,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -182,10 +223,18 @@ describe("Node Directive", () => {
                   updateTechs(update: TechUpdateInput, where: TechWhere): UpdateTechsMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   techs(options: TechOptions, where: TechWhere): [Tech!]!
                   techsAggregate(where: TechWhere): TechAggregateSelection!
-                  techsCount(where: TechWhere): Int!
+                  techsConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechsConnection!
                 }
 
                 enum SortDirection {
@@ -195,7 +244,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
+                type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
                 }
@@ -207,8 +256,8 @@ describe("Node Directive", () => {
 
                 type TechAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelection!
-                  value: StringAggregateSelection!
+                  name: StringAggregateSelectionNullable!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input TechCreateInput {
@@ -216,14 +265,23 @@ describe("Node Directive", () => {
                   value: String
                 }
 
+                type TechEdge {
+                  cursor: String!
+                  node: Tech!
+                }
+
                 input TechOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more TechSort objects to sort Teches by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-                  sort: [TechSort]
+                  \\"\\"\\"
+                  Specify one or more TechSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [TechSort!]
                 }
 
-                \\"\\"\\"Fields to sort Teches by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.
+                \\"\\"\\"
                 input TechSort {
                   name: SortDirection
                   value: SortDirection
@@ -259,6 +317,12 @@ describe("Node Directive", () => {
                   value_STARTS_WITH: String
                 }
 
+                type TechsConnection {
+                  edges: [TechEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 type UpdateInfo {
                   bookmark: String
                   nodesCreated: Int!
@@ -270,12 +334,11 @@ describe("Node Directive", () => {
                 type UpdateTechsMutationResponse {
                   info: UpdateInfo!
                   techs: [Tech!]!
-                }
-                "
+                }"
             `);
         });
 
-        test("Partial types with different plural", () => {
+        test("Partial types with different plural", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Techs") {
                     name: String
@@ -286,7 +349,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -317,10 +380,18 @@ describe("Node Directive", () => {
                   updateTechnologies(update: TechUpdateInput, where: TechWhere): UpdateTechnologiesMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   technologies(options: TechOptions, where: TechWhere): [Tech!]!
                   technologiesAggregate(where: TechWhere): TechAggregateSelection!
-                  technologiesCount(where: TechWhere): Int!
+                  technologiesConnection(after: String, first: Int, sort: [TechSort], where: TechWhere): TechnologiesConnection!
                 }
 
                 enum SortDirection {
@@ -330,7 +401,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
+                type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
                 }
@@ -342,8 +413,8 @@ describe("Node Directive", () => {
 
                 type TechAggregateSelection {
                   count: Int!
-                  name: StringAggregateSelection!
-                  value: StringAggregateSelection!
+                  name: StringAggregateSelectionNullable!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input TechCreateInput {
@@ -351,14 +422,23 @@ describe("Node Directive", () => {
                   value: String
                 }
 
+                type TechEdge {
+                  cursor: String!
+                  node: Tech!
+                }
+
                 input TechOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more TechSort objects to sort Teches by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-                  sort: [TechSort]
+                  \\"\\"\\"
+                  Specify one or more TechSort objects to sort Technologies by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [TechSort!]
                 }
 
-                \\"\\"\\"Fields to sort Teches by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Technologies by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechSort object.
+                \\"\\"\\"
                 input TechSort {
                   name: SortDirection
                   value: SortDirection
@@ -394,6 +474,12 @@ describe("Node Directive", () => {
                   value_STARTS_WITH: String
                 }
 
+                type TechnologiesConnection {
+                  edges: [TechEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }
+
                 type UpdateInfo {
                   bookmark: String
                   nodesCreated: Int!
@@ -405,12 +491,11 @@ describe("Node Directive", () => {
                 type UpdateTechnologiesMutationResponse {
                   info: UpdateInfo!
                   technologies: [Tech!]!
-                }
-                "
+                }"
             `);
         });
 
-        test("Collision between Type and plural", () => {
+        test("Collision between Type and plural", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Techs") {
                     name: String
@@ -421,7 +506,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -452,10 +537,18 @@ describe("Node Directive", () => {
                   updateTechs(update: TechsUpdateInput, where: TechsWhere): UpdateTechsMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   techs(options: TechsOptions, where: TechsWhere): [Techs!]!
                   techsAggregate(where: TechsWhere): TechsAggregateSelection!
-                  techsCount(where: TechsWhere): Int!
+                  techsConnection(after: String, first: Int, sort: [TechsSort], where: TechsWhere): TechsConnection!
                 }
 
                 enum SortDirection {
@@ -465,7 +558,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
+                type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
                 }
@@ -476,21 +569,36 @@ describe("Node Directive", () => {
 
                 type TechsAggregateSelection {
                   count: Int!
-                  value: StringAggregateSelection!
+                  value: StringAggregateSelectionNullable!
+                }
+
+                type TechsConnection {
+                  edges: [TechsEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }
 
                 input TechsCreateInput {
                   value: String
                 }
 
+                type TechsEdge {
+                  cursor: String!
+                  node: Techs!
+                }
+
                 input TechsOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more TechsSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-                  sort: [TechsSort]
+                  \\"\\"\\"
+                  Specify one or more TechsSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [TechsSort!]
                 }
 
-                \\"\\"\\"Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechsSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one TechsSort object.
+                \\"\\"\\"
                 input TechsSort {
                   value: SortDirection
                 }
@@ -525,12 +633,11 @@ describe("Node Directive", () => {
                 type UpdateTechsMutationResponse {
                   info: UpdateInfo!
                   techs: [Techs!]!
-                }
-                "
+                }"
             `);
         });
 
-        test("Same plural on multiple nodes", () => {
+        test("Same plural on multiple nodes", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Techs") {
                     name: String
@@ -541,7 +648,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -572,10 +679,18 @@ describe("Node Directive", () => {
                   updateTechs(update: UserUpdateInput, where: UserWhere): UpdateTechsMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   techs(options: UserOptions, where: UserWhere): [User!]!
                   techsAggregate(where: UserWhere): UserAggregateSelection!
-                  techsCount(where: UserWhere): Int!
+                  techsConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): TechsConnection!
                 }
 
                 enum SortDirection {
@@ -585,9 +700,15 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
+                type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
+                }
+
+                type TechsConnection {
+                  edges: [UserEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }
 
                 type UpdateInfo {
@@ -609,21 +730,30 @@ describe("Node Directive", () => {
 
                 type UserAggregateSelection {
                   count: Int!
-                  value: StringAggregateSelection!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input UserCreateInput {
                   value: String
                 }
 
+                type UserEdge {
+                  cursor: String!
+                  node: User!
+                }
+
                 input UserOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-                  sort: [UserSort]
+                  \\"\\"\\"
+                  Specify one or more UserSort objects to sort Techs by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [UserSort!]
                 }
 
-                \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Techs by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+                \\"\\"\\"
                 input UserSort {
                   value: SortDirection
                 }
@@ -645,12 +775,11 @@ describe("Node Directive", () => {
                   value_NOT_IN: [String]
                   value_NOT_STARTS_WITH: String
                   value_STARTS_WITH: String
-                }
-                "
+                }"
             `);
         });
 
-        test("Collision with pluralize", () => {
+        test("Collision with pluralize", async () => {
             const typeDefs = gql`
                 type Tech @node(plural: "Users") {
                     name: String
@@ -661,7 +790,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -692,10 +821,18 @@ describe("Node Directive", () => {
                   updateUsers(update: UserUpdateInput, where: UserWhere): UpdateUsersMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   users(options: UserOptions, where: UserWhere): [User!]!
                   usersAggregate(where: UserWhere): UserAggregateSelection!
-                  usersCount(where: UserWhere): Int!
+                  usersConnection(after: String, first: Int, sort: [UserSort], where: UserWhere): UsersConnection!
                 }
 
                 enum SortDirection {
@@ -705,7 +842,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
+                type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
                 }
@@ -729,21 +866,30 @@ describe("Node Directive", () => {
 
                 type UserAggregateSelection {
                   count: Int!
-                  value: StringAggregateSelection!
+                  value: StringAggregateSelectionNullable!
                 }
 
                 input UserCreateInput {
                   value: String
                 }
 
+                type UserEdge {
+                  cursor: String!
+                  node: User!
+                }
+
                 input UserOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-                  sort: [UserSort]
+                  \\"\\"\\"
+                  Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [UserSort!]
                 }
 
-                \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
+                \\"\\"\\"
                 input UserSort {
                   value: SortDirection
                 }
@@ -766,11 +912,16 @@ describe("Node Directive", () => {
                   value_NOT_STARTS_WITH: String
                   value_STARTS_WITH: String
                 }
-                "
+
+                type UsersConnection {
+                  edges: [UserEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
+                }"
             `);
         });
 
-        test("Type collision with pluralize", () => {
+        test("Type collision with pluralize", async () => {
             const typeDefs = gql`
                 type User {
                     name: String
@@ -781,7 +932,7 @@ describe("Node Directive", () => {
                 }
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(neoSchema.schema));
+            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
             expect(printedSchema).toMatchInlineSnapshot(`
                 "schema {
@@ -812,10 +963,18 @@ describe("Node Directive", () => {
                   updateUsers(update: UsersUpdateInput, where: UsersWhere): UpdateUsersMutationResponse!
                 }
 
+                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+                type PageInfo {
+                  endCursor: String
+                  hasNextPage: Boolean!
+                  hasPreviousPage: Boolean!
+                  startCursor: String
+                }
+
                 type Query {
                   users(options: UsersOptions, where: UsersWhere): [Users!]!
                   usersAggregate(where: UsersWhere): UsersAggregateSelection!
-                  usersCount(where: UsersWhere): Int!
+                  usersConnection(after: String, first: Int, sort: [UsersSort], where: UsersWhere): UsersConnection!
                 }
 
                 enum SortDirection {
@@ -825,7 +984,7 @@ describe("Node Directive", () => {
                   DESC
                 }
 
-                type StringAggregateSelection {
+                type StringAggregateSelectionNullable {
                   longest: String
                   shortest: String
                 }
@@ -849,21 +1008,36 @@ describe("Node Directive", () => {
 
                 type UsersAggregateSelection {
                   count: Int!
-                  value: StringAggregateSelection!
+                  value: StringAggregateSelectionNullable!
+                }
+
+                type UsersConnection {
+                  edges: [UsersEdge!]!
+                  pageInfo: PageInfo!
+                  totalCount: Int!
                 }
 
                 input UsersCreateInput {
                   value: String
                 }
 
+                type UsersEdge {
+                  cursor: String!
+                  node: Users!
+                }
+
                 input UsersOptions {
                   limit: Int
                   offset: Int
-                  \\"\\"\\"Specify one or more UsersSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.\\"\\"\\"
-                  sort: [UsersSort]
+                  \\"\\"\\"
+                  Specify one or more UsersSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
+                  \\"\\"\\"
+                  sort: [UsersSort!]
                 }
 
-                \\"\\"\\"Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UsersSort object.\\"\\"\\"
+                \\"\\"\\"
+                Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UsersSort object.
+                \\"\\"\\"
                 input UsersSort {
                   value: SortDirection
                 }
@@ -885,8 +1059,7 @@ describe("Node Directive", () => {
                   value_NOT_IN: [String]
                   value_NOT_STARTS_WITH: String
                   value_STARTS_WITH: String
-                }
-                "
+                }"
             `);
         });
     });

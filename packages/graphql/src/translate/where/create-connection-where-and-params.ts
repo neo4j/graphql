@@ -19,8 +19,7 @@
 
 import { Node, Relationship } from "../../classes";
 import { ConnectionWhereArg, Context } from "../../types";
-import createRelationshipWhereAndParams from "./create-relationship-where-and-params";
-import createNodeWhereAndParams from "./create-node-where-and-params";
+import createElementWhereAndParams from "./create-element-where-and-params";
 
 function createConnectionWhereAndParams({
     whereInput,
@@ -30,6 +29,7 @@ function createConnectionWhereAndParams({
     relationship,
     relationshipVariable,
     parameterPrefix,
+    listPredicates,
 }: {
     whereInput: ConnectionWhereArg;
     context: Context;
@@ -38,6 +38,7 @@ function createConnectionWhereAndParams({
     relationship: Relationship;
     relationshipVariable: string;
     parameterPrefix: string;
+    listPredicates?: string[];
 }): [string, any] {
     const reduced = Object.entries(whereInput).reduce<{ whereStrs: string[]; params: any }>(
         (res, [k, v]) => {
@@ -66,14 +67,14 @@ function createConnectionWhereAndParams({
             }
 
             if (k.startsWith("edge")) {
-                const relationshipWhere = createRelationshipWhereAndParams({
+                const relationshipWhere = createElementWhereAndParams({
                     whereInput: v,
-                    relationship,
-                    relationshipVariable,
+                    element: relationship,
+                    varName: relationshipVariable,
                     context,
                     parameterPrefix: `${parameterPrefix}.${k}`,
+                    listPredicates,
                 });
-
                 const whereStrs = [
                     ...res.whereStrs,
                     k === "edge_NOT" ? `(NOT ${relationshipWhere[0]})` : relationshipWhere[0],
@@ -90,7 +91,7 @@ function createConnectionWhereAndParams({
                     throw new Error("_on is used as the only argument and node is not present within");
                 }
 
-                const rootNodeWhere = createNodeWhereAndParams({
+                const rootNodeWhere = createElementWhereAndParams({
                     whereInput: {
                         ...Object.entries(v).reduce((args, [key, value]) => {
                             if (key !== "_on") {
@@ -103,10 +104,11 @@ function createConnectionWhereAndParams({
                             return args;
                         }, {}),
                     },
-                    node,
-                    nodeVariable,
+                    element: node,
+                    varName: nodeVariable,
                     context,
                     parameterPrefix: `${parameterPrefix}.${k}`,
+                    listPredicates,
                 });
 
                 if (rootNodeWhere[0]) {
@@ -116,7 +118,7 @@ function createConnectionWhereAndParams({
                 }
 
                 if (v?._on?.[node.name]) {
-                    const onTypeNodeWhere = createNodeWhereAndParams({
+                    const onTypeNodeWhere = createElementWhereAndParams({
                         whereInput: {
                             ...Object.entries(v).reduce((args, [key, value]) => {
                                 if (key !== "_on") {
@@ -130,10 +132,11 @@ function createConnectionWhereAndParams({
                                 return args;
                             }, {}),
                         },
-                        node,
-                        nodeVariable,
+                        element: node,
+                        varName: nodeVariable,
                         context,
                         parameterPrefix: `${parameterPrefix}.${k}._on.${node.name}`,
+                        listPredicates,
                     });
 
                     whereStrs = [...whereStrs, k.endsWith("_NOT") ? `(NOT ${onTypeNodeWhere[0]})` : onTypeNodeWhere[0]];

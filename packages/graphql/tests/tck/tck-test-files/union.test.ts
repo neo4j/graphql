@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
-import { createJwtRequest } from "../../../src/utils/test/utils";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Cypher Union", () => {
@@ -38,13 +39,18 @@ describe("Cypher Union", () => {
 
             type Movie {
                 title: String
-                search: [Search] @relationship(type: "SEARCH", direction: OUT)
+                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                }),
+            },
         });
     });
 
@@ -118,14 +124,15 @@ describe("Cypher Union", () => {
             MERGE (this0)-[:SEARCH]->(this0_search_Genre0_node)
             RETURN this0
             }
-            RETURN
-            this0 { .title } AS this0"
+            RETURN [
+            this0 { .title }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_title\\": \\"some movie\\",
-                \\"this0_search_Genre0_node_name\\": \\"some genre\\"
+                \\"this0_search_Genre0_node_name\\": \\"some genre\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -151,12 +158,13 @@ describe("Cypher Union", () => {
             CREATE (this_create_search_Genre0_node:Genre)
             SET this_create_search_Genre0_node.name = $this_create_search_Genre0_node_name
             MERGE (this)-[:SEARCH]->(this_create_search_Genre0_node)
-            RETURN this { .title } AS this"
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_create_search_Genre0_node_name\\": \\"some genre\\"
+                \\"this_create_search_Genre0_node_name\\": \\"some genre\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -198,18 +206,19 @@ describe("Cypher Union", () => {
             			MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN this0
             }
-            RETURN
-            this0 { .title } AS this0"
+            RETURN [
+            this0 { .title }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_title\\": \\"some movie\\",
-                \\"this0_search_Genre_connect0_node_name\\": \\"some genre\\"
+                \\"this0_search_Genre_connect0_node_name\\": \\"some genre\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -248,10 +257,10 @@ describe("Cypher Union", () => {
             WHERE this_search_Genre0.name = $updateMovies.args.update.search.Genre[0].where.node.name
             CALL apoc.do.when(this_search_Genre0 IS NOT NULL, \\"
             SET this_search_Genre0.name = $this_update_search_Genre0_name
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_search_Genre0:this_search_Genre0, auth:$auth,this_update_search_Genre0_name:$this_update_search_Genre0_name})
-            YIELD value as _
-            RETURN this { .title } AS this"
+            YIELD value AS _
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -286,7 +295,8 @@ describe("Cypher Union", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -321,9 +331,9 @@ describe("Cypher Union", () => {
             FOREACH(_ IN CASE this_search_Genre0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_search_Genre0_disconnect0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN this { .title } AS this"
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -349,7 +359,8 @@ describe("Cypher Union", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -384,9 +395,9 @@ describe("Cypher Union", () => {
             FOREACH(_ IN CASE this_disconnect_search_Genre0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_search_Genre0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN this { .title } AS this"
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -408,7 +419,8 @@ describe("Cypher Union", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -445,15 +457,16 @@ describe("Cypher Union", () => {
             			MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
-            RETURN this { .title } AS this"
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_title\\": \\"some movie\\",
-                \\"this_connect_search_Genre0_node_name\\": \\"some genre\\"
+                \\"this_connect_search_Genre0_node_name\\": \\"some genre\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -485,7 +498,7 @@ describe("Cypher Union", () => {
             WHERE this_delete_search_Genre0.name = $updateMovies.args.delete.search.Genre[0].where.node.name
             WITH this, collect(DISTINCT this_delete_search_Genre0) as this_delete_search_Genre0_to_delete
             FOREACH(x IN this_delete_search_Genre0_to_delete | DETACH DELETE x)
-            RETURN this { .title } AS this"
+            RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -507,7 +520,8 @@ describe("Cypher Union", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

@@ -20,11 +20,10 @@
 import { gql } from "apollo-server";
 import { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../../src/utils/test/utils";
+import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
 describe("Cypher Date", () => {
-    const secret = "secret";
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -38,7 +37,7 @@ describe("Cypher Date", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            config: { enableRegex: true, jwt: { secret } },
+            config: { enableRegex: true },
         });
     });
 
@@ -126,8 +125,8 @@ describe("Cypher Date", () => {
             SET this0.date = $this0_date
             RETURN this0
             }
-            RETURN
-            this0 { .date } AS this0"
+            RETURN [
+            this0 { .date }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -136,7 +135,8 @@ describe("Cypher Date", () => {
                     \\"year\\": 1970,
                     \\"month\\": 1,
                     \\"day\\": 1
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });
@@ -161,7 +161,7 @@ describe("Cypher Date", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             SET this.date = $this_update_date
-            RETURN this { .id, .date } AS this"
+            RETURN collect(DISTINCT this { .id, .date }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -170,7 +170,8 @@ describe("Cypher Date", () => {
                     \\"year\\": 1970,
                     \\"month\\": 1,
                     \\"day\\": 1
-                }
+                },
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

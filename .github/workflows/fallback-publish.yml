@@ -15,19 +15,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
-      - run: yarn build
+        run: yarn
+      - name: Build ${{ matrix.package }}
+        run: yarn build
+        working-directory: packages/${{ matrix.package }}
       - name: Pack ${{ matrix.package }}
         run: npm pack
         working-directory: packages/${{ matrix.package }}
       - name: Archive release tarball
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: release-tarballs
           path: packages/${{ matrix.package }}/neo4j-graphql-*.tgz
@@ -42,12 +44,12 @@ jobs:
       name: npm
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: release-tarballs
       - id: get-version
         run: |
-          version=$(echo $GITHUB_REF | cut -d/ -f4)
+          version=$(echo "$GITHUB_REF" | cut -d/ -f4)
           echo "::set-output name=version::$version"
       - name: npm publish
         run: |
@@ -60,11 +62,11 @@ jobs:
           fi
 
           npm config set @neo4j:registry https://registry.npmjs.org
-          npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
+          npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
 
           for tarball in *.tgz
           do
-            npm publish $tarball --tag=$tag --access=public
+            npm publish "$tarball" --tag=$tag --access=public
           done
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

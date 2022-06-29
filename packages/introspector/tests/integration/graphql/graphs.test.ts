@@ -80,8 +80,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
     test("Can introspect and generate on small graph with no rel properties", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -113,13 +112,14 @@ describe("GraphQL - Infer Schema on graphs", () => {
             }"
         `);
 
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
     test("Can introspect and generate multiple relationships (even with the same type)", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -128,9 +128,9 @@ describe("GraphQL - Infer Schema on graphs", () => {
         await wSession.writeTransaction((tx) =>
             tx.run(
                 `CREATE (m:Movie {title: $props.title})
-                CREATE (p:Play {title: $props.title})
-                CREATE (a:Actor {name: $props.name})
-                CREATE (d:Dog {name: $props.name})
+                CREATE (p:Play:Theater {title: $props.title})
+                CREATE (a:Actor:Person {name: $props.name})
+                CREATE (d:Dog:K9 {name: $props.name})
                 MERGE (a)-[:ACTED_IN]->(p)
                 MERGE (a)-[:ACTED_IN]->(m)
                 MERGE (a)-[:DIRECTED]->(m)
@@ -144,14 +144,14 @@ describe("GraphQL - Infer Schema on graphs", () => {
 
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
         expect(typeDefs).toMatchInlineSnapshot(`
-            "type Actor {
+            "type Actor @node(additionalLabels: [\\"Person\\"]) {
             	actedInMovies: [Movie!]! @relationship(type: \\"ACTED_IN\\", direction: OUT)
             	actedInPlays: [Play!]! @relationship(type: \\"ACTED_IN\\", direction: OUT)
             	directedMovies: [Movie!]! @relationship(type: \\"DIRECTED\\", direction: OUT)
             	name: String!
             }
 
-            type Dog {
+            type Dog @node(additionalLabels: [\\"K9\\"]) {
             	actedInMovies: [Movie!]! @relationship(type: \\"ACTED_IN\\", direction: OUT)
             	name: String!
             }
@@ -163,19 +163,20 @@ describe("GraphQL - Infer Schema on graphs", () => {
             	title: String!
             }
 
-            type Play {
+            type Play @node(additionalLabels: [\\"Theater\\"]) {
             	actorsActedIn: [Actor!]! @relationship(type: \\"ACTED_IN\\", direction: IN)
             	title: String!
             }"
         `);
 
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
     test("Can introspect and generate relationships with properties", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -233,13 +234,14 @@ describe("GraphQL - Infer Schema on graphs", () => {
             }"
         `);
 
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
     test("Can handle the larger character set from Neo4j", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
-            // eslint-disable-next-line jest/no-disabled-tests, jest/no-jasmine-globals
-            pending();
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
             return;
         }
 
@@ -281,6 +283,8 @@ describe("GraphQL - Infer Schema on graphs", () => {
             }"
         `);
 
-        expect(() => new Neo4jGraphQL({ typeDefs, driver })).not.toThrow();
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        await expect(neoSchema.getSchema()).resolves.not.toThrow();
     });
 });
