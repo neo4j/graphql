@@ -390,8 +390,14 @@ describe("Subscriptions", () => {
 
             input MovieUpdateInput {
               actorCount: Int
+              actorCount_DECREMENT: Int
+              actorCount_INCREMENT: Int
               actors: [MovieActorsUpdateFieldInput!]
               averageRating: Float
+              averageRating_ADD: Float
+              averageRating_DIVIDE: Float
+              averageRating_MULTIPLY: Float
+              averageRating_SUBTRACT: Float
               id: ID
               isActive: Boolean
             }
@@ -1000,8 +1006,14 @@ describe("Subscriptions", () => {
 
             input MovieUpdateInput {
               actorCount: Int
+              actorCount_DECREMENT: Int
+              actorCount_INCREMENT: Int
               actors: [MovieActorsUpdateFieldInput!]
               averageRating: Float
+              averageRating_ADD: Float
+              averageRating_DIVIDE: Float
+              averageRating_MULTIPLY: Float
+              averageRating_SUBTRACT: Float
               id: ID
               isActive: Boolean
             }
