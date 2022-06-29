@@ -19,14 +19,14 @@
 
 import { generate } from "randomstring";
 import * as neo4j from "neo4j-driver";
-import { getBrowser, getPage, Browser } from "./puppeteer";
+import { test } from "@playwright/test";
 import { Login } from "./pages/Login";
 import { SchemaEditor } from "./pages/SchemaEditor";
 import { Editor } from "./pages/Editor";
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
-describe("workflow", () => {
+test.describe("workflow", () => {
     const id = generate({
         charset: "alphabetic",
     });
@@ -57,22 +57,21 @@ describe("workflow", () => {
         }
     `;
 
-    let browser: Browser;
+    // let browser: Browser;
     let driver: neo4j.Driver;
 
-    beforeAll(async () => {
+    test.beforeAll(async () => {
         driver = neo4j.driver(NEO_URL, neo4j.auth.basic(NEO_USER, NEO_PASSWORD));
-        browser = await getBrowser();
+        // browser = await getBrowser();
     });
 
-    afterAll(async () => {
-        await browser.close();
+    test.afterAll(async () => {
+        // await browser.close();
         await driver.close();
     });
 
-    test("should perform workflow end-to-end", async () => {
-        const page = await getPage({ browser });
-
+    test("should perform workflow end-to-end", async ({ page }) => {
+        await page.goto("http://localhost:4242");
         const login = new Login(page);
         await login.login();
 
@@ -93,7 +92,7 @@ describe("workflow", () => {
         }
 
         await editor.submitQuery();
-        await page.waitForNetworkIdle();
+        // await page.waitForNetworkIdle();
         await page.waitForTimeout(2000);
 
         const outputQuery = await editor.getOutput();
@@ -109,7 +108,7 @@ describe("workflow", () => {
         await editor.setParams(variables);
 
         await editor.submitQuery();
-        await page.waitForNetworkIdle();
+        // await page.waitForNetworkIdle();
         await page.waitForTimeout(2000);
 
         const outputQueryWithVariables = await editor.getOutput();

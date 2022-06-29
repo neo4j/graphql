@@ -17,24 +17,24 @@
  * limitations under the License.
  */
 
-import { getBrowser, getPage, Browser } from "./puppeteer";
+import { test } from "@playwright/test";
 import { Login } from "./pages/Login";
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
-describe("login", () => {
-    let browser: Browser;
+test.describe("login", () => {
+    // let browser: Browser;
 
-    beforeAll(async () => {
-        browser = await getBrowser();
-    });
+    // beforeAll(async () => {
+    //     browser = await getBrowser();
+    // });
 
-    afterAll(async () => {
-        await browser.close();
-    });
+    // afterAll(async () => {
+    //     await browser.close();
+    // });
 
-    test("should login", async () => {
-        const page = await getPage({ browser });
+    test("should login", async ({ page }) => {
+        await page.goto("http://localhost:4242");
         const login = new Login(page);
 
         await login.setUsername(NEO_USER);

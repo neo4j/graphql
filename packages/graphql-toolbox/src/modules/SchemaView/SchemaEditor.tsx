@@ -149,7 +149,7 @@ export const SchemaEditor = ({ loading, mirrorRef }: Props) => {
     }, [appsettings.showLintMarkers]);
 
     return (
-        <div className="rounded-b-xl" style={{ width: "100%", height: "100%" }}>
+        <div className="rounded-b-xl" id={SCHEMA_EDITOR_INPUT + "1"} style={{ width: "100%", height: "100%" }}>
             <FileName extension={Extension.GRAPHQL} name="type-definitions"></FileName>
             <textarea id={SCHEMA_EDITOR_INPUT} ref={ref} style={{ width: "100%", height: "100%" }} />
         </div>

@@ -17,19 +17,23 @@
  * limitations under the License.
  */
 
-import { SCHEMA_EDITOR_INPUT } from "../../../src/constants";
+import { SCHEMA_EDITOR_INPUT } from "../../src/constants";
 import { Screen } from "./Screen";
 
 export class SchemaEditor extends Screen {
     public async setTypeDefs(typeDefs: string) {
-        await this.page.waitForSelector(`#${SCHEMA_EDITOR_INPUT}`);
-        await this.page.evaluate(
-            ({ id, typeDefs }) => {
-                // @ts-ignore -Find a better solution
-                document[`${id}`].setValue(typeDefs);
-            },
-            { typeDefs, id: SCHEMA_EDITOR_INPUT }
-        );
+        await this.page.waitForSelector(`#${SCHEMA_EDITOR_INPUT}1 .CodeMirror`);
+        await this.page.fill(`#${SCHEMA_EDITOR_INPUT}1 .CodeMirror`, typeDefs);
+        // TODO: remove constants
+
+        await this.page.screenshot({ path: "screenshot_s.png", fullPage: true });
+        // await this.page.evaluate(
+        //     ({ id, typeDefs }) => {
+        //         // @ts-ignore -Find a better solution
+        //         document[`${id}`].setValue(typeDefs);
+        //     },
+        //     { typeDefs, id: SCHEMA_EDITOR_INPUT }
+        // );
     }
 
     public async buildSchema() {
@@ -38,12 +42,14 @@ export class SchemaEditor extends Screen {
     }
 
     public async getTypeDefs(): Promise<string> {
-        const output = await this.page.$eval(`#${SCHEMA_EDITOR_INPUT}`, (el) => {
-            // @ts-ignore - Injected in html
-            return document.CodeMirror.fromTextArea(el).getValue();
-        });
+        return this.page.inputValue(`#${SCHEMA_EDITOR_INPUT}`);
 
-        return output as unknown as string;
+        // const output = await this.page.$eval(`#${SCHEMA_EDITOR_INPUT}`, (el) => {
+        //     // @ts-ignore - Injected in html
+        //     return document.CodeMirror.fromTextArea(el).getValue();
+        // });
+
+        // return output as unknown as string;
     }
 
     public async introspect() {
