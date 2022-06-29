@@ -108,7 +108,6 @@ function translateTopLevelMatch({
         // cypherParams = { ...cypherParams, ...whereAuth[1] };
     }
 
-    console.log(whereAuth[0]);
     //
     // if (whereStrs.length) {
     //     cyphers.push(`WHERE ${whereStrs.join(" AND ")}`);

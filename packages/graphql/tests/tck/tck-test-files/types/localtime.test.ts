@@ -56,14 +56,14 @@ describe("Cypher LocalTime", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.time = $this_time
+            "MATCH (this:\`Movie\`)
+            WHERE this.time = $param0
             RETURN this { .time } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_time\\": {
+                \\"param0\\": {
                     \\"hour\\": 12,
                     \\"minute\\": 0,
                     \\"second\\": 0,
@@ -88,14 +88,14 @@ describe("Cypher LocalTime", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.time >= $this_time_GTE
+            "MATCH (this:\`Movie\`)
+            WHERE this.time >= $param0
             RETURN this { .time } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_time_GTE\\": {
+                \\"param0\\": {
                     \\"hour\\": 13,
                     \\"minute\\": 45,
                     \\"second\\": 33,
@@ -162,7 +162,7 @@ describe("Cypher LocalTime", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             SET this.time = $this_update_time
             RETURN collect(DISTINCT this { .id, .time }) AS data"
         `);

@@ -56,14 +56,14 @@ describe("Cypher LocalDateTime", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.localDT = $this_localDT
+            "MATCH (this:\`Movie\`)
+            WHERE this.localDT = $param0
             RETURN this { .localDT } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_localDT\\": {
+                \\"param0\\": {
                     \\"year\\": 2003,
                     \\"month\\": 9,
                     \\"day\\": 14,
@@ -91,14 +91,14 @@ describe("Cypher LocalDateTime", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.localDT >= $this_localDT_GTE
+            "MATCH (this:\`Movie\`)
+            WHERE this.localDT >= $param0
             RETURN this { .localDT } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_localDT_GTE\\": {
+                \\"param0\\": {
                     \\"year\\": 2010,
                     \\"month\\": 8,
                     \\"day\\": 23,
@@ -171,7 +171,7 @@ describe("Cypher LocalDateTime", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             SET this.localDT = $this_update_localDT
             RETURN collect(DISTINCT this { .id, .localDT }) AS data"
         `);

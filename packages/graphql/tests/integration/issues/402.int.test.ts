@@ -34,17 +34,6 @@ describe("https://github.com/neo4j/graphql/issues/402", () => {
         await driver.close();
     });
 
-    // MATCH (this:Event)
-    // WHERE this.id = $this_id
-    // RETURN this { .id, area: head([ (this)-[:HAPPENS_IN]->(this_area:Area)   | this_area { .id } ]) } as this
-
-    // MATCH (this:`Event`)
-    // WHERE (this.id = $param0
-    // AND (exists((this)-[:`HAPPENS_IN`]->(:`Area`))
-    // AND ANY(this1 IN [(this)-[:`HAPPENS_IN`]->(this1:`Area`) | this1]
-    //             )))
-    // RETURN this { .id, area: head([ (this)-[:HAPPENS_IN]->(this_area:Area)   | this_area { .id } ]) } as this
-
     test("should ignore IN statement for optional variables", async () => {
         const session = driver.session();
 

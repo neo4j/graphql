@@ -402,8 +402,7 @@ describe("Cypher WHERE", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WHERE
-                NOT (this.title IS NULL)
+                WHERE this.title IS NOT NULL
                 RETURN this { .title } as this"
             `);
 

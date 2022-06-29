@@ -56,14 +56,14 @@ describe("Cypher BigInt", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:File)
-            WHERE this.size = $this_size
+            "MATCH (this:\`File\`)
+            WHERE this.size = $param0
             RETURN this { .name } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_size\\": {
+                \\"param0\\": {
                     \\"low\\": -1,
                     \\"high\\": 2147483647
                 }
@@ -86,14 +86,14 @@ describe("Cypher BigInt", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:File)
-            WHERE this.size = $this_size
+            "MATCH (this:\`File\`)
+            WHERE this.size = $param0
             RETURN this { .name } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_size\\": {
+                \\"param0\\": {
                     \\"low\\": -1,
                     \\"high\\": 2147483647
                 }
@@ -117,14 +117,14 @@ describe("Cypher BigInt", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:File)
-            WHERE this.size = $this_size
+            "MATCH (this:\`File\`)
+            WHERE this.size = $param0
             RETURN this { .name } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_size\\": {
+                \\"param0\\": {
                     \\"low\\": -1,
                     \\"high\\": 2147483647
                 }
