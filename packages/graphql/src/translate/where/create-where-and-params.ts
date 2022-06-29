@@ -229,7 +229,6 @@ function createWhereAndParams({
                     // TODO: Change to listPredicateToClause when filtering no longer in projection
                     const clause = listPredicateToSizeFunction(listPredicate, matchPattern, connectionWhere[0]);
                     res.clauses.push(clause);
-                    res.params = { ...res.params, ...connectionWhere[1] };
                 }
 
                 const whereKeySuffix = operator ? `_${operator}` : "";

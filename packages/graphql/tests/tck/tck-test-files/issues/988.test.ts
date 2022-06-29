@@ -153,12 +153,6 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"edge\\": {
-                    \\"current\\": true
-                },
-                \\"node\\": {
-                    \\"name\\": \\"smart\\"
-                },
                 \\"this_AND_OR_series\\": {
                     \\"where\\": {
                         \\"manufacturerConnection\\": {

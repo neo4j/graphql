@@ -736,9 +736,6 @@ describe("Cypher Advanced Filtering", () => {
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
-                    \\"node\\": {
-                        \\"name\\": \\"some genre\\"
-                    },
                     \\"this_movies\\": {
                         \\"where\\": {
                             \\"genresConnection\\": {
@@ -774,9 +771,6 @@ describe("Cypher Advanced Filtering", () => {
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
-                    \\"node\\": {
-                        \\"name\\": \\"some genre\\"
-                    },
                     \\"this_movies\\": {
                         \\"where\\": {
                             \\"genresConnection_NOT\\": {
@@ -814,9 +808,6 @@ describe("Cypher Advanced Filtering", () => {
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"node\\": {
-                            \\"name\\": \\"some genre\\"
-                        },
                         \\"this_movies\\": {
                             \\"where\\": {
                                 \\"genresConnection_ALL\\": {
@@ -842,9 +833,6 @@ describe("Cypher Advanced Filtering", () => {
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"node\\": {
-                            \\"name\\": \\"some genre\\"
-                        },
                         \\"this_movies\\": {
                             \\"where\\": {
                                 \\"genresConnection_NONE\\": {
@@ -870,9 +858,6 @@ describe("Cypher Advanced Filtering", () => {
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"node\\": {
-                            \\"name\\": \\"some genre\\"
-                        },
                         \\"this_movies\\": {
                             \\"where\\": {
                                 \\"genresConnection_SINGLE\\": {
@@ -898,9 +883,6 @@ describe("Cypher Advanced Filtering", () => {
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"node\\": {
-                            \\"name\\": \\"some genre\\"
-                        },
                         \\"this_movies\\": {
                             \\"where\\": {
                                 \\"genresConnection_SOME\\": {

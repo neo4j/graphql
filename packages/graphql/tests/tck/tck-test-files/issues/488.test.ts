@@ -86,9 +86,6 @@ describe("#488", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"type\\": \\"Smile\\"
-                },
                 \\"this_journalists\\": {
                     \\"where\\": {
                         \\"keywordsConnection\\": {
@@ -130,9 +127,6 @@ describe("#488", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"type\\": \\"Smile\\"
-                },
                 \\"this_journalists\\": {
                     \\"where\\": {
                         \\"keywordsConnection_NOT\\": {

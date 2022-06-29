@@ -83,14 +83,6 @@ describe("#582", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_type\\": \\"Cat\\",
-                \\"node\\": {
-                    \\"type\\": \\"Dog\\",
-                    \\"parentsConnection\\": {
-                        \\"node\\": {
-                            \\"type\\": \\"Bird\\"
-                        }
-                    }
-                },
                 \\"this_entities\\": {
                     \\"where\\": {
                         \\"childrenConnection\\": {
@@ -156,19 +148,6 @@ describe("#582", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_type\\": \\"Cat\\",
-                \\"node\\": {
-                    \\"type\\": \\"Dog\\",
-                    \\"parentsConnection\\": {
-                        \\"node\\": {
-                            \\"type\\": \\"Bird\\",
-                            \\"childrenConnection\\": {
-                                \\"node\\": {
-                                    \\"type\\": \\"Fish\\"
-                                }
-                            }
-                        }
-                    }
-                },
                 \\"this_entities\\": {
                     \\"where\\": {
                         \\"childrenConnection\\": {

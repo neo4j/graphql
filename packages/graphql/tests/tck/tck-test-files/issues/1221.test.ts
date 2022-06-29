@@ -110,13 +110,6 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_current\\": true,
-                \\"node\\": {
-                    \\"nameDetailsConnection\\": {
-                        \\"node\\": {
-                            \\"fullName\\": \\"MHA\\"
-                        }
-                    }
-                },
                 \\"this_series\\": {
                     \\"where\\": {
                         \\"architectureConnection_SINGLE\\": {
@@ -266,17 +259,6 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_current\\": true,
-                \\"node\\": {
-                    \\"architectureConnection\\": {
-                        \\"node\\": {
-                            \\"nameDetailsConnection\\": {
-                                \\"node\\": {
-                                    \\"fullName\\": \\"MHA\\"
-                                }
-                            }
-                        }
-                    }
-                },
                 \\"this_mains\\": {
                     \\"where\\": {
                         \\"mainConnection_SINGLE\\": {
