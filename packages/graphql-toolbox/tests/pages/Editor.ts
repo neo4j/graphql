@@ -23,33 +23,24 @@ import { Screen } from "./Screen";
 export class Editor extends Screen {
     public async setQuery(query: string) {
         await this.page.waitForSelector("[data-test-editor-query-button]");
-        await this.page.fill(`#${EDITOR_QUERY_INPUT}`, query);
-        // TODO: remove constants
-
-        await this.page.screenshot({ path: "screenshot_q.png", fullPage: true });
-
-        // await this.page.evaluate(
-        //     ({ id, query }) => {
-        //         // @ts-ignore -Find a better solution
-        //         document[`${id}`].setValue(query);
-        //     },
-        //     { query, id: EDITOR_QUERY_INPUT }
-        // );
+        await this.page.evaluate(
+            ({ id, query }) => {
+                // @ts-ignore -Find a better solution
+                document[`${id}`].setValue(query);
+            },
+            { query, id: EDITOR_QUERY_INPUT }
+        );
     }
 
     public async setParams(params: string) {
         await this.page.waitForSelector("[data-test-editor-query-button]");
-        await this.page.fill(`#${EDITOR_PARAMS_INPUT}`, params);
-
-        await this.page.screenshot({ path: "screenshot_p.png", fullPage: true });
-
-        // await this.page.evaluate(
-        //     ({ id, params }) => {
-        //         // @ts-ignore -Find a better solution
-        //         document[`${id}`].setValue(params);
-        //     },
-        //     { params, id: EDITOR_PARAMS_INPUT }
-        // );
+        await this.page.evaluate(
+            ({ id, params }) => {
+                // @ts-ignore -Find a better solution
+                document[`${id}`].setValue(params);
+            },
+            { params, id: EDITOR_PARAMS_INPUT }
+        );
     }
 
     public async submitQuery() {
@@ -58,14 +49,12 @@ export class Editor extends Screen {
     }
 
     public async getOutput(): Promise<string> {
-        return this.page.inputValue(`#${EDITOR_RESPONSE_OUTPUT}`);
+        const output = await this.page.evaluate((id) => {
+            // @ts-ignore -Find a better solution
+            return document[`${id}`].getValue();
+        }, EDITOR_RESPONSE_OUTPUT);
 
-        // const output = await this.page.evaluate((id) => {
-        //     // @ts-ignore -Find a better solution
-        //     return document[`${id}`].getValue();
-        // }, EDITOR_RESPONSE_OUTPUT);
-
-        // return output as unknown as string;
+        return output as unknown as string;
     }
 
     public async awaitSuccess() {

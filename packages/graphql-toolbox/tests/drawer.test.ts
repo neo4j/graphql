@@ -17,10 +17,7 @@
  * limitations under the License.
  */
 
-import { getBrowser, getPage, Browser } from "./puppeteer";
-import { Login } from "./pages/Login";
-import { SchemaEditor } from "./pages/SchemaEditor";
-import { HelpDrawer } from "./pages/HelpDrawer";
+import { test, describe } from "./utils/pagemodel";
 
 describe("drawer", () => {
     const typeDefs = `
@@ -28,34 +25,24 @@ describe("drawer", () => {
             name: String!
         }
     `;
-    let browser: Browser;
 
-    beforeAll(async () => {
-        browser = await getBrowser();
-    });
+    test("should show the Help and learn drawer and its content", async ({
+        loginPage,
+        helpDrawerPage,
+        schemaEditorPage,
+    }) => {
+        await loginPage.login();
 
-    afterAll(async () => {
-        await browser.close();
-    });
+        await helpDrawerPage.openHelpDrawer();
+        await helpDrawerPage.displaysSchemaViewContent();
+        await helpDrawerPage.displaysKeybindingsInSchemaView();
 
-    test("should show the Help and learn drawer and its content", async () => {
-        const page = await getPage({ browser });
+        await schemaEditorPage.setTypeDefs(typeDefs);
+        await schemaEditorPage.buildSchema();
 
-        const login = new Login(page);
-        await login.login();
-
-        const helpDrawer = new HelpDrawer(page);
-        await helpDrawer.openHelpDrawer();
-        await helpDrawer.displaysSchemaViewContent();
-        await helpDrawer.displaysKeybindingsInSchemaView();
-
-        const schemaEditor = new SchemaEditor(page);
-        await schemaEditor.setTypeDefs(typeDefs);
-        await schemaEditor.buildSchema();
-
-        await helpDrawer.displaysEditorViewContent();
-        await helpDrawer.displaysSchemaDocumentation();
-        await helpDrawer.displaysKeybindingsInEditorView();
-        await helpDrawer.closeHelpDrawer();
+        await helpDrawerPage.displaysEditorViewContent();
+        await helpDrawerPage.displaysSchemaDocumentation();
+        await helpDrawerPage.displaysKeybindingsInEditorView();
+        await helpDrawerPage.closeHelpDrawer();
     });
 });

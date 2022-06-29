@@ -25,44 +25,16 @@ export class Login extends Screen {
     public async setUsername(username: string) {
         await this.page.waitForSelector("[data-test-login-username]");
         await this.page.fill("[data-test-login-username]", username);
-
-        // await this.page.waitForSelector("[data-test-login-username]");
-        // await this.page.$eval(
-        //     "[data-test-login-username]",
-        //     (el, injected) => {
-        //         // @ts-ignore - Find a way to type this
-        //         el.value = injected;
-        //     },
-        //     username
-        // );
     }
 
     public async setPassword(password: string) {
         await this.page.waitForSelector("[data-test-login-password]");
         await this.page.fill("[data-test-login-password]", password);
-
-        // await this.page.$eval(
-        //     "[data-test-login-password]",
-        //     (el, injected) => {
-        //         // @ts-ignore - Find a way to type this
-        //         el.value = injected;
-        //     },
-        //     password
-        // );
     }
 
     public async setURL(url: string) {
         await this.page.waitForSelector("[data-test-login-url]");
         await this.page.fill("[data-test-login-url]", url);
-
-        // await this.page.$eval(
-        //     "[data-test-login-url]",
-        //     (el, injected) => {
-        //         // @ts-ignore - Find a way to type this
-        //         el.value = injected;
-        //     },
-        //     url
-        // );
     }
 
     public async submit() {
