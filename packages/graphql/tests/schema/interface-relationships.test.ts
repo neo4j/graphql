@@ -71,6 +71,8 @@ describe("Interface Relationships", () => {
 
             input ActedInUpdateInput {
               screenTime: Int
+              screenTime_DECREMENT: Int
+              screenTime_INCREMENT: Int
             }
 
             input ActedInWhere {
@@ -308,6 +310,8 @@ describe("Interface Relationships", () => {
 
             input MovieUpdateInput {
               runtime: Int
+              runtime_DECREMENT: Int
+              runtime_INCREMENT: Int
               title: String
             }
 
@@ -476,6 +480,8 @@ describe("Interface Relationships", () => {
 
             input SeriesUpdateInput {
               episodes: Int
+              episodes_DECREMENT: Int
+              episodes_INCREMENT: Int
               title: String
             }
 
@@ -596,6 +602,8 @@ describe("Interface Relationships", () => {
 
             input ActedInUpdateInput {
               screenTime: Int
+              screenTime_DECREMENT: Int
+              screenTime_INCREMENT: Int
             }
 
             input ActedInWhere {
@@ -988,6 +996,8 @@ describe("Interface Relationships", () => {
 
             input EpisodeUpdateInput {
               runtime: Int
+              runtime_DECREMENT: Int
+              runtime_INCREMENT: Int
               series: EpisodeSeriesUpdateFieldInput
             }
 
@@ -1164,6 +1174,8 @@ describe("Interface Relationships", () => {
             input MovieUpdateInput {
               actors: [ProductionActorsUpdateFieldInput!]
               runtime: Int
+              runtime_DECREMENT: Int
+              runtime_INCREMENT: Int
               title: String
             }
 
@@ -1761,6 +1773,8 @@ describe("Interface Relationships", () => {
             input SeriesUpdateInput {
               actors: [ProductionActorsUpdateFieldInput!]
               episodeCount: Int
+              episodeCount_DECREMENT: Int
+              episodeCount_INCREMENT: Int
               episodes: [SeriesEpisodesUpdateFieldInput!]
               title: String
             }

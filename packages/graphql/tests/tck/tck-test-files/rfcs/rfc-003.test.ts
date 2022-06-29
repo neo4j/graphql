@@ -64,7 +64,7 @@ describe("integration/rfs/003", () => {
                     	WITH this0
                     	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
                     	WITH count(this0_director_Director_unique) as c
-                    	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
+                    	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
                     	RETURN c AS this0_director_Director_unique_ignored
                     }
                     RETURN this0
@@ -119,7 +119,7 @@ describe("integration/rfs/003", () => {
                     	WITH this0
                     	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
                     	WITH count(this0_director_Director_unique) as c
-                    	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                    	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                     	RETURN c AS this0_director_Director_unique_ignored
                     }
                     RETURN this0
@@ -185,7 +185,7 @@ describe("integration/rfs/003", () => {
                         	WITH this0_director0_node
                         	MATCH (this0_director0_node)-[this0_director0_node_address_Address_unique:HAS_ADDRESS]->(:Address)
                         	WITH count(this0_director0_node_address_Address_unique) as c
-                        	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
+                        	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
                         	RETURN c AS this0_director0_node_address_Address_unique_ignored
                         }
                         WITH this0
@@ -193,7 +193,7 @@ describe("integration/rfs/003", () => {
                         	WITH this0
                         	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(this0_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
+                        	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
                         	RETURN c AS this0_director_Director_unique_ignored
                         }
                         RETURN this0
@@ -259,7 +259,7 @@ describe("integration/rfs/003", () => {
                         	WITH this0_director0_node
                         	MATCH (this0_director0_node)-[this0_director0_node_address_Address_unique:HAS_ADDRESS]->(:Address)
                         	WITH count(this0_director0_node_address_Address_unique) as c
-                        	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
+                        	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
                         	RETURN c AS this0_director0_node_address_Address_unique_ignored
                         }
                         WITH this0
@@ -267,7 +267,7 @@ describe("integration/rfs/003", () => {
                         	WITH this0
                         	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(this0_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                        	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                         	RETURN c AS this0_director_Director_unique_ignored
                         }
                         RETURN this0
@@ -325,7 +325,7 @@ describe("integration/rfs/003", () => {
                         	WITH this
                         	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(this_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
+                        	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
                         RETURN 'Query cannot conclude with CALL'"
@@ -379,7 +379,7 @@ describe("integration/rfs/003", () => {
                         	WITH this
                         	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(this_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                        	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
                         RETURN 'Query cannot conclude with CALL'"
@@ -446,7 +446,7 @@ describe("integration/rfs/003", () => {
                             	WITH this_director0
                             	MATCH (this_director0)-[this_director0_address_Address_unique:HAS_ADDRESS]->(:Address)
                             	WITH count(this_director0_address_Address_unique) as c
-                            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
+                            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
                             	RETURN c AS this_director0_address_Address_unique_ignored
                             }
                             RETURN count(*) AS _
@@ -457,7 +457,7 @@ describe("integration/rfs/003", () => {
                             	WITH this
                             	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                             	WITH count(this_director_Director_unique) as c
-                            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
+                            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
                             	RETURN c AS this_director_Director_unique_ignored
                             }
                             RETURN 'Query cannot conclude with CALL'"
@@ -540,7 +540,7 @@ describe("integration/rfs/003", () => {
                             	WITH this_director0
                             	MATCH (this_director0)-[this_director0_address_Address_unique:HAS_ADDRESS]->(:Address)
                             	WITH count(this_director0_address_Address_unique) as c
-                            	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
+                            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
                             	RETURN c AS this_director0_address_Address_unique_ignored
                             }
                             RETURN count(*) AS _
@@ -551,7 +551,7 @@ describe("integration/rfs/003", () => {
                             	WITH this
                             	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                             	WITH count(this_director_Director_unique) as c
-                            	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                             	RETURN c AS this_director_Director_unique_ignored
                             }
                             RETURN 'Query cannot conclude with CALL'"
@@ -634,7 +634,7 @@ describe("integration/rfs/003", () => {
                             	WITH this_director0_create0_node
                             	MATCH (this_director0_create0_node)-[this_director0_create0_node_address_Address_unique:HAS_ADDRESS]->(:Address)
                             	WITH count(this_director0_create0_node_address_Address_unique) as c
-                            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
+                            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
                             	RETURN c AS this_director0_create0_node_address_Address_unique_ignored
                             }
                             WITH this
@@ -642,7 +642,7 @@ describe("integration/rfs/003", () => {
                             	WITH this
                             	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                             	WITH count(this_director_Director_unique) as c
-                            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
+                            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
                             	RETURN c AS this_director_Director_unique_ignored
                             }
                             RETURN 'Query cannot conclude with CALL'"
@@ -691,9 +691,9 @@ describe("integration/rfs/003", () => {
                         const mutation = gql`
                             mutation {
                                 updateMovies(
-                                    where: { id: "${movieId}" }, 
-                                    delete: { 
-                                        director: { 
+                                    where: { id: "${movieId}" },
+                                    delete: {
+                                        director: {
                                             where: { node: { id: "${directorId}" } },
                                             delete: { address: { where: { node: { id: "some-address" } } } }
                                         }
@@ -728,14 +728,14 @@ describe("integration/rfs/003", () => {
                             	WITH this
                             	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                             	WITH count(this_director_Director_unique) as c
-                            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
+                            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
                             	RETURN c AS this_director_Director_unique_ignored
                             }
                             CALL {
                             	WITH this
                             	MATCH (this)<-[this_coDirector_CoDirector_unique:CO_DIRECTED]-(:CoDirector)
                             	WITH count(this_coDirector_CoDirector_unique) as c
-                            	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.coDirector must be less than or equal to one', [0])
+                            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.coDirector must be less than or equal to one', [0])
                             	RETURN c AS this_coDirector_CoDirector_unique_ignored
                             }
                             RETURN 'Query cannot conclude with CALL'"
@@ -801,9 +801,9 @@ describe("integration/rfs/003", () => {
                         const mutation = gql`
                             mutation {
                                 updateMovies(
-                                    where: { id: "${movieId}" }, 
-                                    delete: { 
-                                        director: { 
+                                    where: { id: "${movieId}" },
+                                    delete: {
+                                        director: {
                                             where: { node: { id: "${directorId}" } },
                                             delete: { address: { where: { node: { id: "some-address" } } } }
                                         }
@@ -838,14 +838,14 @@ describe("integration/rfs/003", () => {
                             	WITH this
                             	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                             	WITH count(this_director_Director_unique) as c
-                            	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                             	RETURN c AS this_director_Director_unique_ignored
                             }
                             CALL {
                             	WITH this
                             	MATCH (this)<-[this_coDirector_CoDirector_unique:CO_DIRECTED]-(:CoDirector)
                             	WITH count(this_coDirector_CoDirector_unique) as c
-                            	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.coDirector must be less than or equal to one', [0])
+                            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.coDirector must be less than or equal to one', [0])
                             	RETURN c AS this_coDirector_CoDirector_unique_ignored
                             }
                             RETURN 'Query cannot conclude with CALL'"
@@ -936,7 +936,7 @@ describe("integration/rfs/003", () => {
                         	WITH this0
                         	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(this0_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
+                        	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
                         	RETURN c AS this0_director_Director_unique_ignored
                         }
                         RETURN this0
@@ -1005,7 +1005,7 @@ describe("integration/rfs/003", () => {
                         	WITH this0
                         	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(this0_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                        	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                         	RETURN c AS this0_director_Director_unique_ignored
                         }
                         RETURN this0
@@ -1100,7 +1100,7 @@ describe("integration/rfs/003", () => {
                             	WITH this0_director_connect0_node
                             	MATCH (this0_director_connect0_node)-[this0_director_connect0_node_address_Address_unique:HAS_ADDRESS]->(:Address)
                             	WITH count(this0_director_connect0_node_address_Address_unique) as c
-                            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
+                            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
                             	RETURN c AS this0_director_connect0_node_address_Address_unique_ignored
                             }
                             	RETURN count(*) AS _
@@ -1112,7 +1112,7 @@ describe("integration/rfs/003", () => {
                             	WITH this0
                             	MATCH (this0)<-[this0_director_Director_unique:DIRECTED]-(:Director)
                             	WITH count(this0_director_Director_unique) as c
-                            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
+                            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
                             	RETURN c AS this0_director_Director_unique_ignored
                             }
                             RETURN this0
@@ -1182,7 +1182,7 @@ describe("integration/rfs/003", () => {
                         	WITH this
                         	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(this_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
+                        	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
                         RETURN 'Query cannot conclude with CALL'"
@@ -1233,10 +1233,10 @@ describe("integration/rfs/003", () => {
                         mutation {
                             updateMovies(
                                 where: { id: "${movieId}" },
-                                disconnect: { 
+                                disconnect: {
                                     director: { where: { node: { id: "${directorId1}" } } }
                                 }
-                                connect: { 
+                                connect: {
                                     director: { where: { node: { id: "${directorId2}" } } }
                                 }
                             ) {
@@ -1284,7 +1284,7 @@ describe("integration/rfs/003", () => {
                         	WITH this
                         	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(this_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
+                        	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
                         RETURN collect(DISTINCT this { .id, director: head([ (this)<-[:DIRECTED]-(this_director:Director)   | this_director { .id } ]) }) AS data"
@@ -1334,10 +1334,10 @@ describe("integration/rfs/003", () => {
                         mutation {
                             updateMovies(
                                 where: { id: "${movieId}" },
-                                disconnect: { 
+                                disconnect: {
                                     director: { where: { node: { id: "${directorId1}" } } }
                                 }
-                                connect: { 
+                                connect: {
                                     director: { where: { node: { id: "${directorId2}" } } }
                                 }
                             ) {
@@ -1385,7 +1385,7 @@ describe("integration/rfs/003", () => {
                         	WITH this
                         	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
                         	WITH count(this_director_Director_unique) as c
-                        	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
+                        	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
                         RETURN collect(DISTINCT this { .id, director: head([ (this)<-[:DIRECTED]-(this_director:Director)   | this_director { .id } ]) }) AS data"

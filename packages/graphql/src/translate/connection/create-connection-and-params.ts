@@ -271,7 +271,7 @@ function createConnectionAndParams({
                 if (allowAndParams[0]) {
                     globalParams = { ...globalParams, ...allowAndParams[1] };
                     unionInterfaceSubquery.push(
-                        `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+                        `CALL apoc.util.validate(NOT (${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
                     );
                 }
 
@@ -353,7 +353,7 @@ function createConnectionAndParams({
         });
         if (allowAndParams[0]) {
             globalParams = { ...globalParams, ...allowAndParams[1] };
-            subquery.push(`CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+            subquery.push(`CALL apoc.util.validate(NOT (${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         }
 
         if (sortInput.length) {
@@ -385,7 +385,7 @@ function createConnectionAndParams({
 
             if (projectionMeta?.authValidateStrs?.length) {
                 subquery.push(
-                    `CALL apoc.util.validate(NOT(${projectionMeta.authValidateStrs.join(
+                    `CALL apoc.util.validate(NOT (${projectionMeta.authValidateStrs.join(
                         " AND "
                     )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
                 );
