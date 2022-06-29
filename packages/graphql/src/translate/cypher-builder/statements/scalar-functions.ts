@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { PointParam } from "../CypherBuilder";
 import { CypherContext } from "../CypherContext";
 import { CypherVariable } from "../references/References";
 
@@ -50,6 +51,37 @@ export class CoalesceFunction extends ScalarFunction {
     }
 }
 
+export class DistanceFunction extends ScalarFunction {
+    constructor(private property: [CypherVariable, string] | ScalarFunction, private point: PointParam) {
+        super("distance");
+    }
+
+    public getCypher(context: CypherContext): string {
+        let propParam: string;
+        if (this.property instanceof ScalarFunction) {
+            const propertyCypher = this.property.getCypher(context);
+            propParam = propertyCypher;
+        } else {
+            const [variable, prop] = this.property;
+            const variableId = context.getVariableId(variable);
+            propParam = `${variableId}.${prop}`;
+        }
+        const functionParamsStr = `${propParam}, ${this.point.getCypher(context)}`;
+        return this.getOperation(functionParamsStr);
+    }
+}
+
 export function coalesce(variable: CypherVariable, property: string, coalesceValue: string): CoalesceFunction {
     return new CoalesceFunction(variable, property, coalesceValue);
+}
+
+export function distance(
+    variable: CypherVariable | ScalarFunction,
+    property: string,
+    point: PointParam
+): DistanceFunction {
+    if (variable instanceof ScalarFunction) {
+        return new DistanceFunction(variable, point);
+    }
+    return new DistanceFunction([variable, property], point);
 }

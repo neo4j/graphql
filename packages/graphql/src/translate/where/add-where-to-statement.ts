@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { GraphQLWhereArg, Context, RelationField, ConnectionField } from "../../types";
+import { GraphQLWhereArg, Context, RelationField, ConnectionField, PointField } from "../../types";
 import { Node, Relationship } from "../../classes";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
@@ -28,6 +28,7 @@ import { PredicateFunction } from "../cypher-builder/statements/predicate-functi
 import createAggregateWhereAndParams from "../create-aggregate-where-and-params";
 import { WhereInput } from "../cypher-builder/statements/Where";
 import { ScalarFunction } from "../cypher-builder/statements/scalar-functions";
+import createWhereClause from "./create-where-clause";
 
 // type CypherPropertyValue =
 //     | [MatchableElement | CypherBuilder.Variable, Record<string, CypherBuilder.Param | CypherBuilder.WhereClause>]
@@ -177,13 +178,63 @@ function mapProperties({
             });
         }
 
-        return createPrimitiveProperty({
-            targetElement,
-            operator,
-            dbFieldName,
-            value,
-            coalesceValue,
+        const pointField = node.pointFields.find((x) => x.fieldName === fieldName);
+        const durationField = node.primitiveFields.find(
+            (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
+        );
+
+        let targetElementOrCoalesce: MatchableElement | CypherBuilder.Variable | ScalarFunction = targetElement;
+        if (coalesceValue) {
+            targetElementOrCoalesce = CypherBuilder.coalesce(targetElement, dbFieldName, coalesceValue);
+        }
+
+        return new CypherBuilder.RawCypherWithCallback((cypherContext: CypherBuilder.CypherContext) => {
+            let property: string;
+            if (targetElementOrCoalesce instanceof ScalarFunction) {
+                property = targetElementOrCoalesce.getCypher(cypherContext);
+            } else {
+                const varId = cypherContext.getVariableId(targetElementOrCoalesce);
+                property = `${varId}.${dbFieldName}`;
+            }
+            if (value === null) {
+                const isNullStr = `${property} ${isNot ? "IS NOT" : "IS"} NULL`;
+                return [isNullStr, {}];
+            }
+
+            const param = new CypherBuilder.Param(value);
+
+            const paramId = cypherContext.getParamId(param);
+
+            const whereStr = createWhereClause({
+                property,
+                param: paramId,
+                operator,
+                isNot,
+                durationField,
+                pointField,
+            });
+
+            return [whereStr, {}];
         });
+        // if (pointField) {
+
+        // return createPointProperty({
+        //     targetElement,
+        //     operator,
+        //     dbFieldName,
+        //     value,
+        //     coalesceValue,
+        //     pointField,
+        // });
+        // }
+
+        // return createPrimitiveProperty({
+        //     targetElement,
+        //     operator,
+        //     dbFieldName,
+        //     value,
+        //     coalesceValue,
+        // });
     });
 }
 
@@ -247,9 +298,14 @@ function createPrimitiveProperty({
                 break;
             case "NOT_IN":
                 return CypherBuilder.not([targetElementOrCoalesce, { [dbFieldName]: CypherBuilder.in(param) }]);
+            case "INCLUDES":
+            case "NOT_INCLUDES":
+                throw new Error("INCLUDES Not implemented");
             default:
                 throw new Error(`Invalid operator ${operator}`);
         }
+
+        // TODO: should handle not
         return [targetElementOrCoalesce, { [dbFieldName]: whereClause }];
     }
     return [targetElementOrCoalesce, { [dbFieldName]: param }];
@@ -480,7 +536,6 @@ function createAggregateProperty({
     value: any;
     parentNode: CypherBuilder.Node;
 }): CypherBuilder.RawCypherWithCallback {
-    // MISSING VARNAME
     const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
     const relationship = context.relationships.find((x) => x.properties === relationField.properties) as Relationship;
 

@@ -26,7 +26,7 @@ export { Match } from "./statements/Match";
 export { RawCypher, RawCypherWithCallback } from "./statements/RawCypher";
 
 export { Node, NamedNode } from "./references/Node";
-export { Param, RawParam } from "./references/Param";
+export { Param, RawParam, PointParam } from "./references/Param";
 export { Relationship } from "./references/Relationship";
 export { Variable } from "./references/Variable";
 export { CypherContext } from "./CypherContext";
@@ -34,7 +34,7 @@ export { CypherContext } from "./CypherContext";
 export { CypherResult } from "./types";
 
 export { or, and, not } from "./statements/where-operators";
-export { coalesce } from "./statements/scalar-functions";
+export { coalesce, distance } from "./statements/scalar-functions";
 export {
     inClause as in,
     gt,
