@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:ABCE)
             WHERE this.id = $this_id
-            CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)),'Relation field \\"%s\\" cannot have more than one node linked',[\\"interface\\"])
+            CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
             CREATE (this_create_interface_ChildOne0_node_ChildOne:ChildOne)
             SET this_create_interface_ChildOne0_node_ChildOne.id = randomUUID()
             SET this_create_interface_ChildOne0_node_ChildOne.name = $this_create_interface_ChildOne0_node_ChildOne_name
@@ -132,8 +132,8 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:ABCE)
             WHERE this.id = $this_id
-            CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)),'Relation field \\"%s\\" cannot have more than one node linked',[\\"interface\\"])
-            CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildTwo)),'Relation field \\"%s\\" cannot have more than one node linked',[\\"interface\\"])
+            CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
+            CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildTwo)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
             WITH this
             CALL {
             	WITH this

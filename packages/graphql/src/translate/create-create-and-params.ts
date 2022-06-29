@@ -97,7 +97,7 @@ function createCreateAndParams({
                     const isCreatingMultipleNodesForOneToOneRel = !isInterfaceAnArray && createNodeInputKeys.length > 1;
                     if (isCreatingMultipleNodesForOneToOneRel) {
                         throw new Error(
-                            `Relation field "${
+                            `Relationship field "${relationField.connectionPrefix}.${
                                 relationField.interface?.dbPropertyName || relationField.interface?.fieldName
                             }" cannot have more than one node linked`
                         );
