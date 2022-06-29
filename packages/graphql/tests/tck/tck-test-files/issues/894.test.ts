@@ -68,8 +68,8 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.name = $this_name
+            "MATCH (this:\`User\`)
+            WHERE this.name = $param0
             WITH this
             CALL {
             	WITH this
@@ -105,7 +105,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_name\\": \\"Luke Skywalker\\",
+                \\"param0\\": \\"Luke Skywalker\\",
                 \\"this_connect_activeOrganization0_node_id\\": \\"test-id\\",
                 \\"updateUsers\\": {
                     \\"args\\": {

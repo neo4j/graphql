@@ -80,8 +80,8 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Community)
-            WHERE this.id = $this_id
+            "MATCH (this:\`Community\`)
+            WHERE this.id = $param0
             RETURN this { .id, hasFeedItems: apoc.coll.flatten([this_hasFeedItems IN apoc.cypher.runFirstColumn(\\"Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag)
                return pag SKIP ($limit * $pageIndex) LIMIT $limit\\", {this: this, auth: $auth, limit: $this_hasFeedItems_limit, page: $this_hasFeedItems_page}, true) WHERE (this_hasFeedItems:\`Content\`) OR (this_hasFeedItems:\`Project\`)  |   [ this_hasFeedItems IN [this_hasFeedItems] WHERE (this_hasFeedItems:\`Content\`) | this_hasFeedItems { __resolveType: \\"Content\\",  .name } ] + [ this_hasFeedItems IN [this_hasFeedItems] WHERE (this_hasFeedItems:\`Project\`) | this_hasFeedItems { __resolveType: \\"Project\\",  .name } ] ]) } as this"
         `);

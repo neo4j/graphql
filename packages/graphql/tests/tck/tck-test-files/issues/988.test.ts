@@ -135,8 +135,17 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Series)
-            WHERE ((EXISTS((this)-[:MANUFACTURER]->(:Manufacturer)) AND ANY(this_AND_OR_manufacturerConnection_Manufacturer_map IN [(this)-[this_AND_OR_manufacturerConnection_Manufacturer_SeriesManufacturerRelationship:MANUFACTURER]->(this_AND_OR_manufacturerConnection_Manufacturer:Manufacturer)  | { node: this_AND_OR_manufacturerConnection_Manufacturer, relationship: this_AND_OR_manufacturerConnection_Manufacturer_SeriesManufacturerRelationship } ] WHERE this_AND_OR_manufacturerConnection_Manufacturer_map.relationship.current = $this_AND_OR_series.where.manufacturerConnection.edge.current AND this_AND_OR_manufacturerConnection_Manufacturer_map.node.name = $this_AND_OR_series.where.manufacturerConnection.node.name) OR EXISTS((this)-[:MANUFACTURER]->(:Manufacturer)) AND ANY(this_AND_OR1_manufacturerConnection_Manufacturer_map IN [(this)-[this_AND_OR1_manufacturerConnection_Manufacturer_SeriesManufacturerRelationship:MANUFACTURER]->(this_AND_OR1_manufacturerConnection_Manufacturer:Manufacturer)  | { node: this_AND_OR1_manufacturerConnection_Manufacturer, relationship: this_AND_OR1_manufacturerConnection_Manufacturer_SeriesManufacturerRelationship } ] WHERE this_AND_OR1_manufacturerConnection_Manufacturer_map.relationship.current = $this_AND_OR1_series.where.manufacturerConnection.edge.current AND this_AND_OR1_manufacturerConnection_Manufacturer_map.node.name = $this_AND_OR1_series.where.manufacturerConnection.node.name)) AND (EXISTS((this)-[:BRAND]->(:Brand)) AND ANY(this_AND1_OR_brandConnection_Brand_map IN [(this)-[this_AND1_OR_brandConnection_Brand_SeriesBrandRelationship:BRAND]->(this_AND1_OR_brandConnection_Brand:Brand)  | { node: this_AND1_OR_brandConnection_Brand, relationship: this_AND1_OR_brandConnection_Brand_SeriesBrandRelationship } ] WHERE this_AND1_OR_brandConnection_Brand_map.relationship.current = $this_AND1_OR_series.where.brandConnection.edge.current AND this_AND1_OR_brandConnection_Brand_map.node.name = $this_AND1_OR_series.where.brandConnection.node.name))) AND this.current = $this_current
+            "MATCH (this:\`Series\`)
+            WHERE (this.current = $param0
+            AND (((exists((this)-[:\`MANUFACTURER\`]->(:\`Manufacturer\`))
+            AND ANY(var3 IN [(this)-[this1:\`MANUFACTURER\`]->(this2:\`Manufacturer\`) | { node: this2, relationship: this1 }]
+                        WHERE var3.relationship.current = $nestedParam1.edge.current AND var3.node.name = $nestedParam1.node.name))
+            OR (exists((this)-[:\`MANUFACTURER\`]->(:\`Manufacturer\`))
+            AND ANY(var6 IN [(this)-[this4:\`MANUFACTURER\`]->(this5:\`Manufacturer\`) | { node: this5, relationship: this4 }]
+                        WHERE var6.relationship.current = $nestedParam2.edge.current AND var6.node.name = $nestedParam2.node.name)))
+            AND (exists((this)-[:\`BRAND\`]->(:\`Brand\`))
+            AND ANY(var9 IN [(this)-[this7:\`BRAND\`]->(this8:\`Brand\`) | { node: this8, relationship: this7 }]
+                        WHERE var9.relationship.current = $nestedParam3.edge.current AND var9.node.name = $nestedParam3.node.name))))
             CALL {
             WITH this
             MATCH (this)-[this_manufacturer_relationship:MANUFACTURER]->(this_manufacturer:Manufacturer)
@@ -153,43 +162,31 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_AND_OR_series\\": {
-                    \\"where\\": {
-                        \\"manufacturerConnection\\": {
-                            \\"edge\\": {
-                                \\"current\\": true
-                            },
-                            \\"node\\": {
-                                \\"name\\": \\"C\\"
-                            }
-                        }
+                \\"param0\\": true,
+                \\"nestedParam1\\": {
+                    \\"edge\\": {
+                        \\"current\\": true
+                    },
+                    \\"node\\": {
+                        \\"name\\": \\"C\\"
                     }
                 },
-                \\"this_AND_OR1_series\\": {
-                    \\"where\\": {
-                        \\"manufacturerConnection\\": {
-                            \\"edge\\": {
-                                \\"current\\": false
-                            },
-                            \\"node\\": {
-                                \\"name\\": \\"AM\\"
-                            }
-                        }
+                \\"nestedParam2\\": {
+                    \\"edge\\": {
+                        \\"current\\": false
+                    },
+                    \\"node\\": {
+                        \\"name\\": \\"AM\\"
                     }
                 },
-                \\"this_AND1_OR_series\\": {
-                    \\"where\\": {
-                        \\"brandConnection\\": {
-                            \\"edge\\": {
-                                \\"current\\": true
-                            },
-                            \\"node\\": {
-                                \\"name\\": \\"smart\\"
-                            }
-                        }
+                \\"nestedParam3\\": {
+                    \\"edge\\": {
+                        \\"current\\": true
+                    },
+                    \\"node\\": {
+                        \\"name\\": \\"smart\\"
                     }
-                },
-                \\"this_current\\": true
+                }
             }"
         `);
     });

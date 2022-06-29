@@ -93,8 +93,8 @@ describe("#324", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
-            WHERE this.identifier = $this_identifier
+            "MATCH (this:\`Person\`)
+            WHERE this.identifier = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_car0_relationship:CAR]->(this_car0:Car)
             CALL apoc.do.when(this_car0 IS NOT NULL, \\"
@@ -149,7 +149,7 @@ describe("#324", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_identifier\\": \\"Someone\\",
+                \\"param0\\": \\"Someone\\",
                 \\"this_update_car0_manufacturer0_name\\": \\"Manufacturer\\",
                 \\"this_car0_manufacturer0_logo0_connect0_node_identifier\\": \\"Opel Logo\\",
                 \\"auth\\": {

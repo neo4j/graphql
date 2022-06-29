@@ -77,8 +77,8 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $this_id
+            "MATCH (this:\`User\`)
+            WHERE this.id = $param0
             RETURN this { updates: apoc.coll.flatten([this_updates IN apoc.cypher.runFirstColumn(\\"MATCH (this)-[a:WROTE]->(wrote:Post)
             WHERE a.date_added IS NOT NULL
             WITH COLLECT(wrote{ .*, date_added: a.date_added, typename: 'WROTE' }) as updates1, this
@@ -93,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"test-id\\",
+                \\"param0\\": \\"test-id\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": false,
                     \\"roles\\": []

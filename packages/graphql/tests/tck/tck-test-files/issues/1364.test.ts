@@ -101,7 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-            MATCH (this:Movie)
+            MATCH (this:\`Movie\`)
             WITH COLLECT(this) as edges
             WITH edges, size(edges) as totalCount
             UNWIND edges as this
@@ -134,7 +134,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-            MATCH (this:Movie)
+            MATCH (this:\`Movie\`)
             WITH COLLECT(this) as edges
             WITH edges, size(edges) as totalCount
             UNWIND edges as this
@@ -168,7 +168,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-            MATCH (this:Movie)
+            MATCH (this:\`Movie\`)
             WITH COLLECT(this) as edges
             WITH edges, size(edges) as totalCount
             UNWIND edges as this

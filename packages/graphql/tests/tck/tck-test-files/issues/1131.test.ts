@@ -89,7 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`BibliographicReference\`:\`Resource\`)
-            WHERE this.uri = $this_iri
+            WHERE this.uri = $param0
             SET this.prefLabel = $this_update_prefLabel
             	WITH this
             CALL {
@@ -115,7 +115,7 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_iri\\": \\"urn:myiri2\\",
+                \\"param0\\": \\"urn:myiri2\\",
                 \\"this_update_prefLabel\\": [
                     \\"Updated Label:My BRS with Resource\\"
                 ],
