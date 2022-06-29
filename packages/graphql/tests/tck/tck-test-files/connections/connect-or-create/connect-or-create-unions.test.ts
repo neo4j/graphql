@@ -206,8 +206,8 @@ describe("Create or connect with unions", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            WHERE this.name = $this_name
+            "MATCH (this:\`Actor\`)
+            WHERE this.name = $param0
             SET this.name = $this_update_name
             	WITH this
             CALL {
@@ -238,7 +238,7 @@ describe("Create or connect with unions", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_name\\": \\"Tom Hanks evil twin\\",
+                \\"param0\\": \\"Tom Hanks evil twin\\",
                 \\"this_update_name\\": \\"Tom Hanks\\",
                 \\"this_actedIn_Movie0_connectOrCreate_param0\\": {
                     \\"low\\": 105,

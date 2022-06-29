@@ -78,8 +78,8 @@ describe("Relay Cursor Connection projections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
@@ -91,7 +91,7 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
     });
@@ -119,8 +119,8 @@ describe("Relay Cursor Connection projections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
@@ -132,7 +132,7 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
     });
@@ -155,8 +155,8 @@ describe("Relay Cursor Connection projections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
@@ -169,7 +169,7 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
     });
@@ -192,8 +192,8 @@ describe("Relay Cursor Connection projections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            WHERE this.name = $this_name
+            "MATCH (this:\`Actor\`)
+            WHERE this.name = $param0
             CALL {
             WITH this
             CALL {
@@ -215,7 +215,7 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_name\\": \\"Tom Hanks\\"
+                \\"param0\\": \\"Tom Hanks\\"
             }"
         `);
     });
@@ -243,8 +243,8 @@ describe("Relay Cursor Connection projections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            WHERE this.name = $this_name
+            "MATCH (this:\`Actor\`)
+            WHERE this.name = $param0
             CALL {
             WITH this
             CALL {
@@ -266,7 +266,7 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_name\\": \\"Tom Hanks\\"
+                \\"param0\\": \\"Tom Hanks\\"
             }"
         `);
     });
@@ -294,8 +294,8 @@ describe("Relay Cursor Connection projections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
@@ -307,7 +307,7 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
     });
@@ -335,8 +335,8 @@ describe("Relay Cursor Connection projections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
@@ -349,7 +349,7 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
     });

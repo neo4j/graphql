@@ -149,8 +149,8 @@ describe("Create or Connect", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Actor)
-                WHERE this.name = $this_name
+                "MATCH (this:\`Actor\`)
+                WHERE this.name = $param0
                 SET this.name = $this_update_name
                 	WITH this
                 CALL {
@@ -168,7 +168,7 @@ describe("Create or Connect", () => {
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
-                    \\"this_name\\": \\"Tom Hanks\\",
+                    \\"param0\\": \\"Tom Hanks\\",
                     \\"this_update_name\\": \\"Tom Hanks 2\\",
                     \\"this_movies0_connectOrCreate_param0\\": {
                         \\"low\\": 105,
@@ -374,8 +374,8 @@ describe("Create or Connect", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Actor)
-                WHERE this.name = $this_name
+                "MATCH (this:\`Actor\`)
+                WHERE this.name = $param0
                 SET this.name = $this_update_name
                 	WITH this
                 CALL {
@@ -395,7 +395,7 @@ describe("Create or Connect", () => {
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
-                    \\"this_name\\": \\"Tom Hanks\\",
+                    \\"param0\\": \\"Tom Hanks\\",
                     \\"this_update_name\\": \\"Tom Hanks 2\\",
                     \\"this_movies0_connectOrCreate_param0\\": {
                         \\"low\\": 105,
@@ -436,8 +436,8 @@ describe("Create or Connect", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Actor)
-                WHERE this.name = $this_name
+                "MATCH (this:\`Actor\`)
+                WHERE this.name = $param0
                 SET this.name = $this_update_name
                 	WITH this
                 CALL {
@@ -456,7 +456,7 @@ describe("Create or Connect", () => {
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
-                    \\"this_name\\": \\"Tom Hanks\\",
+                    \\"param0\\": \\"Tom Hanks\\",
                     \\"this_update_name\\": \\"Tom Hanks 2\\",
                     \\"this_movies0_connectOrCreate_param0\\": {
                         \\"low\\": 105,
@@ -599,8 +599,8 @@ describe("Create or Connect", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Actor)
-                WHERE this.name = $this_name
+                "MATCH (this:\`Actor\`)
+                WHERE this.name = $param0
                 SET this.name = $this_update_name
                 	WITH this
                 CALL {
@@ -620,7 +620,7 @@ describe("Create or Connect", () => {
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
-                    \\"this_name\\": \\"Tom Hanks\\",
+                    \\"param0\\": \\"Tom Hanks\\",
                     \\"this_update_name\\": \\"Tom Hanks 2\\",
                     \\"this_movies0_connectOrCreate_param0\\": {
                         \\"low\\": 105,

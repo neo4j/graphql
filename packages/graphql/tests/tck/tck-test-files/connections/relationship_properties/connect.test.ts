@@ -219,8 +219,8 @@ describe("Relationship Properties Connect Cypher", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             WITH this
             CALL {
             	WITH this
@@ -245,7 +245,7 @@ describe("Relationship Properties Connect Cypher", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\",
+                \\"param0\\": \\"Forrest Gump\\",
                 \\"this_connect_actors0_relationship_screenTime\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
@@ -283,8 +283,8 @@ describe("Relationship Properties Connect Cypher", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             WITH this
             CALL {
             	WITH this
@@ -310,7 +310,7 @@ describe("Relationship Properties Connect Cypher", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\",
+                \\"param0\\": \\"Forrest Gump\\",
                 \\"this_connect_actors0_node_name\\": \\"Tom Hanks\\",
                 \\"this_connect_actors0_relationship_screenTime\\": {
                     \\"low\\": 60,

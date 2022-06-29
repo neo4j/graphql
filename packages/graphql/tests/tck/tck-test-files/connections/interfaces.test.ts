@@ -88,7 +88,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             CALL {
             WITH this
             CALL {
@@ -140,7 +140,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             CALL {
             WITH this
             CALL {
@@ -208,7 +208,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             CALL {
             WITH this
             CALL {
@@ -287,7 +287,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             CALL {
             WITH this
             CALL {
@@ -358,7 +358,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 });
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Actor)
+                    "MATCH (this:\`Actor\`)
                     CALL {
                     WITH this
                     CALL {
@@ -411,7 +411,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 });
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Actor)
+                    "MATCH (this:\`Actor\`)
                     CALL {
                     WITH this
                     CALL {
@@ -465,7 +465,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 });
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Actor)
+                    "MATCH (this:\`Actor\`)
                     CALL {
                     WITH this
                     CALL {
@@ -517,7 +517,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 });
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Actor)
+                    "MATCH (this:\`Actor\`)
                     CALL {
                     WITH this
                     CALL {
