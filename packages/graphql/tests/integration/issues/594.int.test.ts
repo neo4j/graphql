@@ -92,10 +92,12 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data[typeMovie.plural]).toHaveLength(2);
-        expect(gqlResult.data[typeMovie.plural]).toEqual([
-            { actorsAggregate: { node: { nickname: { shortest: "SName" } } } },
-            { actorsAggregate: { node: { nickname: { shortest: null } } } },
-        ]);
+        expect(gqlResult.data[typeMovie.plural]).toEqual(
+            expect.arrayContaining([
+                { actorsAggregate: { node: { nickname: { shortest: "SName" } } } },
+                { actorsAggregate: { node: { nickname: { shortest: null } } } },
+            ])
+        );
     });
 
     test("should support nullable fields in aggregations", async () => {
