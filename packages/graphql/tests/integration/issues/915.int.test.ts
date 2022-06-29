@@ -24,6 +24,7 @@ import { gql } from "apollo-server";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { delay } from "../../../src/utils/utils";
+import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
 
 // Adapted from BigInt
 const PositiveInt = new GraphQLScalarType({
@@ -77,25 +78,31 @@ const PositiveInt = new GraphQLScalarType({
 describe("https://github.com/neo4j/graphql/issues/915", () => {
     let driver: Driver;
     let databaseName: string;
-    let MULTIDB_SUPPORT: boolean;
+    let MULTIDB_SUPPORT = true;
 
     beforeAll(async () => {
         driver = await neo4j();
 
-        MULTIDB_SUPPORT = await driver.supportsMultiDb();
+        databaseName = generate({ readable: true, charset: "alphabetic" });
 
-        if (MULTIDB_SUPPORT) {
-            databaseName = generate({ readable: true, charset: "alphabetic" });
-
-            const cypher = `CREATE DATABASE ${databaseName}`;
-            const session = driver.session();
-
+        const cypher = `CREATE DATABASE ${databaseName}`;
+        const session = driver.session();
+        try {
             await session.run(cypher);
-
+        } catch (e) {
+            if (e instanceof Error) {
+                if (isMultiDbUnsupportedError(e)) {
+                    // No multi-db support, so we skip tests
+                    MULTIDB_SUPPORT = false;
+                } else {
+                    throw e;
+                }
+            }
+        } finally {
             await session.close();
-
-            await delay(5000);
         }
+
+        await delay(5000);
     });
 
     afterAll(async () => {
