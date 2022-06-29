@@ -22,6 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("BigInt", () => {
     let driver: Driver;
@@ -145,9 +146,10 @@ describe("BigInt", () => {
 
         test("should successfully query an node with a BigInt property using in where", async () => {
             const session = driver.session();
+            const fileType = generateUniqueType("File");
 
             const typeDefs = `
-                type File {
+                type ${fileType} {
                   name: String!
                   size: BigInt!
                 }
@@ -163,7 +165,7 @@ describe("BigInt", () => {
 
             const query = `
                 query {
-                    files(where: { size: 8323372036854775807 }) {
+                    ${fileType.plural}(where: { size: 8323372036854775807 }) {
                         name
                         size
                     }
@@ -172,7 +174,7 @@ describe("BigInt", () => {
 
             try {
                 await session.run(`
-                   CREATE (f:File)
+                   CREATE (f:${fileType})
                    SET f.name = "${name}"
                    SET f.size = 8323372036854775807
                `);
@@ -185,9 +187,13 @@ describe("BigInt", () => {
 
                 expect(gqlResult.errors).toBeFalsy();
 
-                expect((gqlResult?.data as any)?.files[0]).toEqual({
-                    name,
-                    size: "8323372036854775807",
+                expect(gqlResult?.data as any).toEqual({
+                    [fileType.plural]: [
+                        {
+                            name,
+                            size: "8323372036854775807",
+                        },
+                    ],
                 });
             } finally {
                 await session.close();

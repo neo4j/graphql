@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 import neo4j from "../neo4j";
 
-describe("582", () => {
+describe("https://github.com/neo4j/graphql/issues/582", () => {
     let driver: Driver;
     let type: UniqueType;
     let bookmarks: string[];

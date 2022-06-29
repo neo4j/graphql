@@ -28,8 +28,13 @@ export class Variable implements CypherVariable {
 
     constructor(private input: Record<string, CypherVariable | CypherParameter>) {}
 
-    getCypher(context: CypherContext): string {
-        const serializedVariables = Object.entries(this.input).reduce((acc, [key, variable]) => {
+    public getCypher(context: CypherContext): string {
+        const serializedVariables = this.serializeVariables(context);
+        return stringifyObject(serializedVariables);
+    }
+
+    protected serializeVariables(context: CypherContext): Record<string, string> {
+        return Object.entries(this.input).reduce((acc, [key, variable]) => {
             let variableId: string;
             if (variable instanceof Param) {
                 variableId = context.getParamId(variable);
@@ -44,6 +49,5 @@ export class Variable implements CypherVariable {
             acc[key] = variableId;
             return acc;
         }, {});
-        return stringifyObject(serializedVariables);
     }
 }

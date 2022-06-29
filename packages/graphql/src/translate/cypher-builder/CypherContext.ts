@@ -34,6 +34,10 @@ export class CypherContext implements CypherContextInterface {
         this.prefix = prefix || "";
     }
 
+    public getParamsSize(): number {
+        return this.params.size;
+    }
+
     public getParamId(param: CypherParameter): string {
         const id = this.params.get(param);
         if (!id) {

@@ -23,12 +23,13 @@ import mapToDbProperty from "../../utils/map-to-db-property";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { MatchableElement } from "../cypher-builder/MatchPattern";
 import { WhereOperator } from "../cypher-builder/statements/where-operators";
-import { whereRegEx, WhereRegexGroups } from "./utils";
+import { getListPredicate, whereRegEx, WhereRegexGroups } from "./utils";
 import { PredicateFunction } from "../cypher-builder/statements/predicate-functions";
 import createAggregateWhereAndParams from "../create-aggregate-where-and-params";
 import { WhereInput } from "../cypher-builder/statements/Where";
 import { ScalarFunction } from "../cypher-builder/statements/scalar-functions";
 import createWhereClause from "./create-where-clause";
+import createConnectionWhereAndParams from "./create-connection-where-and-params";
 
 // type CypherPropertyValue =
 //     | [MatchableElement | CypherBuilder.Variable, Record<string, CypherBuilder.Param | CypherBuilder.WhereClause>]
@@ -128,17 +129,22 @@ function mapProperties({
     context: Context;
 }): WhereInput {
     return properties.map(([key, value]) => {
+        // console.log("MAPPROPERTIES");
+        // console.log("key", key);
+        // console.log("value", value);
         const match = whereRegEx.exec(key);
 
-        const { fieldName, isAggregate, operator } = match?.groups as WhereRegexGroups;
+        const { prefix, fieldName, isAggregate, operator } = match?.groups as WhereRegexGroups;
 
         const isNot = operator?.startsWith("NOT") ?? false;
         const coalesceValue = [...node.primitiveFields, ...node.temporalFields, ...node.enumFields].find(
             (f) => fieldName === f.fieldName
         )?.coalesceValue as string | undefined;
 
-        // TODO: deal with coalesce
-        const dbFieldName = mapToDbProperty(node, fieldName);
+        let dbFieldName = mapToDbProperty(node, fieldName);
+        if (prefix) {
+            dbFieldName = `${prefix}${dbFieldName}`;
+        }
 
         const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
 
@@ -439,7 +445,7 @@ function createConnectionProperty({
             relationship: { variable: true },
         });
 
-        const subquery = new CypherBuilder.Query();
+        // WITH statement
 
         // TODO: remove duplicate
         let listPredicate: PredicateFunction;
@@ -447,6 +453,8 @@ function createConnectionProperty({
             node: childNode,
             relationship,
         });
+
+        const subquery = new CypherBuilder.Query();
 
         switch (operator) {
             case "ALL":
@@ -465,14 +473,36 @@ function createConnectionProperty({
                 break;
         }
 
-        const mappedProperties = mapConnectionProperties({
-            whereInput: value,
-            targetVariable: projectionVariable,
-            node: refNode,
-            context,
-        });
+        // TODO: createConnectionWhereAndParams
 
-        subquery.where(...mappedProperties);
+        const rawQuery = new CypherBuilder.RawCypherWithCallback((cypherContext: CypherBuilder.CypherContext) => {
+            const listPredicateStr = getListPredicate(operator as any);
+            const contextRelationship = context.relationships.find(
+                (x) => x.name === connectionField.relationshipTypeName
+            ) as Relationship;
+            const collectedMapId = cypherContext.getVariableId(projectionVariable);
+
+            const prefix = `nestedParam${cypherContext.getParamsSize()}`; // Generates unique name for nested reference
+            const result = createConnectionWhereAndParams({
+                whereInput: entry[1] as any,
+                context,
+                node: refNode,
+                nodeVariable: `${collectedMapId}.node`,
+                relationship: contextRelationship,
+                relationshipVariable: `${collectedMapId}.relationship`,
+                parameterPrefix: prefix, //`${collectedMapId}`, // ERROR HERE
+                listPredicates: [listPredicateStr],
+            });
+            return [result[0], { [prefix]: result[1] }];
+        });
+        subquery.where(rawQuery);
+        // const mappedProperties = mapConnectionProperties({
+        //     whereInput: value,
+        //     targetVariable: projectionVariable,
+        //     node: refNode,
+        //     context,
+        // });
+        // subquery.where(...mappedProperties);
 
         return CypherBuilder.and(exists, listPredicate);
     });
