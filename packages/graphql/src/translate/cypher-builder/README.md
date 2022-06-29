@@ -249,7 +249,7 @@ CALL {
     CREATE (this0:\`Movie\`)
     SET this0.id = $param0
     RETURN this0
-    RETURN COUNT(*)
+    RETURN COUNT(*) AS _
 }
 ```
 

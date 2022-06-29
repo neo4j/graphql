@@ -211,7 +211,7 @@ describe("CypherBuilder", () => {
                 	CREATE (this0:\`Movie\`)
                 SET this0.id = $param0
                 RETURN this0
-                	RETURN COUNT(*)
+                	RETURN COUNT(*) AS _
                 }"
             `);
             expect(queryResult.params).toMatchInlineSnapshot(`
@@ -237,9 +237,9 @@ describe("CypherBuilder", () => {
                 	CREATE (this0:\`Movie\`)
 
                 RETURN this0
-                	RETURN COUNT(*)
+                	RETURN COUNT(*) AS _
                 }
-                	RETURN COUNT(*)
+                	RETURN COUNT(*) AS _
                 }"
             `);
             expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);

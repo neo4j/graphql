@@ -404,7 +404,7 @@ function createConnectAndParams({
             params = { ...params, ...postAuth.params };
         }
 
-        subquery.push("\tRETURN count(*)");
+        subquery.push("\tRETURN count(*) AS _");
 
         return { subquery: subquery.join("\n"), params };
     }

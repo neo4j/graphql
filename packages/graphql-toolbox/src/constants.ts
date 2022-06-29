@@ -25,9 +25,12 @@ export const LOCAL_STATE_LOGIN = "neo4j.graphql.login";
 export const LOCAL_STATE_ENABLE_DEBUG = "neo4j.graphql.debug";
 export const LOCAL_STATE_CHECK_CONSTRAINT = "neo4j.graphql.checkConstraint";
 export const LOCAL_STATE_CREATE_CONSTRAINT = "neo4j.graphql.createConstraint";
+export const LOCAL_STATE_CONSTRAINT = "neo4j.graphql.constraint";
 export const LOCAL_STATE_EDITOR_THEME = "neo4j.graphql.editorTheme";
 export const LOCAL_STATE_ENABLE_REGEX = "neo4j.graphql.enable.regex";
-export const LOCAL_STATE_FAVOURITES = "neo4j.graphql.favourites";
+export const LOCAL_STATE_FAVORITES = "neo4j.graphql.favorites";
+export const LOCAL_STATE_SHOW_LINT_MARKERS = "neo4j.graphql.showLintMarkers";
+export const LOCAL_STATE_SELECTED_DATABASE_NAME = "neo4j.graphql.selectedDatabaseName";
 
 export const SCHEMA_EDITOR_INPUT = "SCHEMA_EDITOR_INPUT";
 export const EDITOR_QUERY_INPUT = "EDITOR_QUERY_INPUT";
@@ -60,3 +63,4 @@ query {
 `;
 
 export const DEFAULT_BOLT_URL = "bolt://localhost:7687";
+export const DEFAULT_DATABASE_NAME = "neo4j";

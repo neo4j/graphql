@@ -16,6 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /* eslint-disable import/no-extraneous-dependencies */
 import ws from "ws";
 import { Client, createClient } from "graphql-ws";

@@ -449,7 +449,7 @@ describe("integration/rfs/003", () => {
                             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
                             	RETURN c AS this_director0_address_Address_unique_ignored
                             }
-                            RETURN count(*)
+                            RETURN count(*) AS _
                             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_director0:this_director0, auth:$auth,this_update_director0_id:$this_update_director0_id})
                             YIELD value AS _
                             WITH this
@@ -543,7 +543,7 @@ describe("integration/rfs/003", () => {
                             	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address must be less than or equal to one', [0])
                             	RETURN c AS this_director0_address_Address_unique_ignored
                             }
-                            RETURN count(*)
+                            RETURN count(*) AS _
                             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_director0:this_director0, auth:$auth,this_update_director0_id:$this_update_director0_id})
                             YIELD value AS _
                             WITH this
@@ -929,7 +929,7 @@ describe("integration/rfs/003", () => {
                         			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
                         		)
                         	)
-                        	RETURN count(*)
+                        	RETURN count(*) AS _
                         }
                         WITH this0
                         CALL {
@@ -998,7 +998,7 @@ describe("integration/rfs/003", () => {
                         			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
                         		)
                         	)
-                        	RETURN count(*)
+                        	RETURN count(*) AS _
                         }
                         WITH this0
                         CALL {
@@ -1103,9 +1103,9 @@ describe("integration/rfs/003", () => {
                             	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
                             	RETURN c AS this0_director_connect0_node_address_Address_unique_ignored
                             }
-                            	RETURN count(*)
+                            	RETURN count(*) AS _
                             }
-                            	RETURN count(*)
+                            	RETURN count(*) AS _
                             }
                             WITH this0
                             CALL {
@@ -1175,7 +1175,7 @@ describe("integration/rfs/003", () => {
                         FOREACH(_ IN CASE this_disconnect_director0 WHEN NULL THEN [] ELSE [1] END |
                         DELETE this_disconnect_director0_rel
                         )
-                        RETURN count(*)
+                        RETURN count(*) AS _
                         }
                         WITH this
                         CALL {
@@ -1267,7 +1267,7 @@ describe("integration/rfs/003", () => {
                         			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
                         		)
                         	)
-                        	RETURN count(*)
+                        	RETURN count(*) AS _
                         }
                         WITH this
                         CALL {
@@ -1277,7 +1277,7 @@ describe("integration/rfs/003", () => {
                         FOREACH(_ IN CASE this_disconnect_director0 WHEN NULL THEN [] ELSE [1] END |
                         DELETE this_disconnect_director0_rel
                         )
-                        RETURN count(*)
+                        RETURN count(*) AS _
                         }
                         WITH this
                         CALL {
@@ -1368,7 +1368,7 @@ describe("integration/rfs/003", () => {
                         			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
                         		)
                         	)
-                        	RETURN count(*)
+                        	RETURN count(*) AS _
                         }
                         WITH this
                         CALL {
@@ -1378,7 +1378,7 @@ describe("integration/rfs/003", () => {
                         FOREACH(_ IN CASE this_disconnect_director0 WHEN NULL THEN [] ELSE [1] END |
                         DELETE this_disconnect_director0_rel
                         )
-                        RETURN count(*)
+                        RETURN count(*) AS _
                         }
                         WITH this
                         CALL {
