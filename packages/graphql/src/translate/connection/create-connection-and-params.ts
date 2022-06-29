@@ -453,7 +453,7 @@ function createConnectionAndParams({
         }
         returnValues.push("totalCount: size(edges)");
         if (sortInput.length && elementsToCollect.length > 0) {
-            subquery.push("WITH *");
+            subquery.push("WITH edges, edge");
             const sort = sortInput.map((s) =>
                 [
                     ...Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`),

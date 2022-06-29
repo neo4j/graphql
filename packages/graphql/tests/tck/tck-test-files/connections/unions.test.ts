@@ -403,7 +403,7 @@ describe("Cypher -> Connections -> Unions", () => {
             WITH edge ORDER BY edge.words ASC
             WITH collect(edge) as edges
             UNWIND edges as edge
-            WITH *
+            WITH edges, edge
             ORDER BY edge.words ASC
             RETURN { edges: collect(edge), totalCount: size(edges) } AS publicationsConnection
             }

@@ -176,7 +176,7 @@ describe("Relationship Properties Cypher", () => {
             ORDER BY this_acted_in_relationship.screenTime DESC
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
-            WITH *
+            WITH edges, edge
             ORDER BY edge.screenTime DESC
             RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
             }

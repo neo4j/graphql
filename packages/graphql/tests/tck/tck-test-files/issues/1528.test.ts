@@ -70,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
             }
         `;
 
-        const req = createJwtRequest(secret, { roles: ["admin"] });
+        const req = createJwtRequest(secret);
         const result = await translateQuery(neoSchema, query, {
             req,
         });
@@ -85,7 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
             WITH collect({ node: { title: this_movie.title, actorsCount:  apoc.cypher.runFirstColumn(\\"MATCH (this)<-[:ACTED_IN]-(ac:Person)
             RETURN count(ac)\\", {this: this_movie, auth: $auth}, false) } }) AS edges
             UNWIND edges as edge
-            WITH *
+            WITH edges, edge
             ORDER BY edge.node.actorsCount DESC
             RETURN { edges: collect(edge), totalCount: size(edges) } AS moviesConnection
             }

@@ -379,7 +379,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     WITH edge ORDER BY edge.screenTime ASC
                     WITH collect(edge) as edges
                     UNWIND edges as edge
-                    WITH *
+                    WITH edges, edge
                     ORDER BY edge.screenTime ASC
                     RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
                     }
@@ -435,7 +435,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     WITH edge ORDER BY edge.node.title ASC
                     WITH collect(edge) as edges
                     UNWIND edges as edge
-                    WITH *
+                    WITH edges, edge
                     ORDER BY edge.node.title ASC
                     RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
                     }
@@ -492,7 +492,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     WITH edge ORDER BY edge.screenTime ASC
                     WITH collect(edge) as edges
                     UNWIND edges as edge
-                    WITH *
+                    WITH edges, edge
                     ORDER BY edge.screenTime ASC
                     RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
                     }
@@ -547,7 +547,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     WITH edge ORDER BY edge.node.title ASC
                     WITH collect(edge) as edges
                     UNWIND edges as edge
-                    WITH *
+                    WITH edges, edge
                     ORDER BY edge.node.title ASC
                     RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
                     }

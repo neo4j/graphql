@@ -221,7 +221,7 @@ describe("createConnectionAndParams", () => {
             ORDER BY this_acted_in_relationship.screenTime DESC, this_actor.name ASC
             WITH collect({ screenTime: this_acted_in_relationship.screenTime }) AS edges
             UNWIND edges as edge
-            WITH *
+            WITH edges, edge
             ORDER BY edge.screenTime DESC, edge.node.name ASC
             RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
             }"
