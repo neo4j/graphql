@@ -593,7 +593,7 @@ function createAggregateProperty({
 
         const aggregateWhereAndParams = createAggregateWhereAndParams({
             node: refNode,
-            chainStr: "",
+            chainStr: "aggr",
             context,
             field: relationField,
             varName,

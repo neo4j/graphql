@@ -74,7 +74,7 @@ describe("Cypher Aggregations Many", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { id: { shortest: min(this.id), longest: max(this.id) }, title: { shortest:
                                         reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(\\"
                                             RETURN

@@ -823,7 +823,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         `);
     });
 
-    test("MAX_LT", async () => {
+    test.only("MAX_LT", async () => {
         const query = gql`
             {
                 posts(where: { likesAggregate: { edge: { someBigInt_MAX_LT: "2147483648" } } }) {
@@ -838,16 +838,16 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  max(this_likesAggregate_edge.someBigInt) < $this_likesAggregate_edge_someBigInt_MAX_LT
-            \\", { this: this, this_likesAggregate_edge_someBigInt_MAX_LT: $this_likesAggregate_edge_someBigInt_MAX_LT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  max(aggr_edge.someBigInt) < $aggr_edge_someBigInt_MAX_LT
+            \\", { this: this, aggr_edge_someBigInt_MAX_LT: $aggr_edge_someBigInt_MAX_LT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someBigInt_MAX_LT\\": {
+                \\"aggr_edge_someBigInt_MAX_LT\\": {
                     \\"low\\": -2147483648,
                     \\"high\\": 0
                 }

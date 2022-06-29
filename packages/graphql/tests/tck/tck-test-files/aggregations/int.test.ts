@@ -57,7 +57,7 @@ describe("Cypher Aggregations Int", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { imdbRating: { min: min(this.imdbRating) } }"
         `);
 
@@ -81,7 +81,7 @@ describe("Cypher Aggregations Int", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { imdbRating: { max: max(this.imdbRating) } }"
         `);
 
@@ -105,7 +105,7 @@ describe("Cypher Aggregations Int", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { imdbRating: { average: avg(this.imdbRating) } }"
         `);
 
@@ -129,7 +129,7 @@ describe("Cypher Aggregations Int", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { imdbRating: { sum: sum(this.imdbRating) } }"
         `);
 
@@ -156,7 +156,7 @@ describe("Cypher Aggregations Int", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { imdbRating: { min: min(this.imdbRating), max: max(this.imdbRating), average: avg(this.imdbRating), sum: sum(this.imdbRating) } }"
         `);
 

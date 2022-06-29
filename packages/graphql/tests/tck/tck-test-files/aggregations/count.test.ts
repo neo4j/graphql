@@ -55,7 +55,7 @@ describe("Cypher Aggregations Count", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { count: count(this) }"
         `);
 
@@ -77,14 +77,14 @@ describe("Cypher Aggregations Count", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             RETURN { count: count(this) }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"some-title\\"
+                \\"param0\\": \\"some-title\\"
             }"
         `);
     });

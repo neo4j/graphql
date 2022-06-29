@@ -67,7 +67,7 @@ describe("Field Level Aggregations Where", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN this { .title, actorsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:Person) WHERE n.age > $this_actorsAggregate_n_age_GT    RETURN COUNT(n)\\", { this_actorsAggregate_n_age_GT: $this_actorsAggregate_n_age_GT, this: this })) } } as this"
         `);
 
@@ -102,7 +102,7 @@ describe("Field Level Aggregations Where", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN this { .title, actorsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:Person) WHERE n.name CONTAINS $this_actorsAggregate_n_name_CONTAINS    RETURN COUNT(n)\\", { this_actorsAggregate_n_name_CONTAINS: $this_actorsAggregate_n_name_CONTAINS, this: this })) }, directorsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:DIRECTED]-(n:Person) WHERE n.name CONTAINS $this_directorsAggregate_n_name_CONTAINS    RETURN COUNT(n)\\", { this_directorsAggregate_n_name_CONTAINS: $this_directorsAggregate_n_name_CONTAINS, this: this })) } } as this"
         `);
 
