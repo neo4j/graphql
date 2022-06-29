@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { filterTruthy } from "../../../utils/utils";
 import { CypherASTNode } from "../CypherASTNode";
 import { Param, Variable } from "../CypherBuilder";
 import { CypherContext } from "../CypherContext";
@@ -59,9 +60,11 @@ export class WhereStatement extends CypherASTNode {
     }
 
     public cypher(context: CypherContext): string {
-        const whereStatements = this.whereParams.map((operation) => {
-            return operation.getCypher(context);
-        });
+        const whereStatements = filterTruthy(
+            this.whereParams.map((operation) => {
+                return operation.getCypher(context);
+            })
+        );
 
         if (whereStatements.length === 0) return "";
         if (whereStatements.length > 1) return `${this.whereClause} (${whereStatements.join("\nAND ")})`;

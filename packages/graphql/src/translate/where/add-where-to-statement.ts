@@ -30,6 +30,7 @@ import { WhereInput } from "../cypher-builder/statements/Where";
 import { ScalarFunction } from "../cypher-builder/statements/scalar-functions";
 import createWhereClause from "./create-where-clause";
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
+import { filterTruthy } from "../../utils/utils";
 
 // type CypherPropertyValue =
 //     | [MatchableElement | CypherBuilder.Variable, Record<string, CypherBuilder.Param | CypherBuilder.WhereClause>]
@@ -128,7 +129,7 @@ function mapProperties({
     targetElement: MatchableElement | CypherBuilder.Variable;
     context: Context;
 }): WhereInput {
-    return properties.map(([key, value]) => {
+    const propertiesMappedToWhere = properties.map(([key, value]) => {
         // console.log("MAPPROPERTIES");
         // console.log("key", key);
         // console.log("value", value);
@@ -145,6 +146,18 @@ function mapProperties({
         if (prefix) {
             dbFieldName = `${prefix}${dbFieldName}`;
         }
+
+        //TODO
+        // if (node.isGlobalNode && key === "id") {
+        //     const { field, id } = node.fromGlobalId(value as string);
+        //     param = param.replace(key, field);
+
+        //     // get the dbField from the returned property fieldName
+        //     const dbField = mapToDbProperty(node, field);
+        //     res.clauses.push(`${varName}.${dbField} = $${param}`);
+        //     res.params = { ...res.params, [param]: id };
+        //     return res;
+        // }
 
         const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
 
@@ -242,6 +255,8 @@ function mapProperties({
         //     coalesceValue,
         // });
     });
+
+    return filterTruthy(propertiesMappedToWhere);
 }
 
 function createPrimitiveProperty({
@@ -331,7 +346,7 @@ function createRelationProperty({
     operator: string | undefined;
     value: GraphQLWhereArg;
     isNot: boolean;
-}): WhereOperator | PredicateFunction {
+}): WhereOperator | PredicateFunction | undefined {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
 
@@ -390,6 +405,10 @@ function createRelationProperty({
         node: refNode,
         context,
     });
+
+    if (mappedProperties.length === 0) {
+        return undefined;
+    }
 
     subquery.where(...mappedProperties);
 
@@ -490,7 +509,7 @@ function createConnectionProperty({
                 nodeVariable: `${collectedMapId}.node`,
                 relationship: contextRelationship,
                 relationshipVariable: `${collectedMapId}.relationship`,
-                parameterPrefix: prefix, //`${collectedMapId}`, // ERROR HERE
+                parameterPrefix: prefix,
                 listPredicates: [listPredicateStr],
             });
             return [result[0], { [prefix]: result[1] }];
