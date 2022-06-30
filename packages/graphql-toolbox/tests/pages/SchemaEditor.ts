@@ -22,7 +22,7 @@ import { Screen } from "./Screen";
 
 export class SchemaEditor extends Screen {
     public async setTypeDefs(typeDefs: string) {
-        await this.page.waitForSelector(`#${SCHEMA_EDITOR_INPUT}1 .CodeMirror`);
+        await this.page.waitForSelector("[data-test-schema-editor-build-button]");
         await this.page.evaluate(
             ({ id, typeDefs }) => {
                 // @ts-ignore -Find a better solution

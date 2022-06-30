@@ -33,8 +33,8 @@ type Pages = {
 };
 
 const pageInitialSetup = async (page: base.Page): Promise<void> => {
-    await page.goto("/");
     await page.setViewportSize({ width: 1920, height: 1080 });
+    await page.goto("/");
 };
 
 const test = base.test.extend<Pages>({

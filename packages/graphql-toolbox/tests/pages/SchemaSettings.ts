@@ -17,30 +17,22 @@
  * limitations under the License.
  */
 
+import { expect } from "@playwright/test";
 import { Screen } from "./Screen";
 
 export class SchemaSettings extends Screen {
     public async enableDebug() {
-        await this.page.waitForSelector("[data-test-schema-debug-checkbox");
-        await this.page.evaluate((selector) => {
-            // @ts-ignore -Find a better solution
-            document.querySelector(selector).click();
-        }, "[data-test-schema-debug-checkbox]");
-        const isDebugCheckboxChecked = await this.page.$eval("[data-test-schema-debug-checkbox]", (el) => {
-            // @ts-ignore
-            return el.checked;
-        });
-        if (!isDebugCheckboxChecked) throw new Error("Enable Debug checkbox was not checked");
-        return true;
+        await this.page.waitForSelector("[data-test-schema-debug-checkbox]");
+        await this.page.check("[data-test-schema-debug-checkbox]");
+    }
+
+    public async isDebugChecked() {
+        await this.page.waitForSelector("[data-test-schema-debug-checkbox]");
+        expect(await this.page.isChecked("[data-test-schema-debug-checkbox]")).toBeTruthy();
     }
 
     public async disableDebug() {
-        const isDebugCheckboxChecked = await this.page.$eval("[data-test-schema-debug-checkbox]", (el) => {
-            // @ts-ignore
-            return el.checked;
-        });
-        if (!isDebugCheckboxChecked) return true;
-        await this.page.waitForSelector("[data-test-schema-debug-checkbox");
-        await this.page.click("[data-test-schema-debug-checkbox]");
+        await this.page.waitForSelector("[data-test-schema-debug-checkbox]");
+        await this.page.uncheck("[data-test-schema-debug-checkbox]");
     }
 }

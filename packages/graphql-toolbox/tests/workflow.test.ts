@@ -27,11 +27,13 @@ describe("workflow", () => {
     const id = generate({
         charset: "alphabetic",
     });
+
     const typeDefs = `
         type Movie {
             id: ID!
         }
     `;
+
     const query = `
         query {
             movies(where: { id: "${id}" }) {
@@ -39,6 +41,7 @@ describe("workflow", () => {
             }
         }
     `;
+
     const queryWithVariables = `
         query($moviesWhere: MovieWhere) {
             movies(where: $moviesWhere) {
@@ -46,6 +49,7 @@ describe("workflow", () => {
             }
         }
     `;
+
     const variables = `
         {
             "moviesWhere": {

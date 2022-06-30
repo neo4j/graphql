@@ -22,7 +22,7 @@ import { test, describe } from "./utils/pagemodel";
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
 describe("login", () => {
-    test("should login", async ({ loginPage }) => {
+    test("should log in", async ({ loginPage }) => {
         await loginPage.setUsername(NEO_USER);
         await loginPage.setPassword(NEO_PASSWORD);
         await loginPage.setURL(NEO_URL);
