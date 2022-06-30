@@ -103,7 +103,8 @@ describe("Cypher -> Connections -> Interfaces", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
         `);
@@ -157,7 +158,8 @@ describe("Cypher -> Connections -> Interfaces", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
         `);
@@ -225,7 +227,8 @@ describe("Cypher -> Connections -> Interfaces", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
         `);
@@ -304,7 +307,8 @@ describe("Cypher -> Connections -> Interfaces", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
         `);
@@ -374,7 +378,10 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     }
                     WITH edge ORDER BY edge.screenTime ASC
                     WITH collect(edge) as edges
-                    RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+                    UNWIND edges as edge
+                    WITH edges, edge
+                    ORDER BY edge.screenTime ASC
+                    RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
                     }
                     RETURN this { .name, actedInConnection } as this"
                 `);
@@ -427,7 +434,10 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     }
                     WITH edge ORDER BY edge.node.title ASC
                     WITH collect(edge) as edges
-                    RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+                    UNWIND edges as edge
+                    WITH edges, edge
+                    ORDER BY edge.node.title ASC
+                    RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
                     }
                     RETURN this { .name, actedInConnection } as this"
                 `);
@@ -481,7 +491,10 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     }
                     WITH edge ORDER BY edge.screenTime ASC
                     WITH collect(edge) as edges
-                    RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+                    UNWIND edges as edge
+                    WITH edges, edge
+                    ORDER BY edge.screenTime ASC
+                    RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
                     }
                     RETURN this { .name, actedInConnection } as this"
                 `);
@@ -533,7 +546,10 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     }
                     WITH edge ORDER BY edge.node.title ASC
                     WITH collect(edge) as edges
-                    RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+                    UNWIND edges as edge
+                    WITH edges, edge
+                    ORDER BY edge.node.title ASC
+                    RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
                     }
                     RETURN this { .name, actedInConnection } as this"
                 `);

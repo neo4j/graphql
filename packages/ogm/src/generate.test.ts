@@ -1157,6 +1157,8 @@ describe("generate", () => {
 
             export type ActedInUpdateInput = {
               screenTime?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_INCREMENT?: InputMaybe<Scalars[\\"Int\\"]>;
+              screenTime_DECREMENT?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
             export type ActedInWhere = {

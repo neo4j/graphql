@@ -110,7 +110,7 @@ export default async function translateCreate({
             varName: "REPLACE_ME",
         });
         if (projection[2]?.authValidateStrs?.length) {
-            projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
+            projAuth = `CALL apoc.util.validate(NOT (${projection[2].authValidateStrs.join(
                 " AND "
             )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
         }
