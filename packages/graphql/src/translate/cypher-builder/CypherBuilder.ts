@@ -33,7 +33,7 @@ export { CypherContext } from "./CypherContext";
 
 export { CypherResult } from "./types";
 
-export { or, and, not } from "./statements/where-operators";
+export { or, and, not, WhereOperator } from "./statements/where-operators";
 export { coalesce, distance } from "./statements/scalar-functions";
 export {
     inClause as in,
@@ -49,7 +49,7 @@ export {
 } from "./statements/where-clauses";
 
 export { exists, any, none, single, all } from "./statements/predicate-functions";
-
+export { Exists } from "./statements/Exists";
 export { MatchPattern } from "./MatchPattern";
 
 export * as db from "./statements/db";

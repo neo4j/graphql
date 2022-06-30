@@ -135,7 +135,6 @@ export class MatchPattern<T extends MatchableElement> extends CypherASTNode {
     }
 
     private serializeParameters(parameters: ParamsRecord, context: CypherContext): string {
-        console.log(parameters);
         if (Object.keys(parameters).length === 0) return "";
         const paramValues = Object.entries(parameters).reduce((acc, [key, param]) => {
             acc[key] = param.getCypher(context);

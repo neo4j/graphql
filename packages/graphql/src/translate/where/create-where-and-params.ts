@@ -200,7 +200,6 @@ function createWhereAndParams({
                 const inStr = connectionField.relationship.direction === "IN" ? "<-" : "-";
                 const outStr = connectionField.relationship.direction === "OUT" ? "->" : "-";
                 const labels = refNode.getLabelString(context);
-                const collectedMap = `${thisParam}_map`;
 
                 const matchPattern = `(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${thisParam}${labels})`;
 

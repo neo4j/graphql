@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { GraphQLWhereArg, Context, RelationField, ConnectionField, PointField } from "../../types";
+import { GraphQLWhereArg, Context, RelationField, ConnectionField } from "../../types";
 import { Node, Relationship } from "../../classes";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
@@ -31,6 +31,7 @@ import { ScalarFunction } from "../cypher-builder/statements/scalar-functions";
 import createWhereClause from "./create-where-clause";
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
 import { filterTruthy } from "../../utils/utils";
+import { listPredicateToSizeFunction } from "./list-predicate-to-size-function";
 
 type WhereMatchStatement = CypherBuilder.Match<any> | CypherBuilder.db.FullTextQueryNodes;
 
@@ -80,7 +81,6 @@ function mapAllProperties({
         resultArray.push(...mappedProperties);
     }
 
-    // const operatorFields = whereFields.filter(([key, value]) => key === "OR");
     for (const [key, value] of whereFields) {
         if (key === "OR" || key === "AND") {
             // value is an array
@@ -318,18 +318,12 @@ function createRelationProperty({
         type: relationField.type,
     });
 
-    const matchPattern1 = new CypherBuilder.MatchPattern(relationship, {
-        source: relationField.direction === "IN" ? { variable: false } : { labels: false },
-        target: relationField.direction === "IN" ? { labels: false } : { variable: false },
-        relationship: { variable: false },
-    });
-    const exists = CypherBuilder.exists(matchPattern1);
-
-    const matchPattern2 = new CypherBuilder.MatchPattern(relationship, {
+    const matchPattern = new CypherBuilder.MatchPattern(relationship, {
         source: relationField.direction === "IN" ? { variable: true } : { labels: false },
         target: relationField.direction === "IN" ? { labels: false } : { variable: true },
         relationship: { variable: false },
     });
+    const exists = new CypherBuilder.Exists(matchPattern);
 
     if (value === null) {
         if (!isNot) {
@@ -340,24 +334,6 @@ function createRelationProperty({
     }
 
     const subquery = new CypherBuilder.Query();
-
-    let listPredicate: PredicateFunction;
-    switch (operator) {
-        case "ALL":
-            listPredicate = CypherBuilder.all(matchPattern2, childNode, subquery);
-            break;
-        case "NOT":
-        case "NONE":
-            listPredicate = CypherBuilder.none(matchPattern2, childNode, subquery);
-            break;
-        case "SINGLE":
-            listPredicate = CypherBuilder.single(matchPattern2, childNode, subquery);
-            break;
-        case "SOME":
-        default:
-            listPredicate = CypherBuilder.any(matchPattern2, childNode, subquery);
-            break;
-    }
 
     const mappedProperties = mapAllProperties({
         whereInput: value,
@@ -370,9 +346,44 @@ function createRelationProperty({
         return undefined;
     }
 
-    subquery.where(...mappedProperties);
+    switch (operator) {
+        case "ALL": {
+            const notProperties = CypherBuilder.not(CypherBuilder.and(...mappedProperties));
 
-    return CypherBuilder.and(exists, listPredicate);
+            subquery.where(notProperties);
+            exists.concat(subquery);
+            return CypherBuilder.not(exists);
+        }
+        case "NOT":
+        case "NONE":
+            subquery.where(...mappedProperties);
+            exists.concat(subquery);
+
+            return CypherBuilder.not(exists);
+
+        case "SINGLE": {
+            subquery.where(...mappedProperties);
+            const sizeStatement = new CypherBuilder.RawCypherWithCallback(
+                (cypherContext: CypherBuilder.CypherContext, childrenCypher: string) => {
+                    const matchPatternStr = matchPattern.getCypher(cypherContext);
+                    const str = `size([${matchPatternStr} ${childrenCypher} | 1]) = 1`;
+                    return [str, {}];
+                }
+            );
+            sizeStatement.concat(subquery);
+
+            return sizeStatement;
+        }
+        case "SOME":
+            subquery.where(...mappedProperties);
+            exists.concat(subquery);
+            return exists;
+        default:
+            break;
+    }
+    subquery.where(...mappedProperties);
+    exists.concat(subquery);
+    return exists;
 }
 
 function createConnectionProperty({
@@ -408,75 +419,46 @@ function createConnectionProperty({
             type: relationField.type,
         });
 
-        const matchPattern1 = new CypherBuilder.MatchPattern(relationship, {
-            source: relationField.direction === "IN" ? { variable: false } : { labels: false },
-            target: relationField.direction === "IN" ? { labels: false } : { variable: false },
-            relationship: { variable: false },
-        });
-        const exists = CypherBuilder.exists(matchPattern1);
-
-        const matchPattern2 = new CypherBuilder.MatchPattern(relationship, {
+        const matchPattern = new CypherBuilder.MatchPattern(relationship, {
             source: relationField.direction === "IN" ? { variable: true } : { labels: false },
             target: relationField.direction === "IN" ? { labels: false } : { variable: true },
             relationship: { variable: true },
         });
 
-        // TODO: remove duplicate
-        let listPredicate: PredicateFunction;
-        const projectionVariable = new CypherBuilder.Variable({
-            node: childNode,
-            relationship,
-        });
-
-        const subquery = new CypherBuilder.Query();
-
-        switch (operator) {
-            case "ALL":
-                listPredicate = CypherBuilder.all(matchPattern2, projectionVariable, subquery);
-                break;
-            case "NOT":
-            case "NONE":
-                listPredicate = CypherBuilder.none(matchPattern2, projectionVariable, subquery);
-                break;
-            case "SINGLE":
-                listPredicate = CypherBuilder.single(matchPattern2, projectionVariable, subquery);
-                break;
-            case "SOME":
-            default:
-                listPredicate = CypherBuilder.any(matchPattern2, projectionVariable, subquery);
-                break;
-        }
-
-        // TODO: createConnectionWhereAndParams
-
-        const rawQuery = new CypherBuilder.RawCypherWithCallback((cypherContext: CypherBuilder.CypherContext) => {
-            const listPredicateStr = getListPredicate(operator as any);
+        const listPredicateStr = getListPredicate(operator as any);
+        const rawWhereQuery = new CypherBuilder.RawCypherWithCallback((cypherContext: CypherBuilder.CypherContext) => {
             const contextRelationship = context.relationships.find(
                 (x) => x.name === connectionField.relationshipTypeName
             ) as Relationship;
-            const collectedMapId = cypherContext.getVariableId(projectionVariable);
+            // const collectedMapId = cypherContext.getVariableId(projectionVariable);
 
             const prefix = `nestedParam${cypherContext.getParamsSize()}`; // Generates unique name for nested reference
             const result = createConnectionWhereAndParams({
                 whereInput: entry[1] as any,
                 context,
                 node: refNode,
-                nodeVariable: `${collectedMapId}.node`,
+                nodeVariable: cypherContext.getVariableId(childNode),
                 relationship: contextRelationship,
-                relationshipVariable: `${collectedMapId}.relationship`,
+                relationshipVariable: cypherContext.getVariableId(relationship),
                 parameterPrefix: prefix,
                 listPredicates: [listPredicateStr],
             });
             return [result[0], { [prefix]: result[1] }];
         });
-        subquery.where(rawQuery);
 
-        return CypherBuilder.and(exists, listPredicate);
+        const subquery = new CypherBuilder.RawCypherWithCallback(
+            (cypherContext: CypherBuilder.CypherContext, children: string) => {
+                const patternStr = matchPattern.getCypher(cypherContext);
+                const clause = listPredicateToSizeFunction(listPredicateStr, patternStr, children);
+                return [clause, {}];
+            }
+        );
+        subquery.concat(rawWhereQuery);
+
+        return subquery;
     });
 
-    return operations.reduce((prev, current) => {
-        return CypherBuilder.and(prev, current);
-    });
+    return CypherBuilder.and(...operations);
 }
 
 function createAggregateProperty({

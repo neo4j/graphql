@@ -69,20 +69,22 @@ function translateTopLevelMatch({
         // );
 
         // TODO: move this to FullTextQueryNodes
-        fulltextWhere = new CypherBuilder.RawCypherWithCallback((cypherContext: CypherBuilder.CypherContext) => {
-            let fullTextWhereStr: string;
-            const matchId = cypherContext.getVariableId(matchNode);
-            if (node.nodeDirective?.additionalLabels?.length) {
-                const labelsWhereStrs = node.getLabels(context).map((label) => {
-                    return `"${label}" IN labels(${matchId})`;
-                });
-                fullTextWhereStr = labelsWhereStrs.join(" AND ");
-            } else {
-                fullTextWhereStr = `"${node.getMainLabel()}" IN labels(${matchId})`;
-            }
+        fulltextWhere = new CypherBuilder.RawCypherWithCallback(
+            (cypherContext: CypherBuilder.CypherContext, _children: string) => {
+                let fullTextWhereStr: string;
+                const matchId = cypherContext.getVariableId(matchNode);
+                if (node.nodeDirective?.additionalLabels?.length) {
+                    const labelsWhereStrs = node.getLabels(context).map((label) => {
+                        return `"${label}" IN labels(${matchId})`;
+                    });
+                    fullTextWhereStr = labelsWhereStrs.join(" AND ");
+                } else {
+                    fullTextWhereStr = `"${node.getMainLabel()}" IN labels(${matchId})`;
+                }
 
-            return [fullTextWhereStr, {}];
-        });
+                return [fullTextWhereStr, {}];
+            }
+        );
 
         if (fulltextWhere) {
             matchQuery.where(fulltextWhere);

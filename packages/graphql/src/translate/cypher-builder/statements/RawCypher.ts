@@ -41,7 +41,7 @@ export class RawCypher extends Query {
     }
 }
 
-type RawCypherCallback = (c: CypherContext) => [string, Record<string, any>];
+type RawCypherCallback = (c: CypherContext, children: string) => [string, Record<string, any>];
 
 export class RawCypherWithCallback extends Query {
     private callback: RawCypherCallback;
@@ -52,8 +52,7 @@ export class RawCypherWithCallback extends Query {
     }
 
     cypher(context: CypherContext, childrenCypher: string): string {
-        if (childrenCypher) throw new Error("Raw query does not support children");
-        const [query, params] = this.callback(context);
+        const [query, params] = this.callback(context, childrenCypher);
 
         const cypherParams = convertToCypherParams(params);
 

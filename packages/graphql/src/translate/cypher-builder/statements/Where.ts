@@ -19,7 +19,7 @@
 
 import { filterTruthy } from "../../../utils/utils";
 import { CypherASTNode } from "../CypherASTNode";
-import { Param, Variable } from "../CypherBuilder";
+import { Exists, Param, Variable } from "../CypherBuilder";
 import { CypherContext } from "../CypherContext";
 import { MatchableElement } from "../MatchPattern";
 import { PredicateFunction } from "./predicate-functions";
@@ -35,6 +35,7 @@ export type WhereInput = Array<
     | PredicateFunction
     | RawCypher
     | RawCypherWithCallback
+    | Exists
 >;
 
 export class WhereStatement extends CypherASTNode {
