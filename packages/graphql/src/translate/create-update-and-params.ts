@@ -36,6 +36,7 @@ import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { escapeQuery } from "./utils/escape-query";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
+import { buildMathStatements, matchMathField, mathDescriptorBuilder } from "./utils/math";
 import { indentBlock } from "./utils/indent-block";
 
 interface Res {
@@ -271,6 +272,7 @@ export default function createUpdateAndParams({
                             const setProperties = createSetRelationshipProperties({
                                 properties: update.update.edge,
                                 varName: relationshipVariable,
+                                withVars,
                                 relationship,
                                 callbackBucket,
                                 operation: "UPDATE",
@@ -280,8 +282,8 @@ export default function createUpdateAndParams({
                             });
 
                             const updateStrs = [escapeQuery(setProperties), escapeQuery("RETURN count(*) AS _")];
-
-                            const apocArgs = `{${relationshipVariable}:${relationshipVariable}, ${
+                            const varsAsArgumentString = withVars.map(variable => `${variable}:${variable}`).join(", ");
+                            const apocArgs = `{${varsAsArgumentString}, ${relationshipVariable}:${relationshipVariable}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}, resolvedCallbacks: $resolvedCallbacks}`;
 
@@ -392,6 +394,7 @@ export default function createUpdateAndParams({
                                 const setA = createSetRelationshipProperties({
                                     properties: create.edge,
                                     varName: propertiesName,
+                                    withVars,
                                     relationship,
                                     callbackBucket,
                                     operation: "CREATE",
@@ -454,7 +457,10 @@ export default function createUpdateAndParams({
             addCallbackAndSetParam(field, varName, updateInput, callbackBucket, res.strs, "UPDATE")
         );
 
-        const settableField = node.mutableFields.find((x) => x.fieldName === key);
+        const mathMatch = matchMathField(key);
+        const { hasMatched, propertyName } = mathMatch;
+        const settableFieldComparator = hasMatched ? propertyName : key;
+        const settableField = node.mutableFields.find((x) => x.fieldName === settableFieldComparator);
         const authableField = node.authableFields.find((x) => x.fieldName === key);
 
         if (settableField) {
@@ -468,10 +474,17 @@ export default function createUpdateAndParams({
                 } else {
                     res.strs.push(`SET ${varName}.${dbFieldName} = point($${param})`);
                 }
+            } else if (hasMatched) {
+                const mathDescriptor = mathDescriptorBuilder(value as number, node, mathMatch);
+                if (updateInput[mathDescriptor.dbName]) {
+                    throw new Error(`Ambiguous property: ${mathDescriptor.dbName}`);
+                }
+
+                const mathStatements = buildMathStatements(mathDescriptor, varName, withVars, param);
+                res.strs.push(...mathStatements);
             } else {
                 res.strs.push(`SET ${varName}.${dbFieldName} = $${param}`);
             }
-
             res.params[param] = value;
         }
 
@@ -561,12 +574,12 @@ export default function createUpdateAndParams({
     const forbiddenString = `"${AUTH_FORBIDDEN_ERROR}"`;
 
     if (preAuthStrs.length) {
-        const apocStr = `CALL apoc.util.validate(NOT(${preAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
+        const apocStr = `CALL apoc.util.validate(NOT (${preAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
         preAuthStr = `${withStr}\n${apocStr}`;
     }
 
     if (postAuthStrs.length) {
-        const apocStr = `CALL apoc.util.validate(NOT(${postAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
+        const apocStr = `CALL apoc.util.validate(NOT (${postAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
         postAuthStr = `${withStr}\n${apocStr}`;
     }
 

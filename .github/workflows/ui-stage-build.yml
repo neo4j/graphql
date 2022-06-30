@@ -19,10 +19,12 @@ jobs:
         with:
           node-version: lts/*
       - name: UI build
+        env:
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           yarn
           yarn build
-          echo ${{ github.event.number }} > ./dist/prnumber
+          echo "$PULL_REQUEST_NUMBER" > ./dist/prnumber
         working-directory: packages/graphql-toolbox
       - name: Archive UI
         uses: actions/upload-artifact@v3

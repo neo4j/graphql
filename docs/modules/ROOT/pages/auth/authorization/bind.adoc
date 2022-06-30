@@ -68,7 +68,7 @@ The generated cypher for this query would look like the below, throwing you out 
 ----
 MATCH (u:User { id: "user1" })
 SET u.id = "user2"
-CALL apoc.util.validate(NOT(u.id = "user1"), "Forbidden")
+CALL apoc.util.validate(NOT (u.id = "user1"), "Forbidden")
 RETURN u
 ----
 
