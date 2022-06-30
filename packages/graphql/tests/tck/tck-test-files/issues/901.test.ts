@@ -94,8 +94,9 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Series)
-            WHERE (size([(this)-[this_OR_manufacturerConnection_Series_SeriesManufacturerRelationship:HAS_MANUFACTURER]->(this_OR_manufacturerConnection_Series:Series) WHERE this_OR_manufacturerConnection_Series_SeriesManufacturerRelationship.current = $this_OR_series.where.manufacturerConnection.edge.current AND this_OR_manufacturerConnection_Series.name = $this_OR_series.where.manufacturerConnection.node.name | 1]) > 0 OR size([(this)-[this_OR1_brandConnection_Series_SeriesBrandRelationship:HAS_BRAND]->(this_OR1_brandConnection_Series:Series) WHERE this_OR1_brandConnection_Series_SeriesBrandRelationship.current = $this_OR1_series.where.brandConnection.edge.current AND this_OR1_brandConnection_Series.name = $this_OR1_series.where.brandConnection.node.name | 1]) > 0)
+            "MATCH (this:\`Series\`)
+            WHERE (size([(this)-[this1:\`HAS_MANUFACTURER\`]->(this0:\`Series\`) WHERE this1.current = $nestedParam0.edge.current AND this0.name = $nestedParam0.node.name | 1]) > 0
+            OR size([(this)-[this4:\`HAS_BRAND\`]->(this3:\`Series\`) WHERE this4.current = $nestedParam1.edge.current AND this3.name = $nestedParam1.node.name | 1]) > 0)
             RETURN this { .name, brand: head([ (this)-[:HAS_BRAND]->(this_brand:Series)   | this_brand { .name } ]), manufacturer: head([ (this)-[:HAS_MANUFACTURER]->(this_manufacturer:Series)   | this_manufacturer { .name } ]) } as this"
         `);
 

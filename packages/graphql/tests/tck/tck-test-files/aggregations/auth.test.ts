@@ -98,8 +98,9 @@ describe("Cypher Aggregations with Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.name = $this_name AND this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            "MATCH (this:\`User\`)
+            WHERE (this.name = $param0
+            AND this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN { count: count(this) }"
         `);
