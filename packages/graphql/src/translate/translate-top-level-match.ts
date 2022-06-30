@@ -17,11 +17,9 @@
  * limitations under the License.
  */
 
-import { dedent } from "graphql-compose";
 import { Node } from "../classes";
 import { AuthOperations, Context, GraphQLWhereArg } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
-import createWhereAndParams from "./where/create-where-and-params";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { addWhereToStatement } from "./where/add-where-to-statement";
 
@@ -95,17 +93,6 @@ function translateTopLevelMatch({
     }
 
     if (whereInput) {
-        // const where = createWhereAndParams({
-        //     whereInput,
-        //     varName,
-        //     node,
-        //     context,
-        //     recursing: true,
-        // });
-        // if (where[0]) {
-        //     whereStrs.push(where[0]);
-        //     cypherParams = { ...cypherParams, ...where[1] };
-        // }
         addWhereToStatement({
             whereInput,
             node,

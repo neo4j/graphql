@@ -32,11 +32,6 @@ import createWhereClause from "./create-where-clause";
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
 import { filterTruthy } from "../../utils/utils";
 
-// type CypherPropertyValue =
-//     | [MatchableElement | CypherBuilder.Variable, Record<string, CypherBuilder.Param | CypherBuilder.WhereClause>]
-//     | WhereOperator
-//     | PredicateFunction;
-
 type WhereMatchStatement = CypherBuilder.Match<any> | CypherBuilder.db.FullTextQueryNodes;
 
 export function addWhereToStatement<T extends MatchableElement, Q extends WhereMatchStatement>({
@@ -82,11 +77,8 @@ function mapAllProperties({
     if (leafProperties.length > 0) {
         const mappedProperties = mapProperties({ properties: leafProperties, node, targetElement, context });
 
-        // resultArray.push([targetElement, mappedProperties]);
         resultArray.push(...mappedProperties);
     }
-
-    // matchStatement.where([targetElement, mappedProperties]);
 
     // const operatorFields = whereFields.filter(([key, value]) => key === "OR");
     for (const [key, value] of whereFields) {
@@ -123,9 +115,6 @@ function mapProperties({
     context: Context;
 }): WhereInput {
     const propertiesMappedToWhere = properties.map(([key, value]): WhereInput[0] | undefined => {
-        // console.log("MAPPROPERTIES");
-        // console.log("key", key);
-        // console.log("value", value);
         const match = whereRegEx.exec(key);
 
         const { prefix, fieldName, isAggregate, operator } = match?.groups as WhereRegexGroups;
@@ -224,30 +213,12 @@ function mapProperties({
 
             return [whereStr, {}];
         });
-        // if (pointField) {
-
-        // return createPointProperty({
-        //     targetElement,
-        //     operator,
-        //     dbFieldName,
-        //     value,
-        //     coalesceValue,
-        //     pointField,
-        // });
-        // }
-
-        // return createPrimitiveProperty({
-        //     targetElement,
-        //     operator,
-        //     dbFieldName,
-        //     value,
-        //     coalesceValue,
-        // });
     });
 
     return filterTruthy(propertiesMappedToWhere);
 }
 
+/** TODO: substitute rawCypherBuilder with this */
 function createPrimitiveProperty({
     targetElement,
     operator,
@@ -427,9 +398,6 @@ function createConnectionProperty({
 
     const operations = Object.entries(nodeEntries).map((entry) => {
         const refNode = context.nodes.find((x) => x.name === entry[0]) as Node;
-        // const relationshipContext = context.relationships.find(
-        //     (x) => x.name === connectionField.relationshipTypeName
-        // ) as Relationship;
 
         const relationField = connectionField.relationship;
 
@@ -452,8 +420,6 @@ function createConnectionProperty({
             target: relationField.direction === "IN" ? { labels: false } : { variable: true },
             relationship: { variable: true },
         });
-
-        // WITH statement
 
         // TODO: remove duplicate
         let listPredicate: PredicateFunction;
@@ -504,13 +470,6 @@ function createConnectionProperty({
             return [result[0], { [prefix]: result[1] }];
         });
         subquery.where(rawQuery);
-        // const mappedProperties = mapConnectionProperties({
-        //     whereInput: value,
-        //     targetVariable: projectionVariable,
-        //     node: refNode,
-        //     context,
-        // });
-        // subquery.where(...mappedProperties);
 
         return CypherBuilder.and(exists, listPredicate);
     });
@@ -518,49 +477,6 @@ function createConnectionProperty({
     return operations.reduce((prev, current) => {
         return CypherBuilder.and(prev, current);
     });
-}
-
-function mapConnectionProperties({
-    whereInput,
-    node,
-    targetVariable,
-    context,
-}: {
-    whereInput: Record<string, any>;
-    node: Node;
-    targetVariable: CypherBuilder.Variable;
-    context: Context;
-}): WhereInput {
-    const nodeProperties = (whereInput.node || {}) as Record<string, any>;
-
-    const parsedProperties = Object.entries(nodeProperties).reduce((acc, [key, value]) => {
-        acc[`node.${key}`] = value;
-        return acc;
-    }, {});
-
-    // SAME with relationship (edge)
-    const mappedPropertiesNode = mapAllProperties({
-        whereInput: parsedProperties,
-        node,
-        targetElement: targetVariable,
-        context,
-    });
-
-    const edgeProperties = (whereInput.edge || {}) as Record<string, any>;
-
-    const parsedEdgeProperties = Object.entries(edgeProperties).reduce((acc, [key, value]) => {
-        acc[`relationship.${key}`] = value;
-        return acc;
-    }, {});
-
-    const mappedPropertiesEdge = mapAllProperties({
-        whereInput: parsedEdgeProperties,
-        node,
-        targetElement: targetVariable,
-        context,
-    });
-
-    return [...mappedPropertiesNode, ...mappedPropertiesEdge];
 }
 
 function createAggregateProperty({

@@ -30,7 +30,7 @@ describe("MatchPattern", () => {
     describe("Node", () => {
         test("Simple node", () => {
             const node = new CypherBuilder.Node({ labels: ["TestLabel"] });
-            const pattern = new MatchPattern(node, { labels: false });
+            const pattern = new MatchPattern(node, { source: { labels: false } });
 
             expect(pattern.getCypher(context)).toBe(`(this0)`);
         });
@@ -44,7 +44,7 @@ describe("MatchPattern", () => {
 
         test("Node with parameters", () => {
             const node = new CypherBuilder.Node({ labels: ["TestLabel"] });
-            const pattern = new MatchPattern(node, { labels: false }).withParams({
+            const pattern = new MatchPattern(node, { source: { labels: false } }).withParams({
                 name: new CypherBuilder.Param("test"),
                 age: new CypherBuilder.Param(123),
             });
@@ -68,7 +68,11 @@ describe("MatchPattern", () => {
             const node1 = new CypherBuilder.Node({ labels: ["Actor"] });
             const node2 = new CypherBuilder.Node({ labels: ["Movie"] });
             const relationship = new CypherBuilder.Relationship({ source: node1, target: node2, type: "ACTED_IN" });
-            const pattern = new MatchPattern(relationship, { labels: false, relationshipTypes: false });
+            const pattern = new MatchPattern(relationship, {
+                source: { labels: false },
+                relationship: { type: false },
+                target: { labels: false },
+            });
 
             expect(pattern.getCypher(context)).toBe(`(this1)-[this0]->(this2)`);
         });
@@ -86,7 +90,10 @@ describe("MatchPattern", () => {
             const node1 = new CypherBuilder.Node({ labels: ["Actor"] });
             const node2 = new CypherBuilder.Node({ labels: ["Movie"] });
             const relationship = new CypherBuilder.Relationship({ source: node1, target: node2, type: "ACTED_IN" });
-            const pattern = new MatchPattern(relationship, { labels: false }).withParams({
+            const pattern = new MatchPattern(relationship, {
+                source: { labels: false },
+                target: { labels: false },
+            }).withParams({
                 source: { name: new CypherBuilder.Param("test") },
                 relationship: {
                     value: new CypherBuilder.Param("test"),
@@ -97,7 +104,7 @@ describe("MatchPattern", () => {
             });
 
             expect(pattern.getCypher(context)).toBe(
-                `(this1 { name: $param0 })-[this0:\`ACTED_IN\` { value: $param1 }]->(this2 { name: $param2 })`
+                `(this1 { name: $param1 })-[this0:\`ACTED_IN\` { value: $param0 }]->(this2 { name: $param2 })`
             );
         });
     });

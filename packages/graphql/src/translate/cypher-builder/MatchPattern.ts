@@ -90,7 +90,7 @@ export class MatchPattern<T extends MatchableElement> extends CypherASTNode {
     protected cypher(context: CypherContext, childrenCypher: string): string {
         if (childrenCypher) throw new Error("Match pattern cannot have children nodes");
         if (this.matchElement instanceof Node) {
-            return this.getNodeCypher(context, this.matchElement);
+            return this.getNodeCypher(context, this.matchElement, this.parameters as MatchParams<Node>);
         }
         if (this.matchElement instanceof Relationship) {
             return this.getRelationshipCypher(context, this.matchElement);
@@ -102,19 +102,15 @@ export class MatchPattern<T extends MatchableElement> extends CypherASTNode {
         const referenceId = this.options?.relationship?.variable ? context.getVariableId(relationship) : "";
 
         const parameterOptions = this.parameters as MatchParams<Relationship>;
-        const parameterStrs = {
-            source: this.serializeParameters(parameterOptions.source || {}, context),
-            relationship: this.serializeParameters(parameterOptions.relationship || {}, context),
-            target: this.serializeParameters(parameterOptions.target || {}, context),
-        };
+        const relationshipParamsStr = this.serializeParameters(parameterOptions.relationship || {}, context);
 
         const relationshipType = this.options.relationship?.type ? relationship.getTypeString() : "";
 
-        const sourceStr = this.getNodeCypher(context, relationship.source, "source");
-        const targetStr = this.getNodeCypher(context, relationship.target, "target");
+        const sourceStr = this.getNodeCypher(context, relationship.source, parameterOptions.source, "source");
+        const targetStr = this.getNodeCypher(context, relationship.target, parameterOptions.target, "target");
         const arrowStr = this.getRelationshipArrow(relationship);
 
-        const relationshipStr = `${referenceId}${relationshipType}${parameterStrs.relationship}`;
+        const relationshipStr = `${referenceId}${relationshipType}${relationshipParamsStr}`;
 
         return `${sourceStr}-[${relationshipStr}]${arrowStr}${targetStr}`;
     }
@@ -123,18 +119,24 @@ export class MatchPattern<T extends MatchableElement> extends CypherASTNode {
         return relationship.directed ? "->" : "-";
     }
 
-    private getNodeCypher(context: CypherContext, node: Node, item: "source" | "target" = "source"): string {
+    private getNodeCypher(
+        context: CypherContext,
+        node: Node,
+        parameters: ParamsRecord | undefined,
+        item: "source" | "target" = "source"
+    ): string {
         const nodeOptions = this.options[item] as ItemOption;
 
         const referenceId = nodeOptions.variable ? context.getVariableId(node) : "";
-        const parametersStr = this.serializeParameters(this.parameters as MatchParams<Node>, context);
+        const parametersStr = this.serializeParameters(parameters || {}, context);
         const nodeLabelString = nodeOptions.labels ? node.getLabelsString() : "";
 
         return `(${referenceId}${nodeLabelString}${parametersStr})`;
     }
 
-    private serializeParameters(parameters: MatchParams<Node>, context: CypherContext): string {
-        if (Object.keys(this.parameters).length === 0) return "";
+    private serializeParameters(parameters: ParamsRecord, context: CypherContext): string {
+        console.log(parameters);
+        if (Object.keys(parameters).length === 0) return "";
         const paramValues = Object.entries(parameters).reduce((acc, [key, param]) => {
             acc[key] = param.getCypher(context);
             return acc;
