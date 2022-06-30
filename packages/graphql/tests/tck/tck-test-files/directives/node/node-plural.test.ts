@@ -171,13 +171,13 @@ describe("Plural in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Tech\`)
-            WHERE this.name = $this_name
+            WHERE this.name = $param0
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_name\\": \\"Matrix\\"
+                \\"param0\\": \\"Matrix\\"
             }"
         `);
     });

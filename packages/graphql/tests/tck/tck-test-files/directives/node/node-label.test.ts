@@ -244,14 +244,14 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE this.id = $this_id
+            WHERE this.id = $param0
             SET this.id = $this_update_id
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"1\\",
+                \\"param0\\": \\"1\\",
                 \\"this_update_id\\": \\"2\\",
                 \\"resolvedCallbacks\\": {}
             }"
@@ -281,7 +281,7 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE this.id = $this_id
+            WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
             WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
@@ -295,7 +295,7 @@ describe("Label in Node directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"1\\",
+                \\"param0\\": \\"1\\",
                 \\"this_update_actors0_name\\": \\"new name\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
@@ -347,7 +347,7 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE this.id = $this_id
+            WHERE this.id = $param0
             WITH this
             CALL {
             	WITH this
@@ -365,7 +365,7 @@ describe("Label in Node directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"1\\",
+                \\"param0\\": \\"1\\",
                 \\"this_connect_actors0_node_name\\": \\"Daniel\\",
                 \\"resolvedCallbacks\\": {}
             }"
@@ -390,7 +390,7 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE this.id = $this_id
+            WHERE this.id = $param0
             WITH this
             CALL {
             WITH this
@@ -406,7 +406,7 @@ describe("Label in Node directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"1\\",
+                \\"param0\\": \\"1\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -443,13 +443,13 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE this.id = $this_id
+            WHERE this.id = $param0
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"123\\"
+                \\"param0\\": \\"123\\"
             }"
         `);
     });
@@ -470,7 +470,7 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE this.id = $this_id
+            WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
             WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
@@ -481,7 +481,7 @@ describe("Label in Node directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"123\\",
+                \\"param0\\": \\"123\\",
                 \\"this_deleteMovies\\": {
                     \\"args\\": {
                         \\"delete\\": {
@@ -517,13 +517,15 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE EXISTS((this)<-[:ACTED_IN]-(:\`Person\`)) AND ANY(this_actors IN [(this)<-[:ACTED_IN]-(this_actors:\`Person\`) | this_actors] WHERE this_actors.name = $this_actors_name)
+            WHERE (exists((:\`Person\`)-[:\`ACTED_IN\`]->(this))
+            AND ANY(this1 IN [(this1:\`Person\`)-[:\`ACTED_IN\`]->(this) | this1]
+                        WHERE this1.name = $param0))
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actors_name\\": \\"tom\\"
+                \\"param0\\": \\"tom\\"
             }"
         `);
     });

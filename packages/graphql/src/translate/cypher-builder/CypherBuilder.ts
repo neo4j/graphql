@@ -51,3 +51,5 @@ export {
 export { exists, any, none, single, all } from "./statements/predicate-functions";
 
 export { MatchPattern } from "./MatchPattern";
+
+export * as db from "./statements/db";

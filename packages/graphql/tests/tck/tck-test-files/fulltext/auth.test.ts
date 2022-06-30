@@ -72,7 +72,8 @@ describe("Cypher -> fulltext -> Auth", () => {
                 \\"MovieTitle\\",
                 $this_fulltext_MovieTitle_phrase
             ) YIELD node as this
-            WHERE \\"Movie\\" IN labels(this) AND EXISTS((this)<-[:DIRECTED]-(:Person)) AND ALL(director IN [(this)<-[:DIRECTED]-(director:Person) | director] WHERE director.id IS NOT NULL AND director.id = $this_auth_where0_director_id)
+            WHERE (\\"Movie\\" IN labels(this)
+            AND EXISTS((this)<-[:DIRECTED]-(:Person)) AND ALL(director IN [(this)<-[:DIRECTED]-(director:Person) | director] WHERE director.id IS NOT NULL AND director.id = $this_auth_where0_director_id))
             RETURN this { .title } as this"
         `);
 

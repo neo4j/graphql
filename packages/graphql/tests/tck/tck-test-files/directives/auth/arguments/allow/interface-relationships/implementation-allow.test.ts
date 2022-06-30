@@ -96,7 +96,7 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             WITH this
             CALL {
             WITH this
@@ -144,8 +144,8 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $this_id
+            "MATCH (this:\`User\`)
+            WHERE this.id = $param0
             WITH this
             CALL {
             WITH this
@@ -168,7 +168,7 @@ describe("@auth allow on specific interface implementation", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"1\\",
+                \\"param0\\": \\"1\\",
                 \\"this_Post_auth_allow0_creator_id\\": \\"id-01\\",
                 \\"this_Post_comments_id\\": \\"1\\",
                 \\"this_content\\": {
@@ -202,8 +202,8 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $this_id
+            "MATCH (this:\`User\`)
+            WHERE this.id = $param0
             WITH this
             CALL {
             WITH this
@@ -269,7 +269,7 @@ describe("@auth allow on specific interface implementation", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"user-id\\",
+                \\"param0\\": \\"user-id\\",
                 \\"this_update_content0_id\\": \\"new-id\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
@@ -320,8 +320,8 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $this_id
+            "MATCH (this:\`User\`)
+            WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
             WHERE this_content_Comment0.id = $this_deleteUsers.args.delete.content[0].where.node.id
@@ -339,7 +339,7 @@ describe("@auth allow on specific interface implementation", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"user-id\\",
+                \\"param0\\": \\"user-id\\",
                 \\"this_deleteUsers\\": {
                     \\"args\\": {
                         \\"delete\\": {
@@ -377,8 +377,8 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $this_id
+            "MATCH (this:\`User\`)
+            WHERE this.id = $param0
             WITH this
             CALL {
             WITH this
@@ -404,7 +404,7 @@ describe("@auth allow on specific interface implementation", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"user-id\\",
+                \\"param0\\": \\"user-id\\",
                 \\"this_disconnect_content0Post1_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
@@ -451,8 +451,8 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $this_id
+            "MATCH (this:\`User\`)
+            WHERE this.id = $param0
             WITH this
             CALL {
             WITH this
@@ -490,7 +490,7 @@ describe("@auth allow on specific interface implementation", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"user-id\\",
+                \\"param0\\": \\"user-id\\",
                 \\"this_disconnect_content0Post1_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"this_disconnect_content0Post0_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"updateUsers\\": {
@@ -547,8 +547,8 @@ describe("@auth allow on specific interface implementation", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $this_id
+            "MATCH (this:\`User\`)
+            WHERE this.id = $param0
             WITH this
             CALL {
             	WITH this
@@ -578,7 +578,7 @@ describe("@auth allow on specific interface implementation", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"user-id\\",
+                \\"param0\\": \\"user-id\\",
                 \\"this_connect_content0_node_id\\": \\"post-id\\",
                 \\"this_connect_content0_nodePost0_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"resolvedCallbacks\\": {}

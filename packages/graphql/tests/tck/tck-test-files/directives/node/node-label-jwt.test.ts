@@ -96,13 +96,13 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`:\`Person\`)
-            WHERE this.age > $this_age_GT
+            WHERE this.age > $param0
             RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:\`Film\`)  WHERE this_movies.title = $this_movies_title | this_movies { .title } ] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_age_GT\\": {
+                \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },

@@ -59,7 +59,7 @@ describe("Cypher computed directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             RETURN this { .firstName, .lastName, .fullName } as this"
         `);
 
@@ -81,7 +81,7 @@ describe("Cypher computed directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             RETURN this { .fullName, .firstName, .lastName } as this"
         `);
 

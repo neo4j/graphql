@@ -37,19 +37,21 @@ import { filterTruthy } from "../../utils/utils";
 //     | WhereOperator
 //     | PredicateFunction;
 
-export function addWhereToStatement<T extends MatchableElement>({
+type WhereMatchStatement = CypherBuilder.Match<any> | CypherBuilder.db.FullTextQueryNodes;
+
+export function addWhereToStatement<T extends MatchableElement, Q extends WhereMatchStatement>({
     targetElement,
     matchStatement,
     whereInput,
     context,
     node,
 }: {
-    matchStatement: CypherBuilder.Match<T>;
+    matchStatement: Q;
     targetElement: T;
     whereInput: GraphQLWhereArg;
     context: Context;
     node: Node;
-}): CypherBuilder.Match<T> {
+}): Q {
     const mappedProperties = mapAllProperties({
         whereInput,
         targetElement,

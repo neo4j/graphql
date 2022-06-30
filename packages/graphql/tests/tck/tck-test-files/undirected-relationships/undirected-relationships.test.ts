@@ -65,7 +65,7 @@ describe("Undirected relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | this_friends { .name } ], directedFriends: [ (this)-[:FRIENDS_WITH]->(this_directedFriends:User)   | this_directedFriends { .name } ] } as this"
         `);
 
@@ -120,7 +120,7 @@ describe("Undirected relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             RETURN this { content:  [this_content IN [(this)-[:HAS_CONTENT]-(this_content) WHERE (\\"Blog\\" IN labels(this_content)) OR (\\"Post\\" IN labels(this_content)) | head( [ this_content IN [this_content] WHERE (\\"Blog\\" IN labels(this_content)) | this_content { __resolveType: \\"Blog\\",  .title } ] + [ this_content IN [this_content] WHERE (\\"Post\\" IN labels(this_content)) | this_content { __resolveType: \\"Post\\",  .content } ] ) ] WHERE this_content IS NOT NULL]  } as this"
         `);
 
@@ -180,7 +180,7 @@ describe("Undirected relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             WITH this
             CALL {
             WITH this
@@ -244,7 +244,7 @@ describe("Undirected relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Foo)
+            "MATCH (this:\`Foo\`)
             RETURN this { DrinksAt: head([ (this)-[:DRINKS_AT]->(this_DrinksAt:Bar)   | this_DrinksAt { .id, Customers: [ (this_DrinksAt)-[:DRINKS_AT]-(this_DrinksAt_Customers:Foo)   | this_DrinksAt_Customers { .Name } ] } ]) } as this"
         `);
 

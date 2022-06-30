@@ -44,17 +44,22 @@ function translateTopLevelMatch({
     const whereStrs: string[] = [];
 
     const matchNode = new CypherBuilder.NamedNode(varName, { labels: node.getLabels(context) });
-    const matchQuery = new CypherBuilder.Match(matchNode);
+    let matchQuery: CypherBuilder.Match<CypherBuilder.Node> | CypherBuilder.db.FullTextQueryNodes =
+        new CypherBuilder.Match(matchNode);
+
+    let fulltextWhere: CypherBuilder.RawCypherWithCallback | undefined;
     if (Object.entries(fulltextInput).length) {
         // THIS is only for fulltext search
         if (Object.entries(fulltextInput).length > 1) {
             throw new Error("Can only call one search at any given time");
         }
         // TODO: add fulltext search
-        // const [indexName, indexInput] = Object.entries(fulltextInput)[0];
-        // const baseParamName = `${varName}_fulltext_${indexName}`;
-        // const paramPhraseName = `${baseParamName}_phrase`;
-        // cypherParams[paramPhraseName] = indexInput.phrase;
+        const [indexName, indexInput] = Object.entries(fulltextInput)[0];
+        const baseParamName = `${varName}_fulltext_${indexName}`;
+        const paramPhraseName = `${baseParamName}_phrase`;
+        cypherParams[paramPhraseName] = indexInput.phrase; // TODO: pass this param
+
+        matchQuery = new CypherBuilder.db.FullTextQueryNodes(matchNode, indexName, paramPhraseName);
 
         // cyphers.push(
         //     dedent(`
@@ -65,13 +70,28 @@ function translateTopLevelMatch({
         //     `)
         // );
 
-        // if (node.nodeDirective?.additionalLabels?.length) {
-        //     node.getLabels(context).forEach((label) => {
-        //         whereStrs.push(`"${label}" IN labels(${varName})`);
-        //     });
-        // } else {
-        //     whereStrs.push(`"${node.getMainLabel()}" IN labels(${varName})`);
-        // }
+        // TODO: move this to FullTextQueryNodes
+        fulltextWhere = new CypherBuilder.RawCypherWithCallback((cypherContext: CypherBuilder.CypherContext) => {
+            let fullTextWhereStr: string;
+            const matchId = cypherContext.getVariableId(matchNode);
+            if (node.nodeDirective?.additionalLabels?.length) {
+                const labelsWhereStrs = node.getLabels(context).map((label) => {
+                    return `"${label}" IN labels(${matchId})`;
+                });
+                fullTextWhereStr = labelsWhereStrs.join(" AND ");
+            } else {
+                fullTextWhereStr = `"${node.getMainLabel()}" IN labels(${matchId})`;
+            }
+
+            return [fullTextWhereStr, {}];
+        });
+
+        if (fulltextWhere) {
+            matchQuery.where(fulltextWhere);
+        }
+    } else {
+        // Not fulltext, normal match
+        matchQuery = new CypherBuilder.Match(matchNode);
     }
 
     if (whereInput) {
