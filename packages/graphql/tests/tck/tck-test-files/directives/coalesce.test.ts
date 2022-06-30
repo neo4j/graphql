@@ -165,14 +165,14 @@ describe("Cypher coalesce()", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE coalesce(this.status, \\"ACTIVE\\") = $this_status
+            "MATCH (this:\`Movie\`)
+            WHERE coalesce(this.status, \\"ACTIVE\\") = $param0
             RETURN this { .id, .status } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_status\\": \\"ACTIVE\\"
+                \\"param0\\": \\"ACTIVE\\"
             }"
         `);
     });
@@ -222,7 +222,7 @@ describe("Cypher coalesce()", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             CALL {
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
