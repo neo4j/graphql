@@ -62,7 +62,6 @@ describe("Cypher Advanced Filtering", () => {
     afterAll(() => {
         unsetTestEnvVars(undefined);
     });
-
     test("IN", async () => {
         const query = gql`
             {
@@ -637,20 +636,7 @@ describe("Cypher Advanced Filtering", () => {
         });
 
         describe("List Predicates", () => {
-            const generateQueryAndSnapShots = (operator: "ALL" | "NONE" | "SINGLE" | "SOME") => {
-                const getListPredicate = () => {
-                    switch (operator) {
-                        case "ALL":
-                            return "ALL";
-                        case "NONE":
-                            return "NONE";
-                        case "SINGLE":
-                            return "SINGLE";
-                        case "SOME":
-                        default:
-                            return "ANY";
-                    }
-                };
+            const generateQuery = (operator: "ALL" | "NONE" | "SINGLE" | "SOME"): DocumentNode => {
                 const query = gql`
                     {
                         movies(where: { genres_${operator}: { name: "some genre" } }) {
@@ -658,118 +644,83 @@ describe("Cypher Advanced Filtering", () => {
                         }
                     }
                 `;
-                const cypher = `
-                    "MATCH (this:Movie)
-                    WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ${getListPredicate()}(this_genres_${operator} IN [(this)-[:IN_GENRE]->(this_genres_${operator}:Genre) | this_genres_${operator}] WHERE this_genres_${operator}.name = $this_genres_${operator}_name)
-                    RETURN this { .actorCount } as this"
-                `;
-
-                const params = `
-                    "{
-                        \\"this_genres_${operator}_name\\": \\"some genre\\"
-                    }"
-                `;
-                return { query, cypher, params };
+                return query;
             };
             test("ALL", async () => {
-                const { query, cypher, params } = generateQueryAndSnapShots("ALL");
+                const query = generateQuery("ALL");
 
                 const req = createJwtRequest("secret", {});
                 const result = await translateQuery(neoSchema, query, { req });
 
-                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(
-                    cypher,
-                    `
+                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
                     WHERE (exists((this)-[:\`IN_GENRE\`]->(:\`Genre\`))
                     AND ALL(this1 IN [(this)-[:\`IN_GENRE\`]->(this1:\`Genre\`) | this1]
                                 WHERE this1.name = $param0))
                     RETURN this { .actorCount } as this"
-                `
-                );
-                expect(formatParams(result.params)).toMatchInlineSnapshot(
-                    params,
-                    `
+                `);
+                expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
                         \\"param0\\": \\"some genre\\"
                     }"
-                `
-                );
+                `);
             });
             test("NONE", async () => {
-                const { query, cypher, params } = generateQueryAndSnapShots("NONE");
+                const query = generateQuery("NONE");
 
                 const req = createJwtRequest("secret", {});
                 const result = await translateQuery(neoSchema, query, { req });
 
-                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(
-                    cypher,
-                    `
+                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
                     WHERE (exists((this)-[:\`IN_GENRE\`]->(:\`Genre\`))
                     AND NONE(this1 IN [(this)-[:\`IN_GENRE\`]->(this1:\`Genre\`) | this1]
                                 WHERE this1.name = $param0))
                     RETURN this { .actorCount } as this"
-                `
-                );
-                expect(formatParams(result.params)).toMatchInlineSnapshot(
-                    params,
-                    `
+                `);
+                expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
                         \\"param0\\": \\"some genre\\"
                     }"
-                `
-                );
+                `);
             });
             test("SINGLE", async () => {
-                const { query, cypher, params } = generateQueryAndSnapShots("SINGLE");
+                const query = generateQuery("SINGLE");
 
                 const req = createJwtRequest("secret", {});
                 const result = await translateQuery(neoSchema, query, { req });
 
-                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(
-                    cypher,
-                    `
+                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
                     WHERE (exists((this)-[:\`IN_GENRE\`]->(:\`Genre\`))
                     AND SINGLE(this1 IN [(this)-[:\`IN_GENRE\`]->(this1:\`Genre\`) | this1]
                                 WHERE this1.name = $param0))
                     RETURN this { .actorCount } as this"
-                `
-                );
-                expect(formatParams(result.params)).toMatchInlineSnapshot(
-                    params,
-                    `
+                `);
+                expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
                         \\"param0\\": \\"some genre\\"
                     }"
-                `
-                );
+                `);
             });
             test("SOME", async () => {
-                const { query, cypher, params } = generateQueryAndSnapShots("SOME");
+                const query = generateQuery("SOME");
 
                 const req = createJwtRequest("secret", {});
                 const result = await translateQuery(neoSchema, query, { req });
 
-                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(
-                    cypher,
-                    `
+                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
                     WHERE (exists((this)-[:\`IN_GENRE\`]->(:\`Genre\`))
                     AND ANY(this1 IN [(this)-[:\`IN_GENRE\`]->(this1:\`Genre\`) | this1]
                                 WHERE this1.name = $param0))
                     RETURN this { .actorCount } as this"
-                `
-                );
-                expect(formatParams(result.params)).toMatchInlineSnapshot(
-                    params,
-                    `
+                `);
+                expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
                         \\"param0\\": \\"some genre\\"
                     }"
-                `
-                );
+                `);
             });
         });
     });
@@ -842,20 +793,7 @@ describe("Cypher Advanced Filtering", () => {
         });
 
         describe("List Predicates", () => {
-            const generateQueryAndSnapShots = (operator: "ALL" | "NONE" | "SINGLE" | "SOME") => {
-                const getListPredicate = () => {
-                    switch (operator) {
-                        case "ALL":
-                            return "ALL";
-                        case "NONE":
-                            return "NONE";
-                        case "SINGLE":
-                            return "SINGLE";
-                        case "SOME":
-                        default:
-                            return "ANY";
-                    }
-                };
+            const generateQuery = (operator: "ALL" | "NONE" | "SINGLE" | "SOME"): DocumentNode => {
                 const query = gql`
                     {
                         movies(where: { genresConnection_${operator}: { node: { name: "some genre" } } }) {
@@ -863,46 +801,22 @@ describe("Cypher Advanced Filtering", () => {
                         }
                     }
                 `;
-                const cypher = `
-                    "MATCH (this:Movie)
-                    WHERE EXISTS((this)-[:IN_GENRE]->(:Genre)) AND ${getListPredicate()}(this_genresConnection_${operator}_Genre_map IN [(this)-[this_genresConnection_${operator}_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_${operator}_Genre:Genre)  | { node: this_genresConnection_${operator}_Genre, relationship: this_genresConnection_${operator}_Genre_MovieGenresRelationship } ] WHERE this_genresConnection_${operator}_Genre_map.node.name = $this_movies.where.genresConnection_${operator}.node.name)
-                    RETURN this { .actorCount } as this"
-                `;
-
-                const params = `
-                    "{
-                        \\"this_movies\\": {
-                            \\"where\\": {
-                                \\"genresConnection_${operator}\\": {
-                                    \\"node\\": {
-                                        \\"name\\": \\"some genre\\"
-                                    }
-                                }
-                            }
-                        }
-                    }"
-                `;
-                return { query, cypher, params };
+                return query;
             };
             test("ALL", async () => {
-                const { query, cypher, params } = generateQueryAndSnapShots("ALL");
+                const query = generateQuery("ALL");
 
                 const req = createJwtRequest("secret", {});
                 const result = await translateQuery(neoSchema, query, { req });
 
-                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(
-                    cypher,
-                    `
+                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
                     WHERE (exists((this)-[:\`IN_GENRE\`]->(:\`Genre\`))
                     AND ALL(var3 IN [(this)-[this1:\`IN_GENRE\`]->(this2:\`Genre\`) | { node: this2, relationship: this1 }]
                                 WHERE var3.node.name = $nestedParam0.node.name))
                     RETURN this { .actorCount } as this"
-                `
-                );
-                expect(formatParams(result.params)).toMatchInlineSnapshot(
-                    params,
-                    `
+                `);
+                expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
                         \\"nestedParam0\\": {
                             \\"node\\": {
@@ -910,28 +824,22 @@ describe("Cypher Advanced Filtering", () => {
                             }
                         }
                     }"
-                `
-                );
+                `);
             });
             test("NONE", async () => {
-                const { query, cypher, params } = generateQueryAndSnapShots("NONE");
+                const query = generateQuery("NONE");
 
                 const req = createJwtRequest("secret", {});
                 const result = await translateQuery(neoSchema, query, { req });
 
-                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(
-                    cypher,
-                    `
+                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
                     WHERE (exists((this)-[:\`IN_GENRE\`]->(:\`Genre\`))
                     AND NONE(var3 IN [(this)-[this1:\`IN_GENRE\`]->(this2:\`Genre\`) | { node: this2, relationship: this1 }]
                                 WHERE var3.node.name = $nestedParam0.node.name))
                     RETURN this { .actorCount } as this"
-                `
-                );
-                expect(formatParams(result.params)).toMatchInlineSnapshot(
-                    params,
-                    `
+                `);
+                expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
                         \\"nestedParam0\\": {
                             \\"node\\": {
@@ -939,28 +847,22 @@ describe("Cypher Advanced Filtering", () => {
                             }
                         }
                     }"
-                `
-                );
+                `);
             });
             test("SINGLE", async () => {
-                const { query, cypher, params } = generateQueryAndSnapShots("SINGLE");
+                const query = generateQuery("SINGLE");
 
                 const req = createJwtRequest("secret", {});
                 const result = await translateQuery(neoSchema, query, { req });
 
-                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(
-                    cypher,
-                    `
+                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
                     WHERE (exists((this)-[:\`IN_GENRE\`]->(:\`Genre\`))
                     AND SINGLE(var3 IN [(this)-[this1:\`IN_GENRE\`]->(this2:\`Genre\`) | { node: this2, relationship: this1 }]
                                 WHERE var3.node.name = $nestedParam0.node.name))
                     RETURN this { .actorCount } as this"
-                `
-                );
-                expect(formatParams(result.params)).toMatchInlineSnapshot(
-                    params,
-                    `
+                `);
+                expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
                         \\"nestedParam0\\": {
                             \\"node\\": {
@@ -968,28 +870,22 @@ describe("Cypher Advanced Filtering", () => {
                             }
                         }
                     }"
-                `
-                );
+                `);
             });
             test("SOME", async () => {
-                const { query, cypher, params } = generateQueryAndSnapShots("SOME");
+                const query = generateQuery("SOME");
 
                 const req = createJwtRequest("secret", {});
                 const result = await translateQuery(neoSchema, query, { req });
 
-                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(
-                    cypher,
-                    `
+                expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
                     WHERE (exists((this)-[:\`IN_GENRE\`]->(:\`Genre\`))
                     AND ANY(var3 IN [(this)-[this1:\`IN_GENRE\`]->(this2:\`Genre\`) | { node: this2, relationship: this1 }]
                                 WHERE var3.node.name = $nestedParam0.node.name))
                     RETURN this { .actorCount } as this"
-                `
-                );
-                expect(formatParams(result.params)).toMatchInlineSnapshot(
-                    params,
-                    `
+                `);
+                expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
                         \\"nestedParam0\\": {
                             \\"node\\": {
@@ -997,8 +893,7 @@ describe("Cypher Advanced Filtering", () => {
                             }
                         }
                     }"
-                `
-                );
+                `);
             });
         });
     });
