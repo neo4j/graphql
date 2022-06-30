@@ -196,10 +196,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package:
-          - graphql
-          - ogm
-          - introspector
+        packages:
+          [
+            { package: "ogm", shard: 1/1 },
+            { package: "introspector", shard: 1/1 },
+            { package: "graphql", shard: 1/4 },
+            { package: "graphql", shard: 2/4 },
+            { package: "graphql", shard: 3/4 },
+            { package: "graphql", shard: 4/4 },
+          ]
         neo4j-version:
           - 4.3.2
           - 4.3
@@ -233,9 +238,9 @@ jobs:
         run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
-          yarn test:int --coverage
+          yarn test:int --shard=${{ matrix.packages.shard }} --coverage
           mv coverage coverage-${{ matrix.neo4j-version }}
-        working-directory: packages/${{ matrix.package }}
+        working-directory: packages/${{ matrix.packages.package }}
         env:
           NEO_USER: neo4j
           NEO_PASSWORD: password
@@ -243,5 +248,5 @@ jobs:
       - name: Archive coverage report
         uses: actions/upload-artifact@v3
         with:
-          name: integration-coverage-${{ matrix.package }}
-          path: packages/${{ matrix.package }}/coverage-${{ matrix.neo4j-version }}/
+          name: integration-coverage-${{ matrix.packages.package }}
+          path: packages/${{ matrix.packages.package }}/coverage-${{ matrix.neo4j-version }}/
