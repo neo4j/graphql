@@ -83,7 +83,8 @@ describe("Mixed nesting", () => {
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WHERE this_actor.name = $this_actorsConnection.args.where.node.name
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, movies: [ (this_actor)-[:ACTED_IN]->(this_actor_movies:Movie)  WHERE (NOT this_actor_movies.title = $this_actor_movies_title_NOT) | this_actor_movies { .title } ] } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
@@ -149,10 +150,12 @@ describe("Mixed nesting", () => {
             MATCH (this_actor)-[this_actor_acted_in_relationship:ACTED_IN]->(this_actor_movie:Movie)
             WHERE (NOT this_actor_movie.title = $this_actorsConnection.edges.node.moviesConnection.args.where.node.title_NOT)
             WITH collect({ node: { title: this_actor_movie.title, actors: [ (this_actor_movie)<-[:ACTED_IN]-(this_actor_movie_actors:Actor)  WHERE (NOT this_actor_movie_actors.name = $this_actor_movie_actors_name_NOT) | this_actor_movie_actors { .name } ] } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS moviesConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS moviesConnection
             }
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, moviesConnection: moviesConnection } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
@@ -220,7 +223,8 @@ describe("Mixed nesting", () => {
             MATCH (this_actors)-[this_actors_acted_in_relationship:ACTED_IN]->(this_actors_movie:Movie)
             WHERE (NOT this_actors_movie.title = $this_actors_moviesConnection.args.where.node.title_NOT)
             WITH collect({ screenTime: this_actors_acted_in_relationship.screenTime, node: { title: this_actors_movie.title } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS moviesConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS moviesConnection
             } RETURN moviesConnection\\", { this_actors: this_actors, this_actors_moviesConnection: $this_actors_moviesConnection, auth: $auth }, false) } ] } as this"
         `);
 
