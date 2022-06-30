@@ -31,6 +31,7 @@ const config: PlaywrightTestConfig = {
         baseURL: "http://localhost:4242",
     },
     testDir: "tests",
+    timeout: 45 * 1000,
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
     workers: process.env.CI ? 8 : undefined,
