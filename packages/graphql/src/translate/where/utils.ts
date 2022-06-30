@@ -55,19 +55,19 @@ export type WhereRegexGroups = {
     prefix?: string;
 };
 
-type ListPredicate = "ALL" | "NONE" | "SINGLE" | "ANY";
+export type ListPredicate = "all" | "none" | "single" | "any";
 
 export const getListPredicate = (operator?: WhereOperator): ListPredicate => {
     switch (operator) {
         case "ALL":
-            return "ALL";
+            return "all";
         case "NOT":
         case "NONE":
-            return "NONE";
+            return "none";
         case "SINGLE":
-            return "SINGLE";
+            return "single";
         case "SOME":
         default:
-            return "ANY";
+            return "any";
     }
 };

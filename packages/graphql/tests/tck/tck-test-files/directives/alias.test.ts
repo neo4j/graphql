@@ -110,7 +110,8 @@ describe("Cypher alias directive", () => {
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
             WITH collect({ character: this_acted_in_relationship.characterPropInDb, screenTime: this_acted_in_relationship.screenTime, node: { title: this_movie.title, rating: this_movie.ratingPropInDb } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
             }
             RETURN this { .name, city: this.cityPropInDb, actedInConnection } as this"
         `);
@@ -180,7 +181,8 @@ describe("Cypher alias directive", () => {
             WITH this0
             MATCH (this0)-[this0_acted_in_relationship:ACTED_IN]->(this0_movie:Movie)
             WITH collect({ character: this0_acted_in_relationship.characterPropInDb, screenTime: this0_acted_in_relationship.screenTime, node: { title: this0_movie.title, rating: this0_movie.ratingPropInDb } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
             }
             RETURN [
             this0 { .name, city: this0.cityPropInDb, actedIn: [ (this0)-[:ACTED_IN]->(this0_actedIn:Movie)   | this0_actedIn { .title, rating: this0_actedIn.ratingPropInDb } ], actedInConnection }] AS data"

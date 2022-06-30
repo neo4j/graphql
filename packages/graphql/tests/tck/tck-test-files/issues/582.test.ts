@@ -72,14 +72,11 @@ describe("#582", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Entity\`)
-            WHERE (this.type = $param0
-            AND (exists((this)-[:\`EDGE\`]->(:\`Entity\`))
-            AND ANY(var3 IN [(this)-[this1:\`EDGE\`]->(this2:\`Entity\`) | { node: this2, relationship: this1 }]
-                        WHERE var3.node.type = $nestedParam1.node.type AND apoc.cypher.runFirstColumn(\\"RETURN EXISTS((var3_node)<-[:EDGE]-(:Entity))
-            AND ANY(var3_node_Entity_map IN [(var3_node)<-[var3_node_Entity_EntityParentsRelationship:EDGE]-(var3_node_Entity:Entity) | { node: var3_node_Entity, relationship: var3_node_Entity_EntityParentsRelationship } ] WHERE
-            var3_node_Entity_map.node.type = $nestedParam1.node.parentsConnection.node.type
-            )\\", { var3_node: var3.node, nestedParam1: $nestedParam1 }))))
+            "MATCH (this:Entity)
+            WHERE this.type = $this_type AND size([(this)-[this_childrenConnection_Entity_EntityChildrenRelationship:EDGE]->(this_childrenConnection_Entity:Entity) WHERE this_childrenConnection_Entity.type = $this_entities.where.childrenConnection.node.type AND apoc.cypher.runFirstColumn(\\"RETURN exists((this_childrenConnection_Entity)<-[:EDGE]-(:Entity))
+            AND any(this_childrenConnection_Entity_Entity_map IN [(this_childrenConnection_Entity)<-[this_childrenConnection_Entity_Entity_EntityParentsRelationship:EDGE]-(this_childrenConnection_Entity_Entity:Entity) | { node: this_childrenConnection_Entity_Entity, relationship: this_childrenConnection_Entity_Entity_EntityParentsRelationship } ] WHERE
+            this_childrenConnection_Entity_Entity_map.node.type = $this_entities.where.childrenConnection.node.parentsConnection.node.type
+            )\\", { this_childrenConnection_Entity: this_childrenConnection_Entity, this_entities: $this_entities }) | 1]) > 0
             RETURN this { .type } as this"
         `);
 
@@ -133,17 +130,14 @@ describe("#582", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Entity\`)
-            WHERE (this.type = $param0
-            AND (exists((this)-[:\`EDGE\`]->(:\`Entity\`))
-            AND ANY(var3 IN [(this)-[this1:\`EDGE\`]->(this2:\`Entity\`) | { node: this2, relationship: this1 }]
-                        WHERE var3.node.type = $nestedParam1.node.type AND apoc.cypher.runFirstColumn(\\"RETURN EXISTS((var3_node)<-[:EDGE]-(:Entity))
-            AND ANY(var3_node_Entity_map IN [(var3_node)<-[var3_node_Entity_EntityParentsRelationship:EDGE]-(var3_node_Entity:Entity) | { node: var3_node_Entity, relationship: var3_node_Entity_EntityParentsRelationship } ] WHERE
-            var3_node_Entity_map.node.type = $nestedParam1.node.parentsConnection.node.type AND apoc.cypher.runFirstColumn(\\\\\\"RETURN EXISTS((var3_node_Entity_map_node)-[:EDGE]->(:Entity))
-            AND ANY(var3_node_Entity_map_node_Entity_map IN [(var3_node_Entity_map_node)-[var3_node_Entity_map_node_Entity_EntityChildrenRelationship:EDGE]->(var3_node_Entity_map_node_Entity:Entity) | { node: var3_node_Entity_map_node_Entity, relationship: var3_node_Entity_map_node_Entity_EntityChildrenRelationship } ] WHERE
-            var3_node_Entity_map_node_Entity_map.node.type = $nestedParam1.node.parentsConnection.node.childrenConnection.node.type
-            )\\\\\\", { var3_node_Entity_map_node: var3_node_Entity_map.node, nestedParam1: $nestedParam1 })
-            )\\", { var3_node: var3.node, nestedParam1: $nestedParam1 }))))
+            "MATCH (this:Entity)
+            WHERE this.type = $this_type AND size([(this)-[this_childrenConnection_Entity_EntityChildrenRelationship:EDGE]->(this_childrenConnection_Entity:Entity) WHERE this_childrenConnection_Entity.type = $this_entities.where.childrenConnection.node.type AND apoc.cypher.runFirstColumn(\\"RETURN exists((this_childrenConnection_Entity)<-[:EDGE]-(:Entity))
+            AND any(this_childrenConnection_Entity_Entity_map IN [(this_childrenConnection_Entity)<-[this_childrenConnection_Entity_Entity_EntityParentsRelationship:EDGE]-(this_childrenConnection_Entity_Entity:Entity) | { node: this_childrenConnection_Entity_Entity, relationship: this_childrenConnection_Entity_Entity_EntityParentsRelationship } ] WHERE
+            this_childrenConnection_Entity_Entity_map.node.type = $this_entities.where.childrenConnection.node.parentsConnection.node.type AND apoc.cypher.runFirstColumn(\\\\\\"RETURN exists((this_childrenConnection_Entity_Entity_map_node)-[:EDGE]->(:Entity))
+            AND any(this_childrenConnection_Entity_Entity_map_node_Entity_map IN [(this_childrenConnection_Entity_Entity_map_node)-[this_childrenConnection_Entity_Entity_map_node_Entity_EntityChildrenRelationship:EDGE]->(this_childrenConnection_Entity_Entity_map_node_Entity:Entity) | { node: this_childrenConnection_Entity_Entity_map_node_Entity, relationship: this_childrenConnection_Entity_Entity_map_node_Entity_EntityChildrenRelationship } ] WHERE
+            this_childrenConnection_Entity_Entity_map_node_Entity_map.node.type = $this_entities.where.childrenConnection.node.parentsConnection.node.childrenConnection.node.type
+            )\\\\\\", { this_childrenConnection_Entity_Entity_map_node: this_childrenConnection_Entity_Entity_map.node, this_entities: $this_entities })
+            )\\", { this_childrenConnection_Entity: this_childrenConnection_Entity, this_entities: $this_entities }) | 1]) > 0
             RETURN this { .type } as this"
         `);
 

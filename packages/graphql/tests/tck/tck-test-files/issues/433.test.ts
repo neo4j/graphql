@@ -73,7 +73,8 @@ describe("#413", () => {
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_person:Person)
             WITH collect({ node: { name: this_person.name } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);

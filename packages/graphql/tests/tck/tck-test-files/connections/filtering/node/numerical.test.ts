@@ -88,7 +88,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WHERE this_actor.age < $this_actorsConnection.args.where.node.age_LT
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, age: this_actor.age } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
@@ -141,7 +142,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WHERE this_actor.age <= $this_actorsConnection.args.where.node.age_LTE
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, age: this_actor.age } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
@@ -194,7 +196,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WHERE this_actor.age > $this_actorsConnection.args.where.node.age_GT
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, age: this_actor.age } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
@@ -247,7 +250,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WHERE this_actor.age >= $this_actorsConnection.args.where.node.age_GTE
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, age: this_actor.age } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);

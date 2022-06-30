@@ -87,7 +87,7 @@ describe("createAuthAndParams", () => {
 
             expect(trimmer(result[0])).toEqual(
                 trimmer(`
-                    ((this.id IS NOT NULL AND this.id = $this_auth_allow0_id) OR (ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))
+                    ((this.id IS NOT NULL AND this.id = $this_auth_allow0_id) OR (any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr))))
                 `)
             );
 
@@ -160,7 +160,7 @@ describe("createAuthAndParams", () => {
 
             expect(trimmer(result[0])).toEqual(
                 trimmer(`
-                    ((ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))) OR ((ANY(r IN ["member"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND this.id IS NOT NULL AND this.id = $this_auth_where1_id)))
+                    ((any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr))) OR ((any(r IN ["member"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND this.id IS NOT NULL AND this.id = $this_auth_where1_id)))
                 `)
             );
 
@@ -230,7 +230,7 @@ describe("createAuthAndParams", () => {
 
             expect(trimmer(result[0])).toEqual(
                 trimmer(`
-                    ((this.id IS NOT NULL AND this.id = $this_auth_allow0_id) OR (ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))
+                    ((this.id IS NOT NULL AND this.id = $this_auth_allow0_id) OR (any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr))))
                 `)
             );
 
@@ -298,7 +298,7 @@ describe("createAuthAndParams", () => {
 
             expect(trimmer(result[0])).toEqual(
                 trimmer(`
-                     (ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND this.id IS NOT NULL AND this.id = $this_auth_allow0_id)
+                     (any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND this.id IS NOT NULL AND this.id = $this_auth_allow0_id)
                 `)
             );
 
@@ -368,7 +368,7 @@ describe("createAuthAndParams", () => {
 
             expect(trimmer(result[0])).toEqual(
                 trimmer(`
-                        (this.id IS NOT NULL AND this.id = $thisAND0_auth_allow0_id AND ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)))
+                        (this.id IS NOT NULL AND this.id = $thisAND0_auth_allow0_id AND any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr)))
                     `)
             );
 
@@ -436,7 +436,7 @@ describe("createAuthAndParams", () => {
 
             expect(trimmer(result[0])).toEqual(
                 trimmer(`
-                    ((this.id IS NOT NULL AND this.id = $thisOR0_auth_allow0_id) OR (ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))
+                    ((this.id IS NOT NULL AND this.id = $thisOR0_auth_allow0_id) OR (any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr))))
                 `)
             );
 
@@ -511,13 +511,13 @@ describe("createAuthAndParams", () => {
 
             expect(trimmer(result[0])).toEqual(
                 trimmer(`
-                    (ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))
+                    (any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr))
                 AND
                     this.id IS NOT NULL AND this.id = $this_auth_allow0_id
                 AND
-                    (this.id IS NOT NULL AND this.id = $thisAND0_auth_allow0_id AND ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)))
+                    (this.id IS NOT NULL AND this.id = $thisAND0_auth_allow0_id AND any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr)))
                 AND
-                    ((this.id IS NOT NULL AND this.id = $thisOR0_auth_allow0_id) OR (ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr)))))
+                    ((this.id IS NOT NULL AND this.id = $thisOR0_auth_allow0_id) OR (any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr)))))
                 `)
             );
 
@@ -908,7 +908,7 @@ describe("createAuthAndParams", () => {
             });
 
             expect(trimmer(result[0])).toEqual(
-                trimmer('((false) OR (ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))')
+                trimmer('((false) OR (any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr))))')
             );
             expect(result[1]).toEqual({});
         });
@@ -969,7 +969,7 @@ describe("createAuthAndParams", () => {
             });
 
             expect(trimmer(result[0])).toEqual(
-                trimmer('((false) OR (ANY(r IN ["admin"] WHERE ANY(rr IN $auth.roles WHERE r = rr))))')
+                trimmer('((false) OR (any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr))))')
             );
             expect(result[1]).toEqual({});
         });

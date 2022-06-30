@@ -149,7 +149,7 @@ function createDisconnectAndParams({
             const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`WITH ${[...withVars, _varName, relVarName].join(", ")}`);
             subquery.push(
-                `CALL apoc.util.validate(NOT(${preAuth.disconnects.join(
+                `CALL apoc.util.validate(NOT (${preAuth.disconnects.join(
                     " AND "
                 )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
             );
@@ -317,7 +317,7 @@ function createDisconnectAndParams({
             const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`WITH ${[...withVars, _varName].join(", ")}`);
             subquery.push(
-                `CALL apoc.util.validate(NOT(${postAuth.disconnects.join(
+                `CALL apoc.util.validate(NOT (${postAuth.disconnects.join(
                     " AND "
                 )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
             );

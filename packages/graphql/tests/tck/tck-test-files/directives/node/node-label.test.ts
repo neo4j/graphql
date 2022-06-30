@@ -128,7 +128,8 @@ describe("Label in Node directive", () => {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:\`Person\`)
             WITH collect({ node: { name: this_actor.name } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
@@ -517,9 +518,7 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE (exists((:\`Person\`)-[:\`ACTED_IN\`]->(this))
-            AND ANY(this1 IN [(this1:\`Person\`)-[:\`ACTED_IN\`]->(this) | this1]
-                        WHERE this1.name = $param0))
+            WHERE EXISTS { (this)<-[:ACTED_IN]-(this_actors:\`Person\`) WHERE this_actors.name = $this_actors_name }
             DETACH DELETE this"
         `);
 

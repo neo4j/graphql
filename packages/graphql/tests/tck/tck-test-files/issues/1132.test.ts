@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             	OPTIONAL MATCH (this_connect_targets0_node:Target)
             	WHERE this_connect_targets0_node.id = $this_connect_targets0_node_id
             	WITH this, this_connect_targets0_node
-            	CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $thisSource1_allow_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $thisSource1_allow_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this_connect_targets0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_TARGET]->(this_connect_targets0_node)
@@ -126,7 +126,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             OPTIONAL MATCH (this)-[this_disconnect_targets0_rel:HAS_TARGET]->(this_disconnect_targets0:Target)
             WHERE this_disconnect_targets0.id = $updateSources.args.disconnect.targets[0].where.node.id
             WITH this, this_disconnect_targets0, this_disconnect_targets0_rel
-            CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $thisSource0_allow_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $thisSource0_allow_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             FOREACH(_ IN CASE this_disconnect_targets0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_targets0_rel
             )

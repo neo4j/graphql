@@ -119,7 +119,7 @@ describe("#324", () => {
             	WITH this_car0_manufacturer0
             	MATCH (this_car0_manufacturer0)-[this_car0_manufacturer0_logo_Logo_unique:LOGO]->(:Logo)
             	WITH count(this_car0_manufacturer0_logo_Logo_unique) as c
-            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDManufacturer.logo required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDManufacturer.logo required', [0])
             	RETURN c AS this_car0_manufacturer0_logo_Logo_unique_ignored
             }
             RETURN count(*) AS _
@@ -130,7 +130,7 @@ describe("#324", () => {
             	WITH this_car0
             	MATCH (this_car0)-[this_car0_manufacturer_Manufacturer_unique:MANUFACTURER]->(:Manufacturer)
             	WITH count(this_car0_manufacturer_Manufacturer_unique) as c
-            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDCar.manufacturer required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDCar.manufacturer required', [0])
             	RETURN c AS this_car0_manufacturer_Manufacturer_unique_ignored
             }
             RETURN count(*) AS _
@@ -141,7 +141,7 @@ describe("#324", () => {
             	WITH this
             	MATCH (this)-[this_car_Car_unique:CAR]->(:Car)
             	WITH count(this_car_Car_unique) as c
-            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPerson.car required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPerson.car required', [0])
             	RETURN c AS this_car_Car_unique_ignored
             }
             RETURN collect(DISTINCT this { .identifier }) AS data"

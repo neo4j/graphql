@@ -208,10 +208,18 @@ describe("Aggregations", () => {
               createdAt: DateTime
               id: ID
               imdbRating: Float
+              imdbRating_ADD: Float
+              imdbRating_DIVIDE: Float
+              imdbRating_MULTIPLY: Float
+              imdbRating_SUBTRACT: Float
               isbn: String
               screenTime: Duration
               someBigInt: BigInt
+              someBigInt_DECREMENT: BigInt
+              someBigInt_INCREMENT: BigInt
               someInt: Int
+              someInt_DECREMENT: Int
+              someInt_INCREMENT: Int
               someLocalDateTime: LocalDateTime
               someLocalTime: LocalTime
               someTime: Time
@@ -535,11 +543,19 @@ describe("Aggregations", () => {
 
             input LikesUpdateInput {
               someBigInt: BigInt
+              someBigInt_DECREMENT: BigInt
+              someBigInt_INCREMENT: BigInt
               someDateTime: DateTime
               someDuration: Duration
               someFloat: Float
+              someFloat_ADD: Float
+              someFloat_DIVIDE: Float
+              someFloat_MULTIPLY: Float
+              someFloat_SUBTRACT: Float
               someId: ID
               someInt: Int
+              someInt_DECREMENT: Int
+              someInt_INCREMENT: Int
               someLocalDateTime: LocalDateTime
               someLocalTime: LocalTime
               someString: String
@@ -1368,11 +1384,19 @@ describe("Aggregations", () => {
 
             input UserUpdateInput {
               someBigInt: BigInt
+              someBigInt_DECREMENT: BigInt
+              someBigInt_INCREMENT: BigInt
               someDateTime: DateTime
               someDuration: Duration
               someFloat: Float
+              someFloat_ADD: Float
+              someFloat_DIVIDE: Float
+              someFloat_MULTIPLY: Float
+              someFloat_SUBTRACT: Float
               someId: ID
               someInt: Int
+              someInt_DECREMENT: Int
+              someInt_INCREMENT: Int
               someLocalDateTime: LocalDateTime
               someLocalTime: LocalTime
               someString: String

@@ -79,10 +79,8 @@ describe("#488", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Journalist\`)
-            WHERE (exists((this)-[:\`HAS_KEYWORD\`]->(:\`Emoji\`))
-            AND ANY(var3 IN [(this)-[this1:\`HAS_KEYWORD\`]->(this2:\`Emoji\`) | { node: this2, relationship: this1 }]
-                        WHERE var3.node.type = $nestedParam0.node.type))
+            "MATCH (this:Journalist)
+            WHERE size([(this)-[this_keywordsConnection_Emoji_JournalistKeywordsRelationship:HAS_KEYWORD]->(this_keywordsConnection_Emoji:Emoji) WHERE this_keywordsConnection_Emoji.type = $this_journalists.where.keywordsConnection.node.type | 1]) > 0
             RETURN this { .name, keywords:  [this_keywords IN [(this)-[:HAS_KEYWORD]->(this_keywords) WHERE (\\"Emoji\\" IN labels(this_keywords)) OR (\\"Hashtag\\" IN labels(this_keywords)) OR (\\"Text\\" IN labels(this_keywords)) | head( [ this_keywords IN [this_keywords] WHERE (\\"Emoji\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Emoji\\",  .id, .type } ] + [ this_keywords IN [this_keywords] WHERE (\\"Hashtag\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Hashtag\\" }  ] + [ this_keywords IN [this_keywords] WHERE (\\"Text\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Text\\" }  ] ) ] WHERE this_keywords IS NOT NULL]  } as this"
         `);
 
@@ -118,10 +116,8 @@ describe("#488", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Journalist\`)
-            WHERE (exists((this)-[:\`HAS_KEYWORD\`]->(:\`Emoji\`))
-            AND NONE(var3 IN [(this)-[this1:\`HAS_KEYWORD\`]->(this2:\`Emoji\`) | { node: this2, relationship: this1 }]
-                        WHERE var3.node.type = $nestedParam0.node.type))
+            "MATCH (this:Journalist)
+            WHERE size([(this)-[this_keywordsConnection_NOT_Emoji_JournalistKeywordsRelationship:HAS_KEYWORD]->(this_keywordsConnection_NOT_Emoji:Emoji) WHERE this_keywordsConnection_NOT_Emoji.type = $this_journalists.where.keywordsConnection_NOT.node.type | 1]) = 0
             RETURN this { .name, keywords:  [this_keywords IN [(this)-[:HAS_KEYWORD]->(this_keywords) WHERE (\\"Emoji\\" IN labels(this_keywords)) OR (\\"Hashtag\\" IN labels(this_keywords)) OR (\\"Text\\" IN labels(this_keywords)) | head( [ this_keywords IN [this_keywords] WHERE (\\"Emoji\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Emoji\\",  .id, .type } ] + [ this_keywords IN [this_keywords] WHERE (\\"Hashtag\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Hashtag\\" }  ] + [ this_keywords IN [this_keywords] WHERE (\\"Text\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Text\\" }  ] ) ] WHERE this_keywords IS NOT NULL]  } as this"
         `);
 

@@ -94,13 +94,8 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Series\`)
-            WHERE ((exists((this)-[:\`HAS_MANUFACTURER\`]->(:\`Series\`))
-            AND ANY(var3 IN [(this)-[this1:\`HAS_MANUFACTURER\`]->(this2:\`Series\`) | { node: this2, relationship: this1 }]
-                        WHERE var3.relationship.current = $nestedParam0.edge.current AND var3.node.name = $nestedParam0.node.name))
-            OR (exists((this)-[:\`HAS_BRAND\`]->(:\`Series\`))
-            AND ANY(var6 IN [(this)-[this4:\`HAS_BRAND\`]->(this5:\`Series\`) | { node: this5, relationship: this4 }]
-                        WHERE var6.relationship.current = $nestedParam1.edge.current AND var6.node.name = $nestedParam1.node.name)))
+            "MATCH (this:Series)
+            WHERE (size([(this)-[this_OR_manufacturerConnection_Series_SeriesManufacturerRelationship:HAS_MANUFACTURER]->(this_OR_manufacturerConnection_Series:Series) WHERE this_OR_manufacturerConnection_Series_SeriesManufacturerRelationship.current = $this_OR_series.where.manufacturerConnection.edge.current AND this_OR_manufacturerConnection_Series.name = $this_OR_series.where.manufacturerConnection.node.name | 1]) > 0 OR size([(this)-[this_OR1_brandConnection_Series_SeriesBrandRelationship:HAS_BRAND]->(this_OR1_brandConnection_Series:Series) WHERE this_OR1_brandConnection_Series_SeriesBrandRelationship.current = $this_OR1_series.where.brandConnection.edge.current AND this_OR1_brandConnection_Series.name = $this_OR1_series.where.brandConnection.node.name | 1]) > 0)
             RETURN this { .name, brand: head([ (this)-[:HAS_BRAND]->(this_brand:Series)   | this_brand { .name } ]), manufacturer: head([ (this)-[:HAS_MANUFACTURER]->(this_manufacturer:Series)   | this_manufacturer { .name } ]) } as this"
         `);
 
