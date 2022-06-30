@@ -109,17 +109,8 @@ function mapAllProperties({
         }
     }
 
-    /* TO IMPLEMENT
-        * coalesce
-        * relay Connection Fields
-        * Aggregate
-        * Relationship fields
-
-    */
-
     return resultArray;
 }
-
 function mapProperties({
     properties,
     node,
@@ -131,7 +122,7 @@ function mapProperties({
     targetElement: MatchableElement | CypherBuilder.Variable;
     context: Context;
 }): WhereInput {
-    const propertiesMappedToWhere = properties.map(([key, value]) => {
+    const propertiesMappedToWhere = properties.map(([key, value]): WhereInput[0] | undefined => {
         // console.log("MAPPROPERTIES");
         // console.log("key", key);
         // console.log("value", value);
@@ -149,17 +140,18 @@ function mapProperties({
             dbFieldName = `${prefix}${dbFieldName}`;
         }
 
-        //TODO
-        // if (node.isGlobalNode && key === "id") {
-        //     const { field, id } = node.fromGlobalId(value as string);
-        //     param = param.replace(key, field);
+        let targetElementOrCoalesce: MatchableElement | CypherBuilder.Variable | ScalarFunction = targetElement;
+        if (coalesceValue) {
+            targetElementOrCoalesce = CypherBuilder.coalesce(targetElement, dbFieldName, coalesceValue);
+        }
 
-        //     // get the dbField from the returned property fieldName
-        //     const dbField = mapToDbProperty(node, field);
-        //     res.clauses.push(`${varName}.${dbField} = $${param}`);
-        //     res.params = { ...res.params, [param]: id };
-        //     return res;
-        // }
+        if (node.isGlobalNode && key === "id") {
+            const { field, id } = node.fromGlobalId(value as string);
+
+            // get the dbField from the returned property fieldName
+            const idDbFieldName = mapToDbProperty(node, field);
+            return [targetElementOrCoalesce, { [idDbFieldName]: new CypherBuilder.Param(id) }];
+        }
 
         const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
 
@@ -203,11 +195,6 @@ function mapProperties({
         const durationField = node.primitiveFields.find(
             (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
         );
-
-        let targetElementOrCoalesce: MatchableElement | CypherBuilder.Variable | ScalarFunction = targetElement;
-        if (coalesceValue) {
-            targetElementOrCoalesce = CypherBuilder.coalesce(targetElement, dbFieldName, coalesceValue);
-        }
 
         return new CypherBuilder.RawCypherWithCallback((cypherContext: CypherBuilder.CypherContext) => {
             let property: string;

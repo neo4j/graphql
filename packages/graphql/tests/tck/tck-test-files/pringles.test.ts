@@ -278,8 +278,8 @@ describe("Cypher Create Pringles", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Product)
-            WHERE this.name = $this_name
+            "MATCH (this:\`Product\`)
+            WHERE this.name = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_has_photo0_relationship:HAS_PHOTO]->(this_photos0:Photo)
             WHERE this_photos0.description = $updateProducts.args.update.photos[0].where.node.description
@@ -323,7 +323,7 @@ describe("Cypher Create Pringles", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_name\\": \\"Pringles\\",
+                \\"param0\\": \\"Pringles\\",
                 \\"this_update_photos0_description\\": \\"Light Green Photo\\",
                 \\"this_photos0_color0_connect0_node_name\\": \\"Light Green\\",
                 \\"auth\\": {

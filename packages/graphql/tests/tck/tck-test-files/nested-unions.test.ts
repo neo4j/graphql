@@ -103,8 +103,8 @@ describe("Nested Unions", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             WITH this
             CALL {
             	WITH this
@@ -134,7 +134,7 @@ describe("Nested Unions", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Movie\\",
+                \\"param0\\": \\"Movie\\",
                 \\"this_connect_actors_LeadActor0_node_name\\": \\"Actor\\",
                 \\"this_connect_actors_LeadActor0_node_actedIn_Series0_node_name\\": \\"Series\\",
                 \\"resolvedCallbacks\\": {}
@@ -179,8 +179,8 @@ describe("Nested Unions", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             WITH this
             CALL {
             WITH this
@@ -206,7 +206,7 @@ describe("Nested Unions", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Movie\\",
+                \\"param0\\": \\"Movie\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
