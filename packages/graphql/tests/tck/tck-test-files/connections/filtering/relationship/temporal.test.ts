@@ -90,7 +90,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WHERE this_acted_in_relationship.startDate > $this_actorsConnection.args.where.edge.startDate_GT AND this_acted_in_relationship.endDateTime < $this_actorsConnection.args.where.edge.endDateTime_LT
             WITH collect({ startDate: this_acted_in_relationship.startDate, endDateTime: apoc.date.convertFormat(toString(this_acted_in_relationship.endDateTime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), node: { name: this_actor.name } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);

@@ -246,7 +246,8 @@ describe("Cypher Auth Where with Roles", () => {
             WHERE (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND exists((this_post)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_where0_creator_id))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))
             CALL apoc.util.validate(NOT (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { content: this_post.content } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS postsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS postsConnection
             }
             RETURN this { .id, postsConnection } as this"
         `);
@@ -302,7 +303,8 @@ describe("Cypher Auth Where with Roles", () => {
             WHERE this_post.id = $this_postsConnection.args.where.node.id AND (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND exists((this_post)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_where0_creator_id))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))
             CALL apoc.util.validate(NOT (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { content: this_post.content } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS postsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS postsConnection
             }
             RETURN this { .id, postsConnection } as this"
         `);

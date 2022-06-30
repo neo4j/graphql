@@ -259,7 +259,8 @@ describe("Math operators", () => {
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
             WITH collect({ pay: this_acted_in_relationship.pay }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
             }
             RETURN collect(DISTINCT this { .name, actedIn: [ (this)-[:ACTED_IN]->(this_actedIn:Movie)   | this_actedIn { .title } ], actedInConnection }) AS data"
         `);

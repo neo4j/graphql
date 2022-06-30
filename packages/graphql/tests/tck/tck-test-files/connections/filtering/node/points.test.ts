@@ -101,7 +101,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
             	WHEN true THEN { point: this_actor.currentLocation }
             	ELSE NULL
             END AS result',{ this_actor: this_actor },false) } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
