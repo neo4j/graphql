@@ -7445,7 +7445,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enhanced-resolve@npm:^5.0.0, enhanced-resolve@npm:^5.7.0, enhanced-resolve@npm:^5.9.3":
+"enhanced-resolve@npm:^5.0.0, enhanced-resolve@npm:^5.10.0, enhanced-resolve@npm:^5.7.0, enhanced-resolve@npm:^5.9.3":
   version: 5.10.0
   resolution: "enhanced-resolve@npm:5.10.0"
   dependencies:
@@ -7747,13 +7747,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-import-resolver-typescript@npm:3.1.1":
-  version: 3.1.1
-  resolution: "eslint-import-resolver-typescript@npm:3.1.1"
+"eslint-import-resolver-typescript@npm:3.1.2":
+  version: 3.1.2
+  resolution: "eslint-import-resolver-typescript@npm:3.1.2"
   dependencies:
     debug: ^4.3.4
-    enhanced-resolve: ^5.9.3
-    get-tsconfig: ^4.0.6
+    enhanced-resolve: ^5.10.0
+    get-tsconfig: ^4.1.0
     globby: ^13.1.2
     is-core-module: ^2.9.0
     is-glob: ^4.0.3
@@ -7761,7 +7761,7 @@ __metadata:
   peerDependencies:
     eslint: "*"
     eslint-plugin-import: "*"
-  checksum: 83a9a8edffebb2a0b8445117750da54669257ab23faa368cfcd91249e529afd059b5ec0f04abb5b232ede08c2a9fbcd1bf53a3eaf7b557d9e217724cd92b7e75
+  checksum: 932a3f1b29e868a5f7d91aed008a284670efbcb6e13dfb5fc168222e797a4ed8b93c6b00b21b724f720ef465f50ce4644884201cb3bb57c752deff6955d3beb9
   languageName: node
   linkType: hard
 
@@ -8921,7 +8921,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"get-tsconfig@npm:^4.0.6":
+"get-tsconfig@npm:^4.1.0":
   version: 4.1.0
   resolution: "get-tsconfig@npm:4.1.0"
   checksum: a1a29cdf53609a1e9e111bf863ea209494c03e425964ed2603e3a2657ed1d38213d4a8e3efbfd945f2ec908fe99b76d3ee87422fac5d8ec4fdd858bbb502efbf
@@ -13177,7 +13177,7 @@ __metadata:
     eslint: 8.18.0
     eslint-config-airbnb-typescript: 17.0.0
     eslint-config-prettier: 8.5.0
-    eslint-import-resolver-typescript: 3.1.1
+    eslint-import-resolver-typescript: 3.1.2
     eslint-plugin-eslint-comments: 3.2.0
     eslint-plugin-import: 2.26.0
     eslint-plugin-jest: 26.5.3
