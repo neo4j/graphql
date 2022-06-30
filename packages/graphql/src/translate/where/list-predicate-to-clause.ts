@@ -38,7 +38,8 @@ export function listPredicateToClause(listPredicate: ListPredicate, matchPattern
             // Sadly no expressive way to check for single match
             clause = `size([${matchPattern} WHERE ${where} | 1]) = 1`;
             break;
-        // no default
+        default:
+            throw new Error(`Unknown predicate ${listPredicate}`);
     }
 
     return clause;

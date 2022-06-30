@@ -37,7 +37,8 @@ export function listPredicateToSizeFunction(listPredicate: ListPredicate, matchP
         case "single":
             clause = `size([${matchPattern} WHERE ${where} | 1]) = 1`;
             break;
-        // no default
+        default:
+            throw new Error(`Unknown predicate ${listPredicate}`);
     }
 
     return clause;
