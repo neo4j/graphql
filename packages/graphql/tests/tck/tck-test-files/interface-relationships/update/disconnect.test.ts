@@ -79,7 +79,7 @@ describe("Interface Relationships - Update disconnect", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             WITH this
             CALL {
             WITH this
@@ -147,7 +147,7 @@ describe("Interface Relationships - Update disconnect", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             WITH this
             CALL {
             WITH this
@@ -246,7 +246,7 @@ describe("Interface Relationships - Update disconnect", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             WITH this
             CALL {
             WITH this
@@ -344,7 +344,7 @@ describe("Interface Relationships - Update disconnect", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             WITH this
             CALL {
             WITH this

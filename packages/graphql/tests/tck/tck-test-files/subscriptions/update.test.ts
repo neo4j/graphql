@@ -70,8 +70,8 @@ describe("Subscriptions metadata on update", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
-            MATCH (this:Movie)
-            WHERE this.id = $this_id
+            MATCH (this:\`Movie\`)
+            WHERE this.id = $param0
             WITH this { .* } AS oldProps, this, meta
             CALL {
             	WITH *
@@ -87,7 +87,7 @@ describe("Subscriptions metadata on update", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"1\\",
+                \\"param0\\": \\"1\\",
                 \\"this_update_id\\": \\"2\\",
                 \\"resolvedCallbacks\\": {}
             }"
