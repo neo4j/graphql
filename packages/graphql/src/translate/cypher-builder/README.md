@@ -324,3 +324,28 @@ Cypher context is an internal class, used to track references to variables and p
 -   Improvements to the Node and Relationship classes to spearate the concept of `variables` (this0) and "MatchPatterns" (`(this0:Movie {...})`)
 -   MATCH, UNION and projections
 -   Improve unit testing
+
+### Pseudo Cypher Grammar for cypher builder
+
+```
+ASTNode
+ -- Clause --- MATCH, RETURN
+ -- SubClause --- WHERE, ORDER BY
+     -- WHERE <BooleanOp | ComparisonOp>
+ -- Function --- distance()
+ -- RawCypher <- Weird hack
+
+type Variable --- this, r
+type Param --- param0
+type PropertyRef=[Variable, PropertyPath] ---  this.potato, this.node.potato
+type Operator --- +,=,, , AND, OR
+  -- Boolean <Boolean | Comparison, OPERATOR, (Boolean | Comparison)?> --- AND, OR, NOT
+  -- Comparison <Expression, Operator, Expression> --- IS NOT, =, <, IS NULL, STARTS WITH, IN
+  -- Math --- +,-,/
+  -- Aggregation operator DISTINCT
+  -- Property operators <PropertyRef, Operator, Expression> --- =, +=, . (access) --- (propertyRef)
+
+type List and type Map
+
+type Expression --- PropertyRef | Variable | Function | Param | Operator | ¿CASE? | Literals
+```
