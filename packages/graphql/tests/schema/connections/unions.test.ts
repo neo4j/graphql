@@ -916,6 +916,8 @@ describe("Unions", () => {
 
             input WroteUpdateInput {
               words: Int
+              words_DECREMENT: Int
+              words_INCREMENT: Int
             }
 
             input WroteWhere {

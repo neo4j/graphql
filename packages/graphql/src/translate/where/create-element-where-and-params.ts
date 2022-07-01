@@ -24,6 +24,7 @@ import createWhereClause from "./create-where-clause";
 import { whereRegEx, WhereRegexGroups, getListPredicate, ListPredicate } from "./utils";
 import { wrapInApocRunFirstColumn } from "../utils/apoc-run";
 import mapToDbProperty from "../../utils/map-to-db-property";
+import { listPredicateToClause } from "./list-predicate-to-clause";
 
 interface Res {
     clauses: string[];
@@ -110,21 +111,12 @@ function createElementWhereAndParams({
                 const relatedNodeVariable = `${varName}_${relationField.fieldName}`;
                 const labels = refNode.getLabelString(context);
 
+                const matchPattern = `(${varName})${inStr}${relTypeStr}${outStr}(${relatedNodeVariable}${labels})`;
+
                 if (value === null) {
-                    res.clauses.push(
-                        `${isNot ? "" : "NOT "}exists((${varName})${inStr}${relTypeStr}${outStr}(:${
-                            relationField.typeMeta.name
-                        }))`
-                    );
+                    res.clauses.push(`${isNot ? "" : "NOT "}EXISTS { ${matchPattern} }`);
                     return res;
                 }
-
-                let resultStr = [
-                    `exists((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
-                    `AND ${getListPredicate(
-                        operator
-                    )}(${relatedNodeVariable} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relatedNodeVariable}${labels}) | ${relatedNodeVariable}] INNER_WHERE `,
-                ].join(" ");
 
                 const recurse = createElementWhereAndParams({
                     whereInput: value,
@@ -134,10 +126,14 @@ function createElementWhereAndParams({
                     parameterPrefix: `${parameterPrefix}.${fieldName}`,
                 });
 
-                resultStr += recurse[0];
-                resultStr += ")"; // close NONE/ANY
-                res.clauses.push(resultStr);
-                res.params = { ...res.params, fieldName: recurse[1] };
+                if (recurse[0]) {
+                    const listPredicate = getListPredicate(operator);
+
+                    const clause = listPredicateToClause(listPredicate, matchPattern, recurse[0]);
+                    res.clauses.push(clause);
+                    res.params = { ...res.params, ...recurse[1] };
+                }
+
                 return res;
             }
             const connectionField = element.connectionFields.find((x) => fieldName === x.fieldName);

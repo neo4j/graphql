@@ -71,6 +71,8 @@ describe("Relationship-properties", () => {
             input ActedInUpdateInput {
               leadRole: Boolean
               screenTime: Int
+              screenTime_DECREMENT: Int
+              screenTime_INCREMENT: Int
               startDate: Date
             }
 
@@ -732,6 +734,8 @@ describe("Relationship-properties", () => {
 
             input ActedInUpdateInput {
               screenTime: Int
+              screenTime_DECREMENT: Int
+              screenTime_INCREMENT: Int
             }
 
             input ActedInWhere {

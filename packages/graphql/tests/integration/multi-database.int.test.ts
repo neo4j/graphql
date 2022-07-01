@@ -22,6 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { isMultiDbUnsupportedError } from "../utils/is-multi-db-unsupported-error";
 
 describe("multi-database", () => {
     let driver: Driver;
@@ -29,16 +30,14 @@ describe("multi-database", () => {
     const id = generate({
         charset: "alphabetic",
     });
-    let MULTIDB_SUPPORT: boolean;
+    let MULTIDB_SUPPORT = true;
     const dbName = "non-default-db-name";
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
 
-        MULTIDB_SUPPORT = await driver.supportsMultiDb();
-
-        if (MULTIDB_SUPPORT) {
+        try {
             // Create DB
             const createSession = await neo4j.getSession();
             await createSession.writeTransaction((tx) => tx.run(`CREATE DATABASE \`${dbName}\``));
@@ -53,6 +52,17 @@ describe("multi-database", () => {
             const waitSession = driver.session({ database: dbName, bookmarks: writeSession.lastBookmark() });
             await waitSession.readTransaction((tx) => tx.run("MATCH (m:Movie) RETURN COUNT(m)"));
             await waitSession.close();
+        } catch (e) {
+            if (e instanceof Error) {
+                if (isMultiDbUnsupportedError(e)) {
+                    // No multi-db support, so we skip tests
+                    MULTIDB_SUPPORT = false;
+                } else {
+                    throw e;
+                }
+            } else {
+                throw e;
+            }
         }
     });
 
