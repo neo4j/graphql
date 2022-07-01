@@ -747,7 +747,7 @@ describe("Subscriptions update", () => {
         const gqlResult: any = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -790,7 +790,7 @@ describe("Subscriptions update", () => {
         const gqlResult: any = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -853,7 +853,7 @@ describe("Subscriptions update", () => {
         const gqlResult: any = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
