@@ -20,22 +20,24 @@
 import { Driver, int } from "neo4j-driver";
 import { graphql, GraphQLError } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "./neo4j";
+import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { generateUniqueType } from "../utils/graphql-types";
 
 describe("Mathematical operations tests", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     const largestSafeSigned32BitInteger = Number(2 ** 31 - 1);
     const largestSafeSigned64BitBigInt = BigInt(2 ** 63 - 1).toString();
     let session;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
-    beforeEach(() => {
-        session = driver.session();
+    beforeEach(async () => {
+        session = await neo4j.getSession();
     });
 
     afterEach(async () => {
@@ -101,7 +103,7 @@ describe("Mathematical operations tests", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, value },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -177,7 +179,7 @@ describe("Mathematical operations tests", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id, value },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
             expect(gqlResult.errors).toBeDefined();
             expect(
@@ -237,7 +239,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, value: 10 },
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
         expect(gqlResult.errors).toBeDefined();
         expect(
@@ -300,7 +302,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, value: 10 },
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -380,7 +382,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, value: 10 },
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -465,7 +467,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, value: 10 },
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -555,7 +557,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, value: 10 },
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -612,7 +614,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, value: increment },
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeDefined();
@@ -703,7 +705,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, payIncrement },
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -792,7 +794,7 @@ describe("Mathematical operations tests", () => {
             schema: await neoSchema.getSchema(),
             source: query,
             variableValues: { id, payIncrement },
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeDefined();
