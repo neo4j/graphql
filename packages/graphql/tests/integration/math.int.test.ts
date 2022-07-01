@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Driver, int } from "neo4j-driver";
+import { Driver, int, Session } from "neo4j-driver";
 import { graphql, GraphQLError } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "./neo4j";
@@ -27,9 +27,9 @@ import { generateUniqueType } from "../utils/graphql-types";
 describe("Mathematical operations tests", () => {
     let driver: Driver;
     let neo4j: Neo4j;
+    let session: Session;
     const largestSafeSigned32BitInteger = Number(2 ** 31 - 1);
     const largestSafeSigned64BitBigInt = BigInt(2 ** 63 - 1).toString();
-    let session;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -41,7 +41,7 @@ describe("Mathematical operations tests", () => {
     });
 
     afterEach(async () => {
-        session = await session.close();
+        await session?.close();
     });
 
     afterAll(async () => {
