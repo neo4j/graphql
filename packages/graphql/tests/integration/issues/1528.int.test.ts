@@ -20,7 +20,7 @@
 import { graphql, GraphQLSchema } from "graphql";
 import { gql } from "apollo-server";
 import { Driver, Session } from "neo4j-driver";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 
@@ -30,6 +30,7 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
     const testGenre = generateUniqueType("Genre");
 
     let schema: GraphQLSchema;
+    let neo4j: Neo4j;
     let driver: Driver;
     let session: Session;
 
@@ -37,14 +38,13 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
         return graphql({
             schema,
             source: query,
-            contextValue: {
-                driver,
-            },
+            contextValue: neo4j.getContextValues(),
         });
     }
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const typeDefs = gql`
             type ${testMovie} {
@@ -70,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
             }
         `;
 
-        session = driver.session();
+        session = await neo4j.getSession();
 
         await session.run(`
             CREATE (g:${testGenre} {name: "Western"})

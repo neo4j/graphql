@@ -21,12 +21,13 @@ import { Driver } from "neo4j-driver";
 import { DocumentNode, graphql } from "graphql";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/464", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     let typeAuthor: UniqueType;
     let typeBook: UniqueType;
@@ -58,7 +59,8 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
     let queryBooks: string;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     beforeEach(() => {
@@ -127,7 +129,11 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: createMutation,
-            contextValue: { executionContext: driver },
+            contextValue: {
+                ...neo4j.getContextValues(),
+                driver: null,
+                executionContext: driver,
+            },
             variableValues: {
                 id: bookId,
                 name: bookName,
@@ -157,19 +163,23 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
         const books = await graphql({
             schema: await neoSchema.getSchema(),
             source: queryBooks,
-            contextValue: { executionContext: driver },
+            contextValue: {
+                ...neo4j.getContextValues(),
+                driver: null,
+                executionContext: driver,
+            },
         });
 
         expect(books.data?.[typeBook.plural]).toEqual([{ id: bookId, name: bookName }]);
     });
 
     test("should run the mutation and commit the result, but not close the session", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         try {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: createMutation,
-                contextValue: { driver, executionContext: session },
+                contextValue: { ...neo4j.getContextValues(), executionContext: session },
                 variableValues: {
                     id: bookId,
                     name: bookName,
@@ -199,7 +209,7 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
             const books = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: queryBooks,
-                contextValue: { driver, executionContext: session },
+                contextValue: { ...neo4j.getContextValues(), executionContext: session },
             });
 
             expect(books.data?.[typeBook.plural]).toEqual([{ id: bookId, name: bookName }]);
@@ -209,13 +219,13 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
     });
 
     test("should run the mutation but not commit until it is done explicitly", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         const transaction = session.beginTransaction();
         try {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: createMutation,
-                contextValue: { driver, executionContext: transaction },
+                contextValue: { ...neo4j.getContextValues(), executionContext: transaction },
                 variableValues: {
                     id: bookId,
                     name: bookName,
@@ -247,7 +257,7 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
             const noBooks = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: queryBooks,
-                contextValue: { driver },
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(noBooks.data?.[typeBook.plural]).toEqual([]);
@@ -257,7 +267,7 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
             const books = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: queryBooks,
-                contextValue: { driver },
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(books.data?.[typeBook.plural]).toEqual([{ id: bookId, name: bookName }]);

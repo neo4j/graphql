@@ -23,13 +23,14 @@
  *   `ts-node tests/integration/teardown.ts`
  */
 
-import neo4j from "./neo4j";
+import Neo4j from "./neo4j";
 
 /* eslint-disable no-console */
 
 const teardown = async () => {
-    const driver = await neo4j();
-    const session = driver.session();
+    const neo4j = new Neo4j();
+    const driver = await neo4j.getDriver();
+    const session = await neo4j.getSession();
 
     try {
         console.log("Clearing down database...");

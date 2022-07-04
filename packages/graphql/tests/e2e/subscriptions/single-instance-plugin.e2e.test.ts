@@ -23,11 +23,12 @@ import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
 import { WebSocketTestClient } from "../setup/ws-client";
-import neo4j from "../setup/neo4j";
+import Neo4j from "../setup/neo4j";
 import { Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "../../../src";
 import { delay } from "../../../src/utils/utils";
 
 describe("Create Subscription", () => {
+    let neo4j: Neo4j;
     let driver: Driver;
     let plugin: Neo4jGraphQLSubscriptionsSingleInstancePlugin;
 
@@ -56,11 +57,17 @@ describe("Create Subscription", () => {
          }
          `;
 
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
+            config: {
+                driverConfig: {
+                    database: neo4j.getIntegrationDatabaseName(),
+                },
+            },
             plugins: {
                 subscriptions: plugin,
             },

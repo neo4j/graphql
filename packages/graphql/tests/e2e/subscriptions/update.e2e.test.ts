@@ -24,9 +24,10 @@ import { generateUniqueType } from "../../utils/graphql-types";
 import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../setup/ws-client";
-import neo4j from "../setup/neo4j";
+import Neo4j from "../setup/neo4j";
 
 describe("Update Subscriptions", () => {
+    let neo4j: Neo4j;
     let driver: Driver;
 
     const typeMovie = generateUniqueType("Movie");
@@ -46,11 +47,17 @@ describe("Update Subscriptions", () => {
          }
          `;
 
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
+            config: {
+                driverConfig: {
+                    database: neo4j.getIntegrationDatabaseName(),
+                },
+            },
             plugins: {
                 subscriptions: new TestSubscriptionsPlugin(),
             },
