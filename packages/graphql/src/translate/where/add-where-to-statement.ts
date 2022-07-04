@@ -23,7 +23,7 @@ import mapToDbProperty from "../../utils/map-to-db-property";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { MatchableElement } from "../cypher-builder/MatchPattern";
 import { WhereOperator } from "../cypher-builder/statements/where-operators";
-import { getListPredicate, whereRegEx, WhereRegexGroups } from "./utils";
+import { getListPredicate, whereRegEx, whereRegExWithoutNot, WhereRegexGroups } from "./utils";
 import { PredicateFunction } from "../cypher-builder/statements/predicate-functions";
 import createAggregateWhereAndParams from "../create-aggregate-where-and-params";
 import { WhereInput } from "../cypher-builder/statements/Where";
@@ -180,116 +180,171 @@ function mapProperties({
             });
         }
 
+        let expression1: ScalarFunction | CypherBuilder.Expression;
+        if (targetElementOrCoalesce instanceof ScalarFunction) {
+            expression1 = targetElementOrCoalesce;
+        } else {
+            expression1 = new CypherBuilder.PropertyExpression(targetElementOrCoalesce, dbFieldName);
+        }
+        let expression2: ScalarFunction | CypherBuilder.Expression;
+        if (value === null) {
+            // this is needed to avoid to pass a parameter with NULL as value
+            expression2 = new CypherBuilder.LiteralExpression(value);
+        } else {
+            const param = new CypherBuilder.Param(value);
+            expression2 = new CypherBuilder.ParamExpression(param);
+        }
         const pointField = node.pointFields.find((x) => x.fieldName === fieldName);
         const durationField = node.primitiveFields.find(
             (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
         );
+        const stringField = node.primitiveFields.find(
+            (x) => x.fieldName === fieldName && (x.typeMeta.name === "String" || x.typeMeta.name === "ID")
+        );
+        const numberField = node.primitiveFields.find(
+            (x) => x.fieldName === fieldName && (x.typeMeta.name === "Int" || x.typeMeta.name === "Float" || x.typeMeta.name === "BigInt")
+        );
+        const enumFields = node.enumFields.find(
+            (x) => x.fieldName === fieldName
+        )
 
-        return new CypherBuilder.RawCypherWithCallback((cypherContext: CypherBuilder.CypherContext) => {
-            let property: string;
-            if (targetElementOrCoalesce instanceof ScalarFunction) {
-                property = targetElementOrCoalesce.getCypher(cypherContext);
-            } else {
-                const varId = cypherContext.getVariableId(targetElementOrCoalesce);
-                property = `${varId}.${dbFieldName}`;
+        if (pointField) {
+            // Method reference?
+            let pointComparatorMethod: keyof CypherBuilder.NumericalComparator | CypherBuilder.ListComparator;
+            switch (operator) {
+                case "LT":
+                case "LTE":
+                case "GT":
+                case "GTE":
+                    pointComparatorMethod = operator.toLocaleLowerCase() as keyof CypherBuilder.NumericalComparator | CypherBuilder.ListComparator ;
+                    break;
+                case "IN":
+                case "INCLUDES":
+                    pointComparatorMethod = operator.toLocaleLowerCase() as keyof CypherBuilder.NumericalComparator | CypherBuilder.ListComparator;
+                    break;
+                case "NOT_INCLUDES":
+                    pointComparatorMethod = "includes" as keyof CypherBuilder.NumericalComparator | CypherBuilder.ListComparator;
+                    break;
+                case "NOT_IN": 
+                    pointComparatorMethod = "in" as keyof CypherBuilder.NumericalComparator | CypherBuilder.ListComparator;
+                    break;
+                default:
+                    pointComparatorMethod = "eq" as keyof CypherBuilder.NumericalComparator | CypherBuilder.ListComparator;
             }
-            if (value === null) {
-                const isNullStr = `${property} ${isNot ? "IS NOT" : "IS"} NULL`;
-                return [isNullStr, {}];
+            if (isNot) {
+                return  CypherBuilder.not(new CypherBuilder.PointComparatorAST(expression1, expression2, pointComparatorMethod, Boolean(pointField.typeMeta.array)))
             }
-
-            const param = new CypherBuilder.Param(value);
-
-            const paramId = cypherContext.getParamId(param);
-
-            const whereStr = createWhereClause({
-                property,
-                param: paramId,
-                operator,
-                isNot,
-                durationField,
-                pointField,
-            });
-
-            return [whereStr, {}];
-        });
+            return new CypherBuilder.PointComparatorAST(expression1, expression2, pointComparatorMethod, Boolean(pointField.typeMeta.array));
+        }
+        if (durationField) {
+            let durationComparatorOperation: keyof CypherBuilder.NumericalComparator;
+            switch (operator) {
+                case "LT":
+                case "LTE":
+                case "GT":
+                case "GTE":
+                    durationComparatorOperation = operator.toLocaleLowerCase() as keyof CypherBuilder.NumericalComparator;
+                    break;
+                default:
+                    durationComparatorOperation = "eq" as keyof CypherBuilder.NumericalComparator;
+            }
+            return new CypherBuilder.DurationComparatorAST(expression1, expression2, durationComparatorOperation)
+        }
+        if (stringField || enumFields) {
+            let stringComparatorOperation: keyof CypherBuilder.StrComparator | CypherBuilder.ListComparator;
+            switch (operator) {
+                case "NOT_ENDS_WITH":
+                case "ENDS_WITH":
+                    stringComparatorOperation = "endsWith"as keyof CypherBuilder.StrComparator | CypherBuilder.ListComparator;
+                    break;
+                case "NOT_STARTS_WITH":
+                case "STARTS_WITH":
+                    stringComparatorOperation = "startsWith" as keyof CypherBuilder.StrComparator | CypherBuilder.ListComparator;
+                    break;
+                case "NOT_CONTAINS":
+                case "CONTAINS":
+                    stringComparatorOperation = "contains" as keyof CypherBuilder.StrComparator | CypherBuilder.ListComparator;
+                    break;
+                case "NOT_IN":
+                case "IN":
+                    stringComparatorOperation = "in" as keyof CypherBuilder.StrComparator | CypherBuilder.ListComparator;
+                    break;
+                case "MATCHES":
+                    stringComparatorOperation = "matches" as keyof CypherBuilder.StrComparator | CypherBuilder.ListComparator;
+                    break;
+                default:
+                    stringComparatorOperation = "eq" as keyof CypherBuilder.StrComparator | CypherBuilder.ListComparator;
+            }
+            if (isNot) {
+                return CypherBuilder.not(new CypherBuilder.StringComparatorAST(expression1, expression2, stringComparatorOperation));
+            }
+            return new CypherBuilder.StringComparatorAST(expression1, expression2, stringComparatorOperation);
+        }
+        if (numberField) {
+            let numericalComparatorOperation: keyof CypherBuilder.NumericalComparator | CypherBuilder.ListComparator;
+            switch (operator) {
+                case "LT":
+                case "LTE":
+                case "GT":
+                case "GTE":
+                case "IN":
+                    numericalComparatorOperation = operator.toLocaleLowerCase() as keyof CypherBuilder.NumericalComparator | CypherBuilder.ListComparator;
+                    break;
+                case "NOT_IN":
+                    numericalComparatorOperation = "in" as keyof CypherBuilder.NumericalComparator | CypherBuilder.ListComparator;
+                    break;
+                default:
+                    numericalComparatorOperation = "eq" as keyof CypherBuilder.NumericalComparator;
+            }
+            if (isNot) {
+                return CypherBuilder.not(new CypherBuilder.NumbericalComparatorAST(expression1, expression2, numericalComparatorOperation));
+            }
+            return new CypherBuilder.NumbericalComparatorAST(expression1, expression2, numericalComparatorOperation);
+        }
+        const temporalField = node.temporalFields.find(
+            (x) => x.fieldName === fieldName && (x.typeMeta.name === "DateTime" || x.typeMeta.name === "Date" || x.typeMeta.name === "LocalDateTime" || x.typeMeta.name === "Time" || x.typeMeta.name === "LocalTime")
+        )
+        if (temporalField) {
+            let temporalComparatorOperation: keyof CypherBuilder.NumericalComparator | CypherBuilder.ListComparator;
+            switch (operator) {
+                case "LT":
+                case "LTE":
+                case "GT":
+                case "GTE":
+                case "IN":
+                    temporalComparatorOperation = operator.toLocaleLowerCase() as keyof CypherBuilder.NumericalComparator | CypherBuilder.ListComparator;
+                    break;
+                default:
+                    temporalComparatorOperation = "eq" as keyof CypherBuilder.NumericalComparator;
+            }
+            if (isNot) {
+                return CypherBuilder.not(new CypherBuilder.TemporalComparatorAST(expression1, expression2, temporalComparatorOperation));
+            }
+            return new CypherBuilder.TemporalComparatorAST(expression1, expression2, temporalComparatorOperation);
+        }
+        const booleanField = node.primitiveFields.find(
+            (x) => x.fieldName === fieldName && x.typeMeta.name === "Boolean"
+        )
+        if (booleanField) {
+            let booleanComparatorOperation: keyof CypherBuilder.EqualityComparator | CypherBuilder.ListComparator;
+            switch (operator) {
+                case "IN":
+                case "INCLUDES":
+                    booleanComparatorOperation = operator.toLocaleLowerCase() as keyof CypherBuilder.EqualityComparator | CypherBuilder.ListComparator;
+                    break;
+                default:
+                    booleanComparatorOperation = "eq" as keyof CypherBuilder.EqualityComparator;
+            }
+            if (isNot) {
+                return CypherBuilder.not(new CypherBuilder.BooleanComparatorAST(expression1, expression2, booleanComparatorOperation));
+            }
+            return new CypherBuilder.BooleanComparatorAST(expression1, expression2, booleanComparatorOperation);
+        }
+        throw new Error(`Not implemented ${node.primitiveFields.map(field => field.typeMeta.name).join(', ')}; operation: ${operator}`);
+        
     });
 
     return filterTruthy(propertiesMappedToWhere);
-}
-
-/** TODO: substitute rawCypherBuilder with this */
-function createPrimitiveProperty({
-    targetElement,
-    operator,
-    dbFieldName,
-    value,
-    coalesceValue,
-}: {
-    targetElement: MatchableElement | CypherBuilder.Variable;
-    operator: string | undefined;
-    dbFieldName: string;
-    value: any;
-    coalesceValue: string | undefined;
-}): WhereInput[0] {
-    const param = new CypherBuilder.Param(value);
-
-    let targetElementOrCoalesce: MatchableElement | CypherBuilder.Variable | ScalarFunction = targetElement;
-    if (coalesceValue) {
-        targetElementOrCoalesce = CypherBuilder.coalesce(targetElement, dbFieldName, coalesceValue);
-    }
-
-    if (operator) {
-        let whereClause: CypherBuilder.WhereClause;
-        switch (operator) {
-            case "LT":
-                whereClause = CypherBuilder.lt(param);
-                break;
-            case "LTE":
-                whereClause = CypherBuilder.lte(param);
-                break;
-            case "GT":
-                whereClause = CypherBuilder.gt(param);
-                break;
-            case "GTE":
-                whereClause = CypherBuilder.gte(param);
-                break;
-            case "NOT":
-                return CypherBuilder.not([targetElementOrCoalesce, { [dbFieldName]: param }]);
-            case "ENDS_WITH":
-                whereClause = CypherBuilder.endsWith(param);
-                break;
-            case "NOT_ENDS_WITH":
-                return CypherBuilder.not([targetElementOrCoalesce, { [dbFieldName]: CypherBuilder.endsWith(param) }]);
-            case "STARTS_WITH":
-                whereClause = CypherBuilder.startsWith(param);
-                break;
-            case "NOT_STARTS_WITH":
-                return CypherBuilder.not([targetElementOrCoalesce, { [dbFieldName]: CypherBuilder.startsWith(param) }]);
-            case "MATCHES":
-                whereClause = CypherBuilder.match(param);
-                break;
-            case "CONTAINS":
-                whereClause = CypherBuilder.contains(param);
-                break;
-            case "NOT_CONTAINS":
-                return CypherBuilder.not([targetElementOrCoalesce, { [dbFieldName]: CypherBuilder.contains(param) }]);
-            case "IN":
-                whereClause = CypherBuilder.in(param);
-                break;
-            case "NOT_IN":
-                return CypherBuilder.not([targetElementOrCoalesce, { [dbFieldName]: CypherBuilder.in(param) }]);
-            case "INCLUDES":
-            case "NOT_INCLUDES":
-                throw new Error("INCLUDES Not implemented");
-            default:
-                throw new Error(`Invalid operator ${operator}`);
-        }
-
-        // TODO: should handle not
-        return [targetElementOrCoalesce, { [dbFieldName]: whereClause }];
-    }
-    return [targetElementOrCoalesce, { [dbFieldName]: param }];
 }
 
 function createRelationProperty({

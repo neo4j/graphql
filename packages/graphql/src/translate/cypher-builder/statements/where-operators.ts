@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Exists, RawCypher, RawCypherWithCallback, Variable } from "../CypherBuilder";
+import { Exists, Comparator, RawCypher, RawCypherWithCallback, Variable } from "../CypherBuilder";
 import { CypherContext } from "../CypherContext";
 import { MatchableElement } from "../MatchPattern";
 import { Param } from "../references/Param";
@@ -43,7 +43,7 @@ export class WhereOperator {
         const nestedOperationsCypher = this.whereInput.map((input) => {
             if (input instanceof WhereOperator) return input.getCypher(context);
             if (input instanceof PredicateFunction) return input.getCypher(context);
-            if (input instanceof RawCypher || input instanceof RawCypherWithCallback || input instanceof Exists)
+            if (input instanceof RawCypher || input instanceof RawCypherWithCallback || input instanceof Exists || input instanceof Comparator)
                 return input.getCypher(context);
 
             return this.composeWhere(context, input as [MatchableElement | Variable, Params]);
@@ -131,7 +131,8 @@ class NotWhereOperator extends WhereOperator {
             inputOperator instanceof PredicateFunction ||
             inputOperator instanceof RawCypher ||
             inputOperator instanceof RawCypherWithCallback ||
-            inputOperator instanceof Exists
+            inputOperator instanceof Exists || 
+            inputOperator instanceof Comparator
         ) {
             const composedWhere = inputOperator.getCypher(context);
             return `\n${this.operation} ${composedWhere}`;

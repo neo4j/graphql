@@ -24,6 +24,24 @@ export { Apoc } from "./statements/Apoc";
 export { Call } from "./statements/Call";
 export { Match } from "./statements/Match";
 export { RawCypher, RawCypherWithCallback } from "./statements/RawCypher";
+export {
+    EqualityComparator,
+    StrComparator,
+    NumericalComparator,
+    ListComparator, 
+    Expression, 
+    Comparator,
+    TemporalComparatorAST,
+    NumbericalComparatorAST,
+    PointComparatorAST,
+    DurationComparatorAST,
+    StringComparatorAST,
+    BooleanComparatorAST,
+    LiteralExpression, 
+    PropertyExpression, 
+    ParamExpression 
+} from "./statements/PredicateExpresssionAST";
+
 
 export { Node, NamedNode } from "./references/Node";
 export { Param, RawParam, PointParam } from "./references/Param";

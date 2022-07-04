@@ -62,11 +62,11 @@ export default function createWhereClause({
     // Comparison operations requires adding dates to durations
     // See https://neo4j.com/developer/cypher/dates-datetimes-durations/#comparing-filtering-values
     if (durationField && operator) {
-        return `datetime() + ${property} ${comparisonMap[operator]} datetime() + $${param}`;
+       return `datetime() + ${property} ${comparisonMap[operator]} datetime() + $${param}`;
     }
 
     const comparison = operator ? comparisonMap[operator] : "=";
-
+   
     switch (operator) {
         case "NOT_INCLUDES":
         case "INCLUDES":

@@ -643,6 +643,7 @@ describe("Cypher Advanced Filtering", () => {
                 `;
                 return query;
             };
+
             test("ALL", async () => {
                 const query = generateQuery("ALL");
 
