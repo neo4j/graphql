@@ -5,26 +5,25 @@ module.exports = async function globalTeardown() {
     const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
     const driver = neo4j.driver(NEO_URL, auth);
     const cypherDropDb = `DROP DATABASE  ${global.INT_TEST_DB_NAME} IF EXISTS`;
-    const cypherDetachNodes = `MATCH (n) DETACH DELETE n`;
     let session = null;
-    let cypher = null;
 
     try {
         const hasMultiDbSupport = await driver.supportsMultiDb();
+        if (!hasMultiDbSupport) {
+            // INFO: We do nothing in case the dbms has no multi-db support.
+            return;
+        }
         session = driver.session();
-        cypher = hasMultiDbSupport ? cypherDropDb : cypherDetachNodes;
-        await session.run(cypher);
+        await session.run(cypherDropDb);
     } catch (error) {
-        if (error.message.includes("Unsupported administration command")) {
-            // This is to address when running the tests against a community edition of Neo4j
-            // reason: the community edtion does not allow to drop databases
-            try {
-                await session.writeTransaction((tx) => tx.run(cypherDetachNodes));
-            } catch (err) {
-                console.log(`\nJest /packages/graphql teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypherDetachNodes}", Error: ${err.message}`); // eslint-disable-line no-console
-            }
+        if (
+            error.message.includes("This is an administration command and it should be executed against the system database") ||
+            error.message.includes("Unsupported administration command") ||
+            error.message.includes("Unable to route write operation to leader for database 'system'")
+        ) {
+            console.log(`\nJest /packages/graphql teardown: Expected action - NO drop of database as not supported in the current environment.`); // eslint-disable-line no-console
         } else {
-            console.log(`\nJest /packages/graphql teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypher}", Error: ${error.message}`); // eslint-disable-line no-console
+            console.log(`\nJest /packages/graphql teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypherDropDb}", Error: ${error.message}`); // eslint-disable-line no-console
         }
     } finally {
         if (session) await session.close();
