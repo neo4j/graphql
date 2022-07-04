@@ -29,7 +29,7 @@ import Neo4j from "./neo4j";
 
 const teardown = async () => {
     const neo4j = new Neo4j();
-    driver = await neo4j.getDriver();
+    const driver = await neo4j.getDriver();
     const session = await neo4j.getSession();
 
     try {
