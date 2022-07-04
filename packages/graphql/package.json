@@ -69,7 +69,7 @@
         "jest": "28.1.2",
         "koa": "2.13.4",
         "koa-jwt": "4.0.3",
-        "koa-router": "10.1.1",
+        "koa-router": "11.0.1",
         "libnpmsearch": "5.0.3",
         "mock-jwks": "1.0.3",
         "nock": "13.2.8",
