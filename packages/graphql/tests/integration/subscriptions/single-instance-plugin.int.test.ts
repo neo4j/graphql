@@ -22,17 +22,19 @@ import { graphql } from "graphql";
 import { Driver } from "neo4j-driver";
 import { EventMeta, Neo4jGraphQL, Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 
 describe("Subscriptions Single Instance Plugin", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let neoSchema: Neo4jGraphQL;
     let plugin: Neo4jGraphQLSubscriptionsSingleInstancePlugin;
 
     const typeMovie = generateUniqueType("Movie");
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
         plugin = new Neo4jGraphQLSubscriptionsSingleInstancePlugin();
         const typeDefs = gql`
             type ${typeMovie.name} {
@@ -79,7 +81,7 @@ describe("Subscriptions Single Instance Plugin", () => {
         const gqlResult: any = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();

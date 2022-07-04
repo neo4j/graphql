@@ -23,7 +23,7 @@ import { graphql } from "graphql";
 import jsonwebtoken from "jsonwebtoken";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
-import neo4j from "../../../neo4j";
+import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
 import { generateUniqueType } from "../../../../utils/graphql-types";
 
@@ -31,6 +31,7 @@ describe(`Field Level Auth Where Requests`, () => {
     let neoSchema: Neo4jGraphQL;
     let token: string;
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
     const typeMovie = generateUniqueType("Movie");
     const typeActor = generateUniqueType("Actor");
@@ -52,8 +53,9 @@ describe(`Field Level Auth Where Requests`, () => {
     const secret = "secret";
 
     beforeAll(async () => {
-        driver = await neo4j();
-        session = driver.session();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+        session = await neo4j.getSession();
 
         await session.run(`
             CREATE (m:${typeMovie.name}
@@ -113,7 +115,7 @@ describe(`Field Level Auth Where Requests`, () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
         });
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({

@@ -21,7 +21,7 @@ import { Driver } from "neo4j-driver";
 import { graphql, GraphQLScalarType } from "graphql";
 import { Kind } from "graphql/language";
 import { generate } from "randomstring";
-import neo4j from "./neo4j";
+import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { generateUniqueType } from "../utils/graphql-types";
 
@@ -53,9 +53,11 @@ const GraphQLUpperCaseString = new GraphQLScalarType({
 
 describe("scalars", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -63,7 +65,7 @@ describe("scalars", () => {
     });
 
     test("should create a movie (with a custom scalar)", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             scalar UpperCaseString
@@ -100,7 +102,7 @@ describe("scalars", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -117,7 +119,7 @@ describe("scalars", () => {
     });
 
     test("should serialize a id correctly", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Movie {
@@ -148,7 +150,7 @@ describe("scalars", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -187,7 +189,7 @@ describe("scalars", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: mutation,
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 input: [{ integers }],
             },
@@ -226,7 +228,7 @@ describe("scalars", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: mutation,
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 input: [{ floats }],
             },

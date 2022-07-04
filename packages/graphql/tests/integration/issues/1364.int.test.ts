@@ -19,7 +19,7 @@
 
 import { graphql, GraphQLSchema } from "graphql";
 import { Driver, Session } from "neo4j-driver";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 
@@ -30,20 +30,20 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
 
     let schema: GraphQLSchema;
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
 
     async function graphqlQuery(query: string) {
         return graphql({
             schema,
             source: query,
-            contextValue: {
-                driver,
-            },
+            contextValue: neo4j.getContextValues(),
         });
     }
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const typeDefs = `
             type ${testActor.name} {
@@ -75,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             }
         `;
 
-        session = driver.session();
+        session = await neo4j.getSession();
 
         await session.run(`
             CREATE (m1:${testMovie} { title: "A Movie" })-[:HAS_GENRE]->(:${testGenre} { name: "Genre 1" })
