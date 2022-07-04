@@ -79,8 +79,8 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
             CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
             SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
-            RETURN count(*)
-            \\", \\"\\", {this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies, resolvedCallbacks: $resolvedCallbacks})
+            RETURN count(*) AS _
+            \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies, resolvedCallbacks: $resolvedCallbacks})
             YIELD value AS this_acted_in0_relationship_actors0_edge
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
@@ -150,13 +150,13 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
             CALL apoc.do.when(this_actors0 IS NOT NULL, \\"
             SET this_actors0.name = $this_update_actors0_name
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
             YIELD value AS _
             CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
             SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime
-            RETURN count(*)
-            \\", \\"\\", {this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies, resolvedCallbacks: $resolvedCallbacks})
+            RETURN count(*) AS _
+            \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies, resolvedCallbacks: $resolvedCallbacks})
             YIELD value AS this_acted_in0_relationship_actors0_edge
             RETURN collect(DISTINCT this { .title }) AS data"
         `);

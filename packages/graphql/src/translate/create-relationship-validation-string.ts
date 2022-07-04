@@ -59,7 +59,7 @@ function createRelationshipValidationString({
             `\tWITH ${varName}`,
             `\tMATCH (${varName})${inStr}[${relVarname}:${field.type}]${outStr}(${toNode.getLabelString(context)})`,
             `\tWITH count(${relVarname}) as c`,
-            `\tCALL apoc.util.validate(NOT(${predicate}), '${errorMsg}', [0])`,
+            `\tCALL apoc.util.validate(NOT (${predicate}), '${errorMsg}', [0])`,
             `\tRETURN c AS ${relVarname}_ignored`,
             `}`,
         ].join("\n");

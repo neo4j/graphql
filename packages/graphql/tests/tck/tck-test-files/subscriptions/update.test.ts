@@ -73,7 +73,12 @@ describe("Subscriptions metadata on update", () => {
             MATCH (this:Movie)
             WHERE this.id = $this_id
             WITH this { .* } AS oldProps, this, meta
-            SET this.id = $this_update_id
+            CALL {
+            	WITH *
+            	SET this.id = $this_update_id
+            	RETURN meta as update_meta
+            }
+            WITH *, update_meta as meta
             WITH this, meta + { event: \\"update\\", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             WITH this, meta
             UNWIND meta AS m

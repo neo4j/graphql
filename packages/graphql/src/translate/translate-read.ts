@@ -79,7 +79,7 @@ function translateRead({
     [projStr] = projection;
     cypherParams = { ...cypherParams, ...projection[1] };
     if (projection[2]?.authValidateStrs?.length) {
-        projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
+        projAuth = `CALL apoc.util.validate(NOT (${projection[2].authValidateStrs.join(
             " AND "
         )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
@@ -130,7 +130,7 @@ function translateRead({
     });
     if (allowAndParams[0]) {
         cypherParams = { ...cypherParams, ...allowAndParams[1] };
-        authStr = `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+        authStr = `CALL apoc.util.validate(NOT (${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
     let cypher: string[] = [];

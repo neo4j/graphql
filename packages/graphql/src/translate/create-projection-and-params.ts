@@ -109,13 +109,13 @@ function createNodeWhereAndParams({
         },
     });
     if (preAuth[0]) {
-        whereStrs.push(`apoc.util.validatePredicate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        whereStrs.push(`apoc.util.validatePredicate(NOT (${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         params = { ...params, ...preAuth[1] };
     }
 
     if (authValidateStrs?.length) {
         whereStrs.push(
-            `apoc.util.validatePredicate(NOT(${authValidateStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+            `apoc.util.validatePredicate(NOT (${authValidateStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
         );
     }
 
@@ -229,7 +229,7 @@ function createProjectionAndParams({
                     if (refNode) {
                         const labelsStatements = refNode
                             .getLabels(context)
-                            .map((label) => `"${label}" IN labels(${varName}_${alias})`);
+                            .map((label) => `${varName}_${alias}:\`${label}\``);
                         unionWheres.push(`(${labelsStatements.join("AND")})`);
 
                         const innerHeadStr: string[] = [
@@ -303,9 +303,10 @@ function createProjectionAndParams({
                 ...(context.cypherParams ? { cypherParams: context.cypherParams } : {}),
             };
 
-            const expectMultipleValues = referenceNode && cypherField.typeMeta.array ? "true" : "false";
+            const expectMultipleValues =
+                (referenceNode || referenceUnion) && cypherField.typeMeta.array ? "true" : "false";
             const apocWhere = projectionAuthStrs.length
-                ? `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStrs.join(
+                ? `WHERE apoc.util.validatePredicate(NOT (${projectionAuthStrs.join(
                       " AND "
                   )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
                 : "";
@@ -347,6 +348,12 @@ function createProjectionAndParams({
 
             if (cypherField.isScalar || cypherField.isEnum) {
                 res.projection.push(`${alias}: ${apocStr}`);
+
+                return res;
+            }
+
+            if (referenceUnion && cypherField.typeMeta.array) {
+                res.projection.push(`${alias}: apoc.coll.flatten([${apocStr}])`);
 
                 return res;
             }
@@ -403,7 +410,7 @@ function createProjectionAndParams({
                     }
                 }
 
-                res.projection.push(`${field.alias}: ${field.alias}${offsetLimitStr}`);
+                res.projection.push(`${field.alias}: ${field.name}${offsetLimitStr}`);
 
                 return res;
             }

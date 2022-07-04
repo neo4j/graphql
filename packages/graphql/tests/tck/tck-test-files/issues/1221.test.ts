@@ -86,10 +86,10 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Series)
-            WHERE this.current = $this_current AND EXISTS((this)-[:ARCHITECTURE]->(:MasterData)) AND SINGLE(this_architectureConnection_SINGLE_MasterData_map IN [(this)-[this_architectureConnection_SINGLE_MasterData_SeriesArchitectureRelationship:ARCHITECTURE]->(this_architectureConnection_SINGLE_MasterData:MasterData)  | { node: this_architectureConnection_SINGLE_MasterData, relationship: this_architectureConnection_SINGLE_MasterData_SeriesArchitectureRelationship } ] WHERE apoc.cypher.runFirstColumn(\\"RETURN EXISTS((this_architectureConnection_SINGLE_MasterData_map_node)-[:HAS_NAME]->(:NameDetails))
-            AND SINGLE(this_architectureConnection_SINGLE_MasterData_map_node_NameDetails_map IN [(this_architectureConnection_SINGLE_MasterData_map_node)-[this_architectureConnection_SINGLE_MasterData_map_node_NameDetails_MasterDataNameDetailsRelationship:HAS_NAME]->(this_architectureConnection_SINGLE_MasterData_map_node_NameDetails:NameDetails) | { node: this_architectureConnection_SINGLE_MasterData_map_node_NameDetails, relationship: this_architectureConnection_SINGLE_MasterData_map_node_NameDetails_MasterDataNameDetailsRelationship } ] WHERE
-            this_architectureConnection_SINGLE_MasterData_map_node_NameDetails_map.node.fullName = $this_series.where.architectureConnection_SINGLE.node.nameDetailsConnection.node.fullName
-            )\\", { this_architectureConnection_SINGLE_MasterData_map_node: this_architectureConnection_SINGLE_MasterData_map.node, this_series: $this_series }, false))
+            WHERE this.current = $this_current AND size([(this)-[this_architectureConnection_SINGLE_MasterData_SeriesArchitectureRelationship:ARCHITECTURE]->(this_architectureConnection_SINGLE_MasterData:MasterData) WHERE apoc.cypher.runFirstColumn(\\"RETURN exists((this_architectureConnection_SINGLE_MasterData)-[:HAS_NAME]->(:NameDetails))
+            AND single(this_architectureConnection_SINGLE_MasterData_NameDetails_map IN [(this_architectureConnection_SINGLE_MasterData)-[this_architectureConnection_SINGLE_MasterData_NameDetails_MasterDataNameDetailsRelationship:HAS_NAME]->(this_architectureConnection_SINGLE_MasterData_NameDetails:NameDetails) | { node: this_architectureConnection_SINGLE_MasterData_NameDetails, relationship: this_architectureConnection_SINGLE_MasterData_NameDetails_MasterDataNameDetailsRelationship } ] WHERE
+            this_architectureConnection_SINGLE_MasterData_NameDetails_map.node.fullName = $this_series.where.architectureConnection_SINGLE.node.nameDetailsConnection.node.fullName
+            )\\", { this_architectureConnection_SINGLE_MasterData: this_architectureConnection_SINGLE_MasterData, this_series: $this_series }, false) | 1]) = 1
             CALL {
             WITH this
             MATCH (this)-[this_architecture_relationship:ARCHITECTURE]->(this_masterdata:MasterData)
@@ -99,10 +99,12 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             MATCH (this_masterdata)-[this_masterdata_has_name_relationship:HAS_NAME]->(this_masterdata_namedetails:NameDetails)
             WHERE this_masterdata_has_name_relationship.current = $this_architectureConnection.edges.node.nameDetailsConnection.args.where.edge.current
             WITH collect({ node: { fullName: this_masterdata_namedetails.fullName } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS nameDetailsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS nameDetailsConnection
             }
             WITH collect({ node: { nameDetailsConnection: nameDetailsConnection } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS architectureConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS architectureConnection
             }
             RETURN this { .id, architectureConnection } as this"
         `);
@@ -225,13 +227,13 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Main)
-            WHERE this.current = $this_current AND EXISTS((this)-[:MAIN]->(:Series)) AND SINGLE(this_mainConnection_SINGLE_Series_map IN [(this)-[this_mainConnection_SINGLE_Series_MainMainRelationship:MAIN]->(this_mainConnection_SINGLE_Series:Series)  | { node: this_mainConnection_SINGLE_Series, relationship: this_mainConnection_SINGLE_Series_MainMainRelationship } ] WHERE apoc.cypher.runFirstColumn(\\"RETURN EXISTS((this_mainConnection_SINGLE_Series_map_node)-[:ARCHITECTURE]->(:MasterData))
-            AND SINGLE(this_mainConnection_SINGLE_Series_map_node_MasterData_map IN [(this_mainConnection_SINGLE_Series_map_node)-[this_mainConnection_SINGLE_Series_map_node_MasterData_SeriesArchitectureRelationship:ARCHITECTURE]->(this_mainConnection_SINGLE_Series_map_node_MasterData:MasterData) | { node: this_mainConnection_SINGLE_Series_map_node_MasterData, relationship: this_mainConnection_SINGLE_Series_map_node_MasterData_SeriesArchitectureRelationship } ] WHERE
-            apoc.cypher.runFirstColumn(\\\\\\"RETURN EXISTS((this_mainConnection_SINGLE_Series_map_node_MasterData_map_node)-[:HAS_NAME]->(:NameDetails))
-            AND SINGLE(this_mainConnection_SINGLE_Series_map_node_MasterData_map_node_NameDetails_map IN [(this_mainConnection_SINGLE_Series_map_node_MasterData_map_node)-[this_mainConnection_SINGLE_Series_map_node_MasterData_map_node_NameDetails_MasterDataNameDetailsRelationship:HAS_NAME]->(this_mainConnection_SINGLE_Series_map_node_MasterData_map_node_NameDetails:NameDetails) | { node: this_mainConnection_SINGLE_Series_map_node_MasterData_map_node_NameDetails, relationship: this_mainConnection_SINGLE_Series_map_node_MasterData_map_node_NameDetails_MasterDataNameDetailsRelationship } ] WHERE
-            this_mainConnection_SINGLE_Series_map_node_MasterData_map_node_NameDetails_map.node.fullName = $this_mains.where.mainConnection_SINGLE.node.architectureConnection.node.nameDetailsConnection.node.fullName
-            )\\\\\\", { this_mainConnection_SINGLE_Series_map_node_MasterData_map_node: this_mainConnection_SINGLE_Series_map_node_MasterData_map.node, this_mains: $this_mains }, false)
-            )\\", { this_mainConnection_SINGLE_Series_map_node: this_mainConnection_SINGLE_Series_map.node, this_mains: $this_mains }, false))
+            WHERE this.current = $this_current AND size([(this)-[this_mainConnection_SINGLE_Series_MainMainRelationship:MAIN]->(this_mainConnection_SINGLE_Series:Series) WHERE apoc.cypher.runFirstColumn(\\"RETURN exists((this_mainConnection_SINGLE_Series)-[:ARCHITECTURE]->(:MasterData))
+            AND single(this_mainConnection_SINGLE_Series_MasterData_map IN [(this_mainConnection_SINGLE_Series)-[this_mainConnection_SINGLE_Series_MasterData_SeriesArchitectureRelationship:ARCHITECTURE]->(this_mainConnection_SINGLE_Series_MasterData:MasterData) | { node: this_mainConnection_SINGLE_Series_MasterData, relationship: this_mainConnection_SINGLE_Series_MasterData_SeriesArchitectureRelationship } ] WHERE
+            apoc.cypher.runFirstColumn(\\\\\\"RETURN exists((this_mainConnection_SINGLE_Series_MasterData_map_node)-[:HAS_NAME]->(:NameDetails))
+            AND single(this_mainConnection_SINGLE_Series_MasterData_map_node_NameDetails_map IN [(this_mainConnection_SINGLE_Series_MasterData_map_node)-[this_mainConnection_SINGLE_Series_MasterData_map_node_NameDetails_MasterDataNameDetailsRelationship:HAS_NAME]->(this_mainConnection_SINGLE_Series_MasterData_map_node_NameDetails:NameDetails) | { node: this_mainConnection_SINGLE_Series_MasterData_map_node_NameDetails, relationship: this_mainConnection_SINGLE_Series_MasterData_map_node_NameDetails_MasterDataNameDetailsRelationship } ] WHERE
+            this_mainConnection_SINGLE_Series_MasterData_map_node_NameDetails_map.node.fullName = $this_mains.where.mainConnection_SINGLE.node.architectureConnection.node.nameDetailsConnection.node.fullName
+            )\\\\\\", { this_mainConnection_SINGLE_Series_MasterData_map_node: this_mainConnection_SINGLE_Series_MasterData_map.node, this_mains: $this_mains }, false)
+            )\\", { this_mainConnection_SINGLE_Series: this_mainConnection_SINGLE_Series, this_mains: $this_mains }, false) | 1]) = 1
             CALL {
             WITH this
             MATCH (this)-[this_main_relationship:MAIN]->(this_series:Series)
@@ -245,13 +247,16 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             MATCH (this_series_masterdata)-[this_series_masterdata_has_name_relationship:HAS_NAME]->(this_series_masterdata_namedetails:NameDetails)
             WHERE this_series_masterdata_has_name_relationship.current = $this_mainConnection.edges.node.architectureConnection.edges.node.nameDetailsConnection.args.where.edge.current
             WITH collect({ node: { fullName: this_series_masterdata_namedetails.fullName } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS nameDetailsConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS nameDetailsConnection
             }
             WITH collect({ node: { nameDetailsConnection: nameDetailsConnection } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS architectureConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS architectureConnection
             }
             WITH collect({ node: { architectureConnection: architectureConnection } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS mainConnection
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(edges) } AS mainConnection
             }
             RETURN this { .id, mainConnection } as this"
         `);

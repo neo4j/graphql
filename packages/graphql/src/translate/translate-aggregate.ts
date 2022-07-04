@@ -44,7 +44,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         },
     });
     if (allowAuth[0]) {
-        cypherStrs.push(`CALL apoc.util.validate(NOT(${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        cypherStrs.push(`CALL apoc.util.validate(NOT (${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         cypherParams = { ...cypherParams, ...allowAuth[1] };
     }
 
@@ -72,7 +72,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     });
 
     if (authStrs.length) {
-        cypherStrs.push(`CALL apoc.util.validate(NOT(${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        cypherStrs.push(`CALL apoc.util.validate(NOT (${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
     }
 
     Object.entries(selections).forEach((selection) => {

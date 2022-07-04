@@ -88,7 +88,7 @@ This can be achieved using `apoc.util.validate`, something akin to the following
 ```cypher
 MATCH (:Source)<-[has_target:HAS_TARGET]-(:Target)
 WITH count(has_target) as has_target_count
-CALL apoc.util.validate(NOT(apoc.util.validatePredicate(NOT(has_target_count = 1), '@neo4j/graphql/CARDINALITY_VIOLATION Source.target must be 1', [0])), '@neo4j/graphql/CARDINALITY_VIOLATION', [0])
+CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT (has_target_count = 1), '@neo4j/graphql/CARDINALITY_VIOLATION Source.target must be 1', [0])), '@neo4j/graphql/CARDINALITY_VIOLATION', [0])
 ```
 
 There is likely a much cleaner solution than this.
