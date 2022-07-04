@@ -55,7 +55,7 @@ The query string is preceded by a question mark (?) and contains key-value pairs
 | connectURL    | Form: scheme://username@bolt-url:port; Used at login, pre-populates the Username and Connection URI input field with the provided value | bolt://admin@localhost:7687 |
 | db            | Only applicable for multi-database supported Neo4j DBMSs. The provided value is used as the selected database name                      | neo4j                       |
 
-An example with the URL parameters `connectURL` and `db`: `http://localhost:4242?connectURL=bolt%2Bs://xxxx.databases.neo4j.io&db=mydatabase`
+An example with the URL parameters `connectURL` and `db`: `http://localhost:4242?connectURL=bolt%2Bs://testuser@xxxx.databases.neo4j.io&db=mydatabase`
 
 Note: The plus symbol (+) in the connectURL needs to be URL encoded to become `%2B`. For example `bolt+s` becomes `bolt%2Bs`.
 
