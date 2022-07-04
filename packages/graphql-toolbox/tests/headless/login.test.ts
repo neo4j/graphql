@@ -33,6 +33,19 @@ describe("login", () => {
         await browser.close();
     });
 
+    test("should pre-fill connection URI and username input fields with values from url query parameter", async () => {
+        const page = await getPage({
+            browser,
+            urlQueryParameter: "connectURL=bolt%2Bs://testuser@abcd22.databases.neo4j.io",
+        });
+        const login = new Login(page);
+
+        const username = await login.getUsername();
+        const connectURI = await login.getURL();
+        expect(username).toEqual("testuser");
+        expect(connectURI).toEqual("bolt+s://abcd22.databases.neo4j.io");
+    });
+
     test("should login", async () => {
         const page = await getPage({ browser });
         const login = new Login(page);

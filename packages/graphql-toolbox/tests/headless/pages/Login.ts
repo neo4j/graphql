@@ -34,6 +34,16 @@ export class Login extends Screen {
         );
     }
 
+    public async getUsername(): Promise<string> {
+        const element = await this.page.$("[data-test-login-username]");
+        const text = await this.page.evaluate((element) => {
+            // @ts-ignore - Find a better solution
+            return element.value;
+        }, element);
+
+        return text as string;
+    }
+
     public async setPassword(password: string) {
         await this.page.waitForSelector("[data-test-login-password]");
         await this.page.$eval(
@@ -56,6 +66,16 @@ export class Login extends Screen {
             },
             url
         );
+    }
+
+    public async getURL(): Promise<string> {
+        const element = await this.page.$("[data-test-login-url]");
+        const text = await this.page.evaluate((element) => {
+            // @ts-ignore - Find a better solution
+            return element.value;
+        }, element);
+
+        return text as string;
     }
 
     public async submit() {

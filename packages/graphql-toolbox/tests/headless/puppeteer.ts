@@ -35,10 +35,14 @@ async function getBundle() {
     return bundle;
 }
 
-export async function getPage(options: { browser: puppeteer.Browser }): Promise<puppeteer.Page> {
+export async function getPage(options: {
+    browser: puppeteer.Browser;
+    urlQueryParameter?: string;
+}): Promise<puppeteer.Page> {
+    const { browser, urlQueryParameter } = options;
     const bundle = await getBundle();
 
-    const page = await options.browser.newPage();
+    const page = await browser.newPage();
 
     await page.setViewport({ width: 1920, height: 1080 });
 
@@ -46,7 +50,7 @@ export async function getPage(options: { browser: puppeteer.Browser }): Promise<
     page.on("request", (request) => {
         request.respond({ status: 200, contentType: "text/html", body: bundle });
     });
-    await page.goto("http://localhost");
+    await page.goto(`http://localhost${urlQueryParameter ? `?${urlQueryParameter}` : ""}`);
 
     await page.waitForNetworkIdle();
 
