@@ -23,41 +23,28 @@ const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localh
 
 export class Login extends Screen {
     public async setUsername(username: string) {
-        await this.page.click("[data-test-login-username]", { clickCount: 3 });
-        await this.page.focus("[data-test-login-username]");
-        await this.page.keyboard.type(username);
+        await this.page.waitForSelector("[data-test-login-username]");
+        await this.page.fill("[data-test-login-username]", username);
     }
 
-    public async getUsername(): Promise<string> {
-        const element = await this.page.$("[data-test-login-username]");
-        const text = await this.page.evaluate((element) => {
-            // @ts-ignore - Find a better solution
-            return element.value;
-        }, element);
-
-        return text as string;
+    public async getUsername() {
+        await this.page.waitForSelector("[data-test-login-username]");
+        await this.page.inputValue("[data-test-login-username]");
     }
 
     public async setPassword(password: string) {
-        await this.page.click("[data-test-login-password]", { clickCount: 3 });
-        await this.page.focus("[data-test-login-password]");
-        await this.page.keyboard.type(password);
+        await this.page.waitForSelector("[data-test-login-password]");
+        await this.page.fill("[data-test-login-password]", password);
     }
 
     public async setURL(url: string) {
-        await this.page.click("[data-test-login-url]", { clickCount: 3 });
-        await this.page.focus("[data-test-login-url]");
-        await this.page.keyboard.type(url);
+        await this.page.waitForSelector("[data-test-login-url]");
+        await this.page.fill("[data-test-login-url]", url);
     }
 
-    public async getURL(): Promise<string> {
-        const element = await this.page.$("[data-test-login-url]");
-        const text = await this.page.evaluate((element) => {
-            // @ts-ignore - Find a better solution
-            return element.value;
-        }, element);
-
-        return text as string;
+    public async getURL() {
+        await this.page.waitForSelector("[data-test-login-url]");
+        await this.page.inputValue("[data-test-login-url]");
     }
 
     public async submit() {
@@ -75,5 +62,10 @@ export class Login extends Screen {
         await this.setURL(url);
         await this.submit();
         await this.awaitSuccess();
+    }
+
+    public async logout() {
+        await this.page.waitForSelector("[data-test-topbar-disconnect-button]");
+        await this.page.click("[data-test-topbar-disconnect-button]");
     }
 }

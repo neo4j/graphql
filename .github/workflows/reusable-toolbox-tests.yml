@@ -25,10 +25,14 @@ jobs:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn install --frozen-lockfile
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+      - name: Run @neo4j/graphql-toolbox unit tests
+        run: yarn test:unit
+        working-directory: packages/graphql-toolbox
       - name: Run @neo4j/graphql-toolbox e2e tests
-        run: |
-          yarn test
+        run: yarn test
         working-directory: packages/graphql-toolbox
         env:
           NEO_USER: neo4j
