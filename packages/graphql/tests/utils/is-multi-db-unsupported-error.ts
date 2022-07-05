@@ -20,8 +20,8 @@
 export function isMultiDbUnsupportedError(e: Error) {
     if (
         e.message.includes("This is an administration command and it should be executed against the system database") ||
-        e.message.includes("Neo4jError: Unsupported administration command") ||
-        e.message.includes("Neo4jError: Unable to route write operation to leader for database 'system'")
+        e.message.includes("Unsupported administration command") ||
+        e.message.includes("Unable to route write operation to leader for database 'system'")
     ) {
         return true;
     }

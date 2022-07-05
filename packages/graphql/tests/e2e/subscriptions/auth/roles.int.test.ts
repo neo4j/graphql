@@ -25,11 +25,12 @@ import { generateUniqueType } from "../../../utils/graphql-types";
 import { ApolloTestServer, TestGraphQLServer } from "../../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../../setup/ws-client";
-import neo4j from "../../setup/neo4j";
+import Neo4j from "../../setup/neo4j";
 import { createJwtHeader } from "../../../utils/create-jwt-request";
 
 describe("Subscription auth roles", () => {
     const typeMovie = generateUniqueType("Movie");
+    let neo4j: Neo4j;
     let driver: Driver;
     let jwtToken: string;
     let server: TestGraphQLServer;
@@ -44,11 +45,17 @@ describe("Subscription auth roles", () => {
 
     beforeAll(async () => {
         jwtToken = createJwtHeader("secret", { roles: ["admin"] });
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
+            config: {
+                driverConfig: {
+                    database: neo4j.getIntegrationDatabaseName(),
+                },
+            },
             plugins: {
                 subscriptions: new TestSubscriptionsPlugin(),
                 auth: new Neo4jGraphQLAuthJWTPlugin({
