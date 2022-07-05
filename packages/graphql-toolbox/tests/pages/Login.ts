@@ -53,4 +53,9 @@ export class Login extends Screen {
         await this.submit();
         await this.awaitSuccess();
     }
+
+    public async logout() {
+        await this.page.waitForSelector("[data-test-topbar-disconnect-button]");
+        await this.page.click("[data-test-topbar-disconnect-button]");
+    }
 }

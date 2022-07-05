@@ -39,23 +39,21 @@ const pageInitialSetup = async (page: base.Page): Promise<void> => {
 
 const test = base.test.extend<Pages>({
     editorPage: async ({ page }, use) => {
-        await pageInitialSetup(page);
         use(new Editor(page));
     },
     helpDrawerPage: async ({ page }, use) => {
-        await pageInitialSetup(page);
         use(new HelpDrawer(page));
     },
     loginPage: async ({ page }, use) => {
         await pageInitialSetup(page);
-        use(new Login(page));
+        const loginPage = await new Login(page);
+        await use(loginPage);
+        await loginPage.logout();
     },
     schemaEditorPage: async ({ page }, use) => {
-        await pageInitialSetup(page);
         use(new SchemaEditor(page));
     },
     schemaSettingsPage: async ({ page }, use) => {
-        await pageInitialSetup(page);
         use(new SchemaSettings(page));
     },
 });
