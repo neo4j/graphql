@@ -272,21 +272,19 @@ describe("Cypher Aggregations with Auth", () => {
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $name_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN { name: { shortest:
-                                        reduce(shortest = collect(this.name)[0], current IN collect(this.name) | apoc.cypher.runFirstColumn(\\"
-                                            RETURN
-                                            CASE size(current) < size(shortest)
+                                        reduce(aggVar = collect(this.name)[0], current IN collect(this.name) |
+                                            CASE size(current) < size(aggVar)
                                             WHEN true THEN current
-                                            ELSE shortest
-                                            END AS result
-                                        \\", { current: current, shortest: shortest }, false))
+                                            ELSE aggVar
+                                            END
+                                        )
                                     , longest:
-                                        reduce(shortest = collect(this.name)[0], current IN collect(this.name) | apoc.cypher.runFirstColumn(\\"
-                                            RETURN
-                                            CASE size(current) > size(shortest)
+                                        reduce(aggVar = collect(this.name)[0], current IN collect(this.name) |
+                                            CASE size(current) > size(aggVar)
                                             WHEN true THEN current
-                                            ELSE shortest
-                                            END AS result
-                                        \\", { current: current, shortest: shortest }, false))
+                                            ELSE aggVar
+                                            END
+                                        )
                                      } }"
         `);
 
