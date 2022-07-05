@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Page } from "puppeteer";
+import { Page } from "@playwright/test";
 
 export abstract class Screen {
     page: Page;

@@ -19,10 +19,7 @@
 
 import { generate } from "randomstring";
 import * as neo4j from "neo4j-driver";
-import { getBrowser, getPage, Browser } from "./puppeteer";
-import { Login } from "./pages/Login";
-import { SchemaEditor } from "./pages/SchemaEditor";
-import { Editor } from "./pages/Editor";
+import { test, describe, expect, beforeAll, afterAll } from "./utils/pagemodel";
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
@@ -30,11 +27,13 @@ describe("workflow", () => {
     const id = generate({
         charset: "alphabetic",
     });
+
     const typeDefs = `
         type Movie {
             id: ID!
         }
     `;
+
     const query = `
         query {
             movies(where: { id: "${id}" }) {
@@ -42,6 +41,7 @@ describe("workflow", () => {
             }
         }
     `;
+
     const queryWithVariables = `
         query($moviesWhere: MovieWhere) {
             movies(where: $moviesWhere) {
@@ -49,6 +49,7 @@ describe("workflow", () => {
             }
         }
     `;
+
     const variables = `
         {
             "moviesWhere": {
@@ -57,31 +58,23 @@ describe("workflow", () => {
         }
     `;
 
-    let browser: Browser;
     let driver: neo4j.Driver;
 
     beforeAll(async () => {
         driver = neo4j.driver(NEO_URL, neo4j.auth.basic(NEO_USER, NEO_PASSWORD));
-        browser = await getBrowser();
     });
 
     afterAll(async () => {
-        await browser.close();
         await driver.close();
     });
 
-    test("should perform workflow end-to-end", async () => {
-        const page = await getPage({ browser });
+    test("should perform workflow end-to-end", async ({ page, loginPage, schemaEditorPage, editorPage }) => {
+        await loginPage.login();
 
-        const login = new Login(page);
-        await login.login();
+        await schemaEditorPage.setTypeDefs(typeDefs);
+        await schemaEditorPage.buildSchema();
 
-        const schemaEditor = new SchemaEditor(page);
-        await schemaEditor.setTypeDefs(typeDefs);
-        await schemaEditor.buildSchema();
-
-        const editor = new Editor(page);
-        await editor.setQuery(query);
+        await editorPage.setQuery(query);
 
         const session = await driver.session();
         try {
@@ -92,11 +85,10 @@ describe("workflow", () => {
             await session.close();
         }
 
-        await editor.submitQuery();
-        await page.waitForNetworkIdle();
+        await editorPage.submitQuery();
         await page.waitForTimeout(2000);
 
-        const outputQuery = await editor.getOutput();
+        const outputQuery = await editorPage.getOutput();
 
         expect(JSON.parse(outputQuery)).toMatchObject({
             data: {
@@ -105,14 +97,13 @@ describe("workflow", () => {
         });
 
         // Testing a query with variables
-        await editor.setQuery(queryWithVariables);
-        await editor.setParams(variables);
+        await editorPage.setQuery(queryWithVariables);
+        await editorPage.setParams(variables);
 
-        await editor.submitQuery();
-        await page.waitForNetworkIdle();
+        await editorPage.submitQuery();
         await page.waitForTimeout(2000);
 
-        const outputQueryWithVariables = await editor.getOutput();
+        const outputQueryWithVariables = await editorPage.getOutput();
 
         expect(JSON.parse(outputQueryWithVariables)).toMatchObject({
             data: {

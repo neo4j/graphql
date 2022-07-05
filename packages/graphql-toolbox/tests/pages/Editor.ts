@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { EDITOR_PARAMS_INPUT, EDITOR_QUERY_INPUT, EDITOR_RESPONSE_OUTPUT } from "../../../src/constants";
+import { EDITOR_PARAMS_INPUT, EDITOR_QUERY_INPUT, EDITOR_RESPONSE_OUTPUT } from "../../src/constants";
 import { Screen } from "./Screen";
 
 export class Editor extends Screen {
