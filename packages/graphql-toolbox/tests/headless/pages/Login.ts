@@ -23,15 +23,9 @@ const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localh
 
 export class Login extends Screen {
     public async setUsername(username: string) {
-        await this.page.waitForSelector("[data-test-login-username]");
-        await this.page.$eval(
-            "[data-test-login-username]",
-            (el, injected) => {
-                // @ts-ignore - Find a way to type this
-                el.value = injected;
-            },
-            username
-        );
+        await this.page.click("[data-test-login-username]", { clickCount: 3 });
+        await this.page.focus("[data-test-login-username]");
+        await this.page.keyboard.type(username);
     }
 
     public async getUsername(): Promise<string> {
@@ -45,27 +39,15 @@ export class Login extends Screen {
     }
 
     public async setPassword(password: string) {
-        await this.page.waitForSelector("[data-test-login-password]");
-        await this.page.$eval(
-            "[data-test-login-password]",
-            (el, injected) => {
-                // @ts-ignore - Find a way to type this
-                el.value = injected;
-            },
-            password
-        );
+        await this.page.click("[data-test-login-password]", { clickCount: 3 });
+        await this.page.focus("[data-test-login-password]");
+        await this.page.keyboard.type(password);
     }
 
     public async setURL(url: string) {
-        await this.page.waitForSelector("[data-test-login-url]");
-        await this.page.$eval(
-            "[data-test-login-url]",
-            (el, injected) => {
-                // @ts-ignore - Find a way to type this
-                el.value = injected;
-            },
-            url
-        );
+        await this.page.click("[data-test-login-url]", { clickCount: 3 });
+        await this.page.focus("[data-test-login-url]");
+        await this.page.keyboard.type(url);
     }
 
     public async getURL(): Promise<string> {
