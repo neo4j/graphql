@@ -18,21 +18,18 @@
  */
 
 import * as neo4j from "neo4j-driver";
-import { getBrowser, getPage, Browser } from "./puppeteer";
 import { Login } from "./pages/Login";
-import { TopBar } from "./pages/TopBar";
+import { test, describe, expect, beforeAll, afterAll } from "./utils/pagemodel";
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
 const DATABASE_NAME = "graphqltoolboxe2etestdatabase";
 
 describe("URL query parameters", () => {
-    let browser: Browser;
     let driver: neo4j.Driver;
 
     beforeAll(async () => {
         driver = neo4j.driver(NEO_URL, neo4j.auth.basic(NEO_USER, NEO_PASSWORD));
-        browser = await getBrowser();
         const session = await driver.session();
         try {
             await session.run(`CREATE OR REPLACE DATABASE ${DATABASE_NAME}`);
@@ -52,15 +49,13 @@ describe("URL query parameters", () => {
         } finally {
             await session.close();
             await driver.close();
-            await browser.close();
         }
     });
 
-    test("should pre-fill connection URI and username input fields with values from url query parameter", async () => {
-        const page = await getPage({
-            browser,
-            urlQueryParameter: "connectURL=bolt%2Bs://testuser@abcd22.databases.neo4j.io",
-        });
+    test("should pre-fill connection URI and username input fields with values from url query parameter", async ({
+        page,
+    }) => {
+        await page.goto("/?connectURL=bolt%2Bs://testuser@abcd22.databases.neo4j.io");
         const login = new Login(page);
 
         const username = await login.getUsername();
@@ -70,14 +65,16 @@ describe("URL query parameters", () => {
         expect(connectURI).toEqual("bolt+s://abcd22.databases.neo4j.io");
     });
 
-    test("should select the database from provided url query parameter", async () => {
-        const page = await getPage({ browser, urlQueryParameter: `db=${DATABASE_NAME}` });
+    test("should select the database from provided url query parameter", async ({ page, topBarPage }) => {
+        await page.goto(`/?db=${DATABASE_NAME}`);
 
         const login = new Login(page);
         await login.login();
 
-        const topBar = new TopBar(page);
-        const selectedDatabase = await topBar.getSelectedDatabase();
+        // We need some waiting time after loading the application for a dbms query checking for available databases to resolve.
+        await page.waitForTimeout(1000);
+
+        const selectedDatabase = await topBarPage.getSelectedDatabase();
 
         expect(selectedDatabase).toEqual(DATABASE_NAME);
     });
