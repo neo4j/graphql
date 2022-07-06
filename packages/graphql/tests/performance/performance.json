@@ -5,10 +5,10 @@
             "maxRows": 133,
             "dbHits": 400,
             "cache": {
-                "hits": 5,
+                "hits": 6,
                 "misses": 0
             },
-            "time": 10
+            "time": 13
         },
         "file": "aggregations"
     },
@@ -18,10 +18,10 @@
             "maxRows": 133,
             "dbHits": 400,
             "cache": {
-                "hits": 427,
+                "hits": 452,
                 "misses": 0
             },
-            "time": 11
+            "time": 14
         },
         "file": "aggregations"
     },
@@ -31,10 +31,10 @@
             "maxRows": 133,
             "dbHits": 287,
             "cache": {
-                "hits": 395,
+                "hits": 402,
                 "misses": 0
             },
-            "time": 8
+            "time": 10
         },
         "file": "aggregations"
     },
@@ -44,10 +44,10 @@
             "maxRows": 172,
             "dbHits": 593,
             "cache": {
-                "hits": 161,
+                "hits": 152,
                 "misses": 0
             },
-            "time": 8
+            "time": 10
         },
         "file": "connections"
     },
@@ -57,10 +57,10 @@
             "maxRows": 512,
             "dbHits": 2301,
             "cache": {
-                "hits": 658,
+                "hits": 751,
                 "misses": 0
             },
-            "time": 9
+            "time": 16
         },
         "file": "connections"
     },
@@ -70,23 +70,23 @@
             "maxRows": 172,
             "dbHits": 631,
             "cache": {
-                "hits": 165,
+                "hits": 157,
                 "misses": 0
             },
-            "time": 6
+            "time": 7
         },
         "file": "query"
     },
     {
         "name": "SimpleQueryWithNestedWhere",
         "result": {
-            "maxRows": 172,
-            "dbHits": 793,
+            "maxRows": 159,
+            "dbHits": 497,
             "cache": {
-                "hits": 283,
+                "hits": 174,
                 "misses": 0
             },
-            "time": 7
+            "time": 6
         },
         "file": "query"
     },
@@ -96,10 +96,10 @@
             "maxRows": 40588,
             "dbHits": 203784,
             "cache": {
-                "hits": 74165,
+                "hits": 67708,
                 "misses": 0
             },
-            "time": 307
+            "time": 632
         },
         "file": "query"
     },
@@ -107,38 +107,38 @@
         "name": "OrFilterOnRelationships",
         "result": {
             "maxRows": 172,
-            "dbHits": 109480,
+            "dbHits": 2407,
             "cache": {
-                "hits": 33944,
+                "hits": 856,
                 "misses": 0
             },
-            "time": 368
+            "time": 11
         },
         "file": "query"
     },
     {
         "name": "OrFilterOnRelationshipsAndNested",
         "result": {
-            "maxRows": 172,
-            "dbHits": 76880,
+            "maxRows": 151,
+            "dbHits": 1692,
             "cache": {
-                "hits": 37304,
+                "hits": 915,
                 "misses": 0
             },
-            "time": 284
+            "time": 78
         },
         "file": "query"
     },
     {
         "name": "QueryWithNestedIn",
         "result": {
-            "maxRows": 172,
-            "dbHits": 955,
+            "maxRows": 147,
+            "dbHits": 661,
             "cache": {
-                "hits": 305,
+                "hits": 198,
                 "misses": 0
             },
-            "time": 8
+            "time": 17
         },
         "file": "query"
     },
@@ -148,10 +148,10 @@
             "maxRows": 35,
             "dbHits": 214,
             "cache": {
-                "hits": 31,
+                "hits": 34,
                 "misses": 0
             },
-            "time": 6
+            "time": 16
         },
         "file": "unions"
     }
