@@ -59,15 +59,6 @@ function translateTopLevelMatch({
 
         matchQuery = new CypherBuilder.db.FullTextQueryNodes(matchNode, indexName, paramPhraseName);
 
-        // cyphers.push(
-        //     dedent(`
-        //         CALL db.index.fulltext.queryNodes(
-        //             "${indexName}",
-        //             $${paramPhraseName}
-        //         ) YIELD node as this
-        //     `)
-        // );
-
         // TODO: move this to FullTextQueryNodes
         fulltextWhere = new CypherBuilder.RawCypherWithCallback(
             (cypherContext: CypherBuilder.CypherContext, _children: string) => {
@@ -113,14 +104,8 @@ function translateTopLevelMatch({
     if (whereAuth[0]) {
         const authQuery = new CypherBuilder.RawCypher(whereAuth[0], whereAuth[1] as Record<string, any>);
         matchQuery.where(authQuery);
-        // whereStrs.push(whereAuth[0]);
-        // cypherParams = { ...cypherParams, ...whereAuth[1] };
     }
 
-    //
-    // if (whereStrs.length) {
-    //     cyphers.push(`WHERE ${whereStrs.join(" AND ")}`);
-    // }
     const result = matchQuery.build();
     cyphers.push(result.cypher);
     cypherParams = { ...cypherParams, ...result.params };
