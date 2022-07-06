@@ -271,7 +271,7 @@ function createConnectionAndParams({
                 if (allowAndParams[0]) {
                     globalParams = { ...globalParams, ...allowAndParams[1] };
                     unionInterfaceSubquery.push(
-                        `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+                        `CALL apoc.util.validate(NOT (${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
                     );
                 }
 
@@ -353,7 +353,7 @@ function createConnectionAndParams({
         });
         if (allowAndParams[0]) {
             globalParams = { ...globalParams, ...allowAndParams[1] };
-            subquery.push(`CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+            subquery.push(`CALL apoc.util.validate(NOT (${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         }
 
         if (sortInput.length) {
@@ -385,7 +385,7 @@ function createConnectionAndParams({
 
             if (projectionMeta?.authValidateStrs?.length) {
                 subquery.push(
-                    `CALL apoc.util.validate(NOT(${projectionMeta.authValidateStrs.join(
+                    `CALL apoc.util.validate(NOT (${projectionMeta.authValidateStrs.join(
                         " AND "
                     )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
                 );
@@ -444,9 +444,24 @@ function createConnectionAndParams({
         ];
     } else if (!firstInput && !afterInput) {
         if (connection.edges || connection.pageInfo) {
-            returnValues.push("edges: edges");
+            if (elementsToCollect.length > 0) {
+                subquery.push("UNWIND edges as edge");
+                returnValues.push("edges: collect(edge)");
+            } else {
+                returnValues.push("edges: edges");
+            }
         }
         returnValues.push("totalCount: size(edges)");
+        if (sortInput.length && elementsToCollect.length > 0) {
+            subquery.push("WITH edges, edge");
+            const sort = sortInput.map((s) =>
+                [
+                    ...Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`),
+                    ...Object.entries(s.node || []).map(([f, direction]) => `edge.node.${f} ${direction}`),
+                ].join(", ")
+            );
+            subquery.push(`ORDER BY ${sort.join(", ")}`);
+        }
         subquery.push(`RETURN { ${returnValues.join(", ")} } AS ${resolveTree.alias}`);
     } else {
         subquery = [

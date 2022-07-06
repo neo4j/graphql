@@ -22,12 +22,13 @@ import { graphql } from "graphql";
 import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 
 describe("interface relationships", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
 
@@ -36,14 +37,15 @@ describe("interface relationships", () => {
     let typeActor: UniqueType;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         typeMovie = generateUniqueType("Movie");
         typeSeries = generateUniqueType("Series");
         typeActor = generateUniqueType("Actor");
-        session = driver.session();
+        session = await neo4j.getSession();
 
         const typeDefs = gql`
             interface Production {
@@ -133,7 +135,7 @@ describe("interface relationships", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { name: actorName },
         });
 
@@ -220,7 +222,7 @@ describe("interface relationships", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query.loc!.source,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { name: actor.name },
         });
 
@@ -302,7 +304,7 @@ describe("interface relationships", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { name: actorName },
         });
 
@@ -367,7 +369,7 @@ describe("interface relationships", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { name: actorName, title: "Apple" },
         });
 
@@ -436,7 +438,7 @@ describe("interface relationships", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { name: actorName, title: "Apple" },
         });
 
@@ -503,7 +505,7 @@ describe("interface relationships", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { name: actorName, title: "Apple", movieTitle: "Pear" },
         });
 

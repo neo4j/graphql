@@ -267,7 +267,7 @@ Generates an `apoc.validate` statement
 
 ```typescript
 const query = new CypherBuilder.Apoc.Validate({
-    predicate: `NOT(my_statement)`,
+    predicate: `NOT (my_statement)`,
     message: AUTH_FORBIDDEN_ERROR,
 });
 ```

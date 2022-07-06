@@ -20,10 +20,12 @@ jobs:
         with:
           node-version: lts/*
       - name: Build documentation
+        env:
+          PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           yarn
           yarn build
-          echo ${{ github.event.number }} > ./build/prnumber
+          echo "$PULL_REQUEST_NUMBER" > ./build/prnumber
         working-directory: docs/
       - name: Archive documentation
         uses: actions/upload-artifact@v3
