@@ -76,7 +76,7 @@ function mapAllProperties({
 
     const leafProperties = whereFields.filter(([key, value]) => key !== "OR" && key !== "AND");
     if (leafProperties.length > 0) {
-        const mappedProperties = mapProperties({ properties: leafProperties, node, targetElement, context });
+        const mappedProperties = mapLeafProperties({ properties: leafProperties, node, targetElement, context });
 
         resultArray.push(...mappedProperties);
     }
@@ -103,7 +103,7 @@ function mapAllProperties({
 
     return resultArray;
 }
-function mapProperties({
+function mapLeafProperties({
     properties,
     node,
     targetElement,

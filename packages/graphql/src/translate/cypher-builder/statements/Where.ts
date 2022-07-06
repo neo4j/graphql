@@ -30,33 +30,6 @@ import { WhereOperator, and } from "./where-operators";
 
 type Params = Record<string, Param<any> | WhereClause>;
 
-// ASTNode
-//  -- Clause --- MATCH, RETURN
-//  -- SubClause --- WHERE, ORDER BY
-//      -- WHERE <BooleanOp | ComparisonOp>
-//  -- Function --- distance()
-//  -- RawCypher <- Weird hack
-
-// type Variable --- this, r
-// type Param --- param0
-// type PropertyRef=[Variable, PropertyPath] ---  this.potato, this.node.potato
-// type Operator --- +,=,, , AND, OR
-//   -- Boolean <Boolean | Comparison, OPERATOR, (Boolean | Comparison)?> --- AND, OR, NOT
-//   -- Comparison <Expression, Operator, Expression> --- IS NOT, =, <, IS NULL, STARTS WITH
-//   -- Math --- +,-,/
-//   -- List operators --- IN, [], .
-//   -- Aggregation operator DISTINCT
-//   -- Property operators --- =, +=, . (access) --- (propertyRef)
-
-// type List and type Map
-
-// type Expression --- PropertyRef | Variable | Function | Param | Operator | ¿CASE? | Literals
-
-// SET this.potato = distance(dsdas); // OK
-// SET this.potato = MATCH // X
-
-// type WhereInput=<Property, Expression>? --- this.potato = 5, "HELLO" IN this.potato
-
 export type WhereInput = Array<
     | [MatchableElement | Variable | ScalarFunction, Params]
     | WhereOperator
