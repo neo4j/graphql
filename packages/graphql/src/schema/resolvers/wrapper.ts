@@ -20,6 +20,7 @@
 import Debug from "debug";
 import { GraphQLResolveInfo, GraphQLSchema, print } from "graphql";
 import { Driver } from "neo4j-driver";
+import { Executor, ExecutorConstructorParam } from "../../classes/Executor";
 import { Neo4jGraphQLAuthenticationError, Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
@@ -84,7 +85,24 @@ export const wrapResolver =
 
         context.auth = createAuthParam({ context });
 
-        context.queryOptions = config.queryOptions;
+        const executorConstructorParam: ExecutorConstructorParam = {
+            executionContext: context.executionContext,
+            auth: context.auth,
+        };
+
+        if (config.queryOptions) {
+            executorConstructorParam.queryOptions = config.queryOptions;
+        }
+
+        if (context.driverConfig?.database) {
+            executorConstructorParam.database = context.driverConfig?.database;
+        }
+
+        if (context.driverConfig?.bookmarks) {
+            executorConstructorParam.bookmarks = context.driverConfig?.bookmarks;
+        }
+
+        context.executor = new Executor(executorConstructorParam);
 
         return next(root, args, context, info);
     };
