@@ -19,6 +19,10 @@ enable authentication on the root query type. By providing no role or policy nam
 packages/graphql/src/schema/resolvers/wrapper.ts
 packages/graphql/src/classes/Neo4jGraphQL.ts
 
+==> check "is Authenticated" in auth
+
+similar to a global readonly
+
 Feel free to add/remove subheadings below as appropriate:
 
 ### Usage Examples
