@@ -273,7 +273,6 @@ function createProjectionAndParams({
 
             const initApocParamsStrs = [
                 ...(context.auth ? ["auth: $auth"] : []),
-                "auth: $auth",
                 ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
             ];
 
@@ -605,7 +604,6 @@ function createProjectionAndParams({
                     .filter(Boolean)
                     .map((connectionParamName) => `${connectionParamName}: $${connectionParamName}`),
                 ...(context.auth ? ["auth: $auth"] : []),
-                "auth: $auth",
                 ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
             ];
 
