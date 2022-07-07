@@ -1,4 +1,5 @@
 export { Match } from "./clauses/Match";
+export { Create } from "./clauses/Create";
 
 export { NodeRef as Node } from "./variables/NodeRef";
 export { RelationshipRef as Relationship } from "./variables/RelationshipRef";
