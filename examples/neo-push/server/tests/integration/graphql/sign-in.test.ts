@@ -1,4 +1,4 @@
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import server from "../server";
 import * as neo4j from "../neo4j";
