@@ -255,6 +255,7 @@ function createConnectAndParams({
 
         if (connect.connect) {
             const connects = (Array.isArray(connect.connect) ? connect.connect : [connect.connect]) as any[];
+
             connects.forEach((c) => {
                 const reduced = Object.entries(c)
                     .filter(([k]) => {

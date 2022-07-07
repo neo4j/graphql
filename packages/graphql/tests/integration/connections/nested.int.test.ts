@@ -20,12 +20,13 @@
 import { Driver, Session } from "neo4j-driver";
 import { graphql, GraphQLSchema } from "graphql";
 import { gql } from "apollo-server";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 
 describe("Connections Alias", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
     let schema: GraphQLSchema;
 
@@ -37,13 +38,14 @@ describe("Connections Alias", () => {
     const screenTime = 120;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     beforeEach(async () => {
         typeMovie = generateUniqueType("Movie");
         typeActor = generateUniqueType("Actor");
-        session = driver.session();
+        session = await neo4j.getSession();
 
         const typeDefs = gql`
             type ${typeMovie} {
@@ -116,7 +118,7 @@ describe("Connections Alias", () => {
         const result = await graphql({
             schema,
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(result.errors).toBeUndefined();
@@ -180,7 +182,7 @@ describe("Connections Alias", () => {
         const result = await graphql({
             schema,
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(result.errors).toBeUndefined();

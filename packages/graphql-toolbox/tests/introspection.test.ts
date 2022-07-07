@@ -19,31 +19,23 @@
 
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
 import * as neo4j from "neo4j-driver";
-import { getBrowser, getPage, Browser } from "./puppeteer";
-import { Login } from "./pages/Login";
-import { SchemaEditor } from "./pages/SchemaEditor";
+import { test, describe, expect, beforeAll, afterAll } from "./utils/pagemodel";
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
 describe("introspection", () => {
-    let browser: Browser;
     let driver: neo4j.Driver;
 
     beforeAll(async () => {
         driver = neo4j.driver(NEO_URL, neo4j.auth.basic(NEO_USER, NEO_PASSWORD));
-        browser = await getBrowser();
     });
 
     afterAll(async () => {
-        await browser.close();
         await driver.close();
     });
 
-    test("should introspect database and output result", async () => {
-        const page = await getPage({ browser });
-
-        const login = new Login(page);
-        await login.login();
+    test("should introspect database and output result", async ({ page, loginPage, schemaEditorPage }) => {
+        await loginPage.login();
 
         const sessionFactory = () => driver?.session({ defaultAccessMode: neo4j.session.WRITE }) as neo4j.Session;
         const session = await sessionFactory();
@@ -65,11 +57,9 @@ describe("introspection", () => {
             await session.close();
         }
 
-        const schemaEditor = new SchemaEditor(page);
-        await schemaEditor.introspect();
-        await page.waitForNetworkIdle();
+        await schemaEditorPage.introspect();
         await page.waitForTimeout(2000);
-        const generatedTypeDefs = await schemaEditor.getTypeDefs();
+        const generatedTypeDefs = await schemaEditorPage.getTypeDefs();
 
         const actualTypeDefs = await toGraphQLTypeDefs(sessionFactory);
 

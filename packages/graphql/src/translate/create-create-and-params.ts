@@ -89,6 +89,20 @@ function createCreateAndParams({
                 const unionTypeName = relationField.union || relationField.interface ? refNode.name : "";
 
                 if (v.create) {
+                    const isInterfaceAnArray = relationField.interface?.typeMeta.array;
+                    const createNodeInputIsOfTypeRefNode = !!v.create.node?.[refNode.name];
+                    const createNodeInputKeys = createNodeInputIsOfTypeRefNode
+                        ? Object.keys((v.create.node as any[]) || [])
+                        : [];
+                    const isCreatingMultipleNodesForOneToOneRel = !isInterfaceAnArray && createNodeInputKeys.length > 1;
+                    if (isCreatingMultipleNodesForOneToOneRel) {
+                        throw new Error(
+                            `Relationship field "${relationField.connectionPrefix}.${
+                                relationField.interface?.dbPropertyName || relationField.interface?.fieldName
+                            }" cannot have more than one node linked`
+                        );
+                    }
+
                     const creates = relationField.typeMeta.array ? v.create : [v.create];
                     creates.forEach((create, index) => {
                         if (relationField.interface && !create.node[refNode.name]) {

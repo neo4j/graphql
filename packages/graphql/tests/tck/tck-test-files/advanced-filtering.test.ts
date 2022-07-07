@@ -593,7 +593,7 @@ describe("Cypher Advanced Filtering", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
-                WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND any(this_genres IN [(this)-[:IN_GENRE]->(this_genres:Genre) | this_genres] WHERE this_genres.name = $this_genres_name)
+                WHERE EXISTS { (this)-[:IN_GENRE]->(this_genres:Genre) WHERE this_genres.name = $this_genres_name }
                 RETURN this { .actorCount } as this"
             `);
 
@@ -620,7 +620,7 @@ describe("Cypher Advanced Filtering", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
-                WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND none(this_genres_NOT IN [(this)-[:IN_GENRE]->(this_genres_NOT:Genre) | this_genres_NOT] WHERE this_genres_NOT.name = $this_genres_NOT_name)
+                WHERE NOT EXISTS { (this)-[:IN_GENRE]->(this_genres_NOT:Genre) WHERE this_genres_NOT.name = $this_genres_NOT_name }
                 RETURN this { .actorCount } as this"
             `);
 
@@ -650,7 +650,7 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:Movie)
-                    WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND all(this_genres_ALL IN [(this)-[:IN_GENRE]->(this_genres_ALL:Genre) | this_genres_ALL] WHERE this_genres_ALL.name = $this_genres_ALL_name)
+                    WHERE NOT EXISTS { (this)-[:IN_GENRE]->(this_genres_ALL:Genre) WHERE NOT this_genres_ALL.name = $this_genres_ALL_name }
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -667,7 +667,7 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:Movie)
-                    WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND none(this_genres_NONE IN [(this)-[:IN_GENRE]->(this_genres_NONE:Genre) | this_genres_NONE] WHERE this_genres_NONE.name = $this_genres_NONE_name)
+                    WHERE NOT EXISTS { (this)-[:IN_GENRE]->(this_genres_NONE:Genre) WHERE this_genres_NONE.name = $this_genres_NONE_name }
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -684,7 +684,7 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:Movie)
-                    WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND single(this_genres_SINGLE IN [(this)-[:IN_GENRE]->(this_genres_SINGLE:Genre) | this_genres_SINGLE] WHERE this_genres_SINGLE.name = $this_genres_SINGLE_name)
+                    WHERE size([(this)-[:IN_GENRE]->(this_genres_SINGLE:Genre) WHERE this_genres_SINGLE.name = $this_genres_SINGLE_name | 1]) = 1
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -701,7 +701,7 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:Movie)
-                    WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND any(this_genres_SOME IN [(this)-[:IN_GENRE]->(this_genres_SOME:Genre) | this_genres_SOME] WHERE this_genres_SOME.name = $this_genres_SOME_name)
+                    WHERE EXISTS { (this)-[:IN_GENRE]->(this_genres_SOME:Genre) WHERE this_genres_SOME.name = $this_genres_SOME_name }
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -730,7 +730,7 @@ describe("Cypher Advanced Filtering", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
-                WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND any(this_genresConnection_Genre_map IN [(this)-[this_genresConnection_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_Genre:Genre)  | { node: this_genresConnection_Genre, relationship: this_genresConnection_Genre_MovieGenresRelationship } ] WHERE this_genresConnection_Genre_map.node.name = $this_movies.where.genresConnection.node.name)
+                WHERE size([(this)-[this_genresConnection_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_Genre:Genre) WHERE this_genresConnection_Genre.name = $this_movies.where.genresConnection.node.name | 1]) > 0
                 RETURN this { .actorCount } as this"
             `);
 
@@ -765,7 +765,7 @@ describe("Cypher Advanced Filtering", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
-                WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND none(this_genresConnection_NOT_Genre_map IN [(this)-[this_genresConnection_NOT_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_NOT_Genre:Genre)  | { node: this_genresConnection_NOT_Genre, relationship: this_genresConnection_NOT_Genre_MovieGenresRelationship } ] WHERE this_genresConnection_NOT_Genre_map.node.name = $this_movies.where.genresConnection_NOT.node.name)
+                WHERE size([(this)-[this_genresConnection_NOT_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_NOT_Genre:Genre) WHERE this_genresConnection_NOT_Genre.name = $this_movies.where.genresConnection_NOT.node.name | 1]) = 0
                 RETURN this { .actorCount } as this"
             `);
 
@@ -803,7 +803,7 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:Movie)
-                    WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND all(this_genresConnection_ALL_Genre_map IN [(this)-[this_genresConnection_ALL_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_ALL_Genre:Genre)  | { node: this_genresConnection_ALL_Genre, relationship: this_genresConnection_ALL_Genre_MovieGenresRelationship } ] WHERE this_genresConnection_ALL_Genre_map.node.name = $this_movies.where.genresConnection_ALL.node.name)
+                    WHERE size([(this)-[this_genresConnection_ALL_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_ALL_Genre:Genre) WHERE NOT this_genresConnection_ALL_Genre.name = $this_movies.where.genresConnection_ALL.node.name | 1]) = 0
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -828,7 +828,7 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:Movie)
-                    WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND none(this_genresConnection_NONE_Genre_map IN [(this)-[this_genresConnection_NONE_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_NONE_Genre:Genre)  | { node: this_genresConnection_NONE_Genre, relationship: this_genresConnection_NONE_Genre_MovieGenresRelationship } ] WHERE this_genresConnection_NONE_Genre_map.node.name = $this_movies.where.genresConnection_NONE.node.name)
+                    WHERE size([(this)-[this_genresConnection_NONE_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_NONE_Genre:Genre) WHERE this_genresConnection_NONE_Genre.name = $this_movies.where.genresConnection_NONE.node.name | 1]) = 0
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -853,7 +853,7 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:Movie)
-                    WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND single(this_genresConnection_SINGLE_Genre_map IN [(this)-[this_genresConnection_SINGLE_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_SINGLE_Genre:Genre)  | { node: this_genresConnection_SINGLE_Genre, relationship: this_genresConnection_SINGLE_Genre_MovieGenresRelationship } ] WHERE this_genresConnection_SINGLE_Genre_map.node.name = $this_movies.where.genresConnection_SINGLE.node.name)
+                    WHERE size([(this)-[this_genresConnection_SINGLE_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_SINGLE_Genre:Genre) WHERE this_genresConnection_SINGLE_Genre.name = $this_movies.where.genresConnection_SINGLE.node.name | 1]) = 1
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -878,7 +878,7 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:Movie)
-                    WHERE exists((this)-[:IN_GENRE]->(:Genre)) AND any(this_genresConnection_SOME_Genre_map IN [(this)-[this_genresConnection_SOME_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_SOME_Genre:Genre)  | { node: this_genresConnection_SOME_Genre, relationship: this_genresConnection_SOME_Genre_MovieGenresRelationship } ] WHERE this_genresConnection_SOME_Genre_map.node.name = $this_movies.where.genresConnection_SOME.node.name)
+                    WHERE size([(this)-[this_genresConnection_SOME_Genre_MovieGenresRelationship:IN_GENRE]->(this_genresConnection_SOME_Genre:Genre) WHERE this_genresConnection_SOME_Genre.name = $this_movies.where.genresConnection_SOME.node.name | 1]) > 0
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`

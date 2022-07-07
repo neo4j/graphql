@@ -36,7 +36,7 @@ export class ResultsDisplay {
     ): Promise<void> {
         // eslint-disable-next-line no-console
         console.table(
-            results.reduce((acc, { name, result, file }) => {
+            results.reduce((acc, { name, result, file, type }) => {
                 const coloredFile = this.colorText(file, TTYColors.yellow);
 
                 const coloredOnly = this.colorText("_only", TTYColors.cyan);
@@ -56,7 +56,12 @@ export class ResultsDisplay {
                     }
                 }
 
-                acc[`${coloredFile}.${displayName}`] = result2;
+                let typeStr = "";
+                if (type === "cypher") {
+                    typeStr = this.colorText("[cypher]", TTYColors.cyan);
+                }
+
+                acc[`${typeStr} ${coloredFile}.${displayName}`] = result2;
                 return acc;
             }, {})
         );
