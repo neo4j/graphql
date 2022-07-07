@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../CypherASTNode";
 import { Expr } from "../types";
 import { Operation } from "./Operation";
 import { CypherEnvironment } from "../Environment";
@@ -33,31 +32,16 @@ export abstract class ComparisonOp extends Operation {
     }
 }
 
-class DummyExpr extends CypherASTNode {
-    constructor(private value: any) {
-        super();
-    }
-
-    protected cypher(environment: CypherEnvironment): string {
-        return `${this.value}`;
-    }
-}
-
-function literalToASTNode(value: any): CypherASTNode {
-    if (value instanceof CypherASTNode) return value;
-    return new DummyExpr(value);
-}
-
 class BinaryComparisonOp extends ComparisonOp {
-    private leftExpr: CypherASTNode; //Expr;
-    private rightExpr: CypherASTNode; //Expr;
+    private leftExpr: Expr;
+    private rightExpr: Expr;
 
     constructor(operator: ComparisonOperator, leftExpr: Expr, rightExpr: Expr) {
         super(operator);
         this.operator = operator;
-        this.leftExpr = literalToASTNode(leftExpr);
-        this.rightExpr = literalToASTNode(rightExpr);
-        this.addChildren(this.leftExpr, this.rightExpr);
+        this.leftExpr = leftExpr;
+        this.rightExpr = rightExpr;
+        // this.addChildren(this.leftExpr, this.rightExpr);
     }
 
     protected cypher(env: CypherEnvironment): string {
@@ -69,12 +53,12 @@ class BinaryComparisonOp extends ComparisonOp {
 }
 
 class UnaryComparisonOp extends ComparisonOp {
-    private child: CypherASTNode;
+    private child: Expr;
 
     constructor(operator: ComparisonOperator, child: Expr) {
         super(operator);
-        this.child = literalToASTNode(child);
-        this.addChildren(this.child);
+        this.child = child;
+        // this.addChildren(this.child);
     }
 
     protected cypher(_env: CypherEnvironment): string {

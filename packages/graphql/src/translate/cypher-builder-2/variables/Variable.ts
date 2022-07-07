@@ -17,11 +17,18 @@
  * limitations under the License.
  */
 
+import type { CypherEnvironment } from "../Environment";
+
 /** Represents a variable */
 export abstract class Variable {
     public readonly prefix: string;
 
     constructor(prefix: string) {
         this.prefix = prefix;
+    }
+
+    public getCypher(env: CypherEnvironment): string {
+        const id = env.getVariableId(this);
+        return `${id}`;
     }
 }

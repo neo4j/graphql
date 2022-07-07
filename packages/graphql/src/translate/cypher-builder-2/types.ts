@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
+import { Variable } from "./variables/Variable";
 import { Operation } from "./operations/Operation";
 
-export type Expr = Operation | string | number; // FOR NOW literals are strings and numbers, these should be variables
+export type Expr = Operation | Variable;
 
 export type CypherResult = {
     cypher: string;

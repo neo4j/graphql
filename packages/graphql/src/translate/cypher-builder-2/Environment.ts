@@ -20,11 +20,6 @@
 import { Variable } from "./variables/Variable";
 import { Param } from "./variables/Param";
 
-// export interface CypherContextInterface {
-//     getVariableId(reference: CypherVariable): string;
-//     getParamId(reference: CypherParameter): string;
-// }
-
 /** Hold the internal references of parameters and variables */
 export class CypherEnvironment {
     private globalPrefix: string;
@@ -44,6 +39,14 @@ export class CypherEnvironment {
         return id;
     }
 
+    public getParams(): Record<string, any> {
+        return this.params.reduce((acc, param: Param) => {
+            const key = this.getVariableId(param);
+            acc[key] = param.value;
+            return acc;
+        }, {} as Record<string, any>);
+    }
+
     private addVariableReference(variable: Variable) {
         const paramIndex = this.params.length; // Indexes are separate for readability reasons
         let varIndex: number;
@@ -58,14 +61,6 @@ export class CypherEnvironment {
         const varId = `${this.globalPrefix}${variable.prefix}${varIndex}`;
         this.references.set(variable, varId);
         return varId;
-    }
-
-    public getParams(): Record<string, any> {
-        return this.params.reduce((acc, param: Param) => {
-            const key = this.getVariableId(param);
-            acc[key] = param.value;
-            return acc;
-        }, {} as Record<string, any>);
     }
 
     // public addNamedParamReference(name: string, param: CypherParameter): void {

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Param } from "../cypher-builder/CypherBuilder";
+import type { Param } from "../cypher-builder/CypherBuilder";
 import { CypherEnvironment } from "./Environment";
 
 /** Abstract class representing a Cypher Statement in the AST */
@@ -38,7 +38,7 @@ export abstract class CypherASTNode {
     }
 
     /** Visitor pattern to generate the Cypher on nested nodes */
-    public getCypher(env: CypherEnvironment, separator = "\n"): string {
+    public getCypher(env: CypherEnvironment): string {
         // Object.entries(this.namedParams).forEach(([name, param]) => {
         //     context.addNamedParamReference(name, param); // Only for compatibility reasons
         // });

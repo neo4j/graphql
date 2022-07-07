@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { CypherEnvironment } from "../Environment";
+import type { CypherEnvironment } from "../Environment";
 import { Variable } from "./Variable";
 
 export class Param<T = any> extends Variable {
