@@ -131,13 +131,12 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                     const lessOrGreaterThan = entry[1].name === "shortest" ? "<" : ">";
 
                     const reduce = `
-                            reduce(shortest = collect(this.${fieldName})[0], current IN collect(this.${fieldName}) | apoc.cypher.runFirstColumn("
-                                RETURN
-                                CASE size(current) ${lessOrGreaterThan} size(shortest)
+                            reduce(aggVar = collect(this.${fieldName})[0], current IN collect(this.${fieldName}) | 
+                                CASE size(current) ${lessOrGreaterThan} size(aggVar)
                                 WHEN true THEN current
-                                ELSE shortest
-                                END AS result
-                            ", { current: current, shortest: shortest }, false))
+                                ELSE aggVar
+                                END
+                            )
                         `;
 
                     thisProjections.push(`${entry[1].alias || entry[1].name}: ${reduce}`);
