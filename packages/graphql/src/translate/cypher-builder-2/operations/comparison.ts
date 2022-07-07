@@ -18,9 +18,9 @@
  */
 
 import { CypherASTNode } from "../CypherASTNode";
-import { CypherContext } from "../../cypher-builder/CypherContext";
 import { Expr } from "../types";
 import { Operation } from "./Operation";
+import { CypherEnvironment } from "../Environment";
 
 type ComparisonOperator = "=" | "<" | ">" | "<>" | "<=" | ">=" | "IS NULL" | "IS NOT NULL";
 
@@ -38,12 +38,12 @@ class DummyExpr extends CypherASTNode {
         super();
     }
 
-    protected cypher(context: CypherContext, childrenCypher: string): string {
+    protected cypher(environment: CypherEnvironment): string {
         return `${this.value}`;
     }
 }
 
-function dummify(value: any): CypherASTNode {
+function literalToASTNode(value: any): CypherASTNode {
     if (value instanceof CypherASTNode) return value;
     return new DummyExpr(value);
 }
@@ -55,27 +55,30 @@ class BinaryComparisonOp extends ComparisonOp {
     constructor(operator: ComparisonOperator, leftExpr: Expr, rightExpr: Expr) {
         super(operator);
         this.operator = operator;
-        this.leftExpr = dummify(leftExpr);
-        this.rightExpr = dummify(rightExpr);
+        this.leftExpr = literalToASTNode(leftExpr);
+        this.rightExpr = literalToASTNode(rightExpr);
         this.addChildren(this.leftExpr, this.rightExpr);
     }
 
-    protected cypher(context: CypherContext, childrenCypher: string): string {
-        const leftStr = this.leftExpr.getCypher(context);
-        const rightStr = this.rightExpr.getCypher(context);
+    protected cypher(env: CypherEnvironment): string {
+        const leftStr = this.leftExpr.getCypher(env);
+        const rightStr = this.rightExpr.getCypher(env);
 
         return `${leftStr} ${this.operator} ${rightStr}`;
     }
 }
 
 class UnaryComparisonOp extends ComparisonOp {
+    private child: CypherASTNode;
+
     constructor(operator: ComparisonOperator, child: Expr) {
         super(operator);
-        this.addASTNode(dummify(child));
+        this.child = literalToASTNode(child);
+        this.addChildren(this.child);
     }
 
-    protected cypher(_context: CypherContext, childrenCypher: string): string {
-        return `${this.operator} ${childrenCypher}`;
+    protected cypher(_env: CypherEnvironment): string {
+        return `${this.operator}`;
     }
 }
 

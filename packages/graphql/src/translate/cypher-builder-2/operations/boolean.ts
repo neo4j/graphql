@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { CypherContext } from "../../cypher-builder/CypherContext";
+import { CypherEnvironment } from "../Environment";
 import { ComparisonOp } from "./comparison";
 import { Operation } from "./Operation";
 
@@ -45,22 +45,25 @@ class BinaryOp extends BooleanOp {
         this.right = right;
     }
 
-    protected cypher(context: CypherContext, _childrenCypher: string): string {
-        const leftCypher = this.left.getCypher(context);
-        const rightCypher = this.right.getCypher(context);
+    protected cypher(env: CypherEnvironment): string {
+        const leftCypher = this.left.getCypher(env);
+        const rightCypher = this.right.getCypher(env);
 
         return `(${leftCypher} ${this.operator} ${rightCypher})`;
     }
 }
 
 class NotOp extends BooleanOp {
+    private child: BooleanOpChild;
+
     constructor(child: BooleanOpChild) {
         super("NOT");
-        this.addASTNode(child);
+        this.child = child;
+        this.addChildren(this.child);
     }
 
-    protected cypher(_context: CypherContext, childrenCypher: string): string {
-        return `${this.operator} ${childrenCypher}`;
+    protected cypher(_env: CypherEnvironment): string {
+        return `${this.operator}`;
     }
 }
 

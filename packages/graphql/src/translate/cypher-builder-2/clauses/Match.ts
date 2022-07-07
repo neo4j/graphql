@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { CypherContext } from "../../cypher-builder/CypherContext";
-import { MatchableElement, MatchParams, MatchPattern } from "../../cypher-builder/MatchPattern";
+import { MatchableElement, MatchParams, MatchPattern } from "../MatchPattern";
+import { CypherEnvironment } from "../Environment";
 import { Where, WhereParams } from "../sub-clauses/Where";
 import { Clause } from "./Clause";
 
@@ -34,7 +34,8 @@ export class Match<T extends MatchableElement> extends Clause {
     public where(input: WhereParams): this {
         if (!this.whereSubClause) {
             const whereClause = new Where(this, input);
-            this.addASTNode(whereClause);
+            this.addChildren(whereClause);
+            // this.addASTNode(whereClause);
             this.whereSubClause = whereClause;
         } else {
             this.and(input);
@@ -48,9 +49,13 @@ export class Match<T extends MatchableElement> extends Clause {
         return this;
     }
 
-    public cypher(context: CypherContext, childrenCypher: string): string {
-        const nodeCypher = this.matchPattern.getCypher(context);
-        return `MATCH ${nodeCypher}\n${childrenCypher}`;
+    public cypher(env: CypherEnvironment): string {
+        const nodeCypher = this.matchPattern.getCypher(env);
+        let whereCypher = "";
+        if (this.whereSubClause) {
+            whereCypher = `\n${this.whereSubClause.getCypher(env)}`;
+        }
+        return `MATCH ${nodeCypher}${whereCypher}`;
     }
 
     // public return(node: Node, fields?: string[], alias?: string): this {

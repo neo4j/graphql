@@ -18,7 +18,7 @@
  */
 
 import { CypherASTNode } from "../CypherASTNode";
-import { CypherContext } from "../../cypher-builder/CypherContext";
+import { CypherEnvironment } from "../Environment";
 import { and, BooleanOp } from "../operations/boolean";
 import { ComparisonOp } from "../operations/comparison";
 import { SubClause } from "./SubClause";
@@ -40,8 +40,8 @@ export class Where extends SubClause {
         this.addChildren(this.whereParams);
     }
 
-    public cypher(context: CypherContext, childrenCypher: string): string {
-        const opStr = this.whereParams.getCypher(context);
+    public cypher(env: CypherEnvironment): string {
+        const opStr = this.whereParams.getCypher(env);
         return `WHERE ${opStr}`;
     }
 }

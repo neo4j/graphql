@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import { Match } from "./Match";
-import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 import { and, or } from "../operations/boolean";
 import { gt, lt, eq } from "../operations/comparison";
+
+import * as CypherBuilder from "../CypherBuilder";
 
 describe("CypherBuilder", () => {
     it("Match", () => {
         const node = new CypherBuilder.Node({ labels: ["Movie"] });
 
-        const matchClause = new Match(node).where(and(or(gt(1, 2), lt(1, 2)), eq("aa", "bb")));
+        const matchClause = new CypherBuilder.Match(node).where(and(or(gt(1, 2), lt(1, 2)), eq("aa", "bb")));
 
         const queryResult = matchClause.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
