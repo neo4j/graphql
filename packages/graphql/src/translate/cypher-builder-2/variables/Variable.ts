@@ -18,6 +18,7 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
+import { PropertyRef } from "../PropertyRef";
 
 /** Represents a variable */
 export abstract class Variable {
@@ -30,5 +31,9 @@ export abstract class Variable {
     public getCypher(env: CypherEnvironment): string {
         const id = env.getVariableId(this);
         return `${id}`;
+    }
+
+    public property(path: string): PropertyRef {
+        return new PropertyRef(this, path);
     }
 }

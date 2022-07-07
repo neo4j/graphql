@@ -23,6 +23,11 @@ import { Where, WhereParams } from "../sub-clauses/Where";
 import { Clause } from "./Clause";
 import { Return } from "./Return";
 import { NodeRef } from "../variables/NodeRef";
+import { Variable } from "../variables/Variable";
+import { ComparisonOp, eq } from "../operations/comparison";
+import { PropertyRef } from "../PropertyRef";
+import { Param } from "../variables/Param";
+import { and, BooleanOp } from "../operations/boolean";
 
 export class Match<T extends MatchableElement> extends Clause {
     private pattern: Pattern<T>;
@@ -34,14 +39,25 @@ export class Match<T extends MatchableElement> extends Clause {
         this.pattern = new Pattern(variable).withParams(parameters);
     }
 
-    public where(input: WhereParams): this {
+    public where(input: WhereParams): this;
+    public where(target: Variable, params: Record<string, Param>): this;
+    public where(input: WhereParams | Variable, params?: Record<string, Param>): this {
+        let whereInput: WhereParams;
+        if (input instanceof Variable) {
+            const generatedOp = variableAndObjectToOperation(input, params || {});
+            if (!generatedOp) return this;
+            whereInput = generatedOp;
+        } else {
+            whereInput = input;
+        }
+
         if (!this.whereSubClause) {
-            const whereClause = new Where(this, input);
+            const whereClause = new Where(this, whereInput);
             this.addChildren(whereClause);
             // this.addASTNode(whereClause);
             this.whereSubClause = whereClause;
         } else {
-            this.and(input);
+            this.and(whereInput);
         }
         return this;
     }
@@ -71,4 +87,21 @@ export class Match<T extends MatchableElement> extends Clause {
         this.returnStatement = returnStatement;
         return returnStatement;
     }
+}
+
+/** Transforms a simple input into an operation sub tree */
+function variableAndObjectToOperation(
+    target: Variable,
+    params: Record<string, Param>
+): BooleanOp | ComparisonOp | undefined {
+    let operation: BooleanOp | ComparisonOp | undefined;
+    for (const [key, value] of Object.entries(params)) {
+        const property = new PropertyRef(target, key);
+        const eqOp = eq(property, value);
+        if (!operation) operation = eqOp;
+        else {
+            operation = and(operation, eqOp);
+        }
+    }
+    return operation;
 }

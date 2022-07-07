@@ -41,7 +41,7 @@ export class CypherEnvironment {
 
     public getParams(): Record<string, any> {
         return this.params.reduce((acc, param: Param) => {
-            const key = this.getVariableId(param);
+            const key = this.getVariableId(param).substring(1); // Removes leading $ in params
             acc[key] = param.value;
             return acc;
         }, {} as Record<string, any>);
@@ -51,14 +51,16 @@ export class CypherEnvironment {
         const paramIndex = this.params.length; // Indexes are separate for readability reasons
         let varIndex: number;
 
+        let varId: string;
         if (variable instanceof Param) {
             varIndex = paramIndex;
             this.params.push(variable);
+            varId = `$${this.globalPrefix}${variable.prefix}${varIndex}`;
         } else {
             varIndex = this.references.size - paramIndex;
+            varId = `${this.globalPrefix}${variable.prefix}${varIndex}`;
         }
 
-        const varId = `${this.globalPrefix}${variable.prefix}${varIndex}`;
         this.references.set(variable, varId);
         return varId;
     }

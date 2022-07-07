@@ -17,13 +17,22 @@
  * limitations under the License.
  */
 
-import { Variable } from "./variables/Variable";
-import { Operation } from "./operations/Operation";
-import { PropertyRef } from "./PropertyRef";
+import { CypherEnvironment } from "./Environment";
+import type { Variable } from "./variables/Variable";
 
-export type Expr = Operation | Variable | PropertyRef;
+/** Represents a Node reference */
+export class PropertyRef {
+    private variable: Variable;
+    private property: string;
 
-export type CypherResult = {
-    cypher: string;
-    params: Record<string, string>;
-};
+    constructor(variable: Variable, property: string) {
+        this.variable = variable;
+        this.property = property;
+    }
+
+    public getCypher(env: CypherEnvironment): string {
+        // TODO: null param
+        const variableStr = this.variable.getCypher(env);
+        return `${variableStr}.${this.property}`;
+    }
+}

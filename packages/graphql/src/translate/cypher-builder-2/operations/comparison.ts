@@ -23,80 +23,54 @@ import { CypherEnvironment } from "../Environment";
 
 type ComparisonOperator = "=" | "<" | ">" | "<>" | "<=" | ">=" | "IS NULL" | "IS NOT NULL";
 
-export abstract class ComparisonOp extends Operation {
-    protected operator: ComparisonOperator;
+export class ComparisonOp extends Operation {
+    private operator: ComparisonOperator;
+    private leftExpr: Expr | undefined;
+    private rightExpr: Expr | undefined;
 
-    constructor(operator: ComparisonOperator) {
+    constructor(operator: ComparisonOperator, left: Expr | undefined, right: Expr | undefined) {
         super();
         this.operator = operator;
-    }
-}
-
-class BinaryComparisonOp extends ComparisonOp {
-    private leftExpr: Expr;
-    private rightExpr: Expr;
-
-    constructor(operator: ComparisonOperator, leftExpr: Expr, rightExpr: Expr) {
-        super(operator);
-        this.operator = operator;
-        this.leftExpr = leftExpr;
-        this.rightExpr = rightExpr;
-        // this.addChildren(this.leftExpr, this.rightExpr);
+        this.leftExpr = left;
+        this.rightExpr = right;
     }
 
     protected cypher(env: CypherEnvironment): string {
-        const leftStr = this.leftExpr.getCypher(env);
-        const rightStr = this.rightExpr.getCypher(env);
+        const leftStr = this.leftExpr ? `${this.leftExpr.getCypher(env)} ` : "";
+        const rightStr = this.rightExpr ? ` ${this.rightExpr.getCypher(env)}` : "";
 
-        return `${leftStr} ${this.operator} ${rightStr}`;
+        return `${leftStr}${this.operator}${rightStr}`;
     }
 }
 
-class UnaryComparisonOp extends ComparisonOp {
-    private child: Expr;
-
-    constructor(operator: ComparisonOperator, child: Expr) {
-        super(operator);
-        this.child = child;
-        // this.addChildren(this.child);
-    }
-
-    protected cypher(_env: CypherEnvironment): string {
-        return `${this.operator}`;
-    }
-}
-
-function createBinary(op: ComparisonOperator, leftExpr: Expr, rightExpr: Expr): BinaryComparisonOp {
-    return new BinaryComparisonOp(op, leftExpr, rightExpr);
-}
-function createUnary(op: ComparisonOperator, childExpr: Expr): UnaryComparisonOp {
-    return new UnaryComparisonOp(op, childExpr);
+function createOp(op: ComparisonOperator, leftExpr: Expr | undefined, rightExpr?: Expr): ComparisonOp {
+    return new ComparisonOp(op, leftExpr, rightExpr);
 }
 
 export function eq(leftExpr: Expr, rightExpr: Expr) {
-    return createBinary("=", leftExpr, rightExpr);
+    return createOp("=", leftExpr, rightExpr);
 }
 
 export function gt(leftExpr: Expr, rightExpr: Expr) {
-    return createBinary(">", leftExpr, rightExpr);
+    return createOp(">", leftExpr, rightExpr);
 }
 
 export function gte(leftExpr: Expr, rightExpr: Expr) {
-    return createBinary(">=", leftExpr, rightExpr);
+    return createOp(">=", leftExpr, rightExpr);
 }
 
 export function lt(leftExpr: Expr, rightExpr: Expr) {
-    return createBinary("<", leftExpr, rightExpr);
+    return createOp("<", leftExpr, rightExpr);
 }
 
 export function lte(leftExpr: Expr, rightExpr: Expr) {
-    return createBinary("<=", leftExpr, rightExpr);
+    return createOp("<=", leftExpr, rightExpr);
 }
 
 export function isNull(childExpr: Expr) {
-    return createUnary("IS NULL", childExpr);
+    return createOp("IS NULL", childExpr);
 }
 
 export function isNotNull(childExpr: Expr) {
-    return createUnary("IS NOT NULL", childExpr);
+    return createOp("IS NOT NULL", childExpr);
 }

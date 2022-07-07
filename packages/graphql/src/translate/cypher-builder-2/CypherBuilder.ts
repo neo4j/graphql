@@ -6,3 +6,5 @@ export { Param } from "./variables/Param";
 
 export { or, and, not } from "./operations/boolean";
 export { eq, gt, gte, lt, lte, isNull, isNotNull } from "./operations/comparison";
+
+export { PropertyRef } from "./PropertyRef";
