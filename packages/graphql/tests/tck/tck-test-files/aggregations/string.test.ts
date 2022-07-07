@@ -59,13 +59,12 @@ describe("Cypher Aggregations String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             RETURN { title: { shortest:
-                                        reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(\\"
-                                            RETURN
-                                            CASE size(current) < size(shortest)
+                                        reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
+                                            CASE size(current) < size(aggVar)
                                             WHEN true THEN current
-                                            ELSE shortest
-                                            END AS result
-                                        \\", { current: current, shortest: shortest }, false))
+                                            ELSE aggVar
+                                            END
+                                        )
                                      } }"
         `);
 
@@ -91,13 +90,12 @@ describe("Cypher Aggregations String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             RETURN { title: { longest:
-                                        reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(\\"
-                                            RETURN
-                                            CASE size(current) > size(shortest)
+                                        reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
+                                            CASE size(current) > size(aggVar)
                                             WHEN true THEN current
-                                            ELSE shortest
-                                            END AS result
-                                        \\", { current: current, shortest: shortest }, false))
+                                            ELSE aggVar
+                                            END
+                                        )
                                      } }"
         `);
 
@@ -124,21 +122,19 @@ describe("Cypher Aggregations String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
             RETURN { title: { shortest:
-                                        reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(\\"
-                                            RETURN
-                                            CASE size(current) < size(shortest)
+                                        reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
+                                            CASE size(current) < size(aggVar)
                                             WHEN true THEN current
-                                            ELSE shortest
-                                            END AS result
-                                        \\", { current: current, shortest: shortest }, false))
+                                            ELSE aggVar
+                                            END
+                                        )
                                     , longest:
-                                        reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(\\"
-                                            RETURN
-                                            CASE size(current) > size(shortest)
+                                        reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
+                                            CASE size(current) > size(aggVar)
                                             WHEN true THEN current
-                                            ELSE shortest
-                                            END AS result
-                                        \\", { current: current, shortest: shortest }, false))
+                                            ELSE aggVar
+                                            END
+                                        )
                                      } }"
         `);
 
