@@ -43,13 +43,11 @@ describe("CypherBuilder", () => {
     it("Match Where", () => {
         const node = new CypherBuilder.Node({ labels: ["Movie"] });
 
+        const param = new CypherBuilder.Param(1);
         const clause = new CypherBuilder.Match(node)
             .where(
                 and(
-                    or(
-                        gt(new CypherBuilder.Param(1), new CypherBuilder.Param(2)),
-                        lt(new CypherBuilder.Param(1), new CypherBuilder.Param(2))
-                    ),
+                    or(gt(param, new CypherBuilder.Param(2)), lt(param, new CypherBuilder.Param(4))),
                     eq(new CypherBuilder.Param("aa"), new CypherBuilder.Param("bb"))
                 )
             )
@@ -58,7 +56,7 @@ describe("CypherBuilder", () => {
         const queryResult = clause.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "MATCH (this0:\`Movie\`)
-            WHERE (($param0 > $param1 OR $param2 < $param3) AND $param4 = $param5)
+            WHERE (($param0 > $param1 OR $param0 < $param2) AND $param3 = $param4)
             RETURN this0 {.title} AS movie"
         `);
 
@@ -66,10 +64,9 @@ describe("CypherBuilder", () => {
             Object {
               "param0": 1,
               "param1": 2,
-              "param2": 1,
-              "param3": 2,
-              "param4": "aa",
-              "param5": "bb",
+              "param2": 4,
+              "param3": "aa",
+              "param4": "bb",
             }
         `);
     });
