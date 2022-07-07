@@ -71,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
         await driver.close();
     });
 
-    test("should be possible to count connection using list predicates", async () => {
+    test.skip("should be possible to count connection using list predicates", async () => {
         const query = `
         query Genres {
         ${genreType.plural} {

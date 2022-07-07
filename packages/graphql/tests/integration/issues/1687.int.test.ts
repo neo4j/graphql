@@ -71,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/1686", () => {
         await driver.close();
     });
 
-    test("should be able to returns all the genres related to Matrix using connection fields", async () => {
+    test.skip("should be able to returns all the genres related to Matrix using connection fields", async () => {
         const query = `
         query Genres {
             ${genreType.plural}(where: {

@@ -71,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/1686", () => {
         await driver.close();
     });
 
-    test("should be possible to count all the movies connection", async () => {
+    test.skip("should be possible to count all the movies connection", async () => {
         const query = `
         query MoviesConnection {
             ${movieType.operations.connection} {
