@@ -7853,21 +7853,48 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-import-resolver-typescript@npm:3.1.2":
-  version: 3.1.2
-  resolution: "eslint-import-resolver-typescript@npm:3.1.2"
+"eslint-import-resolver-typescript@npm:3.2.4":
+  version: 3.2.4
+  resolution: "eslint-import-resolver-typescript@npm:3.2.4"
   dependencies:
     debug: ^4.3.4
     enhanced-resolve: ^5.10.0
-    get-tsconfig: ^4.1.0
+    get-tsconfig: "npm:@unts/get-tsconfig@^4.1.1"
     globby: ^13.1.2
     is-core-module: ^2.9.0
     is-glob: ^4.0.3
-    synckit: ^0.7.1
+    synckit: ^0.7.2
   peerDependencies:
     eslint: "*"
     eslint-plugin-import: "*"
-  checksum: 932a3f1b29e868a5f7d91aed008a284670efbcb6e13dfb5fc168222e797a4ed8b93c6b00b21b724f720ef465f50ce4644884201cb3bb57c752deff6955d3beb9
+  dependenciesMeta:
+    "@1stg/babel-preset@3.1.2":
+      unplugged: true
+    "@1stg/commitlint-config@3.1.2":
+      unplugged: true
+    "@1stg/common-config@5.2.4":
+      unplugged: true
+    "@1stg/eslint-config@5.2.4":
+      unplugged: true
+    "@1stg/lib-config@7.2.5":
+      unplugged: true
+    "@1stg/lint-staged@3.1.3":
+      unplugged: true
+    "@1stg/markuplint-config@2.1.2":
+      unplugged: true
+    "@1stg/prettier-config@3.4.2":
+      unplugged: true
+    "@1stg/remark-config@4.0.2":
+      unplugged: true
+    "@1stg/simple-git-hooks@0.1.4":
+      unplugged: true
+    "@1stg/tsconfig@2.2.2":
+      unplugged: true
+    "@changesets/changelog-github@0.4.5":
+      unplugged: true
+    "@changesets/cli@2.23.0":
+      unplugged: true
+  checksum: 3417dabb0e0db5faba38a509780422281dd7feddb4f8a88258b229a4135ea6aa53ab9cafec90b1e845d6a5efd78cbfb182961ab62e1df6bd27bf0c0ad1268f68
   languageName: node
   linkType: hard
 
@@ -9010,10 +9037,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"get-tsconfig@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "get-tsconfig@npm:4.1.0"
-  checksum: a1a29cdf53609a1e9e111bf863ea209494c03e425964ed2603e3a2657ed1d38213d4a8e3efbfd945f2ec908fe99b76d3ee87422fac5d8ec4fdd858bbb502efbf
+"get-tsconfig@npm:@unts/get-tsconfig@^4.1.1":
+  version: 4.1.1
+  resolution: "@unts/get-tsconfig@npm:4.1.1"
+  checksum: dff677518c6bb9452aeb96a8d5935d0a93da1671ec17f92a8b1dfedc957447b12a4a1e8cade4b8dbacfef97a7b1761de40787f315ec62eebe65aa20675fc4944
   languageName: node
   linkType: hard
 
@@ -13266,7 +13293,7 @@ __metadata:
     eslint: 8.19.0
     eslint-config-airbnb-typescript: 17.0.0
     eslint-config-prettier: 8.5.0
-    eslint-import-resolver-typescript: 3.1.2
+    eslint-import-resolver-typescript: 3.2.4
     eslint-plugin-eslint-comments: 3.2.0
     eslint-plugin-import: 2.26.0
     eslint-plugin-jest: 26.5.3
@@ -17604,7 +17631,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"synckit@npm:^0.7.1":
+"synckit@npm:^0.7.2":
   version: 0.7.2
   resolution: "synckit@npm:0.7.2"
   dependencies:
