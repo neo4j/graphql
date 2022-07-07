@@ -2,28 +2,30 @@
 
 ## Problem
 
-For some use cases the GraphQL API needs to be secured globally, on the top most level. This would allow or prevent any querying of the API as a whole.
+For some use cases the GraphQL API needs to be secured globally to restrict access to any of the top-level declarations. This is also refered to as API-wide authorization.
 https://www.apollographql.com/docs/apollo-server/security/authentication/#api-wide-authorization
-
-Outside of GraphQL:
-https://www.apollographql.com/docs/apollo-server/security/authentication/#outside-of-graphql
 
 ## Proposed Solution
 
--   config boolean
--   directive?
--   check the user token
+Add a configuration option, a boolean, to the `Neo4jGraphQL` class which allows for an opt-in for global authentication. The default value is `false`.
+For each request (GraphQL query) check the existance of a valid `jwt` token.
+Make sure `noVerify` in `Neo4jGraphQLJWT` is not set to `false`. Only verified JWT tokens can be accepted for global authentication. Throw an error in case `noVerify: false` and `globalAuth: true`.
+When to perform the check?
+During runtime on every request. `WrapResolver` https://github.com/neo4j/graphql/blob/dev/packages/graphql/src/schema/resolvers/wrapper.ts#L41 could be a plausible place to test it.
+What happens if not authenticated?
+Throw `Neo4jGraphQLAuthenticationError` error
 
-enable authentication on the root query type. By providing no role or policy names we’re simply saying the user must be authenticated.
+### Alternative solution
 
-packages/graphql/src/schema/resolvers/wrapper.ts
-packages/graphql/src/classes/Neo4jGraphQL.ts
+A top-level schema directive for `query`, `mutation` or `subscription`.
+Negative: Need to specify it three times, risk to forget to specify it for all three top-level types.
+Positive: Granularity in providing authorization, f.e. can allow for read requests but preventing CUD operations
 
-==> check "is Authenticated" in auth
-
-similar to a global readonly
-
-Feel free to add/remove subheadings below as appropriate:
+```
+extend type Query @authenticatedOnly
+extend type Mutation @authenticatedOnly
+extend type Subscription @authenticatedOnly
+```
 
 ### Usage Examples
 
@@ -33,9 +35,9 @@ What risks might cause us to go over the appetite described above?
 
 ### Security consideration
 
-Please take some time to think about potential security issues/considerations for the proposed solution.
-For example: How can a malicious user abuse this? How can we prevent that in such case?
+Is checking the existance of a `jwt` enough? do we need to check for more information or content in the JWT token itself? Roles?
+Needs to be thourghly tested with integration tests to prevent unauthorized access.
 
 ## Out of Scope
 
-What are we definitely not going to implement in this solution?
+-
