@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type * as neo4j from "neo4j-driver";
 import type { EventEmitter } from "events";
 import type { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
 import type { ResolveTree } from "graphql-parse-resolve-info";
@@ -363,8 +362,8 @@ export type EventMeta = {
         new: Record<string, any>;
     };
     typename: string;
-    id: neo4j.Integer | string | number;
-    timestamp: neo4j.Integer | string | number;
+    id: Integer | string | number;
+    timestamp: Integer | string | number;
 };
 
 /** Serialized subscription event */
