@@ -17,18 +17,21 @@
  * limitations under the License.
  */
 
-import { MatchableElement, MatchParams, MatchPattern } from "../MatchPattern";
+import { MatchableElement, MatchParams, Pattern } from "../Pattern";
 import { CypherEnvironment } from "../Environment";
 import { Where, WhereParams } from "../sub-clauses/Where";
 import { Clause } from "./Clause";
+import { Return } from "./Return";
+import { NodeRef } from "../variables/NodeRef";
 
 export class Match<T extends MatchableElement> extends Clause {
-    private matchPattern: MatchPattern<T>;
+    private pattern: Pattern<T>;
     private whereSubClause: Where | undefined;
+    private returnStatement: Return | undefined;
 
     constructor(variable: T, parameters: MatchParams<T> = {}, parent?: Clause) {
         super(parent);
-        this.matchPattern = new MatchPattern(variable).withParams(parameters);
+        this.pattern = new Pattern(variable).withParams(parameters);
     }
 
     public where(input: WhereParams): this {
@@ -50,17 +53,22 @@ export class Match<T extends MatchableElement> extends Clause {
     }
 
     public cypher(env: CypherEnvironment): string {
-        const nodeCypher = this.matchPattern.getCypher(env);
+        const nodeCypher = this.pattern.getCypher(env);
         let whereCypher = "";
+        let returnCypher = "";
         if (this.whereSubClause) {
             whereCypher = `\n${this.whereSubClause.getCypher(env)}`;
         }
-        return `MATCH ${nodeCypher}${whereCypher}`;
+        if (this.returnStatement) {
+            returnCypher = `\n${this.returnStatement.getCypher(env)}`;
+        }
+        return `MATCH ${nodeCypher}${whereCypher}${returnCypher}`;
     }
 
-    // public return(node: Node, fields?: string[], alias?: string): this {
-    //     const returnStatement = new ReturnStatement(this, [node, fields, alias]);
-    //     this.addStatement(returnStatement);
-    //     return this;
-    // }
+    public return(node: NodeRef, fields?: string[], alias?: string): Return {
+        const returnStatement = new Return([node, fields, alias]);
+        this.addChildren(returnStatement);
+        this.returnStatement = returnStatement;
+        return returnStatement;
+    }
 }

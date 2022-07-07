@@ -49,7 +49,7 @@ type MatchRelationshipParams = {
 
 export type MatchParams<T extends MatchableElement> = T extends NodeRef ? ParamsRecord : MatchRelationshipParams;
 
-export class MatchPattern<T extends MatchableElement> extends CypherASTNode {
+export class Pattern<T extends MatchableElement> extends CypherASTNode {
     public readonly matchElement: T;
     private parameters: MatchParams<T>;
     private options: MatchPatternOptions; // TODO: fix typings, this is not undefined
@@ -82,7 +82,7 @@ export class MatchPattern<T extends MatchableElement> extends CypherASTNode {
         };
     }
 
-    public withParams(parameters: MatchParams<T>): MatchPattern<T> {
+    public withParams(parameters: MatchParams<T>): this {
         this.parameters = parameters;
         return this;
     }

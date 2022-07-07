@@ -26,12 +26,15 @@ describe("CypherBuilder", () => {
     it("Match", () => {
         const node = new CypherBuilder.Node({ labels: ["Movie"] });
 
-        const matchClause = new CypherBuilder.Match(node).where(and(or(gt(1, 2), lt(1, 2)), eq("aa", "bb")));
+        const clause = new CypherBuilder.Match(node)
+            .where(and(or(gt(1, 2), lt(1, 2)), eq("aa", "bb")))
+            .return(node, ["title"], "movie");
 
-        const queryResult = matchClause.build();
+        const queryResult = clause.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "MATCH (this0:\`Movie\`)
-            WHERE ((1 > 2 OR 1 < 2) AND aa = bb)"
+            WHERE ((1 > 2 OR 1 < 2) AND aa = bb)
+            RETURN this0 {.title} AS movie"
         `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
