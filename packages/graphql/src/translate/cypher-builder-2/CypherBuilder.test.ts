@@ -89,9 +89,9 @@ describe("CypherBuilder", () => {
                 labels: ["Movie"],
             });
 
-            const movieId = new CypherBuilder.PropertyRef(movieNode, "id");
-            const movieName = new CypherBuilder.PropertyRef(movieNode, "name");
-            const movieAge = new CypherBuilder.PropertyRef(movieNode, "age");
+            const movieId = movieNode.property("id");
+            const movieName = movieNode.property("name");
+            const movieAge = movieNode.property("age");
 
             const matchQuery = new CypherBuilder.Match(movieNode)
                 .where(

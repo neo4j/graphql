@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { CypherEnvironment } from "./Environment";
+import type { CypherEnvironment } from "./Environment";
 import type { Variable } from "./variables/Variable";
 
 /** Represents a Node reference */
