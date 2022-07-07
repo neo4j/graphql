@@ -18,9 +18,9 @@
  */
 
 import createUpdateAndParams from "./create-update-and-params";
-import { Neo4jGraphQL } from "../classes";
+import type { Neo4jGraphQL } from "../classes";
 import { CallbackBucket } from "../classes/CallbackBucket";
-import { Context } from "../types";
+import type { Context } from "../types";
 import { trimmer } from "../utils";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 

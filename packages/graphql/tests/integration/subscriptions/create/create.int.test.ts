@@ -19,7 +19,7 @@
 
 import { gql } from "apollo-server";
 import { graphql } from "graphql";
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../src";
 import { generateUniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";

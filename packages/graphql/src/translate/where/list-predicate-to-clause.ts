@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { ListPredicate } from "./utils";
+import type { ListPredicate } from "./utils";
 
 export function listPredicateToClause(listPredicate: ListPredicate, matchPattern: string, where: string): string {
     let clause: string;

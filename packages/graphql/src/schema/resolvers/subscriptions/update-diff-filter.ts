@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { SubscriptionsEvent } from "../../../types";
+import type { SubscriptionsEvent } from "../../../types";
 import { compareProperties } from "./utils/compare-properties";
 
 export function updateDiffFilter(event: SubscriptionsEvent): boolean {

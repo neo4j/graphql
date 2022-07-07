@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { CustomEnumField, CustomScalarField, PointField, PrimitiveField, TemporalField } from "../types";
+import type { CustomEnumField, CustomScalarField, PointField, PrimitiveField, TemporalField } from "../types";
 
 interface Fields {
     scalarFields: CustomScalarField[];

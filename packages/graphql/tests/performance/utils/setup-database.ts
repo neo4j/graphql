@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Session } from "neo4j-driver";
+import type { Session } from "neo4j-driver";
 
 const cypherQuery = `
 CREATE (TheMatrix:Movie {title:'The Matrix', released:1999, tagline:'Welcome to the Real World'})

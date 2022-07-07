@@ -18,7 +18,7 @@
  */
 
 import { EventEmitter } from "events";
-import { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "../types";
+import type { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "../types";
 
 /** Default subscriptions plugin for debug */
 export class Neo4jGraphQLSubscriptionsSingleInstancePlugin implements Neo4jGraphQLSubscriptionsPlugin {

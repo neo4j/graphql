@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { Node, Relationship } from "../../classes";
-import { ConnectionWhereArg, Context } from "../../types";
+import type { Node, Relationship } from "../../classes";
+import type { ConnectionWhereArg, Context } from "../../types";
 import createElementWhereAndParams from "./create-element-where-and-params";
-import { ListPredicate } from "./utils";
+import type { ListPredicate } from "./utils";
 
 function createConnectionWhereAndParams({
     whereInput,

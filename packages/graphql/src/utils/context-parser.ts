@@ -1,5 +1,5 @@
 import dotProp from "dot-prop";
-import { Context } from "../types";
+import type { Context } from "../types";
 
 export default class ContextParser {
     public static parseTag(value: string, tagName: "context" | "jwt"): string | undefined {

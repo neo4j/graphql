@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthenticationError, Node } from "../classes";
-import { AuthOperations, BaseField, AuthRule, BaseAuthRule, Context } from "../types";
+import type { Node } from "../classes";
+import { Neo4jGraphQLAuthenticationError } from "../classes";
+import type { AuthOperations, BaseField, AuthRule, BaseAuthRule, Context } from "../types";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import mapToDbProperty from "../utils/map-to-db-property";
 import joinPredicates, { isPredicateJoin, PREDICATE_JOINS } from "../utils/join-predicates";

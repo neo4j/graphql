@@ -18,9 +18,9 @@
  */
 
 import { request } from "graphql-request";
-import * as neo4j from "neo4j-driver";
+import type * as neo4j from "neo4j-driver";
 import { Storage } from "../utils/storage";
-import { LoginPayload, Neo4jDatabase } from "../types";
+import type { LoginPayload, Neo4jDatabase } from "../types";
 import { DEFAULT_DATABASE_NAME, LOCAL_STATE_SELECTED_DATABASE_NAME } from "../constants";
 
 const GET_DATABASES_QUERY = `

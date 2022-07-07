@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import createAuthAndParams from "../create-auth-and-params";
-import { Context } from "../../types";
-import { Node } from "../../classes";
+import type { Context } from "../../types";
+import type { Node } from "../../classes";
 
 export type AggregationAuth = {
     query: string;

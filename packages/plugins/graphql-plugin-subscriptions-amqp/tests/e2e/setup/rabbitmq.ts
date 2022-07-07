@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import amqp from "amqplib";
+import type amqp from "amqplib";
 
 export default function getRabbitConnectionOptions(): amqp.Options.Connect {
     const { RABBITMQ_HOST = "localhost", RABBITMQ_USER = "guest", RABBITMQ_PASSWORD = "guest" } = process.env;

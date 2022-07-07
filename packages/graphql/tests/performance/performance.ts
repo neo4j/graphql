@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import path from "path";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { gql } from "apollo-server";

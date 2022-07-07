@@ -19,8 +19,8 @@
 
 import { haveSharedElement } from "../../../utils/utils";
 import createAuthParam from "../../../translate/create-auth-param";
-import { AuthRule } from "../../../types";
-import { SubscriptionContext } from "./types";
+import type { AuthRule } from "../../../types";
+import type { SubscriptionContext } from "./types";
 
 export class SubscriptionAuth {
     public static validateAuthenticationRule(rule: AuthRule, context: SubscriptionContext): boolean {

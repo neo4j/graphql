@@ -1,6 +1,6 @@
-import { ArgumentNode, DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
-import { FullText, FullTextIndex } from "../../types";
-import { ObjectFields } from "../get-obj-field-meta";
+import type { ArgumentNode, DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
+import type { FullText, FullTextIndex } from "../../types";
+import type { ObjectFields } from "../get-obj-field-meta";
 import parseValueNode from "../parse-value-node";
 
 function parseFulltextDirective({

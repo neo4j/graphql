@@ -18,7 +18,7 @@
  */
 
 import mapToDbProperty from "../../utils/map-to-db-property";
-import { GraphElement } from "../../classes";
+import type { GraphElement } from "../../classes";
 
 /** Maps Neo4jGraphQL Math operator to Cypher symbol */
 const CypherOperatorMap = new Map<string, string>([

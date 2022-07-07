@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql, GraphQLScalarType } from "graphql";
 import { Kind } from "graphql/language";
 import { generate } from "randomstring";
