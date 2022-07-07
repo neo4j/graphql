@@ -37,27 +37,43 @@ export class TestRunner {
     }
 
     public async runTests(tests: Array<Performance.TestInfo>): Promise<Array<Performance.TestDisplayData>> {
-        const results: Array<any> = [];
+        const results: Array<Performance.TestDisplayData> = [];
         for (const test of tests) {
             // eslint-disable-next-line no-await-in-loop -- We want to run tests sequentially
             const perfResult = await this.runPerformanceTest(gql(test.query));
-            results.push({ name: test.name, result: perfResult, file: test.filename });
+            results.push({ name: test.name, result: perfResult, file: test.filename, type: "graphql" });
+        }
+
+        return results;
+    }
+
+    public async runCypherTests(tests: Array<Performance.TestInfo>): Promise<Array<Performance.TestDisplayData>> {
+        const results: Array<Performance.TestDisplayData> = [];
+        for (const test of tests) {
+            // eslint-disable-next-line no-await-in-loop -- We want to run tests sequentially
+            const perfResult = await this.runCypherQuery(test.query);
+            results.push({ name: test.name, result: perfResult, file: test.filename, type: "cypher" });
         }
 
         return results;
     }
 
     private async runPerformanceTest(query: DocumentNode): Promise<Performance.Result> {
+        const req = createJwtRequest("secret", {});
+        const cypherQuery = await translateQuery(this.schema, query, {
+            req,
+        });
+
+        return this.runCypherQuery(cypherQuery.cypher, cypherQuery.params);
+    }
+
+    private async runCypherQuery(cypher: string, params: Record<string, any> = {}): Promise<Performance.Result> {
         const session = this.driver.session();
         try {
-            const req = createJwtRequest("secret", {});
-            const cypherQuery = await translateQuery(this.schema, query, {
-                req,
-            });
-            const profiledQuery = this.wrapQueryInProfile(cypherQuery.cypher);
+            const profiledQuery = this.wrapQueryInProfile(cypher);
 
             const t1 = new Date().getTime();
-            const result = await session.run(profiledQuery, cypherQuery.params);
+            const result = await session.run(profiledQuery, params);
             const t2 = new Date().getTime();
 
             const profiledPlan = result.summary.profile as ProfiledPlan;

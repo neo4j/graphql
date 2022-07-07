@@ -52,6 +52,41 @@ export async function collectTests(
     return tests;
 }
 
+export async function collectCypherTests(
+    rootPath: string
+): Promise<Array<{ query: string; name: string; filename: string }>> {
+    const files = await filesFromDir(rootPath, ".cypher");
+
+    let onlyFilter = false;
+    const onlyRegex = /_only$/i;
+    const skipRegex = /_skip$/i;
+    const testFilesData = await Promise.all(
+        files.map(async (filePath) => {
+            const fileData = await fs.readFile(filePath, "utf-8");
+            const rawQueries = fileData.split(/^#\s?Test:\s/gim);
+            rawQueries.shift();
+            return rawQueries.map((query: string) => {
+                const tokens = query.trim().split("\n");
+                const name = tokens.shift()?.trim() as string;
+                if (name.match(onlyRegex)) onlyFilter = true;
+                const cypher = tokens.join("\n");
+                return {
+                    query: cypher,
+                    name,
+                    filename: path.basename(filePath).split(path.extname(filePath))[0],
+                };
+            });
+        })
+    );
+
+    const tests = testFilesData.flat().filter((t) => !t.name.match(skipRegex));
+
+    if (onlyFilter) {
+        return tests.filter((t) => t.name.match(onlyRegex));
+    }
+    return tests;
+}
+
 async function filesFromDir(startPath: string, filter: string): Promise<string[]> {
     const files = await fs.readdir(startPath);
     const filenames = await Promise.all(
