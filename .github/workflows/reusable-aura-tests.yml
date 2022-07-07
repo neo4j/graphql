@@ -5,12 +5,16 @@ on:
     secrets:
       AURA_FREE_URI:
         required: true
+        description: "URI locating the AuraDB Free instance to test against"
       AURA_FREE_PASSWORD:
         required: true
+        description: "Password of the AuraDB Free instance to test against"
       AURA_PROFESSIONAL_URI:
         required: true
+        description: "URI locating the AuraDB Professional instance to test against"
       AURA_PROFESSIONAL_PASSWORD:
         required: true
+        description: "Password of the AuraDB Professional instance to test against"
 
 jobs:
   aura-teardown:

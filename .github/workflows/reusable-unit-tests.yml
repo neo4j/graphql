@@ -5,6 +5,7 @@ on:
     secrets:
       CODECOV_TOKEN:
         required: true
+        description: "API token for Codecov, if it is available in the current context"
 
 jobs:
   unit-tests:
