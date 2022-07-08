@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { GraphQLResolveInfo } from "graphql";
+import type { GraphQLResolveInfo } from "graphql";
 import { execute } from "../../../utils";
 import { translateRead } from "../../../translate";
-import { Node } from "../../../classes";
-import { Context } from "../../../types";
+import type { Node } from "../../../classes";
+import type { Context } from "../../../types";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 
 export function findResolver({ node }: { node: Node }) {

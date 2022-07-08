@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { RelationshipWhereOperator, WhereOperator } from "./types";
+import type { RelationshipWhereOperator, WhereOperator } from "./types";
 
 export const comparisonMap: Record<Exclude<WhereOperator, RelationshipWhereOperator>, string> = {
     NOT: "=",

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Context, Neo4jGraphQLCallbacks } from "../types";
+import type { Context, Neo4jGraphQLCallbacks } from "../types";
 
 export interface Callback {
     functionName: string;

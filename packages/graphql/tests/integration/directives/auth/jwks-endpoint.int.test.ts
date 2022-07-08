@@ -18,10 +18,11 @@
  */
 
 import { Neo4jGraphQLAuthJWKSPlugin } from "@neo4j/graphql-plugin-auth";
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import createJWKSMock, { JWKSMock } from "mock-jwks";
+import type { JWKSMock } from "mock-jwks";
+import createJWKSMock from "mock-jwks";
 import supertest from "supertest";
 import Koa from "koa";
 import Router from "koa-router";

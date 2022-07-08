@@ -18,16 +18,17 @@
  */
 
 import Debug from "debug";
-import {
+import type {
     DirectiveDefinitionNode,
     DocumentNode,
     EnumTypeDefinitionNode,
     InputObjectTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
-    Kind,
     ObjectTypeDefinitionNode,
     ScalarTypeDefinitionNode,
-    UnionTypeDefinitionNode,
+    UnionTypeDefinitionNode} from "graphql";
+import {
+    Kind
 } from "graphql";
 import { isRootType } from "../utils/is-root-type";
 import { DEBUG_GENERATE } from "../constants";

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql, createSourceEventStream, parse } from "graphql";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";

@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { FieldDefinitionNode, Kind, StringValueNode } from "graphql";
+import type { FieldDefinitionNode, StringValueNode } from "graphql";
+import { Kind } from "graphql";
 import { removeDuplicates } from "../utils/utils";
 
 type IgnoreMeta = {

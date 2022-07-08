@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
-import { GraphQLResolveInfo } from "graphql";
-import { FieldsByTypeName, parseResolveInfo } from "graphql-parse-resolve-info";
+import type { GraphQLResolveInfo } from "graphql";
+import type { FieldsByTypeName} from "graphql-parse-resolve-info";
+import { parseResolveInfo } from "graphql-parse-resolve-info";
 import { execute } from "../../../utils";
 import { translateRead } from "../../../translate";
-import { Node } from "../../../classes";
-import { Context } from "../../../types";
+import type { Node } from "../../../classes";
+import type { Context } from "../../../types";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { fromGlobalId } from "../../../utils/global-ids";
 

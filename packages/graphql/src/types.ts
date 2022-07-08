@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-import * as neo4j from "neo4j-driver";
-import { EventEmitter } from "events";
-import { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
-import { ResolveTree } from "graphql-parse-resolve-info";
-import { Driver, Integer, Session, Transaction } from "neo4j-driver";
-import { Node, Relationship } from "./classes";
-import { RelationshipQueryDirectionOption } from "./constants";
-import { Executor } from "./classes/Executor";
+import type { EventEmitter } from "events";
+import type { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { Driver, Integer, Session, Transaction } from "neo4j-driver";
+import type { Node, Relationship } from "./classes";
+import type { RelationshipQueryDirectionOption } from "./constants";
+import type { Executor } from "./classes/Executor";
 
 export { Node } from "./classes";
 
@@ -364,8 +363,8 @@ export type EventMeta = {
         new: Record<string, any>;
     };
     typename: string;
-    id: neo4j.Integer | string | number;
-    timestamp: neo4j.Integer | string | number;
+    id: Integer | string | number;
+    timestamp: Integer | string | number;
 };
 
 /** Serialized subscription event */

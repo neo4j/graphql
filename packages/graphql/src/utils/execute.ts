@@ -17,10 +17,24 @@
  * limitations under the License.
  */
 
-import { SessionMode, QueryResult } from "neo4j-driver";
+import type { SessionMode, QueryResult, Session, Transaction } from "neo4j-driver";
+import { Neo4jError } from "neo4j-driver";
 import Debug from "debug";
-import { DEBUG_EXECUTE } from "../constants";
-import { Context } from "../types";
+import {
+    Neo4jGraphQLForbiddenError,
+    Neo4jGraphQLAuthenticationError,
+    Neo4jGraphQLConstraintValidationError,
+    Neo4jGraphQLRelationshipValidationError,
+} from "../classes";
+import {
+    AUTH_FORBIDDEN_ERROR,
+    AUTH_UNAUTHENTICATED_ERROR,
+    DEBUG_EXECUTE,
+    RELATIONSHIP_REQUIREMENT_PREFIX,
+} from "../constants";
+import createAuthParam from "../translate/create-auth-param";
+import type { Context, DriverConfig } from "../types";
+import environment from "../environment";
 
 const debug = Debug(DEBUG_EXECUTE);
 

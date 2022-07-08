@@ -18,7 +18,7 @@
  */
 
 import createCreateAndParams from "./create-create-and-params";
-import { Neo4jGraphQL } from "../classes";
+import type { Neo4jGraphQL } from "../classes";
 import { trimmer } from "../utils";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";

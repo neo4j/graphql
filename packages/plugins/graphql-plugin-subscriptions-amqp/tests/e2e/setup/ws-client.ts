@@ -19,7 +19,8 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 import ws from "ws";
-import { Client, createClient } from "graphql-ws";
+import type { Client} from "graphql-ws";
+import { createClient } from "graphql-ws";
 import { EventEmitter } from "events";
 
 export interface WebSocketClient {

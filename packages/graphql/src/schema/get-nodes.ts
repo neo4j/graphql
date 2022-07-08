@@ -17,18 +17,19 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, NamedTypeNode } from "graphql";
-import { Exclude, Node } from "../classes";
-import { NodeDirective } from "../classes/NodeDirective";
-import { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
-import { Auth, FullText, Neo4jGraphQLCallbacks } from "../types";
+import type { DirectiveNode, NamedTypeNode } from "graphql";
+import type { Exclude} from "../classes";
+import { Node } from "../classes";
+import type { NodeDirective } from "../classes/NodeDirective";
+import type { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
+import type { Auth, FullText, Neo4jGraphQLCallbacks } from "../types";
 import getObjFieldMeta from "./get-obj-field-meta";
 import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
 import parseFulltextDirective from "./parse/parse-fulltext-directive";
 import parseNodeDirective from "./parse-node-directive";
 import parseExcludeDirective from "./parse-exclude-directive";
 import getAuth from "./get-auth";
-import { DefinitionNodes } from "./get-definition-nodes";
+import type { DefinitionNodes } from "./get-definition-nodes";
 
 type Nodes = {
     nodes: Node[];

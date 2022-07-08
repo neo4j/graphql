@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../classes";
+import type { Driver } from "neo4j-driver";
+import type { Neo4jGraphQL } from "../classes";
 import {
     CypherConnectComponentsPlanner,
     CypherExpressionEngine,

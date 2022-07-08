@@ -18,7 +18,7 @@
  */
 
 import { graphql } from "graphql";
-import { Driver, Session } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { gql } from "apollo-server";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";

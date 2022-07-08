@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import * as neo4j from "neo4j-driver";
-import { ResolveTree } from "graphql-parse-resolve-info";
+import type * as neo4j from "neo4j-driver";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 import { GraphQLSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { AuthContext, Context } from "../../../src/types";
+import type { AuthContext, Context } from "../../../src/types";
 import { Builder } from "./builder";
 import { Executor } from "../../../src/classes/Executor";
 

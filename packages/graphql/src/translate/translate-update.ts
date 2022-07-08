@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { Node, Relationship } from "../classes";
-import { Context, RelationField, ConnectionField } from "../types";
+import type { Node, Relationship } from "../classes";
+import type { Context, RelationField, ConnectionField } from "../types";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import createUpdateAndParams from "./create-update-and-params";

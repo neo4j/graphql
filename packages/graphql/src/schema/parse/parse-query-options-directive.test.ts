@@ -20,7 +20,7 @@
 /* eslint-disable-next-line import/no-extraneous-dependencies */
 import { gql } from "apollo-server-core";
 import * as neo4j from "neo4j-driver";
-import { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
+import type { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
 import { parseQueryOptionsDirective } from "./parse-query-options-directive";
 import { QueryOptionsDirective } from "../../classes/QueryOptionsDirective";
 

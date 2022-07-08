@@ -18,8 +18,8 @@
  */
 
 import { dedent } from "graphql-compose";
-import { Node } from "../classes";
-import { AuthOperations, Context, GraphQLWhereArg } from "../types";
+import type { Node } from "../classes";
+import type { AuthOperations, Context, GraphQLWhereArg } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createWhereAndParams from "./where/create-where-and-params";
 

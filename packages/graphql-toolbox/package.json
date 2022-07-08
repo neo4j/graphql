@@ -1,5 +1,6 @@
 {
     "name": "@neo4j/graphql-toolbox",
+    "private": true,
     "version": "1.0.2",
     "description": "Developer UI For Neo4j GraphQL",
     "exports": "./dist/main.js",
@@ -37,8 +38,8 @@
     },
     "author": "Neo4j",
     "dependencies": {
-        "@neo4j-ndl/base": "^0.5.0",
-        "@neo4j-ndl/react": "^0.5.0",
+        "@neo4j-ndl/base": "^0.6.0",
+        "@neo4j-ndl/react": "^0.6.0",
         "@neo4j/graphql": "^3.5.0",
         "@neo4j/introspector": "^1.0.1",
         "codemirror": "^5.65.3",
@@ -58,7 +59,7 @@
         "uuid": "^8.3.2"
     },
     "devDependencies": {
-        "@playwright/test": "^1.23.0",
+        "@playwright/test": "1.23.1",
         "@tsconfig/create-react-app": "1.0.2",
         "@types/codemirror": "5.60.5",
         "@types/crypto-js": "4.1.1",

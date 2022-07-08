@@ -1,0 +1,49 @@
+name: "Unit tests"
+
+on:
+  workflow_call:
+    secrets:
+      CODECOV_TOKEN:
+        required: false
+        description: "API token for Codecov, if it is available in the current context"
+
+env:
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+jobs:
+  unit-tests:
+    strategy:
+      matrix:
+        package:
+          - graphql
+          - ogm
+          - introspector
+          - plugins/graphql-plugin-auth
+          - plugins/graphql-plugin-subscriptions-amqp
+        graphql-version:
+          - "^15.0.0"
+          - "^16.0.0"
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Overwrite GraphQL version
+        run: yarn up --exact graphql@${{ matrix.graphql-version }}
+      - name: Run packages/${{ matrix.package }} unit tests
+        run: yarn run test:unit --coverage
+        working-directory: packages/${{ matrix.package }}
+      - if: ${{ env.CODECOV_TOKEN != '' }}
+        name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./packages/${{ matrix.package }}/coverage/
+          flags: ${{ matrix.package }},unit
+          fail_ci_if_error: true

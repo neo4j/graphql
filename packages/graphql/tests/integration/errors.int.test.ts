@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { graphql, GraphQLError } from "graphql";
+import type { GraphQLError } from "graphql";
+import { graphql } from "graphql";
 import { Neo4jGraphQL } from "../../src/classes";
 
 describe("Errors", () => {

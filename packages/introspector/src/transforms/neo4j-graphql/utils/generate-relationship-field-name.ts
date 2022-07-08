@@ -19,7 +19,7 @@
 
 import camelcase from "camelcase";
 import pluralize from "pluralize";
-import { Direction } from "../types";
+import type { Direction } from "../types";
 
 export default function inferRelationshipFieldName(
     relType: string,
