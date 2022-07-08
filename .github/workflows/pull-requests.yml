@@ -95,3 +95,6 @@ jobs:
       - integration-tests-on-prem
 
     runs-on: ubuntu-latest
+
+    steps:
+      - run: "Passed!"
