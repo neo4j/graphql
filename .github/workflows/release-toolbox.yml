@@ -190,7 +190,7 @@ jobs:
           echo "::set-output name=prerelease::$prerelease"
       - name: Build Changelog
         id: github-release
-        uses: mikepenz/release-changelog-builder-action@fe2e48d239b7a46743878cfe2fd2d1e088ae2837
+        uses: mikepenz/release-changelog-builder-action@9628cd4fe09b8829636c8a5baa348ebf317685cc
         with:
           configuration: "config/release-changelog-builder-action/configuration-toolbox.json"
           toTag: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
