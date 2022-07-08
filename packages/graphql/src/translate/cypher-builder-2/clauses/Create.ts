@@ -19,15 +19,19 @@
 
 import { CypherEnvironment } from "../Environment";
 import { Pattern } from "../Pattern";
-import { SetClause, SetParam } from "../sub-clauses/Set";
+import { PropertyRef } from "../PropertyRef";
+import { SetClause } from "../sub-clauses/Set";
 import { NodeRef } from "../variables/NodeRef";
 import { Param } from "../variables/Param";
 import { Clause } from "./Clause";
 import { Return } from "./Return";
 
+type CreateSetParams = [PropertyRef | string, Param<any>];
+
 type Params = Record<string, Param<any>>;
 
 export class Create extends Clause {
+    private node: NodeRef;
     private pattern: Pattern<NodeRef>;
     private setClause: SetClause;
     private returnStatement: Return | undefined;
@@ -36,10 +40,18 @@ export class Create extends Clause {
         super(parent);
         this.pattern = new Pattern(node).withParams(params);
         this.setClause = new SetClause(this);
+        this.node = node;
     }
 
-    public set(...params: SetParam[]): this {
-        this.setClause.addParams(...params);
+    public set(...params: CreateSetParams[]): this {
+        const formattedParams: Array<[PropertyRef, Param<any>]> = params.map(([prop, param]) => {
+            if (typeof prop === "string") {
+                const property = new PropertyRef(this.node, prop);
+                return [property, param];
+            }
+            return [prop, param];
+        });
+        this.setClause.addParams(...formattedParams);
         return this;
     }
 

@@ -43,7 +43,7 @@ export class SetClause extends SubClause {
             .map((param) => {
                 return this.composeParam(env, param);
             })
-            .join("\n");
+            .join(",\n");
 
         return `SET ${paramsStr}`;
     }

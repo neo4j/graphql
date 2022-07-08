@@ -197,65 +197,65 @@ describe("CypherBuilder", () => {
         });
     });
 
-    // describe("Create", () => {
-    //     test("Create Node", () => {
-    //         const idParam = new CypherBuilder.Param("my-id");
-    //         const movieNode = new CypherBuilder.Node({
-    //             labels: ["Movie"],
-    //         });
+    describe("Create", () => {
+        test("Create Node", () => {
+            const idParam = new CypherBuilder.Param("my-id");
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+            });
 
-    //         const createQuery = new CypherBuilder.Create(movieNode, {
-    //             test: new CypherBuilder.Param("test-value"),
-    //             id: idParam,
-    //         })
-    //             .set({ id: idParam })
-    //             .return(movieNode);
+            const createQuery = new CypherBuilder.Create(movieNode, {
+                test: new CypherBuilder.Param("test-value"),
+                id: idParam,
+            })
+                .set([movieNode.property("id"), idParam])
+                .return(movieNode);
 
-    //         const queryResult = createQuery.build();
-    //         expect(queryResult.cypher).toMatchInlineSnapshot(`
-    //             "CREATE (this0:\`Movie\` { test: $param0, id: $param1 })
-    //             SET this0.id = $param1
-    //             RETURN this0"
-    //             `);
+            const queryResult = createQuery.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "CREATE (this0:\`Movie\` { test: $param0, id: $param1 })
+                SET this0.id = $param1
+                RETURN this0"
+                `);
 
-    //         expect(queryResult.params).toMatchInlineSnapshot(`
-    //             Object {
-    //               "param0": "test-value",
-    //               "param1": "my-id",
-    //             }
-    //         `);
-    //     });
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "test-value",
+                  "param1": "my-id",
+                }
+            `);
+        });
 
-    //     test("Create Node with null property", () => {
-    //         const idParam = new CypherBuilder.Param(null);
-    //         const testParam = new CypherBuilder.Param(null);
-    //         const nullStringParam = new CypherBuilder.Param("null");
+        test("Create Node with null property", () => {
+            const idParam = new CypherBuilder.Param(null);
+            const testParam = new CypherBuilder.Param(null);
+            const nullStringParam = new CypherBuilder.Param("null");
 
-    //         const movieNode = new CypherBuilder.Node({
-    //             labels: ["Movie"],
-    //         });
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+            });
 
-    //         const createQuery = new CypherBuilder.Create(movieNode, {
-    //             id: idParam,
-    //         })
-    //             .set({ test: testParam, nullStr: nullStringParam })
-    //             .return(movieNode);
+            const createQuery = new CypherBuilder.Create(movieNode, {
+                id: idParam,
+            })
+                .set(["test", testParam], ["nullStr", nullStringParam])
+                .return(movieNode);
 
-    //         const queryResult = createQuery.build();
-    //         expect(queryResult.cypher).toMatchInlineSnapshot(`
-    //             "CREATE (this0:\`Movie\` { id: NULL })
-    //             SET this0.test = NULL,
-    //             this0.nullStr = $param0
-    //             RETURN this0"
-    //         `);
+            const queryResult = createQuery.build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "CREATE (this0:\`Movie\` { id: NULL })
+                SET this0.test = NULL,
+                this0.nullStr = $param0
+                RETURN this0"
+            `);
 
-    //         expect(queryResult.params).toMatchInlineSnapshot(`
-    //             Object {
-    //               "param0": "null",
-    //             }
-    //         `);
-    //     });
-    // });
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "null",
+                }
+            `);
+        });
+    });
 
     // describe("Merge", () => {
     //     test("Merge node", () => {
