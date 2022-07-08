@@ -190,7 +190,8 @@ export class Executor {
     }
 
     private async sessionRun(query: string, parameters, defaultAccessMode, session): Promise<QueryResult> {
-        const result = await session[`${defaultAccessMode.toLowerCase()}Transaction`](
+        const transactionType = `${defaultAccessMode.toLowerCase()}Transaction`;
+        const result = await session[transactionType](
             (transaction: Transaction) => this.transactionRun(query, parameters, transaction),
             this.getTransactionConfig()
         );
