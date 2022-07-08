@@ -107,4 +107,39 @@ describe("CypherBuilder clauses", () => {
             }
         `);
     });
+
+    it("CALL with with", () => {
+        const node = new CypherBuilder.Node({ labels: ["Movie"] });
+
+        const param = new CypherBuilder.Param(1);
+        const matchClause = new CypherBuilder.Match(node)
+            .where(
+                and(
+                    or(gt(param, new CypherBuilder.Param(2)), lt(param, new CypherBuilder.Param(4))),
+                    eq(new CypherBuilder.Param("aa"), new CypherBuilder.Param("bb"))
+                )
+            )
+            .return(node, ["title"], "movie");
+
+        const clause = new CypherBuilder.Call(matchClause).with(node);
+        const queryResult = clause.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "CALL {
+                WITH this0
+                MATCH (this0:\`Movie\`)
+                WHERE (($param0 > $param1 OR $param0 < $param2) AND $param3 = $param4)
+                RETURN this0 {.title} AS movie
+            }"
+        `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": 1,
+              "param1": 2,
+              "param2": 4,
+              "param3": "aa",
+              "param4": "bb",
+            }
+        `);
+    });
 });

@@ -69,7 +69,7 @@ export class Match<T extends MatchableElement> extends Clause {
         return this;
     }
 
-    public cypher(env: CypherEnvironment): string {
+    protected cypher(env: CypherEnvironment): string {
         const nodeCypher = this.pattern.getCypher(env);
         let whereCypher = "";
         let returnCypher = "";

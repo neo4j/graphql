@@ -31,7 +31,7 @@ export class Return extends Clause {
         this.returnArgs = args;
     }
 
-    public cypher(env: CypherEnvironment): string {
+    protected cypher(env: CypherEnvironment): string {
         let projection = "";
         let alias = "";
         if ((this.returnArgs[1] || []).length > 0) {

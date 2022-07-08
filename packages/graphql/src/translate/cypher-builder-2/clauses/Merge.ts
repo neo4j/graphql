@@ -56,7 +56,7 @@ export class Merge<T extends NodeRef | RelationshipRef> extends Clause {
         return returnStatement;
     }
 
-    public cypher(env: CypherEnvironment): string {
+    protected cypher(env: CypherEnvironment): string {
         const mergeStr = `MERGE ${this.pattern.getCypher(env)}`;
         const onCreateStatement = this.onCreateClause.getCypher(env);
         const separator = onCreateStatement ? "\n" : "";

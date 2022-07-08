@@ -17,31 +17,26 @@
  * limitations under the License.
  */
 
-import type { CypherASTNode } from "../CypherASTNode";
+import type { Call } from "../clauses/Call";
 import type { CypherEnvironment } from "../Environment";
-import type { ComparisonOp } from "../operations/comparison";
-import { and, BooleanOp } from "../operations/boolean";
+import type { PropertyRef } from "../PropertyRef";
+import type { Param } from "../variables/Param";
+import type { Variable } from "../variables/Variable";
 import { SubClause } from "./SubClause";
 
-export type WhereParams = BooleanOp | ComparisonOp;
+export type SetParam = [PropertyRef, Param<any>];
 
-export class Where extends SubClause {
-    private whereParams: WhereParams;
-    protected whereClause = "WHERE";
+/** Represents a WITH statement to import variables into a CALL subquery */
+export class ImportWith extends SubClause {
+    private params: Variable[];
 
-    constructor(parent: CypherASTNode, whereInput: WhereParams) {
+    constructor(parent: Call, params: Variable[] = []) {
         super(parent);
-        this.whereParams = whereInput;
-        this.addChildren(this.whereParams);
-    }
-
-    public and(op: WhereParams): void {
-        this.whereParams = and(this.whereParams, op);
-        this.addChildren(this.whereParams);
+        this.params = params;
     }
 
     protected cypher(env: CypherEnvironment): string {
-        const opStr = this.whereParams.getCypher(env);
-        return `WHERE ${opStr}`;
+        const paramsStr = this.params.map((v) => v.getCypher(env));
+        return `WITH ${paramsStr.join(", ")}`;
     }
 }

@@ -37,7 +37,7 @@ export class SetClause extends SubClause {
         this.params.push(...params);
     }
 
-    public cypher(env: CypherEnvironment): string {
+    protected cypher(env: CypherEnvironment): string {
         if (this.params.length === 0) return "";
         const paramsStr = this.params
             .map((param) => {
