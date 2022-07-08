@@ -17,13 +17,26 @@
  * limitations under the License.
  */
 
-import neo4j from "neo4j-driver";
 import { getDirective, MapperKind, mapSchema } from "@graphql-tools/utils";
 import { graphql, GraphQLSchema } from "graphql";
 import { gql } from "apollo-server";
+import { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
+import Neo4j from "../neo4j";
 
 describe("https://github.com/neo4j/graphql/issues/349", () => {
+    let driver: Driver;
+    let neo4j: Neo4j;
+
+    beforeAll(async () => {
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+    });
+
+    afterAll(async () => {
+        await driver.close();
+    });
+
     function disallowDirective(directiveName: string) {
         return {
             disallowDirectiveTypeDefs: `directive @${directiveName} on FIELD_DEFINITION`,
@@ -63,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                     `,
                 ],
 
-                driver: neo4j.driver("bolt://localhost:7687"),
+                driver,
                 resolvers: { Mutation: { doStuff: () => "OK" } },
             });
 
@@ -78,7 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                         doStuff
                     }
                 `,
-                contextValue: { driver: neo4j.driver("bolt://localhost:7687") },
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.data).toBeNull();
@@ -110,7 +123,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                     `,
                 ],
 
-                driver: neo4j.driver("bolt://localhost:7687"),
+                driver,
                 resolvers: {
                     NestedResult: {
                         stuff: (parent: string) => parent,
@@ -139,7 +152,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                         doStuff
                     }
                 `,
-                contextValue: { driver: neo4j.driver("bolt://localhost:7687") },
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.data).toBeNull();
@@ -154,7 +167,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                         getStuff
                     }
                 `,
-                contextValue: { driver: neo4j.driver("bolt://localhost:7687") },
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.data).toBeNull();
@@ -171,7 +184,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                         }
                     }
                 `,
-                contextValue: { driver: neo4j.driver("bolt://localhost:7687") },
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.data).toBeNull();
@@ -188,7 +201,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                         }
                     }
                 `,
-                contextValue: { driver: neo4j.driver("bolt://localhost:7687") },
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.data).toBeNull();
@@ -213,7 +226,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                 `,
             ],
 
-            driver: neo4j.driver("bolt://localhost:7687"),
+            driver,
             resolvers: { Mutation: { doStuff: () => "OK" } },
         });
 
@@ -225,7 +238,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                         doStuff
                     }
                 `,
-                contextValue: { driver: neo4j.driver("bolt://localhost:7687") },
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(gqlResult.data?.doStuff).toBe("OK");

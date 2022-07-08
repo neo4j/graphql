@@ -5,7 +5,7 @@
     "fixed": [["@neo4j/graphql", "@neo4j/graphql-ogm"]],
     "linked": [],
     "access": "public",
-    "baseBranch": "main",
+    "baseBranch": "dev",
     "updateInternalDependencies": "patch",
     "ignore": []
 }

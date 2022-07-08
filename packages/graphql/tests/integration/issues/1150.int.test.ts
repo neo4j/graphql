@@ -21,7 +21,7 @@ import { graphql, GraphQLSchema } from "graphql";
 import { gql } from "apollo-server";
 import { Driver } from "neo4j-driver";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 
@@ -29,9 +29,11 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
     const secret = "secret";
     let schema: GraphQLSchema;
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const typeDefs = gql`
             type Battery {
@@ -119,10 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
         const res = await graphql({
             schema,
             source: query,
-            contextValue: {
-                driver,
-                req,
-            },
+            contextValue: neo4j.getContextValues({ req }),
         });
 
         expect(res.errors).toBeUndefined();

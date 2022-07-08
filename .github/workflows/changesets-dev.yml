@@ -25,7 +25,7 @@ jobs:
         run: yarn
 
       - name: Create Release Pull Request
-        uses: changesets/action@2a025e8ab1cfa4312c2868cb6aa3cd3b473b84bf
+        uses: changesets/action@6a46d2c28377497e64763ba5f1faeabbd3d88c33
         with:
           title: changesets for branch `dev`
         env:

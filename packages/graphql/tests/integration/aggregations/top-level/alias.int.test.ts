@@ -20,22 +20,24 @@
 import { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
 
 describe("aggregations-top_level-alias", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let typeMovie: UniqueType;
     let session: Session;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
-    beforeEach(() => {
+    beforeEach(async () => {
         typeMovie = generateUniqueType("Movie");
-        session = driver.session();
+        session = await neo4j.getSession();
     });
 
     afterEach(async () => {
@@ -47,8 +49,6 @@ describe("aggregations-top_level-alias", () => {
     });
 
     test("should perform many aggregations while aliasing each field and return correct data", async () => {
-        const session = driver.session();
-
         const typeDefs = `
             type ${typeMovie} {
                 testString: ID!
@@ -109,7 +109,7 @@ describe("aggregations-top_level-alias", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             if (gqlResult.errors) {

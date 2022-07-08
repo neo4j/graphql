@@ -24,38 +24,17 @@ const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localh
 export class Login extends Screen {
     public async setUsername(username: string) {
         await this.page.waitForSelector("[data-test-login-username]");
-        await this.page.$eval(
-            "[data-test-login-username]",
-            (el, injected) => {
-                // @ts-ignore - Find a way to type this
-                el.value = injected;
-            },
-            username
-        );
+        await this.page.fill("[data-test-login-username]", username);
     }
 
     public async setPassword(password: string) {
         await this.page.waitForSelector("[data-test-login-password]");
-        await this.page.$eval(
-            "[data-test-login-password]",
-            (el, injected) => {
-                // @ts-ignore - Find a way to type this
-                el.value = injected;
-            },
-            password
-        );
+        await this.page.fill("[data-test-login-password]", password);
     }
 
     public async setURL(url: string) {
         await this.page.waitForSelector("[data-test-login-url]");
-        await this.page.$eval(
-            "[data-test-login-url]",
-            (el, injected) => {
-                // @ts-ignore - Find a way to type this
-                el.value = injected;
-            },
-            url
-        );
+        await this.page.fill("[data-test-login-url]", url);
     }
 
     public async submit() {
@@ -67,11 +46,16 @@ export class Login extends Screen {
         await this.page.waitForSelector("[data-test-schema-editor-build-button]");
     }
 
-    public async login(username: string = NEO_USER, password: string = NEO_PASSWORD, url: string = NEO_URL,) {
+    public async login(username: string = NEO_USER, password: string = NEO_PASSWORD, url: string = NEO_URL) {
         await this.setUsername(username);
         await this.setPassword(password);
         await this.setURL(url);
         await this.submit();
         await this.awaitSuccess();
+    }
+
+    public async logout() {
+        await this.page.waitForSelector("[data-test-topbar-disconnect-button]");
+        await this.page.click("[data-test-topbar-disconnect-button]");
     }
 }

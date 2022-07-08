@@ -35,7 +35,7 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - uses: reviewdog/action-eslint@v1
+      - uses: reviewdog/action-eslint@d3395027ea2cfc5cf8f460b1ea939b6c86fea656
         with:
           fail_on_error: true
           eslint_flags: "."
@@ -55,7 +55,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v2
+      - uses: dorny/paths-filter@8c7f485a57f7cad3483dcc0fdf36122a0542f200
         id: filter
         with:
           list-files: shell

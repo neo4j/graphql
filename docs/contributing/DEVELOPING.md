@@ -56,9 +56,9 @@ yarn install
 [Visual Studio Code](https://code.visualstudio.com/) comes highly recommended
 for working in this repository, and we additionally recommend the following extensions:
 
-* [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-* [Jest](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest)
-* [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+-   [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+-   [Jest](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest)
+-   [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
 The Jest extension should automatically detect the tests for this repository and
 watch them in the Status Bar.
@@ -132,10 +132,11 @@ npm run test-docker
 ### Performance
 
 `packages/graphql` has a performance benchmark built in. To run it:
+
 1. Go to `packages/graphql`
 2. Run `yarn performance`
 
-All `.graphql` files in `tests/performance` are part of the performance suite. To skip or run a test, append `_skip` or `_only` to the query, e.g.:
+All `.graphql` files in `tests/performance/graphql` are part of the performance suite. To skip or run a test, append `_skip` or `_only` to the query, e.g.:
 
 ```graphql
 query SimpleUnionQuery_only {
@@ -155,7 +156,9 @@ query SimpleUnionQuery_only {
 
 To update the file `performance.json`, with the results of the performance test, run `yarn performance -u`
 
+## Running with Cypher
 
+The performance tests can also run raw Cypher, to enable it, run `yarn performance --cypher`. Cypher queries must be located at `tests/performance/cypher`
 
 ## Linting/formatting
 
@@ -167,8 +170,8 @@ adhere to our linting and formatting rules.
 For the sake of completeness, add an entry for the new project into the following
 files in the root of the repository:
 
-* `tsconfig.json` (`references` entry)
-* `jest.config.base.js` (`moduleNameMapper` entry)
+-   `tsconfig.json` (`references` entry)
+-   `jest.config.base.js` (`moduleNameMapper` entry)
 
 ### Dependencies within the monorepo
 
@@ -207,10 +210,10 @@ like:
 
 The real key entries here are:
 
-* `baseUrl` - for all of the relative references in this file, this will tell
-`tsc` where to start from
-* `paths` - this will translate `import` statements in code to the relative dependency
-* `references` - gives TypeScript "permission" to accesss the projects at these paths
+-   `baseUrl` - for all of the relative references in this file, this will tell
+    `tsc` where to start from
+-   `paths` - this will translate `import` statements in code to the relative dependency
+-   `references` - gives TypeScript "permission" to accesss the projects at these paths
 
 Finally, it is highly likely that Jest will also need access to this internal
 dependency, so `packages/project/jest.config.js` will need to look like:
