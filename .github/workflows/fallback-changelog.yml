@@ -94,7 +94,7 @@ jobs:
           echo "::set-output name=prerelease::$prerelease"
       - name: Build Changelog
         id: github-release
-        uses: mikepenz/release-changelog-builder-action@9628cd4fe09b8829636c8a5baa348ebf317685cc
+        uses: mikepenz/release-changelog-builder-action@401210947fa212918c4d4f2fa2c82e0ec94a0a79
         with:
           configuration: "config/release-changelog-builder-action/configuration-${{ steps.get-label.outputs.label }}.json"
           toTag: "@neo4j/${{ matrix.package }}@${{ env.VERSION }}"
