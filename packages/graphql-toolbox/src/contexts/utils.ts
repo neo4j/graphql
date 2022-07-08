@@ -145,7 +145,7 @@ export const getDatabases = async (driver: neo4j.Driver): Promise<Neo4jDatabase[
     }
 };
 
-const getUrlSearchParam = (paramName: string): string | null => {
+export const getUrlSearchParam = (paramName: string): string | null => {
     const queryString = window.location.search;
     if (!queryString) return null;
     const urlParams = new URLSearchParams(queryString);
@@ -154,14 +154,20 @@ const getUrlSearchParam = (paramName: string): string | null => {
 
 export const getConnectUrlSearchParamValue = (): {
     url: string;
-    username: string;
+    username: string | null;
     protocol: string;
 } | null => {
     const dbmsParam = getUrlSearchParam(CONNECT_URL_PARAM_NAME as string);
     if (!dbmsParam) return null;
-    const [protocol, username, host] = dbmsParam.split(/:\/\/|@/);
-    if (!protocol || !username || !host) return null;
-    return { protocol, username, url: `${protocol}://${host}` };
+
+    const [protocol, host] = dbmsParam.split(/:\/\//);
+    if (!protocol || !host) return null;
+
+    const [username, href] = host.split(/@/);
+    if (!username || !href) {
+        return { protocol, username: null, url: `${protocol}://${host}` };
+    }
+    return { protocol, username, url: `${protocol}://${href}` };
 };
 
 export const resolveSelectedDatabaseName = (databases: Neo4jDatabase[]): string => {

@@ -65,6 +65,19 @@ describe("URL query parameters", () => {
         expect(connectURI).toEqual("bolt+s://abcd22.databases.neo4j.io");
     });
 
+    test("should pre-fill connection URI input field with values from url query parameter, no username provided in query parameter", async ({
+        page,
+    }) => {
+        await page.goto("/?connectURL=bolt%2Bs://abcd22.databases.neo4j.io");
+        const login = new Login(page);
+
+        const username = await login.getUsername();
+        const connectURI = await login.getURL();
+
+        expect(username).toEqual("neo4j");
+        expect(connectURI).toEqual("bolt+s://abcd22.databases.neo4j.io");
+    });
+
     test("should select the database from provided url query parameter", async ({ page, topBarPage }) => {
         await page.goto(`/?db=${DATABASE_NAME}`);
 
@@ -72,7 +85,7 @@ describe("URL query parameters", () => {
         await login.login();
 
         // We need some waiting time after loading the application for a dbms query checking for available databases to resolve.
-        await page.waitForTimeout(1000);
+        await page.waitForTimeout(2000);
 
         const selectedDatabase = await topBarPage.getSelectedDatabase();
 
