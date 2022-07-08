@@ -18,7 +18,7 @@
  */
 
 import { omitFields } from "../../../src/utils/utils";
-import * as Performance from "../types";
+import type * as Performance from "../types";
 
 enum TTYColors {
     yellow = "\x1b[33m",

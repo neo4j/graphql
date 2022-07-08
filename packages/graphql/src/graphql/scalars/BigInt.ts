@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
+import type { ValueNode } from "graphql";
+import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
 import { int, isInt } from "neo4j-driver";
 
 export const GraphQLBigInt = new GraphQLScalarType({

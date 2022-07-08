@@ -18,7 +18,7 @@
  */
 
 import camelCase from "camelcase";
-import {
+import type {
     ObjectTypeDefinitionNode,
     NamedTypeNode,
     ListTypeNode,

@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import { GraphQLResolveInfo, GraphQLUnionType } from "graphql";
+import type { GraphQLResolveInfo} from "graphql";
+import { GraphQLUnionType } from "graphql";
 import { execute } from "../../../utils";
-import { ConnectionField, Context, CypherField } from "../../../types";
+import type { ConnectionField, Context, CypherField } from "../../../types";
 import { graphqlArgsToCompose } from "../../to-compose";
 import createAuthAndParams from "../../../translate/create-auth-and-params";
 import createAuthParam from "../../../translate/create-auth-param";

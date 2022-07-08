@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { Driver, Session } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import Debug from "debug";
-import Node from "../Node";
-import { DriverConfig } from "../..";
+import type Node from "../Node";
+import type { DriverConfig } from "../..";
 import { DEBUG_EXECUTE } from "../../constants";
 
 const debug = Debug(DEBUG_EXECUTE);

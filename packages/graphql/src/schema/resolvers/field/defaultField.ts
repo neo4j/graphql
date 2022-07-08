@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { GraphQLResolveInfo } from "graphql";
+import type { GraphQLResolveInfo } from "graphql";
 
 /**
  * Based on the default field resolver used by graphql-js that accounts for aliased fields

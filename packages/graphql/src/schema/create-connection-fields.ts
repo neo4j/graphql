@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import { GraphQLResolveInfo } from "graphql";
-import { InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
-import { Node, Relationship } from "../classes";
-import { ConnectionField, ConnectionQueryArgs } from "../types";
-import { ObjectFields } from "./get-obj-field-meta";
+import type { GraphQLResolveInfo } from "graphql";
+import type { InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import type { Node} from "../classes";
+import { Relationship } from "../classes";
+import type { ConnectionField, ConnectionQueryArgs } from "../types";
+import type { ObjectFields } from "./get-obj-field-meta";
 import getSortableFields from "./get-sortable-fields";
 import { addDirectedArgument } from "./directed-argument";
 import { connectionFieldResolver } from "./pagination";

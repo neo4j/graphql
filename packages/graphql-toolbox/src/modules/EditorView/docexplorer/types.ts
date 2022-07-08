@@ -5,8 +5,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { MouseEvent } from "react";
-import {
+import type { MouseEvent } from "react";
+import type {
     GraphQLField,
     GraphQLInputField,
     GraphQLArgument,

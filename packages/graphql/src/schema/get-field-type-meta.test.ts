@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { parse, ObjectTypeDefinitionNode } from "graphql";
+import type { ObjectTypeDefinitionNode } from "graphql";
+import { parse } from "graphql";
 import getFieldTypeMeta from "./get-field-type-meta";
 
 describe("getFieldTypeMeta", () => {

@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import { FieldNode, GraphQLResolveInfo } from "graphql";
-import { SchemaComposer } from "graphql-compose";
+import type { FieldNode, GraphQLResolveInfo } from "graphql";
+import type { SchemaComposer } from "graphql-compose";
 import { execute } from "../../../utils";
 import { translateUpdate } from "../../../translate";
-import { Node } from "../../../classes";
-import { Context } from "../../../types";
+import type { Node } from "../../../classes";
+import type { Context } from "../../../types";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { publishEventsToPlugin } from "../../subscriptions/publish-events-to-plugin";
 

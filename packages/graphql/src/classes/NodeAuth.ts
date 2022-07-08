@@ -18,7 +18,7 @@
  */
 
 import { asArray, haveSharedElement } from "../utils/utils";
-import { Auth, AuthOperations, AuthRule } from "../types";
+import type { Auth, AuthOperations, AuthRule } from "../types";
 
 /** Helper class for a node auth directive */
 export class NodeAuth implements Auth {

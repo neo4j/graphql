@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { FieldDefinitionNode } from "graphql";
+import type { FieldDefinitionNode } from "graphql";
 import getCypherMeta from "./get-cypher-meta";
 
 describe("getCypherMeta", () => {

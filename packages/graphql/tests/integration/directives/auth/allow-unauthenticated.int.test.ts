@@ -20,7 +20,7 @@
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { Socket } from "net";
 import { graphql } from "graphql";
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { IncomingMessage } from "http";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DocumentNode, Source } from "graphql";
+import type { DocumentNode, Source } from "graphql";
 
 /** Returns a valid source for graphql from a gql query */
 export function getQuerySource(query: DocumentNode): Source {

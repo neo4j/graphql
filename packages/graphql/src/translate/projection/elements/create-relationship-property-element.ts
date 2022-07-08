@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
-import Relationship from "../../../classes/Relationship";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+import type Relationship from "../../../classes/Relationship";
 import mapToDbProperty from "../../../utils/map-to-db-property";
 import { createDatetimeElement } from "./create-datetime-element";
 import createPointElement from "./create-point-element";

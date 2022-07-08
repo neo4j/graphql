@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 
-import { GraphQLResolveInfo } from "graphql";
-import { InputTypeComposer, SchemaComposer, upperFirst } from "graphql-compose";
-import { PageInfo } from "graphql-relay";
+import type { GraphQLResolveInfo } from "graphql";
+import type { InputTypeComposer, SchemaComposer} from "graphql-compose";
+import { upperFirst } from "graphql-compose";
+import type { PageInfo } from "graphql-relay";
 import { execute } from "../../../utils";
 import { translateRead } from "../../../translate";
-import { Node } from "../../../classes";
-import { Context } from "../../../types";
+import type { Node } from "../../../classes";
+import type { Context } from "../../../types";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { isNeoInt } from "../../../utils/utils";
 import { createConnectionWithEdgeProperties } from "../../pagination";

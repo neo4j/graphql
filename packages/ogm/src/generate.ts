@@ -19,11 +19,11 @@
 
 import { codegen } from "@graphql-codegen/core";
 import * as typescriptPlugin from "@graphql-codegen/typescript";
-import { Types } from "@graphql-codegen/plugin-helpers";
+import type { Types } from "@graphql-codegen/plugin-helpers";
 import * as fs from "fs";
 import * as graphql from "graphql";
 import prettier from "prettier";
-import { OGM } from "./index";
+import type { OGM } from "./index";
 import { getReferenceNode } from "./utils";
 import { upperFirst } from "./utils/upper-first";
 
