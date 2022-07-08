@@ -18,7 +18,7 @@
  */
 
 import createWhereAndParams from "./create-where-and-params";
-import { Context } from "../../types";
+import type { Context } from "../../types";
 import { ContextBuilder } from "../../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
 

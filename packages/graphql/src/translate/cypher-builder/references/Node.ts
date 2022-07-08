@@ -18,7 +18,7 @@
  */
 
 import { escapeLabel } from "../utils";
-import { CypherVariable, WhereElement, WhereParams } from "./References";
+import type { CypherVariable, WhereElement, WhereParams } from "./References";
 
 type NodeInput = {
     labels?: Array<string>;

@@ -19,18 +19,20 @@
 
 import { gql } from "apollo-server";
 import { graphql } from "graphql";
-import { Driver, Session } from "neo4j-driver";
-import neo4j from "../neo4j";
+import type { Driver, Session } from "neo4j-driver";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { getQuerySource } from "../../utils/get-query-source";
 
 describe("https://github.com/neo4j/graphql/issues/619", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
         const typeDefs = gql`
             type FooIsARandomName {
                 id: ID @unique
@@ -49,8 +51,8 @@ describe("https://github.com/neo4j/graphql/issues/619", () => {
         neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
-    beforeEach(() => {
-        session = driver.session();
+    beforeEach(async () => {
+        session = await neo4j.getSession();
     });
 
     afterEach(async () => {
@@ -84,7 +86,7 @@ describe("https://github.com/neo4j/graphql/issues/619", () => {
         const gqlResult: any = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(mutation),
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();

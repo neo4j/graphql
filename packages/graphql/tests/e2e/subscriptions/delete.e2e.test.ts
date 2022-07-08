@@ -17,16 +17,19 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import supertest, { Response } from "supertest";
+import type { Driver } from "neo4j-driver";
+import type { Response } from "supertest";
+import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
-import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
+import type { TestGraphQLServer } from "../setup/apollo-server";
+import { ApolloTestServer } from "../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../setup/ws-client";
-import neo4j from "../setup/neo4j";
+import Neo4j from "../setup/neo4j";
 
 describe("Delete Subscription", () => {
+    let neo4j: Neo4j;
     let driver: Driver;
 
     const typeMovie = generateUniqueType("Movie");
@@ -41,11 +44,17 @@ describe("Delete Subscription", () => {
          }
          `;
 
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
+            config: {
+                driverConfig: {
+                    database: neo4j.getIntegrationDatabaseName(),
+                },
+            },
             plugins: {
                 subscriptions: new TestSubscriptionsPlugin(),
             },

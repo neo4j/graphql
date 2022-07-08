@@ -17,14 +17,15 @@
  * limitations under the License.
  */
 
-import { Driver, Session } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { generateUniqueType } from "../../../utils/graphql-types";
 
 describe("Field Level Aggregations Graphql alias", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
     let typeDefs: string;
 
@@ -34,7 +35,8 @@ describe("Field Level Aggregations Graphql alias", () => {
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         typeDefs = `
         type ${typeMovie.name} {
@@ -56,7 +58,7 @@ describe("Field Level Aggregations Graphql alias", () => {
         `;
 
         neoSchema = new Neo4jGraphQL({ typeDefs });
-        session = driver.session();
+        session = await neo4j.getSession();
         await session.run(`CREATE (m:${typeMovie.name} { title: "Terminator"})<-[:ACTED_IN { screentime: 60, character: "Terminator" }]-(:${typeActor.name} { name: "Arnold", age: 54, born: datetime('1980-07-02')})
         CREATE (m)<-[:ACTED_IN { screentime: 120, character: "Sarah" }]-(:${typeActor.name} {name: "Linda", age:37, born: datetime('2000-02-02')})`);
     });
@@ -91,7 +93,7 @@ describe("Field Level Aggregations Graphql alias", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -129,7 +131,7 @@ describe("Field Level Aggregations Graphql alias", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();

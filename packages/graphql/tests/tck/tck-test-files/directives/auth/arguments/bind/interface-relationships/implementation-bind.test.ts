@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../../../../../utils/tck-test-utils";
 import { createJwtRequest } from "../../../../../../../utils/create-jwt-request";

@@ -18,8 +18,8 @@
  */
 
 import { mergeTypeDefs } from "@graphql-tools/merge";
-import { TypeSource } from "@graphql-tools/utils";
-import { DocumentNode } from "graphql";
+import type { TypeSource } from "@graphql-tools/utils";
+import type { DocumentNode } from "graphql";
 
 export function getDocument(typeDefs: TypeSource): DocumentNode {
     return mergeTypeDefs(typeDefs);

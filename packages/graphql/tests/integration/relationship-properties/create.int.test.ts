@@ -17,18 +17,20 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("Relationship properties - create", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -56,7 +58,7 @@ describe("Relationship properties - create", () => {
             typeDefs,
         });
 
-        const session = driver.session();
+        const session = await neo4j.getSession();
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
         const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
@@ -94,7 +96,7 @@ describe("Relationship properties - create", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { movieTitle, actorName, screenTime },
         });
         expect(result.errors).toBeFalsy();
@@ -142,7 +144,7 @@ describe("Relationship properties - create", () => {
             typeDefs,
         });
 
-        const session = driver.session();
+        const session = await neo4j.getSession();
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
         const words = Math.floor((Math.random() * 1e3) / Math.random());
@@ -179,7 +181,7 @@ describe("Relationship properties - create", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source,
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { movieTitle, actorName, words },
         });
         expect(result.errors).toBeFalsy();

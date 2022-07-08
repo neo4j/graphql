@@ -17,18 +17,20 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import isUUID from "is-uuid";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("@id directive", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -36,7 +38,7 @@ describe("@id directive", () => {
     });
 
     test("should create a movie with autogenerate id", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Movie {
@@ -62,7 +64,7 @@ describe("@id directive", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -77,7 +79,7 @@ describe("@id directive", () => {
     });
 
     test("should create a movie with autogenerate id when field inherited from interface", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             interface MovieInterface {
@@ -107,7 +109,7 @@ describe("@id directive", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -122,7 +124,7 @@ describe("@id directive", () => {
     });
 
     test("should create a movie with autogenerate id and a nested genre with autogenerate id", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Genre {
@@ -166,7 +168,7 @@ describe("@id directive", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -182,7 +184,7 @@ describe("@id directive", () => {
     });
 
     test("should autogenerate an ID for a relationship property", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Actor {
@@ -233,7 +235,7 @@ describe("@id directive", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: { driver },
+                contextValue: neo4j.getContextValues(),
                 variableValues: { title, name },
             });
 

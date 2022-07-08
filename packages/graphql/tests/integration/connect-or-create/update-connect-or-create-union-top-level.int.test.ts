@@ -18,15 +18,17 @@
  */
 
 import { gql } from "apollo-server";
-import { Driver, Session, Integer } from "neo4j-driver";
-import { graphql, DocumentNode } from "graphql";
-import neo4j from "../neo4j";
+import type { Driver, Session, Integer } from "neo4j-driver";
+import type { DocumentNode } from "graphql";
+import { graphql } from "graphql";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { getQuerySource } from "../../utils/get-query-source";
 
 describe("Update -> ConnectOrCreate union top level", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
     let typeDefs: DocumentNode;
 
@@ -37,7 +39,8 @@ describe("Update -> ConnectOrCreate union top level", () => {
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         typeDefs = gql`
         type ${typeMovie.name} {
@@ -65,8 +68,8 @@ describe("Update -> ConnectOrCreate union top level", () => {
         neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
-    beforeEach(() => {
-        session = driver.session();
+    beforeEach(async () => {
+        session = await neo4j.getSession();
     });
 
     afterEach(async () => {
@@ -119,7 +122,7 @@ describe("Update -> ConnectOrCreate union top level", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeActor.operations.update][typeActor.plural]).toEqual([
@@ -208,7 +211,7 @@ describe("Update -> ConnectOrCreate union top level", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult as any).data[typeActor.operations.update][typeActor.plural]).toEqual([

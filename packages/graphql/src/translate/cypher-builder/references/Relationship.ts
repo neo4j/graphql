@@ -18,8 +18,8 @@
  */
 
 import { escapeLabel } from "../utils";
-import { Node } from "./Node";
-import { CypherVariable, WhereElement, WhereParams } from "./References";
+import type { Node } from "./Node";
+import type { CypherVariable, WhereElement, WhereParams } from "./References";
 
 export type RelationshipInput = {
     source: Node;

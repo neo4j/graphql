@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { CallbackBucket } from "../classes/CallbackBucket";
-import { Relationship } from "../classes";
+import type { CallbackBucket } from "../classes/CallbackBucket";
+import type { Relationship } from "../classes";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
 

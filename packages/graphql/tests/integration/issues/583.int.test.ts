@@ -18,16 +18,18 @@
  */
 
 import gql from "graphql-tag";
-import { graphql, GraphQLSchema } from "graphql";
-import { Driver } from "neo4j-driver";
+import type { GraphQLSchema } from "graphql";
+import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 
 const testLabel = generate({ charset: "alphabetic" });
 
 describe("583", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let schema: GraphQLSchema;
 
     const typeDefs = gql`
@@ -82,8 +84,9 @@ describe("583", () => {
     };
 
     beforeAll(async () => {
-        driver = await neo4j();
-        const session = driver.session();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         schema = await neoSchema.getSchema();
@@ -110,7 +113,7 @@ describe("583", () => {
     });
 
     afterAll(async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         await session.run(`MATCH (node:${testLabel}) DETACH DELETE node`);
         await session.close();
@@ -137,7 +140,7 @@ describe("583", () => {
             schema,
             source: query.loc!.source,
             variableValues: { actorId: actor.id },
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();

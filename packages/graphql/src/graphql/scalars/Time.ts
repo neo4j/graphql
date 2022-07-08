@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
+import type { ValueNode } from "graphql";
+import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
 import neo4j from "neo4j-driver";
 
 export const TIME_REGEX =

@@ -18,10 +18,10 @@
  */
 
 import { CypherASTNode } from "../CypherASTNode";
-import { CypherContextInterface } from "../CypherContext";
-import { CypherResult } from "../types";
-import { WhereInput, WhereStatement } from "./Where";
+import type { WhereInput, WhereStatement } from "./Where";
 import { WithStatement, WithStatementArgs } from "./With";
+import type { CypherContextInterface } from "../CypherContext";
+import type { CypherResult } from "../types";
 
 /** Represents a statement to be defined by the user, adding build method to the cypher ast */
 export class Query extends CypherASTNode {

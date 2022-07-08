@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
-import { BaseField } from "../../types";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { BaseField } from "../../types";
 import { removeDuplicates } from "../../utils/utils";
 
 /** Finds a resolve tree of selection based on field name */

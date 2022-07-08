@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import { graphql, GraphQLSchema } from "graphql";
-import { Driver } from "neo4j-driver";
-import neo4j from "../neo4j";
+import type { GraphQLSchema } from "graphql";
+import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 
@@ -28,20 +29,20 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
     const testBooking = generateUniqueType("Booking");
 
     let schema: GraphQLSchema;
+    let neo4j: Neo4j;
     let driver: Driver;
 
     async function graphqlQuery(query: string) {
         return graphql({
             schema,
             source: query,
-            contextValue: {
-                driver,
-            },
+            contextValue: neo4j.getContextValues(),
         });
     }
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const typeDefs = `
             type ${testTenant} {
@@ -76,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
             }
         `;
 
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         await session.run(`
             CREATE (:${testTenant} { id: "12", name: "Tenant1" })<-[:HOSTED_BY]-(:${testBooking} { id: "212" })

@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import { graphql, GraphQLSchema } from "graphql";
+import type { Driver } from "neo4j-driver";
+import type { GraphQLSchema } from "graphql";
+import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { gql } from "apollo-server";
-import neo4j from "./neo4j";
+import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { generateUniqueType } from "../utils/graphql-types";
 
@@ -29,6 +30,7 @@ const testLabel = generate({ charset: "alphabetic" });
 
 describe("sort", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let schema: GraphQLSchema;
 
     const movieType = generateUniqueType("Movie");
@@ -118,8 +120,9 @@ describe("sort", () => {
     ];
 
     beforeAll(async () => {
-        driver = await neo4j();
-        const session = driver.session();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         schema = await neoSchema.getSchema();
@@ -143,7 +146,7 @@ describe("sort", () => {
     });
 
     afterAll(async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
         await session.close();
         await driver.close();
@@ -155,7 +158,7 @@ describe("sort", () => {
                 graphql({
                     schema,
                     source,
-                    contextValue: { driver },
+                    contextValue: neo4j.getContextValues(),
                     variableValues: { movieIds: movies.map(({ id }) => id), direction },
                 });
 
@@ -275,7 +278,7 @@ describe("sort", () => {
                 graphql({
                     schema,
                     source,
-                    contextValue: { driver },
+                    contextValue: neo4j.getContextValues(),
                     variableValues: { movieIds: movies.map(({ id }) => id), direction },
                 });
 
@@ -415,7 +418,7 @@ describe("sort", () => {
             graphql({
                 schema,
                 source,
-                contextValue: { driver },
+                contextValue: neo4j.getContextValues(),
                 variableValues: { movieId: movies[1].id, actorIds: actors.map(({ id }) => id), direction },
             });
 
@@ -700,7 +703,7 @@ describe("sort", () => {
                 graphql({
                     schema,
                     source,
-                    contextValue: { driver },
+                    contextValue: neo4j.getContextValues(),
                     variableValues: { actorId: actors[0].id, direction },
                 });
             describe("with field in selection set", () => {
@@ -847,7 +850,7 @@ describe("sort", () => {
             graphql({
                 schema,
                 source,
-                contextValue: { driver },
+                contextValue: neo4j.getContextValues(),
                 variableValues: { actorId: actors[0].id, direction },
             });
         describe("node", () => {

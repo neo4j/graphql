@@ -17,19 +17,22 @@
  * limitations under the License.
  */
 
-import { Driver, int } from "neo4j-driver";
+import type { Driver} from "neo4j-driver";
+import { int } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("Float", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     const imdbRatingFloat = 4.0;
     const imdbRatingInt = 4;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -37,7 +40,7 @@ describe("Float", () => {
     });
 
     test("should create a movie with float (as ast value)", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Movie {
@@ -73,7 +76,7 @@ describe("Float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -99,7 +102,7 @@ describe("Float", () => {
     });
 
     test("should create a movie with float (as variable)", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Movie {
@@ -135,7 +138,7 @@ describe("Float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: {
                     imdbRating_float: imdbRatingFloat,
                     imdbRating_int: imdbRatingInt,
@@ -168,7 +171,7 @@ describe("Float", () => {
         const float = 4.0;
         const floats = [float, float, float];
 
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Movie {
@@ -206,7 +209,7 @@ describe("Float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: {
                     float,
                     floats,
@@ -232,7 +235,7 @@ describe("Float", () => {
     });
 
     test("should return normal JS number if the value isInt", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Movie {
@@ -269,7 +272,7 @@ describe("Float", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();

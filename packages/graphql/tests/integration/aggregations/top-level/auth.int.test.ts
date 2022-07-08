@@ -18,20 +18,22 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { generateUniqueType } from "../../../utils/graphql-types";
 
 describe("aggregations-top_level-auth", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     const secret = "secret";
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -39,7 +41,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should throw forbidden when incorrect allow on aggregate count", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const randomType = generateUniqueType("Movie");
 
@@ -82,7 +84,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getContextValues({ req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -92,7 +94,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should append auth where to predicate and return post count for this user", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type User {
@@ -139,7 +141,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getContextValues({ req }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -155,7 +157,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should throw when invalid allow when aggregating a Int field", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type Movie {
@@ -207,7 +209,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getContextValues({ req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -217,7 +219,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should throw when invalid allow when aggregating a ID field", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type Movie {
@@ -269,7 +271,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getContextValues({ req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -279,7 +281,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should throw when invalid allow when aggregating a String field", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type Movie {
@@ -331,7 +333,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getContextValues({ req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -341,7 +343,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should throw when invalid allow when aggregating a Float field", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type Movie {
@@ -393,7 +395,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getContextValues({ req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -403,7 +405,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should throw when invalid allow when aggregating a BigInt field", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type Movie {
@@ -455,7 +457,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getContextValues({ req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -465,7 +467,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should throw when invalid allow when aggregating a DateTime field", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type Movie {
@@ -517,7 +519,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getContextValues({ req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -527,7 +529,7 @@ describe("aggregations-top_level-auth", () => {
     });
 
     test("should throw when invalid allow when aggregating a Duration field", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type Movie {
@@ -579,7 +581,7 @@ describe("aggregations-top_level-auth", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req },
+                contextValue: neo4j.getContextValues({ req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");

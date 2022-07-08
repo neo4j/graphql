@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../CypherASTNode";
-import { CypherContext } from "../CypherContext";
+import type { CypherASTNode } from "../CypherASTNode";
+import type { CypherContext } from "../CypherContext";
 import { Query } from "./Query";
 
 type ApocValidateOptions = {

@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
-import { ObjectFields } from "../get-obj-field-meta";
-import { Node } from "../../classes";
+import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import type { ObjectFields } from "../get-obj-field-meta";
+import type { Node } from "../../classes";
 import { numericalResolver } from "../resolvers/field/numerical";
 import { AggregationTypesMapper } from "./aggregation-types-mapper";
 

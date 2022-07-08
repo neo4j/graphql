@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Directive, ExcludeOperation } from "../types";
+import type { Directive, ExcludeOperation } from "../types";
 
 export class ExcludeDirective implements Directive {
     operations: ExcludeOperation[] = [];

@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: alex-page/github-project-automation-plus@v0.8.1
+      - uses: alex-page/github-project-automation-plus@be108970955040d35dd6d053c3aff3faaf678026
         with:
           project: Feature Requests
           column: Feature requests

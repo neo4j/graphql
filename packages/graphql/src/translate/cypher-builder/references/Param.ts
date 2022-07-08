@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { CypherContext } from "../CypherContext";
-import { CypherParameter } from "./References";
+import type { CypherContext } from "../CypherContext";
+import type { CypherParameter } from "./References";
 
 export class Param<T = any> implements CypherParameter {
     public readonly prefix: string = "param";

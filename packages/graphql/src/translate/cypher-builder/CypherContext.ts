@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { CypherParameter, CypherVariable } from "./references/References";
+import type { CypherParameter, CypherVariable } from "./references/References";
 
 export interface CypherContextInterface {
     getVariableId(reference: CypherVariable): string;
