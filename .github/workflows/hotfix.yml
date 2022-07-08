@@ -460,7 +460,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: pull-request
-        uses: repo-sync/pull-request@65785d95a5a466e46a9d0708933a3bd51bbf9dde
+        uses: repo-sync/pull-request@ff8726ae82c9970bde6527e419133aa167297c40
         with:
           destination_branch: "dev"
           pr_title: "Merge ${{ github.ref }} into dev"
