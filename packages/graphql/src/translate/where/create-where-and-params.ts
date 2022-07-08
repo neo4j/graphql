@@ -18,13 +18,14 @@
  */
 
 import { mergeDeep } from "@graphql-tools/utils";
-import { GraphQLWhereArg, Context } from "../../types";
-import { Node, Relationship } from "../../classes";
+import type { GraphQLWhereArg, Context } from "../../types";
+import type { Node, Relationship } from "../../classes";
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import createAggregateWhereAndParams from "../create-aggregate-where-and-params";
 import createWhereClause from "./create-where-clause";
-import { getListPredicate, whereRegEx, WhereRegexGroups } from "./utils";
+import type { WhereRegexGroups } from "./utils";
+import { getListPredicate, whereRegEx } from "./utils";
 import { listPredicateToClause } from "./list-predicate-to-clause";
 import { listPredicateToSizeFunction } from "./list-predicate-to-size-function";
 

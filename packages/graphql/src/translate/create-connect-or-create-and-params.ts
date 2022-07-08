@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { RelationField, Context } from "../types";
-import { Node, Relationship } from "../classes";
+import type { RelationField, Context } from "../types";
+import type { Node, Relationship } from "../classes";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { asArray, omitFields } from "../utils/utils";

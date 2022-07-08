@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { offsetToCursor } from "graphql-relay";
 import { generate } from "randomstring";

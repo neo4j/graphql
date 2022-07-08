@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import { DocumentNode, graphql, GraphQLSchema, parse, print, SelectionSetNode } from "graphql";
-import { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
+import type { DocumentNode, GraphQLSchema, SelectionSetNode } from "graphql";
+import { graphql, parse, print } from "graphql";
+import type { GraphQLOptionsArg, GraphQLWhereArg, DeleteInfo } from "../types";
 
 function printSelectionSet(selectionSet: string | DocumentNode | SelectionSetNode): string {
     if (typeof selectionSet === "string") {

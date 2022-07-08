@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { gql } from "apollo-server";
-import { graphql, defaultFieldResolver, GraphQLSchema } from "graphql";
+import type { GraphQLSchema } from "graphql";
+import { graphql, defaultFieldResolver } from "graphql";
 import { getDirective, MapperKind, mapSchema } from "@graphql-tools/utils";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
@@ -50,7 +51,7 @@ describe("Custom Directives", () => {
                             const fieldDirective = getDirective(schema, fieldConfig, directiveName)?.[0];
                             if (fieldDirective) {
                                 const { resolve = defaultFieldResolver } = fieldConfig;
-                                // eslint-disable-next-line no-param-reassign
+                                 
                                 fieldConfig.resolve = async (source, args, context, info) => {
                                     const result = await resolve(source, args, context, info);
                                     if (typeof result === "string") {

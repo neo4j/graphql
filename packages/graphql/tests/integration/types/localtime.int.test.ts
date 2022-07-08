@@ -19,7 +19,8 @@
 
 import { faker } from "@faker-js/faker";
 import { graphql } from "graphql";
-import neo4jDriver, { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
+import neo4jDriver from "neo4j-driver";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";

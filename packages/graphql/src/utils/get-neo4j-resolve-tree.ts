@@ -17,19 +17,21 @@
  * limitations under the License.
  */
 
-import {
+import type {
     GraphQLField,
     GraphQLInterfaceType,
     GraphQLNamedType,
     GraphQLNonNull,
     GraphQLObjectType,
     GraphQLResolveInfo,
-    GraphQLInputObjectType,
     GraphQLInputType,
-    GraphQLList,
+    GraphQLList} from "graphql";
+import {
+    GraphQLInputObjectType,
     GraphQLScalarType,
 } from "graphql";
-import { parseResolveInfo, ResolveTree } from "graphql-parse-resolve-info";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+import { parseResolveInfo } from "graphql-parse-resolve-info";
 import neo4j from "neo4j-driver";
 
 function getNeo4jArgumentValue({ argument, type }: { argument: unknown | unknown[]; type: GraphQLInputType }) {

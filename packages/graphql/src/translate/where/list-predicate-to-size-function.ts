@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { ListPredicate } from "./utils";
+import type { ListPredicate } from "./utils";
 
 // TODO: Temporary function whilst filtering is performed in projections
 // To be superseded by list-predicate-to-clause.ts when moved to subqueries

@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import { GraphQLResolveInfo } from "graphql";
-import { integer, isInt, Integer } from "neo4j-driver";
+import type { GraphQLResolveInfo } from "graphql";
+import type { Integer } from "neo4j-driver";
+import { integer, isInt } from "neo4j-driver";
 import { defaultFieldResolver } from "./defaultField";
 
 function isIntegerable(value: unknown): value is number | string | Integer | { low: number; high: number } | bigint {

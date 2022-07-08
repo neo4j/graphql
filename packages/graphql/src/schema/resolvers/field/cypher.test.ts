@@ -18,7 +18,7 @@
  */
 
 import { cypherResolver } from "./cypher";
-import { CypherField } from "../../../types";
+import type { CypherField } from "../../../types";
 
 describe("Cypher resolver", () => {
     test("should return the correct; type, args and resolve", () => {

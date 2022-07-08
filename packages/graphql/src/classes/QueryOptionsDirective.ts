@@ -18,7 +18,7 @@
  */
 
 import * as neo4j from "neo4j-driver";
-import { Integer } from "neo4j-driver";
+import type { Integer } from "neo4j-driver";
 
 type QueryOptionsDirectiveConstructor = {
     limit: {
