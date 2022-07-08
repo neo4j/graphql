@@ -23,6 +23,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Driver, Integer, Session, Transaction } from "neo4j-driver";
 import type { Node, Relationship } from "./classes";
 import type { RelationshipQueryDirectionOption } from "./constants";
+import type { Executor } from "./classes/Executor";
 
 export { Node } from "./classes";
 
@@ -46,11 +47,11 @@ export interface Context {
     schema: GraphQLSchema;
     auth?: AuthContext;
     callbacks?: Neo4jGraphQLCallbacks;
-    queryOptions?: CypherQueryOptions;
     plugins?: Neo4jGraphQLPlugins;
     jwt?: JwtPayload;
     subscriptionsEnabled: boolean;
     executionContext: Driver | Session | Transaction;
+    executor: Executor;
     [k: string]: any;
 }
 

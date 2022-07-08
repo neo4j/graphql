@@ -45,164 +45,33 @@ export interface ExecuteResult {
     records: Record<PropertyKey, any>[];
 }
 
-function getSessionParams(input: { defaultAccessMode: SessionMode; context: Context }) {
-    const sessionParams: {
-        defaultAccessMode?: SessionMode;
-        bookmarks?: string | string[];
-        database?: string;
-    } = { defaultAccessMode: input.defaultAccessMode };
-
-    const driverConfig = input.context.driverConfig as DriverConfig;
-    if (driverConfig) {
-        if (driverConfig.database) {
-            sessionParams.database = driverConfig.database;
-        }
-
-        if (driverConfig.bookmarks) {
-            sessionParams.bookmarks = driverConfig.bookmarks;
-        }
-    }
-
-    return sessionParams;
-}
-
-type TransactionConfig = {
-    metadata: {
-        app: string;
-        // Possible values from https://neo4j.com/docs/operations-manual/current/monitoring/logging/#attach-metadata-tx (will only be user-transpiled for @neo4j/graphql)
-        type: "system" | "user-direct" | "user-action" | "user-transpiled";
-    };
-};
-
-function getTransactionConfig(): TransactionConfig {
-    const app = `${environment.NPM_PACKAGE_NAME}@${environment.NPM_PACKAGE_VERSION}`;
-
-    return {
-        metadata: {
-            app,
-            type: "user-transpiled",
-        },
-    };
-}
-
-interface DriverLike {
-    session(config);
-}
-
-function isDriverLike(executionContext: any): executionContext is DriverLike {
-    return typeof executionContext.session === "function";
-}
-
-interface SessionLike {
-    beginTransaction(config);
-}
-
-function isSessionLike(executionContext: any): executionContext is SessionLike {
-    return typeof executionContext.beginTransaction === "function";
-}
-
-type Executor = {
-    transaction: Transaction;
-    session?: Session;
-    openedTransaction: boolean;
-    openedSession: boolean;
-};
-
-function getExecutor(input: { defaultAccessMode: SessionMode; context: Context }): Executor {
-    const executionContext = input.context.executionContext;
-
-    if (isDriverLike(executionContext)) {
-        const session = executionContext.session(getSessionParams(input));
-        const transaction = session.beginTransaction(getTransactionConfig());
-        return { session, transaction, openedTransaction: true, openedSession: true };
-    }
-
-    if (isSessionLike(executionContext)) {
-        const transaction = executionContext.beginTransaction(getTransactionConfig());
-        return { session: executionContext, transaction, openedTransaction: true, openedSession: false };
-    }
-
-    return { transaction: executionContext, openedTransaction: false, openedSession: false };
-}
-
-async function execute(input: {
+async function execute({
+    cypher,
+    params,
+    defaultAccessMode,
+    context,
+}: {
     cypher: string;
     params: any;
     defaultAccessMode: SessionMode;
     context: Context;
 }): Promise<ExecuteResult> {
-    const executor = getExecutor(input);
+    const result = await context.executor.execute(cypher, params, defaultAccessMode);
 
-    // Its really difficult to know when users are using the `auth` param. For Simplicity it better to do the check here
-    if (
-        input.cypher.includes("$auth.") ||
-        input.cypher.includes("auth: $auth") ||
-        input.cypher.includes("auth:$auth")
-    ) {
-        input.params.auth = createAuthParam({ context: input.context });
+    if (!result) {
+        throw new Error("Unable to execute query against Neo4j database");
     }
 
-    const cypher =
-        input.context.queryOptions && Object.keys(input.context.queryOptions).length
-            ? `CYPHER ${Object.entries(input.context.queryOptions)
-                  .map(([key, value]) => `${key}=${value}`)
-                  .join(" ")}\n${input.cypher}`
-            : input.cypher;
+    const records = result.records.map((r) => r.toObject());
 
-    try {
-        debug("%s", `About to execute Cypher:\nCypher:\n${cypher}\nParams:\n${JSON.stringify(input.params, null, 2)}`);
+    debug(`Execute successful, received ${records.length} records`);
 
-        const result: QueryResult | undefined = await executor.transaction.run(cypher, input.params);
-
-        if (!result) {
-            throw new Error("Unable to execute query against Neo4j database");
-        }
-
-        if (executor.openedTransaction) {
-            await executor.transaction.commit();
-        }
-
-        const records = result.records.map((r) => r.toObject());
-
-        debug(`Execute successful, received ${records.length} records`);
-
-        const bookmark = executor.session ? executor.session.lastBookmark() : null;
-
-        return {
-            // Despite being typed as `string | null`, seems to return `string[]`
-            bookmark: bookmark && Array.isArray(bookmark) && bookmark[0] ? bookmark[0] : null,
-            result,
-            statistics: result.summary.counters.updates(),
-            records: result.records.map((r) => r.toObject()),
-        };
-    } catch (error) {
-        if (error instanceof Neo4jError) {
-            if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_FORBIDDEN_ERROR}`)) {
-                throw new Neo4jGraphQLForbiddenError("Forbidden");
-            }
-
-            if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_UNAUTHENTICATED_ERROR}`)) {
-                throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
-            }
-
-            if (error.message.includes(`Caused by: java.lang.RuntimeException: ${RELATIONSHIP_REQUIREMENT_PREFIX}`)) {
-                const [, message] = error.message.split(RELATIONSHIP_REQUIREMENT_PREFIX);
-                throw new Neo4jGraphQLRelationshipValidationError(message);
-            }
-
-            if (error.code === "Neo.ClientError.Schema.ConstraintValidationFailed") {
-                throw new Neo4jGraphQLConstraintValidationError("Constraint validation failed");
-            }
-        }
-
-        debug("%s", error);
-
-        throw error;
-    } finally {
-        if (executor.openedSession && executor.session) {
-            await executor.session.close();
-        }
-    }
+    return {
+        bookmark: context.executor.lastBookmark,
+        result,
+        statistics: result.summary.counters.updates(),
+        records,
+    };
 }
 
 export default execute;
