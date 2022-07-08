@@ -18,7 +18,7 @@
  */
 
 import { joinStrings } from "../../../utils/utils";
-import { CypherContext } from "../CypherContext";
+import type { CypherContext } from "../CypherContext";
 import { Query } from "./Query";
 
 export class Call extends Query {

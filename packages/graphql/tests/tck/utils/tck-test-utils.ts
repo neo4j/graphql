@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import { DocumentNode, graphql, GraphQLArgs } from "graphql";
-import { IncomingMessage } from "http";
+import type { DocumentNode, GraphQLArgs } from "graphql";
+import { graphql } from "graphql";
+import type { IncomingMessage } from "http";
 import createAuthParam from "../../../src/translate/create-auth-param";
-import { Neo4jGraphQL } from "../../../src";
+import type { Neo4jGraphQL } from "../../../src";
 import { DriverBuilder } from "../../utils/builders/driver-builder";
 import { getQuerySource } from "../../utils/get-query-source";
 

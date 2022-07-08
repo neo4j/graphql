@@ -20,12 +20,12 @@
 import assert from "assert";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { gql } from "apollo-server-express";
-import { Driver, ProfiledPlan } from "neo4j-driver";
-import { DocumentNode } from "graphql";
-import * as Performance from "../types";
+import type { Driver, ProfiledPlan } from "neo4j-driver";
+import type { DocumentNode } from "graphql";
+import type * as Performance from "../types";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { translateQuery } from "../../tck/utils/tck-test-utils";
-import Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";
+import type Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";
 
 export class TestRunner {
     private driver: Driver;

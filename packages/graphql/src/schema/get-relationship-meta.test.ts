@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { FieldDefinitionNode } from "graphql";
+import type { FieldDefinitionNode } from "graphql";
 import getRelationshipMeta from "./get-relationship-meta";
 
 describe("getRelationshipMeta", () => {

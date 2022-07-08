@@ -18,14 +18,16 @@
  */
 
 import Debug from "debug";
-import { GraphQLResolveInfo, GraphQLSchema, print } from "graphql";
-import { Driver } from "neo4j-driver";
-import { Neo4jGraphQLAuthenticationError, Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
+import type { GraphQLResolveInfo, GraphQLSchema} from "graphql";
+import { print } from "graphql";
+import type { Driver } from "neo4j-driver";
+import type { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
+import { Neo4jGraphQLAuthenticationError } from "../../classes";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
-import { Context, Neo4jGraphQLPlugins, JwtPayload, Neo4jGraphQLAuthPlugin } from "../../types";
+import type { Context, Neo4jGraphQLPlugins, JwtPayload, Neo4jGraphQLAuthPlugin } from "../../types";
 import { getToken, parseBearerToken } from "../../utils/get-token";
-import { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
+import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
 
 const debug = Debug(DEBUG_GRAPHQL);
 

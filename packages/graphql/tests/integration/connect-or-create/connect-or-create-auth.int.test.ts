@@ -19,8 +19,9 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { Driver, Session, Integer } from "neo4j-driver";
-import { graphql, DocumentNode } from "graphql";
+import type { Driver, Session, Integer } from "neo4j-driver";
+import type { DocumentNode } from "graphql";
+import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";

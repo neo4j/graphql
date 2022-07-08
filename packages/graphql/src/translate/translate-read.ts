@@ -16,11 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Integer, int } from "neo4j-driver";
+import type { Integer} from "neo4j-driver";
+import { int } from "neo4j-driver";
 import { cursorToOffset } from "graphql-relay";
-import { Node } from "../classes";
+import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
-import { GraphQLOptionsArg, GraphQLSortArg, Context, ConnectionField, RelationField } from "../types";
+import type { GraphQLOptionsArg, GraphQLSortArg, Context, ConnectionField, RelationField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";

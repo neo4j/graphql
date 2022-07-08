@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { Node, Relationship } from "../classes";
-import { Context } from "../types";
+import type { Node, Relationship } from "../classes";
+import type { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createCreateAndParams from "./create-create-and-params";
@@ -34,7 +34,7 @@ import createRelationshipValidationStr from "./create-relationship-validation-st
 import { createEventMeta } from "./subscriptions/create-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { escapeQuery } from "./utils/escape-query";
-import { CallbackBucket } from "../classes/CallbackBucket";
+import type { CallbackBucket } from "../classes/CallbackBucket";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { buildMathStatements, matchMathField, mathDescriptorBuilder } from "./utils/math";
 import { indentBlock } from "./utils/indent-block";

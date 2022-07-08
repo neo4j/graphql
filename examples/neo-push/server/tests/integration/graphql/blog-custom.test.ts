@@ -1,4 +1,4 @@
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { IncomingMessage } from "http";
 import { Socket } from "net";

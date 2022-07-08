@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { InputValueDefinitionNode, DirectiveNode } from "graphql";
-import { DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition, Directive } from "graphql-compose";
+import type { InputValueDefinitionNode, DirectiveNode } from "graphql";
+import type { DirectiveArgs, ObjectTypeComposerFieldConfigAsObjectDefinition, Directive } from "graphql-compose";
 import getFieldTypeMeta from "./get-field-type-meta";
 import parseValueNode from "./parse-value-node";
-import { BaseField, InputField, PrimitiveField, TemporalField } from "../types";
+import type { BaseField, InputField, PrimitiveField, TemporalField } from "../types";
 import { numericalResolver } from "./resolvers/field/numerical";
 import { idResolver } from "./resolvers/field/id";
 

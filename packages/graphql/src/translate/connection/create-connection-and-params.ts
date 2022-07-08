@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import { mergeDeep } from "@graphql-tools/utils";
-import { Integer } from "neo4j-driver";
-import { ConnectionField, ConnectionSortArg, ConnectionWhereArg, Context } from "../../types";
-import { Node } from "../../classes";
+import type { Integer } from "neo4j-driver";
+import type { ConnectionField, ConnectionSortArg, ConnectionWhereArg, Context } from "../../types";
+import type { Node } from "../../classes";
 // eslint-disable-next-line import/no-cycle
 import createProjectionAndParams from "../create-projection-and-params";
-import Relationship from "../../classes/Relationship";
+import type Relationship from "../../classes/Relationship";
 import createRelationshipPropertyElement from "../projection/elements/create-relationship-property-element";
 import createConnectionWhereAndParams from "../where/create-connection-where-and-params";
 import createAuthAndParams from "../create-auth-and-params";

@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { Driver, isTime, Integer } from "neo4j-driver";
+import type { Driver, Integer } from "neo4j-driver";
+import { isTime } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";

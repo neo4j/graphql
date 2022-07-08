@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import { objectFieldsToComposeFields } from "../to-compose";
-import { Node } from "../../classes";
+import type { Node } from "../../classes";
 
 export function generateEventPayloadType(node: Node, schemaComposer: SchemaComposer): ObjectTypeComposer {
     const nodeFields = objectFieldsToComposeFields([

@@ -18,13 +18,14 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode, graphql } from "graphql";
-import { Driver, Integer, Session } from "neo4j-driver";
+import type { DocumentNode} from "graphql";
+import { graphql } from "graphql";
+import type { Driver, Integer, Session } from "neo4j-driver";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src";
 import { getQuerySource } from "../../../utils/get-query-source";
 import { generateUniqueType } from "../../../utils/graphql-types";
-import { Neo4jGraphQLSubscriptionsPlugin } from "../../../../src/types";
+import type { Neo4jGraphQLSubscriptionsPlugin } from "../../../../src/types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 
 describe("Create -> ConnectOrCreate", () => {

@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import { ValueNode, ObjectValueNode } from "graphql/language/ast";
+import type { ValueNode, ObjectValueNode } from "graphql/language/ast";
 import { Kind } from "graphql/language";
 
 function valueOfObjectValueNode(ast: ObjectValueNode) {
     return Object.values(ast.fields).reduce((a, b) => {
-        // eslint-disable-next-line no-param-reassign
+         
         a[b.name.value] = parseValueNode(b.value);
 
         return a;

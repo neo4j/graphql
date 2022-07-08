@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { GraphElement, Node, Relationship } from "../classes";
-import { RelationField, Context, BaseField } from "../types";
+import type { GraphElement, Node, Relationship } from "../classes";
+import type { RelationField, Context, BaseField } from "../types";
 
 type Operator = "=" | "<" | "<=" | ">" | ">=";
 
