@@ -62,6 +62,7 @@
         "@tsconfig/create-react-app": "1.0.2",
         "@types/codemirror": "5.60.5",
         "@types/crypto-js": "4.1.1",
+        "@types/jsdom": "^16.2.14",
         "@types/lodash.debounce": "4.0.7",
         "@types/markdown-it": "12.2.3",
         "@types/prettier": "2.6.3",
