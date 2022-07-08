@@ -2341,7 +2341,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^2.3.2
     "@graphql-codegen/typescript": ^2.4.2
     "@graphql-tools/merge": ^8.2.1
-    "@neo4j/graphql": ^3.5.0
+    "@neo4j/graphql": ^3.5.1
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/jest": 28.1.4
     "@types/node": 16.11.43
@@ -2471,7 +2471,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@^3.5.0, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@^3.5.0, @neo4j/graphql@^3.5.1, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
