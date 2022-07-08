@@ -97,4 +97,4 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: "Passed!"
+      - run: echo "Passed!"
