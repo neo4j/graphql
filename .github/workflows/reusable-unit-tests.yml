@@ -4,8 +4,11 @@ on:
   workflow_call:
     secrets:
       CODECOV_TOKEN:
-        required: true
+        required: false
         description: "API token for Codecov, if it is available in the current context"
+
+env:
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 jobs:
   unit-tests:
@@ -16,6 +19,7 @@ jobs:
           - ogm
           - introspector
           - plugins/graphql-plugin-auth
+          - plugins/graphql-plugin-subscriptions-amqp
         graphql-version:
           - "^15.0.0"
           - "^16.0.0"
@@ -35,7 +39,8 @@ jobs:
       - name: Run packages/${{ matrix.package }} unit tests
         run: yarn run test:unit --coverage
         working-directory: packages/${{ matrix.package }}
-      - name: Upload coverage to Codecov
+      - if: ${{ env.CODECOV_TOKEN != '' }}
+        name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

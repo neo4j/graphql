@@ -4,8 +4,11 @@ on:
   workflow_call:
     secrets:
       CODECOV_TOKEN:
-        required: true
+        required: false
         description: "API token for Codecov, if it is available in the current context"
+
+env:
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 jobs:
   integration-tests:
@@ -60,7 +63,8 @@ jobs:
           NEO_USER: neo4j
           NEO_PASSWORD: testpassword
           NEO_URL: bolt://localhost:7687
-      - name: Upload coverage to Codecov
+      - if: ${{ env.CODECOV_TOKEN != '' }}
+        name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
