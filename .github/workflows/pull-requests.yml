@@ -82,41 +82,6 @@ jobs:
   unit-tests:
     uses: ./.github/workflows/reusable-unit-tests.yml
 
-  unit-tests-plugins:
-    needs:
-      - cache-dependencies
-
-    strategy:
-      fail-fast: false
-      matrix:
-        package:
-          - graphql-plugin-auth
-          - graphql-plugin-subscriptions-amqp
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
-      - name: Run packages/plugins/${{ matrix.package }} unit tests
-        run: yarn run test:unit --coverage
-        working-directory: packages/plugins/${{ matrix.package }}
-      - name: Archive coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: unit-coverage-${{ matrix.package }}
-          path: packages/plugins/${{ matrix.package }}/coverage/
-
   e2e-tests-plugins:
     uses: ./.github/workflows/reusable-subscriptions-plugin-amqp-e2e-test.yml
 
