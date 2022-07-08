@@ -81,3 +81,17 @@ jobs:
 
   integration-tests-on-prem:
     uses: ./.github/workflows/reusable-integration-tests-on-prem.yml
+
+  quality-gate:
+    needs:
+      - reviewdog-eslint
+      - package-tests
+      - neo-push-tests
+      - license-header-check
+      - unit-tests
+      - e2e-tests-plugins
+      - api-library-tests
+      - toolbox-tests
+      - integration-tests-on-prem
+
+    runs-on: ubuntu-latest
