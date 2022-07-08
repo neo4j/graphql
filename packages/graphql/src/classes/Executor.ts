@@ -20,7 +20,7 @@
 import { Driver, Neo4jError, QueryResult, Result, Session, SessionMode, Transaction } from "neo4j-driver";
 import Debug from "debug";
 
-import { AuthContext, CypherQueryOptions } from "../types";
+import type { AuthContext, CypherQueryOptions } from "../types";
 import environment from "../environment";
 import {
     Neo4jGraphQLAuthenticationError,
