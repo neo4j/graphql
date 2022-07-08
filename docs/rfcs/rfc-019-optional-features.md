@@ -13,7 +13,7 @@ The Config solution is to extend the `Neo4jGraphQLConfig` to support the list of
         config: {
             enableDebug: true,
             features: {
-              stringComparator: { enabled: true, extraConf: {...} }
+              stringComparator: { enabled: true, settings: {...} }
             }
         },
         typeDefs: typeDefs,
@@ -51,7 +51,7 @@ One solution could be for not core features to be implemented outside the core l
                 secret: "1234",
                 noVerify: true,
             }),
-            stringComparator: new Neo4jStringComparator(),
+            stringComparator: new Neo4jStringComparator({...settings}),
         },
     });
 ```
@@ -65,5 +65,4 @@ Some parts of the codebase could be not designed to be extended.
 - Library complexity.
 
 ### Security consideration
-- Library complexity could lead to security concerns.
-- Community plugins could be developed with a lower standard.
+- External developed plugin could lead to security concerns

@@ -1,4 +1,4 @@
-# String Comparator
+# String Comparator operators
 
 ## Problem
 In some cases is useful to compare two strings in Lexicographic order, currently is not possible to use the Neo4j GraphQL library to replicate the behavior of a Cypher statement like: `MATCH(n) WHERE n.stringProp < "string value" RETURN n`.
