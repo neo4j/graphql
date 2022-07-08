@@ -67,7 +67,35 @@ describe("CypherBuilder clauses", () => {
         const queryResult = clause.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "CREATE (this0:\`Movie\`)
-            SET this0.title = $param0
+            SET
+            this0.title = $param0,
+            this0.runtime = $param1
+            RETURN this0 {.title} AS movie"
+        `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": "The Matrix",
+              "param1": 120,
+            }
+        `);
+    });
+
+    it("Merge OnCreate Set", () => {
+        const node = new CypherBuilder.Node({ labels: ["Movie"] });
+
+        const clause = new CypherBuilder.Merge(node)
+            .onCreate(
+                [node.property("title"), new CypherBuilder.Param("The Matrix")],
+                [node.property("runtime"), new CypherBuilder.Param(120)]
+            )
+            .return(node, ["title"], "movie");
+
+        const queryResult = clause.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "MERGE (this0:\`Movie\`)
+            ON CREATE SET
+            this0.title = $param0,
             this0.runtime = $param1
             RETURN this0 {.title} AS movie"
         `);

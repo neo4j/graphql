@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../CypherASTNode";
-import { CypherEnvironment } from "../Environment";
-import { PropertyRef } from "../PropertyRef";
-import { Param } from "../variables/Param";
+import type { CypherASTNode } from "../CypherASTNode";
+import type { CypherEnvironment } from "../Environment";
+import type { PropertyRef } from "../PropertyRef";
+import type { Param } from "../variables/Param";
 import { SubClause } from "./SubClause";
 
 export type SetParam = [PropertyRef, Param<any>];
@@ -45,7 +45,7 @@ export class SetClause extends SubClause {
             })
             .join(",\n");
 
-        return `SET ${paramsStr}`;
+        return `SET\n${paramsStr}`;
     }
 
     private composeParam(env: CypherEnvironment, [ref, param]: SetParam): string {

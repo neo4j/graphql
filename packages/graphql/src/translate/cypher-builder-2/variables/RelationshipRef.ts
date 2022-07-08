@@ -18,8 +18,8 @@
  */
 
 import { escapeLabel } from "../utils";
-import { NodeRef } from "./NodeRef";
 import { Variable } from "./Variable";
+import type { NodeRef } from "./NodeRef";
 
 export type RelationshipInput = {
     source: NodeRef;

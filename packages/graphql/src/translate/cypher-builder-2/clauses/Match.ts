@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
+import type { CypherEnvironment } from "../Environment";
+import type { Param } from "../variables/Param";
+import type { NodeRef } from "../variables/NodeRef";
 import { MatchableElement, MatchParams, Pattern } from "../Pattern";
-import { CypherEnvironment } from "../Environment";
 import { Where, WhereParams } from "../sub-clauses/Where";
 import { Clause } from "./Clause";
 import { Return } from "./Return";
-import { NodeRef } from "../variables/NodeRef";
 import { Variable } from "../variables/Variable";
 import { ComparisonOp, eq } from "../operations/comparison";
 import { PropertyRef } from "../PropertyRef";
-import { Param } from "../variables/Param";
 import { and, BooleanOp } from "../operations/boolean";
 
 export class Match<T extends MatchableElement> extends Clause {
@@ -37,6 +37,7 @@ export class Match<T extends MatchableElement> extends Clause {
     constructor(variable: T, parameters: MatchParams<T> = {}, parent?: Clause) {
         super(parent);
         this.pattern = new Pattern(variable).withParams(parameters);
+        this.addChildren(this.pattern);
     }
 
     public where(input: WhereParams): this;

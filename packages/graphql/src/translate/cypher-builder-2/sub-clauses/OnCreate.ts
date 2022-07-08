@@ -17,21 +17,14 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../CypherASTNode";
-import type { CypherResult } from "../types";
+import type { CypherEnvironment } from "../Environment";
+import { SetClause, SetParam } from "./Set";
 
-/** Represents a clause ast node */
-export abstract class Clause extends CypherASTNode {
-    public build(prefix?: string): CypherResult {
-        if (this.isRoot) {
-            const context = this.getContext(prefix);
-            const cypher = this.getCypher(context);
-            return {
-                cypher,
-                params: context.getParams(),
-            };
-        }
-        const root = this.getRoot() as Clause;
-        return root.build(prefix);
+export type OnCreateParam = SetParam;
+
+export class OnCreate extends SetClause {
+    public cypher(env: CypherEnvironment): string {
+        const setCypher = super.cypher(env);
+        return `ON CREATE ${setCypher}`;
     }
 }

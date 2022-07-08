@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import { CypherEnvironment } from "../Environment";
 import { Pattern } from "../Pattern";
 import { PropertyRef } from "../PropertyRef";
 import { SetClause } from "../sub-clauses/Set";
-import { NodeRef } from "../variables/NodeRef";
-import { Param } from "../variables/Param";
 import { Clause } from "./Clause";
 import { Return } from "./Return";
+import type { CypherEnvironment } from "../Environment";
+import type { NodeRef } from "../variables/NodeRef";
+import type { Param } from "../variables/Param";
 
 type CreateSetParams = [PropertyRef | string, Param<any>];
 
@@ -39,6 +39,7 @@ export class Create extends Clause {
     constructor(node: NodeRef, params: Params = {}, parent?: Clause) {
         super(parent);
         this.pattern = new Pattern(node).withParams(params);
+        this.addChildren(this.pattern);
         this.setClause = new SetClause(this);
         this.node = node;
     }

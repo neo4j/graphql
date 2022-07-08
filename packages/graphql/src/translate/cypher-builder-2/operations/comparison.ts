@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { Expr } from "../types";
+import type { Expr } from "../types";
+import type { CypherEnvironment } from "../Environment";
 import { Operation } from "./Operation";
-import { CypherEnvironment } from "../Environment";
 
 type ComparisonOperator = "=" | "<" | ">" | "<>" | "<=" | ">=" | "IS NULL" | "IS NOT NULL";
 

@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { CypherEnvironment } from "../Environment";
-import { NodeRef } from "../variables/NodeRef";
 import { Clause } from "./Clause";
+import type { NodeRef } from "../variables/NodeRef";
+import type { CypherEnvironment } from "../Environment";
 
 export type Projection = [NodeRef, Array<string>?, string?];
 

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Variable } from "./variables/Variable";
+import type { Variable } from "./variables/Variable";
 import { Param } from "./variables/Param";
 
 /** Hold the internal references of parameters and variables */

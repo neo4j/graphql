@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { CypherEnvironment } from "../Environment";
-import { ComparisonOp } from "./comparison";
+import type { CypherEnvironment } from "../Environment";
+import type { ComparisonOp } from "./comparison";
 import { Operation } from "./Operation";
 
 type BooleanOperator = "AND" | "NOT" | "OR";

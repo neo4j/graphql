@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../CypherASTNode";
-import { CypherEnvironment } from "../Environment";
+import type { CypherASTNode } from "../CypherASTNode";
+import type { CypherEnvironment } from "../Environment";
+import type { ComparisonOp } from "../operations/comparison";
 import { and, BooleanOp } from "../operations/boolean";
-import { ComparisonOp } from "../operations/comparison";
 import { SubClause } from "./SubClause";
 
 export type WhereParams = BooleanOp | ComparisonOp;

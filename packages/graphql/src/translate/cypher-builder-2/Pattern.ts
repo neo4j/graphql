@@ -22,8 +22,8 @@ import { stringifyObject } from "../utils/stringify-object";
 import { padLeft } from "./utils";
 import { NodeRef } from "./variables/NodeRef";
 import { RelationshipRef } from "./variables/RelationshipRef";
-import { CypherEnvironment } from "./Environment";
-import { Param } from "./variables/Param";
+import type { CypherEnvironment } from "./Environment";
+import type { Param } from "./variables/Param";
 
 export type MatchableElement = NodeRef | RelationshipRef;
 
