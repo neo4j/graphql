@@ -13,17 +13,6 @@ Add new fields, used as String comparators, in all the `Where` input types that 
 - `{property name}_LT`
 - `{property name}_LTE`
 
-For instance, as the type `Movie` has the property title, it will be possible to select all the sequels of the movie `The Matrix` with a query like: 
-
-```graphql
-query MatrixSequels {
-  movies(where: {
-    title_GT: "The Matrix"
-  }) {
-    title
-  }
-}
-```
 
 ### Usage Examples
 Given the following type definitions:
@@ -38,12 +27,22 @@ For instance, as the type `Movie` has the property title, it will be possible to
 ```graphql
 query MatrixSequels {
   movies(where: {
+    title_STARTS_WITH: "The Matrix"
     title_GT: "The Matrix"
   }) {
     title
   }
 }
 ```
+
+that could be then translated to a Cypher like:
+```cypher
+MATCH(m:Movie)
+WHERE m.title STARTS WITH "The Matrix" AND m.title > "The Matrix"
+RETURN m.title 
+```
+
+Assuming that `The Matrix`, `The Matrix 2`, `The Matrix 3` are presents in the Neo4j instance then we can expect that `The Matrix 2` and `The Matrix 3` are returned.
 
 ### Technical considerations
 
