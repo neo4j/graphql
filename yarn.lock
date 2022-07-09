@@ -2455,7 +2455,7 @@ __metadata:
     react-dom: 18.2.0
     react-resizable: ^3.0.4
     style-loader: 3.3.1
-    tailwindcss: 3.1.4
+    tailwindcss: 3.1.5
     terser-webpack-plugin: 5.3.3
     ts-jest: 28.0.5
     ts-loader: 9.3.1
@@ -14647,12 +14647,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-load-config@npm:^3.1.4":
-  version: 3.1.4
-  resolution: "postcss-load-config@npm:3.1.4"
+"postcss-load-config@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "postcss-load-config@npm:4.0.1"
   dependencies:
     lilconfig: ^2.0.5
-    yaml: ^1.10.2
+    yaml: ^2.1.1
   peerDependencies:
     postcss: ">=8.0.9"
     ts-node: ">=9.0.0"
@@ -14661,7 +14661,7 @@ __metadata:
       optional: true
     ts-node:
       optional: true
-  checksum: 1c589504c2d90b1568aecae8238ab993c17dba2c44f848a8f13619ba556d26a1c09644d5e6361b5784e721e94af37b604992f9f3dc0483e687a0cc1cc5029a34
+  checksum: b61f890499ed7dcda1e36c20a9582b17d745bad5e2b2c7bc96942465e406bc43ae03f270c08e60d1e29dab1ee50cb26970b5eb20c9aae30e066e20bd607ae4e4
   languageName: node
   linkType: hard
 
@@ -16140,7 +16140,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.1.7, resolve@npm:^1.10.0, resolve@npm:^1.12.0, resolve@npm:^1.20.0, resolve@npm:^1.22.0, resolve@npm:^1.9.0":
+"resolve@npm:^1.1.7, resolve@npm:^1.10.0, resolve@npm:^1.12.0, resolve@npm:^1.20.0, resolve@npm:^1.22.0, resolve@npm:^1.22.1, resolve@npm:^1.9.0":
   version: 1.22.1
   resolution: "resolve@npm:1.22.1"
   dependencies:
@@ -16166,7 +16166,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.1.7#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.12.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.9.0#~builtin<compat/resolve>":
+"resolve@patch:resolve@^1.1.7#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.12.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.9.0#~builtin<compat/resolve>":
   version: 1.22.1
   resolution: "resolve@patch:resolve@npm%3A1.22.1#~builtin<compat/resolve>::version=1.22.1&hash=07638b"
   dependencies:
@@ -17614,9 +17614,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:3.1.4":
-  version: 3.1.4
-  resolution: "tailwindcss@npm:3.1.4"
+"tailwindcss@npm:3.1.5":
+  version: 3.1.5
+  resolution: "tailwindcss@npm:3.1.5"
   dependencies:
     arg: ^5.0.2
     chokidar: ^3.5.3
@@ -17634,18 +17634,18 @@ __metadata:
     postcss: ^8.4.14
     postcss-import: ^14.1.0
     postcss-js: ^4.0.0
-    postcss-load-config: ^3.1.4
+    postcss-load-config: ^4.0.1
     postcss-nested: 5.0.6
     postcss-selector-parser: ^6.0.10
     postcss-value-parser: ^4.2.0
     quick-lru: ^5.1.1
-    resolve: ^1.22.0
+    resolve: ^1.22.1
   peerDependencies:
     postcss: ^8.0.9
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: 716b7d80e51c4904d845920cbb88483114ae6f14b20328b9206f49fd642bbcd390b9764fc574f85901b0377184c5d4eb94c00bcf73e280f81e772cf621d390a5
+  checksum: 9b66bb481e63596d299ca994b745f0b99b1f0958148fe7a6b1b43436fe786865215b319b97fd6be1cd1050cf458656af98a0ec35f91cc5af97e3b771e8544746
   languageName: node
   linkType: hard
 
