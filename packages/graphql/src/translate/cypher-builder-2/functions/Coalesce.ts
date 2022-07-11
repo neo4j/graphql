@@ -17,16 +17,9 @@
  * limitations under the License.
  */
 
-import type { Variable } from "./variables/Variable";
-import type { Operation } from "./operations/Operation";
-import type { PropertyRef } from "./PropertyRef";
-import type { CypherFunction } from "./functions/CypherFunction";
-import type { Literal } from "./variables/Literal";
-import type { Exists } from "./Exists";
+import type { Expr } from "../types";
+import { CypherFunction } from "./CypherFunction";
 
-export type Expr = Operation | Variable | PropertyRef | CypherFunction | Literal | Exists;
-
-export type CypherResult = {
-    cypher: string;
-    params: Record<string, string>;
-};
+export function coalesce(expr: Expr): CypherFunction {
+    return new CypherFunction("coalesce", [expr]);
+}

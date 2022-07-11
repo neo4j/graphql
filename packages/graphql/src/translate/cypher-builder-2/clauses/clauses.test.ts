@@ -54,6 +54,26 @@ describe("CypherBuilder clauses", () => {
         `);
     });
 
+    test("Match where with property and not", () => {
+        const node = new CypherBuilder.Node({ labels: ["Movie"] });
+
+        const queryMatch = new CypherBuilder.Match(node).where(
+            CypherBuilder.not(CypherBuilder.eq(node.property("title"), new CypherBuilder.Param("Matrix")))
+        );
+
+        const queryResult = queryMatch.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "MATCH (this0:\`Movie\`)
+            WHERE NOT(this0.title = $param0)"
+        `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": "Matrix",
+            }
+        `);
+    });
+
     it("Create Set", () => {
         const node = new CypherBuilder.Node({ labels: ["Movie"] });
 

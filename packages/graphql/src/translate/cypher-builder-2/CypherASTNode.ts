@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { Param } from "../cypher-builder/CypherBuilder";
 import { CypherEnvironment } from "./Environment";
+import type { Param } from "./variables/Param";
 
 /** Abstract class representing a Cypher Statement in the AST */
 export abstract class CypherASTNode {

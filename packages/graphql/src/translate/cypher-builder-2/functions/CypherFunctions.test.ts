@@ -17,16 +17,23 @@
  * limitations under the License.
  */
 
-import type { Variable } from "./variables/Variable";
-import type { Operation } from "./operations/Operation";
-import type { PropertyRef } from "./PropertyRef";
-import type { CypherFunction } from "./functions/CypherFunction";
-import type { Literal } from "./variables/Literal";
-import type { Exists } from "./Exists";
+import * as CypherBuilder from "../CypherBuilder";
 
-export type Expr = Operation | Variable | PropertyRef | CypherFunction | Literal | Exists;
+describe("Functions", () => {
+    test("coalesce", () => {
+        const testParam = new CypherBuilder.Param("Hello");
+        const query = new CypherBuilder.Return(
+            CypherBuilder.coalesce(CypherBuilder.Null, testParam, new CypherBuilder.Literal("arthur"))
+        );
 
-export type CypherResult = {
-    cypher: string;
-    params: Record<string, string>;
-};
+        const queryResult = query.build();
+
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"RETURN coalesce(NULL, $param0, \\"arthur\\")"`);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": "Hello",
+            }
+        `);
+    });
+});

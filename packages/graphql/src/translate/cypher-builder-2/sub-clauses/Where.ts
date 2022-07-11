@@ -22,8 +22,10 @@ import type { CypherEnvironment } from "../Environment";
 import type { ComparisonOp } from "../operations/comparison";
 import { and, BooleanOp } from "../operations/boolean";
 import { SubClause } from "./SubClause";
+import type { RawCypher } from "../clauses/RawCypher";
+import type { Exists } from "../Exists";
 
-export type WhereParams = BooleanOp | ComparisonOp;
+export type WhereParams = BooleanOp | ComparisonOp | RawCypher | Exists;
 
 export class Where extends SubClause {
     private whereParams: WhereParams;

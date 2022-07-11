@@ -21,7 +21,20 @@ import type { Expr } from "../types";
 import type { CypherEnvironment } from "../Environment";
 import { Operation } from "./Operation";
 
-type ComparisonOperator = "=" | "<" | ">" | "<>" | "<=" | ">=" | "IS NULL" | "IS NOT NULL";
+type ComparisonOperator =
+    | "="
+    | "<"
+    | ">"
+    | "<>"
+    | "<="
+    | ">="
+    | "IS NULL"
+    | "IS NOT NULL"
+    | "IN"
+    | "CONTAINS"
+    | "STARTS WITH"
+    | "ENDS WITH"
+    | "=~";
 
 export class ComparisonOp extends Operation {
     private operator: ComparisonOperator;
@@ -73,4 +86,23 @@ export function isNull(childExpr: Expr) {
 
 export function isNotNull(childExpr: Expr) {
     return createOp("IS NOT NULL", childExpr);
+}
+
+/* Below are operators that are not technically comparison, but can be treated as such */
+
+export function inOp(leftExpr: Expr, rightExpr: Expr) {
+    return createOp("IN", leftExpr, rightExpr);
+}
+
+export function contains(leftExpr: Expr, rightExpr: Expr) {
+    return createOp("CONTAINS", leftExpr, rightExpr);
+}
+export function startsWith(leftExpr: Expr, rightExpr: Expr) {
+    return createOp("STARTS WITH", leftExpr, rightExpr);
+}
+export function endsWith(leftExpr: Expr, rightExpr: Expr) {
+    return createOp("ENDS WITH", leftExpr, rightExpr);
+}
+export function matches(leftExpr: Expr, rightExpr: Expr) {
+    return createOp("=~", leftExpr, rightExpr);
 }

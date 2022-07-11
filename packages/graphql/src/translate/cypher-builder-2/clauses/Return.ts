@@ -21,8 +21,10 @@ import { Clause } from "./Clause";
 import type { NodeRef } from "../variables/NodeRef";
 import type { CypherEnvironment } from "../Environment";
 import { isString } from "../../../utils/utils";
+import type { Expr } from "../types";
 
-export type Projection = string | [NodeRef, Array<string>?, string?];
+// TODO: make projection more elegant
+export type Projection = string | [NodeRef, Array<string>?, string?] | Expr;
 
 export class Return extends Clause {
     private returnArgs: Projection;
@@ -36,17 +38,20 @@ export class Return extends Clause {
         if (isString(this.returnArgs)) {
             return `RETURN ${this.returnArgs}`;
         }
-        let projection = "";
-        let alias = "";
-        if ((this.returnArgs[1] || []).length > 0) {
-            projection = ` {${(this.returnArgs[1] as Array<string>).map((s) => `.${s}`).join(", ")}}`;
-        }
+        if (Array.isArray(this.returnArgs)) {
+            let projection = "";
+            let alias = "";
+            if ((this.returnArgs[1] || []).length > 0) {
+                projection = ` {${(this.returnArgs[1] as Array<string>).map((s) => `.${s}`).join(", ")}}`;
+            }
 
-        if ((this.returnArgs[2] || []).length > 0) {
-            alias = ` AS ${this.returnArgs[2]}`;
-        }
-        const nodeAlias = env.getVariableId(this.returnArgs[0]);
+            if ((this.returnArgs[2] || []).length > 0) {
+                alias = ` AS ${this.returnArgs[2]}`;
+            }
+            const nodeAlias = env.getVariableId(this.returnArgs[0]);
 
-        return `RETURN ${nodeAlias}${projection}${alias}`;
+            return `RETURN ${nodeAlias}${projection}${alias}`;
+        }
+        return `RETURN ${this.returnArgs.getCypher(env)}`;
     }
 }

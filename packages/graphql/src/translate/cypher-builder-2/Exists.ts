@@ -17,37 +17,36 @@
  * limitations under the License.
  */
 
-import { Clause } from "./Clause";
-import type { CypherEnvironment } from "../Environment";
-import type { CypherASTNode } from "../CypherASTNode";
-import { padBlock } from "../utils";
-import { ImportWith } from "../sub-clauses/ImportWith";
-import type { Variable } from "../variables/Variable";
+import type { CypherEnvironment } from "./Environment";
+import { CypherASTNode } from "./CypherASTNode";
+import { padBlock } from "./utils";
+import type { Clause } from "./clauses/Clause";
 
-export class Call extends Clause {
+/** Note: This is not a clause, I have no idea what this is */
+export class Exists extends CypherASTNode {
     private subQuery: CypherASTNode;
-    private importWith: ImportWith | undefined;
+    // private importWith: ImportWith | undefined;
 
-    constructor(subQuery: Clause, parent?: Clause) {
+    constructor(subQuery: Clause, parent?: CypherASTNode) {
         super(parent);
         const rootQuery = subQuery.getRoot();
         this.addChildren(rootQuery);
         this.subQuery = rootQuery;
     }
 
-    public with(...params: Variable[]): this {
-        if (this.importWith) throw new Error("Call import already set");
-        this.importWith = new ImportWith(this, params);
-        return this;
-    }
+    // public with(...params: Variable[]): this {
+    //     if (this.importWith) throw new Error("Call import already set");
+    //     this.importWith = new ImportWith(this, params);
+    //     return this;
+    // }
 
     protected cypher(env: CypherEnvironment): string {
-        let subQueryStr = this.subQuery.getCypher(env);
-        if (this.importWith) {
-            const withStr = this.importWith.getCypher(env);
-            subQueryStr = `${withStr}\n${subQueryStr}`;
-        }
+        const subQueryStr = this.subQuery.getCypher(env);
+        // if (this.importWith) {
+        //     const withStr = this.importWith.getCypher(env);
+        //     subQueryStr = `${withStr}\n${subQueryStr}`;
+        // }
         const paddedSubQuery = padBlock(subQueryStr);
-        return `CALL {\n${paddedSubQuery}\n}`;
+        return `EXISTS {\n${paddedSubQuery}\n}`;
     }
 }

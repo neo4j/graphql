@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 
+import type { Exists, RawCypher } from "../CypherBuilder";
 import type { CypherEnvironment } from "../Environment";
 import type { ComparisonOp } from "./comparison";
 import { Operation } from "./Operation";
 
 type BooleanOperator = "AND" | "NOT" | "OR";
 
-type BooleanOpChild = BooleanOp | ComparisonOp;
+type BooleanOpChild = BooleanOp | ComparisonOp | RawCypher | Exists;
 
 export abstract class BooleanOp extends Operation {
     protected operator: BooleanOperator;
@@ -35,21 +36,18 @@ export abstract class BooleanOp extends Operation {
 }
 
 class BinaryOp extends BooleanOp {
-    private left: BooleanOpChild;
-    private right: BooleanOpChild;
+    private children: BooleanOpChild[];
 
-    constructor(operator: BooleanOperator, left: BooleanOpChild, right: BooleanOpChild) {
+    constructor(operator: BooleanOperator, left: BooleanOpChild, right: BooleanOpChild, ...extra: BooleanOpChild[]) {
         super(operator);
-        this.addChildren(left, right);
-        this.left = left;
-        this.right = right;
+        this.children = [left, right, ...extra];
+        this.addChildren(...this.children);
     }
 
     protected cypher(env: CypherEnvironment): string {
-        const leftCypher = this.left.getCypher(env);
-        const rightCypher = this.right.getCypher(env);
+        const childrenStr = this.children.map((c) => c.getCypher(env)).join(` ${this.operator} `);
 
-        return `(${leftCypher} ${this.operator} ${rightCypher})`;
+        return `(${childrenStr})`;
     }
 }
 
@@ -62,19 +60,34 @@ class NotOp extends BooleanOp {
         this.addChildren(this.child);
     }
 
-    protected cypher(_env: CypherEnvironment): string {
-        return `${this.operator}`;
+    protected cypher(env: CypherEnvironment): string {
+        const childStr = this.child.getCypher(env);
+        return `${this.operator}(${childStr})`;
     }
 }
 
-export function and(left: BooleanOpChild, right: BooleanOpChild): BooleanOp {
-    return new BinaryOp("AND", left, right);
+export function and(left: BooleanOpChild, right: BooleanOpChild, ...extra: BooleanOpChild[]): BooleanOp;
+export function and(...ops: BooleanOpChild[]): BooleanOpChild | BooleanOp | undefined;
+export function and(...ops: BooleanOpChild[]): BooleanOp | BooleanOpChild | undefined {
+    const op1 = ops.shift();
+    const op2 = ops.shift();
+    if (op1 && op2) {
+        return new BinaryOp("AND", op1, op2, ...ops);
+    }
+    return op1;
 }
 
 export function not(child: BooleanOpChild): BooleanOp {
     return new NotOp(child);
 }
 
-export function or(left: BooleanOpChild, right: BooleanOpChild): BooleanOp {
-    return new BinaryOp("OR", left, right);
+export function or(left: BooleanOpChild, right: BooleanOpChild, ...extra: BooleanOpChild[]): BooleanOp;
+export function or(...ops: BooleanOpChild[]): BooleanOpChild | BooleanOp | undefined;
+export function or(...ops: BooleanOpChild[]): BooleanOp | BooleanOpChild | undefined {
+    const op1 = ops.shift();
+    const op2 = ops.shift();
+    if (op1 && op2) {
+        return new BinaryOp("OR", op1, op2, ...ops);
+    }
+    return op1;
 }

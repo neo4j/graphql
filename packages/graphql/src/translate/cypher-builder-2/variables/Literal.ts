@@ -17,16 +17,19 @@
  * limitations under the License.
  */
 
-import type { Variable } from "./variables/Variable";
-import type { Operation } from "./operations/Operation";
-import type { PropertyRef } from "./PropertyRef";
-import type { CypherFunction } from "./functions/CypherFunction";
-import type { Literal } from "./variables/Literal";
-import type { Exists } from "./Exists";
+import type { CypherEnvironment } from "../Environment";
 
-export type Expr = Operation | Variable | PropertyRef | CypherFunction | Literal | Exists;
+type LiteralValues = string | number | null;
 
-export type CypherResult = {
-    cypher: string;
-    params: Record<string, string>;
-};
+/** Represents a literal value */
+export class Literal<T = LiteralValues> {
+    public value: T;
+
+    constructor(value: T) {
+        this.value = value;
+    }
+
+    public getCypher(_env: CypherEnvironment): string {
+        return `${this.value}`;
+    }
+}

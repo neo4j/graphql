@@ -34,9 +34,13 @@ export class Match<T extends MatchableElement> extends Clause {
     private whereSubClause: Where | undefined;
     private returnStatement: Return | undefined;
 
-    constructor(variable: T, parameters: MatchParams<T> = {}, parent?: Clause) {
+    constructor(variable: T | Pattern<T>, parameters: MatchParams<T> = {}, parent?: Clause) {
         super(parent);
-        this.pattern = new Pattern(variable).withParams(parameters);
+        if (variable instanceof Pattern) {
+            this.pattern = variable;
+        } else {
+            this.pattern = new Pattern(variable).withParams(parameters);
+        }
         this.addChildren(this.pattern);
     }
 
@@ -79,6 +83,7 @@ export class Match<T extends MatchableElement> extends Clause {
         if (this.returnStatement) {
             returnCypher = `\n${this.returnStatement.getCypher(env)}`;
         }
+
         return `MATCH ${nodeCypher}${whereCypher}${returnCypher}`;
     }
 

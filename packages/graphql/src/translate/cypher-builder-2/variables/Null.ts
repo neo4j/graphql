@@ -17,16 +17,18 @@
  * limitations under the License.
  */
 
-import type { Variable } from "./variables/Variable";
-import type { Operation } from "./operations/Operation";
-import type { PropertyRef } from "./PropertyRef";
-import type { CypherFunction } from "./functions/CypherFunction";
-import type { Literal } from "./variables/Literal";
-import type { Exists } from "./Exists";
+import type { CypherEnvironment } from "../Environment";
+import { Literal } from "./Literal";
 
-export type Expr = Operation | Variable | PropertyRef | CypherFunction | Literal | Exists;
+/* Careful, this could lead to Cypher Injection */
+export class NullVariable extends Literal<null> {
+    constructor() {
+        super(null);
+    }
 
-export type CypherResult = {
-    cypher: string;
-    params: Record<string, string>;
-};
+    public getCypher(_env: CypherEnvironment): string {
+        return `NULL`;
+    }
+}
+
+export const CypherNull = new NullVariable();

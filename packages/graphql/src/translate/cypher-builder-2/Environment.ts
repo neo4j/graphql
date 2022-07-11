@@ -49,7 +49,7 @@ export class CypherEnvironment {
     }
 
     private addVariableReference(variable: Variable): string {
-        const paramIndex = this.params.length; // Indexes are separate for readability reasons
+        const paramIndex = this.getParamsSize(); // Indexes are separate for readability reasons
 
         if (variable instanceof Param) {
             const varId = `${this.globalPrefix}${variable.prefix}${paramIndex}`;
@@ -64,6 +64,10 @@ export class CypherEnvironment {
 
     public addNamedParamReference(name: string, param: Param): void {
         this.addParam(name, param);
+    }
+
+    public getParamsSize(): number {
+        return this.params.length;
     }
 
     private addParam(id: string, param: Param): string {

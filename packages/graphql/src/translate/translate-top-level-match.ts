@@ -20,7 +20,7 @@
 import type { AuthOperations, Context, GraphQLWhereArg } from "../types";
 import type { Node } from "../classes";
 import createAuthAndParams from "./create-auth-and-params";
-import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import * as CypherBuilder from "./cypher-builder-2/CypherBuilder";
 import { addWhereToStatement } from "./where/add-where-to-statement";
 
 function translateTopLevelMatch({
@@ -39,13 +39,15 @@ function translateTopLevelMatch({
     const { resolveTree } = context;
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
-    const whereStrs: string[] = [];
+    // const whereStrs: string[] = [];
 
     const matchNode = new CypherBuilder.NamedNode(varName, { labels: node.getLabels(context) });
+    // let matchQuery: CypherBuilder.Match<CypherBuilder.Node> | CypherBuilder.db.FullTextQueryNodes =
+    // new CypherBuilder.Match(matchNode);
     let matchQuery: CypherBuilder.Match<CypherBuilder.Node> | CypherBuilder.db.FullTextQueryNodes =
         new CypherBuilder.Match(matchNode);
 
-    let fulltextWhere: CypherBuilder.RawCypherWithCallback | undefined;
+    let fulltextWhere: CypherBuilder.RawCypher | undefined;
     if (Object.entries(fulltextInput).length) {
         // THIS is only for fulltext search
         if (Object.entries(fulltextInput).length > 1) {
@@ -60,29 +62,24 @@ function translateTopLevelMatch({
         matchQuery = new CypherBuilder.db.FullTextQueryNodes(matchNode, indexName, paramPhraseName);
 
         // TODO: move this to FullTextQueryNodes
-        fulltextWhere = new CypherBuilder.RawCypherWithCallback(
-            (cypherContext: CypherBuilder.CypherContext, _children: string) => {
-                let fullTextWhereStr: string;
-                const matchId = cypherContext.getVariableId(matchNode);
-                if (node.nodeDirective?.additionalLabels?.length) {
-                    const labelsWhereStrs = node.getLabels(context).map((label) => {
-                        return `"${label}" IN labels(${matchId})`;
-                    });
-                    fullTextWhereStr = labelsWhereStrs.join(" AND ");
-                } else {
-                    fullTextWhereStr = `"${node.getMainLabel()}" IN labels(${matchId})`;
-                }
-
-                return [fullTextWhereStr, {}];
+        fulltextWhere = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+            let fullTextWhereStr: string;
+            const matchId = env.getVariableId(matchNode);
+            if (node.nodeDirective?.additionalLabels?.length) {
+                const labelsWhereStrs = node.getLabels(context).map((label) => {
+                    return `"${label}" IN labels(${matchId})`;
+                });
+                fullTextWhereStr = labelsWhereStrs.join(" AND ");
+            } else {
+                fullTextWhereStr = `"${node.getMainLabel()}" IN labels(${matchId})`;
             }
-        );
+
+            return [fullTextWhereStr, {}];
+        });
 
         if (fulltextWhere) {
             matchQuery.where(fulltextWhere);
         }
-    } else {
-        // Not fulltext, normal match
-        matchQuery = new CypherBuilder.Match(matchNode);
     }
 
     if (whereInput) {
@@ -102,7 +99,11 @@ function translateTopLevelMatch({
         where: { varName, node },
     });
     if (whereAuth[0]) {
-        const authQuery = new CypherBuilder.RawCypher(whereAuth[0], whereAuth[1] as Record<string, any>);
+        const authQuery = new CypherBuilder.RawCypher(() => {
+            return whereAuth;
+        });
+
+        // const authQuery = new CypherBuilder.RawCypher(whereAuth[0], whereAuth[1] as Record<string, any>);
         matchQuery.where(authQuery);
     }
 
