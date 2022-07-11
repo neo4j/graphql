@@ -49,6 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/1686", () => {
                 id: ID
                 title: String
             }
+
             type ${movieType.name} implements ${productionType.name} {
                 id: ID
                 title: String
@@ -60,10 +61,12 @@ describe("https://github.com/neo4j/graphql/issues/1686", () => {
                 ${movieType.plural}: [${productionType.name}!]! @relationship(type: "HAS_GENRE", direction: IN)
             }
         `;
+
         const neoGraphql = new Neo4jGraphQL({
             typeDefs,
             driver,
         });
+
         schema = await neoGraphql.getSchema();
     });
 
@@ -71,13 +74,13 @@ describe("https://github.com/neo4j/graphql/issues/1686", () => {
         await driver.close();
     });
 
-    test("should be possible to count all the movies connection", async () => {
+    test("should be possible to count all the movies connections", async () => {
         const query = `
-        query MoviesConnection {
-            ${movieType.operations.connection} {
-              totalCount
+            query MoviesConnection {
+                ${movieType.operations.connection} {
+                totalCount
+                }
             }
-          }
         `;
 
         const cypher = `
