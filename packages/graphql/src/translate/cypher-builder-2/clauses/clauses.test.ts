@@ -68,8 +68,8 @@ describe("CypherBuilder clauses", () => {
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "CREATE (this0:\`Movie\`)
             SET
-            this0.title = $param0,
-            this0.runtime = $param1
+                this0.title = $param0,
+                this0.runtime = $param1
             RETURN this0 {.title} AS movie"
         `);
 
@@ -95,8 +95,8 @@ describe("CypherBuilder clauses", () => {
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "MERGE (this0:\`Movie\`)
             ON CREATE SET
-            this0.title = $param0,
-            this0.runtime = $param1
+                this0.title = $param0,
+                this0.runtime = $param1
             RETURN this0 {.title} AS movie"
         `);
 

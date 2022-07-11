@@ -18,7 +18,7 @@
  */
 
 import { CypherASTNode } from "../CypherASTNode";
-import type { WhereInput, WhereStatement } from "./Where";
+import { WhereInput, WhereStatement } from "./Where";
 import { WithStatement, WithStatementArgs } from "./With";
 import type { CypherContextInterface } from "../CypherContext";
 import type { CypherResult } from "../types";

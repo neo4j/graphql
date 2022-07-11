@@ -41,12 +41,12 @@ export class Param<T = any> extends Variable {
     }
 }
 
-// /* Careful, this could lead to Cypher Injection */
-// export class RawParam<T> extends Param<T> {
-//     public getCypher(_context: CypherContext): string {
-//         return `${this.value}`;
-//     }
-// }
+/* Careful, this could lead to Cypher Injection */
+export class RawParam<T> extends Param<T> {
+    public getCypher(_env: CypherEnvironment): string {
+        return `${this.value}`;
+    }
+}
 
 // type Point = { latitude: number; longitude: number };
 

@@ -20,8 +20,9 @@
 import { Clause } from "./Clause";
 import type { NodeRef } from "../variables/NodeRef";
 import type { CypherEnvironment } from "../Environment";
+import { isString } from "../../../utils/utils";
 
-export type Projection = [NodeRef, Array<string>?, string?];
+export type Projection = string | [NodeRef, Array<string>?, string?];
 
 export class Return extends Clause {
     private returnArgs: Projection;
@@ -32,6 +33,9 @@ export class Return extends Clause {
     }
 
     protected cypher(env: CypherEnvironment): string {
+        if (isString(this.returnArgs)) {
+            return `RETURN ${this.returnArgs}`;
+        }
         let projection = "";
         let alias = "";
         if ((this.returnArgs[1] || []).length > 0) {

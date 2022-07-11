@@ -17,13 +17,15 @@
  * limitations under the License.
  */
 
-import { Exists, RawCypher, RawCypherWithCallback, Variable } from "../CypherBuilder";
-import { CypherContext } from "../CypherContext";
-import { MatchableElement } from "../MatchPattern";
-import { Param } from "../references/Param";
+import { Exists } from "../CypherBuilder";
+import type { Variable } from "../CypherBuilder";
+import { RawCypher, RawCypherWithCallback } from "../CypherBuilder";
+import type { CypherContext } from "../CypherContext";
+import type { MatchableElement } from "../MatchPattern";
+import type { Param } from "../references/Param";
 import { PredicateFunction } from "./predicate-functions";
 import { ScalarFunction } from "./scalar-functions";
-import { WhereInput } from "./Where";
+import type { WhereInput } from "./Where";
 import { WhereClause } from "./where-clauses";
 
 type Params = Record<string, Param<any> | WhereClause>;

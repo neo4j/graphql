@@ -23,9 +23,11 @@ import { PropertyRef } from "../PropertyRef";
 /** Represents a variable */
 export abstract class Variable {
     public readonly prefix: string;
+    public id: string | undefined; // Overrides variable name for compatibility reasons
 
-    constructor(prefix: string) {
+    constructor(prefix: string, id?: string) {
         this.prefix = prefix;
+        this.id = id;
     }
 
     public getCypher(env: CypherEnvironment): string {
@@ -35,5 +37,12 @@ export abstract class Variable {
 
     public property(path: string): PropertyRef {
         return new PropertyRef(this, path);
+    }
+}
+
+/** For compatibility reasons, represents a plain string variable */
+export class RawVariable extends Variable {
+    constructor(name: string) {
+        super("", name);
     }
 }

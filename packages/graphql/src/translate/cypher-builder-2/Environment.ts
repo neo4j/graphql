@@ -32,6 +32,7 @@ export class CypherEnvironment {
     }
 
     public getVariableId(variable: Variable): string {
+        if (variable.id) return variable.id; // Overrides ids for compatibility reasons
         const id = this.references.get(variable);
         if (!id) {
             return this.addVariableReference(variable);
@@ -47,27 +48,30 @@ export class CypherEnvironment {
         }, {} as Record<string, any>);
     }
 
-    private addVariableReference(variable: Variable) {
+    private addVariableReference(variable: Variable): string {
         const paramIndex = this.params.length; // Indexes are separate for readability reasons
-        let varIndex: number;
 
-        let varId: string;
         if (variable instanceof Param) {
-            varIndex = paramIndex;
-            this.params.push(variable);
-            varId = `$${this.globalPrefix}${variable.prefix}${varIndex}`;
-        } else {
-            varIndex = this.references.size - paramIndex;
-            varId = `${this.globalPrefix}${variable.prefix}${varIndex}`;
+            const varId = `${this.globalPrefix}${variable.prefix}${paramIndex}`;
+            return this.addParam(varId, variable);
         }
 
+        const varIndex = this.references.size - paramIndex;
+        const varId = `${this.globalPrefix}${variable.prefix}${varIndex}`;
         this.references.set(variable, varId);
         return varId;
     }
 
-    // public addNamedParamReference(name: string, param: CypherParameter): void {
-    //     this.params.set(param, name);
-    // }
+    public addNamedParamReference(name: string, param: Param): void {
+        this.addParam(name, param);
+    }
+
+    private addParam(id: string, param: Param): string {
+        const paramId = `$${id}`;
+        this.references.set(param, paramId);
+        this.params.push(param);
+        return paramId;
+    }
 
     // private addVariable(variable: CypherVariable): string {
     //     const varIndex = this.variables.size;

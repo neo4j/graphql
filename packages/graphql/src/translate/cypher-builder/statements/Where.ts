@@ -19,13 +19,13 @@
 
 import { filterTruthy } from "../../../utils/utils";
 import { CypherASTNode } from "../CypherASTNode";
-import { Exists, Param, Variable } from "../CypherBuilder";
-import { CypherContext } from "../CypherContext";
-import { MatchableElement } from "../MatchPattern";
-import { PredicateFunction } from "./predicate-functions";
-import { RawCypher, RawCypherWithCallback } from "./RawCypher";
-import { ScalarFunction } from "./scalar-functions";
-import { WhereClause } from "./where-clauses";
+import type { Exists, Param, Variable } from "../CypherBuilder";
+import type { CypherContext } from "../CypherContext";
+import type { MatchableElement } from "../MatchPattern";
+import type { PredicateFunction } from "./predicate-functions";
+import type { RawCypher, RawCypherWithCallback } from "./RawCypher";
+import type { ScalarFunction } from "./scalar-functions";
+import type { WhereClause } from "./where-clauses";
 import { WhereOperator, and } from "./where-operators";
 
 type Params = Record<string, Param<any> | WhereClause>;

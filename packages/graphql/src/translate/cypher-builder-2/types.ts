@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { Variable } from "./variables/Variable";
-import { Operation } from "./operations/Operation";
-import { PropertyRef } from "./PropertyRef";
+import type { Variable } from "./variables/Variable";
+import type { Operation } from "./operations/Operation";
+import type { PropertyRef } from "./PropertyRef";
 
 export type Expr = Operation | Variable | PropertyRef;
 

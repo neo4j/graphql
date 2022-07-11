@@ -18,11 +18,12 @@
  */
 
 import { dedent } from "graphql-compose";
-import { CypherContext } from "../CypherContext";
-import { Node } from "../references/Node";
+import type { CypherContext } from "../CypherContext";
+import type { Node } from "../references/Node";
+import type { WhereInput } from "./Where";
 import { Query } from "./Query";
 import { ReturnStatement } from "./Return";
-import { WhereInput, WhereStatement } from "./Where";
+import { WhereStatement } from "./Where";
 
 export class FullTextQueryNodes extends Query {
     private whereStatement: WhereStatement | undefined;

@@ -39,3 +39,10 @@ export class NodeRef extends Variable {
         return `:${escapedLabels.join(":")}`;
     }
 }
+
+export class NamedNode extends NodeRef {
+    constructor(id: string, options?: NodeRefOptions) {
+        super(options || {});
+        this.id = id;
+    }
+}

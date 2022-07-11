@@ -18,8 +18,8 @@
  */
 
 import { CypherASTNode } from "../CypherASTNode";
-import { CypherContext } from "../CypherContext";
-import { CypherVariable } from "../references/References";
+import type { CypherContext } from "../CypherContext";
+import type { CypherVariable } from "../references/References";
 
 export type WithStatementArgs = Array<[CypherVariable | [CypherVariable, string], CypherVariable]>;
 

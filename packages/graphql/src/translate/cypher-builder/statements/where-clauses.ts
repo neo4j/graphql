@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { CypherContext } from "../CypherContext";
-import { Param } from "../references/Param";
+import type { CypherContext } from "../CypherContext";
+import type { Param } from "../references/Param";
 
 // type Params = Record<string, Param<any>>;
 // type WhereInput = Array<[MatchableElement, Params] | WhereOperator>;

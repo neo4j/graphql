@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { PointParam } from "../CypherBuilder";
-import { CypherContext } from "../CypherContext";
-import { CypherVariable } from "../references/References";
+import type { PointParam } from "../CypherBuilder";
+import type { CypherContext } from "../CypherContext";
+import type { CypherVariable } from "../references/References";
 
 // type Params = Record<string, Param<any>>;
 // type WhereInput = Array<[MatchableElement, Params] | WhereOperator>;

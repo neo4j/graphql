@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import { Param } from "./CypherBuilder";
+
 /** Adds spaces to the left of the string, returns empty string is variable is undefined or empty string */
 export function padLeft(str: string | undefined): string {
     if (!str) return "";
@@ -32,4 +34,11 @@ export function padBlock(block: string, spaces = 4): string {
     const paddingStr = " ".repeat(spaces);
     const paddedNewLines = block.replace(/\n/g, `\n${paddingStr}`);
     return `${paddingStr}${paddedNewLines}`;
+}
+
+export function convertToCypherParams<T>(original: Record<string, T>): Record<string, Param<T>> {
+    return Object.entries(original).reduce((acc, [key, value]) => {
+        acc[key] = new Param(value);
+        return acc;
+    }, {});
 }

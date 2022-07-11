@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import { GraphQLWhereArg, Context, RelationField, ConnectionField } from "../../types";
-import { Node, Relationship } from "../../classes";
+import type { GraphQLWhereArg, Context, RelationField, ConnectionField } from "../../types";
+import type { Node, Relationship } from "../../classes";
+import type { MatchableElement } from "../cypher-builder/MatchPattern";
+import type { WhereInput } from "../cypher-builder/statements/Where";
+import type { PredicateFunction } from "../cypher-builder/statements/predicate-functions";
+import type { WhereOperator } from "../cypher-builder/statements/where-operators";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
-import { MatchableElement } from "../cypher-builder/MatchPattern";
-import { WhereOperator } from "../cypher-builder/statements/where-operators";
 import { getListPredicate, whereRegEx, WhereRegexGroups } from "./utils";
-import { PredicateFunction } from "../cypher-builder/statements/predicate-functions";
 import createAggregateWhereAndParams from "../create-aggregate-where-and-params";
-import { WhereInput } from "../cypher-builder/statements/Where";
 import { ScalarFunction } from "../cypher-builder/statements/scalar-functions";
 import createWhereClause from "./create-where-clause";
 import createConnectionWhereAndParams from "./create-connection-where-and-params";

@@ -18,9 +18,9 @@
  */
 
 import { stringifyObject } from "../../utils/stringify-object";
-import { CypherContext } from "../CypherContext";
 import { Param } from "./Param";
-import { CypherParameter, CypherVariable } from "./References";
+import type { CypherContext } from "../CypherContext";
+import type { CypherParameter, CypherVariable } from "./References";
 
 /** Defines a random variable defined within cypher */
 export class Variable implements CypherVariable {

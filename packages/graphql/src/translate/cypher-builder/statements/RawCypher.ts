@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { Param } from "../CypherBuilder";
-import { CypherContext } from "../CypherContext";
+import type { Param } from "../CypherBuilder";
+import type { CypherContext } from "../CypherContext";
 import { convertToCypherParams } from "../utils";
 import { Query } from "./Query";
 

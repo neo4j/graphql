@@ -215,7 +215,7 @@ describe("CypherBuilder", () => {
             expect(queryResult.cypher).toMatchInlineSnapshot(`
                 "CREATE (this0:\`Movie\` { test: $param0, id: $param1 })
                 SET
-                this0.id = $param1
+                    this0.id = $param1
                 RETURN this0"
             `);
 
@@ -246,8 +246,8 @@ describe("CypherBuilder", () => {
             expect(queryResult.cypher).toMatchInlineSnapshot(`
                 "CREATE (this0:\`Movie\` { id: NULL })
                 SET
-                this0.test = NULL,
-                this0.nullStr = $param0
+                    this0.test = NULL,
+                    this0.nullStr = $param0
                 RETURN this0"
             `);
 
@@ -271,7 +271,7 @@ describe("CypherBuilder", () => {
             expect(queryResult.cypher).toMatchInlineSnapshot(`
                 "MERGE (this0:\`MyLabel\`)
                 ON CREATE SET
-                this0.age = $param0"
+                    this0.age = $param0"
             `);
             expect(queryResult.params).toMatchInlineSnapshot(`
                 Object {
@@ -294,7 +294,7 @@ describe("CypherBuilder", () => {
             expect(queryResult.cypher).toMatchInlineSnapshot(`
                 "MERGE (this0:\`MyLabel\` { test: $param0 })
                 ON CREATE SET
-                this0.age = $param1"
+                    this0.age = $param1"
             `);
             expect(queryResult.params).toMatchInlineSnapshot(`
                 Object {
@@ -322,9 +322,9 @@ describe("CypherBuilder", () => {
             expect(queryResult.cypher).toMatchInlineSnapshot(`
                 "MERGE (this1)-[this0]->(this2)
                 ON CREATE SET
-                this1.age = $param0,
-                this1.name = $param1,
-                this0.screentime = $param2"
+                    this1.age = $param0,
+                    this1.name = $param1,
+                    this0.screentime = $param2"
             `);
             expect(queryResult.params).toMatchInlineSnapshot(`
                 Object {
@@ -351,7 +351,7 @@ describe("CypherBuilder", () => {
                 "CALL {
                     CREATE (this0:\`Movie\`)
                     SET
-                    this0.id = $param0
+                        this0.id = $param0
                     RETURN this0
                 }"
             `);
@@ -380,7 +380,7 @@ describe("CypherBuilder", () => {
                     CALL {
                         CREATE (this0:\`Movie\`)
                         SET
-                        this0.id = $param0
+                            this0.id = $param0
                         RETURN this0
                     }
                 }"

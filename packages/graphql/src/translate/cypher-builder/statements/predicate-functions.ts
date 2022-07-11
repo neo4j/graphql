@@ -17,9 +17,11 @@
  * limitations under the License.
  */
 
-import { Query, Relationship, Node, Variable } from "../CypherBuilder";
-import { CypherContext } from "../CypherContext";
-import { MatchPattern } from "../MatchPattern";
+import { Node } from "../CypherBuilder";
+import type { Query, Relationship } from "../CypherBuilder";
+import type { Variable } from "../CypherBuilder";
+import type { CypherContext } from "../CypherContext";
+import type { MatchPattern } from "../MatchPattern";
 
 export abstract class PredicateFunction {
     public abstract getCypher(context: CypherContext): string;

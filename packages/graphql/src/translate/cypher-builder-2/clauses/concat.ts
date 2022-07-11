@@ -17,19 +17,22 @@
  * limitations under the License.
  */
 
-import type { CypherASTNode } from "../CypherASTNode";
-import type { CypherContext } from "../CypherContext";
-import type { MatchPattern } from "../MatchPattern";
-import { Query } from "./Query";
+import type { CypherEnvironment } from "../Environment";
+import { Clause } from "./Clause";
 
-export class Exists extends Query {
-    constructor(private matchPattern: MatchPattern<any>, parent?: CypherASTNode) {
-        super(parent);
+class ConcatClause extends Clause {
+    constructor(private children: Clause[], private separator: string) {
+        super();
+        this.addChildren(...children);
     }
 
-    public cypher(context: CypherContext, childrenCypher: string): string {
-        const matchPatterStr = this.matchPattern.getCypher(context);
-
-        return `EXISTS { ${matchPatterStr} ${childrenCypher} }`;
+    protected cypher(env: CypherEnvironment): string {
+        const childrenStrs = this.children.map((c) => c.getCypher(env));
+        return childrenStrs.join(this.separator);
     }
+}
+
+/** Concatenates multiple clauses into a clause */
+export function concat(...clauses: Clause[]): Clause {
+    return new ConcatClause(clauses, "\n");
 }

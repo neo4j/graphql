@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { Node } from "./Node";
-import { Param } from "./Param";
-import { Relationship } from "./Relationship";
+import type { Node } from "./Node";
+import type { Param } from "./Param";
+import type { Relationship } from "./Relationship";
 
 // These interfaces are mainly to avoid coupling and circular dependencies between context and statements
 

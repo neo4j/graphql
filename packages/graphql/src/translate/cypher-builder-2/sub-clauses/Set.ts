@@ -20,13 +20,14 @@
 import type { CypherASTNode } from "../CypherASTNode";
 import type { CypherEnvironment } from "../Environment";
 import type { PropertyRef } from "../PropertyRef";
+import { padBlock } from "../utils";
 import type { Param } from "../variables/Param";
 import { SubClause } from "./SubClause";
 
 export type SetParam = [PropertyRef, Param<any>];
 
 export class SetClause extends SubClause {
-    private params: SetParam[];
+    protected params: SetParam[];
 
     constructor(parent: CypherASTNode, params: SetParam[] = []) {
         super(parent);
@@ -45,7 +46,7 @@ export class SetClause extends SubClause {
             })
             .join(",\n");
 
-        return `SET\n${paramsStr}`;
+        return `SET\n${padBlock(paramsStr)}`;
     }
 
     private composeParam(env: CypherEnvironment, [ref, param]: SetParam): string {
