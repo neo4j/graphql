@@ -40,11 +40,21 @@ jobs:
     if: github.event.pull_request.merged == true
     uses: ./.github/workflows/reusable-toolbox-tests.yml
 
-  aura-tests:
+  aura-free-tests:
     if: github.event.pull_request.merged == true
     uses: ./.github/workflows/reusable-aura-tests.yml
-    secrets: inherit
-    concurrency: aura
+    secrets:
+      URI: ${{ secrets.AURA_FREE_URI }}
+      PASSWORD: ${{ secrets.AURA_FREE_PASSWORD }}
+    concurrency: aura-free
+
+  aura-professional-tests:
+    if: github.event.pull_request.merged == true
+    uses: ./.github/workflows/reusable-aura-tests.yml
+    secrets:
+      URI: ${{ secrets.AURA_PROFESSIONAL_URI }}
+      PASSWORD: ${{ secrets.AURA_PROFESSIONAL_PASSWORD }}
+    concurrency: aura-professional
 
   # slack-release-notification:
   #   needs:
