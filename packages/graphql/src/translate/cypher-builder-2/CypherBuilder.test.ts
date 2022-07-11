@@ -336,53 +336,60 @@ describe("CypherBuilder", () => {
         });
     });
 
-    // describe("Call", () => {
-    //     test("Wraps query inside Call", () => {
-    //         const idParam = new CypherBuilder.Param("my-id");
-    //         const movieNode = new CypherBuilder.Node({
-    //             labels: ["Movie"],
-    //         });
+    describe("Call", () => {
+        test("Wraps query inside Call", () => {
+            const idParam = new CypherBuilder.Param("my-id");
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+            });
 
-    //         const createQuery = new CypherBuilder.Create(movieNode).set({ id: idParam }).return(movieNode);
+            const createQuery = new CypherBuilder.Create(movieNode)
+                .set([movieNode.property("id"), idParam])
+                .return(movieNode);
+            const queryResult = new CypherBuilder.Call(createQuery).build();
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "CALL {
+                    CREATE (this0:\`Movie\`)
+                    SET
+                    this0.id = $param0
+                    RETURN this0
+                }"
+            `);
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "my-id",
+                }
+            `);
+        });
 
-    //         const queryResult = new CypherBuilder.Call(createQuery).build();
-    //         expect(queryResult.cypher).toMatchInlineSnapshot(`
-    //             "CALL {
-    //             	CREATE (this0:\`Movie\`)
-    //             SET this0.id = $param0
-    //             RETURN this0
-    //             	RETURN COUNT(*) AS _
-    //             }"
-    //         `);
-    //         expect(queryResult.params).toMatchInlineSnapshot(`
-    //             Object {
-    //               "param0": "my-id",
-    //             }
-    //         `);
-    //     });
+        test("Nested Call", () => {
+            const idParam = new CypherBuilder.Param("my-id");
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+            });
 
-    //     test("Nested Call", () => {
-    //         const movieNode = new CypherBuilder.Node({
-    //             labels: ["Movie"],
-    //         });
-    //         const createQuery = new CypherBuilder.Create(movieNode).return(movieNode);
+            const createQuery = new CypherBuilder.Create(movieNode)
+                .set([movieNode.property("id"), idParam])
+                .return(movieNode);
+            const nestedCall = new CypherBuilder.Call(createQuery);
+            const call = new CypherBuilder.Call(nestedCall);
+            const queryResult = call.build();
 
-    //         const call1 = new CypherBuilder.Call(createQuery);
-    //         const call2 = new CypherBuilder.Call(call1);
-
-    //         const queryResult = call2.build();
-    //         expect(queryResult.cypher).toMatchInlineSnapshot(`
-    //             "CALL {
-    //             	CALL {
-    //             	CREATE (this0:\`Movie\`)
-
-    //             RETURN this0
-    //             	RETURN COUNT(*) AS _
-    //             }
-    //             	RETURN COUNT(*) AS _
-    //             }"
-    //         `);
-    //         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
-    //     });
-    // });
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "CALL {
+                    CALL {
+                        CREATE (this0:\`Movie\`)
+                        SET
+                        this0.id = $param0
+                        RETURN this0
+                    }
+                }"
+            `);
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "my-id",
+                }
+            `);
+        });
+    });
 });
