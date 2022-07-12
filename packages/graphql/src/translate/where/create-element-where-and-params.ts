@@ -212,7 +212,8 @@ function createElementWhereAndParams({
 
                     res.clauses.push(apocRunFirstColumn);
 
-                    res.params = { ...res.params, [fieldName]: connectionWhere[1] };
+                    const paramFieldName = operator ? `${fieldName}_${operator}` : fieldName;
+                    res.params = { ...res.params, [paramFieldName]: connectionWhere[1] };
                 });
 
                 return res;
