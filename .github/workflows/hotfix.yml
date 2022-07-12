@@ -424,7 +424,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
       - name: Release
-        uses: softprops/action-gh-release@50195ba7f6f93d1ac97ba8332a178e008ad176aa
+        uses: softprops/action-gh-release@cd28b0f5ee8571b76cfdaa62a30d51d752317477
         with:
           body: ${{ steps.github-release.outputs.changelog }}
           name: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
