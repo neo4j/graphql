@@ -33,9 +33,9 @@ jobs:
           NEO_PASSWORD: ${{ secrets.PASSWORD }}
           NEO_URL: ${{ secrets.URI }}
 
-  integration-tests-aura:
+  test:
     needs:
-      - aura-teardown
+      - teardown
 
     continue-on-error: true
 
