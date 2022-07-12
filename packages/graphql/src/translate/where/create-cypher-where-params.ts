@@ -26,23 +26,20 @@ import createAggregateWhereAndParams from "../create-aggregate-where-and-params"
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
 import { listPredicateToSizeFunction } from "./list-predicate-to-size-function";
 import { filterTruthy } from "../../utils/utils";
+import { createComparisonOperation } from "./operations/create-comparison-operation";
 
-type WhereMatchStatement = CypherBuilder.Match<any> | CypherBuilder.db.FullTextQueryNodes;
-// type WhereMatchStatement = CypherBuilder.Match<any> | CypherBuilder.db.FullTextQueryNodes;
-
-export function addWhereToStatement<Q extends WhereMatchStatement>({
+/** Translate a target node and GraphQL input into a Cypher operation */
+export function createCypherWhereParams({
     targetElement,
-    matchStatement,
     whereInput,
     context,
     node,
 }: {
-    matchStatement: Q;
     targetElement: CypherBuilder.Node;
     whereInput: GraphQLWhereArg;
     context: Context;
     node: Node;
-}): Q {
+}): CypherBuilder.WhereParams | undefined {
     const mappedProperties = mapPropertiesToOperators({
         whereInput,
         targetElement,
@@ -50,12 +47,7 @@ export function addWhereToStatement<Q extends WhereMatchStatement>({
         context,
     });
 
-    const defaultAndOperation = CypherBuilder.and(...mappedProperties);
-    if (defaultAndOperation) {
-        matchStatement.where(defaultAndOperation);
-    }
-
-    return matchStatement;
+    return CypherBuilder.and(...mappedProperties);
 }
 
 function mapPropertiesToOperators({
@@ -72,36 +64,29 @@ function mapPropertiesToOperators({
     const whereFields = Object.entries(whereInput);
 
     return filterTruthy(
-        whereFields.map(
-            ([key, value]):
-                | CypherBuilder.ComparisonOp
-                | CypherBuilder.BooleanOp
-                | CypherBuilder.RawCypher
-                | CypherBuilder.Exists
-                | undefined => {
-                if (key === "OR") {
-                    const nested = value
-                        .map((v) => {
-                            return mapPropertiesToOperators({ whereInput: v, node, targetElement, context });
-                        })
-                        .flat();
+        whereFields.map(([key, value]): CypherBuilder.WhereParams | undefined => {
+            if (key === "OR") {
+                const nested = value
+                    .map((v) => {
+                        return mapPropertiesToOperators({ whereInput: v, node, targetElement, context });
+                    })
+                    .flat();
 
-                    return CypherBuilder.or(...nested);
-                }
-                if (key === "AND") {
-                    const nested = value
-                        .map((v) => {
-                            return mapPropertiesToOperators({ whereInput: v, node, targetElement, context });
-                        })
-                        .flat();
-
-                    return CypherBuilder.and(...nested);
-                }
-                const fieldOperation = createComparisonOnProperty({ key, value, node, targetElement, context });
-
-                return fieldOperation;
+                return CypherBuilder.or(...nested);
             }
-        )
+            if (key === "AND") {
+                const nested = value
+                    .map((v) => {
+                        return mapPropertiesToOperators({ whereInput: v, node, targetElement, context });
+                    })
+                    .flat();
+
+                return CypherBuilder.and(...nested);
+            }
+            const fieldOperation = createComparisonOnProperty({ key, value, node, targetElement, context });
+
+            return fieldOperation;
+        })
     );
 }
 
@@ -130,15 +115,12 @@ function createComparisonOnProperty({
     if (prefix) {
         dbFieldName = `${prefix}${dbFieldName}`;
     }
-    // TODO: fix global id
     if (node.isGlobalNode && key === "id") {
         const { field, id } = node.fromGlobalId(value as string);
         // get the dbField from the returned property fieldName
         const idDbFieldName = mapToDbProperty(node, field);
         let idProperty = targetElement.property(idDbFieldName) as CypherBuilder.PropertyRef | CypherBuilder.Function;
         if (coalesceValue) {
-            // TODO: improve
-            console.log(coalesceValue);
             idProperty = CypherBuilder.coalesce(
                 idProperty as CypherBuilder.PropertyRef,
                 new CypherBuilder.Literal(coalesceValue)
@@ -199,147 +181,21 @@ function createComparisonOnProperty({
         }
         return CypherBuilder.isNull(propertyRef);
     }
+
     const pointField = node.pointFields.find((x) => x.fieldName === fieldName);
-    if (pointField) {
-        return createPointComparison({
-            propertyRefOrCoalesce: propertyRef,
-            param: new CypherBuilder.Param(value),
-            operator,
-            pointField,
-        });
-    }
     const durationField = node.primitiveFields.find((x) => x.fieldName === fieldName && x.typeMeta.name === "Duration");
 
-    return createPrimitiveComparison({
+    const comparisonOp = createComparisonOperation({
         propertyRefOrCoalesce: propertyRef,
         param: new CypherBuilder.Param(value),
         operator,
         durationField,
+        pointField,
     });
-}
-
-function createPointComparison({
-    operator,
-    propertyRefOrCoalesce,
-    param,
-    pointField,
-}: {
-    operator: string | undefined;
-    propertyRefOrCoalesce: CypherBuilder.PropertyRef | CypherBuilder.Function;
-    param: CypherBuilder.Param;
-    pointField: PointField;
-}): CypherBuilder.ComparisonOp | CypherBuilder.BooleanOp {
-    const comprehensionVar = new CypherBuilder.Variable();
-    const mapPoint = CypherBuilder.point(comprehensionVar);
-    const pointList = new CypherBuilder.ListComprehension(comprehensionVar, param, undefined, mapPoint);
-
-    const nestedPointRef = param.property("point");
-    const pointDistance: CypherBuilder.Function = CypherBuilder.distance(
-        propertyRefOrCoalesce,
-        CypherBuilder.point(nestedPointRef)
-    );
-    const distanceRef = param.property("distance");
-    const paramPoint = CypherBuilder.point(param);
-
-    if (operator) {
-        switch (operator) {
-            case "LT":
-                return CypherBuilder.lt(pointDistance, distanceRef);
-            case "LTE":
-                return CypherBuilder.lte(pointDistance, distanceRef);
-            case "GT":
-                return CypherBuilder.gt(pointDistance, distanceRef);
-            case "GTE":
-                return CypherBuilder.gte(pointDistance, distanceRef);
-            case "DISTANCE":
-                return CypherBuilder.eq(pointDistance, distanceRef);
-            case "NOT": // TODO: handle not after this
-                if (pointField?.typeMeta.array) {
-                    return CypherBuilder.not(CypherBuilder.eq(propertyRefOrCoalesce, pointList));
-                }
-
-                return CypherBuilder.not(CypherBuilder.eq(propertyRefOrCoalesce, paramPoint));
-            case "IN":
-                return CypherBuilder.in(propertyRefOrCoalesce, pointList);
-            case "NOT_IN":
-                return CypherBuilder.not(CypherBuilder.in(propertyRefOrCoalesce, pointList));
-            case "INCLUDES":
-                return CypherBuilder.in(paramPoint, propertyRefOrCoalesce);
-            case "NOT_INCLUDES":
-                return CypherBuilder.not(CypherBuilder.in(paramPoint, propertyRefOrCoalesce));
-            default:
-                throw new Error(`Invalid operator ${operator}`);
-        }
+    if (isNot) {
+        return CypherBuilder.not(comparisonOp);
     }
-
-    if (pointField?.typeMeta.array) {
-        return CypherBuilder.eq(propertyRefOrCoalesce, pointList);
-    }
-
-    return CypherBuilder.eq(propertyRefOrCoalesce, paramPoint);
-}
-
-function createPrimitiveComparison({
-    operator,
-    propertyRefOrCoalesce,
-    param,
-    durationField,
-}: {
-    operator: string | undefined;
-    propertyRefOrCoalesce: CypherBuilder.PropertyRef | CypherBuilder.Function;
-    param: CypherBuilder.Param;
-    durationField: PrimitiveField | undefined;
-}): CypherBuilder.ComparisonOp | CypherBuilder.BooleanOp {
-    let variable: CypherBuilder.Variable | CypherBuilder.Operation = param;
-    let propertyRef: CypherBuilder.PropertyRef | CypherBuilder.Function | CypherBuilder.Operation =
-        propertyRefOrCoalesce;
-    // Comparison operations requires adding dates to durations
-    // See https://neo4j.com/developer/cypher/dates-datetimes-durations/#comparing-filtering-values
-    if (durationField && operator) {
-        variable = CypherBuilder.plus(CypherBuilder.datetime(), variable);
-        propertyRef = CypherBuilder.plus(CypherBuilder.datetime(), propertyRefOrCoalesce);
-    }
-
-    if (operator) {
-        switch (operator) {
-            case "LT":
-                return CypherBuilder.lt(propertyRef, variable);
-            case "LTE":
-                return CypherBuilder.lte(propertyRef, variable);
-            case "GT":
-                return CypherBuilder.gt(propertyRef, variable);
-            case "GTE":
-                return CypherBuilder.gte(propertyRef, variable);
-            case "NOT":
-                return CypherBuilder.not(CypherBuilder.eq(propertyRef, variable));
-            case "ENDS_WITH":
-                return CypherBuilder.endsWith(propertyRef, variable);
-            case "NOT_ENDS_WITH":
-                return CypherBuilder.not(CypherBuilder.endsWith(propertyRef, variable));
-            case "STARTS_WITH":
-                return CypherBuilder.startsWith(propertyRef, variable);
-            case "NOT_STARTS_WITH":
-                return CypherBuilder.not(CypherBuilder.startsWith(propertyRef, variable));
-            case "MATCHES":
-                return CypherBuilder.matches(propertyRef, variable);
-            case "CONTAINS":
-                return CypherBuilder.contains(propertyRef, variable);
-            case "NOT_CONTAINS":
-                return CypherBuilder.not(CypherBuilder.contains(propertyRef, variable));
-            case "IN":
-                return CypherBuilder.in(propertyRef, variable);
-            case "NOT_IN":
-                return CypherBuilder.not(CypherBuilder.in(propertyRef, variable));
-            case "INCLUDES":
-                return CypherBuilder.in(variable, propertyRef);
-            case "NOT_INCLUDES":
-                return CypherBuilder.not(CypherBuilder.in(variable, propertyRef));
-            default:
-                throw new Error(`Invalid operator ${operator}`);
-        }
-    }
-
-    return CypherBuilder.eq(propertyRef, variable);
+    return comparisonOp;
 }
 
 function createRelationProperty({
@@ -384,8 +240,6 @@ function createRelationProperty({
         }
         return exists;
     }
-
-    // const subquery = new CypherBuilder.Query();
 
     const nestedOperators = mapPropertiesToOperators({
         whereInput: value,

@@ -21,7 +21,7 @@ import type { AuthOperations, Context, GraphQLWhereArg } from "../types";
 import type { Node } from "../classes";
 import createAuthAndParams from "./create-auth-and-params";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
-import { addWhereToStatement } from "./where/add-where-to-statement";
+import { createCypherWhereParams } from "./where/create-cypher-where-params";
 
 function translateTopLevelMatch({
     node,
@@ -39,7 +39,6 @@ function translateTopLevelMatch({
     const { resolveTree } = context;
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
-    // const whereStrs: string[] = [];
 
     const matchNode = new CypherBuilder.NamedNode(varName, { labels: node.getLabels(context) });
 
@@ -82,13 +81,14 @@ function translateTopLevelMatch({
     }
 
     if (whereInput) {
-        addWhereToStatement({
+        const whereOp = createCypherWhereParams({
             whereInput,
             node,
             context,
-            matchStatement: matchQuery,
             targetElement: matchNode,
         });
+
+        if (whereOp) matchQuery.where(whereOp);
     }
 
     const whereAuth = createAuthAndParams({
@@ -102,7 +102,6 @@ function translateTopLevelMatch({
             return whereAuth;
         });
 
-        // const authQuery = new CypherBuilder.RawCypher(whereAuth[0], whereAuth[1] as Record<string, any>);
         matchQuery.where(authQuery);
     }
 

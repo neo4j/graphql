@@ -47,6 +47,7 @@ export type { CypherEnvironment as Environment } from "./Environment";
 export type { Operation } from "./operations/Operation";
 export type { ComparisonOp } from "./operations/comparison";
 export type { BooleanOp } from "./operations/boolean";
+export type { WhereParams } from "./sub-clauses/Where";
 export type { Expr } from "./types";
 export type { CypherFunction as Function } from "./functions/CypherFunction";
 
