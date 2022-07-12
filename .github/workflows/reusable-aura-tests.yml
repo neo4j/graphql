@@ -3,27 +3,15 @@ name: "Aura tests"
 on:
   workflow_call:
     secrets:
-      AURA_FREE_URI:
+      URI:
         required: true
-        description: "URI locating the AuraDB Free instance to test against"
-      AURA_FREE_PASSWORD:
+        description: "The URI locating the AuraDB instance to be tested against"
+      PASSWORD:
         required: true
-        description: "Password of the AuraDB Free instance to test against"
-      AURA_PROFESSIONAL_URI:
-        required: true
-        description: "URI locating the AuraDB Professional instance to test against"
-      AURA_PROFESSIONAL_PASSWORD:
-        required: true
-        description: "Password of the AuraDB Professional instance to test against"
+        description: "The password needed to access the AuraDB instance"
 
 jobs:
-  aura-teardown:
-    strategy:
-      matrix:
-        aura-instance:
-          - free
-          - professional
-
+  teardown:
     runs-on: ubuntu-latest
 
     steps:
@@ -37,22 +25,17 @@ jobs:
         run: yarn --immutable
       - name: Install ts-node and typescript
         run: npm install -g ts-node typescript
-      - name: Uppercase instance name
-        run: |
-          lowercase_instance=${{ matrix.aura-instance }}
-          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>"${GITHUB_ENV}"
-          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>"${GITHUB_ENV}"
       - name: Delete all data in instance
         run: ts-node tests/integration/teardown.ts
         working-directory: packages/graphql
         env:
           NEO_USER: neo4j
-          NEO_PASSWORD: ${{ secrets[env.AURA_PASSWORD_SECRET] }}
-          NEO_URL: ${{ secrets[env.AURA_URI_SECRET] }}
+          NEO_PASSWORD: ${{ secrets.PASSWORD }}
+          NEO_URL: ${{ secrets.URI }}
 
-  integration-tests-aura:
+  test:
     needs:
-      - aura-teardown
+      - teardown
 
     continue-on-error: true
 
@@ -63,9 +46,6 @@ jobs:
           - graphql
           - introspector
           - ogm
-        aura-instance:
-          - free
-          - professional
 
     runs-on: ubuntu-latest
 
@@ -78,17 +58,11 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - name: Uppercase instance name
-        run: |
-          lowercase_instance=${{ matrix.aura-instance }}
-          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>"${GITHUB_ENV}"
-          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>"${GITHUB_ENV}"
       - name: Run @neo4j/graphql integration tests
         run: |
-          yarn test:int --coverage
-          mv coverage coverage-aura-${{ matrix.aura-instance }}
+          yarn test:int
         working-directory: packages/${{ matrix.package }}
         env:
           NEO_USER: neo4j
-          NEO_PASSWORD: ${{ secrets[env.AURA_PASSWORD_SECRET] }}
-          NEO_URL: ${{ secrets[env.AURA_URI_SECRET] }}
+          NEO_PASSWORD: ${{ secrets.PASSWORD }}
+          NEO_URL: ${{ secrets.URI }}

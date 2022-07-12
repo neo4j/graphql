@@ -1,7 +1,7 @@
 {
     "name": "@neo4j/graphql-toolbox",
     "private": true,
-    "version": "1.0.2",
+    "version": "1.1.0",
     "description": "Developer UI For Neo4j GraphQL",
     "exports": "./dist/main.js",
     "main": "./dist/main.js",
@@ -59,7 +59,7 @@
         "uuid": "^8.3.2"
     },
     "devDependencies": {
-        "@playwright/test": "1.23.1",
+        "@playwright/test": "1.23.2",
         "@tsconfig/create-react-app": "1.0.2",
         "@types/codemirror": "5.60.5",
         "@types/crypto-js": "4.1.1",
