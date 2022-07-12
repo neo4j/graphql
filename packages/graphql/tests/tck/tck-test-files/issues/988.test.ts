@@ -136,10 +136,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
-            WHERE (this.current = $param0
-            AND ((size([(this)-[this2:\`MANUFACTURER\`]->(this1:\`Manufacturer\`) WHERE this2.current = $nestedParam1.edge.current AND this1.name = $nestedParam1.node.name | 1]) > 0
-            OR size([(this)-[this4:\`MANUFACTURER\`]->(this3:\`Manufacturer\`) WHERE this4.current = $nestedParam2.edge.current AND this3.name = $nestedParam2.node.name | 1]) > 0)
-            AND size([(this)-[this6:\`BRAND\`]->(this5:\`Brand\`) WHERE this6.current = $nestedParam3.edge.current AND this5.name = $nestedParam3.node.name | 1]) > 0))
+            WHERE (((size([(this)-[this0:\`MANUFACTURER\`]->(this1:\`Manufacturer\`) WHERE this0.current = $nestedParam0.edge.current AND this1.name = $nestedParam0.node.name | 1]) > 0 OR size([(this)-[this2:\`MANUFACTURER\`]->(this3:\`Manufacturer\`) WHERE this2.current = $nestedParam1.edge.current AND this3.name = $nestedParam1.node.name | 1]) > 0) AND size([(this)-[this4:\`BRAND\`]->(this5:\`Brand\`) WHERE this4.current = $nestedParam2.edge.current AND this5.name = $nestedParam2.node.name | 1]) > 0) AND this.current = $param3)
             CALL {
             WITH this
             MATCH (this)-[this_manufacturer_relationship:MANUFACTURER]->(this_manufacturer:Manufacturer)
@@ -158,8 +155,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": true,
-                \\"nestedParam1\\": {
+                \\"nestedParam0\\": {
                     \\"edge\\": {
                         \\"current\\": true
                     },
@@ -167,7 +163,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                         \\"name\\": \\"C\\"
                     }
                 },
-                \\"nestedParam2\\": {
+                \\"nestedParam1\\": {
                     \\"edge\\": {
                         \\"current\\": false
                     },
@@ -175,14 +171,15 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                         \\"name\\": \\"AM\\"
                     }
                 },
-                \\"nestedParam3\\": {
+                \\"nestedParam2\\": {
                     \\"edge\\": {
                         \\"current\\": true
                     },
                     \\"node\\": {
                         \\"name\\": \\"smart\\"
                     }
-                }
+                },
+                \\"param3\\": true
             }"
         `);
     });

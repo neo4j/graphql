@@ -86,8 +86,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
-            WHERE (this.current = $param0
-            AND size([(this)-[this2:\`ARCHITECTURE\`]->(this1:\`MasterData\`) WHERE apoc.cypher.runFirstColumn(\\"RETURN exists((this1)-[:HAS_NAME]->(:NameDetails))
+            WHERE (this.current = $param0 AND size([(this)-[this0:\`ARCHITECTURE\`]->(this1:\`MasterData\`) WHERE apoc.cypher.runFirstColumn(\\"RETURN exists((this1)-[:HAS_NAME]->(:NameDetails))
             AND single(this1_NameDetails_map IN [(this1)-[this1_NameDetails_MasterDataNameDetailsRelationship:HAS_NAME]->(this1_NameDetails:NameDetails) | { node: this1_NameDetails, relationship: this1_NameDetails_MasterDataNameDetailsRelationship } ] WHERE
             this1_NameDetails_map.node.fullName = $nestedParam1.node.nameDetailsConnection.node.fullName
             )\\", { this1: this1, nestedParam1: $nestedParam1 }, false) | 1]) = 1)
@@ -224,8 +223,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Main\`)
-            WHERE (this.current = $param0
-            AND size([(this)-[this2:\`MAIN\`]->(this1:\`Series\`) WHERE apoc.cypher.runFirstColumn(\\"RETURN exists((this1)-[:ARCHITECTURE]->(:MasterData))
+            WHERE (this.current = $param0 AND size([(this)-[this0:\`MAIN\`]->(this1:\`Series\`) WHERE apoc.cypher.runFirstColumn(\\"RETURN exists((this1)-[:ARCHITECTURE]->(:MasterData))
             AND single(this1_MasterData_map IN [(this1)-[this1_MasterData_SeriesArchitectureRelationship:ARCHITECTURE]->(this1_MasterData:MasterData) | { node: this1_MasterData, relationship: this1_MasterData_SeriesArchitectureRelationship } ] WHERE
             apoc.cypher.runFirstColumn(\\\\\\"RETURN exists((this1_MasterData_map_node)-[:HAS_NAME]->(:NameDetails))
             AND single(this1_MasterData_map_node_NameDetails_map IN [(this1_MasterData_map_node)-[this1_MasterData_map_node_NameDetails_MasterDataNameDetailsRelationship:HAS_NAME]->(this1_MasterData_map_node_NameDetails:NameDetails) | { node: this1_MasterData_map_node_NameDetails, relationship: this1_MasterData_map_node_NameDetails_MasterDataNameDetailsRelationship } ] WHERE

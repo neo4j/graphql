@@ -116,8 +116,9 @@ describe("Cypher NULL", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE
-            NOT EXISTS { (this0:\`Actor\`)-[:\`ACTED_IN\`]->(this)  }
+            WHERE NOT EXISTS {
+                MATCH (this0:\`Actor\`)-[:\`ACTED_IN\`]->(this)
+            }
             RETURN this { .title } as this"
         `);
 
@@ -140,7 +141,9 @@ describe("Cypher NULL", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE EXISTS { (this0:\`Actor\`)-[:\`ACTED_IN\`]->(this)  }
+            WHERE EXISTS {
+                MATCH (this0:\`Actor\`)-[:\`ACTED_IN\`]->(this)
+            }
             RETURN this { .title } as this"
         `);
 

@@ -54,7 +54,7 @@ describe("Cypher -> fulltext -> Match", () => {
                 \\"MovieTitle\\",
                 $this_fulltext_MovieTitle_phrase
             ) YIELD node as this
-            WHERE \\"Movie\\" IN labels(this)
+                        WHERE \\"Movie\\" IN labels(this)
             RETURN this { .title } as this"
         `);
 
@@ -84,8 +84,7 @@ describe("Cypher -> fulltext -> Match", () => {
                 \\"MovieTitle\\",
                 $this_fulltext_MovieTitle_phrase
             ) YIELD node as this
-            WHERE (\\"Movie\\" IN labels(this)
-            AND this.title = $param0)
+                        WHERE (\\"Movie\\" IN labels(this) AND this.title = $param0)
             RETURN this { .title } as this"
         `);
 

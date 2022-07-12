@@ -42,8 +42,7 @@ function translateTopLevelMatch({
     // const whereStrs: string[] = [];
 
     const matchNode = new CypherBuilder.NamedNode(varName, { labels: node.getLabels(context) });
-    // let matchQuery: CypherBuilder.Match<CypherBuilder.Node> | CypherBuilder.db.FullTextQueryNodes =
-    // new CypherBuilder.Match(matchNode);
+
     let matchQuery: CypherBuilder.Match<CypherBuilder.Node> | CypherBuilder.db.FullTextQueryNodes =
         new CypherBuilder.Match(matchNode);
 

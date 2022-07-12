@@ -54,7 +54,7 @@ describe("Cypher -> fulltext -> Aggregate", () => {
                 \\"MovieTitle\\",
                 $this_fulltext_MovieTitle_phrase
             ) YIELD node as this
-            WHERE \\"Movie\\" IN labels(this)
+                        WHERE \\"Movie\\" IN labels(this)
             RETURN { count: count(this) }"
         `);
 

@@ -62,7 +62,7 @@ class NotOp extends BooleanOp {
 
     protected cypher(env: CypherEnvironment): string {
         const childStr = this.child.getCypher(env);
-        return `${this.operator}(${childStr})`;
+        return `${this.operator} ${childStr}`;
     }
 }
 

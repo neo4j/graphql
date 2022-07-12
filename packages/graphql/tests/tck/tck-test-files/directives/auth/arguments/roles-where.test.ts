@@ -146,8 +146,7 @@ describe("Cypher Auth Where with Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (this.name = $param0
-            AND (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND this.id IS NOT NULL AND this.id = $this_auth_where0_id)) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr)))))
+            WHERE (this.name = $param0 AND (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND this.id IS NOT NULL AND this.id = $this_auth_where0_id)) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr)))))
             CALL apoc.util.validate(NOT (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id } as this"
         `);
@@ -631,8 +630,7 @@ describe("Cypher Auth Where with Roles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (this.name = $param0
-            AND (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND this.id IS NOT NULL AND this.id = $this_auth_where0_id)) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr)))))
+            WHERE (this.name = $param0 AND (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND this.id IS NOT NULL AND this.id = $this_auth_where0_id)) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr)))))
             WITH this
             CALL apoc.util.validate(NOT (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.name = $this_update_name

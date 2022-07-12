@@ -122,8 +122,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (this.name = $param0
-            AND this.id IS NOT NULL AND this.id = $this_auth_where0_id)
+            WHERE (this.name = $param0 AND this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             RETURN this { .id } as this"
         `);
 
@@ -485,8 +484,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (this.name = $param0
-            AND this.id IS NOT NULL AND this.id = $this_auth_where0_id)
+            WHERE (this.name = $param0 AND this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             SET this.name = $this_update_name
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -623,8 +621,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (this.name = $param0
-            AND this.id IS NOT NULL AND this.id = $this_auth_where0_id)
+            WHERE (this.name = $param0 AND this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             DETACH DELETE this"
         `);
 

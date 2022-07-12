@@ -44,11 +44,9 @@ export class FullTextQueryNodes extends Clause {
             const whereStatement = new Where(this, input);
             this.addChildren(whereStatement);
             this.whereClause = whereStatement;
+        } else {
+            this.whereClause.and(input);
         }
-        // } else {
-        //     // Avoids adding unneeded where statements
-        //     this.whereStatement.addWhereParams(input);
-        // }
         return this;
     }
 

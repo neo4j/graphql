@@ -64,7 +64,7 @@ describe("CypherBuilder clauses", () => {
         const queryResult = queryMatch.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "MATCH (this0:\`Movie\`)
-            WHERE NOT(this0.title = $param0)"
+            WHERE NOT this0.title = $param0"
         `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`
