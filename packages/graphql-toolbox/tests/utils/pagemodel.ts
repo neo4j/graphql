@@ -21,6 +21,7 @@ import * as base from "@playwright/test";
 import { Editor } from "../pages/Editor";
 import { HelpDrawer } from "../pages/HelpDrawer";
 import { Login } from "../pages/Login";
+import { TopBar } from "../pages/TopBar";
 import { SchemaEditor } from "../pages/SchemaEditor";
 import { SchemaSettings } from "../pages/SchemaSettings";
 
@@ -30,6 +31,7 @@ type Pages = {
     loginPage: Login;
     schemaEditorPage: SchemaEditor;
     schemaSettingsPage: SchemaSettings;
+    topBarPage: TopBar;
 };
 
 const pageInitialSetup = async (page: base.Page): Promise<void> => {
@@ -55,6 +57,9 @@ const test = base.test.extend<Pages>({
     },
     schemaSettingsPage: async ({ page }, use) => {
         use(new SchemaSettings(page));
+    },
+    topBarPage: async ({ page }, use) => {
+        use(new TopBar(page));
     },
 });
 
