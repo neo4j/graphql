@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { ObjectTypeDefinitionNode } from "graphql";
+import type { ObjectTypeDefinitionNode } from "graphql";
 
 const rootTypes = ["Query", "Mutation", "Subscription"];
 

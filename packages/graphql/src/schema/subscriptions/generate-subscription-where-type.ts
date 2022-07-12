@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { InputTypeComposer, SchemaComposer } from "graphql-compose";
-import { Node } from "../../classes";
+import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
+import type { Node } from "../../classes";
 import { objectFieldsToSubscriptionsWhereInputFields } from "../to-compose";
 
 export function generateSubscriptionWhereType(node: Node, schemaComposer: SchemaComposer): InputTypeComposer {

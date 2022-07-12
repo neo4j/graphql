@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Direction, Directive } from "../types";
+import type { Direction, Directive } from "../types";
 
 export class RelationshipDirective implements Directive {
     direction: Direction;

@@ -18,9 +18,10 @@
  */
 
 import { getDirective, MapperKind, mapSchema } from "@graphql-tools/utils";
-import { graphql, GraphQLSchema } from "graphql";
+import type { GraphQLSchema } from "graphql";
+import { graphql } from "graphql";
 import { gql } from "apollo-server";
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
 
@@ -45,7 +46,7 @@ describe("https://github.com/neo4j/graphql/issues/349", () => {
                     [MapperKind.OBJECT_FIELD]: (fieldConfig) => {
                         const fieldDirective = getDirective(schema, fieldConfig, directiveName)?.[0];
                         if (fieldDirective) {
-                            // eslint-disable-next-line no-param-reassign
+                             
                             fieldConfig.resolve = () => {
                                 throw new Error("go away");
                             };

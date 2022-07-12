@@ -19,7 +19,7 @@
 
 import { IncomingMessage } from "http";
 import Debug from "debug";
-import { Context } from "../types";
+import type { Context } from "../types";
 import { DEBUG_AUTH } from "../constants";
 
 const debug = Debug(DEBUG_AUTH);

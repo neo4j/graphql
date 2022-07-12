@@ -18,7 +18,7 @@
  */
 
 import * as fs from "fs/promises";
-import * as Performance from "../types";
+import type * as Performance from "../types";
 
 export class ResultsWriter {
     private path: string;

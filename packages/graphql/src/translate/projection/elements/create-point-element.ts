@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
-import { PointField } from "../../../types";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { PointField } from "../../../types";
 
 function createPointElement({
     resolveTree,

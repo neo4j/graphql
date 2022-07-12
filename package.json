@@ -24,15 +24,15 @@
         "prepare": "husky install"
     },
     "devDependencies": {
-        "@tsconfig/node14": "^1.0.3",
-        "@typescript-eslint/eslint-plugin": "5.30.5",
-        "@typescript-eslint/parser": "5.30.5",
+        "@tsconfig/node14": "1.0.3",
+        "@typescript-eslint/eslint-plugin": "5.30.6",
+        "@typescript-eslint/parser": "5.30.6",
         "concurrently": "7.2.2",
         "dotenv": "16.0.1",
         "eslint": "8.19.0",
         "eslint-config-airbnb-typescript": "17.0.0",
         "eslint-config-prettier": "8.5.0",
-        "eslint-import-resolver-typescript": "3.1.2",
+        "eslint-import-resolver-typescript": "3.2.5",
         "eslint-plugin-eslint-comments": "3.2.0",
         "eslint-plugin-import": "2.26.0",
         "eslint-plugin-jest": "26.5.3",
@@ -51,6 +51,7 @@
     },
     "packageManager": "yarn@3.2.1",
     "dependencies": {
+        "@changesets/changelog-github": "^0.4.5",
         "@changesets/cli": "^2.22.0"
     }
 }

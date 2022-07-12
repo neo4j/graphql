@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Driver, Session, Transaction } from "neo4j-driver";
+import type { Driver, Session, Transaction } from "neo4j-driver";
 import { Builder } from "./builder";
 
 type RunFunction = ((...params) => any) & { calls: Array<Array<any>> };

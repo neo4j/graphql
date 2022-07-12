@@ -1,5 +1,5 @@
 import { gql } from "apollo-server-express";
-import { Context } from "../types";
+import type { Context } from "../types";
 import { comparePassword, createJWT, hashPassword } from "../utils";
 
 export const typeDefs = gql`

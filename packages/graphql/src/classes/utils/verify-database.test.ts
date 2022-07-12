@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { Driver, Session } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import checkNeo4jCompat from "./verify-database";
 import { REQUIRED_APOC_FUNCTIONS, REQUIRED_APOC_PROCEDURES, MIN_VERSIONS } from "../../constants";
-import { DriverConfig } from "../../types";
+import type { DriverConfig } from "../../types";
 
 describe("checkNeo4jCompat", () => {
     test("should add driver config to session", async () => {

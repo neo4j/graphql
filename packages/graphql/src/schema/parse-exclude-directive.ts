@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, valueFromASTUntyped, ArgumentNode } from "graphql";
+import type { DirectiveNode, ArgumentNode } from "graphql";
+import { valueFromASTUntyped } from "graphql";
 import { Exclude } from "../classes";
 
 function parseExcludeDirective(excludeDirective: DirectiveNode | undefined | null) {

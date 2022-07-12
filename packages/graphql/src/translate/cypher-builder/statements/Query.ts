@@ -18,8 +18,8 @@
  */
 
 import { CypherASTNode } from "../CypherASTNode";
-import { CypherContextInterface } from "../CypherContext";
-import { CypherResult } from "../types";
+import type { CypherContextInterface } from "../CypherContext";
+import type { CypherResult } from "../types";
 
 /** Represents a statement to be defined by the user, adding build method to the cypher ast */
 export class Query extends CypherASTNode {

@@ -18,8 +18,8 @@
  */
 
 import { CypherASTNode } from "../CypherASTNode";
-import { CypherContext } from "../CypherContext";
-import { Node } from "../references/Node";
+import type { CypherContext } from "../CypherContext";
+import type { Node } from "../references/Node";
 
 export type ReturnStatementArgs = [Node, Array<string>?, string?];
 

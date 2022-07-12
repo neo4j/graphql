@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
 import { Neo4jGraphQL } from "../../../../src";

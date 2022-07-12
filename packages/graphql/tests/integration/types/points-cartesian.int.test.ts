@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { Driver, int, Session } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
+import { int } from "neo4j-driver";
 import { graphql } from "graphql";
 import { faker } from "@faker-js/faker";
 import Neo4j from "../neo4j";

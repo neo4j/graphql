@@ -17,13 +17,15 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import { DocumentNode, graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
+import type { DocumentNode} from "graphql";
+import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/464", () => {
     let driver: Driver;
