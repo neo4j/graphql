@@ -42,7 +42,7 @@ WHERE m.title STARTS WITH "The Matrix" AND m.title > "The Matrix"
 RETURN m.title 
 ```
 
-Assuming that `The Matrix`, `The Matrix 2`, `The Matrix 3` are presents in the Neo4j instance then we can expect that `The Matrix 2` and `The Matrix 3` are returned.
+Assuming that `The Matrix`, `The Matrix Reloaded`, `The Matrix Revolutions` are presents in the Neo4j instance then we can expect that `The Matrix Reloaded` and `The Matrix Revolutions` are returned.
 
 ### Technical considerations
 
