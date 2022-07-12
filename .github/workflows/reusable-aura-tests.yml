@@ -2,6 +2,10 @@ name: "Aura tests"
 
 on:
   workflow_call:
+    inputs:
+      BRANCH:
+        required: false
+        type: string
     secrets:
       URI:
         required: true
@@ -17,6 +21,8 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.BRANCH || github.ref }}
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
