@@ -23,7 +23,7 @@ describe("Functions", () => {
     test("coalesce", () => {
         const testParam = new CypherBuilder.Param("Hello");
         const query = new CypherBuilder.Return(
-            CypherBuilder.coalesce(CypherBuilder.Null, testParam, new CypherBuilder.Literal("arthur"))
+            CypherBuilder.coalesce(CypherBuilder.Null, testParam, new CypherBuilder.Literal(`"arthur"`))
         );
 
         const queryResult = query.build();

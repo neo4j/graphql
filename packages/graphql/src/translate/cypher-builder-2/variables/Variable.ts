@@ -19,13 +19,14 @@
 
 import type { CypherEnvironment } from "../Environment";
 import { PropertyRef } from "../PropertyRef";
+import type { CypherCompilable } from "../types";
 
 /** Represents a variable */
-export abstract class Variable {
+export class Variable implements CypherCompilable {
     public readonly prefix: string;
     public id: string | undefined; // Overrides variable name for compatibility reasons
 
-    constructor(prefix: string, id?: string) {
+    constructor(prefix = "var", id?: string) {
         this.prefix = prefix;
         this.id = id;
     }

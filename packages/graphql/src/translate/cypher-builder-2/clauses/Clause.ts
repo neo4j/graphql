@@ -24,11 +24,11 @@ import type { CypherResult } from "../types";
 export abstract class Clause extends CypherASTNode {
     public build(prefix?: string): CypherResult {
         if (this.isRoot) {
-            const context = this.getContext(prefix);
-            const cypher = this.getCypher(context);
+            const env = this.getEnv(prefix);
+            const cypher = this.getCypher(env);
             return {
                 cypher,
-                params: context.getParams(),
+                params: env.getParams(),
             };
         }
         const root = this.getRoot() as Clause;

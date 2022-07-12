@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import type { Expr } from "../types";
-import { CypherFunction } from "./CypherFunction";
+import type { CypherEnvironment } from "../Environment";
+import type { CypherCompilable } from "../types";
 
-export function coalesce(expr: Expr): CypherFunction {
-    return new CypherFunction("coalesce", [expr]);
+// Should this be a variable?
+export abstract class CypherList implements CypherCompilable {
+    abstract getCypher(env: CypherEnvironment): string;
 }

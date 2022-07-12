@@ -18,10 +18,11 @@
  */
 
 import { CypherEnvironment } from "./Environment";
+import type { CypherCompilable } from "./types";
 import type { Param } from "./variables/Param";
 
 /** Abstract class representing a Cypher Statement in the AST */
-export abstract class CypherASTNode {
+export abstract class CypherASTNode implements CypherCompilable {
     // protected children: Array<CypherASTNode> = [];
     protected parent?: CypherASTNode;
     protected namedParams: Record<string, Param> = {}; // Only for compatibility reasons
@@ -54,7 +55,7 @@ export abstract class CypherASTNode {
     /** Defines the internal Cypher to generate by the ASTNode */
     protected abstract cypher(env: CypherEnvironment): string;
 
-    protected getContext(prefix?: string): CypherEnvironment {
+    protected getEnv(prefix?: string): CypherEnvironment {
         return new CypherEnvironment(prefix);
     }
 

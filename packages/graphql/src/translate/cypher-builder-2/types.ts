@@ -23,10 +23,17 @@ import type { PropertyRef } from "./PropertyRef";
 import type { CypherFunction } from "./functions/CypherFunction";
 import type { Literal } from "./variables/Literal";
 import type { Exists } from "./Exists";
+import type { CypherEnvironment } from "./Environment";
+import type { CypherList } from "./list/List";
 
-export type Expr = Operation | Variable | PropertyRef | CypherFunction | Literal | Exists;
+export type Expr = Operation | Variable | PropertyRef | CypherFunction | Literal | Exists | CypherList;
 
 export type CypherResult = {
     cypher: string;
     params: Record<string, string>;
 };
+
+/** Defines the interface for a class that can be compiled into Cypher */
+export interface CypherCompilable {
+    getCypher(env: CypherEnvironment): string;
+}

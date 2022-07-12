@@ -31,7 +31,7 @@ export class Where extends SubClause {
     private whereParams: WhereParams;
     protected whereClause = "WHERE";
 
-    constructor(parent: CypherASTNode, whereInput: WhereParams) {
+    constructor(parent: CypherASTNode | undefined, whereInput: WhereParams) {
         super(parent);
         this.whereParams = whereInput;
         this.addChildren(this.whereParams);

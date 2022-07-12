@@ -139,11 +139,15 @@ describe("CypherBuilder", () => {
             const queryResult = matchQuery.build();
             expect(queryResult.cypher).toMatchInlineSnapshot(`
                 "MATCH (this0:\`Movie\`)
-                WHERE NOT
+                WHERE NOT(this0.name = $param0)
                 RETURN this0"
             `);
 
-            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "my-name",
+                }
+            `);
         });
 
         test("Match node with NOT and OR operator", () => {
@@ -168,11 +172,16 @@ describe("CypherBuilder", () => {
             const queryResult = matchQuery.build();
             expect(queryResult.cypher).toMatchInlineSnapshot(`
                 "MATCH (this0:\`Movie\`)
-                WHERE NOT
+                WHERE NOT((this0.age = $param0 OR this0.name = $param1))
                 RETURN this0"
             `);
 
-            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+            expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": 5,
+                  "param1": "my-name",
+                }
+            `);
         });
 
         test("Match with null values", () => {

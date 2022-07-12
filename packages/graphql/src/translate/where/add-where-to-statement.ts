@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLWhereArg, Context, RelationField, ConnectionField } from "../../types";
+import type { GraphQLWhereArg, Context, RelationField, ConnectionField, PointField, PrimitiveField } from "../../types";
 import type { Node, Relationship } from "../../classes";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import * as CypherBuilder from "../cypher-builder-2/CypherBuilder";
@@ -26,6 +26,7 @@ import createAggregateWhereAndParams from "../create-aggregate-where-and-params"
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
 import { listPredicateToSizeFunction } from "./list-predicate-to-size-function";
 import { filterTruthy } from "../../utils/utils";
+import { RawCypherWithCallback } from "../cypher-builder/CypherBuilder";
 
 type WhereMatchStatement = CypherBuilder.Match<any> | CypherBuilder.db.FullTextQueryNodes;
 // type WhereMatchStatement = CypherBuilder.Match<any> | CypherBuilder.db.FullTextQueryNodes;
@@ -193,237 +194,153 @@ function createComparisonOnProperty({
         });
     }
 
-    // TODO: fix point and duration
-    const pointField = node.pointFields.find((x) => x.fieldName === fieldName);
-    const durationField = node.primitiveFields.find((x) => x.fieldName === fieldName && x.typeMeta.name === "Duration");
-
     if (value === null) {
         if (isNot) {
             return CypherBuilder.isNotNull(propertyRef);
         }
         return CypherBuilder.isNull(propertyRef);
     }
+    const pointField = node.pointFields.find((x) => x.fieldName === fieldName);
+    if (pointField) {
+        return createPointComparison({
+            propertyRefOrCoalesce: propertyRef,
+            param: new CypherBuilder.Param(value),
+            operator,
+            pointField,
+        });
+    }
+    const durationField = node.primitiveFields.find((x) => x.fieldName === fieldName && x.typeMeta.name === "Duration");
 
     return createPrimitiveComparison({
         propertyRefOrCoalesce: propertyRef,
-        value,
+        param: new CypherBuilder.Param(value),
         operator,
+        durationField,
     });
 }
-// function mapProperties({
-//     whereInput,
-//     node,
-//     targetElement,
-//     context,
-// }: {
-//     whereInput: Record<string, any>;
-//     node: Node;
-//     targetElement: CypherBuilder.Node | CypherBuilder.Variable;
-//     context: Context;
-// }): WhereInput {
-//     const resultArray: WhereInput = [];
-//     const whereFields = Object.entries(whereInput);
 
-//     const leafProperties = whereFields.filter(([key, value]) => key !== "OR" && key !== "AND");
-//     if (leafProperties.length > 0) {
-//         const mappedProperties = mapLeafProperties({ properties: leafProperties, node, targetElement, context });
-
-//         resultArray.push(...mappedProperties);
-//     }
-
-//     for (const [key, value] of whereFields) {
-//         if (key === "OR" || key === "AND") {
-//             // value is an array
-//             const nestedResult: any[] = [];
-//             for (const nestedValue of value) {
-//                 const mapNested = mapProperties({ whereInput: nestedValue, node, targetElement, context });
-//                 nestedResult.push(...mapNested);
-//             }
-
-//             if (key === "OR") {
-//                 const orOperation = CypherBuilder.or(...nestedResult);
-//                 resultArray.push(orOperation);
-//             }
-//             if (key === "AND") {
-//                 const andOperation = CypherBuilder.and(...nestedResult);
-//                 resultArray.push(andOperation);
-//             }
-//         }
-//     }
-
-//     return resultArray;
-// }
-
-// function mapLeafProperties({
-//     properties,
-//     node,
-//     targetElement,
-//     context,
-// }: {
-//     properties: Array<[string, any]>;
-//     node: Node;
-//     targetElement: MatchableElement | CypherBuilder.Variable;
-//     context: Context;
-// }): WhereInput {
-//     const propertiesMappedToWhere = properties.map(([key, value]): WhereInput[0] | undefined => {
-//         const match = whereRegEx.exec(key);
-
-//         const { prefix, fieldName, isAggregate, operator } = match?.groups as WhereRegexGroups;
-
-//         const isNot = operator?.startsWith("NOT") ?? false;
-//         const coalesceValue = [...node.primitiveFields, ...node.temporalFields, ...node.enumFields].find(
-//             (f) => fieldName === f.fieldName
-//         )?.coalesceValue as string | undefined;
-
-//         let dbFieldName = mapToDbProperty(node, fieldName);
-//         if (prefix) {
-//             dbFieldName = `${prefix}${dbFieldName}`;
-//         }
-
-//         let targetElementOrCoalesce: MatchableElement | CypherBuilder.Variable | ScalarFunction = targetElement;
-//         if (coalesceValue) {
-//             targetElementOrCoalesce = CypherBuilder.coalesce(targetElement, dbFieldName, coalesceValue);
-//         }
-
-//         if (node.isGlobalNode && key === "id") {
-//             const { field, id } = node.fromGlobalId(value as string);
-
-//             // get the dbField from the returned property fieldName
-//             const idDbFieldName = mapToDbProperty(node, field);
-//             return [targetElementOrCoalesce, { [idDbFieldName]: new CypherBuilder.Param(id) }];
-//         }
-
-//         const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
-
-//         if (isAggregate) {
-//             if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
-
-//             const nestedAggregate = createAggregateProperty({
-//                 relationField,
-//                 context,
-//                 value,
-//                 parentNode: targetElement as CypherBuilder.Node,
-//             });
-
-//             return nestedAggregate;
-//         }
-
-//         if (relationField) {
-//             // Relation
-//             return createRelationProperty({
-//                 relationField,
-//                 context,
-//                 parentNode: targetElement as CypherBuilder.Node,
-//                 operator,
-//                 value,
-//                 isNot,
-//             });
-//         }
-
-//         const connectionField = node.connectionFields.find((x) => x.fieldName === fieldName);
-//         if (connectionField) {
-//             return createConnectionProperty({
-//                 value,
-//                 connectionField,
-//                 context,
-//                 parentNode: targetElement as CypherBuilder.Node,
-//                 operator,
-//             });
-//         }
-
-//         const pointField = node.pointFields.find((x) => x.fieldName === fieldName);
-//         const durationField = node.primitiveFields.find(
-//             (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
-//         );
-
-//         return new CypherBuilder.RawCypherWithCallback((cypherContext: CypherBuilder.CypherContext) => {
-//             let property: string;
-//             if (targetElementOrCoalesce instanceof ScalarFunction) {
-//                 property = targetElementOrCoalesce.getCypher(cypherContext);
-//             } else {
-//                 const varId = cypherContext.getVariableId(targetElementOrCoalesce);
-//                 property = `${varId}.${dbFieldName}`;
-//             }
-//             if (value === null) {
-//                 const isNullStr = `${property} ${isNot ? "IS NOT" : "IS"} NULL`;
-//                 return [isNullStr, {}];
-//             }
-
-//             const param = new CypherBuilder.Param(value);
-
-//             const paramId = cypherContext.getParamId(param);
-
-//             const whereStr = createWhereClause({
-//                 property,
-//                 param: paramId,
-//                 operator,
-//                 isNot,
-//                 durationField,
-//                 pointField,
-//             });
-
-//             return [whereStr, {}];
-//         });
-//     });
-
-//     return filterTruthy(propertiesMappedToWhere);
-// }
-
-/** TODO: substitute rawCypherBuilder with this */
-function createPrimitiveComparison({
+function createPointComparison({
     operator,
     propertyRefOrCoalesce,
-    value,
+    param,
+    pointField,
 }: {
-    // targetElement: CypherBuilder.Variable;
     operator: string | undefined;
     propertyRefOrCoalesce: CypherBuilder.PropertyRef | CypherBuilder.Function;
-    value: any;
+    param: CypherBuilder.Param;
+    pointField: PointField;
 }): CypherBuilder.ComparisonOp | CypherBuilder.BooleanOp {
-    const param = new CypherBuilder.Param(value);
+    const comprehensionVar = new CypherBuilder.Variable();
+    const mapPoint = CypherBuilder.point(comprehensionVar);
+    const pointList = new CypherBuilder.ListComprehension(comprehensionVar, param, undefined, mapPoint);
+
+    const nestedPointRef = param.property("point");
+    const pointDistance: CypherBuilder.Function = CypherBuilder.distance(
+        propertyRefOrCoalesce,
+        CypherBuilder.point(nestedPointRef)
+    );
+    const distanceRef = param.property("distance");
+    const paramPoint = CypherBuilder.point(param);
 
     if (operator) {
         switch (operator) {
             case "LT":
-                return CypherBuilder.lt(propertyRefOrCoalesce, param);
+                return CypherBuilder.lt(pointDistance, distanceRef);
             case "LTE":
-                return CypherBuilder.lte(propertyRefOrCoalesce, param);
+                return CypherBuilder.lte(pointDistance, distanceRef);
             case "GT":
-                return CypherBuilder.gt(propertyRefOrCoalesce, param);
+                return CypherBuilder.gt(pointDistance, distanceRef);
             case "GTE":
-                return CypherBuilder.gte(propertyRefOrCoalesce, param);
-            case "NOT":
-                return CypherBuilder.not(CypherBuilder.eq(propertyRefOrCoalesce, param));
-            case "ENDS_WITH":
-                return CypherBuilder.endsWith(propertyRefOrCoalesce, param);
-            case "NOT_ENDS_WITH":
-                return CypherBuilder.not(CypherBuilder.endsWith(propertyRefOrCoalesce, param));
-            case "STARTS_WITH":
-                return CypherBuilder.startsWith(propertyRefOrCoalesce, param);
-            case "NOT_STARTS_WITH":
-                return CypherBuilder.not(CypherBuilder.startsWith(propertyRefOrCoalesce, param));
-            case "MATCHES":
-                return CypherBuilder.matches(propertyRefOrCoalesce, param);
-            case "CONTAINS":
-                return CypherBuilder.contains(propertyRefOrCoalesce, param);
-            case "NOT_CONTAINS":
-                return CypherBuilder.not(CypherBuilder.contains(propertyRefOrCoalesce, param));
+                return CypherBuilder.gte(pointDistance, distanceRef);
+            case "DISTANCE":
+                return CypherBuilder.eq(pointDistance, distanceRef);
+            case "NOT": // TODO: handle not after this
+                if (pointField?.typeMeta.array) {
+                    return CypherBuilder.not(CypherBuilder.eq(propertyRefOrCoalesce, pointList));
+                }
+
+                return CypherBuilder.not(CypherBuilder.eq(propertyRefOrCoalesce, paramPoint));
             case "IN":
-                return CypherBuilder.in(propertyRefOrCoalesce, param);
+                return CypherBuilder.in(propertyRefOrCoalesce, pointList);
             case "NOT_IN":
-                return CypherBuilder.not(CypherBuilder.in(propertyRefOrCoalesce, param));
+                return CypherBuilder.not(CypherBuilder.in(propertyRefOrCoalesce, pointList));
             case "INCLUDES":
+                return CypherBuilder.in(paramPoint, propertyRefOrCoalesce);
             case "NOT_INCLUDES":
-                throw new Error("INCLUDES Not implemented");
+                return CypherBuilder.not(CypherBuilder.in(paramPoint, propertyRefOrCoalesce));
             default:
                 throw new Error(`Invalid operator ${operator}`);
         }
-
-        // TODO: should handle not
-        // return [targetElementOrCoalesce, { [dbFieldName]: whereClause }];
     }
-    return CypherBuilder.eq(propertyRefOrCoalesce, param);
-    // return [targetElementOrCoalesce, { [dbFieldName]: param }];
+
+    if (pointField?.typeMeta.array) {
+        return CypherBuilder.eq(propertyRefOrCoalesce, pointList);
+    }
+
+    return CypherBuilder.eq(propertyRefOrCoalesce, paramPoint);
+}
+
+function createPrimitiveComparison({
+    operator,
+    propertyRefOrCoalesce,
+    param,
+    durationField,
+}: {
+    operator: string | undefined;
+    propertyRefOrCoalesce: CypherBuilder.PropertyRef | CypherBuilder.Function;
+    param: CypherBuilder.Param;
+    durationField: PrimitiveField | undefined;
+}): CypherBuilder.ComparisonOp | CypherBuilder.BooleanOp {
+    let variable: CypherBuilder.Variable | CypherBuilder.Operation = param;
+    let propertyRef: CypherBuilder.PropertyRef | CypherBuilder.Function | CypherBuilder.Operation =
+        propertyRefOrCoalesce;
+    // Comparison operations requires adding dates to durations
+    // See https://neo4j.com/developer/cypher/dates-datetimes-durations/#comparing-filtering-values
+    if (durationField && operator) {
+        variable = CypherBuilder.plus(CypherBuilder.datetime(), variable);
+        propertyRef = CypherBuilder.plus(CypherBuilder.datetime(), propertyRefOrCoalesce);
+    }
+
+    if (operator) {
+        switch (operator) {
+            case "LT":
+                return CypherBuilder.lt(propertyRef, variable);
+            case "LTE":
+                return CypherBuilder.lte(propertyRef, variable);
+            case "GT":
+                return CypherBuilder.gt(propertyRef, variable);
+            case "GTE":
+                return CypherBuilder.gte(propertyRef, variable);
+            case "NOT":
+                return CypherBuilder.not(CypherBuilder.eq(propertyRef, variable));
+            case "ENDS_WITH":
+                return CypherBuilder.endsWith(propertyRef, variable);
+            case "NOT_ENDS_WITH":
+                return CypherBuilder.not(CypherBuilder.endsWith(propertyRef, variable));
+            case "STARTS_WITH":
+                return CypherBuilder.startsWith(propertyRef, variable);
+            case "NOT_STARTS_WITH":
+                return CypherBuilder.not(CypherBuilder.startsWith(propertyRef, variable));
+            case "MATCHES":
+                return CypherBuilder.matches(propertyRef, variable);
+            case "CONTAINS":
+                return CypherBuilder.contains(propertyRef, variable);
+            case "NOT_CONTAINS":
+                return CypherBuilder.not(CypherBuilder.contains(propertyRef, variable));
+            case "IN":
+                return CypherBuilder.in(propertyRef, variable);
+            case "NOT_IN":
+                return CypherBuilder.not(CypherBuilder.in(propertyRef, variable));
+            case "INCLUDES":
+                return CypherBuilder.in(variable, propertyRef);
+            case "NOT_INCLUDES":
+                return CypherBuilder.not(CypherBuilder.in(variable, propertyRef));
+            default:
+                throw new Error(`Invalid operator ${operator}`);
+        }
+    }
+
+    return CypherBuilder.eq(propertyRef, variable);
 }
 
 function createRelationProperty({

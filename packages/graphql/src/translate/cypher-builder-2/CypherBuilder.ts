@@ -10,9 +10,10 @@ export { With } from "./clauses/With";
 export { NodeRef as Node, NamedNode } from "./variables/NodeRef";
 export { RelationshipRef as Relationship } from "./variables/RelationshipRef";
 export { Param, RawParam } from "./variables/Param";
-export { RawVariable } from "./variables/Variable";
+export { RawVariable, Variable } from "./variables/Variable";
 export { CypherNull as Null } from "./variables/Null";
 export { Literal } from "./variables/Literal";
+export { ListComprehension } from "./list/ListComprehension";
 
 export { Pattern } from "./Pattern"; // TODO: Maybe this should not be exported
 
@@ -32,7 +33,9 @@ export {
     matches,
 } from "./operations/comparison";
 
-export { coalesce } from "./functions/CypherFunction";
+export { plus, minus } from "./operations/math";
+
+export { coalesce, point, distance, cypherDatetime as datetime } from "./functions/CypherFunction";
 
 export { CypherResult } from "./types";
 
@@ -40,7 +43,6 @@ export { concat } from "./clauses/concat";
 
 export type { PropertyRef } from "./PropertyRef";
 export type { Clause } from "./clauses/Clause";
-export type { Variable } from "./variables/Variable";
 export type { CypherEnvironment as Environment } from "./Environment";
 export type { Operation } from "./operations/Operation";
 export type { ComparisonOp } from "./operations/comparison";

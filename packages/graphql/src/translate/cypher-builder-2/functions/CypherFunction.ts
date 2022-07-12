@@ -21,7 +21,7 @@ import { CypherASTNode } from "../CypherASTNode";
 import type { CypherEnvironment } from "../Environment";
 import type { Expr } from "../types";
 
-type FunctionType = "coalesce";
+type FunctionType = "coalesce" | "point" | "distance" | "datetime";
 
 /** Represents an function */
 export class CypherFunction extends CypherASTNode {
@@ -43,4 +43,16 @@ export class CypherFunction extends CypherASTNode {
 
 export function coalesce(expr: Expr, ...optionalExpr: Expr[]): CypherFunction {
     return new CypherFunction("coalesce", [expr, ...optionalExpr]);
+}
+
+export function point(variable: Expr): CypherFunction {
+    return new CypherFunction("point", [variable]);
+}
+
+export function distance(lexpr: Expr, rexpr: Expr): CypherFunction {
+    return new CypherFunction("distance", [lexpr, rexpr]);
+}
+
+export function cypherDatetime(): CypherFunction {
+    return new CypherFunction("datetime");
 }

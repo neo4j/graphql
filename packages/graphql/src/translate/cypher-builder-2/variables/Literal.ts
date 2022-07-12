@@ -21,7 +21,7 @@ import type { CypherEnvironment } from "../Environment";
 
 type LiteralValues = string | number | null;
 
-/** Represents a literal value */
+/** Represents a literal value, it is not a variable */
 export class Literal<T = LiteralValues> {
     public value: T;
 
