@@ -1,7 +1,7 @@
 {
     "name": "@neo4j/graphql-toolbox",
     "private": true,
-    "version": "1.0.2",
+    "version": "1.1.0",
     "description": "Developer UI For Neo4j GraphQL",
     "exports": "./dist/main.js",
     "main": "./dist/main.js",
