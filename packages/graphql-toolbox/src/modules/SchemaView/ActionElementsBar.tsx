@@ -24,6 +24,7 @@ import { Button, HeroIcon, IconButton } from "@neo4j-ndl/react";
 interface Props {
     hasSchema: boolean;
     loading: boolean;
+    isIntrospecting: boolean;
     formatTheCode: () => void;
     introspect: () => Promise<void>;
     onSubmit: () => void;
@@ -33,6 +34,7 @@ interface Props {
 export const ActionElementsBar = ({
     hasSchema,
     loading,
+    isIntrospecting,
     formatTheCode,
     introspect,
     onSubmit,
@@ -90,6 +92,7 @@ export const ActionElementsBar = ({
                         fill="outlined"
                         onClick={introspect}
                         disabled={loading}
+                        loading={isIntrospecting}
                     >
                         Generate type definitions
                     </Button>
