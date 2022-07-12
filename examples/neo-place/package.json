@@ -1,6 +1,7 @@
 {
     "name": "neo-place",
     "version": "0.1.0",
+    "private": true,
     "description": "Subscriptions example",
     "scripts": {
         "start": "node server.js",
@@ -8,7 +9,6 @@
         "build": "parcel build client/index.html client/qr.html",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "private": true,
     "repository": {
         "type": "git",
         "url": "git+https://github.com/neo4j/graphql.git"
