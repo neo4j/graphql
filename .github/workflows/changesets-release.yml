@@ -61,6 +61,8 @@ jobs:
       github.event.pull_request.user.login == 'neo4j-team-graphql' &&
       startsWith(github.head_ref, 'changeset-release/')
     uses: ./.github/workflows/reusable-aura-tests.yml
+    with:
+      CONTINUE_ON_ERROR: true
     secrets:
       URI: ${{ secrets.AURA_FREE_URI }}
       PASSWORD: ${{ secrets.AURA_FREE_PASSWORD }}
@@ -72,6 +74,8 @@ jobs:
       github.event.pull_request.user.login == 'neo4j-team-graphql' &&
       startsWith(github.head_ref, 'changeset-release/')
     uses: ./.github/workflows/reusable-aura-tests.yml
+    with:
+      CONTINUE_ON_ERROR: true
     secrets:
       URI: ${{ secrets.AURA_PROFESSIONAL_URI }}
       PASSWORD: ${{ secrets.AURA_PROFESSIONAL_PASSWORD }}

@@ -7,6 +7,11 @@ on:
         required: false
         type: string
         description: "Which branch to run tests against"
+      CONTINUE_ON_ERROR:
+        required: false
+        type: boolean
+        default: false
+        description: "Should the workflow execution continue if the tests against Aura fail"
     secrets:
       URI:
         required: true
@@ -44,7 +49,7 @@ jobs:
     needs:
       - teardown
 
-    continue-on-error: true
+    continue-on-error: ${{ inputs.CONTINUE_ON_ERROR }}
 
     strategy:
       max-parallel: 1
