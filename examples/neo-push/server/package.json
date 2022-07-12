@@ -1,6 +1,7 @@
 {
     "name": "neo-push-server",
     "version": "1.0.0",
+    "private": true,
     "description": "",
     "main": "./dist/src/index.js",
     "scripts": {
