@@ -64,3 +64,7 @@ query {
 
 export const DEFAULT_BOLT_URL = "bolt://localhost:7687";
 export const DEFAULT_DATABASE_NAME = "neo4j";
+export const DEFAULT_USERNAME = "neo4j";
+
+export const CONNECT_URL_PARAM_NAME = "connectURL";
+export const DATABASE_PARAM_NAME = "db";
