@@ -19,7 +19,7 @@ const schemaScreenCmds: RowEntryType[] = [
     {
         label: "Show autocomplete hints",
         winCmd: "Ctrl+Space",
-        macCmd: "Cmd+Space",
+        macCmd: "Option+Space",
     },
     {
         label: "",
@@ -42,7 +42,7 @@ const editorScreenCmds: RowEntryType[] = [
     {
         label: "Show\n autocomplete\n hints",
         winCmd: "Ctrl+Space",
-        macCmd: "Cmd+Space",
+        macCmd: "Option+Space",
     },
     {
         label: "",
