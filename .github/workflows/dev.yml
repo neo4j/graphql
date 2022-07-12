@@ -38,7 +38,6 @@ jobs:
     uses: ./.github/workflows/reusable-toolbox-tests.yml
 
   aura-free-tests:
-    if: github.event.pull_request.merged == true
     uses: ./.github/workflows/reusable-aura-tests.yml
     secrets:
       URI: ${{ secrets.AURA_FREE_URI }}
@@ -46,7 +45,6 @@ jobs:
     concurrency: aura-free
 
   aura-professional-tests:
-    if: github.event.pull_request.merged == true
     uses: ./.github/workflows/reusable-aura-tests.yml
     secrets:
       URI: ${{ secrets.AURA_PROFESSIONAL_URI }}
@@ -54,7 +52,6 @@ jobs:
     concurrency: aura-professional
 
   aura-5-tests:
-    if: github.event.pull_request.merged == true
     uses: ./.github/workflows/reusable-aura-tests.yml
     secrets:
       URI: ${{ secrets.AURA_5_URI }}
