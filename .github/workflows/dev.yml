@@ -1,5 +1,7 @@
 name: "dev"
 
+concurrency: "dev"
+
 on:
   push:
     branches:
