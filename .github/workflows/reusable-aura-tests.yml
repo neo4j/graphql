@@ -6,6 +6,7 @@ on:
       BRANCH:
         required: false
         type: string
+        description: "Which branch to run tests against"
     secrets:
       URI:
         required: true
