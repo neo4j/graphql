@@ -19,7 +19,9 @@
 
 import type { Context, GraphQLWhereArg, RelationField } from "../../../types";
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
-import { mapPropertiesToOperators } from "../create-cypher-where-params";
+// line disable for recursive function
+// eslint-disable-next-line import/no-cycle
+import { createCypherWhereParams, mapPropertiesToOperators } from "../create-cypher-where-params";
 
 export function createRelationOperation({
     relationField,
@@ -64,15 +66,13 @@ export function createRelationOperation({
         return exists;
     }
 
-    const nestedOperators = mapPropertiesToOperators({
+    const relationOperator = createCypherWhereParams({
         // Nested properties here
         whereInput: value,
         targetElement: childNode,
         node: refNode,
         context,
     });
-
-    const relationOperator = CypherBuilder.and(...nestedOperators);
 
     if (!relationOperator) {
         return undefined;
@@ -92,19 +92,19 @@ export function createRelationOperation({
 
         case "SINGLE": {
             existsSubquery.where(relationOperator);
-            const sizeStatement = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
-                const subqueryStr = existsSubquery.getCypher(env).replace("MATCH", ""); // This should be part of list comprehension, match clause
-                const str = `size([${subqueryStr} | 1]) = 1`; // TODO: change this into a patternComprehension
-                return [str, {}];
-            });
-            return sizeStatement;
+            return createSizeStatement(existsSubquery);
         }
         case "SOME":
+        default:
             existsSubquery.where(relationOperator);
             return exists;
-        default:
-            break;
     }
-    existsSubquery.where(relationOperator); // SAME AS SOME?
-    return exists;
+}
+
+function createSizeStatement(existsSubquery: CypherBuilder.Match): CypherBuilder.RawCypher {
+    return new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+        const subqueryStr = existsSubquery.getCypher(env).replace("MATCH", ""); // This should be part of list comprehension, match clause
+        const str = `size([${subqueryStr} | 1]) = 1`; // TODO: change this into a patternComprehension
+        return [str, {}];
+    });
 }

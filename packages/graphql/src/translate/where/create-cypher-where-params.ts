@@ -25,6 +25,8 @@ import { whereRegEx, WhereRegexGroups } from "./utils";
 import { filterTruthy } from "../../utils/utils";
 import { createComparisonOperation } from "./operations/create-comparison-operation";
 import { createAggregateOperation } from "./operations/create-aggregate-operation";
+// line disable for recursive function
+// eslint-disable-next-line import/no-cycle
 import { createRelationOperation } from "./operations/create-relation-operation";
 import { createConnectionOperation } from "./operations/create-connection-operation";
 import { createGlobalNodeOperation } from "./operations/create-global-node-operation";

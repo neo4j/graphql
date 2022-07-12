@@ -29,7 +29,7 @@ import { ComparisonOp, eq } from "../operations/comparison";
 import { PropertyRef } from "../PropertyRef";
 import { and, BooleanOp } from "../operations/boolean";
 
-export class Match<T extends MatchableElement> extends Clause {
+export class Match<T extends MatchableElement = any> extends Clause {
     private pattern: Pattern<T>;
     private whereSubClause: Where | undefined;
     private returnStatement: Return | undefined;
