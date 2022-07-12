@@ -28,6 +28,6 @@ jobs:
         uses: changesets/action@2a025e8ab1cfa4312c2868cb6aa3cd3b473b84bf
         with:
           title: changesets for branch `master`
-          version: yarn changeset version --since master && yarn
+          version: yarn changeset-version-master
         env:
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
