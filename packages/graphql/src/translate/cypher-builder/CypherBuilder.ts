@@ -1,55 +1,53 @@
-/*
- * Copyright (c) "Neo4j"
- * Neo4j Sweden AB [http://neo4j.com]
- *
- * This file is part of Neo4j.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+export { Match } from "./clauses/Match";
+export { Create } from "./clauses/Create";
+export { Merge } from "./clauses/Merge";
+export { Call } from "./clauses/Call";
+export { Exists } from "./Exists";
+export { Return } from "./clauses/Return";
+export { RawCypher } from "./clauses/RawCypher";
+export { With } from "./clauses/With";
 
-export { Query } from "./statements/Query";
-export { Create } from "./statements/Create";
-export { Merge } from "./statements/Merge";
-export { Apoc } from "./statements/Apoc";
-export { Call } from "./statements/Call";
-export { Match } from "./statements/Match";
-export { RawCypher, RawCypherWithCallback } from "./statements/RawCypher";
+export { NodeRef as Node, NamedNode } from "./variables/NodeRef";
+export { RelationshipRef as Relationship } from "./variables/RelationshipRef";
+export { Param, RawParam } from "./variables/Param";
+export { RawVariable, Variable } from "./variables/Variable";
+export { CypherNull as Null } from "./variables/Null";
+export { Literal } from "./variables/Literal";
+export { ListComprehension } from "./list/ListComprehension";
 
-export { Node, NamedNode } from "./references/Node";
-export { Param, RawParam, PointParam } from "./references/Param";
-export { Relationship } from "./references/Relationship";
-export { Variable } from "./references/Variable";
-export { CypherContext } from "./CypherContext";
+export { Pattern } from "./Pattern"; // TODO: Maybe this should not be exported
 
-export { CypherResult } from "./types";
-
-export { or, and, not, WhereOperator } from "./statements/where-operators";
-export { coalesce, distance } from "./statements/scalar-functions";
+export { or, and, not } from "./operations/boolean";
 export {
-    inClause as in,
+    eq,
     gt,
     gte,
     lt,
     lte,
+    isNull,
+    isNotNull,
+    inOp as in,
     contains,
     startsWith,
     endsWith,
-    match,
-    WhereClause,
-} from "./statements/where-clauses";
+    matches,
+} from "./operations/comparison";
 
-export { exists, any, none, single, all } from "./statements/predicate-functions";
-export { Exists } from "./statements/Exists";
-export { MatchPattern } from "./MatchPattern";
+export { plus, minus } from "./operations/math";
 
-export * as db from "./statements/db";
+export { coalesce, point, distance, cypherDatetime as datetime } from "./functions/CypherFunction";
+
+export { CypherResult } from "./types";
+
+export { concat } from "./clauses/concat";
+
+export type { PropertyRef } from "./PropertyRef";
+export type { Clause } from "./clauses/Clause";
+export type { CypherEnvironment as Environment } from "./Environment";
+export type { Operation } from "./operations/Operation";
+export type { ComparisonOp } from "./operations/comparison";
+export type { BooleanOp } from "./operations/boolean";
+export type { Expr } from "./types";
+export type { CypherFunction as Function } from "./functions/CypherFunction";
+
+export * as db from "./clauses/db";

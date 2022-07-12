@@ -20,13 +20,12 @@
 import type { GraphQLWhereArg, Context, RelationField, ConnectionField, PointField, PrimitiveField } from "../../types";
 import type { Node, Relationship } from "../../classes";
 import mapToDbProperty from "../../utils/map-to-db-property";
-import * as CypherBuilder from "../cypher-builder-2/CypherBuilder";
+import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { getListPredicate, whereRegEx, WhereRegexGroups } from "./utils";
 import createAggregateWhereAndParams from "../create-aggregate-where-and-params";
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
 import { listPredicateToSizeFunction } from "./list-predicate-to-size-function";
 import { filterTruthy } from "../../utils/utils";
-import { RawCypherWithCallback } from "../cypher-builder/CypherBuilder";
 
 type WhereMatchStatement = CypherBuilder.Match<any> | CypherBuilder.db.FullTextQueryNodes;
 // type WhereMatchStatement = CypherBuilder.Match<any> | CypherBuilder.db.FullTextQueryNodes;

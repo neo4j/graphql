@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
-import { CypherContext } from "./CypherContext";
-import type { Param } from "./references/Param";
+import { CypherEnvironment } from "./Environment";
+import type { CypherCompilable } from "./types";
+import type { Param } from "./variables/Param";
 
 /** Abstract class representing a Cypher Statement in the AST */
-export abstract class CypherASTNode {
-    protected children: Array<CypherASTNode> = [];
+export abstract class CypherASTNode implements CypherCompilable {
+    // protected children: Array<CypherASTNode> = [];
     protected parent?: CypherASTNode;
     protected namedParams: Record<string, Param> = {}; // Only for compatibility reasons
 
@@ -38,30 +39,47 @@ export abstract class CypherASTNode {
     }
 
     /** Visitor pattern to generate the Cypher on nested nodes */
-    public getCypher(context: CypherContext, separator = "\n"): string {
-        Object.entries(this.namedParams).forEach(([name, param]) => {
-            context.addNamedParamReference(name, param); // Only for compatibility reasons
-        });
+    public getCypher(env: CypherEnvironment): string {
+        // Object.entries(this.namedParams).forEach(([name, param]) => {
+        //     context.addNamedParamReference(name, param); // Only for compatibility reasons
+        // });
 
-        const childrenCypher = this.children.map((value) => value.getCypher(context)).join(separator);
-        return this.cypher(context, childrenCypher);
+        // const childrenCypher = this.children.map((value) => value.getCypher(context)).join(separator);
+        return this.cypher(env);
     }
+
+    // public addNamedParams(params: Record<string, Param>) {
+    //     this.namedParams = { ...this.namedParams, ...params };
+    // }
 
     /** Defines the internal Cypher to generate by the ASTNode */
-    protected abstract cypher(context: CypherContext, childrenCypher: string): string;
+    protected abstract cypher(env: CypherEnvironment): string;
 
-    protected getContext(prefix?: string): CypherContext {
-        return new CypherContext(prefix);
+    protected getEnv(prefix?: string): CypherEnvironment {
+        return new CypherEnvironment(prefix);
     }
 
-    protected addStatement<C extends CypherASTNode>(astNode: C): C {
-        this.children.push(astNode);
-        astNode.parent = this;
-        return astNode;
+    // protected addStatement<C extends CypherASTNode>(astNode: C): C {
+    //     this.children.push(astNode);
+    //     astNode.setParent(this);
+    //     return astNode;
+    // }
+
+    // protected addASTNode<C extends CypherASTNode>(astNode: C): C {
+    //     this.children.push(astNode);
+    //     astNode.setParent(this);
+    //     return astNode;
+    // }
+
+    /** Sets the parent-child relationship for build traversal */
+    protected addChildren(...nodes: CypherASTNode[]): void {
+        for (const node of nodes) {
+            node.setParent(this);
+        }
     }
 
-    public addNamedParams(params: Record<string, Param>) {
-        this.namedParams = { ...this.namedParams, ...params };
+    protected setParent(node: CypherASTNode): void {
+        this.parent = node;
     }
 
     protected get isRoot() {

@@ -20,7 +20,7 @@
 import type { AuthOperations, Context, GraphQLWhereArg } from "../types";
 import type { Node } from "../classes";
 import createAuthAndParams from "./create-auth-and-params";
-import * as CypherBuilder from "./cypher-builder-2/CypherBuilder";
+import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { addWhereToStatement } from "./where/add-where-to-statement";
 
 function translateTopLevelMatch({

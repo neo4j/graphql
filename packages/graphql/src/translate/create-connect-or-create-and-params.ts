@@ -22,8 +22,8 @@ import type { Node, Relationship } from "../classes";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { asArray, omitFields } from "../utils/utils";
-import * as CypherBuilder from "./cypher-builder-2/CypherBuilder";
-import { convertToCypherParams } from "./cypher-builder-2/utils";
+import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import { convertToCypherParams } from "./cypher-builder/utils";
 
 type CreateOrConnectInput = {
     where?: {
