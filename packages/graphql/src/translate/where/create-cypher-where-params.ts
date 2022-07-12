@@ -17,16 +17,17 @@
  * limitations under the License.
  */
 
-import type { GraphQLWhereArg, Context, RelationField, ConnectionField, PointField, PrimitiveField } from "../../types";
-import type { Node, Relationship } from "../../classes";
+import type { GraphQLWhereArg, Context } from "../../types";
+import type { Node } from "../../classes";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
-import { getListPredicate, whereRegEx, WhereRegexGroups } from "./utils";
-import createAggregateWhereAndParams from "../create-aggregate-where-and-params";
-import createConnectionWhereAndParams from "./create-connection-where-and-params";
-import { listPredicateToSizeFunction } from "./list-predicate-to-size-function";
+import { whereRegEx, WhereRegexGroups } from "./utils";
 import { filterTruthy } from "../../utils/utils";
 import { createComparisonOperation } from "./operations/create-comparison-operation";
+import { createAggregateOperation } from "./operations/create-aggregate-operation";
+import { createRelationOperation } from "./operations/create-relation-operation";
+import { createConnectionOperation } from "./operations/create-connection-operation";
+import { createGlobalNodeOperation } from "./operations/create-global-node-operation";
 
 /** Translate a target node and GraphQL input into a Cypher operation */
 export function createCypherWhereParams({
@@ -50,7 +51,7 @@ export function createCypherWhereParams({
     return CypherBuilder.and(...mappedProperties);
 }
 
-function mapPropertiesToOperators({
+export function mapPropertiesToOperators({
     whereInput,
     node,
     targetElement,
@@ -116,17 +117,12 @@ function createComparisonOnProperty({
         dbFieldName = `${prefix}${dbFieldName}`;
     }
     if (node.isGlobalNode && key === "id") {
-        const { field, id } = node.fromGlobalId(value as string);
-        // get the dbField from the returned property fieldName
-        const idDbFieldName = mapToDbProperty(node, field);
-        let idProperty = targetElement.property(idDbFieldName) as CypherBuilder.PropertyRef | CypherBuilder.Function;
-        if (coalesceValue) {
-            idProperty = CypherBuilder.coalesce(
-                idProperty as CypherBuilder.PropertyRef,
-                new CypherBuilder.Literal(coalesceValue)
-            );
-        }
-        return CypherBuilder.eq(idProperty, new CypherBuilder.Param(id));
+        return createGlobalNodeOperation({
+            node,
+            value,
+            targetElement,
+            coalesceValue,
+        });
     }
 
     let propertyRef: CypherBuilder.PropertyRef | CypherBuilder.Function = targetElement.property(dbFieldName);
@@ -142,19 +138,17 @@ function createComparisonOnProperty({
     if (isAggregate) {
         if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
 
-        const nestedAggregate = createAggregateProperty({
+        return createAggregateOperation({
             relationField,
             context,
             value,
             parentNode: targetElement as CypherBuilder.Node,
         });
-
-        return nestedAggregate;
     }
 
     if (relationField) {
         // Relation
-        return createRelationProperty({
+        return createRelationOperation({
             relationField,
             context,
             parentNode: targetElement as CypherBuilder.Node,
@@ -166,7 +160,7 @@ function createComparisonOnProperty({
 
     const connectionField = node.connectionFields.find((x) => x.fieldName === fieldName);
     if (connectionField) {
-        return createConnectionProperty({
+        return createConnectionOperation({
             value,
             connectionField,
             context,
@@ -196,197 +190,4 @@ function createComparisonOnProperty({
         return CypherBuilder.not(comparisonOp);
     }
     return comparisonOp;
-}
-
-function createRelationProperty({
-    relationField,
-    context,
-    parentNode,
-    operator,
-    value,
-    isNot,
-}: {
-    relationField: RelationField;
-    context: Context;
-    parentNode: CypherBuilder.Node;
-    operator: string | undefined;
-    value: GraphQLWhereArg;
-    isNot: boolean;
-}): CypherBuilder.BooleanOp | CypherBuilder.Exists | CypherBuilder.RawCypher | undefined {
-    const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
-    if (!refNode) throw new Error("Relationship filters must reference nodes");
-
-    const childNode = new CypherBuilder.Node({ labels: refNode.getLabels(context) });
-
-    const relationship = new CypherBuilder.Relationship({
-        source: relationField.direction === "IN" ? childNode : parentNode,
-        target: relationField.direction === "IN" ? parentNode : childNode,
-        type: relationField.type,
-    });
-
-    const matchPattern = new CypherBuilder.Pattern(relationship, {
-        source: relationField.direction === "IN" ? { variable: true } : { labels: false },
-        target: relationField.direction === "IN" ? { labels: false } : { variable: true },
-        relationship: { variable: false },
-    });
-
-    const existsSubquery = new CypherBuilder.Match(matchPattern, {});
-    const exists = new CypherBuilder.Exists(existsSubquery);
-
-    if (value === null) {
-        if (!isNot) {
-            // Bit confusing, but basically checking for not null is the same as checking for relationship exists
-            return CypherBuilder.not(exists);
-        }
-        return exists;
-    }
-
-    const nestedOperators = mapPropertiesToOperators({
-        whereInput: value,
-        targetElement: childNode,
-        node: refNode,
-        context,
-    });
-
-    const relationOperator = CypherBuilder.and(...nestedOperators);
-
-    if (!relationOperator) {
-        return undefined;
-    }
-
-    switch (operator) {
-        case "ALL": {
-            const notProperties = CypherBuilder.not(relationOperator);
-
-            existsSubquery.where(notProperties);
-            return CypherBuilder.not(exists); // Not sure why the double not
-        }
-        case "NOT":
-        case "NONE":
-            existsSubquery.where(relationOperator);
-            return CypherBuilder.not(exists);
-
-        case "SINGLE": {
-            existsSubquery.where(relationOperator);
-            const sizeStatement = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
-                const subqueryStr = existsSubquery.getCypher(env).replace("MATCH", ""); // THis should be part of list comprehension, match clause
-                const str = `size([${subqueryStr} | 1]) = 1`; // TODO: change this into a patternComprehension
-                return [str, {}];
-            });
-            return sizeStatement;
-        }
-        case "SOME":
-            existsSubquery.where(relationOperator);
-            return exists;
-        default:
-            break;
-    }
-    existsSubquery.where(relationOperator); // SAME AS SOME?
-    return exists;
-}
-
-function createConnectionProperty({
-    connectionField,
-    value,
-    context,
-    parentNode,
-    operator,
-}: {
-    connectionField: ConnectionField;
-    value: any;
-    context: Context;
-    parentNode: CypherBuilder.Node;
-    operator: string | undefined;
-}): CypherBuilder.BooleanOp | CypherBuilder.RawCypher | undefined {
-    let nodeEntries: Record<string, any>;
-
-    if (!connectionField?.relationship.union) {
-        nodeEntries = { [connectionField.relationship.typeMeta.name]: value };
-    } else {
-        nodeEntries = value;
-    }
-
-    const operations = Object.entries(nodeEntries).map((entry) => {
-        const refNode = context.nodes.find((x) => x.name === entry[0]) as Node;
-
-        const relationField = connectionField.relationship;
-
-        const childNode = new CypherBuilder.Node({ labels: refNode.getLabels(context) });
-        const relationship = new CypherBuilder.Relationship({
-            source: relationField.direction === "IN" ? childNode : parentNode,
-            target: relationField.direction === "IN" ? parentNode : childNode,
-            type: relationField.type,
-        });
-
-        const matchPattern = new CypherBuilder.Pattern(relationship, {
-            source: relationField.direction === "IN" ? { variable: true } : { labels: false },
-            target: relationField.direction === "IN" ? { labels: false } : { variable: true },
-            relationship: { variable: true },
-        });
-
-        const listPredicateStr = getListPredicate(operator as any);
-        const rawWhereQuery = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
-            const contextRelationship = context.relationships.find(
-                (x) => x.name === connectionField.relationshipTypeName
-            ) as Relationship;
-            // const collectedMapId = cypherContext.getVariableId(projectionVariable);
-
-            const prefix = `nestedParam${env.getParamsSize()}`; // Generates unique name for nested reference
-            const result = createConnectionWhereAndParams({
-                whereInput: entry[1] as any,
-                context,
-                node: refNode,
-                nodeVariable: env.getVariableId(childNode),
-                relationship: contextRelationship,
-                relationshipVariable: env.getVariableId(relationship),
-                parameterPrefix: prefix,
-                listPredicates: [listPredicateStr],
-            });
-            return [result[0], { [prefix]: result[1] }];
-        });
-
-        const subquery = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
-            const patternStr = matchPattern.getCypher(env);
-            const whereStr = rawWhereQuery.getCypher(env);
-            const clause = listPredicateToSizeFunction(listPredicateStr, patternStr, whereStr);
-            return [clause, {}];
-        });
-
-        return subquery;
-    });
-
-    return CypherBuilder.and(...operations) as CypherBuilder.BooleanOp | undefined;
-}
-
-function createAggregateProperty({
-    relationField,
-    context,
-    value,
-    parentNode,
-}: {
-    relationField: RelationField;
-    context: Context;
-    value: any;
-    parentNode: CypherBuilder.Node;
-}): CypherBuilder.RawCypher {
-    const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-    const relationship = context.relationships.find((x) => x.properties === relationField.properties) as Relationship;
-
-    const aggregateStatement = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
-        const varName = env.getVariableId(parentNode);
-
-        const aggregateWhereAndParams = createAggregateWhereAndParams({
-            node: refNode,
-            chainStr: "aggr",
-            context,
-            field: relationField,
-            varName,
-            aggregation: value,
-            relationship,
-        });
-
-        return aggregateWhereAndParams;
-    });
-
-    return aggregateStatement;
 }
