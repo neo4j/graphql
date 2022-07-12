@@ -26,6 +26,6 @@ jobs:
           filters: |
             markdown:
               - added|modified: '*.md'
-      - uses: xt0rted/markdownlint-problem-matcher@b643b0751c371f357690337d4549221347c0e1bc
+      - uses: xt0rted/markdownlint-problem-matcher@86728e421d1d45a47774b4eda0cc1a151bf3edd7
       - name: Run markdownlint
         run: markdownlint --config ./.markdownlint.json ${{ steps.filter.outputs.markdown_files }}

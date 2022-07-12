@@ -6,7 +6,7 @@ on:
       - dev
       - master
     paths:
-      - CHANGELOG.md
+      - "**/CHANGELOG.md"
     types:
       - closed
 
