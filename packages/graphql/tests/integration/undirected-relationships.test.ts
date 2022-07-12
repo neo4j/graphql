@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Driver, Session } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import Neo4j from "./neo4j";

@@ -17,14 +17,15 @@
  * limitations under the License.
  */
 
-import { Fragment, useContext } from "react";
 import { Button, HeroIcon, IconButton } from "@neo4j-ndl/react";
+import { Fragment, useContext } from "react";
+import { DEFAULT_BOLT_URL } from "src/constants";
 // @ts-ignore - SVG Import
 import Neo4jLogoIcon from "../../assets/Neo4j-logo-color.svg";
-import { AuthContext } from "../../contexts/auth";
-import { SettingsContext } from "../../contexts/settings";
-import { Screen, ScreenContext } from "../../contexts/screen";
 import { CustomSelect } from "../../components/CustomSelect";
+import { AuthContext } from "../../contexts/auth";
+import { Screen, ScreenContext } from "../../contexts/screen";
+import { SettingsContext } from "../../contexts/settings";
 
 export const TopBar = () => {
     const auth = useContext(AuthContext);
@@ -41,22 +42,30 @@ export const TopBar = () => {
         settings.setIsShowSettingsDrawer(!settings.isShowSettingsDrawer);
     };
 
+    const constructDbmsUrlWithUsername = (): string => {
+        if (!auth || !auth.connectUrl || !auth.username) return DEFAULT_BOLT_URL;
+        const { connectUrl, username } = auth;
+
+        const modifiedUsername = username.length > 30 ? `${username.substring(0, 28)}...` : username;
+        const [protocol, host] = connectUrl.split(/:\/\//);
+        if (!protocol || !host) return DEFAULT_BOLT_URL;
+
+        return `${protocol}://${modifiedUsername}@${host}`;
+    };
+
     return (
         <div className="flex w-full h-16 bg-white border-b border-gray-100">
             <div className="flex-1 flex justify-start">
-                <div className="flex items-center justify-space">
+                <div className="flex items-center">
                     <img src={Neo4jLogoIcon} alt="Neo4j logo Icon" className="ml-8 w-24" />
                     <p className="ml-6 text-base">GraphQL Toolbox</p>
                     <div className="px-2 py-1 ml-3 rounded n-bg-danger-20 n-text-danger-60 text-sm">beta</div>
                 </div>
             </div>
             <div className="flex-1 flex justify-center">
-                <div className="flex items-center justify-space">
+                <div className="flex items-center">
                     <p className="mr-2">{auth?.isConnected ? greenDot : redDot} </p>
-                    <div className="flex items-center">
-                        <span className="max-width-db-name truncate">{auth.selectedDatabaseName}</span>&#64;
-                        {auth?.connectUrl}
-                    </div>
+                    <div className="flex items-center">{constructDbmsUrlWithUsername()}</div>
                     {auth.databases?.length ? (
                         <Fragment>
                             <span className="mx-2">/</span>
@@ -79,7 +88,7 @@ export const TopBar = () => {
                 </div>
             </div>
             <div className="flex-1 flex justify-end">
-                <div className="flex items-center justify-space text-sm">
+                <div className="flex items-center text-sm">
                     {!auth.isNeo4jDesktop ? (
                         <div className="mr-4 pr-4 border-r border-gray-700">
                             <Button

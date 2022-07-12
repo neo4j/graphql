@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 import { generate } from "randomstring";
 import {
     generateMissingOrAliasedFields,

@@ -33,10 +33,6 @@ li.CodeMirror-hint-active {
     white-space: break-spaces;
 }
 
-.max-width-db-name {
-    max-width: 12rem;
-}
-
 .pt-02 {
     padding-top: 0.2rem;
 }

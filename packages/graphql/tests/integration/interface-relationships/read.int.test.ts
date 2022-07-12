@@ -17,14 +17,15 @@
  * limitations under the License.
  */
 
-import { Driver, Session } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("interface relationships", () => {
     let driver: Driver;

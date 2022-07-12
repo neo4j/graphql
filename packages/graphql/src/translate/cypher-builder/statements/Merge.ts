@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import { CypherContext } from "../CypherContext";
-import { MatchableElement, MatchParams, MatchPattern } from "../MatchPattern";
+import type { CypherContext } from "../CypherContext";
+import type { MatchableElement, MatchParams} from "../MatchPattern";
+import { MatchPattern } from "../MatchPattern";
 import { Node } from "../references/Node";
-import { Param } from "../references/Param";
+import type { Param } from "../references/Param";
 import { Relationship } from "../references/Relationship";
 import { Query } from "./Query";
 

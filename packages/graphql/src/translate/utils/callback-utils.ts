@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { CallbackBucket } from "../../classes/CallbackBucket";
-import { PrimitiveField } from "../../types";
+import type { CallbackBucket } from "../../classes/CallbackBucket";
+import type { PrimitiveField } from "../../types";
 
 export const addCallbackAndSetParam = (
     field: PrimitiveField,

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Neo4jStruct, NodeMap, RelationshipMap } from "../../types";
+import type { Neo4jStruct, NodeMap, RelationshipMap } from "../../types";
 import createNodeFields from "./utils/create-node-fields";
 import uniqueString from "../../utils/unique-string";
 import { NodeDirective } from "./directives/Node";

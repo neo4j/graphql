@@ -19,8 +19,9 @@
 
 import { gql } from "apollo-server";
 import { graphql } from "graphql";
-import { Driver } from "neo4j-driver";
-import { EventMeta, Neo4jGraphQL, Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "../../../src";
+import type { Driver } from "neo4j-driver";
+import type { EventMeta} from "../../../src";
+import { Neo4jGraphQL, Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
 
