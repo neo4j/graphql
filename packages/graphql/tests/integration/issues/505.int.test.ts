@@ -17,16 +17,17 @@
  * limitations under the License.
  */
 
-import { Driver, Session } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/505", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     const userType = generateUniqueType("User");
     const workspaceType = generateUniqueType("Workspace");
@@ -96,7 +97,8 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     `;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -108,15 +110,11 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             return graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: {
-                    driver,
-                    driverConfig: {
-                        bookmarks: session.lastBookmark(),
-                    },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
                     jwt: {
                         sub: userId,
                     },
-                },
+                }),
                 variableValues,
             });
         }
@@ -165,7 +163,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     }
 
     test("single user, single workspace, multiple pages", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
         const userId = generate({ charset: "alphabetic" });
         const workspaceId = generate({ charset: "alphabetic" });
@@ -227,7 +225,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     });
 
     test("single user, multiple workspaces, multiple shared pages", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
         const userId = generate({ charset: "alphabetic" });
         const workspaceIds = Array(2)
@@ -302,7 +300,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     });
 
     test("multiple users, multiple workspaces, multiple shared pages", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
         const userIds = Array(2)
             .fill(0)
@@ -385,7 +383,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     });
 
     test("multiple users, multiple workspaces, multiple mixed shared pages", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
         const userIds = Array(2)
             .fill(0)
@@ -468,7 +466,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     });
 
     test("multiple users, multiple workspaces, multiple private pages", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
         const userIds = Array(2)
             .fill(0)
@@ -551,7 +549,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     });
 
     test("multiple users, multiple workspaces where not member, multiple shared pages", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
         const userIds = Array(2)
             .fill(0)
@@ -633,7 +631,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     });
 
     test("multiple users, multiple workspaces with partial membership, multiple shared pages", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
         const userIds = Array(2)
             .fill(0)
@@ -716,7 +714,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
     });
 
     test("multiple users, multiple workspaces with partial membership, multiple mixed shared pages", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
         const userIds = Array(2)
             .fill(0)

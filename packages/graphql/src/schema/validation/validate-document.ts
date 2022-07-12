@@ -17,16 +17,17 @@
  * limitations under the License.
  */
 
-import {
+import type {
     DefinitionNode,
     DocumentNode,
-    GraphQLSchema,
-    extendSchema,
-    validateSchema,
     ObjectTypeDefinitionNode,
     InputValueDefinitionNode,
     FieldDefinitionNode,
-    TypeNode,
+    TypeNode} from "graphql";
+import {
+    GraphQLSchema,
+    extendSchema,
+    validateSchema,
     specifiedDirectives,
     Kind,
 } from "graphql";

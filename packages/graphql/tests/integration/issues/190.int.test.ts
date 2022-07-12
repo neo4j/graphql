@@ -17,14 +17,15 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("https://github.com/neo4j/graphql/issues/190", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let bookmarks: string[];
     const typeDefs = gql`
         type User {
@@ -42,8 +43,9 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
     `;
 
     beforeAll(async () => {
-        driver = await neo4j();
-        const session = driver.session();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+        const session = await neo4j.getSession();
 
         try {
             await session.run(
@@ -64,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
     });
 
     afterAll(async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         try {
             await session.run("MATCH (u:User) WHERE (u.uid = 'user1' OR u.uid = 'user2') DETACH DELETE u");
@@ -79,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
     });
 
     test("Example 1", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -101,7 +103,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
             });
 
             expect(result.errors).toBeFalsy();
@@ -125,7 +127,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
     });
 
     test("Example 2", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -151,7 +153,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
             });
 
             expect(result.errors).toBeFalsy();

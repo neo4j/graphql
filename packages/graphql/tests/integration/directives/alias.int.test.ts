@@ -18,16 +18,17 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { Driver, Session } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 import { graphql } from "graphql";
 import * as neo4jDriver from "neo4j-driver";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 
 describe("@alias directive", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
     const dbName = generate({ charset: "alphabetic" });
@@ -37,7 +38,8 @@ describe("@alias directive", () => {
     const secret = "secret";
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
         const typeDefs = `
             interface AliasInterface {
                 id: ID! @alias(property: "dbId")
@@ -78,7 +80,7 @@ describe("@alias directive", () => {
     });
 
     beforeEach(async () => {
-        session = driver.session();
+        session = await neo4j.getSession();
         await session.run(`MATCH (n:AliasDirectiveTestUser)-[]-(m:AliasDirectiveTestMovie) DETACH DELETE n, m`);
         await session.run(
             `CREATE (:AliasDirectiveTestUser {dbName: $dbName, dbId: "stringId", dbCreatedAt: "1970-01-02"})-[:LIKES {dbComment: $dbComment, dbCreatedAt: "1970-01-02"}]->(:AliasDirectiveTestMovie {dbTitle: $dbTitle, year: $year, dbCreatedAt: "1970-01-02"})
@@ -119,7 +121,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: usersQuery,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] }, req },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -152,7 +154,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: protectedUsersQuery,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] }, req },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -179,7 +181,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: usersQuery,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -216,7 +218,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: usersQuery,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -261,7 +263,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -326,7 +328,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: userMutation,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeFalsy();
@@ -380,7 +382,7 @@ describe("@alias directive", () => {
         const createResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: create,
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
         });
         const { bookmark } = (createResult.data as any).createAliasDirectiveTestUsers.info;
 
@@ -413,7 +415,7 @@ describe("@alias directive", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: update,
-            contextValue: { driver, driverConfig: { bookmarks: [bookmark] } },
+            contextValue: neo4j.getContextValuesWithBookmarks([bookmark] as string[]),
         });
 
         expect(gqlResult.errors).toBeFalsy();

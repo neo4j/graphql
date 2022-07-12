@@ -17,17 +17,19 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("Enum Relationship Properties", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -35,7 +37,7 @@ describe("Enum Relationship Properties", () => {
     });
 
     test("should create a movie and an actor, with an enum as a relationship property", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const roleTypeResolver = {
             LEADING: "Leading",
@@ -112,7 +114,7 @@ describe("Enum Relationship Properties", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { title, name },
             });
 

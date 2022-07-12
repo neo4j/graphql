@@ -17,18 +17,20 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -60,7 +62,7 @@ describe("Revert https://github.com/neo4j/graphql/pull/572", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeFalsy();

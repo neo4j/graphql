@@ -18,7 +18,7 @@
  */
 
 import { RelationshipQueryDirectionOption } from "../../../src/constants";
-import { RelationField } from "../../../src/types";
+import type { RelationField } from "../../../src/types";
 import { Builder } from "./builder";
 
 export class RelationFieldBuilder extends Builder<RelationField, RelationField> {

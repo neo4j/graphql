@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import { DriverConfig } from "../../types";
+import type { Driver } from "neo4j-driver";
+import type { DriverConfig } from "../../types";
 import { verifyFunctions } from "./verify-functions";
 import { verifyProcedures } from "./verify-procedures";
 import { verifyVersion } from "./verify-version";

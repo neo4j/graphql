@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { ObjectTypeDefinitionNode, parse } from "graphql";
+import type { ObjectTypeDefinitionNode} from "graphql";
+import { parse } from "graphql";
 import getAuth from "./get-auth";
 
 describe("getAuth", () => {

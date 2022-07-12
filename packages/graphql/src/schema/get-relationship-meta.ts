@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, FieldDefinitionNode, StringValueNode } from "graphql";
+import type { DirectiveNode, FieldDefinitionNode, StringValueNode } from "graphql";
 import { RelationshipQueryDirectionOption } from "../constants";
 
 type RelationshipMeta = {

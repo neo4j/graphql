@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import Property from "./Property";
-import Relationship from "./Relationship";
+import type Property from "./Property";
+import type Relationship from "./Relationship";
 
 export default class Node {
     typeId: string;

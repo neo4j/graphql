@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import { Neo4jGraphQL } from "../classes";
+import type { Driver } from "neo4j-driver";
+import type { Neo4jGraphQL } from "../classes";
 import {
+    AuthContext,
     CypherConnectComponentsPlanner,
     CypherExpressionEngine,
     CypherInterpretedPipesFallback,
@@ -32,6 +33,7 @@ import {
 import execute from "./execute";
 import { trimmer } from ".";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
+import { Executor } from "../classes/Executor";
 
 describe("execute", () => {
     test("should execute return records.toObject", async () => {
@@ -95,9 +97,13 @@ describe("execute", () => {
                     params,
                     defaultAccessMode,
                     context: new ContextBuilder({
-                        driverConfig: { database, bookmarks },
                         neoSchema,
-                        executionContext: driver,
+                        executor: new Executor({
+                            executionContext: driver,
+                            auth: {} as AuthContext,
+                            database,
+                            bookmarks,
+                        }),
                     }).instance(),
                 });
 
@@ -128,7 +134,7 @@ describe("execute", () => {
                     expect(options).toMatchObject({ defaultAccessMode, database, bookmarks });
 
                     const tx = {
-                        run: (paramCypher, paramParams) => {
+                        run: (paramCypher: string, paramParams) => {
                             expect(trimmer(paramCypher)).toEqual(cypher);
                             expect(paramParams).toEqual(params);
 
@@ -166,10 +172,14 @@ describe("execute", () => {
                 params,
                 defaultAccessMode,
                 context: new ContextBuilder({
-                    driverConfig: { database, bookmarks },
                     neoSchema,
-                    executionContext: driver,
-                    queryOptions: {},
+                    executor: new Executor({
+                        executionContext: driver,
+                        auth: {} as AuthContext,
+                        database,
+                        bookmarks,
+                        queryOptions: {},
+                    }),
                 }).instance(),
             });
 
@@ -203,7 +213,7 @@ describe("execute", () => {
                     expect(options).toMatchObject({ defaultAccessMode, database, bookmarks });
 
                     const tx = {
-                        run: (paramCypher, paramParams) => {
+                        run: (paramCypher: string, paramParams) => {
                             expect(trimmer(paramCypher)).toEqual(expectedCypher);
                             expect(paramParams).toEqual(params);
 
@@ -241,19 +251,23 @@ describe("execute", () => {
                 params,
                 defaultAccessMode,
                 context: new ContextBuilder({
-                    driverConfig: { database, bookmarks },
                     neoSchema,
-                    executionContext: driver,
-                    queryOptions: {
-                        runtime: CypherRuntime.INTERPRETED,
-                        planner: CypherPlanner.COST,
-                        connectComponentsPlanner: CypherConnectComponentsPlanner.GREEDY,
-                        updateStrategy: CypherUpdateStrategy.DEFAULT,
-                        expressionEngine: CypherExpressionEngine.COMPILED,
-                        operatorEngine: CypherOperatorEngine.COMPILED,
-                        interpretedPipesFallback: CypherInterpretedPipesFallback.ALL,
-                        replan: CypherReplanning.DEFAULT,
-                    },
+                    executor: new Executor({
+                        executionContext: driver,
+                        auth: {} as AuthContext,
+                        database,
+                        bookmarks,
+                        queryOptions: {
+                            runtime: CypherRuntime.INTERPRETED,
+                            planner: CypherPlanner.COST,
+                            connectComponentsPlanner: CypherConnectComponentsPlanner.GREEDY,
+                            updateStrategy: CypherUpdateStrategy.DEFAULT,
+                            expressionEngine: CypherExpressionEngine.COMPILED,
+                            operatorEngine: CypherOperatorEngine.COMPILED,
+                            interpretedPipesFallback: CypherInterpretedPipesFallback.ALL,
+                            replan: CypherReplanning.DEFAULT,
+                        },
+                    }),
                 }).instance(),
             });
 
@@ -261,4 +275,3 @@ describe("execute", () => {
         });
     });
 });
-/* eslint-enable no-underscore-dangle */

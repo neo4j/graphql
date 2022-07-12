@@ -17,11 +17,10 @@
  * limitations under the License.
  */
 
-import { Driver, Result } from "neo4j-driver";
+import type { Result, Session } from "neo4j-driver";
 
 /** Runs cypher safely, cleaning session afterwars */
-export async function runCypher(driver: Driver, cypher: string): Promise<Result> {
-    const session = driver.session();
+export async function runCypher(session: Session, cypher: string): Promise<Result> {
     try {
         const result = await session.run(cypher);
         await session.close();

@@ -18,16 +18,18 @@
  */
 
 import { graphql } from "graphql";
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 
 describe("579", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -35,7 +37,7 @@ describe("579", () => {
     });
 
     test("should update an Edge property in a one to one relationship", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
           type Product {
@@ -106,7 +108,7 @@ describe("579", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: {},
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();

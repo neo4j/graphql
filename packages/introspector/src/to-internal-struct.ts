@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { Session } from "neo4j-driver";
+import type { Session } from "neo4j-driver";
 import Node from "./classes/Node";
 import Property from "./classes/Property";
 import Relationship from "./classes/Relationship";
-import { Neo4jStruct, NodeMap, PropertyRecord, RelationshipMap } from "./types";
+import type { Neo4jStruct, NodeMap, PropertyRecord, RelationshipMap } from "./types";
 import cleanTypeName from "./utils/clean-type-name";
 import nodeKey from "./utils/node-key";
 

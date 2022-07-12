@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { SchemaComposer } from "graphql-compose";
+import type { SchemaComposer } from "graphql-compose";
 
 export function getResolveAndSubscriptionMethods(composer: SchemaComposer) {
     const resolveMethods = composer.getResolveMethods();

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { JwtPayload, Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
+import type { JwtPayload, Neo4jGraphQLSubscriptionsPlugin } from "../../../types";
 
 export type SubscriptionContext = {
     plugin: Neo4jGraphQLSubscriptionsPlugin;

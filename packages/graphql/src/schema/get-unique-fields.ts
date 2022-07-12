@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { Node } from "../classes";
-import { BaseField } from "../types";
+import type { Node } from "../classes";
+import type { BaseField } from "../types";
 
 export default function getUniqueFields(node: Node): { [k: string]: string } {
     const fields = node.uniqueFields;

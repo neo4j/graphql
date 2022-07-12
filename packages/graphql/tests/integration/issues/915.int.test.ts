@@ -17,11 +17,13 @@
  * limitations under the License.
  */
 
-import { Driver, int, isInt } from "neo4j-driver";
+import type { Driver} from "neo4j-driver";
+import { int, isInt } from "neo4j-driver";
 import { generate } from "randomstring";
-import { graphql, GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
+import type { ValueNode } from "graphql";
+import { graphql, GraphQLError, GraphQLScalarType, Kind } from "graphql";
 import { gql } from "apollo-server";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { delay } from "../../../src/utils/utils";
 import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
@@ -77,11 +79,13 @@ const PositiveInt = new GraphQLScalarType({
 
 describe("https://github.com/neo4j/graphql/issues/915", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let databaseName: string;
     let MULTIDB_SUPPORT = true;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         databaseName = generate({ readable: true, charset: "alphabetic" });
 
@@ -109,7 +113,7 @@ describe("https://github.com/neo4j/graphql/issues/915", () => {
         if (MULTIDB_SUPPORT) {
             const cypher = `DROP DATABASE ${databaseName}`;
 
-            const session = driver.session();
+            const session = await neo4j.getSession();
             try {
                 await session.run(cypher);
             } finally {

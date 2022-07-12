@@ -17,18 +17,21 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import { graphql, GraphQLSchema } from "graphql";
-import neo4j from "./neo4j";
+import type { GraphQLSchema } from "graphql";
+import { graphql } from "graphql";
+import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { generateUniqueType } from "../utils/graphql-types";
 
 describe("Advanced Filtering", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
         process.env.NEO4J_GRAPHQL_ENABLE_REGEX = "true";
     });
 
@@ -41,7 +44,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies IN strings", async () => {
             await Promise.all(
                 ["ID", "String"].map(async (type) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
                     const randomType = generateUniqueType("Movie");
 
                     const typeDefs = `
@@ -86,7 +89,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -106,7 +109,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies REGEX", async () => {
             await Promise.all(
                 ["ID", "String"].map(async (type) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const randomType = generateUniqueType("Movie");
 
@@ -142,7 +145,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -162,7 +165,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies NOT string", async () => {
             await Promise.all(
                 ["ID", "String"].map(async (type) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const randomType = generateUniqueType("Movie");
 
@@ -204,7 +207,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -226,7 +229,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies NOT_IN strings", async () => {
             await Promise.all(
                 ["ID", "String"].map(async (type) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const randomType = generateUniqueType("Movie");
 
@@ -274,7 +277,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -296,7 +299,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies CONTAINS string", async () => {
             await Promise.all(
                 ["ID", "String"].map(async (type) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const randomType = generateUniqueType("Movie");
 
@@ -336,7 +339,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -358,7 +361,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies NOT_CONTAINS string", async () => {
             await Promise.all(
                 ["ID", "String"].map(async (type) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const randomType = generateUniqueType("Movie");
 
@@ -401,7 +404,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -423,7 +426,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies STARTS_WITH string", async () => {
             await Promise.all(
                 ["ID", "String"].map(async (type) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const randomType = generateUniqueType("Movie");
 
@@ -463,7 +466,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -487,7 +490,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies NOT_STARTS_WITH string", async () => {
             await Promise.all(
                 ["ID", "String"].map(async (type) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const randomType = generateUniqueType("Movie");
 
@@ -530,7 +533,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -550,7 +553,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies ENDS_WITH string", async () => {
             await Promise.all(
                 ["ID", "String"].map(async (type) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const randomType = generateUniqueType("Movie");
 
@@ -595,7 +598,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -615,7 +618,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies NOT_ENDS_WITH string", async () => {
             await Promise.all(
                 ["ID", "String"].map(async (type) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const randomType = generateUniqueType("Movie");
 
@@ -660,7 +663,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -683,7 +686,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies NOT number", async () => {
             await Promise.all(
                 ["Int", "Float"].map(async (type) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const randomType = generateUniqueType("Movie");
 
@@ -731,7 +734,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -752,7 +755,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies IN numbers", async () => {
             await Promise.all(
                 ["Int", "Float"].map(async (type) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const randomType = generateUniqueType("Movie");
 
@@ -807,7 +810,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -828,7 +831,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies NOT_IN numbers", async () => {
             await Promise.all(
                 ["Int", "Float"].map(async (type) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const randomType = generateUniqueType("Movie");
 
@@ -885,7 +888,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -906,7 +909,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies LT number", async () => {
             await Promise.all(
                 ["Int", "Float"].map(async (type) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const randomType = generateUniqueType("Movie");
 
@@ -948,7 +951,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -969,7 +972,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies LTE number", async () => {
             await Promise.all(
                 ["Int", "Float"].map(async (type) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const randomType = generateUniqueType("Movie");
 
@@ -1011,7 +1014,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -1031,7 +1034,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies GT number", async () => {
             await Promise.all(
                 ["Int", "Float"].map(async (type) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const randomType = generateUniqueType("Movie");
 
@@ -1073,7 +1076,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -1094,7 +1097,7 @@ describe("Advanced Filtering", () => {
         test("should find Movies GTE number", async () => {
             await Promise.all(
                 ["Int", "Float"].map(async (type) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const randomType = generateUniqueType("Movie");
 
@@ -1136,7 +1139,7 @@ describe("Advanced Filtering", () => {
                         const gqlResult = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
                         if (gqlResult.errors) {
@@ -1156,7 +1159,7 @@ describe("Advanced Filtering", () => {
 
     describe("Boolean Filtering", () => {
         test("should find Movies equality equality", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const randomType = generateUniqueType("Movie");
 
@@ -1189,7 +1192,7 @@ describe("Advanced Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (gqlResult.errors) {
@@ -1205,7 +1208,7 @@ describe("Advanced Filtering", () => {
         });
 
         test("should find Movies NOT boolean", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const randomType = generateUniqueType("Movie");
 
@@ -1238,7 +1241,7 @@ describe("Advanced Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (gqlResult.errors) {
@@ -1257,7 +1260,7 @@ describe("Advanced Filtering", () => {
     describe("Relationship/Connection Filtering", () => {
         describe("equality", () => {
             test("should find using relationship equality on node", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const randomType1 = generateUniqueType("Movie");
                 const randomType2 = generateUniqueType("Genre");
@@ -1313,7 +1316,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
                     if (gqlResult.errors) {
@@ -1333,7 +1336,7 @@ describe("Advanced Filtering", () => {
             });
 
             test("should find using equality on node using connection", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
                 const typeDefs = `
                         type Movie {
                             id: ID
@@ -1377,7 +1380,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
                     if (gqlResult.errors) {
@@ -1397,7 +1400,7 @@ describe("Advanced Filtering", () => {
             });
 
             test("should find using equality on relationship using connection", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
                 const typeDefs = `
                         type Movie {
                             id: ID
@@ -1449,7 +1452,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
                     if (gqlResult.errors) {
@@ -1469,7 +1472,7 @@ describe("Advanced Filtering", () => {
             });
 
             test("should find relationship and node property equality using connection", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
                 const typeDefs = `
                         type Movie {
                             id: ID
@@ -1521,7 +1524,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
                     if (gqlResult.errors) {
@@ -1543,7 +1546,7 @@ describe("Advanced Filtering", () => {
 
         describe("NOT", () => {
             test("should find using NOT on relationship", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const randomType1 = generateUniqueType("Movie");
                 const randomType2 = generateUniqueType("Genre");
@@ -1602,7 +1605,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
                     if (gqlResult.errors) {
@@ -1622,7 +1625,7 @@ describe("Advanced Filtering", () => {
             });
 
             test("should find using NOT on connections", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const randomType1 = generateUniqueType("Movie");
                 const randomType2 = generateUniqueType("Genre");
@@ -1677,7 +1680,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
                     if (gqlResult.errors) {
@@ -1697,7 +1700,7 @@ describe("Advanced Filtering", () => {
             });
 
             test("should find using relationship properties and connections", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const randomType1 = generateUniqueType("Movie");
                 const randomType2 = generateUniqueType("Genre");
@@ -1759,7 +1762,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
                     if (gqlResult.errors) {
@@ -1812,7 +1815,7 @@ describe("Advanced Filtering", () => {
             ];
 
             beforeAll(async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
                 await session.run(
                     `
                     CREATE (m1:Movie:${testLabel}) SET m1 = $movies[0]
@@ -1835,7 +1838,7 @@ describe("Advanced Filtering", () => {
             });
 
             afterAll(async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
                 await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
                 await session.close();
             });
@@ -1856,7 +1859,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("ALL"),
-                        contextValue: { driver },
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1875,7 +1878,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("NONE"),
-                        contextValue: { driver },
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1894,7 +1897,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("SINGLE"),
-                        contextValue: { driver },
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1913,7 +1916,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("SOME"),
-                        contextValue: { driver },
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1954,7 +1957,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("ALL"),
-                        contextValue: { driver },
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1973,7 +1976,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("NONE"),
-                        contextValue: { driver },
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -1992,7 +1995,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("SINGLE"),
-                        contextValue: { driver },
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -2011,7 +2014,7 @@ describe("Advanced Filtering", () => {
                     const gqlResult = await graphql({
                         schema,
                         source: generateQuery("SOME"),
-                        contextValue: { driver },
+                        contextValue: neo4j.getContextValues(),
                         variableValues: { movieIds: movies.map(({ id }) => id) },
                     });
 
@@ -2037,7 +2040,7 @@ describe("Advanced Filtering", () => {
         });
 
         test("should test for not null", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const randomType1 = generateUniqueType("Movie");
             const randomType2 = generateUniqueType("Genre");
@@ -2092,7 +2095,7 @@ describe("Advanced Filtering", () => {
                 const nullResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: nullQuery,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (nullResult.errors) {
@@ -2119,7 +2122,7 @@ describe("Advanced Filtering", () => {
                 const notNullResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: notNullQuery,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (notNullResult.errors) {
@@ -2140,7 +2143,7 @@ describe("Advanced Filtering", () => {
 
     describe("NULL Filtering", () => {
         test("should work for existence and non-existence", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const randomType = generateUniqueType("Movie");
 
@@ -2190,7 +2193,7 @@ describe("Advanced Filtering", () => {
                 const nullResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: nullQuery,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (nullResult.errors) {
@@ -2216,7 +2219,7 @@ describe("Advanced Filtering", () => {
                 const notNullResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: notNullQuery,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (notNullResult.errors) {

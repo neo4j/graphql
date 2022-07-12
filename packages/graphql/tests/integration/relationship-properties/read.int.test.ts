@@ -18,15 +18,16 @@
  */
 
 import { offsetToCursor } from "graphql-relay";
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("Relationship properties - read", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let bookmarks: string[];
 
     const typeDefs = gql`
@@ -50,8 +51,9 @@ describe("Relationship properties - read", () => {
     const actorC = `c${generate({ charset: "alphabetic" })}`;
 
     beforeAll(async () => {
-        driver = await neo4j();
-        const session = driver.session();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+        const session = await neo4j.getSession();
 
         try {
             await session.run(
@@ -68,7 +70,7 @@ describe("Relationship properties - read", () => {
     });
 
     afterAll(async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         try {
             await session.run(`MATCH (a:Actor) WHERE a.name = '${actorA}' DETACH DELETE a`);
@@ -83,7 +85,7 @@ describe("Relationship properties - read", () => {
     });
 
     test("Projecting node and relationship properties with no arguments", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -113,7 +115,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
             });
 
             expect(result.errors).toBeFalsy();
@@ -148,7 +150,7 @@ describe("Relationship properties - read", () => {
     });
 
     test("With `where` argument", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -181,7 +183,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
             });
 
             expect(result.errors).toBeFalsy();
@@ -212,7 +214,7 @@ describe("Relationship properties - read", () => {
     });
 
     test("With `sort` argument", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -242,7 +244,7 @@ describe("Relationship properties - read", () => {
             const ascResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: { nameSort: "ASC" },
             });
 
@@ -283,7 +285,7 @@ describe("Relationship properties - read", () => {
             const descResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: { nameSort: "DESC" },
             });
 
@@ -326,7 +328,7 @@ describe("Relationship properties - read", () => {
     });
 
     test("With `where` and `sort` arguments", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -359,7 +361,7 @@ describe("Relationship properties - read", () => {
             const ascResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: { nameSort: "ASC" },
             });
 
@@ -394,7 +396,7 @@ describe("Relationship properties - read", () => {
             const descResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: { nameSort: "DESC" },
             });
 
@@ -431,7 +433,7 @@ describe("Relationship properties - read", () => {
     });
 
     test("Projecting a connection from a relationship with no argument", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -460,7 +462,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
             });
 
             expect(result.errors).toBeFalsy();
@@ -495,7 +497,7 @@ describe("Relationship properties - read", () => {
     });
 
     test("Projecting a connection from a relationship with `where` argument", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -524,7 +526,7 @@ describe("Relationship properties - read", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
             });
 
             expect(result.errors).toBeFalsy();

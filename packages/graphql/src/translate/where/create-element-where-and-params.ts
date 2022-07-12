@@ -17,11 +17,13 @@
  * limitations under the License.
  */
 
-import { GraphQLWhereArg, ConnectionWhereArg, Context } from "../../types";
-import { GraphElement, Node, Relationship } from "../../classes";
+import type { GraphQLWhereArg, ConnectionWhereArg, Context } from "../../types";
+import type { GraphElement, Relationship } from "../../classes";
+import { Node } from "../../classes";
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
 import createWhereClause from "./create-where-clause";
-import { whereRegEx, WhereRegexGroups, getListPredicate, ListPredicate } from "./utils";
+import type { WhereRegexGroups, ListPredicate } from "./utils";
+import { whereRegEx, getListPredicate } from "./utils";
 import { wrapInApocRunFirstColumn } from "../utils/apoc-run";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import { listPredicateToClause } from "./list-predicate-to-clause";

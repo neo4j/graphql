@@ -96,7 +96,93 @@ actorNode.addLabel("MyOtherLabel")
 actorNode.setAlias("pepe");
 
 query.print() // MATCH(pepe:Actor:MyOtherLabel)-[:ACTED_IN]->(m:Movie) ....
+```
 
+## Cypher Builder Domain
+The domain of the CypherBuilder is a subset of [Cypher syntax](https://neo4j.com/docs/cypher-manual/current/syntax/). Only the minimum required abstraction for query composition for the library will be taken into account.
+
+An abstract class **CypherASTNode** will define the required interface to construct and traverse the generated Cypher tree. All classes defined in the following pseudo-grammar will be implemented as subclasses or **CypherASTNode**:
+
+* **Clause**: A statement that can be built into a Cypher query (string + Params) standalone.
+* **Subclause**: A statement that can only be built as part of a top-level statement.
+    * Subclauses are not exposed directly to the user, and are generated through a builder pattern (e.g. `Match().where()`
+* **Variable**: Reference to a Cypher variable.
+* **PropertyRef**: A reference to a property of a variable (e.g. `this.name`)
+* **Operations**: Different kinds of operations are valid as part of a clause, and usually support recursive expressions.
+
+The pseudo-grammar is as follows:
+```yaml
+Clause: <Match> | <Return> | <Call> | <With>
+-- Match: MATCH <Pattern> (<Where> | <Set>)
+-- Return: RETURN <Projection> <OrderBy>?
+-- Call: CALL { <Clause> }
+-- With: WITH <Projection> # May act as a subclause in some cases
+
+
+SubClause: <Where> | OrderBy # Subclauses cannot exists by themselves, and are always linked to a clause
+-- Where: WHERE (<BooleanOp> | <ComparisonOp>)
+-- Set: SET <PropertyRef> = <Expr>
+-- OrderBy: <PropertyRef> (ASC | DESC)?
+
+
+Variable: <Param> | <NodeRef> | <RelationshipRef> | <Literal>
+-- NodeRef: A variable created from a node reference # new CypherBuilder.Node()
+-- RelationshipRef: A variable created from a Relationship reference
+-- Literal: A variable created from a raw literal
+-- Param # param0
+
+PropertyRef: <Variable>.<PropertyPath> # Example: this.name, this.node.potato
+
+Operations: 
+-- BooleanOp: (<BooleanOp> | <ComparisonOp>)? + (AND | OR | NOT) (<BooleanOp> | <ComparisonOp>)
+-- ComparisonOp: <Expr> (IS NOT, =, <, IS NULL, STARTS WITH...) <Expr>
+-- MathOp: <Expr> (+|-|/|*) <Expr>
+
+Pattern
+-- NodePattern: (NodeRef?:Labels? <Map>)
+-- RelationshipPattern: <NodePattern>-[RelationshipRef?:Type? <Map>]-<NodePattern>
+
+Projection: (Expr (as <Variable>)?)+
+
+Function: <name>(Expr)
+
+List: [1,2..] | <ListComprehension> | <PatternComprehension>
+-- ListComprehension: [<Variable> IN <List | Function> WHERE (<BooleanOp> | <ComparisonOp>) | <Expr> ] # [x IN range(0,10) WHERE x % 2 = 0 | x^3 ]
+-- PatternComprehension: [<Pattern> WHERE (<BooleanOp> | <ComparisonOp>) | <Expr>] # [(a)-->(b:Movie) WHERE b.title CONTAINS 'Matrix' | b.released]
+Map # Similar to a javascript object
+
+
+Expr: PropertyRef | Variable | Function | Operations | Literals | List | Map
+```
+### CypherEnvironment
+The environment takes care of variable naming and parameters generation at built time. The environment is **not** exposed to the user.
+
+
+
+## Lifecycle
+Lazy building of the queries allow for a more flexible query composition. Building a query is done in 2 steps:
+1. The AST is built by composing all the different pieces of it, with a root clause statement. All variables and parameters are passed as references (e.g. CypherBuilder.Node)
+2. Call the method `.build` to generate the cypher and paramenters of the full AST. This process is as follows (hidden to the user):
+    1. A new `CypherEnvironment` is created, empty.
+    2. The method `getCypher` from the root node is called, passing the Environment.
+    3. All the children nodes `getCypher` method are called (recursively)
+    4. (per node) All variable references are translated to unique identifiers through the environment
+    5. (per node) The cypher string is generated (`cypher` method). By creating the string of the current node and composing all the children's cyphers
+    6. The cypher string is returned, the environment generates all the parameters object
+
+## Extending with RawCypherQuery
+To support compatibility with plain strings. The class `RawCypherQuery` can be used to create custom AST nodes:
+
+```typescript
+const myQuery=new CypherBuilder.RawCypherQuery((cypherEnv, childrenCypher)=>{
+    // This callback is executed within the build process
+    const node=new CypherBuilder.Node();
+    const query=`MATCH (${cypherEnv.getVariableId(node)} {name: $myCustomParam}) ${childrenCypher}`;
+    
+    return [query, {myCustomParam: "MyName"}];
+
+});
+parentQuery.concat(myQuery).build(); // Generates the full query
 ```
 
 ## Risks & Unknowns
