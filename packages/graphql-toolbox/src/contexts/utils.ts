@@ -21,7 +21,12 @@ import { request } from "graphql-request";
 import type * as neo4j from "neo4j-driver";
 import { Storage } from "../utils/storage";
 import type { LoginPayload, Neo4jDatabase } from "../types";
-import { DEFAULT_DATABASE_NAME, LOCAL_STATE_SELECTED_DATABASE_NAME } from "../constants";
+import {
+    CONNECT_URL_PARAM_NAME,
+    DATABASE_PARAM_NAME,
+    DEFAULT_DATABASE_NAME,
+    LOCAL_STATE_SELECTED_DATABASE_NAME,
+} from "../constants";
 
 const GET_DATABASES_QUERY = `
     query {
@@ -140,19 +145,47 @@ export const getDatabases = async (driver: neo4j.Driver): Promise<Neo4jDatabase[
     }
 };
 
-export const resolveSelectedDatabaseName = (databases: Neo4jDatabase[]): string => {
-    const storedSelectedDatabaseName = Storage.retrieve(LOCAL_STATE_SELECTED_DATABASE_NAME);
-    const isSelectedDBAvailable = databases?.find((database) => database.name === storedSelectedDatabaseName);
-    if (isSelectedDBAvailable && storedSelectedDatabaseName) {
-        return storedSelectedDatabaseName;
-    }
-    const defaultDatabase = databases?.find((database) => database.default) || undefined;
-    return defaultDatabase?.name || DEFAULT_DATABASE_NAME;
-};
-
-export const getConnectUrlSearchParam = (): string | null => {
+export const getUrlSearchParam = (paramName: string): string | null => {
     const queryString = window.location.search;
     if (!queryString) return null;
     const urlParams = new URLSearchParams(queryString);
-    return urlParams.get("connectURL");
+    return urlParams.get(paramName);
+};
+
+export const getConnectUrlSearchParamValue = (): {
+    url: string;
+    username: string | null;
+    protocol: string;
+} | null => {
+    const dbmsParam = getUrlSearchParam(CONNECT_URL_PARAM_NAME as string);
+    if (!dbmsParam) return null;
+
+    const [protocol, host] = dbmsParam.split(/:\/\//);
+    if (!protocol || !host) return null;
+
+    const [username, href] = host.split(/@/);
+    if (!username || !href) {
+        return { protocol, username: null, url: `${protocol}://${host}` };
+    }
+    return { protocol, username, url: `${protocol}://${href}` };
+};
+
+export const resolveSelectedDatabaseName = (databases: Neo4jDatabase[]): string => {
+    let usedDatabaseName: string | null = null;
+
+    const searchParam = getUrlSearchParam(DATABASE_PARAM_NAME as string);
+    if (searchParam) {
+        Storage.store(LOCAL_STATE_SELECTED_DATABASE_NAME, searchParam);
+        usedDatabaseName = searchParam;
+    } else {
+        usedDatabaseName = Storage.retrieve(LOCAL_STATE_SELECTED_DATABASE_NAME);
+    }
+
+    const isSelectedDatabaseAvailable = databases?.find((database) => database.name === usedDatabaseName);
+    if (isSelectedDatabaseAvailable && usedDatabaseName) {
+        return usedDatabaseName;
+    }
+
+    const defaultDatabase = databases?.find((database) => database.default) || undefined;
+    return defaultDatabase?.name || DEFAULT_DATABASE_NAME;
 };
