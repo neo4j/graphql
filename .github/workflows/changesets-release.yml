@@ -108,7 +108,8 @@ jobs:
       - package-tests
       - integration-tests-on-prem
       - toolbox-tests
-      - aura-tests
+      - aura-free-tests
+      - aura-professional-tests
 
     runs-on: ubuntu-latest
 
