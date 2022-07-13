@@ -2,6 +2,16 @@ name: "Aura tests"
 
 on:
   workflow_call:
+    inputs:
+      BRANCH:
+        required: false
+        type: string
+        description: "Which branch to run tests against"
+      CONTINUE_ON_ERROR:
+        required: false
+        type: boolean
+        default: false
+        description: "Should the workflow execution continue if the tests against Aura fail"
     secrets:
       URI:
         required: true
@@ -17,6 +27,8 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.BRANCH || github.ref }}
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
@@ -37,7 +49,7 @@ jobs:
     needs:
       - teardown
 
-    continue-on-error: true
+    continue-on-error: ${{ inputs.CONTINUE_ON_ERROR }}
 
     strategy:
       max-parallel: 1

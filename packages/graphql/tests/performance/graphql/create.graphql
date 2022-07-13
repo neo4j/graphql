@@ -1,0 +1,7 @@
+mutation SimpleMutation {
+    createMovies(input: [{ id: 1, title: "The Matrix" }]) {
+        movies {
+            title
+        }
+    }
+}
