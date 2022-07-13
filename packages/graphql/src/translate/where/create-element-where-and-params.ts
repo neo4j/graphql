@@ -196,9 +196,11 @@ function createElementWhereAndParams({
                         listPredicates: [currentListPredicate, ...(listPredicates || [])],
                     });
 
+                    // => This connectionWhere here needs to be genresConnection_SOME. I think..
                     resultArr.push(connectionWhere[0]);
                     resultArr.push(")"); // close NONE/ANY
 
+                    // => This expectMultipleValues needs to be 'false' for issue 1685 to work.
                     const expectMultipleValues = listPredicates?.length ? !listPredicates.includes("single") : true;
 
                     const apocRunFirstColumn = wrapInApocRunFirstColumn(
@@ -212,8 +214,7 @@ function createElementWhereAndParams({
 
                     res.clauses.push(apocRunFirstColumn);
 
-                    const paramFieldName = operator ? `${fieldName}_${operator}` : fieldName;
-                    res.params = { ...res.params, [paramFieldName]: connectionWhere[1] };
+                    res.params = { ...res.params, [fieldName]: connectionWhere[1] };
                 });
 
                 return res;
