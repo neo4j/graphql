@@ -27,7 +27,7 @@ import { createComparisonOperation } from "./operations/create-comparison-operat
 import { createAggregateOperation } from "./operations/create-aggregate-operation";
 // line disable for recursive function
 // eslint-disable-next-line import/no-cycle
-import { createRelationOperation } from "./operations/create-relation-operation";
+import { createRelationshipOperation } from "./operations/create-relationship-operation";
 import { createConnectionOperation } from "./operations/create-connection-operation";
 import { createGlobalNodeOperation } from "./operations/create-global-node-operation";
 
@@ -53,7 +53,7 @@ export function createCypherWhereParams({
     return CypherBuilder.and(...mappedProperties);
 }
 
-export function mapPropertiesToOperators({
+function mapPropertiesToOperators({
     whereInput,
     node,
     targetElement,
@@ -69,28 +69,34 @@ export function mapPropertiesToOperators({
     return filterTruthy(
         whereFields.map(([key, value]): CypherBuilder.WhereParams | undefined => {
             if (key === "OR") {
-                const nested = value
-                    .map((v) => {
-                        return mapPropertiesToOperators({ whereInput: v, node, targetElement, context });
-                    })
-                    .flat();
-
+                const nested = mapBooleanPropertiesToOperators({ value, node, targetElement, context });
                 return CypherBuilder.or(...nested);
             }
             if (key === "AND") {
-                const nested = value
-                    .map((v) => {
-                        return mapPropertiesToOperators({ whereInput: v, node, targetElement, context });
-                    })
-                    .flat();
-
+                const nested = mapBooleanPropertiesToOperators({ value, node, targetElement, context });
                 return CypherBuilder.and(...nested);
             }
-            const fieldOperation = createComparisonOnProperty({ key, value, node, targetElement, context });
-
-            return fieldOperation;
+            return createComparisonOnProperty({ key, value, node, targetElement, context });
         })
     );
+}
+
+function mapBooleanPropertiesToOperators({
+    value,
+    node,
+    targetElement,
+    context,
+}: {
+    value: Array<any>;
+    node: Node;
+    targetElement: CypherBuilder.Node | CypherBuilder.Variable;
+    context: Context;
+}): Array<CypherBuilder.ComparisonOp | CypherBuilder.BooleanOp | CypherBuilder.RawCypher | CypherBuilder.Exists> {
+    return value
+        .map((v) => {
+            return mapPropertiesToOperators({ whereInput: v, node, targetElement, context });
+        })
+        .flat();
 }
 
 function createComparisonOnProperty({
@@ -149,8 +155,7 @@ function createComparisonOnProperty({
     }
 
     if (relationField) {
-        // Relation
-        return createRelationOperation({
+        return createRelationshipOperation({
             relationField,
             context,
             parentNode: targetElement as CypherBuilder.Node,
