@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Param } from "./CypherBuilder";
+import { Param } from "./variables/Param";
 
 /** Adds spaces to the left of the string, returns empty string is variable is undefined or empty string */
 export function padLeft(str: string | undefined): string {

@@ -18,7 +18,7 @@
  */
 
 import { isString } from "graphql-compose";
-import { RawVariable, Variable } from "../CypherBuilder";
+import { RawVariable, Variable } from "../variables/Variable";
 import type { CypherEnvironment } from "../Environment";
 import { Clause } from "./Clause";
 
