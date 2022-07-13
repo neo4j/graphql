@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "../Environment";
-import { Clause } from "./Clause";
+import type { CypherEnvironment } from "../../Environment";
+import { Clause } from "../Clause";
 
 class ConcatClause extends Clause {
     constructor(private children: Clause[], private separator: string) {

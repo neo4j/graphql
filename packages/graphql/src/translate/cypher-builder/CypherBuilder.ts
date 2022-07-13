@@ -39,7 +39,7 @@ export { coalesce, point, distance, cypherDatetime as datetime, labels } from ".
 
 export { CypherResult } from "./types";
 
-export { concat } from "./clauses/concat";
+export { concat } from "./clauses/utils/concat";
 
 export type { PropertyRef } from "./PropertyRef";
 export type { Clause } from "./clauses/Clause";
