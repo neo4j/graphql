@@ -120,19 +120,7 @@ function createConnectionWhereAndParams({
 
                 if (v?._on?.[node.name]) {
                     const onTypeNodeWhere = createElementWhereAndParams({
-                        whereInput: {
-                            ...Object.entries(v).reduce((args, [key, value]) => {
-                                if (key !== "_on") {
-                                    return { ...args, [key]: value };
-                                }
-
-                                if (Object.prototype.hasOwnProperty.call(value, node.name)) {
-                                    return { ...args, ...(value as any)[node.name] };
-                                }
-
-                                return args;
-                            }, {}),
-                        },
+                        whereInput: v._on[node.name],
                         element: node,
                         varName: nodeVariable,
                         context,
