@@ -63,22 +63,18 @@ describe("https://github.com/neo4j/graphql/issues/1687", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Genre)
-            WHERE size([(this)<-[this_moviesConnection_ALL_Movie_GenreMoviesRelationship:HAS_GENRE]-(this_moviesConnection_ALL_Movie:Movie) WHERE NOT this_moviesConnection_ALL_Movie.title = $this_genres.where.moviesConnection_ALL.node._on.Movie.title | 1]) = 0
+            "MATCH (this:\`Genre\`)
+            WHERE size([(this1:\`Movie\`)-[this0:\`HAS_GENRE\`]->(this) WHERE NOT this1.title = $nestedParam0.node._on.Movie.title | 1]) = 0
             RETURN this { .name } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_genres\\": {
-                    \\"where\\": {
-                        \\"moviesConnection_ALL\\": {
-                            \\"node\\": {
-                                \\"_on\\": {
-                                    \\"Movie\\": {
-                                        \\"title\\": \\"Matrix\\"
-                                    }
-                                }
+                \\"nestedParam0\\": {
+                    \\"node\\": {
+                        \\"_on\\": {
+                            \\"Movie\\": {
+                                \\"title\\": \\"Matrix\\"
                             }
                         }
                     }

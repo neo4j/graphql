@@ -46,7 +46,9 @@ export function createConnectionOperation({
     }
 
     const operations = Object.entries(nodeEntries).map((entry) => {
-        const refNode = context.nodes.find((x) => x.name === entry[0]) as Node;
+        const refNode = context.nodes.find(
+            (x) => x.name === entry[0] || x.interfaces.some((i) => i.name.value === entry[0])
+        ) as Node;
 
         const relationField = connectionField.relationship;
 

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { PointField } from "src/types";
+import type { PointField } from "../../../types";
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 
 /** Translates a point comparison operation */
