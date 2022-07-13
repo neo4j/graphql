@@ -121,7 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
             schema,
             source: query,
             variableValues: {},
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();
