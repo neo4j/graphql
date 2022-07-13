@@ -159,7 +159,7 @@ describe("@auth allow on specific interface implementation", () => {
             MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
             CALL apoc.util.validate(NOT (exists((this_Post)<-[:HAS_CONTENT]-(:User)) AND any(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WHERE this_Post.id = $this_content.args.where.id
-            RETURN { __resolveType: \\"Post\\", comments: [ (this_Post)-[:HAS_COMMENT]->(this_Post_comments:Comment)  WHERE this_Post_comments.id = $this_Post_comments_id | this_Post_comments { .content } ] } AS content
+            RETURN { __resolveType: \\"Post\\", comments: [ (this_Post)-[:HAS_COMMENT]->(this_Post_comments:Comment)  WHERE this_Post_comments.id = $this_Post_comments_param0 | this_Post_comments { .content } ] } AS content
             }
             RETURN collect(content) AS content
             }
@@ -170,7 +170,7 @@ describe("@auth allow on specific interface implementation", () => {
             "{
                 \\"param0\\": \\"1\\",
                 \\"this_Post_auth_allow0_creator_id\\": \\"id-01\\",
-                \\"this_Post_comments_id\\": \\"1\\",
+                \\"this_Post_comments_param0\\": \\"1\\",
                 \\"this_content\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -553,7 +553,7 @@ describe("@auth allow on specific interface implementation", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Comment)
-            	WHERE this_connect_content0_node.id = $this_connect_content0_node_id
+            	WHERE this_connect_content0_node.id = $this_connect_content0_node_param0
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this_connect_content0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
@@ -563,7 +563,7 @@ describe("@auth allow on specific interface implementation", () => {
             UNION
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
-            	WHERE this_connect_content0_node.id = $this_connect_content0_node_id
+            	WHERE this_connect_content0_node.id = $this_connect_content0_node_param0
             	WITH this, this_connect_content0_node
             	CALL apoc.util.validate(NOT (exists((this_connect_content0_node)<-[:HAS_CONTENT]-(:User)) AND any(creator IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_content0_nodePost0_allow_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
@@ -579,7 +579,7 @@ describe("@auth allow on specific interface implementation", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"user-id\\",
-                \\"this_connect_content0_node_id\\": \\"post-id\\",
+                \\"this_connect_content0_node_param0\\": \\"post-id\\",
                 \\"this_connect_content0_nodePost0_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"resolvedCallbacks\\": {}
             }"

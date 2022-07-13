@@ -28,14 +28,54 @@ import type { WhereRegexGroups } from "./utils";
 import { getListPredicate, whereRegEx } from "./utils";
 import { listPredicateToClause } from "./list-predicate-to-clause";
 import { listPredicateToSizeFunction } from "./list-predicate-to-size-function";
+import { createCypherWhereParams } from "./create-cypher-where-params";
+import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 
 interface Res {
     clauses: string[];
     params: any;
 }
 
+// TODO: change this into using createCypherWhereParams
+/** Wraps createCypherWhereParams with the old interface for compatibility with old way of composing cypher */
+export default function createWhereAndParams({
+    whereInput,
+    varName,
+    chainStr,
+    node,
+    context,
+    recursing,
+}: {
+    node: Node;
+    context: Context;
+    whereInput: GraphQLWhereArg;
+    varName: string;
+    chainStr?: string;
+    recursing?: boolean;
+}): [string, any] {
+    const nodeRef = new CypherBuilder.NamedNode(varName);
+
+    const whereParams = createCypherWhereParams({
+        node,
+        context,
+        whereInput,
+        targetElement: nodeRef,
+    });
+
+    const whereCypher = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+        const cypher = whereParams?.getCypher(env) || "";
+
+        return [cypher, {}];
+    });
+
+    const result = whereCypher.build(`${chainStr || ""}${varName}_`);
+    const whereStr = `${!recursing ? "WHERE " : ""}`;
+
+    return [`${whereStr}${result.cypher}`, result.params];
+}
+
 /** TODO: port all uses of this into create-cypher-where-params */
-function createWhereAndParams({
+function createWhereAndParamsOld({
     whereInput,
     varName,
     chainStr,
@@ -275,5 +315,3 @@ function createWhereAndParams({
 
     return [where, params];
 }
-
-export default createWhereAndParams;

@@ -353,7 +353,7 @@ describe("Label in Node directive", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:\`Person\`)
-            	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
+            	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
@@ -367,7 +367,7 @@ describe("Label in Node directive", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"this_connect_actors0_node_name\\": \\"Daniel\\",
+                \\"this_connect_actors0_node_param0\\": \\"Daniel\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

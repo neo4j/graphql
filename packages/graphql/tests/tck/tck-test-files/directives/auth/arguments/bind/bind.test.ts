@@ -337,7 +337,7 @@ describe("Cypher Auth Allow", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_creator0_node:User)
-            	WHERE this_connect_creator0_node.id = $this_connect_creator0_node_id
+            	WHERE this_connect_creator0_node.id = $this_connect_creator0_node_param0
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this_connect_creator0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)<-[:HAS_POST]-(this_connect_creator0_node)
@@ -361,7 +361,7 @@ describe("Cypher Auth Allow", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"post-id\\",
-                \\"this_connect_creator0_node_id\\": \\"user-id\\",
+                \\"this_connect_creator0_node_param0\\": \\"user-id\\",
                 \\"this_connect_creator0_nodePost0_bind_auth_bind0_creator_id\\": \\"id-01\\",
                 \\"this_connect_creator0_nodeUser1_bind_auth_bind0_id\\": \\"id-01\\",
                 \\"resolvedCallbacks\\": {}

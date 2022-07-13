@@ -101,7 +101,7 @@ describe("Interface Relationships - Create connect", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect0_node:Movie)
-            	WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_title_STARTS_WITH
+            	WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_param0
             	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this0_actedIn_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
@@ -112,7 +112,7 @@ describe("Interface Relationships - Create connect", () => {
             UNION
             	WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect0_node:Series)
-            	WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_title_STARTS_WITH
+            	WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_param0
             	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this0_actedIn_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
@@ -144,7 +144,7 @@ describe("Interface Relationships - Create connect", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_name\\": \\"Actor Name\\",
-                \\"this0_actedIn_connect0_node_title_STARTS_WITH\\": \\"The \\",
+                \\"this0_actedIn_connect0_node_param0\\": \\"The \\",
                 \\"this0_actedIn_connect0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0

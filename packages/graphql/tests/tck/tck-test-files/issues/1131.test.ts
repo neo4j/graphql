@@ -111,7 +111,7 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
                 MERGE (this)-[this_isInPublication1_connectOrCreate_this1:\`isInPublication\`]->(this_isInPublication1_connectOrCreate_this0)
                 RETURN COUNT(*) AS _
             }
-            RETURN collect(DISTINCT this { iri: this.uri, .prefLabel, isInPublication: [ (this)-[:isInPublication]->(this_isInPublication:\`Concept\`:\`Resource\`)  WHERE this_isInPublication.uri IN $this_isInPublication_iri_IN | this_isInPublication { iri: this_isInPublication.uri, .prefLabel } ] }) AS data"
+            RETURN collect(DISTINCT this { iri: this.uri, .prefLabel, isInPublication: [ (this)-[:isInPublication]->(this_isInPublication:\`Concept\`:\`Resource\`)  WHERE this_isInPublication.uri IN $this_isInPublication_param0 | this_isInPublication { iri: this_isInPublication.uri, .prefLabel } ] }) AS data"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -129,7 +129,7 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
                 \\"this_isInPublication1_connectOrCreate_param2\\": [
                     \\"pub\\"
                 ],
-                \\"this_isInPublication_iri_IN\\": [
+                \\"this_isInPublication_param0\\": [
                     \\"new-f\\",
                     \\"new-e\\"
                 ],

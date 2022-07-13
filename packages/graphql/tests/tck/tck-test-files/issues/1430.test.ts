@@ -138,7 +138,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_interface0_node:ChildOne)
-            	WHERE this_connect_interface0_node.name = $this_connect_interface0_node_name
+            	WHERE this_connect_interface0_node.name = $this_connect_interface0_node_param0
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this_connect_interface0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface0_node)
@@ -148,7 +148,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             UNION
             	WITH this
             	OPTIONAL MATCH (this_connect_interface0_node:ChildTwo)
-            	WHERE this_connect_interface0_node.name = $this_connect_interface0_node_name
+            	WHERE this_connect_interface0_node.name = $this_connect_interface0_node_param0
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this_connect_interface0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface0_node)
@@ -172,7 +172,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"TestId\\",
-                \\"this_connect_interface0_node_name\\": \\"childone name connect\\",
+                \\"this_connect_interface0_node_param0\\": \\"childone name connect\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

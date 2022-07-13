@@ -308,7 +308,7 @@ describe("Cypher Auth Allow", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Comment)
-            	WHERE this_connect_content0_node.id = $this_connect_content0_node_id
+            	WHERE this_connect_content0_node.id = $this_connect_content0_node_param0
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this_connect_content0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
@@ -320,7 +320,7 @@ describe("Cypher Auth Allow", () => {
             UNION
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
-            	WHERE this_connect_content0_node.id = $this_connect_content0_node_id
+            	WHERE this_connect_content0_node.id = $this_connect_content0_node_param0
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this_connect_content0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
@@ -336,7 +336,7 @@ describe("Cypher Auth Allow", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"user-id\\",
-                \\"this_connect_content0_node_id\\": \\"content-id\\",
+                \\"this_connect_content0_node_param0\\": \\"content-id\\",
                 \\"this_connect_content0_nodeUser0_bind_auth_bind0_id\\": \\"id-01\\",
                 \\"this_connect_content0_nodeComment1_bind_auth_bind0_creator_id\\": \\"id-01\\",
                 \\"this_connect_content0_nodePost1_bind_auth_bind0_creator_id\\": \\"id-01\\",

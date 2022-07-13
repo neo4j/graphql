@@ -69,14 +69,14 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Team\`)
-            RETURN this { accepted: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:OWNS_RISK]->(n:Risk) WHERE $this_accepted_n_mitigationState_INCLUDES IN n.mitigationState    RETURN COUNT(n)\\", { this_accepted_n_mitigationState_INCLUDES: $this_accepted_n_mitigationState_INCLUDES, this: this })) }, identified: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:OWNS_RISK]->(n:Risk) WHERE $this_identified_n_mitigationState_INCLUDES IN n.mitigationState    RETURN COUNT(n)\\", { this_identified_n_mitigationState_INCLUDES: $this_identified_n_mitigationState_INCLUDES, this: this })) } } as this"
+            RETURN this { accepted: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:OWNS_RISK]->(n:Risk) WHERE $this_accepted_nn_param0 IN n.mitigationState    RETURN COUNT(n)\\", { this_accepted_nn_param0: $this_accepted_nn_param0, this: this })) }, identified: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:OWNS_RISK]->(n:Risk) WHERE $this_identified_nn_param0 IN n.mitigationState    RETURN COUNT(n)\\", { this_identified_nn_param0: $this_identified_nn_param0, this: this })) } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                    "{
-                        \\"this_accepted_n_mitigationState_INCLUDES\\": \\"Accepted\\",
-                        \\"this_identified_n_mitigationState_INCLUDES\\": \\"Identified\\"
-                    }"
-                `);
+            "{
+                \\"this_accepted_nn_param0\\": \\"Accepted\\",
+                \\"this_identified_nn_param0\\": \\"Identified\\"
+            }"
+        `);
     });
 });

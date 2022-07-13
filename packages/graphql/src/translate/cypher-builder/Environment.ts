@@ -76,15 +76,4 @@ export class CypherEnvironment {
         this.params.push(param);
         return paramId;
     }
-
-    // private addVariable(variable: CypherVariable): string {
-    //     const varIndex = this.variables.size;
-    //     if (variable.id) {
-    //         this.variables.set(variable, variable.id);
-    //         return variable.id;
-    //     }
-    //     const variableId = `${this.prefix}${variable.prefix}${varIndex}`;
-    //     this.variables.set(variable, variableId);
-    //     return variableId;
-    // }
 }

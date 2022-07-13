@@ -923,7 +923,7 @@ describe("integration/rfs/003", () => {
                         CALL {
                         	WITH this0
                         	OPTIONAL MATCH (this0_director_connect0_node:Director)
-                        	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_id
+                        	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_param0
                         	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
                         		FOREACH(_ IN CASE this0_director_connect0_node WHEN NULL THEN [] ELSE [1] END |
                         			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
@@ -947,7 +947,7 @@ describe("integration/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"this0_id\\": \\"movieId-4\\",
-                            \\"this0_director_connect0_node_id\\": \\"directorId-4\\",
+                            \\"this0_director_connect0_node_param0\\": \\"directorId-4\\",
                             \\"resolvedCallbacks\\": {}
                         }"
                     `);
@@ -992,7 +992,7 @@ describe("integration/rfs/003", () => {
                         CALL {
                         	WITH this0
                         	OPTIONAL MATCH (this0_director_connect0_node:Director)
-                        	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_id
+                        	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_param0
                         	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
                         		FOREACH(_ IN CASE this0_director_connect0_node WHEN NULL THEN [] ELSE [1] END |
                         			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
@@ -1016,7 +1016,7 @@ describe("integration/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"this0_id\\": \\"movieId-4\\",
-                            \\"this0_director_connect0_node_id\\": \\"directorId-4\\",
+                            \\"this0_director_connect0_node_param0\\": \\"directorId-4\\",
                             \\"resolvedCallbacks\\": {}
                         }"
                     `);
@@ -1079,7 +1079,7 @@ describe("integration/rfs/003", () => {
                             CALL {
                             	WITH this0
                             	OPTIONAL MATCH (this0_director_connect0_node:Director)
-                            	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_id
+                            	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_param0
                             	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
                             		FOREACH(_ IN CASE this0_director_connect0_node WHEN NULL THEN [] ELSE [1] END |
                             			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
@@ -1089,7 +1089,7 @@ describe("integration/rfs/003", () => {
                             CALL {
                             	WITH this0, this0_director_connect0_node
                             	OPTIONAL MATCH (this0_director_connect0_node_address0_node:Address)
-                            	WHERE this0_director_connect0_node_address0_node.street = $this0_director_connect0_node_address0_node_street
+                            	WHERE this0_director_connect0_node_address0_node.street = $this0_director_connect0_node_address0_node_param0
                             	FOREACH(_ IN CASE this0_director_connect0_node WHEN NULL THEN [] ELSE [1] END |
                             		FOREACH(_ IN CASE this0_director_connect0_node_address0_node WHEN NULL THEN [] ELSE [1] END |
                             			MERGE (this0_director_connect0_node)-[:HAS_ADDRESS]->(this0_director_connect0_node_address0_node)
@@ -1123,8 +1123,8 @@ describe("integration/rfs/003", () => {
                         expect(formatParams(result.params)).toMatchInlineSnapshot(`
                             "{
                                 \\"this0_id\\": \\"movieId-4\\",
-                                \\"this0_director_connect0_node_id\\": \\"directorId-4\\",
-                                \\"this0_director_connect0_node_address0_node_street\\": \\"some-street\\",
+                                \\"this0_director_connect0_node_param0\\": \\"directorId-4\\",
+                                \\"this0_director_connect0_node_address0_node_param0\\": \\"some-street\\",
                                 \\"resolvedCallbacks\\": {}
                             }"
                         `);
@@ -1261,7 +1261,7 @@ describe("integration/rfs/003", () => {
                         CALL {
                         	WITH this
                         	OPTIONAL MATCH (this_connect_director0_node:Director)
-                        	WHERE this_connect_director0_node.id = $this_connect_director0_node_id
+                        	WHERE this_connect_director0_node.id = $this_connect_director0_node_param0
                         	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
                         		FOREACH(_ IN CASE this_connect_director0_node WHEN NULL THEN [] ELSE [1] END |
                         			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
@@ -1293,7 +1293,7 @@ describe("integration/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"param0\\": \\"movieId-6\\",
-                            \\"this_connect_director0_node_id\\": \\"directorId2-6\\",
+                            \\"this_connect_director0_node_param0\\": \\"directorId2-6\\",
                             \\"updateMovies\\": {
                                 \\"args\\": {
                                     \\"disconnect\\": {
@@ -1362,7 +1362,7 @@ describe("integration/rfs/003", () => {
                         CALL {
                         	WITH this
                         	OPTIONAL MATCH (this_connect_director0_node:Director)
-                        	WHERE this_connect_director0_node.id = $this_connect_director0_node_id
+                        	WHERE this_connect_director0_node.id = $this_connect_director0_node_param0
                         	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
                         		FOREACH(_ IN CASE this_connect_director0_node WHEN NULL THEN [] ELSE [1] END |
                         			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
@@ -1394,7 +1394,7 @@ describe("integration/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"param0\\": \\"movieId-6\\",
-                            \\"this_connect_director0_node_id\\": \\"directorId2-6\\",
+                            \\"this_connect_director0_node_param0\\": \\"directorId2-6\\",
                             \\"updateMovies\\": {
                                 \\"args\\": {
                                     \\"disconnect\\": {

@@ -155,14 +155,14 @@ describe("Cypher relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
-            RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor)  WHERE this_topActor.name = $this_topActor_name | this_topActor { .name, movies: [ (this_topActor)-[:ACTED_IN]->(this_topActor_movies:Movie)  WHERE this_topActor_movies.title = $this_topActor_movies_title | this_topActor_movies { .title } ] } ]) } as this"
+            RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor)  WHERE this_topActor.name = $this_topActor_param0 | this_topActor { .name, movies: [ (this_topActor)-[:ACTED_IN]->(this_topActor_movies:Movie)  WHERE this_topActor_movies.title = $this_topActor_movies_param0 | this_topActor_movies { .title } ] } ]) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some title\\",
-                \\"this_topActor_movies_title\\": \\"top actor movie\\",
-                \\"this_topActor_name\\": \\"top actor\\"
+                \\"this_topActor_movies_param0\\": \\"top actor movie\\",
+                \\"this_topActor_param0\\": \\"top actor\\"
             }"
         `);
     });

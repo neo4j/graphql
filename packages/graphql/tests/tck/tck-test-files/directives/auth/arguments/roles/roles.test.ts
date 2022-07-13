@@ -479,7 +479,7 @@ describe("Cypher Auth Roles", () => {
             CALL {
             	WITH this, this_post0
             	OPTIONAL MATCH (this_post0_creator0_connect0_node:User)
-            	WHERE this_post0_creator0_connect0_node.id = $this_post0_creator0_connect0_node_id
+            	WHERE this_post0_creator0_connect0_node.id = $this_post0_creator0_connect0_node_param0
             	WITH this, this_post0, this_post0_creator0_connect0_node
             	CALL apoc.util.validate(NOT (any(r IN [\\\\\\"admin\\\\\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND any(r IN [\\\\\\"super-admin\\\\\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
             	FOREACH(_ IN CASE this_post0 WHEN NULL THEN [] ELSE [1] END |
@@ -498,7 +498,7 @@ describe("Cypher Auth Roles", () => {
             	RETURN c AS this_post0_creator_User_unique_ignored
             }
             RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateComments: $updateComments, this_post0:this_post0, auth:$auth,this_post0_creator0_connect0_node_id:$this_post0_creator0_connect0_node_id})
+            \\", \\"\\", {this:this, updateComments: $updateComments, this_post0:this_post0, auth:$auth,this_post0_creator0_connect0_node_param0:$this_post0_creator0_connect0_node_param0})
             YIELD value AS _
             WITH this
             CALL {
@@ -513,7 +513,7 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_post0_creator0_connect0_node_id\\": \\"user-id\\",
+                \\"this_post0_creator0_connect0_node_param0\\": \\"user-id\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
