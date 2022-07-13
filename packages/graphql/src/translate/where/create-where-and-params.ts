@@ -191,7 +191,9 @@ function createWhereAndParams({
             }
 
             Object.entries(nodeEntries).forEach((entry) => {
-                const refNode = context.nodes.find((x) => x.name === entry[0]) as Node;
+                const refNode = context.nodes.find(
+                    (x) => x.name === entry[0] || x.interfaces.some((i) => i.name.value === entry[0])
+                ) as Node;
                 const relationship = context.relationships.find(
                     (x) => x.name === connectionField.relationshipTypeName
                 ) as Relationship;
@@ -201,7 +203,6 @@ function createWhereAndParams({
                 const inStr = connectionField.relationship.direction === "IN" ? "<-" : "-";
                 const outStr = connectionField.relationship.direction === "OUT" ? "->" : "-";
                 const labels = refNode.getLabelString(context);
-                const collectedMap = `${thisParam}_map`;
 
                 const matchPattern = `(${varName})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${thisParam}${labels})`;
 
