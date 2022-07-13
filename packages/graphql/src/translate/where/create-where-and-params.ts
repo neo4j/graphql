@@ -34,6 +34,7 @@ interface Res {
     params: any;
 }
 
+/** TODO: port all uses of this into create-cypher-where-params */
 function createWhereAndParams({
     whereInput,
     varName,

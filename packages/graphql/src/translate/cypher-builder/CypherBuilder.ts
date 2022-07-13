@@ -35,7 +35,7 @@ export {
 
 export { plus, minus } from "./operations/math";
 
-export { coalesce, point, distance, cypherDatetime as datetime } from "./functions/CypherFunction";
+export { coalesce, point, distance, cypherDatetime as datetime, labels } from "./functions/CypherFunction";
 
 export { CypherResult } from "./types";
 
