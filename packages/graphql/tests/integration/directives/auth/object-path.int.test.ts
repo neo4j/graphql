@@ -18,19 +18,21 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin, Neo4jGraphQLAuthJWKSPlugin } from "@neo4j/graphql-plugin-auth";
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("auth/object-path", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     const secret = "secret";
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -38,7 +40,7 @@ describe("auth/object-path", () => {
     });
 
     test("should use object path with allow", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type User {
@@ -87,7 +89,7 @@ describe("auth/object-path", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -100,7 +102,7 @@ describe("auth/object-path", () => {
     });
 
     test("should use $context value plucking on auth", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type User {
@@ -150,7 +152,7 @@ describe("auth/object-path", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req, userId },
+                contextValue: neo4j.getContextValues({ req, userId }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -163,7 +165,7 @@ describe("auth/object-path", () => {
     });
 
     test("should use object path with roles", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type User {
@@ -207,7 +209,7 @@ describe("auth/object-path", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -220,7 +222,7 @@ describe("auth/object-path", () => {
     });
 
     test("should use object path with JWT endpoint", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
         const typeDefs = `
             type User {
@@ -263,7 +265,7 @@ describe("auth/object-path", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
             });
 
             // Since we don't have a valid JWKS Endpoint, we will always get an error validating our JWKS

@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { PointField, PrimitiveField } from "../../types";
-import { WhereOperator } from "./types";
+import type { PointField, PrimitiveField } from "../../types";
+import type { WhereOperator } from "./types";
 import { comparisonMap } from "./utils";
 
 export default function createWhereClause({

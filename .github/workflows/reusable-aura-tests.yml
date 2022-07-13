@@ -1,0 +1,68 @@
+name: "Aura tests"
+
+on:
+  workflow_call:
+    secrets:
+      URI:
+        required: true
+        description: "The URI locating the AuraDB instance to be tested against"
+      PASSWORD:
+        required: true
+        description: "The password needed to access the AuraDB instance"
+
+jobs:
+  teardown:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Install ts-node and typescript
+        run: npm install -g ts-node typescript
+      - name: Delete all data in instance
+        run: ts-node tests/integration/teardown.ts
+        working-directory: packages/graphql
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: ${{ secrets.PASSWORD }}
+          NEO_URL: ${{ secrets.URI }}
+
+  test:
+    needs:
+      - teardown
+
+    continue-on-error: true
+
+    strategy:
+      max-parallel: 1
+      matrix:
+        package:
+          - graphql
+          - introspector
+          - ogm
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Run @neo4j/graphql integration tests
+        run: |
+          yarn test:int
+        working-directory: packages/${{ matrix.package }}
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: ${{ secrets.PASSWORD }}
+          NEO_URL: ${{ secrets.URI }}

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import amqp from "amqplib";
+import type amqp from "amqplib";
 import { Neo4jGraphQLSubscriptionsAMQPPlugin } from "../../../src";
 
 export default function createPlugin(connection: amqp.Options.Connect): Neo4jGraphQLSubscriptionsAMQPPlugin {

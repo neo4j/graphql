@@ -17,18 +17,20 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("https://github.com/neo4j/graphql/issues/387", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -36,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
     });
 
     test("should return custom scalars from custom Cypher fields", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const name = generate({
             charset: "alphabetic",
@@ -83,7 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver },
+                contextValue: neo4j.getContextValues(),
             });
 
             expect(result.errors).toBeFalsy();
@@ -138,7 +140,7 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
         const result = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(result.errors).toBeFalsy();

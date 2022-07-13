@@ -17,17 +17,19 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("360", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -35,7 +37,7 @@ describe("360", () => {
     });
 
     test("should return all nodes when AND is used and members are optional", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const type = generateUniqueType("Event");
 
@@ -73,7 +75,7 @@ describe("360", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -84,7 +86,7 @@ describe("360", () => {
     });
 
     test("should return all nodes when OR is used and members are optional", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const type = generateUniqueType("Event");
 
@@ -122,7 +124,7 @@ describe("360", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeUndefined();
@@ -133,7 +135,7 @@ describe("360", () => {
     });
 
     test("should recreate given test in issue and return correct results", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const type = generateUniqueType("Event");
 
@@ -175,7 +177,7 @@ describe("360", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { rangeStart, rangeEnd },
             });
 

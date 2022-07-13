@@ -17,18 +17,20 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import { graphql, GraphQLSchema } from "graphql";
+import type { Driver } from "neo4j-driver";
+import type { GraphQLSchema } from "graphql";
+import { graphql } from "graphql";
 import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
-import neo4j from "./neo4j";
+import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
 const testLabel = generate({ charset: "alphabetic" });
 
 describe("fragments", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let schema: GraphQLSchema;
 
     const typeDefs = gql`
@@ -83,8 +85,9 @@ describe("fragments", () => {
     const seriesScreenTime = faker.datatype.number();
 
     beforeAll(async () => {
-        driver = await neo4j();
-        const session = driver.session();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         schema = await neoSchema.getSchema();
@@ -110,7 +113,7 @@ describe("fragments", () => {
     });
 
     afterAll(async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         await session.run(`MATCH (node:${testLabel}) DETACH DELETE node`);
         await driver.close();
     });
@@ -130,7 +133,7 @@ describe("fragments", () => {
         const graphqlResult = await graphql({
             schema,
             source: query.loc!.source,
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
             variableValues: { actorName },
         });
 
@@ -161,7 +164,7 @@ describe("fragments", () => {
         const graphqlResult = await graphql({
             schema,
             source: query.loc!.source,
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
             variableValues: { actorName },
         });
 
@@ -204,7 +207,7 @@ describe("fragments", () => {
         const graphqlResult = await graphql({
             schema,
             source: query.loc!.source,
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
             variableValues: { actorName },
         });
 

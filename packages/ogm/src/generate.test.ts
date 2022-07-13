@@ -1343,7 +1343,9 @@ describe("generate", () => {
               title_NOT_STARTS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               title_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
               title_NOT_ENDS_WITH?: InputMaybe<Scalars[\\"String\\"]>;
+              /** @deprecated Use \`actors_SOME\` instead. */
               actors?: InputMaybe<PersonWhere>;
+              /** @deprecated Use \`actors_NONE\` instead. */
               actors_NOT?: InputMaybe<PersonWhere>;
               actorsAggregate?: InputMaybe<MovieActorsAggregateInput>;
               /** Return Movies where all of the related People match this filter */
@@ -1354,7 +1356,9 @@ describe("generate", () => {
               actors_SINGLE?: InputMaybe<PersonWhere>;
               /** Return Movies where some of the related People match this filter */
               actors_SOME?: InputMaybe<PersonWhere>;
+              /** @deprecated Use \`actorsConnection_SOME\` instead. */
               actorsConnection?: InputMaybe<MovieActorsConnectionWhere>;
+              /** @deprecated Use \`actorsConnection_NONE\` instead. */
               actorsConnection_NOT?: InputMaybe<MovieActorsConnectionWhere>;
               actorsConnection_ALL?: InputMaybe<MovieActorsConnectionWhere>;
               actorsConnection_NONE?: InputMaybe<MovieActorsConnectionWhere>;

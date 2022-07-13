@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, ObjectFieldNode, ObjectTypeDefinitionNode, ObjectValueNode } from "graphql";
+import type { DirectiveNode, ObjectFieldNode, ObjectTypeDefinitionNode, ObjectValueNode } from "graphql";
 import * as neo4j from "neo4j-driver";
 import { QueryOptionsDirective } from "../../classes/QueryOptionsDirective";
 import { Neo4jGraphQLError } from "../../classes/Error";

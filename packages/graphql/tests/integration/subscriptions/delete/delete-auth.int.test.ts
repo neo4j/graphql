@@ -18,21 +18,23 @@
  */
 
 import { graphql } from "graphql";
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src";
 import { generateUniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("Subscriptions delete", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let plugin: TestSubscriptionsPlugin;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     beforeEach(() => {
@@ -44,7 +46,7 @@ describe("Subscriptions delete", () => {
     });
 
     test("should throw Forbidden when deleting a node with invalid allow", async () => {
-        const session = driver.session({ defaultAccessMode: "WRITE" });
+        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
         const typeUser = generateUniqueType("User");
         const typeDefs = `
         type ${typeUser.name} {
@@ -88,7 +90,7 @@ describe("Subscriptions delete", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");

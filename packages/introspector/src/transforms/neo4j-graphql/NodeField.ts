@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Directive } from "./types";
+import type { Directive } from "./types";
 
 export class NodeField {
     name: string;

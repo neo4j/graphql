@@ -19,14 +19,16 @@
 
 import { gql } from "apollo-server";
 import { graphql } from "graphql";
-import { Driver, Session } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../../src";
-import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { generateUniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 
 describe("Subscriptions delete", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
     let plugin: TestSubscriptionsPlugin;
@@ -35,11 +37,12 @@ describe("Subscriptions delete", () => {
     let typeMovie: UniqueType;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
-    beforeEach(() => {
-        session = driver.session();
+    beforeEach(async () => {
+        session = await neo4j.getSession();
 
         typeActor = generateUniqueType("Actor");
         typeMovie = generateUniqueType("Movie");
@@ -91,7 +94,7 @@ describe("Subscriptions delete", () => {
         const gqlResult: any = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -133,7 +136,7 @@ describe("Subscriptions delete", () => {
         const gqlResult: any = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -212,7 +215,7 @@ describe("Subscriptions delete", () => {
         const gqlResult: any = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(gqlResult.errors).toBeUndefined();

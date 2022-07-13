@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import { graphql, GraphQLSchema } from "graphql";
+import type { GraphQLSchema } from "graphql";
+import { graphql } from "graphql";
 import { gql } from "apollo-server";
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 
@@ -33,9 +34,11 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
     const secret = "secret";
     let schema: GraphQLSchema;
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const typeDefs = gql`
             type ${riskType.name} {
@@ -73,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
     });
 
     test("multiple aggregations in the same query should return the same results as if were written separately", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         const cypherInsert = `
             CREATE
             (team1: ${teamType.name} {code: 'team-1'}),
@@ -106,23 +109,21 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
         const res = await graphql({
             schema,
             source: query,
-            contextValue: {
-                driver
-            },
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(res.errors).toBeUndefined();
-        const expectedReturn = { 
-            "stats": [
+        const expectedReturn = {
+            stats: [
                 {
-                    "accepted": {
-                        "count": 1
+                    accepted: {
+                        count: 1,
                     },
-                    "identified": {
-                        "count": 0
-                    }
-                }
-            ]
+                    identified: {
+                        count: 0,
+                    },
+                },
+            ],
         };
         expect(res.data).toEqual(expectedReturn);
     });

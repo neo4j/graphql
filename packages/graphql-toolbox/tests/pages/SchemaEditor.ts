@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import { SCHEMA_EDITOR_INPUT } from "../../../src/constants";
+import { SCHEMA_EDITOR_INPUT } from "../../src/constants";
 import { Screen } from "./Screen";
 
 export class SchemaEditor extends Screen {
     public async setTypeDefs(typeDefs: string) {
-        await this.page.waitForSelector(`#${SCHEMA_EDITOR_INPUT}`);
+        await this.page.waitForSelector("[data-test-schema-editor-build-button]");
         await this.page.evaluate(
             ({ id, typeDefs }) => {
                 // @ts-ignore -Find a better solution

@@ -18,7 +18,7 @@
  */
 
 import dotProp from "dot-prop";
-import { AuthContext, Context } from "../types";
+import type { AuthContext, Context } from "../types";
 
 type ContextAuthParams = Pick<Context, "jwt" | "plugins">;
 

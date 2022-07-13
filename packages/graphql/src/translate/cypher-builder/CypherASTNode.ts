@@ -18,7 +18,7 @@
  */
 
 import { CypherContext } from "./CypherContext";
-import { Param } from "./references/Param";
+import type { Param } from "./references/Param";
 
 /** Abstract class representing a Cypher Statement in the AST */
 export abstract class CypherASTNode {

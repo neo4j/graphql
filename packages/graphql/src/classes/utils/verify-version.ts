@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Session } from "neo4j-driver";
+import type { Session } from "neo4j-driver";
 import semver from "semver";
 import { MIN_VERSIONS } from "../../constants";
 

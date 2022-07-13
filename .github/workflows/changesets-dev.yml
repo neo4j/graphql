@@ -1,0 +1,34 @@
+name: changesets (dev)
+
+on:
+  push:
+    branches:
+      - dev
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+
+      - name: Install Dependencies
+        run: yarn
+
+      - name: Create Release Pull Request
+        uses: changesets/action@2a025e8ab1cfa4312c2868cb6aa3cd3b473b84bf
+        with:
+          title: changesets for branch `dev`
+          version: yarn changeset-version
+        env:
+          GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false

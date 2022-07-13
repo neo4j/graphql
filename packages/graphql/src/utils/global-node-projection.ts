@@ -18,7 +18,7 @@
  */
 
 import { omit } from "graphql-compose";
-import { ResolveTree } from "graphql-parse-resolve-info";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 
 interface ResolveTreeMap {
     [key: string]: ResolveTree;

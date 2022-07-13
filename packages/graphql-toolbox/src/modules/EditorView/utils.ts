@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { EditorFromTextArea } from "codemirror";
+import type { EditorFromTextArea } from "codemirror";
 import prettier from "prettier/standalone";
 import prettierBabel from "prettier/parser-babel";
 import parserGraphQL from "prettier/parser-graphql";

@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { DefinitionNode, DocumentNode, FieldDefinitionNode } from "graphql";
-import { Neo4jGraphQLConstructor } from "@neo4j/graphql";
+import type { DefinitionNode, DocumentNode, FieldDefinitionNode } from "graphql";
+import type { Neo4jGraphQLConstructor } from "@neo4j/graphql";
 import { mergeTypeDefs } from "@graphql-tools/merge";
 
 const excludedDirectives = ["auth", "exclude", "private", "readonly", "writeonly"];

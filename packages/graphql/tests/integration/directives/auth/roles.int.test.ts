@@ -18,20 +18,22 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { generateUniqueType } from "../../../utils/graphql-types";
 
 describe("auth/roles", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     const secret = "secret";
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -39,7 +41,7 @@ describe("auth/roles", () => {
     });
 
     beforeAll(async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         try {
             await session.run(`
@@ -57,7 +59,7 @@ describe("auth/roles", () => {
 
     describe("read", () => {
         test("should throw if missing role on type definition", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Product @auth(rules: [{
@@ -92,7 +94,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -102,7 +104,7 @@ describe("auth/roles", () => {
         });
 
         test("should throw if missing role on field definition", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type User  {
@@ -134,7 +136,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -146,7 +148,7 @@ describe("auth/roles", () => {
         // This tests reproduces the security issue related to authorization without match #195
         // eslint-disable-next-line jest/no-disabled-tests
         test.skip("should throw if missing role on type definition and no nodes are matched", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type NotANode @auth(rules: [{
@@ -180,7 +182,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -192,7 +194,7 @@ describe("auth/roles", () => {
 
     describe("create", () => {
         test("should throw if missing role on type definition", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type User @auth(rules: [{
@@ -229,7 +231,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -239,7 +241,7 @@ describe("auth/roles", () => {
         });
 
         test("should throw if missing role on field definition", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type User {
@@ -276,7 +278,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -288,7 +290,7 @@ describe("auth/roles", () => {
 
     describe("update", () => {
         test("should throw if missing role on type definition", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type User @auth(rules: [{
@@ -325,7 +327,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -335,7 +337,7 @@ describe("auth/roles", () => {
         });
 
         test("should throw if missing role on field definition", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type User {
@@ -372,7 +374,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -384,7 +386,7 @@ describe("auth/roles", () => {
 
     describe("connect", () => {
         test("should throw if missing role", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Post {
@@ -450,7 +452,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -460,7 +462,7 @@ describe("auth/roles", () => {
         });
 
         test("should throw if missing role on nested connect", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Comment {
@@ -546,7 +548,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -558,7 +560,7 @@ describe("auth/roles", () => {
 
     describe("disconnect", () => {
         test("should throw if missing role", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Post {
@@ -624,7 +626,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -634,7 +636,7 @@ describe("auth/roles", () => {
         });
 
         test("should throw if missing role on nested disconnect", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Comment {
@@ -719,7 +721,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -731,7 +733,7 @@ describe("auth/roles", () => {
 
     describe("delete", () => {
         test("should throw if missing role on type definition", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type User @auth(rules: [{
@@ -766,7 +768,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -776,7 +778,7 @@ describe("auth/roles", () => {
         });
 
         test("should throw if missing role on type definition (with nested delete)", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type User {
@@ -828,7 +830,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -840,7 +842,7 @@ describe("auth/roles", () => {
 
     describe("custom-resolvers", () => {
         test("should throw if missing role on custom Query with @cypher", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type User @exclude {
@@ -876,7 +878,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -886,7 +888,7 @@ describe("auth/roles", () => {
         });
 
         test("should throw if missing role on custom Mutation with @cypher", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type User {
@@ -922,7 +924,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -932,7 +934,7 @@ describe("auth/roles", () => {
         });
 
         test("should throw if missing role on Field definition @cypher", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type History {
@@ -972,7 +974,7 @@ describe("auth/roles", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -984,7 +986,7 @@ describe("auth/roles", () => {
 
     describe("combining roles with where", () => {
         test("combines where with roles", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const type = generateUniqueType("User");
 
@@ -1047,7 +1049,7 @@ describe("auth/roles", () => {
                 const gqlResultUser = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req: userReq, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: userReq }),
                 });
 
                 expect(gqlResultUser.data).toEqual({
@@ -1060,7 +1062,7 @@ describe("auth/roles", () => {
                 const gqlResultAdmin = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req: adminReq, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: adminReq }),
                 });
 
                 expect(gqlResultAdmin.data?.[type.plural]).toHaveLength(2);
@@ -1078,7 +1080,7 @@ describe("auth/roles", () => {
 
     describe("rolesPath with dots", () => {
         test("can read role from path containing dots", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const type = generateUniqueType("User");
 
@@ -1136,7 +1138,9 @@ describe("auth/roles", () => {
                 const gqlResultUser = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req: nonAdminReq, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+                        req: nonAdminReq,
+                    }),
                 });
 
                 expect((gqlResultUser.errors as any[])[0].message).toBe("Forbidden");
@@ -1150,7 +1154,7 @@ describe("auth/roles", () => {
                 const gqlResultAdmin = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req: adminReq, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: adminReq }),
                 });
 
                 expect(gqlResultAdmin.data).toEqual({

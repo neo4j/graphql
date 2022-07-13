@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 import { offsetToCursor } from "graphql-relay";
 import dedent from "dedent";
-import { ConnectionField, Context } from "../../types";
+import type { ConnectionField, Context } from "../../types";
 import createConnectionAndParams from "./create-connection-and-params";
 import Neo4jGraphQL from "../../classes/Neo4jGraphQL";
 import { NodeBuilder } from "../../../tests/utils/builders/node-builder";

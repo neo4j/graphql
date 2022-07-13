@@ -18,7 +18,8 @@
  */
 
 import jsonwebtoken from "jsonwebtoken";
-import JwksRsa, { JwksClient } from "jwks-rsa";
+import type JwksRsa from "jwks-rsa";
+import { JwksClient } from "jwks-rsa";
 import Debug from "debug";
 import { DEBUG_PREFIX } from "./constants";
 

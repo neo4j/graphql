@@ -17,14 +17,17 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import supertest, { Response } from "supertest";
+import type { Driver } from "neo4j-driver";
+import type { Response } from "supertest";
+import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
-import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
-import neo4j from "../../integration/neo4j";
+import type { TestGraphQLServer } from "../setup/apollo-server";
+import { ApolloTestServer } from "../setup/apollo-server";
+import Neo4j from "../setup/neo4j";
 
 describe("Create", () => {
+    let neo4j: Neo4j;
     let driver: Driver;
 
     const typeMovie = generateUniqueType("Movie");
@@ -38,11 +41,17 @@ describe("Create", () => {
          }
          `;
 
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
+            config: {
+                driverConfig: {
+                    database: neo4j.getIntegrationDatabaseName(),
+                },
+            },
         });
 
         server = new ApolloTestServer(neoSchema);

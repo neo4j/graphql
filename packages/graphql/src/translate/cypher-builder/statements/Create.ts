@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
-import { CypherContext } from "../CypherContext";
+import type { CypherContext } from "../CypherContext";
 import { MatchPattern } from "../MatchPattern";
-import { Node } from "../references/Node";
+import type { Node } from "../references/Node";
 import { Param } from "../references/Param";
 import { Query } from "./Query";
-import { ReturnStatement, ReturnStatementArgs } from "./Return";
+import type { ReturnStatementArgs } from "./Return";
+import { ReturnStatement } from "./Return";
 
 type Params = Record<string, Param<any>>;
 

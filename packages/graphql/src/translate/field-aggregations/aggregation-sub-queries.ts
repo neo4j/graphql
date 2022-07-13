@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { AggregationAuth } from "./field-aggregations-auth";
+import type { AggregationAuth } from "./field-aggregations-auth";
 import { wrapApocConvertDate } from "../projection/elements/create-datetime-element";
 import { stringifyObject } from "../utils/stringify-object";
 

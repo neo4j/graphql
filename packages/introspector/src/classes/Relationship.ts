@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import Property from "./Property";
+import type Property from "./Property";
 
 type Path = {
     fromTypeId: string;

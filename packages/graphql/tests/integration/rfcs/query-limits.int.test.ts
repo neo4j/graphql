@@ -17,18 +17,20 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("integration/rfcs/query-limits", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -37,7 +39,7 @@ describe("integration/rfcs/query-limits", () => {
 
     describe("Top Level Query Limits", () => {
         test("should limit the top level query", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
             const randomType = generateUniqueType("Movie");
 
             const typeDefs = `
@@ -69,7 +71,7 @@ describe("integration/rfcs/query-limits", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (gqlResult.errors) {
@@ -86,7 +88,7 @@ describe("integration/rfcs/query-limits", () => {
 
     describe("Field Level Query Limits", () => {
         test("should limit the normal field level query", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
             const randomType1 = generateUniqueType("Movie");
             const randomType2 = generateUniqueType("Person");
             const movieId = generate({
@@ -131,7 +133,7 @@ describe("integration/rfcs/query-limits", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (gqlResult.errors) {
@@ -146,7 +148,7 @@ describe("integration/rfcs/query-limits", () => {
         });
 
         test("should limit the connection field level query", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
             const randomType1 = generateUniqueType("Movie");
             const randomType2 = generateUniqueType("Person");
             const movieId = generate({
@@ -195,7 +197,7 @@ describe("integration/rfcs/query-limits", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 if (gqlResult.errors) {

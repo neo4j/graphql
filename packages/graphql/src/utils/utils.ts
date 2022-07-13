@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { Integer, isInt } from "neo4j-driver";
+import type { Integer} from "neo4j-driver";
+import { isInt } from "neo4j-driver";
 
 /** Checks if value is string */
 export function isString(value: unknown): value is string {

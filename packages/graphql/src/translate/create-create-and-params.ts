@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { Node, Relationship } from "../classes";
-import { CallbackBucket } from "../classes/CallbackBucket";
-import { Context } from "../types";
+import type { Node, Relationship } from "../classes";
+import type { CallbackBucket } from "../classes/CallbackBucket";
+import type { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";

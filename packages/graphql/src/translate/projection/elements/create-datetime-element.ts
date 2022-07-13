@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
-import { TemporalField } from "../../../types";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { TemporalField } from "../../../types";
 
 export function createDatetimeElement({
     resolveTree,

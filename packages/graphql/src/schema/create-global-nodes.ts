@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { GraphQLResolveInfo } from "graphql";
-import { ObjectTypeComposerFieldConfigAsObjectDefinition, SchemaComposer } from "graphql-compose";
+import type { GraphQLResolveInfo } from "graphql";
+import type { ObjectTypeComposerFieldConfigAsObjectDefinition, SchemaComposer } from "graphql-compose";
 import { nodeDefinitions } from "graphql-relay";
-import { Context, Node } from "../types";
+import type { Context, Node } from "../types";
 import { globalNodeResolver } from "./resolvers/query/global-node";
 
 // returns true if globalNodeFields added or false if not
