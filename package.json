@@ -21,7 +21,9 @@
         "neo-push": "concurrently \"yarn workspace neo-push-server start\" \"yarn workspace neo-push-client start\"",
         "neo-push:seed": "yarn workspace neo-push-server run seed",
         "test-docker": "docker-compose up --build --abort-on-container-exit",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "changeset-version": "changeset version && yarn",
+        "changeset-version-master": "changeset version --since master && yarn"
     },
     "devDependencies": {
         "@tsconfig/node14": "1.0.3",
