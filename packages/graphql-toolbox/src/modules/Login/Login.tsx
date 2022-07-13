@@ -21,17 +21,19 @@ import { useCallback } from "react";
 import { useContext, useState } from "react";
 import { FormInput } from "./FormInput";
 import { Button } from "@neo4j-ndl/react";
-import { DEFAULT_BOLT_URL } from "../../constants";
+import { DEFAULT_BOLT_URL, DEFAULT_USERNAME } from "../../constants";
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
 import { AuthContext } from "../../contexts/auth";
-import { getConnectUrlSearchParam } from "src/contexts/utils";
+import { getConnectUrlSearchParamValue } from "../../contexts/utils";
 
 export const Login = () => {
+    const auth = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const auth = useContext(AuthContext);
-    const [url, setUrl] = useState(getConnectUrlSearchParam() || DEFAULT_BOLT_URL);
+    const { url: searchParamUrl, username: searchParamUsername } = getConnectUrlSearchParamValue() || {};
+    const [url, setUrl] = useState(searchParamUrl || DEFAULT_BOLT_URL);
+    const [username, setUsername] = useState(searchParamUsername || DEFAULT_USERNAME);
 
     const onSubmit = useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {
@@ -40,7 +42,6 @@ export const Login = () => {
 
             try {
                 const data = new FormData(event.currentTarget);
-                const username = data.get("username") as string;
                 const password = data.get("password") as string;
 
                 await auth.login({
@@ -54,7 +55,7 @@ export const Login = () => {
                 setLoading(false);
             }
         },
-        [url]
+        [url, username]
     );
 
     return (
@@ -70,6 +71,8 @@ export const Login = () => {
                         label="Username"
                         name="username"
                         placeholder="neo4j"
+                        value={username}
+                        onChange={(event) => setUsername(event.currentTarget.value)}
                         required={true}
                         type="text"
                         disabled={loading}

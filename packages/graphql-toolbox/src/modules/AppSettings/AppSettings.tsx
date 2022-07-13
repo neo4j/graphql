@@ -82,7 +82,12 @@ export const AppSettings = ({ onClickClose }: Props) => {
                 <span>Made by Neo4j, Inc</span>
                 <span>Copyright &copy; 2002-2022</span>
                 <div className="flex">
-                    <span>Version:</span>&nbsp;<pre>{process.env.VERSION}</pre>
+                    <span>App version:</span>&nbsp;
+                    <pre>{process.env.VERSION}</pre>
+                </div>
+                <div className="flex">
+                    <span>Neo4j GraphQL version:</span>&nbsp;
+                    <pre>{(process.env.NEO4J_GRAPHQL_VERSION || "").replace(/\^|~/g, "")}</pre>
                 </div>
             </div>
         </div>

@@ -94,7 +94,7 @@ export const Favorites = ({ favorites, setFavorites, onSelectFavorite }: Favorit
         <div className="flex flex-col w-full">
             <span className="h5">Favorites</span>
             {favorites?.length ? (
-                <ul className="pt-2">
+                <ul className="pt-3 h-favorite overflow-y-scroll">
                     {favorites.map((favorite, idx) => {
                         return (
                             <li

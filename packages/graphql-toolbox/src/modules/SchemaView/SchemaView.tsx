@@ -54,6 +54,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const settings = useContext(SettingsContext);
     const [error, setError] = useState<string | GraphQLError>("");
     const [loading, setLoading] = useState(false);
+    const [isIntrospecting, setIsIntrospecting] = useState(false);
     const refForEditorMirror = useRef<EditorFromTextArea | null>(null);
     const [isDebugChecked, setIsDebugChecked] = useState<string | null>(Storage.retrieve(LOCAL_STATE_ENABLE_DEBUG));
     const [isRegexChecked, setIsRegexChecked] = useState<string | null>(Storage.retrieve(LOCAL_STATE_ENABLE_REGEX));
@@ -126,6 +127,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const introspect = useCallback(async () => {
         try {
             setLoading(true);
+            setIsIntrospecting(true);
 
             const sessionFactory = () =>
                 auth?.driver?.session({
@@ -141,6 +143,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
             setError(msg);
         } finally {
             setLoading(false);
+            setIsIntrospecting(false);
         }
     }, [buildSchema, refForEditorMirror.current, auth.selectedDatabaseName]);
 
@@ -176,6 +179,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     <ActionElementsBar
                         hasSchema={hasSchema}
                         loading={loading}
+                        isIntrospecting={isIntrospecting}
                         formatTheCode={formatTheCode}
                         onSubmit={onSubmit}
                         introspect={introspect}

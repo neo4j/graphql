@@ -389,14 +389,14 @@ jobs:
           echo "::set-output name=prerelease::$prerelease"
       - name: Build Changelog
         id: github-release
-        uses: mikepenz/release-changelog-builder-action@9628cd4fe09b8829636c8a5baa348ebf317685cc
+        uses: mikepenz/release-changelog-builder-action@c9066537c0c7bc5c7b0ec7722cefc02524c7c005 # renovate: tag=v3.1.0
         with:
           configuration: "config/release-changelog-builder-action/configuration-${{ steps.get-label.outputs.label }}.json"
           toTag: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
         env:
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
       - name: Release
-        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
+        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # renovate: tag=v0.1.14
         with:
           body: ${{ steps.github-release.outputs.changelog }}
           name: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
