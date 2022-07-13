@@ -324,39 +324,6 @@ describe("Cypher WHERE", () => {
         `);
     });
 
-    // test.only("OR and default and", async () => {
-    //     const query = gql`
-    //         query {
-    //             movies(where: { isFavorite: true, id: 2, OR: [{ title: "title1" }, { title: "title2" }] }) {
-    //                 title
-    //             }
-    //         }
-    //     `;
-
-    //     const req = createJwtRequest("secret", {});
-    //     const result = await translateQuery(neoSchema, query, {
-    //         req,
-    //     });
-
-    //     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-    //         "MATCH (this:\`Movie\`)
-    //         WHERE (this.id = $param0
-    //         AND this.isFavorite = $param1
-    //         AND (this.title = $param2
-    //         OR this.title = $param3))
-    //         RETURN this { .title } as this"
-    //     `);
-
-    //     expect(formatParams(result.params)).toMatchInlineSnapshot(`
-    //         "{
-    //             \\"param0\\": \\"2\\",
-    //             \\"param1\\": true,
-    //             \\"param2\\": \\"title1\\",
-    //             \\"param3\\": \\"title2\\"
-    //         }"
-    //     `);
-    // });
-
     describe("Where with null", () => {
         test("Match with NULL in where", async () => {
             const query = gql`

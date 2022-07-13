@@ -64,7 +64,7 @@ describe("CypherBuilder Merge", () => {
             `);
     });
 
-    test.only("Merge relationship", () => {
+    test("Merge relationship", () => {
         const node1 = new CypherBuilder.Node({
             labels: ["MyLabel"],
         });

@@ -20,7 +20,7 @@
 import { Clause } from "./Clause";
 import type { CypherEnvironment } from "../Environment";
 import type { CypherASTNode } from "../CypherASTNode";
-import { padBlock } from "../utils";
+import { compileCypherIfExists, padBlock } from "../utils";
 import { ImportWith } from "../sub-clauses/ImportWith";
 import type { Variable } from "../variables/Variable";
 
@@ -42,12 +42,10 @@ export class Call extends Clause {
     }
 
     public getCypher(env: CypherEnvironment): string {
-        let subQueryStr = this.subQuery.getCypher(env);
-        if (this.importWith) {
-            const withStr = this.importWith.getCypher(env);
-            subQueryStr = `${withStr}\n${subQueryStr}`;
-        }
-        const paddedSubQuery = padBlock(subQueryStr);
-        return `CALL {\n${paddedSubQuery}\n}`;
+        const subQueryStr = this.subQuery.getCypher(env);
+        const withCypher = compileCypherIfExists(this.importWith, env, { suffix: "\n" });
+        const inCallBlock = `${withCypher}${subQueryStr}`;
+
+        return `CALL {\n${padBlock(inCallBlock)}\n}`;
     }
 }

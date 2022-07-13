@@ -25,11 +25,13 @@ import { Return } from "./Return";
 import type { CypherEnvironment } from "../Environment";
 import type { NodeRef } from "../variables/NodeRef";
 import type { Param } from "../variables/Param";
+import { compileCypherIfExists } from "../utils";
 
 type CreateSetParams = [PropertyRef | string, Param<any>];
 
 type Params = Record<string, Param<any>>;
 
+// TODO: support relationships?
 export class Create extends Clause {
     private node: NodeRef;
     private pattern: Pattern<NodeRef>;
@@ -58,10 +60,11 @@ export class Create extends Clause {
 
     public getCypher(env: CypherEnvironment): string {
         const nodeCypher = this.pattern.getCypher(env);
-        let setStr = this.setClause.getCypher(env);
-        if (setStr) setStr = `\n${setStr}`; // TODO: improve this
-        const returnStr = this.returnStatement ? `\n${this.returnStatement.getCypher(env)}` : "";
-        return `CREATE ${nodeCypher}${setStr}${returnStr}`;
+
+        const setCypher = compileCypherIfExists(this.setClause, env, { prefix: "\n" });
+        const returnCypher = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
+
+        return `CREATE ${nodeCypher}${setCypher}${returnCypher}`;
     }
 
     public return(node: NodeRef, fields?: string[], alias?: string): Return {

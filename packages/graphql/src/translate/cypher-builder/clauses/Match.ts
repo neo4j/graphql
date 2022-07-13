@@ -28,11 +28,14 @@ import { Variable } from "../variables/Variable";
 import { ComparisonOp, eq } from "../operations/comparison";
 import { PropertyRef } from "../PropertyRef";
 import { and, BooleanOp } from "../operations/boolean";
+import { SetClause, SetParam } from "../sub-clauses/Set";
+import { compileCypherIfExists } from "../utils";
 
 export class Match<T extends MatchableElement = any> extends Clause {
     private pattern: Pattern<T>;
     private whereSubClause: Where | undefined;
     private returnStatement: Return | undefined;
+    private setSubClause: SetClause | undefined;
 
     constructor(variable: T | Pattern<T>, parameters: MatchParams<T> = {}, parent?: Clause) {
         super(parent);
@@ -47,14 +50,8 @@ export class Match<T extends MatchableElement = any> extends Clause {
     public where(input: WhereParams): this;
     public where(target: Variable, params: Record<string, Param>): this;
     public where(input: WhereParams | Variable, params?: Record<string, Param>): this {
-        let whereInput: WhereParams;
-        if (input instanceof Variable) {
-            const generatedOp = variableAndObjectToOperation(input, params || {});
-            if (!generatedOp) return this;
-            whereInput = generatedOp;
-        } else {
-            whereInput = input;
-        }
+        const whereInput = this.createWhereInput(input, params);
+        if (!whereInput) return this;
 
         if (!this.whereSubClause) {
             const whereClause = new Where(this, whereInput);
@@ -66,24 +63,24 @@ export class Match<T extends MatchableElement = any> extends Clause {
         return this;
     }
 
-    public and(input: WhereParams): this {
+    public and(input: WhereParams): this;
+    public and(target: Variable, params: Record<string, Param>): this;
+    public and(input: WhereParams | Variable, params?: Record<string, Param>): this {
         if (!this.whereSubClause) throw new Error("Cannot and without a where");
-        this.whereSubClause.and(input);
+        const whereInput = this.createWhereInput(input, params);
+        if (whereInput) {
+            this.whereSubClause.and(whereInput);
+        }
         return this;
     }
 
-    public getCypher(env: CypherEnvironment): string {
-        const nodeCypher = this.pattern.getCypher(env);
-        let whereCypher = "";
-        let returnCypher = "";
-        if (this.whereSubClause) {
-            whereCypher = `\n${this.whereSubClause.getCypher(env)}`;
+    public set(...params: SetParam[]): this {
+        if (!this.setSubClause) {
+            this.setSubClause = new SetClause(this, params);
+        } else {
+            this.setSubClause.addParams(...params);
         }
-        if (this.returnStatement) {
-            returnCypher = `\n${this.returnStatement.getCypher(env)}`;
-        }
-
-        return `MATCH ${nodeCypher}${whereCypher}${returnCypher}`;
+        return this;
     }
 
     public return(node: NodeRef, fields?: string[], alias?: string): Return {
@@ -91,6 +88,27 @@ export class Match<T extends MatchableElement = any> extends Clause {
         this.addChildren(returnStatement);
         this.returnStatement = returnStatement;
         return returnStatement;
+    }
+
+    public getCypher(env: CypherEnvironment): string {
+        const nodeCypher = this.pattern.getCypher(env);
+
+        const whereCypher = compileCypherIfExists(this.whereSubClause, env, { prefix: "\n" });
+        const returnCypher = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
+        const setCypher = compileCypherIfExists(this.setSubClause, env, { prefix: "\n" });
+
+        return `MATCH ${nodeCypher}${whereCypher}${setCypher}${returnCypher}`;
+    }
+
+    private createWhereInput(
+        input: WhereParams | Variable,
+        params: Record<string, Param> | undefined
+    ): WhereParams | undefined {
+        if (input instanceof Variable) {
+            const generatedOp = variableAndObjectToOperation(input, params || {});
+            return generatedOp;
+        }
+        return input;
     }
 }
 

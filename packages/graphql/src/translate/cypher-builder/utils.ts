@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import type { CypherEnvironment } from "./Environment";
+import type { CypherCompilable } from "./types";
 import { Param } from "./variables/Param";
 
 /** Adds spaces to the left of the string, returns empty string is variable is undefined or empty string */
@@ -41,4 +43,16 @@ export function convertToCypherParams<T>(original: Record<string, T>): Record<st
         acc[key] = new Param(value);
         return acc;
     }, {});
+}
+
+/** Compiles the cypher of an element, if the resulting cypher is not empty adds a prefix */
+export function compileCypherIfExists(
+    element: CypherCompilable | undefined,
+    env: CypherEnvironment,
+    { prefix = "", suffix = "" }
+): string {
+    if (!element) return "";
+    const cypher = element.getCypher(env);
+    if (!cypher) return "";
+    return `${prefix}${cypher}${suffix}`;
 }
