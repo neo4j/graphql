@@ -2487,12 +2487,12 @@ __metadata:
     html-webpack-inline-source-plugin: 0.0.10
     html-webpack-plugin: 5.5.0
     jest: 28.1.2
-    jest-environment-jsdom: ^28.1.2
+    jest-environment-jsdom: 28.1.2
     lodash.debounce: ^4.0.8
     markdown-it: ^13.0.0
     neo4j-driver: 4.4.6
     node-polyfill-webpack-plugin: 2.0.0
-    parse5: ^5.1.1
+    parse5: 5.1.1
     postcss: 8.4.14
     postcss-loader: 7.0.1
     prettier: ^2.6.2
@@ -11293,7 +11293,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-environment-jsdom@npm:^28.1.2":
+"jest-environment-jsdom@npm:28.1.2":
   version: 28.1.2
   resolution: "jest-environment-jsdom@npm:28.1.2"
   dependencies:
@@ -14525,17 +14525,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"parse5@npm:5.1.1":
+  version: 5.1.1
+  resolution: "parse5@npm:5.1.1"
+  checksum: 613a714af4c1101d1cb9f7cece2558e35b9ae8a0c03518223a4a1e35494624d9a9ad5fad4c13eab66a0e0adccd9aa3d522fc8f5f9cc19789e0579f3fa0bdfc65
+  languageName: node
+  linkType: hard
+
 "parse5@npm:6.0.1":
   version: 6.0.1
   resolution: "parse5@npm:6.0.1"
   checksum: 7d569a176c5460897f7c8f3377eff640d54132b9be51ae8a8fa4979af940830b2b0c296ce75e5bd8f4041520aadde13170dbdec44889975f906098ea0002f4bd
-  languageName: node
-  linkType: hard
-
-"parse5@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "parse5@npm:5.1.1"
-  checksum: 613a714af4c1101d1cb9f7cece2558e35b9ae8a0c03518223a4a1e35494624d9a9ad5fad4c13eab66a0e0adccd9aa3d522fc8f5f9cc19789e0579f3fa0bdfc65
   languageName: node
   linkType: hard
 
