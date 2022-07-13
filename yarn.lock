@@ -2492,7 +2492,7 @@ __metadata:
     markdown-it: ^13.0.0
     neo4j-driver: 4.4.6
     node-polyfill-webpack-plugin: 2.0.0
-    parse5: ^5.1.1
+    parse5: 7.0.0
     postcss: 8.4.14
     postcss-loader: 7.0.1
     prettier: ^2.6.2
@@ -14532,14 +14532,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse5@npm:^5.1.1":
-  version: 5.1.1
-  resolution: "parse5@npm:5.1.1"
-  checksum: 613a714af4c1101d1cb9f7cece2558e35b9ae8a0c03518223a4a1e35494624d9a9ad5fad4c13eab66a0e0adccd9aa3d522fc8f5f9cc19789e0579f3fa0bdfc65
-  languageName: node
-  linkType: hard
-
-"parse5@npm:^7.0.0":
+"parse5@npm:7.0.0, parse5@npm:^7.0.0":
   version: 7.0.0
   resolution: "parse5@npm:7.0.0"
   dependencies:
