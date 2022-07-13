@@ -56,7 +56,7 @@ export class Create extends Clause {
         return this;
     }
 
-    protected cypher(env: CypherEnvironment): string {
+    public getCypher(env: CypherEnvironment): string {
         const nodeCypher = this.pattern.getCypher(env);
         let setStr = this.setClause.getCypher(env);
         if (setStr) setStr = `\n${setStr}`; // TODO: improve this

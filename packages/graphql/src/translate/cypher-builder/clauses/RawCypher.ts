@@ -32,7 +32,7 @@ export class RawCypher extends Clause {
         this.callback = callback;
     }
 
-    cypher(env: CypherEnvironment): string {
+    public getCypher(env: CypherEnvironment): string {
         const cbResult = this.callback(env);
         if (!cbResult) return "";
         const [query, params] = cbResult;

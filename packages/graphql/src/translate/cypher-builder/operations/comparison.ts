@@ -48,7 +48,7 @@ export class ComparisonOp extends Operation {
         this.rightExpr = right;
     }
 
-    protected cypher(env: CypherEnvironment): string {
+    public getCypher(env: CypherEnvironment): string {
         const leftStr = this.leftExpr ? `${this.leftExpr.getCypher(env)} ` : "";
         const rightStr = this.rightExpr ? ` ${this.rightExpr.getCypher(env)}` : "";
 

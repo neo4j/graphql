@@ -70,7 +70,7 @@ describe("#190", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE EXISTS {
-                MATCH (this)-[:\`HAS_DEMOGRAPHIC\`]->(this0:\`UserDemographics\`)
+                MATCH (this)-[:HAS_DEMOGRAPHIC]->(this0:\`UserDemographics\`)
                 WHERE (this0.type = $param0 AND this0.value = $param1)
             }
             RETURN this { .uid, demographics: [ (this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics)   | this_demographics { .type, .value } ] } as this"
@@ -109,7 +109,7 @@ describe("#190", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE EXISTS {
-                MATCH (this)-[:\`HAS_DEMOGRAPHIC\`]->(this0:\`UserDemographics\`)
+                MATCH (this)-[:HAS_DEMOGRAPHIC]->(this0:\`UserDemographics\`)
                 WHERE (this0.type = $param0 OR this0.value = $param1 OR this0.type = $param2 OR this0.type = $param3)
             }
             RETURN this { .uid, demographics: [ (this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics)   | this_demographics { .type, .value } ] } as this"

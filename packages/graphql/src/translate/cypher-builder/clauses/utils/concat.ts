@@ -26,7 +26,7 @@ class ConcatClause extends Clause {
         this.addChildren(...children);
     }
 
-    protected cypher(env: CypherEnvironment): string {
+    public getCypher(env: CypherEnvironment): string {
         const childrenStrs = this.children.map((c) => c.getCypher(env));
         return childrenStrs.join(this.separator);
     }

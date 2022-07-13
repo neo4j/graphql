@@ -35,7 +35,7 @@ export class ImportWith extends SubClause {
         this.params = params;
     }
 
-    protected cypher(env: CypherEnvironment): string {
+    public getCypher(env: CypherEnvironment): string {
         const paramsStr = this.params.map((v) => v.getCypher(env));
         return `WITH ${paramsStr.join(", ")}`;
     }

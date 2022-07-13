@@ -50,7 +50,7 @@ export class FullTextQueryNodes extends Clause {
         return this;
     }
 
-    public cypher(env: CypherEnvironment): string {
+    public getCypher(env: CypherEnvironment): string {
         const targetId = env.getVariableId(this.targetNode);
 
         const whereStr = this.whereClause?.getCypher(env) || "";
@@ -68,10 +68,8 @@ export class FullTextQueryNodes extends Clause {
     }
 
     public return(node: NodeRef, fields?: string[], alias?: string): Return {
-        // const returnStatement = new Return(this, [node, fields, alias]);
         this.returnClause = new Return([node, fields, alias]);
         this.addChildren(this.returnClause);
-        // this.addStatement(returnStatement);
         return this.returnClause;
     }
 }

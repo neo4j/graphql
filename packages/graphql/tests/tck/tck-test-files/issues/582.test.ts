@@ -73,7 +73,7 @@ describe("#582", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Entity\`)
-            WHERE (this.type = $param0 AND size([(this)-[this0:\`EDGE\`]->(this1:\`Entity\`) WHERE this1.type = $nestedParam1.node.type AND apoc.cypher.runFirstColumn(\\"RETURN exists((this1)<-[:EDGE]-(:Entity))
+            WHERE (this.type = $param0 AND size([(this)-[this0:EDGE]->(this1:\`Entity\`) WHERE this1.type = $nestedParam1.node.type AND apoc.cypher.runFirstColumn(\\"RETURN exists((this1)<-[:EDGE]-(:Entity))
             AND any(this1_Entity_map IN [(this1)<-[this1_Entity_EntityParentsRelationship:EDGE]-(this1_Entity:Entity) | { node: this1_Entity, relationship: this1_Entity_EntityParentsRelationship } ] WHERE
             this1_Entity_map.node.type = $nestedParam1.node.parentsConnection.node.type
             )\\", { this1: this1, nestedParam1: $nestedParam1 }) | 1]) > 0)
@@ -131,7 +131,7 @@ describe("#582", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Entity\`)
-            WHERE (this.type = $param0 AND size([(this)-[this0:\`EDGE\`]->(this1:\`Entity\`) WHERE this1.type = $nestedParam1.node.type AND apoc.cypher.runFirstColumn(\\"RETURN exists((this1)<-[:EDGE]-(:Entity))
+            WHERE (this.type = $param0 AND size([(this)-[this0:EDGE]->(this1:\`Entity\`) WHERE this1.type = $nestedParam1.node.type AND apoc.cypher.runFirstColumn(\\"RETURN exists((this1)<-[:EDGE]-(:Entity))
             AND any(this1_Entity_map IN [(this1)<-[this1_Entity_EntityParentsRelationship:EDGE]-(this1_Entity:Entity) | { node: this1_Entity, relationship: this1_Entity_EntityParentsRelationship } ] WHERE
             this1_Entity_map.node.type = $nestedParam1.node.parentsConnection.node.type AND apoc.cypher.runFirstColumn(\\\\\\"RETURN exists((this1_Entity_map_node)-[:EDGE]->(:Entity))
             AND any(this1_Entity_map_node_Entity_map IN [(this1_Entity_map_node)-[this1_Entity_map_node_Entity_EntityChildrenRelationship:EDGE]->(this1_Entity_map_node_Entity:Entity) | { node: this1_Entity_map_node_Entity, relationship: this1_Entity_map_node_Entity_EntityChildrenRelationship } ] WHERE

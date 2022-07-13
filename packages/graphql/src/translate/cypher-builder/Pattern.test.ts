@@ -32,14 +32,14 @@ describe("Pattern", () => {
             const node = new CypherBuilder.Node({ labels: ["TestLabel"] });
             const pattern = new Pattern(node, { source: { labels: false } });
 
-            expect(pattern.getCypher(env)).toBe(`(this0)`);
+            expect(pattern.getCypher(env)).toMatchInlineSnapshot(`"(this0)"`);
         });
 
         test("Simple node with labels", () => {
             const node = new CypherBuilder.Node({ labels: ["TestLabel"] });
             const pattern = new Pattern(node);
 
-            expect(pattern.getCypher(env)).toBe(`(this0:\`TestLabel\`)`);
+            expect(pattern.getCypher(env)).toMatchInlineSnapshot(`"(this0:\`TestLabel\`)"`);
         });
 
         test("Node with parameters", () => {
@@ -49,7 +49,7 @@ describe("Pattern", () => {
                 age: new CypherBuilder.Param(123),
             });
 
-            expect(pattern.getCypher(env)).toBe(`(this0 { name: $param0, age: $param1 })`);
+            expect(pattern.getCypher(env)).toMatchInlineSnapshot(`"(this0 { name: $param0, age: $param1 })"`);
         });
 
         test("Node with parameters and labels", () => {
@@ -59,7 +59,9 @@ describe("Pattern", () => {
                 age: new CypherBuilder.Param(123),
             });
 
-            expect(pattern.getCypher(env)).toBe(`(this0:\`TestLabel\` { name: $param0, age: $param1 })`);
+            expect(pattern.getCypher(env)).toMatchInlineSnapshot(
+                `"(this0:\`TestLabel\` { name: $param0, age: $param1 })"`
+            );
         });
     });
 
@@ -74,7 +76,7 @@ describe("Pattern", () => {
                 target: { labels: false },
             });
 
-            expect(pattern.getCypher(env)).toBe(`(this1)-[this0]->(this2)`);
+            expect(pattern.getCypher(env)).toMatchInlineSnapshot(`"(this1)-[this0]->(this2)"`);
         });
 
         test("Simple relationship with labels", () => {
@@ -83,7 +85,9 @@ describe("Pattern", () => {
             const relationship = new CypherBuilder.Relationship({ source: node1, target: node2, type: "ACTED_IN" });
             const pattern = new Pattern(relationship);
 
-            expect(pattern.getCypher(env)).toBe(`(this1:\`Actor\`)-[this0:\`ACTED_IN\`]->(this2:\`Movie\`)`);
+            expect(pattern.getCypher(env)).toMatchInlineSnapshot(
+                `"(this1:\`Actor\`)-[this0:ACTED_IN]->(this2:\`Movie\`)"`
+            );
         });
 
         test("Relationship with parameters", () => {
@@ -103,8 +107,8 @@ describe("Pattern", () => {
                 },
             });
 
-            expect(pattern.getCypher(env)).toBe(
-                `(this1 { name: $param1 })-[this0:\`ACTED_IN\` { value: $param0 }]->(this2 { name: $param2 })`
+            expect(pattern.getCypher(env)).toMatchInlineSnapshot(
+                `"(this1 { name: $param1 })-[this0:ACTED_IN { value: $param0 }]->(this2 { name: $param2 })"`
             );
         });
     });

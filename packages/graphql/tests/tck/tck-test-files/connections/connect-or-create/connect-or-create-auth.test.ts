@@ -90,7 +90,7 @@ describe("connectOrCreate", () => {
                     MERGE (this0_genres_connectOrCreate_this0:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
                     ON CREATE SET
                         this0_genres_connectOrCreate_this0.name = $this0_genres_connectOrCreate_param1
-                    MERGE (this0)-[this0_genres_connectOrCreate_this1:\`IN_GENRE\`]->(this0_genres_connectOrCreate_this0)
+                    MERGE (this0)-[this0_genres_connectOrCreate_this1:IN_GENRE]->(this0_genres_connectOrCreate_this0)
                     RETURN COUNT(*) AS _
                 }
                 RETURN this0
@@ -143,7 +143,7 @@ describe("connectOrCreate", () => {
                     MERGE (this0_genres_connectOrCreate_this0:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
                     ON CREATE SET
                         this0_genres_connectOrCreate_this0.name = $this0_genres_connectOrCreate_param1
-                    MERGE (this0)-[this0_genres_connectOrCreate_this1:\`IN_GENRE\`]->(this0_genres_connectOrCreate_this0)
+                    MERGE (this0)-[this0_genres_connectOrCreate_this1:IN_GENRE]->(this0_genres_connectOrCreate_this0)
                     RETURN COUNT(*) AS _
                 }
                 RETURN this0
@@ -196,7 +196,7 @@ describe("connectOrCreate", () => {
                     MERGE (this0_genres_connectOrCreate_this0:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
                     ON CREATE SET
                         this0_genres_connectOrCreate_this0.name = $this0_genres_connectOrCreate_param1
-                    MERGE (this0)-[this0_genres_connectOrCreate_this1:\`IN_GENRE\`]->(this0_genres_connectOrCreate_this0)
+                    MERGE (this0)-[this0_genres_connectOrCreate_this1:IN_GENRE]->(this0_genres_connectOrCreate_this0)
                     RETURN COUNT(*) AS _
                 }
                 RETURN this0
@@ -249,7 +249,7 @@ describe("connectOrCreate", () => {
                     MERGE (this0_genres_connectOrCreate_this0:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
                     ON CREATE SET
                         this0_genres_connectOrCreate_this0.name = $this0_genres_connectOrCreate_param1
-                    MERGE (this0)-[this0_genres_connectOrCreate_this1:\`IN_GENRE\`]->(this0_genres_connectOrCreate_this0)
+                    MERGE (this0)-[this0_genres_connectOrCreate_this1:IN_GENRE]->(this0_genres_connectOrCreate_this0)
                     RETURN COUNT(*) AS _
                 }
                 RETURN this0
@@ -315,7 +315,7 @@ describe("connectOrCreate", () => {
                     MERGE (this_genres0_connectOrCreate_this0:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
                     ON CREATE SET
                         this_genres0_connectOrCreate_this0.name = $this_genres0_connectOrCreate_param1
-                    MERGE (this)-[this_genres0_connectOrCreate_this1:\`IN_GENRE\`]->(this_genres0_connectOrCreate_this0)
+                    MERGE (this)-[this_genres0_connectOrCreate_this1:IN_GENRE]->(this_genres0_connectOrCreate_this0)
                     RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
@@ -364,7 +364,7 @@ describe("connectOrCreate", () => {
                     MERGE (this_genres0_connectOrCreate_this0:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
                     ON CREATE SET
                         this_genres0_connectOrCreate_this0.name = $this_genres0_connectOrCreate_param1
-                    MERGE (this)-[this_genres0_connectOrCreate_this1:\`IN_GENRE\`]->(this_genres0_connectOrCreate_this0)
+                    MERGE (this)-[this_genres0_connectOrCreate_this1:IN_GENRE]->(this_genres0_connectOrCreate_this0)
                     RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
@@ -413,7 +413,7 @@ describe("connectOrCreate", () => {
                     MERGE (this_genres0_connectOrCreate_this0:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
                     ON CREATE SET
                         this_genres0_connectOrCreate_this0.name = $this_genres0_connectOrCreate_param1
-                    MERGE (this)-[this_genres0_connectOrCreate_this1:\`IN_GENRE\`]->(this_genres0_connectOrCreate_this0)
+                    MERGE (this)-[this_genres0_connectOrCreate_this1:IN_GENRE]->(this_genres0_connectOrCreate_this0)
                     RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
@@ -462,7 +462,7 @@ describe("connectOrCreate", () => {
                     MERGE (this_genres0_connectOrCreate_this0:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
                     ON CREATE SET
                         this_genres0_connectOrCreate_this0.name = $this_genres0_connectOrCreate_param1
-                    MERGE (this)-[this_genres0_connectOrCreate_this1:\`IN_GENRE\`]->(this_genres0_connectOrCreate_this0)
+                    MERGE (this)-[this_genres0_connectOrCreate_this1:IN_GENRE]->(this_genres0_connectOrCreate_this0)
                     RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
@@ -521,7 +521,7 @@ describe("connectOrCreate", () => {
                     MERGE (this_connectOrCreate_genres_this0:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
                     ON CREATE SET
                         this_connectOrCreate_genres_this0.name = $this_connectOrCreate_genres_param1
-                    MERGE (this)-[this_connectOrCreate_genres_this1:\`IN_GENRE\`]->(this_connectOrCreate_genres_this0)
+                    MERGE (this)-[this_connectOrCreate_genres_this1:IN_GENRE]->(this_connectOrCreate_genres_this0)
                     RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
@@ -570,7 +570,7 @@ describe("connectOrCreate", () => {
                     MERGE (this_connectOrCreate_genres_this0:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
                     ON CREATE SET
                         this_connectOrCreate_genres_this0.name = $this_connectOrCreate_genres_param1
-                    MERGE (this)-[this_connectOrCreate_genres_this1:\`IN_GENRE\`]->(this_connectOrCreate_genres_this0)
+                    MERGE (this)-[this_connectOrCreate_genres_this1:IN_GENRE]->(this_connectOrCreate_genres_this0)
                     RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
@@ -619,7 +619,7 @@ describe("connectOrCreate", () => {
                     MERGE (this_connectOrCreate_genres_this0:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
                     ON CREATE SET
                         this_connectOrCreate_genres_this0.name = $this_connectOrCreate_genres_param1
-                    MERGE (this)-[this_connectOrCreate_genres_this1:\`IN_GENRE\`]->(this_connectOrCreate_genres_this0)
+                    MERGE (this)-[this_connectOrCreate_genres_this1:IN_GENRE]->(this_connectOrCreate_genres_this0)
                     RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
@@ -668,7 +668,7 @@ describe("connectOrCreate", () => {
                     MERGE (this_connectOrCreate_genres_this0:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
                     ON CREATE SET
                         this_connectOrCreate_genres_this0.name = $this_connectOrCreate_genres_param1
-                    MERGE (this)-[this_connectOrCreate_genres_this1:\`IN_GENRE\`]->(this_connectOrCreate_genres_this0)
+                    MERGE (this)-[this_connectOrCreate_genres_this1:IN_GENRE]->(this_connectOrCreate_genres_this0)
                     RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
@@ -725,7 +725,7 @@ describe("connectOrCreate", () => {
                     MERGE (this_connectOrCreate_genres_this0:\`Genre\` { name: $this_connectOrCreate_genres_param1 })
                     ON CREATE SET
                         this_connectOrCreate_genres_this0.name = $this_connectOrCreate_genres_param2
-                    MERGE (this)-[this_connectOrCreate_genres_this1:\`IN_GENRE\`]->(this_connectOrCreate_genres_this0)
+                    MERGE (this)-[this_connectOrCreate_genres_this1:IN_GENRE]->(this_connectOrCreate_genres_this0)
                     RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"

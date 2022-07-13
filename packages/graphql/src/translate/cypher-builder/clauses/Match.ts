@@ -59,7 +59,6 @@ export class Match<T extends MatchableElement = any> extends Clause {
         if (!this.whereSubClause) {
             const whereClause = new Where(this, whereInput);
             this.addChildren(whereClause);
-            // this.addASTNode(whereClause);
             this.whereSubClause = whereClause;
         } else {
             this.and(whereInput);
@@ -73,7 +72,7 @@ export class Match<T extends MatchableElement = any> extends Clause {
         return this;
     }
 
-    protected cypher(env: CypherEnvironment): string {
+    public getCypher(env: CypherEnvironment): string {
         const nodeCypher = this.pattern.getCypher(env);
         let whereCypher = "";
         let returnCypher = "";

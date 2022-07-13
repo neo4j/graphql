@@ -104,7 +104,7 @@ describe("Node Directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Comment\`)
             WHERE EXISTS {
-                MATCH (this0:\`Person\`)-[:\`HAS_POST\`]->(this)
+                MATCH (this0:\`Person\`)-[:HAS_POST]->(this)
                 WHERE this0.id = $param0
             }
             WITH this

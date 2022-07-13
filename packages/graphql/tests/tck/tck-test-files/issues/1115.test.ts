@@ -83,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
                 MERGE (this_connectOrCreate_children_this0:\`Child\` { tcId: $this_connectOrCreate_children_param0 })
                 ON CREATE SET
                     this_connectOrCreate_children_this0.tcId = $this_connectOrCreate_children_param1
-                MERGE (this_connectOrCreate_children_this0)-[this_connectOrCreate_children_this1:\`HAS\`]->(this)
+                MERGE (this_connectOrCreate_children_this0)-[this_connectOrCreate_children_this1:HAS]->(this)
                 RETURN COUNT(*) AS _
             }
             WITH this
@@ -93,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
                 MERGE (this_connectOrCreate_children_this2:\`Child\` { tcId: $this_connectOrCreate_children_param2 })
                 ON CREATE SET
                     this_connectOrCreate_children_this2.tcId = $this_connectOrCreate_children_param3
-                MERGE (this_connectOrCreate_children_this2)-[this_connectOrCreate_children_this3:\`HAS\`]->(this)
+                MERGE (this_connectOrCreate_children_this2)-[this_connectOrCreate_children_this3:HAS]->(this)
                 RETURN COUNT(*) AS _
             }
             RETURN 'Query cannot conclude with CALL'"

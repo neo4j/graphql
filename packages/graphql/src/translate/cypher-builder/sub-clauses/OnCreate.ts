@@ -23,9 +23,9 @@ import { SetClause, SetParam } from "./Set";
 export type OnCreateParam = SetParam;
 
 export class OnCreate extends SetClause {
-    protected cypher(env: CypherEnvironment): string {
+    public getCypher(env: CypherEnvironment): string {
         if (this.params.length === 0) return "";
-        const setCypher = super.cypher(env);
+        const setCypher = super.getCypher(env);
         return `ON CREATE ${setCypher}`;
     }
 }

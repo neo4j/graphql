@@ -44,6 +44,6 @@ export class RelationshipRef extends Variable {
     }
 
     public getTypeString(): string {
-        return this.type ? `:${escapeLabel(this.type)}` : "";
+        return this.type ? `:${this.type}` : "";
     }
 }

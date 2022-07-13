@@ -42,7 +42,7 @@ export class Where extends SubClause {
         this.addChildren(this.whereParams);
     }
 
-    protected cypher(env: CypherEnvironment): string {
+    public getCypher(env: CypherEnvironment): string {
         const opStr = this.whereParams.getCypher(env);
         return `WHERE ${opStr}`;
     }

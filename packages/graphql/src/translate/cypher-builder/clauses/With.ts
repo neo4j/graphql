@@ -41,7 +41,7 @@ export class With extends Clause {
         }
     }
 
-    protected cypher(env: CypherEnvironment): string {
+    public getCypher(env: CypherEnvironment): string {
         if (this.star === true) {
             return `WITH *`;
         }

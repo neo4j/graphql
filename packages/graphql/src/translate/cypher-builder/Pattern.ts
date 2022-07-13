@@ -87,7 +87,7 @@ export class Pattern<T extends MatchableElement> extends CypherASTNode {
         return this;
     }
 
-    protected cypher(env: CypherEnvironment): string {
+    public getCypher(env: CypherEnvironment): string {
         if (this.matchElement instanceof NodeRef) {
             return this.getNodeCypher(env, this.matchElement, this.parameters as MatchParams<NodeRef>);
         }

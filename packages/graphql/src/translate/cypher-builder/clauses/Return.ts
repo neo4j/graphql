@@ -34,7 +34,7 @@ export class Return extends Clause {
         this.returnArgs = args;
     }
 
-    protected cypher(env: CypherEnvironment): string {
+    public getCypher(env: CypherEnvironment): string {
         if (isString(this.returnArgs)) {
             return `RETURN ${this.returnArgs}`;
         }

@@ -41,7 +41,7 @@ export class Call extends Clause {
         return this;
     }
 
-    protected cypher(env: CypherEnvironment): string {
+    public getCypher(env: CypherEnvironment): string {
         let subQueryStr = this.subQuery.getCypher(env);
         if (this.importWith) {
             const withStr = this.importWith.getCypher(env);

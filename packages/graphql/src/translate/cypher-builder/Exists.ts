@@ -22,10 +22,9 @@ import { CypherASTNode } from "./CypherASTNode";
 import { padBlock } from "./utils";
 import type { Clause } from "./clauses/Clause";
 
-/** Note: This is not a clause, I have no idea what this is */
+/** Note: This is not a proper clause, I have no idea what this is */
 export class Exists extends CypherASTNode {
     private subQuery: CypherASTNode;
-    // private importWith: ImportWith | undefined;
 
     constructor(subQuery: Clause, parent?: CypherASTNode) {
         super(parent);
@@ -34,18 +33,8 @@ export class Exists extends CypherASTNode {
         this.subQuery = rootQuery;
     }
 
-    // public with(...params: Variable[]): this {
-    //     if (this.importWith) throw new Error("Call import already set");
-    //     this.importWith = new ImportWith(this, params);
-    //     return this;
-    // }
-
-    protected cypher(env: CypherEnvironment): string {
+    public getCypher(env: CypherEnvironment): string {
         const subQueryStr = this.subQuery.getCypher(env);
-        // if (this.importWith) {
-        //     const withStr = this.importWith.getCypher(env);
-        //     subQueryStr = `${withStr}\n${subQueryStr}`;
-        // }
         const paddedSubQuery = padBlock(subQueryStr);
         return `EXISTS {\n${paddedSubQuery}\n}`;
     }

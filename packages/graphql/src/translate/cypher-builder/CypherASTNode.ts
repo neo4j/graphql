@@ -19,13 +19,11 @@
 
 import { CypherEnvironment } from "./Environment";
 import type { CypherCompilable } from "./types";
-import type { Param } from "./variables/Param";
+// import type { Param } from "./variables/Param";
 
 /** Abstract class representing a Cypher Statement in the AST */
 export abstract class CypherASTNode implements CypherCompilable {
-    // protected children: Array<CypherASTNode> = [];
     protected parent?: CypherASTNode;
-    protected namedParams: Record<string, Param> = {}; // Only for compatibility reasons
 
     constructor(parent?: CypherASTNode) {
         this.parent = parent;
@@ -39,37 +37,11 @@ export abstract class CypherASTNode implements CypherCompilable {
     }
 
     /** Visitor pattern to generate the Cypher on nested nodes */
-    public getCypher(env: CypherEnvironment): string {
-        // Object.entries(this.namedParams).forEach(([name, param]) => {
-        //     context.addNamedParamReference(name, param); // Only for compatibility reasons
-        // });
-
-        // const childrenCypher = this.children.map((value) => value.getCypher(context)).join(separator);
-        return this.cypher(env);
-    }
-
-    // public addNamedParams(params: Record<string, Param>) {
-    //     this.namedParams = { ...this.namedParams, ...params };
-    // }
-
-    /** Defines the internal Cypher to generate by the ASTNode */
-    protected abstract cypher(env: CypherEnvironment): string;
+    public abstract getCypher(env: CypherEnvironment): string;
 
     protected getEnv(prefix?: string): CypherEnvironment {
         return new CypherEnvironment(prefix);
     }
-
-    // protected addStatement<C extends CypherASTNode>(astNode: C): C {
-    //     this.children.push(astNode);
-    //     astNode.setParent(this);
-    //     return astNode;
-    // }
-
-    // protected addASTNode<C extends CypherASTNode>(astNode: C): C {
-    //     this.children.push(astNode);
-    //     astNode.setParent(this);
-    //     return astNode;
-    // }
 
     /** Sets the parent-child relationship for build traversal */
     protected addChildren(...nodes: CypherASTNode[]): void {

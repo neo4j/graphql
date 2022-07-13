@@ -35,7 +35,7 @@ export class CypherFunction extends CypherASTNode {
         this.params = params;
     }
 
-    protected cypher(env: CypherEnvironment): string {
+    public getCypher(env: CypherEnvironment): string {
         const argsStr = this.params.map((expr) => expr.getCypher(env)).join(", ");
 
         return `${this.name}(${argsStr})`;
