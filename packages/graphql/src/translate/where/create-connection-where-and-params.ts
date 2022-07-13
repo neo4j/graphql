@@ -129,7 +129,7 @@ function createConnectionWhereAndParams({
                     });
 
                     whereStrs = [...whereStrs, k.endsWith("_NOT") ? `(NOT ${onTypeNodeWhere[0]})` : onTypeNodeWhere[0]];
-                    params = { ...params, [k]: onTypeNodeWhere[1] };
+                    params = { ...params, [k]: { _on: { [node.name]: onTypeNodeWhere[1] } } };
                     res = { whereStrs, params };
                 }
             }
