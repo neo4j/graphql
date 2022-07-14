@@ -2529,7 +2529,7 @@ __metadata:
     terser-webpack-plugin: 5.3.3
     ts-jest: 28.0.5
     ts-loader: 9.3.1
-    ts-node: 10.8.2
+    ts-node: 10.9.1
     tsconfig-paths-webpack-plugin: 3.5.2
     typescript: 4.7.4
     url-loader: 4.1.1
@@ -2589,7 +2589,7 @@ __metadata:
     semver: ^7.3.5
     supertest: 6.2.4
     ts-jest: 28.0.5
-    ts-node: 10.8.2
+    ts-node: 10.9.1
     typescript: 4.7.4
     ws: 8.8.0
   peerDependencies:
@@ -13619,7 +13619,7 @@ __metadata:
     nodemon: 2.0.19
     randomstring: 1.1.5
     ts-jest: 28.0.5
-    ts-node: 10.8.2
+    ts-node: 10.9.1
     tsconfig-paths: 4.0.0
     typescript: 4.7.4
   languageName: unknown
@@ -18520,9 +18520,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:10.8.2":
-  version: 10.8.2
-  resolution: "ts-node@npm:10.8.2"
+"ts-node@npm:10.9.1":
+  version: 10.9.1
+  resolution: "ts-node@npm:10.9.1"
   dependencies:
     "@cspotcode/source-map-support": ^0.8.0
     "@tsconfig/node10": ^1.0.7
@@ -18554,7 +18554,7 @@ __metadata:
     ts-node-script: dist/bin-script.js
     ts-node-transpile-only: dist/bin-transpile.js
     ts-script: dist/bin-script-deprecated.js
-  checksum: 1eede939beed9f4db35bcc88d78ef803815b99dcdbed1ecac728d861d74dc694918a7f0f437aa08d026193743a31e7e00e2ee34f875f909b5879981c1808e2a7
+  checksum: 090adff1302ab20bd3486e6b4799e90f97726ed39e02b39e566f8ab674fd5bd5f727f43615debbfc580d33c6d9d1c6b1b3ce7d8e3cca3e20530a145ffa232c35
   languageName: node
   linkType: hard
 
