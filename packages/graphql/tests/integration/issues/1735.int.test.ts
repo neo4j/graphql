@@ -85,7 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
         await graphql({
             source,
             schema,
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
             variableValues: { input },
         });
     });
