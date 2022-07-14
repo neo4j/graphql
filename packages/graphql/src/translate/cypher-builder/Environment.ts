@@ -48,20 +48,6 @@ export class CypherEnvironment {
         }, {} as Record<string, any>);
     }
 
-    private addVariableReference(variable: Variable): string {
-        const paramIndex = this.getParamsSize(); // Indexes are separate for readability reasons
-
-        if (variable instanceof Param) {
-            const varId = `${this.globalPrefix}${variable.prefix}${paramIndex}`;
-            return this.addParam(varId, variable);
-        }
-
-        const varIndex = this.references.size - paramIndex;
-        const varId = `${this.globalPrefix}${variable.prefix}${varIndex}`;
-        this.references.set(variable, varId);
-        return varId;
-    }
-
     public addNamedParamReference(name: string, param: Param): void {
         this.addParam(name, param);
     }
@@ -75,5 +61,19 @@ export class CypherEnvironment {
         this.references.set(param, paramId);
         this.params.push(param);
         return paramId;
+    }
+
+    private addVariableReference(variable: Variable): string {
+        const paramIndex = this.getParamsSize(); // Indexes are separate for readability reasons
+
+        if (variable instanceof Param) {
+            const varId = `${this.globalPrefix}${variable.prefix}${paramIndex}`;
+            return this.addParam(varId, variable);
+        }
+
+        const varIndex = this.references.size - paramIndex;
+        const varId = `${this.globalPrefix}${variable.prefix}${varIndex}`;
+        this.references.set(variable, varId);
+        return varId;
     }
 }

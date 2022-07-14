@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { CypherEnvironment } from "./Environment";
+import type { CypherEnvironment } from "./Environment";
 import type { CypherCompilable } from "./types";
 
 /** Abstract class representing a Cypher Statement in the AST */
@@ -35,12 +35,8 @@ export abstract class CypherASTNode implements CypherCompilable {
         return this;
     }
 
-    /** Visitor pattern to generate the Cypher on nested nodes */
+    /** Concrete tree traversal pattern to generate the Cypher on nested nodes */
     public abstract getCypher(env: CypherEnvironment): string;
-
-    protected getEnv(prefix?: string): CypherEnvironment {
-        return new CypherEnvironment(prefix);
-    }
 
     /** Sets the parent-child relationship for build traversal */
     protected addChildren(...nodes: CypherASTNode[]): void {

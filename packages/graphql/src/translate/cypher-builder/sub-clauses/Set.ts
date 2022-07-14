@@ -20,11 +20,13 @@
 import type { CypherASTNode } from "../CypherASTNode";
 import type { CypherEnvironment } from "../Environment";
 import type { PropertyRef } from "../PropertyRef";
+import type { Expr } from "../types";
 import { padBlock } from "../utils";
-import type { Param } from "../variables/Param";
+// import type { Param } from "../variables/Param";
 import { SubClause } from "./SubClause";
 
-export type SetParam = [PropertyRef, Param<any>];
+// TODO: set should accept an expression
+export type SetParam = [PropertyRef, Expr];
 
 export class SetClause extends SubClause {
     protected params: SetParam[];

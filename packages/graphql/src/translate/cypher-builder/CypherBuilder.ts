@@ -17,25 +17,34 @@
  * limitations under the License.
  */
 
+// Clauses
 export { Match } from "./clauses/Match";
 export { Create } from "./clauses/Create";
 export { Merge } from "./clauses/Merge";
 export { Call } from "./clauses/Call";
-export { Exists } from "./Exists";
 export { Return } from "./clauses/Return";
 export { RawCypher } from "./clauses/RawCypher";
 export { With } from "./clauses/With";
 
+// Clauses-like things
+export { Exists } from "./Exists";
+export { concat } from "./clauses/utils/concat";
+export * as db from "./clauses/db";
+
+// Variables and references
 export { NodeRef as Node, NamedNode } from "./variables/NodeRef";
 export { RelationshipRef as Relationship } from "./variables/RelationshipRef";
 export { Param, RawParam } from "./variables/Param";
 export { RawVariable, Variable } from "./variables/Variable";
 export { CypherNull as Null } from "./variables/Null";
 export { Literal } from "./variables/Literal";
+
+// Lists
 export { ListComprehension } from "./list/ListComprehension";
 
 export { Pattern } from "./Pattern"; // TODO: Maybe this should not be exported
 
+// Operations
 export { or, and, not } from "./operations/boolean";
 export {
     eq,
@@ -51,15 +60,13 @@ export {
     endsWith,
     matches,
 } from "./operations/comparison";
-
 export { plus, minus } from "./operations/math";
 
+// Functions
 export { coalesce, point, distance, cypherDatetime as datetime, labels } from "./functions/CypherFunction";
 
-export { CypherResult } from "./types";
-
-export { concat } from "./clauses/utils/concat";
-
+// Types
+export type { CypherResult } from "./types";
 export type { PropertyRef } from "./PropertyRef";
 export type { Clause } from "./clauses/Clause";
 export type { CypherEnvironment as Environment } from "./Environment";
@@ -69,5 +76,3 @@ export type { BooleanOp } from "./operations/boolean";
 export type { WhereParams } from "./sub-clauses/Where";
 export type { Expr } from "./types";
 export type { CypherFunction as Function } from "./functions/CypherFunction";
-
-export * as db from "./clauses/db";

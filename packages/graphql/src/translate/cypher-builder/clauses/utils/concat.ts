@@ -21,7 +21,7 @@ import type { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import { Clause } from "../Clause";
 
-class ConcatClause extends Clause {
+class CompositeClause extends Clause {
     private children: CypherASTNode[];
 
     constructor(children: Clause[], private separator: string) {
@@ -39,5 +39,5 @@ class ConcatClause extends Clause {
 
 /** Concatenates multiple clauses into a clause */
 export function concat(...clauses: Clause[]): Clause {
-    return new ConcatClause(clauses, "\n");
+    return new CompositeClause(clauses, "\n");
 }

@@ -18,6 +18,7 @@
  */
 
 import { CypherASTNode } from "../CypherASTNode";
+import { CypherEnvironment } from "../Environment";
 import type { CypherResult } from "../types";
 
 /** Represents a clause ast node */
@@ -33,5 +34,9 @@ export abstract class Clause extends CypherASTNode {
         }
         const root = this.getRoot() as Clause;
         return root.build(prefix);
+    }
+
+    private getEnv(prefix?: string): CypherEnvironment {
+        return new CypherEnvironment(prefix);
     }
 }
