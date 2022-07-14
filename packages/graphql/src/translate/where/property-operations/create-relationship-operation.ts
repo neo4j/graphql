@@ -19,6 +19,8 @@
 
 import type { Context, GraphQLWhereArg, RelationField } from "../../../types";
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
+// Recursive function
+// eslint-disable-next-line import/no-cycle
 import { createCypherWhereParams } from "../create-cypher-where-params";
 
 export function createRelationshipOperation({

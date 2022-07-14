@@ -21,6 +21,8 @@ import type { GraphQLWhereArg, Context } from "../../types";
 import type { Node } from "../../classes";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { filterTruthy } from "../../utils/utils";
+// Recursive function
+// eslint-disable-next-line import/no-cycle
 import { createWherePropertyOperation } from "./property-operations/create-where-property-operation";
 
 /** Translate a target node and GraphQL input into a Cypher operation o valid where expression */

@@ -23,6 +23,7 @@ import type { Node, Relationship } from "../../../classes";
 import createConnectionWhereAndParams from "../create-connection-where-and-params";
 import { getListPredicate } from "../utils";
 import { listPredicateToSizeFunction } from "../list-predicate-to-size-function";
+import type { WhereOperator } from "../types";
 
 export function createConnectionOperation({
     connectionField,
@@ -65,7 +66,7 @@ export function createConnectionOperation({
             relationship: { variable: true },
         });
 
-        const listPredicateStr = getListPredicate(operator as any);
+        const listPredicateStr = getListPredicate(operator as WhereOperator);
         const rawWhereQuery = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
             const contextRelationship = context.relationships.find(
                 (x) => x.name === connectionField.relationshipTypeName
