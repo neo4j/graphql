@@ -5,7 +5,7 @@
             "maxRows": 133,
             "dbHits": 267,
             "cache": {
-                "hits": 7,
+                "hits": 5,
                 "misses": 0
             },
             "time": 8
@@ -19,7 +19,7 @@
             "maxRows": 133,
             "dbHits": 400,
             "cache": {
-                "hits": 416,
+                "hits": 446,
                 "misses": 0
             },
             "time": 13
@@ -33,24 +33,38 @@
             "maxRows": 133,
             "dbHits": 287,
             "cache": {
-                "hits": 406,
+                "hits": 412,
                 "misses": 0
             },
-            "time": 10
+            "time": 12
         },
         "file": "aggregations",
         "type": "graphql"
     },
     {
-        "name": "Connection",
+        "name": "BatchCreate",
         "result": {
-            "maxRows": 172,
-            "dbHits": 593,
+            "maxRows": 1,
+            "dbHits": 2004,
             "cache": {
-                "hits": 104,
+                "hits": 0,
                 "misses": 0
             },
-            "time": 10
+            "time": 750
+        },
+        "file": "batch-create",
+        "type": "graphql"
+    },
+    {
+        "name": "Connection",
+        "result": {
+            "maxRows": 539,
+            "dbHits": 1595,
+            "cache": {
+                "hits": 622,
+                "misses": 0
+            },
+            "time": 13
         },
         "file": "connections",
         "type": "graphql"
@@ -58,27 +72,41 @@
     {
         "name": "NestedConnection",
         "result": {
-            "maxRows": 512,
-            "dbHits": 2301,
+            "maxRows": 539,
+            "dbHits": 3303,
             "cache": {
-                "hits": 544,
+                "hits": 1243,
                 "misses": 0
             },
-            "time": 22
+            "time": 16
         },
         "file": "connections",
         "type": "graphql"
     },
     {
-        "name": "SimpleQuery",
+        "name": "SimpleMutation",
         "result": {
-            "maxRows": 172,
-            "dbHits": 631,
+            "maxRows": 1,
+            "dbHits": 4,
             "cache": {
-                "hits": 105,
+                "hits": 0,
                 "misses": 0
             },
-            "time": 14
+            "time": 16
+        },
+        "file": "create",
+        "type": "graphql"
+    },
+    {
+        "name": "SimpleQuery",
+        "result": {
+            "maxRows": 540,
+            "dbHits": 2137,
+            "cache": {
+                "hits": 634,
+                "misses": 0
+            },
+            "time": 13
         },
         "file": "query",
         "type": "graphql"
@@ -86,24 +114,10 @@
     {
         "name": "QueryWhere",
         "result": {
-            "maxRows": 160,
-            "dbHits": 411,
+            "maxRows": 540,
+            "dbHits": 1413,
             "cache": {
-                "hits": 95,
-                "misses": 0
-            },
-            "time": 12
-        },
-        "file": "query",
-        "type": "graphql"
-    },
-    {
-        "name": "SimpleQueryWithNestedWhere",
-        "result": {
-            "maxRows": 160,
-            "dbHits": 499,
-            "cache": {
-                "hits": 121,
+                "hits": 621,
                 "misses": 0
             },
             "time": 9
@@ -112,15 +126,29 @@
         "type": "graphql"
     },
     {
+        "name": "SimpleQueryWithNestedWhere",
+        "result": {
+            "maxRows": 540,
+            "dbHits": 1501,
+            "cache": {
+                "hits": 641,
+                "misses": 0
+            },
+            "time": 8
+        },
+        "file": "query",
+        "type": "graphql"
+    },
+    {
         "name": "DeeplyNested",
         "result": {
             "maxRows": 40588,
-            "dbHits": 203784,
+            "dbHits": 204788,
             "cache": {
-                "hits": 50456,
+                "hits": 58003,
                 "misses": 0
             },
-            "time": 360
+            "time": 374
         },
         "file": "query",
         "type": "graphql"
@@ -128,10 +156,38 @@
     {
         "name": "OrFilterOnRelationships",
         "result": {
-            "maxRows": 172,
-            "dbHits": 2050,
+            "maxRows": 540,
+            "dbHits": 5902,
             "cache": {
-                "hits": 502,
+                "hits": 3693,
+                "misses": 0
+            },
+            "time": 24
+        },
+        "file": "query",
+        "type": "graphql"
+    },
+    {
+        "name": "OrFilterOnRelationshipsAndNested",
+        "result": {
+            "maxRows": 540,
+            "dbHits": 5452,
+            "cache": {
+                "hits": 3979,
+                "misses": 0
+            },
+            "time": 69
+        },
+        "file": "query",
+        "type": "graphql"
+    },
+    {
+        "name": "QueryWithNestedIn",
+        "result": {
+            "maxRows": 540,
+            "dbHits": 1657,
+            "cache": {
+                "hits": 661,
                 "misses": 0
             },
             "time": 10
@@ -140,43 +196,15 @@
         "type": "graphql"
     },
     {
-        "name": "OrFilterOnRelationshipsAndNested",
-        "result": {
-            "maxRows": 172,
-            "dbHits": 1954,
-            "cache": {
-                "hits": 956,
-                "misses": 0
-            },
-            "time": 70
-        },
-        "file": "query",
-        "type": "graphql"
-    },
-    {
-        "name": "QueryWithNestedIn",
-        "result": {
-            "maxRows": 150,
-            "dbHits": 667,
-            "cache": {
-                "hits": 136,
-                "misses": 0
-            },
-            "time": 15
-        },
-        "file": "query",
-        "type": "graphql"
-    },
-    {
         "name": "NestedConnectionWhere",
         "result": {
-            "maxRows": 172,
-            "dbHits": 603,
+            "maxRows": 540,
+            "dbHits": 1607,
             "cache": {
-                "hits": 1093,
+                "hits": 1810,
                 "misses": 0
             },
-            "time": 34
+            "time": 17
         },
         "file": "query",
         "type": "graphql"
@@ -187,10 +215,10 @@
             "maxRows": 35,
             "dbHits": 214,
             "cache": {
-                "hits": 25,
+                "hits": 31,
                 "misses": 0
             },
-            "time": 19
+            "time": 6
         },
         "file": "unions",
         "type": "graphql"
