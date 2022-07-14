@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
+import pluralize from "pluralize";
 import type { Node, Relationship } from "../classes";
-import type { Context } from "../types";
+import type { BaseField, Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createCreateAndParams from "./create-create-and-params";
@@ -38,6 +39,7 @@ import type { CallbackBucket } from "../classes/CallbackBucket";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { buildMathStatements, matchMathField, mathDescriptorBuilder } from "./utils/math";
 import { indentBlock } from "./utils/indent-block";
+import { wrapStringInApostrophes } from "../utils/wrap-string-in-apostrophes";
 
 interface Res {
     strs: string[];
@@ -46,6 +48,7 @@ interface Res {
 }
 
 interface UpdateMeta {
+    preArrayMethodValidationStrs: [string, string][];
     preAuthStrs: string[];
     postAuthStrs: string[];
 }
@@ -282,7 +285,9 @@ export default function createUpdateAndParams({
                             });
 
                             const updateStrs = [escapeQuery(setProperties), escapeQuery("RETURN count(*) AS _")];
-                            const varsAsArgumentString = withVars.map(variable => `${variable}:${variable}`).join(", ");
+                            const varsAsArgumentString = withVars
+                                .map((variable) => `${variable}:${variable}`)
+                                .join(", ");
                             const apocArgs = `{${varsAsArgumentString}, ${relationshipVariable}:${relationshipVariable}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}, resolvedCallbacks: $resolvedCallbacks}`;
@@ -506,7 +511,7 @@ export default function createUpdateAndParams({
                 });
 
                 if (!res.meta) {
-                    res.meta = { preAuthStrs: [], postAuthStrs: [] };
+                    res.meta = { preArrayMethodValidationStrs: [], preAuthStrs: [], postAuthStrs: [] };
                 }
 
                 if (preAuth[0]) {
@@ -521,6 +526,10 @@ export default function createUpdateAndParams({
             }
         }
 
+        arrayPush(node, key, res, varName, param, value);
+
+        arrayPop(node, key, res, varName, param, value);
+
         return res;
     }
 
@@ -529,7 +538,7 @@ export default function createUpdateAndParams({
         params: {},
     });
 
-    const { strs, meta = { preAuthStrs: [], postAuthStrs: [] } } = reducedUpdate;
+    const { strs, meta = { preArrayMethodValidationStrs: [], preAuthStrs: [], postAuthStrs: [] } } = reducedUpdate;
     let params = reducedUpdate.params;
 
     let preAuthStrs: string[] = [];
@@ -565,6 +574,7 @@ export default function createUpdateAndParams({
         postAuthStrs = [...postAuthStrs, ...meta.postAuthStrs];
     }
 
+    let preArrayMethodValidationStr = "";
     let preAuthStr = "";
     let postAuthStr = "";
     const relationshipValidationStr = includeRelationshipValidation
@@ -572,6 +582,18 @@ export default function createUpdateAndParams({
         : "";
 
     const forbiddenString = `"${AUTH_FORBIDDEN_ERROR}"`;
+
+    if (meta.preArrayMethodValidationStrs.length) {
+        const nullChecks = meta.preArrayMethodValidationStrs.map((validationStr) => `${validationStr[0]} IS NULL`);
+        const propertyNames = meta.preArrayMethodValidationStrs.map((validationStr) => validationStr[1]);
+
+        preArrayMethodValidationStr = `CALL apoc.util.validate(${nullChecks.join(" OR ")}, "${pluralize(
+            "Property",
+            propertyNames.length
+        )} ${propertyNames.map(() => "%s").join(", ")} cannot be NULL", [${wrapStringInApostrophes(propertyNames).join(
+            ", "
+        )}])`;
+    }
 
     if (preAuthStrs.length) {
         const apocStr = `CALL apoc.util.validate(NOT (${preAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
@@ -595,12 +617,55 @@ export default function createUpdateAndParams({
     return [
         [
             preAuthStr,
+            preArrayMethodValidationStr,
             ...statements,
             postAuthStr,
             ...(relationshipValidationStr ? [withStr, relationshipValidationStr] : []),
         ].join("\n"),
         params,
     ];
+}
+
+function validateNonNullProperty(res: Res, varName: string, field: BaseField) {
+    if (!res.meta) {
+        res.meta = { preArrayMethodValidationStrs: [], preAuthStrs: [], postAuthStrs: [] };
+    }
+
+    res.meta.preArrayMethodValidationStrs.push([`${varName}.${field.dbPropertyName}`, `${field.dbPropertyName}`]);
+}
+
+function arrayPush(node: Node, key: string, res: Res, varName: string, param: string, value: any) {
+    const arrayFieldsPush = node.mutableFields.find((x) => `${x.fieldName}_PUSH` === key);
+
+    if (arrayFieldsPush) {
+        validateNonNullProperty(res, varName, arrayFieldsPush);
+
+        const pointArrayField = node.pointFields.find((x) => `${x.fieldName}_PUSH` === key);
+        if (pointArrayField) {
+            res.strs.push(
+                `SET ${varName}.${arrayFieldsPush.dbPropertyName} = ${varName}.${arrayFieldsPush.dbPropertyName} + [p in $${param} | point(p)]`
+            );
+        } else {
+            res.strs.push(
+                `SET ${varName}.${arrayFieldsPush.dbPropertyName} = ${varName}.${arrayFieldsPush.dbPropertyName} + $${param}`
+            );
+        }
+
+        res.params[param] = value;
+    }
+}
+
+function arrayPop(node: Node, key: string, res: Res, varName: string, param: string, value: any) {
+    const arrayFieldsPop = node.mutableFields.find((x) => `${x.fieldName}_POP` === key);
+    if (arrayFieldsPop) {
+        validateNonNullProperty(res, varName, arrayFieldsPop);
+
+        res.strs.push(
+            `SET ${varName}.${arrayFieldsPop.dbPropertyName} = ${varName}.${arrayFieldsPop.dbPropertyName}[0..-$${param}]`
+        );
+
+        res.params[param] = value;
+    }
 }
 
 function wrapInSubscriptionsMetaCall({
