@@ -19,7 +19,6 @@
 
 import { CypherEnvironment } from "./Environment";
 import type { CypherCompilable } from "./types";
-// import type { Param } from "./variables/Param";
 
 /** Abstract class representing a Cypher Statement in the AST */
 export abstract class CypherASTNode implements CypherCompilable {

@@ -69,7 +69,7 @@ export function createConnectOrCreateAndParams({
 
     const wrappedQueries = statements.map((statement) => {
         const returnStatement = new CypherBuilder.Return("COUNT(*) AS _");
-        const withStatement = new CypherBuilder.With(withVarsVariables);
+        const withStatement = new CypherBuilder.With(...withVarsVariables);
         const callStatement = new CypherBuilder.Call(CypherBuilder.concat(statement, returnStatement)).with(
             ...withVarsVariables
         );

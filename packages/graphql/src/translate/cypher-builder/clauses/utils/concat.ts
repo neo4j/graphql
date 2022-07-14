@@ -17,13 +17,18 @@
  * limitations under the License.
  */
 
+import type { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import { Clause } from "../Clause";
 
 class ConcatClause extends Clause {
-    constructor(private children: Clause[], private separator: string) {
+    private children: CypherASTNode[];
+
+    constructor(children: Clause[], private separator: string) {
         super();
-        this.addChildren(...children);
+        const childrenRoots = children.map((c) => c.getRoot());
+        this.addChildren(...childrenRoots);
+        this.children = childrenRoots;
     }
 
     public getCypher(env: CypherEnvironment): string {

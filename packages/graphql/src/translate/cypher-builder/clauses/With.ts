@@ -21,23 +21,28 @@ import { isString } from "graphql-compose";
 import { RawVariable, Variable } from "../variables/Variable";
 import type { CypherEnvironment } from "../Environment";
 import { Clause } from "./Clause";
+import { compileCypherIfExists } from "../utils";
+
+type WithVariable = Variable | string;
+type WithInputElement = WithVariable | [WithVariable, WithVariable];
+
+type WithVariableAndAlias = {
+    variable: Variable;
+    alias?: Variable;
+};
 
 export class With extends Clause {
-    private variables: Variable[] = [];
+    private variables: WithVariableAndAlias[] = [];
     private star = false;
 
-    constructor(variables: Array<Variable | string> | "*", parent?: Clause) {
-        super(parent);
-
-        if (Array.isArray(variables)) {
-            this.variables = variables.map((rawVar) => {
-                if (isString(rawVar)) {
-                    return new RawVariable(rawVar);
-                }
-                return rawVar;
-            });
-        } else {
+    constructor(str: "*");
+    constructor(...variables: Array<WithInputElement>);
+    constructor(str1: WithInputElement | "*", ...variables: Array<WithInputElement>) {
+        super();
+        if (str1 === "*") {
             this.star = true;
+        } else {
+            this.variables = this.parseVarInput([str1, ...variables]);
         }
     }
 
@@ -48,10 +53,35 @@ export class With extends Clause {
 
         const projection = this.variables
             .map((v) => {
-                return env.getVariableId(v);
+                const varCypher = v.variable.getCypher(env);
+                const aliasCypher = compileCypherIfExists(v.alias, env, { prefix: " AS " });
+                return `${varCypher}${aliasCypher}`;
             })
             .join(",");
 
         return `WITH ${projection}`;
+    }
+
+    private parseVarInput(variables: Array<WithInputElement>): WithVariableAndAlias[] {
+        return variables.map((rawVar) => {
+            if (Array.isArray(rawVar)) {
+                const [variableOrString, aliasOrString] = rawVar;
+
+                return {
+                    variable: this.varOrStringToVar(variableOrString),
+                    alias: this.varOrStringToVar(aliasOrString),
+                };
+            }
+            return {
+                variable: this.varOrStringToVar(rawVar),
+            };
+        });
+    }
+
+    private varOrStringToVar(rawVar: Variable | string): Variable {
+        if (isString(rawVar)) {
+            return new RawVariable(rawVar);
+        }
+        return rawVar;
     }
 }

@@ -23,10 +23,13 @@ import type { CypherASTNode } from "../CypherASTNode";
 import { compileCypherIfExists, padBlock } from "../utils";
 import { ImportWith } from "../sub-clauses/ImportWith";
 import type { Variable } from "../variables/Variable";
+import { Return } from "./Return";
+import type { NodeRef } from "../variables/NodeRef";
 
 export class Call extends Clause {
     private subQuery: CypherASTNode;
     private importWith: ImportWith | undefined;
+    private returnClause: Return | undefined;
 
     constructor(subQuery: Clause, parent?: Clause) {
         super(parent);
@@ -41,11 +44,19 @@ export class Call extends Clause {
         return this;
     }
 
+    public return(node: NodeRef, fields?: string[], alias?: string): Return {
+        const returnClause = new Return([node, fields, alias]);
+        this.addChildren(returnClause);
+        this.returnClause = returnClause;
+        return returnClause;
+    }
+
     public getCypher(env: CypherEnvironment): string {
         const subQueryStr = this.subQuery.getCypher(env);
         const withCypher = compileCypherIfExists(this.importWith, env, { suffix: "\n" });
+        const returnCypher = compileCypherIfExists(this.returnClause, env, { prefix: "\n" });
         const inCallBlock = `${withCypher}${subQueryStr}`;
 
-        return `CALL {\n${padBlock(inCallBlock)}\n}`;
+        return `CALL {\n${padBlock(inCallBlock)}\n}${returnCypher}`;
     }
 }

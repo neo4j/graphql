@@ -37,7 +37,7 @@ describe("CypherBuilder Match Examples", () => {
             type: "ACTED_IN",
         });
 
-        // This where is a simplified sugar syntax to simple x=y AND z=w queries
+        // This where is a simplified sugar syntax for simple x=y AND z=w queries
         const matchQuery = new CypherBuilder.Match(relationship)
             .where(personNode, { name: nameParam })
             .and(movieNode, { released: releasedParam })
@@ -112,7 +112,6 @@ describe("CypherBuilder Match Examples", () => {
             labels: ["Person"],
         });
 
-        // This where is a simplified sugar syntax to simple x=y AND z=w queries
         const matchQuery = new CypherBuilder.Match(personNode)
             .where(personNode, { name: nameParam })
             .set([personNode.property("name"), evilKeanu])

@@ -18,7 +18,6 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import type { Param } from "../variables/Param";
 import type { NodeRef } from "../variables/NodeRef";
 import { MatchableElement, MatchParams, Pattern } from "../Pattern";
 import { Where, WhereParams } from "../sub-clauses/Where";
@@ -48,14 +47,13 @@ export class Match<T extends MatchableElement = any> extends Clause {
     }
 
     public where(input: WhereParams): this;
-    public where(target: Variable, params: Record<string, Param>): this;
-    public where(input: WhereParams | Variable, params?: Record<string, Param>): this {
+    public where(target: Variable, params: Record<string, Variable>): this;
+    public where(input: WhereParams | Variable, params?: Record<string, Variable>): this {
         const whereInput = this.createWhereInput(input, params);
         if (!whereInput) return this;
 
         if (!this.whereSubClause) {
             const whereClause = new Where(this, whereInput);
-            this.addChildren(whereClause);
             this.whereSubClause = whereClause;
         } else {
             this.and(whereInput);
@@ -64,8 +62,8 @@ export class Match<T extends MatchableElement = any> extends Clause {
     }
 
     public and(input: WhereParams): this;
-    public and(target: Variable, params: Record<string, Param>): this;
-    public and(input: WhereParams | Variable, params?: Record<string, Param>): this {
+    public and(target: Variable, params: Record<string, Variable>): this;
+    public and(input: WhereParams | Variable, params?: Record<string, Variable>): this {
         if (!this.whereSubClause) throw new Error("Cannot and without a where");
         const whereInput = this.createWhereInput(input, params);
         if (whereInput) {
@@ -102,7 +100,7 @@ export class Match<T extends MatchableElement = any> extends Clause {
 
     private createWhereInput(
         input: WhereParams | Variable,
-        params: Record<string, Param> | undefined
+        params: Record<string, Variable> | undefined
     ): WhereParams | undefined {
         if (input instanceof Variable) {
             const generatedOp = variableAndObjectToOperation(input, params || {});
@@ -115,7 +113,7 @@ export class Match<T extends MatchableElement = any> extends Clause {
 /** Transforms a simple input into an operation sub tree */
 function variableAndObjectToOperation(
     target: Variable,
-    params: Record<string, Param>
+    params: Record<string, Variable>
 ): BooleanOp | ComparisonOp | undefined {
     let operation: BooleanOp | ComparisonOp | undefined;
     for (const [key, value] of Object.entries(params)) {
