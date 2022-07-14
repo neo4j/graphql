@@ -238,32 +238,32 @@ describe("Math operators", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:Actor)
-WITH this
-OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
-WITH this_acted_in0_relationship, this
-CALL {
-WITH this_acted_in0_relationship
-CALL apoc.util.validate(apoc.meta.type(this_acted_in0_relationship.pay) = \\\\\\"NULL\\\\\\", 'Cannot %s %s to Nan', [\\\\\\"_ADD\\\\\\", $updateActors.args.update.actedIn[0].update.edge.pay_ADD])
-CALL apoc.util.validate(this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_ADD > 2^63-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\\\\\"_ADD\\\\\\", \\\\\\"64\\\\\\"])
-CALL apoc.util.validate(apoc.meta.type(this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_ADD) <> \\\\\\"FLOAT\\\\\\", 'Type Mismatch: Value returned from operator %s does not match: %s', [\\\\\\"_ADD\\\\\\", \\\\\\"Float\\\\\\"])
-SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_ADD
-RETURN this_acted_in0_relationship as this_acted_in0_relationship_pay__ADD
-}
-RETURN count(*) AS _
-\\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, resolvedCallbacks: $resolvedCallbacks})
-YIELD value AS this_acted_in0_relationship_actedIn0_edge
-WITH this
-CALL {
-WITH this
-MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
-WITH collect({ pay: this_acted_in_relationship.pay }) AS edges
-UNWIND edges as edge
-RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
-}
-RETURN collect(DISTINCT this { .name, actedIn: [ (this)-[:ACTED_IN]->(this_actedIn:Movie)   | this_actedIn { .title } ], actedInConnection }) AS data"
-`);
+            "MATCH (this:Actor)
+            WITH this
+            OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
+            CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
+            WITH this_acted_in0_relationship, this
+            CALL {
+            WITH this_acted_in0_relationship
+            CALL apoc.util.validate(apoc.meta.type(this_acted_in0_relationship.pay) = \\\\\\"NULL\\\\\\", 'Cannot %s %s to Nan', [\\\\\\"_ADD\\\\\\", $updateActors.args.update.actedIn[0].update.edge.pay_ADD])
+            CALL apoc.util.validate(this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_ADD > 2^63-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\\\\\"_ADD\\\\\\", \\\\\\"64\\\\\\"])
+            CALL apoc.util.validate(apoc.meta.type(this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_ADD) <> \\\\\\"FLOAT\\\\\\", 'Type Mismatch: Value returned from operator %s does not match: %s', [\\\\\\"_ADD\\\\\\", \\\\\\"Float\\\\\\"])
+            SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_ADD
+            RETURN this_acted_in0_relationship as this_acted_in0_relationship_pay__ADD
+            }
+            RETURN count(*) AS _
+            \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, resolvedCallbacks: $resolvedCallbacks})
+            YIELD value AS this_acted_in0_relationship_actedIn0_edge
+            WITH this
+            CALL {
+            WITH this
+            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
+            WITH collect({ pay: this_acted_in_relationship.pay }) AS edges
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
+            }
+            RETURN collect(DISTINCT this { .name, actedIn: [ (this)-[:ACTED_IN]->(this_actedIn:Movie)   | this_actedIn { .title } ], actedInConnection }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

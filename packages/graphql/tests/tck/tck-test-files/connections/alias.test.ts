@@ -111,26 +111,26 @@ describe("Connections Alias", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:Movie)
-WHERE this.title = $this_title
-CALL {
-WITH this
-MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-WHERE this_actor.name = $this_hanks.args.where.node.name
-WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-UNWIND edges as edge
-RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS hanks
-}
-CALL {
-WITH this
-MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-WHERE this_actor.name = $this_jenny.args.where.node.name
-WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-UNWIND edges as edge
-RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS jenny
-}
-RETURN this { .title, hanks, jenny } as this"
-`);
+            "MATCH (this:Movie)
+            WHERE this.title = $this_title
+            CALL {
+            WITH this
+            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+            WHERE this_actor.name = $this_hanks.args.where.node.name
+            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS hanks
+            }
+            CALL {
+            WITH this
+            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+            WHERE this_actor.name = $this_jenny.args.where.node.name
+            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS jenny
+            }
+            RETURN this { .title, hanks, jenny } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

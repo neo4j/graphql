@@ -123,16 +123,16 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`Film\`)
-CALL {
-WITH this
-MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:\`Person\`)
-WITH collect({ node: { name: this_actor.name } }) AS edges
-UNWIND edges as edge
-RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
-}
-RETURN this { .title, actorsConnection } as this"
-`);
+            "MATCH (this:\`Film\`)
+            CALL {
+            WITH this
+            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:\`Person\`)
+            WITH collect({ node: { name: this_actor.name } }) AS edges
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+            }
+            RETURN this { .title, actorsConnection } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });

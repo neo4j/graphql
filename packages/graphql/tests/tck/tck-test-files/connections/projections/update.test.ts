@@ -82,18 +82,18 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:Movie)
-WHERE this.title = $this_title
-WITH this
-CALL {
-WITH this
-MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-UNWIND edges as edge
-RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
-}
-RETURN collect(DISTINCT this { .title, actorsConnection }) AS data"
-`);
+            "MATCH (this:Movie)
+            WHERE this.title = $this_title
+            WITH this
+            CALL {
+            WITH this
+            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+            }
+            RETURN collect(DISTINCT this { .title, actorsConnection }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

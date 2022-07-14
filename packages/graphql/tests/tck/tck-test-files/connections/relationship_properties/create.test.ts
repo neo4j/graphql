@@ -89,26 +89,26 @@ describe("Relationship Properties Create Cypher", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"CALL {
-CREATE (this0:Movie)
-SET this0.title = $this0_title
-WITH this0
-CREATE (this0_actors0_node:Actor)
-SET this0_actors0_node.name = $this0_actors0_node_name
-MERGE (this0)<-[this0_actors0_relationship:ACTED_IN]-(this0_actors0_node)
-SET this0_actors0_relationship.screenTime = $this0_actors0_relationship_screenTime
-RETURN this0
-}
-CALL {
-WITH this0
-MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
-WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
-UNWIND edges as edge
-RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
-}
-RETURN [
-this0 { .title, actorsConnection }] AS data"
-`);
+            "CALL {
+            CREATE (this0:Movie)
+            SET this0.title = $this0_title
+            WITH this0
+            CREATE (this0_actors0_node:Actor)
+            SET this0_actors0_node.name = $this0_actors0_node_name
+            MERGE (this0)<-[this0_actors0_relationship:ACTED_IN]-(this0_actors0_node)
+            SET this0_actors0_relationship.screenTime = $this0_actors0_relationship_screenTime
+            RETURN this0
+            }
+            CALL {
+            WITH this0
+            MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
+            WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+            }
+            RETURN [
+            this0 { .title, actorsConnection }] AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

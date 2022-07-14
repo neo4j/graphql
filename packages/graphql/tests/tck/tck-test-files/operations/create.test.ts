@@ -327,33 +327,33 @@ describe("Cypher Create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"CALL {
-CREATE (this0:Actor)
-SET this0.name = $this0_name
-WITH this0
-CALL {
-	WITH this0
-	OPTIONAL MATCH (this0_movies_connect0_node:Movie)
-	WHERE this0_movies_connect0_node.id = $this0_movies_connect0_node_id
-	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
-		FOREACH(_ IN CASE this0_movies_connect0_node WHEN NULL THEN [] ELSE [1] END |
-			MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
-		)
-	)
-	RETURN count(*) AS _
-}
-RETURN this0
-}
-RETURN [
-this0 { .name, movies: [ (this0)-[:ACTED_IN]->(this0_movies:Movie)   | this0_movies { actorsConnection: apoc.cypher.runFirstColumn(\\"CALL {
-WITH this0_movies
-MATCH (this0_movies)<-[this0_movies_acted_in_relationship:ACTED_IN]-(this0_movies_actor:Actor)
-WHERE this0_movies_actor.name = $projection_movies_actorsConnection.args.where.node.name
-WITH collect({ node: { name: this0_movies_actor.name } }) AS edges
-UNWIND edges as edge
-RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
-} RETURN actorsConnection\\", { this0_movies: this0_movies, projection_movies_actorsConnection: $projection_movies_actorsConnection, auth: $auth }, false) } ] }] AS data"
-`);
+            "CALL {
+            CREATE (this0:Actor)
+            SET this0.name = $this0_name
+            WITH this0
+            CALL {
+            	WITH this0
+            	OPTIONAL MATCH (this0_movies_connect0_node:Movie)
+            	WHERE this0_movies_connect0_node.id = $this0_movies_connect0_node_id
+            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE this0_movies_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            			MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
+            		)
+            	)
+            	RETURN count(*) AS _
+            }
+            RETURN this0
+            }
+            RETURN [
+            this0 { .name, movies: [ (this0)-[:ACTED_IN]->(this0_movies:Movie)   | this0_movies { actorsConnection: apoc.cypher.runFirstColumn(\\"CALL {
+            WITH this0_movies
+            MATCH (this0_movies)<-[this0_movies_acted_in_relationship:ACTED_IN]-(this0_movies_actor:Actor)
+            WHERE this0_movies_actor.name = $projection_movies_actorsConnection.args.where.node.name
+            WITH collect({ node: { name: this0_movies_actor.name } }) AS edges
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+            } RETURN actorsConnection\\", { this0_movies: this0_movies, projection_movies_actorsConnection: $projection_movies_actorsConnection, auth: $auth }, false) } ] }] AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

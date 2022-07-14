@@ -81,17 +81,17 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:Movie)
-CALL {
-WITH this
-MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-WHERE this_acted_in_relationship.screenTime IN $this_actorsConnection.args.where.edge.screenTime_IN
-WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-UNWIND edges as edge
-RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
-}
-RETURN this { .title, actorsConnection } as this"
-`);
+            "MATCH (this:Movie)
+            CALL {
+            WITH this
+            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+            WHERE this_acted_in_relationship.screenTime IN $this_actorsConnection.args.where.edge.screenTime_IN
+            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+            }
+            RETURN this { .title, actorsConnection } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -140,17 +140,17 @@ RETURN this { .title, actorsConnection } as this"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:Movie)
-CALL {
-WITH this
-MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-WHERE (NOT this_acted_in_relationship.screenTime IN $this_actorsConnection.args.where.edge.screenTime_NOT_IN)
-WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-UNWIND edges as edge
-RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
-}
-RETURN this { .title, actorsConnection } as this"
-`);
+            "MATCH (this:Movie)
+            CALL {
+            WITH this
+            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+            WHERE (NOT this_acted_in_relationship.screenTime IN $this_actorsConnection.args.where.edge.screenTime_NOT_IN)
+            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+            }
+            RETURN this { .title, actorsConnection } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -199,17 +199,17 @@ RETURN this { .title, actorsConnection } as this"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:Movie)
-CALL {
-WITH this
-MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-WHERE $this_actorsConnection.args.where.edge.quotes_INCLUDES IN this_acted_in_relationship.quotes
-WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-UNWIND edges as edge
-RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
-}
-RETURN this { .title, actorsConnection } as this"
-`);
+            "MATCH (this:Movie)
+            CALL {
+            WITH this
+            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+            WHERE $this_actorsConnection.args.where.edge.quotes_INCLUDES IN this_acted_in_relationship.quotes
+            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+            }
+            RETURN this { .title, actorsConnection } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -249,17 +249,17 @@ RETURN this { .title, actorsConnection } as this"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:Movie)
-CALL {
-WITH this
-MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-WHERE (NOT $this_actorsConnection.args.where.edge.quotes_NOT_INCLUDES IN this_acted_in_relationship.quotes)
-WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-UNWIND edges as edge
-RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
-}
-RETURN this { .title, actorsConnection } as this"
-`);
+            "MATCH (this:Movie)
+            CALL {
+            WITH this
+            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+            WHERE (NOT $this_actorsConnection.args.where.edge.quotes_NOT_INCLUDES IN this_acted_in_relationship.quotes)
+            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+            }
+            RETURN this { .title, actorsConnection } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

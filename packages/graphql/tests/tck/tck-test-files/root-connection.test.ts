@@ -188,26 +188,26 @@ describe("Root Connection Query tests", () => {
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, { req });
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"CALL {
-MATCH (this:Movie)
-WITH COLLECT(this) as edges
-WITH edges, size(edges) as totalCount
-UNWIND edges as this
-WITH this, totalCount, { } as edges
-RETURN this, totalCount, edges
-ORDER BY this.title ASC
-LIMIT $this_limit
-}
-CALL {
-WITH this
-MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-WITH collect({ node: { name: this_actor.name } }) AS edges
-UNWIND edges as edge
-RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
-}
-WITH COLLECT({ node: this { .title, actorsConnection } }) as edges, totalCount
-RETURN { edges: edges, totalCount: totalCount } as this"
-`);
+            "CALL {
+            MATCH (this:Movie)
+            WITH COLLECT(this) as edges
+            WITH edges, size(edges) as totalCount
+            UNWIND edges as this
+            WITH this, totalCount, { } as edges
+            RETURN this, totalCount, edges
+            ORDER BY this.title ASC
+            LIMIT $this_limit
+            }
+            CALL {
+            WITH this
+            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+            WITH collect({ node: { name: this_actor.name } }) AS edges
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+            }
+            WITH COLLECT({ node: this { .title, actorsConnection } }) as edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
