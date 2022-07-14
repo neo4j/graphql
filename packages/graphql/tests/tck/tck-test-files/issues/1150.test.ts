@@ -133,11 +133,11 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS driveComponentConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS driveComponentConnection
             }
             WITH collect({ node: { driveComponentConnection: driveComponentConnection } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS driveCompositionsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS driveCompositionsConnection
             }
             RETURN this { .current, driveCompositionsConnection } as this"
         `);

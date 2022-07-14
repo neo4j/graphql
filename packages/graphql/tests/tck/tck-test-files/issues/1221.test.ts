@@ -100,11 +100,11 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             WHERE this_masterdata_has_name_relationship.current = $this_architectureConnection.edges.node.nameDetailsConnection.args.where.edge.current
             WITH collect({ node: { fullName: this_masterdata_namedetails.fullName } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS nameDetailsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS nameDetailsConnection
             }
             WITH collect({ node: { nameDetailsConnection: nameDetailsConnection } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS architectureConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS architectureConnection
             }
             RETURN this { .id, architectureConnection } as this"
         `);
@@ -248,15 +248,15 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             WHERE this_series_masterdata_has_name_relationship.current = $this_mainConnection.edges.node.architectureConnection.edges.node.nameDetailsConnection.args.where.edge.current
             WITH collect({ node: { fullName: this_series_masterdata_namedetails.fullName } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS nameDetailsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS nameDetailsConnection
             }
             WITH collect({ node: { nameDetailsConnection: nameDetailsConnection } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS architectureConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS architectureConnection
             }
             WITH collect({ node: { architectureConnection: architectureConnection } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS mainConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS mainConnection
             }
             RETURN this { .id, mainConnection } as this"
         `);

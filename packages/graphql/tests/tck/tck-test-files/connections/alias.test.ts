@@ -119,7 +119,7 @@ describe("Connections Alias", () => {
             WHERE this_actor.name = $this_hanks.args.where.node.name
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS hanks
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS hanks
             }
             CALL {
             WITH this
@@ -127,7 +127,7 @@ describe("Connections Alias", () => {
             WHERE this_actor.name = $this_jenny.args.where.node.name
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS jenny
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS jenny
             }
             RETURN this { .title, hanks, jenny } as this"
         `);
