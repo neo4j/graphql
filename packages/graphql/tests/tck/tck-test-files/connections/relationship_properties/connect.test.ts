@@ -82,33 +82,33 @@ describe("Relationship Properties Connect Cypher", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.title = $this0_title
-            WITH this0
-            CALL {
-            	WITH this0
-            	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
-            			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
-            SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
-            		)
-            	)
-            	RETURN count(*) AS _
-            }
-            RETURN this0
-            }
-            CALL {
-            WITH this0
-            MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
-            WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
-            UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
-            }
-            RETURN [
-            this0 { .title, actorsConnection }] AS data"
-        `);
+"CALL {
+CREATE (this0:Movie)
+SET this0.title = $this0_title
+WITH this0
+CALL {
+	WITH this0
+	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
+	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+		FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
+			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
+SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
+		)
+	)
+	RETURN count(*) AS _
+}
+RETURN this0
+}
+CALL {
+WITH this0
+MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
+WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
+UNWIND edges as edge
+RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+}
+RETURN [
+this0 { .title, actorsConnection }] AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -154,34 +154,34 @@ describe("Relationship Properties Connect Cypher", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.title = $this0_title
-            WITH this0
-            CALL {
-            	WITH this0
-            	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-            	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_name
-            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
-            			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
-            SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
-            		)
-            	)
-            	RETURN count(*) AS _
-            }
-            RETURN this0
-            }
-            CALL {
-            WITH this0
-            MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
-            WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
-            UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
-            }
-            RETURN [
-            this0 { .title, actorsConnection }] AS data"
-        `);
+"CALL {
+CREATE (this0:Movie)
+SET this0.title = $this0_title
+WITH this0
+CALL {
+	WITH this0
+	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
+	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_name
+	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
+		FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
+			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
+SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
+		)
+	)
+	RETURN count(*) AS _
+}
+RETURN this0
+}
+CALL {
+WITH this0
+MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
+WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
+UNWIND edges as edge
+RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+}
+RETURN [
+this0 { .title, actorsConnection }] AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -221,30 +221,30 @@ describe("Relationship Properties Connect Cypher", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
-            WITH this
-            CALL {
-            	WITH this
-            	OPTIONAL MATCH (this_connect_actors0_node:Actor)
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
-            			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
-            SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
-            		)
-            	)
-            	RETURN count(*) AS _
-            }
-            WITH this
-            CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
-            }
-            RETURN collect(DISTINCT this { .title, actorsConnection }) AS data"
-        `);
+"MATCH (this:Movie)
+WHERE this.title = $this_title
+WITH this
+CALL {
+	WITH this
+	OPTIONAL MATCH (this_connect_actors0_node:Actor)
+	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+		FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
+		)
+	)
+	RETURN count(*) AS _
+}
+WITH this
+CALL {
+WITH this
+MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
+UNWIND edges as edge
+RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+}
+RETURN collect(DISTINCT this { .title, actorsConnection }) AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -286,31 +286,31 @@ describe("Relationship Properties Connect Cypher", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
-            WITH this
-            CALL {
-            	WITH this
-            	OPTIONAL MATCH (this_connect_actors0_node:Actor)
-            	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
-            			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
-            SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
-            		)
-            	)
-            	RETURN count(*) AS _
-            }
-            WITH this
-            CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
-            }
-            RETURN collect(DISTINCT this { .title, actorsConnection }) AS data"
-        `);
+"MATCH (this:Movie)
+WHERE this.title = $this_title
+WITH this
+CALL {
+	WITH this
+	OPTIONAL MATCH (this_connect_actors0_node:Actor)
+	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
+	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
+		FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
+		)
+	)
+	RETURN count(*) AS _
+}
+WITH this
+CALL {
+WITH this
+MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
+UNWIND edges as edge
+RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+}
+RETURN collect(DISTINCT this { .title, actorsConnection }) AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

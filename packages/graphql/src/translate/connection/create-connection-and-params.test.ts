@@ -111,14 +111,14 @@ describe("createConnectionAndParams", () => {
         const entry = createConnectionAndParams({ resolveTree, field, context, nodeVariable: "this" });
 
         expect(entry[0]).toMatchInlineSnapshot(`
-            "CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime }) AS edges
-            UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
-            }"
-        `);
+"CALL {
+WITH this
+MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+WITH collect({ screenTime: this_acted_in_relationship.screenTime }) AS edges
+UNWIND edges as edge
+RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+}"
+`);
     });
 
     test("Returns entry with sort arg", () => {
@@ -214,18 +214,18 @@ describe("createConnectionAndParams", () => {
         const entry = createConnectionAndParams({ resolveTree, field, context, nodeVariable: "this" });
 
         expect(entry[0]).toMatchInlineSnapshot(`
-            "CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WITH this_acted_in_relationship, this_actor
-            ORDER BY this_acted_in_relationship.screenTime DESC, this_actor.name ASC
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime }) AS edges
-            UNWIND edges as edge
-            WITH edges, edge
-            ORDER BY edge.screenTime DESC, edge.node.name ASC
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
-            }"
-        `);
+"CALL {
+WITH this
+MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+WITH this_acted_in_relationship, this_actor
+ORDER BY this_acted_in_relationship.screenTime DESC, this_actor.name ASC
+WITH collect({ screenTime: this_acted_in_relationship.screenTime }) AS edges
+UNWIND edges as edge
+WITH edges, edge
+ORDER BY edge.screenTime DESC, edge.node.name ASC
+RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+}"
+`);
     });
 
     test("Returns an entry with offset and limit args", () => {

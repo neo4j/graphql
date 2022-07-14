@@ -76,18 +76,18 @@ describe("Mixed nesting", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
-            CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name = $this_actorsConnection.args.where.node.name
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, movies: [ (this_actor)-[:ACTED_IN]->(this_actor_movies:Movie)  WHERE (NOT this_actor_movies.title = $this_actor_movies_title_NOT) | this_actor_movies { .title } ] } }) AS edges
-            UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
-            }
-            RETURN this { .title, actorsConnection } as this"
-        `);
+"MATCH (this:Movie)
+WHERE this.title = $this_title
+CALL {
+WITH this
+MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+WHERE this_actor.name = $this_actorsConnection.args.where.node.name
+WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, movies: [ (this_actor)-[:ACTED_IN]->(this_actor_movies:Movie)  WHERE (NOT this_actor_movies.title = $this_actor_movies_title_NOT) | this_actor_movies { .title } ] } }) AS edges
+UNWIND edges as edge
+RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+}
+RETURN this { .title, actorsConnection } as this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -139,26 +139,26 @@ describe("Mixed nesting", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
-            CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name = $this_actorsConnection.args.where.node.name
-            CALL {
-            WITH this_actor
-            MATCH (this_actor)-[this_actor_acted_in_relationship:ACTED_IN]->(this_actor_movie:Movie)
-            WHERE (NOT this_actor_movie.title = $this_actorsConnection.edges.node.moviesConnection.args.where.node.title_NOT)
-            WITH collect({ node: { title: this_actor_movie.title, actors: [ (this_actor_movie)<-[:ACTED_IN]-(this_actor_movie_actors:Actor)  WHERE (NOT this_actor_movie_actors.name = $this_actor_movie_actors_name_NOT) | this_actor_movie_actors { .name } ] } }) AS edges
-            UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS moviesConnection
-            }
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, moviesConnection: moviesConnection } }) AS edges
-            UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
-            }
-            RETURN this { .title, actorsConnection } as this"
-        `);
+"MATCH (this:Movie)
+WHERE this.title = $this_title
+CALL {
+WITH this
+MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+WHERE this_actor.name = $this_actorsConnection.args.where.node.name
+CALL {
+WITH this_actor
+MATCH (this_actor)-[this_actor_acted_in_relationship:ACTED_IN]->(this_actor_movie:Movie)
+WHERE (NOT this_actor_movie.title = $this_actorsConnection.edges.node.moviesConnection.args.where.node.title_NOT)
+WITH collect({ node: { title: this_actor_movie.title, actors: [ (this_actor_movie)<-[:ACTED_IN]-(this_actor_movie_actors:Actor)  WHERE (NOT this_actor_movie_actors.name = $this_actor_movie_actors_name_NOT) | this_actor_movie_actors { .name } ] } }) AS edges
+UNWIND edges as edge
+RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS moviesConnection
+}
+WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, moviesConnection: moviesConnection } }) AS edges
+UNWIND edges as edge
+RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+}
+RETURN this { .title, actorsConnection } as this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -216,17 +216,17 @@ describe("Mixed nesting", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
-            RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor)  WHERE this_actors.name = $this_actors_name | this_actors { .name, moviesConnection: apoc.cypher.runFirstColumn(\\"CALL {
-            WITH this_actors
-            MATCH (this_actors)-[this_actors_acted_in_relationship:ACTED_IN]->(this_actors_movie:Movie)
-            WHERE (NOT this_actors_movie.title = $this_actors_moviesConnection.args.where.node.title_NOT)
-            WITH collect({ screenTime: this_actors_acted_in_relationship.screenTime, node: { title: this_actors_movie.title } }) AS edges
-            UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS moviesConnection
-            } RETURN moviesConnection\\", { this_actors: this_actors, this_actors_moviesConnection: $this_actors_moviesConnection, auth: $auth }, false) } ] } as this"
-        `);
+"MATCH (this:Movie)
+WHERE this.title = $this_title
+RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor)  WHERE this_actors.name = $this_actors_name | this_actors { .name, moviesConnection: apoc.cypher.runFirstColumn(\\"CALL {
+WITH this_actors
+MATCH (this_actors)-[this_actors_acted_in_relationship:ACTED_IN]->(this_actors_movie:Movie)
+WHERE (NOT this_actors_movie.title = $this_actors_moviesConnection.args.where.node.title_NOT)
+WITH collect({ screenTime: this_actors_acted_in_relationship.screenTime, node: { title: this_actors_movie.title } }) AS edges
+UNWIND edges as edge
+RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS moviesConnection
+} RETURN moviesConnection\\", { this_actors: this_actors, this_actors_moviesConnection: $this_actors_moviesConnection, auth: $auth }, false) } ] } as this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

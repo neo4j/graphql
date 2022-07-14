@@ -216,17 +216,17 @@ describe("Cypher coalesce()", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            CALL {
-            WITH this
-            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
-            WHERE coalesce(this_movie.status, \\"ACTIVE\\") = $this_moviesConnection.args.where.node.status
-            WITH collect({ node: { id: this_movie.id, status: this_movie.status } }) AS edges
-            UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS moviesConnection
-            }
-            RETURN this { moviesConnection } as this"
-        `);
+"MATCH (this:Actor)
+CALL {
+WITH this
+MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
+WHERE coalesce(this_movie.status, \\"ACTIVE\\") = $this_moviesConnection.args.where.node.status
+WITH collect({ node: { id: this_movie.id, status: this_movie.status } }) AS edges
+UNWIND edges as edge
+RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS moviesConnection
+}
+RETURN this { moviesConnection } as this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

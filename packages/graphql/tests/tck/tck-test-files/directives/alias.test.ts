@@ -105,16 +105,16 @@ describe("Cypher alias directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            CALL {
-            WITH this
-            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
-            WITH collect({ character: this_acted_in_relationship.characterPropInDb, screenTime: this_acted_in_relationship.screenTime, node: { title: this_movie.title, rating: this_movie.ratingPropInDb } }) AS edges
-            UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
-            }
-            RETURN this { .name, city: this.cityPropInDb, actedInConnection } as this"
-        `);
+"MATCH (this:Actor)
+CALL {
+WITH this
+MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
+WITH collect({ character: this_acted_in_relationship.characterPropInDb, screenTime: this_acted_in_relationship.screenTime, node: { title: this_movie.title, rating: this_movie.ratingPropInDb } }) AS edges
+UNWIND edges as edge
+RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
+}
+RETURN this { .name, city: this.cityPropInDb, actedInConnection } as this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -164,29 +164,29 @@ describe("Cypher alias directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Actor)
-            SET this0.name = $this0_name
-            SET this0.cityPropInDb = $this0_city
-            WITH this0
-            CREATE (this0_actedIn0_node:Movie)
-            SET this0_actedIn0_node.title = $this0_actedIn0_node_title
-            SET this0_actedIn0_node.ratingPropInDb = $this0_actedIn0_node_rating
-            MERGE (this0)-[this0_actedIn0_relationship:ACTED_IN]->(this0_actedIn0_node)
-            SET this0_actedIn0_relationship.characterPropInDb = $this0_actedIn0_relationship_character
-            SET this0_actedIn0_relationship.screenTime = $this0_actedIn0_relationship_screenTime
-            RETURN this0
-            }
-            CALL {
-            WITH this0
-            MATCH (this0)-[this0_acted_in_relationship:ACTED_IN]->(this0_movie:Movie)
-            WITH collect({ character: this0_acted_in_relationship.characterPropInDb, screenTime: this0_acted_in_relationship.screenTime, node: { title: this0_movie.title, rating: this0_movie.ratingPropInDb } }) AS edges
-            UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
-            }
-            RETURN [
-            this0 { .name, city: this0.cityPropInDb, actedIn: [ (this0)-[:ACTED_IN]->(this0_actedIn:Movie)   | this0_actedIn { .title, rating: this0_actedIn.ratingPropInDb } ], actedInConnection }] AS data"
-        `);
+"CALL {
+CREATE (this0:Actor)
+SET this0.name = $this0_name
+SET this0.cityPropInDb = $this0_city
+WITH this0
+CREATE (this0_actedIn0_node:Movie)
+SET this0_actedIn0_node.title = $this0_actedIn0_node_title
+SET this0_actedIn0_node.ratingPropInDb = $this0_actedIn0_node_rating
+MERGE (this0)-[this0_actedIn0_relationship:ACTED_IN]->(this0_actedIn0_node)
+SET this0_actedIn0_relationship.characterPropInDb = $this0_actedIn0_relationship_character
+SET this0_actedIn0_relationship.screenTime = $this0_actedIn0_relationship_screenTime
+RETURN this0
+}
+CALL {
+WITH this0
+MATCH (this0)-[this0_acted_in_relationship:ACTED_IN]->(this0_movie:Movie)
+WITH collect({ character: this0_acted_in_relationship.characterPropInDb, screenTime: this0_acted_in_relationship.screenTime, node: { title: this0_movie.title, rating: this0_movie.ratingPropInDb } }) AS edges
+UNWIND edges as edge
+RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
+}
+RETURN [
+this0 { .name, city: this0.cityPropInDb, actedIn: [ (this0)-[:ACTED_IN]->(this0_actedIn:Movie)   | this0_actedIn { .title, rating: this0_actedIn.ratingPropInDb } ], actedInConnection }] AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
