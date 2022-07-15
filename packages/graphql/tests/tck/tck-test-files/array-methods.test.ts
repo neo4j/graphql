@@ -433,4 +433,62 @@ describe("Arrays Methods", () => {
             }"
         `);
     });
+
+    test("pop and push", async () => {
+        const typeDefs = gql`
+            type Movie {
+                title: String!
+                ratings: [Float!]!
+                scores: [Float!]!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
+
+        const query = gql`
+            mutation {
+                updateMovies(update: { ratings_PUSH: 1.5, scores_POP: 1 }) {
+                    movies {
+                        title
+                        ratings
+                        scores
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            CALL apoc.util.validate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
+            SET this.ratings = this.ratings + $this_update_ratings_PUSH
+            SET this.scores = this.scores[0..-$this_update_scores_POP]
+            RETURN collect(DISTINCT this { .title, .ratings, .scores }) AS data"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_update_ratings_PUSH\\": [
+                    1.5
+                ],
+                \\"this_update_scores_POP\\": {
+                    \\"low\\": 1,
+                    \\"high\\": 0
+                },
+                \\"resolvedCallbacks\\": {}
+            }"
+        `);
+    });
 });
