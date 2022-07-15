@@ -492,4 +492,75 @@ describe("array-push", () => {
             { title: movieTitle, tags: ["test"], moreTags: ["another test"] },
         ]);
     });
+
+    test("should be able to push in a nested update", async () => {
+        const actorName = "Luigino";
+        const movie = generateUniqueType("Movie");
+        const actor = generateUniqueType("Actor");
+        const typeDefs = `
+            type ${movie.name} {
+                viewers: [Int]!
+                workers: [${actor.name}!]! @relationship(type: "WORKED_IN", direction: IN)
+            }
+            type ${actor.name} {
+                id: ID!
+                name: String!
+                worksInMovies: [${movie.name}!]! @relationship(type: "WORKED_IN", direction: OUT)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const update = `
+            mutation($id: ID, $value: [Int]) {
+                ${actor.operations.update}(where: { id: $id }, 
+                    update: {
+                        worksInMovies: [
+                            {
+                                update: {
+                                    node: {
+                                        viewers_PUSH: $value
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ) {
+                    ${actor.plural} {
+                        name
+                        worksInMovies {
+                            viewers
+                        }
+                    }
+                }
+            }
+        `;
+
+        const cypher = `
+            CREATE (a:${movie.name} {viewers: $initialViewers}), (b:${actor.name} {id: $id, name: $name})
+            WITH a,b CREATE (a)<-[worksInMovies: WORKED_IN]-(b)
+        `;
+
+        await session.run(cypher, {
+            id,
+            initialViewers: [],
+            name: actorName,
+        });
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: update,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            variableValues: { value: [1, 2, 3, 4], id },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult.data as any)[actor.operations.update][actor.plural]).toEqual(
+            expect.arrayContaining([{ name: actorName, worksInMovies: [{ viewers: [1, 2, 3, 4] }] }])
+        );
+    });
 });
