@@ -20,11 +20,11 @@
 import type { ConnectionField, ConnectionWhereArg, Context } from "../../../types";
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 import type { Node, Relationship } from "../../../classes";
-import createConnectionWhereAndParams from "../create-connection-where-and-params";
 import { getListPredicate } from "../utils";
 import { listPredicateToSizeFunction } from "../list-predicate-to-size-function";
 import type { WhereOperator } from "../types";
-import { createComparisonOperation } from "./create-comparison-operation";
+// Recursive function
+// eslint-disable-next-line import/no-cycle
 import { createCypherWhereParams } from "../create-cypher-where-params";
 import { filterTruthy } from "../../../utils/utils";
 import { compileCypherIfExists } from "../../cypher-builder/utils";
@@ -132,8 +132,8 @@ function createWherePropertyOperation({
                 return CypherBuilder.and(...filterTruthy(subOperations));
             }
             if (key === "OR") {
+                return CypherBuilder.or(...filterTruthy(subOperations));
             }
-            return CypherBuilder.or(...filterTruthy(subOperations));
         }
 
         if (key.startsWith("edge")) {

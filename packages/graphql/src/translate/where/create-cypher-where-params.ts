@@ -18,7 +18,7 @@
  */
 
 import type { GraphQLWhereArg, Context } from "../../types";
-import type { GraphElement, Node } from "../../classes";
+import type { GraphElement } from "../../classes";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { filterTruthy } from "../../utils/utils";
 // Recursive function
