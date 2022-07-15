@@ -24,7 +24,7 @@ import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import { forEachField, IResolvers } from "@graphql-tools/utils";
 import { mergeResolvers } from "@graphql-tools/merge";
 import Debug from "debug";
-import type { DriverConfig, CypherQueryOptions, Neo4jGraphQLPlugins, Neo4jGraphQLCallbacks } from "../types";
+import type { DriverConfig, CypherQueryOptions, Neo4jGraphQLPlugins, Neo4jGraphQLCallbacks, Neo4jFeaturesSettings} from "../types";
 import { makeAugmentedSchema } from "../schema";
 import Node from "./Node";
 import Relationship from "./Relationship";
@@ -45,6 +45,7 @@ export interface Neo4jGraphQLJWT {
 }
 
 export interface Neo4jGraphQLConfig {
+    features?: Neo4jFeaturesSettings;
     driverConfig?: DriverConfig;
     enableRegex?: boolean;
     enableDebug?: boolean;
@@ -186,6 +187,7 @@ class Neo4jGraphQL {
     private generateSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(this.schemaDefinition.typeDefs, {
+                features: this.config?.features,
                 enableRegex: this.config?.enableRegex,
                 skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),

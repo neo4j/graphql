@@ -48,6 +48,16 @@ describe("Cypher Advanced Filtering", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             config: {
+                features: {
+                    filters: {
+                        String: {
+                            LT: true,
+                            GT: true,
+                            LTE: true,
+                            GTE: true,
+                        },
+                    },
+                },
                 enableRegex: true,
             },
             plugins: {
@@ -396,6 +406,33 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
+    test("LT String", async () => {
+        const query = gql`
+            {
+                movies(where: { title_LT: "The Matrix Revolutions" }) {
+                    title
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+        console.log(result.params);
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE this.title < $this_title_LT
+            RETURN this { .title } as this"
+        `);
+    
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_title_LT\\": \\"The Matrix Revolutions\\"
+            }"
+        `);
+    });
+
     test("LTE", async () => {
         const query = gql`
             {
@@ -452,6 +489,33 @@ describe("Cypher Advanced Filtering", () => {
                     \\"low\\": -1,
                     \\"high\\": 2147483647
                 }
+            }"
+        `);
+    });
+
+    test("LTE String", async () => {
+        const query = gql`
+            {
+                movies(where: { title_LTE: "The Matrix Revolutions" }) {
+                    title
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+        console.log(result.params);
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE this.title <= $this_title_LTE
+            RETURN this { .title } as this"
+        `);
+    
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_title_LTE\\": \\"The Matrix Revolutions\\"
             }"
         `);
     });
@@ -516,6 +580,33 @@ describe("Cypher Advanced Filtering", () => {
         `);
     });
 
+    test("GT String", async () => {
+        const query = gql`
+            {
+                movies(where: { title_GT: "The Matrix Revolutions" }) {
+                    title
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+        console.log(result.params);
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE this.title > $this_title_GT
+            RETURN this { .title } as this"
+        `);
+    
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_title_GT\\": \\"The Matrix Revolutions\\"
+            }"
+        `);
+    });
+
     test("GTE", async () => {
         const query = gql`
             {
@@ -572,6 +663,33 @@ describe("Cypher Advanced Filtering", () => {
                     \\"low\\": -808,
                     \\"high\\": 2147483647
                 }
+            }"
+        `);
+    });
+
+    test("GTE String", async () => {
+        const query = gql`
+            {
+                movies(where: { title_GTE: "The Matrix Revolutions" }) {
+                    title
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+        console.log(result.params);
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Movie)
+            WHERE this.title >= $this_title_GTE
+            RETURN this { .title } as this"
+        `);
+    
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_title_GTE\\": \\"The Matrix Revolutions\\"
             }"
         `);
     });

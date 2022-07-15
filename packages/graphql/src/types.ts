@@ -426,3 +426,18 @@ export type Neo4jGraphQLCallback = (
 ) => CallbackReturnValue | Promise<CallbackReturnValue>;
 
 export type Neo4jGraphQLCallbacks = Record<string, Neo4jGraphQLCallback>;
+
+export interface Neo4jStringFiltersSettings {
+    GT?: boolean;
+    GTE?: boolean;
+    LT?: boolean;
+    LTE?: boolean;
+}
+
+export interface Neo4jFiltersSettings {
+    String?: Neo4jStringFiltersSettings;
+}
+
+export interface Neo4jFeaturesSettings {
+    filters?: Neo4jFiltersSettings;
+}
