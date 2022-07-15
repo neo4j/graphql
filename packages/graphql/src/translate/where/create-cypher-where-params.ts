@@ -18,7 +18,7 @@
  */
 
 import type { GraphQLWhereArg, Context } from "../../types";
-import type { Node } from "../../classes";
+import type { GraphElement, Node } from "../../classes";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { filterTruthy } from "../../utils/utils";
 // Recursive function
@@ -30,17 +30,17 @@ export function createCypherWhereParams({
     targetElement,
     whereInput,
     context,
-    node,
+    element,
 }: {
-    targetElement: CypherBuilder.Node;
+    targetElement: CypherBuilder.Node | CypherBuilder.Relationship;
     whereInput: GraphQLWhereArg;
     context: Context;
-    node: Node;
+    element: GraphElement;
 }): CypherBuilder.WhereParams | undefined {
     const mappedProperties = mapPropertiesToOperators({
         whereInput,
         targetElement,
-        node,
+        element,
         context,
     });
 
@@ -49,12 +49,12 @@ export function createCypherWhereParams({
 
 function mapPropertiesToOperators({
     whereInput,
-    node,
+    element,
     targetElement,
     context,
 }: {
     whereInput: GraphQLWhereArg;
-    node: Node;
+    element: GraphElement;
     targetElement: CypherBuilder.Node | CypherBuilder.Variable;
     context: Context;
 }): Array<CypherBuilder.ComparisonOp | CypherBuilder.BooleanOp | CypherBuilder.RawCypher | CypherBuilder.Exists> {
@@ -63,32 +63,32 @@ function mapPropertiesToOperators({
     return filterTruthy(
         whereFields.map(([key, value]): CypherBuilder.WhereParams | undefined => {
             if (key === "OR") {
-                const nested = mapBooleanPropertiesToOperators({ value, node, targetElement, context });
+                const nested = mapBooleanPropertiesToOperators({ value, element, targetElement, context });
                 return CypherBuilder.or(...nested);
             }
             if (key === "AND") {
-                const nested = mapBooleanPropertiesToOperators({ value, node, targetElement, context });
+                const nested = mapBooleanPropertiesToOperators({ value, element, targetElement, context });
                 return CypherBuilder.and(...nested);
             }
-            return createWherePropertyOperation({ key, value, node, targetElement, context });
+            return createWherePropertyOperation({ key, value, element, targetElement, context });
         })
     );
 }
 
 function mapBooleanPropertiesToOperators({
     value,
-    node,
+    element,
     targetElement,
     context,
 }: {
     value: Array<any>;
-    node: Node;
+    element: GraphElement;
     targetElement: CypherBuilder.Node | CypherBuilder.Variable;
     context: Context;
 }): Array<CypherBuilder.ComparisonOp | CypherBuilder.BooleanOp | CypherBuilder.RawCypher | CypherBuilder.Exists> {
     return value
         .map((v) => {
-            return mapPropertiesToOperators({ whereInput: v, node, targetElement, context });
+            return mapPropertiesToOperators({ whereInput: v, element, targetElement, context });
         })
         .flat();
 }

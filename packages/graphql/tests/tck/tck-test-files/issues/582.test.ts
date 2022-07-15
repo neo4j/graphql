@@ -73,26 +73,15 @@ describe("#582", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Entity\`)
-            WHERE (this.type = $param0 AND size([(this)-[this0:EDGE]->(this1:\`Entity\`) WHERE this1.type = $nestedParam1.node.type AND apoc.cypher.runFirstColumn(\\"RETURN exists((this1)<-[:EDGE]-(:Entity))
-            AND any(this1_Entity_map IN [(this1)<-[this1_Entity_EntityParentsRelationship:EDGE]-(this1_Entity:Entity) | { node: this1_Entity, relationship: this1_Entity_EntityParentsRelationship } ] WHERE
-            this1_Entity_map.node.type = $nestedParam1.node.parentsConnection.node.type
-            )\\", { this1: this1, nestedParam1: $nestedParam1 }) | 1]) > 0)
+            WHERE (this.type = $param0 AND size([(this)-[this0:EDGE]->(this1:\`Entity\`) WHERE (this1.type = $param1 AND size([(this3:\`Entity\`)-[this2:EDGE]->(this1) WHERE this3.type = $param2 | 1]) > 0) | 1]) > 0)
             RETURN this { .type } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Cat\\",
-                \\"nestedParam1\\": {
-                    \\"node\\": {
-                        \\"type\\": \\"Dog\\",
-                        \\"parentsConnection\\": {
-                            \\"node\\": {
-                                \\"type\\": \\"Bird\\"
-                            }
-                        }
-                    }
-                }
+                \\"param1\\": \\"Dog\\",
+                \\"param2\\": \\"Bird\\"
             }"
         `);
     });
@@ -131,34 +120,16 @@ describe("#582", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Entity\`)
-            WHERE (this.type = $param0 AND size([(this)-[this0:EDGE]->(this1:\`Entity\`) WHERE this1.type = $nestedParam1.node.type AND apoc.cypher.runFirstColumn(\\"RETURN exists((this1)<-[:EDGE]-(:Entity))
-            AND any(this1_Entity_map IN [(this1)<-[this1_Entity_EntityParentsRelationship:EDGE]-(this1_Entity:Entity) | { node: this1_Entity, relationship: this1_Entity_EntityParentsRelationship } ] WHERE
-            this1_Entity_map.node.type = $nestedParam1.node.parentsConnection.node.type AND apoc.cypher.runFirstColumn(\\\\\\"RETURN exists((this1_Entity_map_node)-[:EDGE]->(:Entity))
-            AND any(this1_Entity_map_node_Entity_map IN [(this1_Entity_map_node)-[this1_Entity_map_node_Entity_EntityChildrenRelationship:EDGE]->(this1_Entity_map_node_Entity:Entity) | { node: this1_Entity_map_node_Entity, relationship: this1_Entity_map_node_Entity_EntityChildrenRelationship } ] WHERE
-            this1_Entity_map_node_Entity_map.node.type = $nestedParam1.node.parentsConnection.node.childrenConnection.node.type
-            )\\\\\\", { this1_Entity_map_node: this1_Entity_map.node, nestedParam1: $nestedParam1 })
-            )\\", { this1: this1, nestedParam1: $nestedParam1 }) | 1]) > 0)
+            WHERE (this.type = $param0 AND size([(this)-[this0:EDGE]->(this1:\`Entity\`) WHERE (this1.type = $param1 AND size([(this3:\`Entity\`)-[this2:EDGE]->(this1) WHERE (this3.type = $param2 AND size([(this3)-[this4:EDGE]->(this5:\`Entity\`) WHERE this5.type = $param3 | 1]) > 0) | 1]) > 0) | 1]) > 0)
             RETURN this { .type } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Cat\\",
-                \\"nestedParam1\\": {
-                    \\"node\\": {
-                        \\"type\\": \\"Dog\\",
-                        \\"parentsConnection\\": {
-                            \\"node\\": {
-                                \\"type\\": \\"Bird\\",
-                                \\"childrenConnection\\": {
-                                    \\"node\\": {
-                                        \\"type\\": \\"Fish\\"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                \\"param1\\": \\"Dog\\",
+                \\"param2\\": \\"Bird\\",
+                \\"param3\\": \\"Fish\\"
             }"
         `);
     });
