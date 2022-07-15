@@ -466,7 +466,9 @@ export default function createUpdateAndParams({
         const { hasMatched, propertyName } = mathMatch;
         const settableFieldComparator = hasMatched ? propertyName : key;
         const settableField = node.mutableFields.find((x) => x.fieldName === settableFieldComparator);
-        const authableField = node.authableFields.find((x) => x.fieldName === key);
+        const authableField = node.authableFields.find(
+            (x) => x.fieldName === key || `${x.fieldName}_PUSH` === key || `${x.fieldName}_POP` === key
+        );
 
         if (settableField) {
             if (settableField.typeMeta.required && value === null) {
