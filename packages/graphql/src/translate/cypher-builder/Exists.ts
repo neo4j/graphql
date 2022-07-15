@@ -22,7 +22,6 @@ import { CypherASTNode } from "./CypherASTNode";
 import { padBlock } from "./utils";
 import type { Clause } from "./clauses/Clause";
 
-/** Note: This is not a proper clause, I have no idea what this is */
 export class Exists extends CypherASTNode {
     private subQuery: CypherASTNode;
 
