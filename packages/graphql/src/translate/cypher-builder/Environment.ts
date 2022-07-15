@@ -20,7 +20,7 @@
 import type { Variable } from "./variables/Variable";
 import { Param } from "./variables/Param";
 
-/** Hold the internal references of parameters and variables */
+/** Hold the internal references of Cypher parameters and variables */
 export class CypherEnvironment {
     private globalPrefix: string;
 

@@ -447,11 +447,14 @@ function createConnectionAndParams({
             if (elementsToCollect.length > 0) {
                 subquery.push("UNWIND edges as edge");
                 returnValues.push("edges: collect(edge)");
+                returnValues.push("totalCount: size(collect(edge))");
             } else {
                 returnValues.push("edges: edges");
+                returnValues.push("totalCount: size(edges)");
             }
+        } else {
+            returnValues.push("totalCount: size(edges)");
         }
-        returnValues.push("totalCount: size(edges)");
         if (sortInput.length && elementsToCollect.length > 0) {
             subquery.push("WITH edges, edge");
             const sort = sortInput.map((s) =>

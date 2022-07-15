@@ -29,7 +29,6 @@ export type MatchableElement = NodeRef | RelationshipRef;
 
 type ItemOption = { labels?: boolean; variable?: boolean };
 
-// TODO: improve options
 type MatchPatternOptions = {
     source?: ItemOption;
     target?: ItemOption;
@@ -52,7 +51,7 @@ export type MatchParams<T extends MatchableElement> = T extends NodeRef ? Params
 export class Pattern<T extends MatchableElement> extends CypherASTNode {
     public readonly matchElement: T;
     private parameters: MatchParams<T>;
-    private options: MatchPatternOptions; // TODO: fix typings, this is not undefined
+    private options: MatchPatternOptions;
 
     constructor(input: T, options?: MatchPatternOptions) {
         super();

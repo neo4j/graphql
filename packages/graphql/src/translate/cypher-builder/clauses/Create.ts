@@ -17,21 +17,21 @@
  * limitations under the License.
  */
 
+import type { CypherEnvironment } from "../Environment";
+import type { NodeRef } from "../variables/NodeRef";
+import type { Param } from "../variables/Param";
 import { Pattern } from "../Pattern";
 import { PropertyRef } from "../PropertyRef";
 import { SetClause } from "../sub-clauses/Set";
 import { Clause } from "./Clause";
 import { Return } from "./Return";
-import type { CypherEnvironment } from "../Environment";
-import type { NodeRef } from "../variables/NodeRef";
-import type { Param } from "../variables/Param";
 import { compileCypherIfExists } from "../utils";
+import type { Variable } from "../CypherBuilder";
 
-type CreateSetParams = [PropertyRef | string, Param<any>];
+type CreateSetParams = [PropertyRef | string, Variable];
 
 type Params = Record<string, Param<any>>;
 
-// TODO: support relationships?
 export class Create extends Clause {
     private node: NodeRef;
     private pattern: Pattern<NodeRef>;
@@ -47,7 +47,7 @@ export class Create extends Clause {
     }
 
     public set(...params: CreateSetParams[]): this {
-        const formattedParams: Array<[PropertyRef, Param<any>]> = params.map(([prop, param]) => {
+        const formattedParams: Array<[PropertyRef, Variable]> = params.map(([prop, param]) => {
             if (typeof prop === "string") {
                 const property = new PropertyRef(this.node, prop);
                 return [property, param];

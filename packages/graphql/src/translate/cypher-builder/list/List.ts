@@ -20,7 +20,6 @@
 import type { CypherEnvironment } from "../Environment";
 import type { CypherCompilable } from "../types";
 
-// Should this be a variable?
 export abstract class CypherList implements CypherCompilable {
     abstract getCypher(env: CypherEnvironment): string;
 }

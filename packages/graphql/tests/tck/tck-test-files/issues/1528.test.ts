@@ -87,7 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
             UNWIND edges as edge
             WITH edges, edge
             ORDER BY edge.node.actorsCount DESC
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS moviesConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS moviesConnection
             }
             RETURN this { moviesConnection } as this"
         `);

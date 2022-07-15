@@ -20,7 +20,7 @@
 import type { CypherEnvironment } from "./Environment";
 import type { Variable } from "./variables/Variable";
 
-/** Represents a Node reference */
+/** Reference to a Variable property */
 export class PropertyRef {
     private variable: Variable;
     private property: string;
@@ -31,7 +31,6 @@ export class PropertyRef {
     }
 
     public getCypher(env: CypherEnvironment): string {
-        // TODO: null param
         const variableStr = this.variable.getCypher(env);
         return `${variableStr}.${this.property}`;
     }

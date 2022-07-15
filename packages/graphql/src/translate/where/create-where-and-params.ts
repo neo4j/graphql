@@ -22,7 +22,7 @@ import type { Node } from "../../classes";
 import { createCypherWhereParams } from "./create-cypher-where-params";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 
-// TODO: change this into using createCypherWhereParams
+// TODO: Remove this method and replace for directly using createCypherWhereParams
 /** Wraps createCypherWhereParams with the old interface for compatibility with old way of composing cypher */
 export default function createWhereAndParams({
     whereInput,

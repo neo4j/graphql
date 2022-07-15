@@ -23,7 +23,6 @@ import type { CypherEnvironment } from "../Environment";
 import { isString } from "../../../utils/utils";
 import type { Expr } from "../types";
 
-// TODO: make projection more elegant
 export type Projection = string | [NodeRef, Array<string>?, string?] | Expr;
 
 export class Return extends Clause {

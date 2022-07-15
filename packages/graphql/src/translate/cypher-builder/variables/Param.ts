@@ -41,26 +41,8 @@ export class Param<T = any> extends Variable {
     }
 }
 
-/* Careful, this could lead to Cypher Injection */
 export class RawParam<T> extends Param<T> {
     public getCypher(_env: CypherEnvironment): string {
         return `${this.value}`;
     }
 }
-
-// type Point = { latitude: number; longitude: number };
-
-// export class PointParam extends Param<Point | Array<Point>> {
-//     public getCypher(context: CypherContext): string {
-//         if (this.isNull) {
-//             return "NULL";
-//         }
-
-//         const parentCypher = super.getCypher(context);
-//         if (Array.isArray(this.value)) {
-//             return `[p in ${parentCypher} | point(p)]`;
-//         }
-
-//         return `point(${parentCypher})`;
-//     }
-// }

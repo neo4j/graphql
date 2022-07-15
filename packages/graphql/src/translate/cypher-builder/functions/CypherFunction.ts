@@ -24,7 +24,6 @@ import type { NodeRef } from "../variables/NodeRef";
 
 type FunctionType = "coalesce" | "point" | "distance" | "datetime" | "labels";
 
-/** Represents an function */
 export class CypherFunction extends CypherASTNode {
     protected name: FunctionType;
     private params: Array<Expr>;

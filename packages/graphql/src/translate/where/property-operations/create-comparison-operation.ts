@@ -114,7 +114,6 @@ function createBaseOperation({
         case "EQ":
         case "NOT":
             return CypherBuilder.eq(property, param);
-
         default:
             throw new Error(`Invalid operator ${operator}`);
     }

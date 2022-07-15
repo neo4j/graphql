@@ -87,7 +87,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
             WHERE this_acted_in_relationship.screenTime < $this_actorsConnection.args.where.edge.screenTime_LT
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
@@ -140,7 +140,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
             WHERE this_acted_in_relationship.screenTime <= $this_actorsConnection.args.where.edge.screenTime_LTE
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
@@ -193,7 +193,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
             WHERE this_acted_in_relationship.screenTime > $this_actorsConnection.args.where.edge.screenTime_GT
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
@@ -246,7 +246,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
             WHERE this_acted_in_relationship.screenTime >= $this_actorsConnection.args.where.edge.screenTime_GTE
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
