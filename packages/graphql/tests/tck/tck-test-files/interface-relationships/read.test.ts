@@ -345,7 +345,7 @@ describe("Interface Relationships", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
             }
             RETURN this { actedInConnection } as this"
         `);
@@ -399,7 +399,7 @@ describe("Interface Relationships", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
             }
             RETURN this { actedInConnection } as this"
         `);
@@ -464,7 +464,7 @@ describe("Interface Relationships", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
             }
             RETURN this { actedInConnection } as this"
         `);
@@ -545,7 +545,7 @@ describe("Interface Relationships", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
             }
             RETURN this { actedInConnection } as this"
         `);
