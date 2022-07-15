@@ -27,13 +27,18 @@ describe("Arrays Methods", () => {
         const typeDefs = gql`
             type Actor {
                 name: String
+                actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
             type Movie {
                 id: ID!
                 ratings: [Float!]!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 averageRating: Float!
+            }
+
+            interface ActedIn @relationshipProperties {
+                pay: [Float]
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -45,8 +50,146 @@ describe("Arrays Methods", () => {
               mutation: Mutation
             }
 
+            interface ActedIn {
+              pay: [Float]
+            }
+
+            input ActedInCreateInput {
+              pay: [Float]
+            }
+
+            input ActedInSort {
+              pay: SortDirection
+            }
+
+            input ActedInUpdateInput {
+              pay: [Float]
+              pay_POP: Int
+              pay_PUSH: [Float]
+            }
+
+            input ActedInWhere {
+              AND: [ActedInWhere!]
+              OR: [ActedInWhere!]
+              pay: [Float]
+              pay_INCLUDES: Float
+              pay_NOT: [Float]
+              pay_NOT_INCLUDES: Float
+            }
+
             type Actor {
+              actedIn(directed: Boolean = true, options: MovieOptions, where: MovieWhere): [Movie!]!
+              actedInAggregate(directed: Boolean = true, where: MovieWhere): ActorMovieActedInAggregationSelection
+              actedInConnection(after: String, directed: Boolean = true, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
               name: String
+            }
+
+            input ActorActedInAggregateInput {
+              AND: [ActorActedInAggregateInput!]
+              OR: [ActorActedInAggregateInput!]
+              count: Int
+              count_GT: Int
+              count_GTE: Int
+              count_LT: Int
+              count_LTE: Int
+              node: ActorActedInNodeAggregationWhereInput
+            }
+
+            input ActorActedInConnectFieldInput {
+              connect: [MovieConnectInput!]
+              edge: ActedInCreateInput
+              where: MovieConnectWhere
+            }
+
+            type ActorActedInConnection {
+              edges: [ActorActedInRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input ActorActedInConnectionSort {
+              edge: ActedInSort
+              node: MovieSort
+            }
+
+            input ActorActedInConnectionWhere {
+              AND: [ActorActedInConnectionWhere!]
+              OR: [ActorActedInConnectionWhere!]
+              edge: ActedInWhere
+              edge_NOT: ActedInWhere
+              node: MovieWhere
+              node_NOT: MovieWhere
+            }
+
+            input ActorActedInCreateFieldInput {
+              edge: ActedInCreateInput
+              node: MovieCreateInput!
+            }
+
+            input ActorActedInDeleteFieldInput {
+              delete: MovieDeleteInput
+              where: ActorActedInConnectionWhere
+            }
+
+            input ActorActedInDisconnectFieldInput {
+              disconnect: MovieDisconnectInput
+              where: ActorActedInConnectionWhere
+            }
+
+            input ActorActedInFieldInput {
+              connect: [ActorActedInConnectFieldInput!]
+              create: [ActorActedInCreateFieldInput!]
+            }
+
+            input ActorActedInNodeAggregationWhereInput {
+              AND: [ActorActedInNodeAggregationWhereInput!]
+              OR: [ActorActedInNodeAggregationWhereInput!]
+              averageRating_AVERAGE_EQUAL: Float
+              averageRating_AVERAGE_GT: Float
+              averageRating_AVERAGE_GTE: Float
+              averageRating_AVERAGE_LT: Float
+              averageRating_AVERAGE_LTE: Float
+              averageRating_EQUAL: Float
+              averageRating_GT: Float
+              averageRating_GTE: Float
+              averageRating_LT: Float
+              averageRating_LTE: Float
+              averageRating_MAX_EQUAL: Float
+              averageRating_MAX_GT: Float
+              averageRating_MAX_GTE: Float
+              averageRating_MAX_LT: Float
+              averageRating_MAX_LTE: Float
+              averageRating_MIN_EQUAL: Float
+              averageRating_MIN_GT: Float
+              averageRating_MIN_GTE: Float
+              averageRating_MIN_LT: Float
+              averageRating_MIN_LTE: Float
+              averageRating_SUM_EQUAL: Float
+              averageRating_SUM_GT: Float
+              averageRating_SUM_GTE: Float
+              averageRating_SUM_LT: Float
+              averageRating_SUM_LTE: Float
+              id_EQUAL: ID
+            }
+
+            type ActorActedInRelationship implements ActedIn {
+              cursor: String!
+              node: Movie!
+              pay: [Float]
+            }
+
+            input ActorActedInUpdateConnectionInput {
+              edge: ActedInUpdateInput
+              node: MovieUpdateInput
+            }
+
+            input ActorActedInUpdateFieldInput {
+              connect: [ActorActedInConnectFieldInput!]
+              create: [ActorActedInCreateFieldInput!]
+              delete: [ActorActedInDeleteFieldInput!]
+              disconnect: [ActorActedInDisconnectFieldInput!]
+              update: ActorActedInUpdateConnectionInput
+              where: ActorActedInConnectionWhere
             }
 
             type ActorAggregateSelection {
@@ -54,17 +197,40 @@ describe("Arrays Methods", () => {
               name: StringAggregateSelectionNullable!
             }
 
+            input ActorConnectInput {
+              actedIn: [ActorActedInConnectFieldInput!]
+            }
+
             input ActorConnectWhere {
               node: ActorWhere!
             }
 
             input ActorCreateInput {
+              actedIn: ActorActedInFieldInput
               name: String
+            }
+
+            input ActorDeleteInput {
+              actedIn: [ActorActedInDeleteFieldInput!]
+            }
+
+            input ActorDisconnectInput {
+              actedIn: [ActorActedInDisconnectFieldInput!]
             }
 
             type ActorEdge {
               cursor: String!
               node: Actor!
+            }
+
+            type ActorMovieActedInAggregationSelection {
+              count: Int!
+              node: ActorMovieActedInNodeAggregateSelection
+            }
+
+            type ActorMovieActedInNodeAggregateSelection {
+              averageRating: FloatAggregateSelectionNonNullable!
+              id: IDAggregateSelectionNonNullable!
             }
 
             input ActorOptions {
@@ -76,6 +242,10 @@ describe("Arrays Methods", () => {
               sort: [ActorSort!]
             }
 
+            input ActorRelationInput {
+              actedIn: [ActorActedInCreateFieldInput!]
+            }
+
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -84,12 +254,30 @@ describe("Arrays Methods", () => {
             }
 
             input ActorUpdateInput {
+              actedIn: [ActorActedInUpdateFieldInput!]
               name: String
             }
 
             input ActorWhere {
               AND: [ActorWhere!]
               OR: [ActorWhere!]
+              actedIn: MovieWhere @deprecated(reason: \\"Use \`actedIn_SOME\` instead.\\")
+              actedInAggregate: ActorActedInAggregateInput
+              actedInConnection: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_SOME\` instead.\\")
+              actedInConnection_ALL: ActorActedInConnectionWhere
+              actedInConnection_NONE: ActorActedInConnectionWhere
+              actedInConnection_NOT: ActorActedInConnectionWhere @deprecated(reason: \\"Use \`actedInConnection_NONE\` instead.\\")
+              actedInConnection_SINGLE: ActorActedInConnectionWhere
+              actedInConnection_SOME: ActorActedInConnectionWhere
+              \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
+              actedIn_ALL: MovieWhere
+              \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
+              actedIn_NONE: MovieWhere
+              actedIn_NOT: MovieWhere @deprecated(reason: \\"Use \`actedIn_NONE\` instead.\\")
+              \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
+              actedIn_SINGLE: MovieWhere
+              \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
+              actedIn_SOME: MovieWhere
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -172,6 +360,8 @@ describe("Arrays Methods", () => {
             }
 
             input MovieActorsConnectFieldInput {
+              connect: [ActorConnectInput!]
+              edge: ActedInCreateInput
               where: ActorConnectWhere
             }
 
@@ -182,25 +372,31 @@ describe("Arrays Methods", () => {
             }
 
             input MovieActorsConnectionSort {
+              edge: ActedInSort
               node: ActorSort
             }
 
             input MovieActorsConnectionWhere {
               AND: [MovieActorsConnectionWhere!]
               OR: [MovieActorsConnectionWhere!]
+              edge: ActedInWhere
+              edge_NOT: ActedInWhere
               node: ActorWhere
               node_NOT: ActorWhere
             }
 
             input MovieActorsCreateFieldInput {
+              edge: ActedInCreateInput
               node: ActorCreateInput!
             }
 
             input MovieActorsDeleteFieldInput {
+              delete: ActorDeleteInput
               where: MovieActorsConnectionWhere
             }
 
             input MovieActorsDisconnectFieldInput {
+              disconnect: ActorDisconnectInput
               where: MovieActorsConnectionWhere
             }
 
@@ -234,12 +430,14 @@ describe("Arrays Methods", () => {
               name_SHORTEST_LTE: Int
             }
 
-            type MovieActorsRelationship {
+            type MovieActorsRelationship implements ActedIn {
               cursor: String!
               node: Actor!
+              pay: [Float]
             }
 
             input MovieActorsUpdateConnectionInput {
+              edge: ActedInUpdateInput
               node: ActorUpdateInput
             }
 
@@ -260,6 +458,10 @@ describe("Arrays Methods", () => {
 
             input MovieConnectInput {
               actors: [MovieActorsConnectFieldInput!]
+            }
+
+            input MovieConnectWhere {
+              node: MovieWhere!
             }
 
             input MovieCreateInput {
@@ -369,9 +571,9 @@ describe("Arrays Methods", () => {
             type Mutation {
               createActors(input: [ActorCreateInput!]!): CreateActorsMutationResponse!
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-              deleteActors(where: ActorWhere): DeleteInfo!
+              deleteActors(delete: ActorDeleteInput, where: ActorWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-              updateActors(update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
+              updateActors(connect: ActorConnectInput, create: ActorRelationInput, delete: ActorDeleteInput, disconnect: ActorDisconnectInput, update: ActorUpdateInput, where: ActorWhere): UpdateActorsMutationResponse!
               updateMovies(connect: MovieConnectInput, create: MovieRelationInput, delete: MovieDeleteInput, disconnect: MovieDisconnectInput, update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
             }
 
