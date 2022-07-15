@@ -20,7 +20,6 @@
 import type { CypherEnvironment } from "../Environment";
 import { Literal } from "./Literal";
 
-/* Careful, this could lead to Cypher Injection */
 export class NullVariable extends Literal<null> {
     constructor() {
         super(null);
@@ -28,6 +27,10 @@ export class NullVariable extends Literal<null> {
 
     public getCypher(_env: CypherEnvironment): string {
         return `NULL`;
+    }
+
+    public property(_path: string): void {
+        throw new Error("Cypher NULL property cannot have property");
     }
 }
 

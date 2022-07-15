@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import { Clause } from "./Clause";
 import type { CypherEnvironment } from "../Environment";
 import type { CypherASTNode } from "../CypherASTNode";
+import type { Variable } from "../variables/Variable";
+import type { NodeRef } from "../variables/NodeRef";
+import { Clause } from "./Clause";
 import { compileCypherIfExists, padBlock } from "../utils";
 import { ImportWith } from "../sub-clauses/ImportWith";
-import type { Variable } from "../variables/Variable";
 import { Return } from "./Return";
-import type { NodeRef } from "../variables/NodeRef";
 
 export class Call extends Clause {
     private subQuery: CypherASTNode;

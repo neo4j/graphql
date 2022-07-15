@@ -19,7 +19,4 @@
 
 import { CypherASTNode } from "../CypherASTNode";
 
-/** Represents an Operation */
 export abstract class Operation extends CypherASTNode {}
-
-export abstract class MathOp extends Operation {}

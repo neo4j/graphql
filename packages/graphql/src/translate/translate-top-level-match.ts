@@ -46,15 +46,14 @@ function translateTopLevelMatch({
         new CypherBuilder.Match(matchNode);
 
     if (Object.entries(fulltextInput).length) {
-        // THIS is only for fulltext search
+        // This is only for fulltext search
         if (Object.entries(fulltextInput).length > 1) {
             throw new Error("Can only call one search at any given time");
         }
-        // TODO: add fulltext search
         const [indexName, indexInput] = Object.entries(fulltextInput)[0];
         const baseParamName = `${varName}_fulltext_${indexName}`;
         const paramPhraseName = `${baseParamName}_phrase`;
-        cypherParams[paramPhraseName] = indexInput.phrase; // TODO: pass this param
+        cypherParams[paramPhraseName] = indexInput.phrase;
 
         matchQuery = new CypherBuilder.db.FullTextQueryNodes(matchNode, indexName, paramPhraseName);
 

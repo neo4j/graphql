@@ -20,6 +20,7 @@
 import type { CypherEnvironment } from "../Environment";
 import { Where, WhereParams } from "../sub-clauses/Where";
 import type { Expr } from "../types";
+import { compileCypherIfExists } from "../utils";
 import type { Variable } from "../variables/Variable";
 import { CypherList } from "./List";
 
@@ -41,8 +42,8 @@ export class ListComprehension extends CypherList {
     }
 
     getCypher(env: CypherEnvironment): string {
-        const whereStr = this.where ? ` ${this.where.getCypher(env)}` : "";
-        const mapStr = this.mapExpr ? ` | ${this.mapExpr.getCypher(env)}` : "";
+        const whereStr = compileCypherIfExists(this.where, env, { prefix: " " });
+        const mapStr = compileCypherIfExists(this.mapExpr, env, { prefix: " | " });
         const listExprStr = this.listExpr.getCypher(env);
         const varCypher = this.variable.getCypher(env);
 
