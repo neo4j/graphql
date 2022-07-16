@@ -39,7 +39,7 @@
         "@types/jsonwebtoken": "8.5.8",
         "@types/node": "16.11.45",
         "jest": "28.1.3",
-        "ts-jest": "28.0.6",
+        "ts-jest": "28.0.7",
         "typescript": "4.7.4"
     }
 }
