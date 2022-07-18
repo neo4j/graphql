@@ -75,7 +75,7 @@ export function createConnectionOperation({
         const contextRelationship = context.relationships.find(
             (x) => x.name === connectionField.relationshipTypeName
         ) as Relationship;
-        const whereOperator = createWherePropertyOperation({
+        const whereOperator = createConnectionWherePropertyOperation({
             context,
             whereInput: entry[1] as any,
             relationshipRef: relationship,
@@ -100,7 +100,7 @@ export function createConnectionOperation({
     return CypherBuilder.and(...operations) as CypherBuilder.BooleanOp | undefined;
 }
 
-function createWherePropertyOperation({
+function createConnectionWherePropertyOperation({
     context,
     whereInput,
     relationshipRef,
@@ -118,7 +118,7 @@ function createWherePropertyOperation({
     const params = Object.entries(whereInput).map(([key, value]) => {
         if (key === "AND" || key === "OR") {
             const subOperations = (value as Array<any>).map((input) => {
-                return createWherePropertyOperation({
+                return createConnectionWherePropertyOperation({
                     context,
                     whereInput: input,
                     relationshipRef,

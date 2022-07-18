@@ -45,8 +45,16 @@ export function createWherePropertyOperation({
     context: Context;
 }): CypherBuilder.ComparisonOp | CypherBuilder.BooleanOp | CypherBuilder.RawCypher | CypherBuilder.Exists | undefined {
     const match = whereRegEx.exec(key);
+    if (!match) {
+        throw new Error(`Failed to match key in filter: ${key}`);
+    }
 
     const { prefix, fieldName, isAggregate, operator } = match?.groups as WhereRegexGroups;
+
+    if (!fieldName) {
+        throw new Error(`Failed to find field name in filter: ${key}`);
+    }
+
     const isNot = operator?.startsWith("NOT") ?? false;
     const coalesceValue = [...element.primitiveFields, ...element.temporalFields, ...element.enumFields].find(
         (f) => fieldName === f.fieldName
