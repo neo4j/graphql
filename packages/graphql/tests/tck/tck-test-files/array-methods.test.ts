@@ -491,4 +491,200 @@ describe("Arrays Methods", () => {
             }"
         `);
     });
+
+    test("push on relationship properties", async () => {
+        const typeDefs = `
+            type Movie {
+                title: String
+                actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            }
+            
+            type Actor {
+                id: ID!
+                name: String!
+                actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            }
+
+            interface ActedIn @relationshipProperties {
+                pay: [Float]
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
+
+        const query = gql`
+            mutation {
+                updateActors(where: { id: 1 }, update: { actedIn: [{ update: { edge: { pay_PUSH: 10 } } }] }) {
+                    actors {
+                        name
+                        actedIn {
+                            title
+                        }
+                        actedInConnection {
+                            edges {
+                                pay
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Actor)
+            WHERE this.id = $this_id
+            WITH this
+            OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
+            CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
+            SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_PUSH
+            RETURN count(*) AS _
+            \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, resolvedCallbacks: $resolvedCallbacks})
+            YIELD value AS this_acted_in0_relationship_actedIn0_edge
+            WITH this
+            CALL {
+            WITH this
+            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
+            WITH collect({ pay: this_acted_in_relationship.pay }) AS edges
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
+            }
+            RETURN collect(DISTINCT this { .name, actedIn: [ (this)-[:ACTED_IN]->(this_actedIn:Movie)   | this_actedIn { .title } ], actedInConnection }) AS data"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_id\\": \\"1\\",
+                \\"updateActors\\": {
+                    \\"args\\": {
+                        \\"update\\": {
+                            \\"actedIn\\": [
+                                {
+                                    \\"update\\": {
+                                        \\"edge\\": {
+                                            \\"pay_PUSH\\": [
+                                                10
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                \\"resolvedCallbacks\\": {}
+            }"
+        `);
+    });
+
+    test("pop on relationship properties", async () => {
+        const typeDefs = `
+            type Movie {
+                title: String
+                actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            }
+            
+            type Actor {
+                id: ID!
+                name: String!
+                actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            }
+
+            interface ActedIn @relationshipProperties {
+                pay: [Float]
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            config: { enableRegex: true },
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret: "secret",
+                }),
+            },
+        });
+
+        const query = gql`
+            mutation {
+                updateActors(where: { id: 1 }, update: { actedIn: [{ update: { edge: { pay_POP: 1 } } }] }) {
+                    actors {
+                        name
+                        actedIn {
+                            title
+                        }
+                        actedInConnection {
+                            edges {
+                                pay
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:Actor)
+            WHERE this.id = $this_id
+            WITH this
+            OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
+            CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
+            SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay[0..-$updateActors.args.update.actedIn[0].update.edge.pay_POP]
+            SET this_acted_in0_relationship.pay_POP = $updateActors.args.update.actedIn[0].update.edge.pay_POP
+            RETURN count(*) AS _
+            \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, resolvedCallbacks: $resolvedCallbacks})
+            YIELD value AS this_acted_in0_relationship_actedIn0_edge
+            WITH this
+            CALL {
+            WITH this
+            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
+            WITH collect({ pay: this_acted_in_relationship.pay }) AS edges
+            UNWIND edges as edge
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
+            }
+            RETURN collect(DISTINCT this { .name, actedIn: [ (this)-[:ACTED_IN]->(this_actedIn:Movie)   | this_actedIn { .title } ], actedInConnection }) AS data"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this_id\\": \\"1\\",
+                \\"updateActors\\": {
+                    \\"args\\": {
+                        \\"update\\": {
+                            \\"actedIn\\": [
+                                {
+                                    \\"update\\": {
+                                        \\"edge\\": {
+                                            \\"pay_POP\\": {
+                                                \\"low\\": 1,
+                                                \\"high\\": 0
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                },
+                \\"resolvedCallbacks\\": {}
+            }"
+        `);
+    });
 });
