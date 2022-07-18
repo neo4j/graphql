@@ -14,6 +14,9 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -23,11 +26,18 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
+      
+      - name: Configure git
+        run: |
+          git config --global user.name 'Neo4j Team GraphQL'
+          git config --global user.email 'team-graphql@neotechnology.com'
 
       - name: Create Release Pull Request
         uses: changesets/action@2a025e8ab1cfa4312c2868cb6aa3cd3b473b84bf
         with:
           title: changesets for branch `dev`
-          version: yarn changeset version && yarn
+          version: yarn changeset-version
+          setupGitUser: false
         env:
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false

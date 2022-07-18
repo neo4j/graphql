@@ -247,7 +247,7 @@ describe("Cypher Auth Where with Roles", () => {
             CALL apoc.util.validate(NOT (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { content: this_post.content } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS postsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS postsConnection
             }
             RETURN this { .id, postsConnection } as this"
         `);
@@ -304,7 +304,7 @@ describe("Cypher Auth Where with Roles", () => {
             CALL apoc.util.validate(NOT (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { content: this_post.content } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS postsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS postsConnection
             }
             RETURN this { .id, postsConnection } as this"
         `);

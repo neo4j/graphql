@@ -92,7 +92,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
             WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
             }
             RETURN [
             this0 { .title, actorsConnection }] AS data"
@@ -146,14 +146,14 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
             WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
             }
             CALL {
             WITH this1
             MATCH (this1)<-[this1_acted_in_relationship:ACTED_IN]-(this1_actor:Actor)
             WITH collect({ screenTime: this1_acted_in_relationship.screenTime, node: { name: this1_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
             }
             RETURN [
             this0 { .title, actorsConnection },
@@ -210,7 +210,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             WHERE this0_actor.name = $this0_actorsConnection.args.where.node.name
             WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
             }
             CALL {
             WITH this1
@@ -218,7 +218,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             WHERE this1_actor.name = $this1_actorsConnection.args.where.node.name
             WITH collect({ screenTime: this1_acted_in_relationship.screenTime, node: { name: this1_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
             }
             RETURN [
             this0 { .title, actorsConnection },
