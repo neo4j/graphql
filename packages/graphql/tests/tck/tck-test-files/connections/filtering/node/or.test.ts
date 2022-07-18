@@ -89,7 +89,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> OR", () => {
             WHERE ((this_actor.firstName = $this_actorsConnection.args.where.node.OR[0].firstName) OR (this_actor.lastName = $this_actorsConnection.args.where.node.OR[1].lastName))
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { firstName: this_actor.firstName, lastName: this_actor.lastName } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
