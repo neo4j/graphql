@@ -148,13 +148,10 @@ function createConnectionWherePropertyOperation({
         }
 
         if (key.startsWith("node") || key.startsWith(node.name)) {
-            const nestedProperties: Record<string, any> = Object.entries(value as Record<string, any>).reduce(
-                (args, [k, v]) => {
-                    if (k === "_on") return { ...v[node.name], ...args };
-                    return { ...args, [k]: v };
-                },
-                {} as Record<string, any>
-            );
+            // TODO: improve
+            const nodeOnProperties = value._on?.[node.name] || {};
+            const nestedProperties = { ...value, ...nodeOnProperties };
+            delete nestedProperties._on;
 
             if (
                 Object.keys(value).length === 1 &&
