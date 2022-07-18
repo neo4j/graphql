@@ -563,4 +563,90 @@ describe("array-push", () => {
             expect.arrayContaining([{ name: actorName, worksInMovies: [{ viewers: [1, 2, 3, 4] }] }])
         );
     });
+
+    test("should be possible to update relationship properties", async () => {
+        const initialPay = 100;
+        const payIncrement = 50;
+        const movie = generateUniqueType("Movie");
+        const actor = generateUniqueType("Actor");
+        const typeDefs = `
+            type ${movie.name} {
+                title: String
+                actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            }
+            
+            type ${actor.name} {
+                id: ID!
+                name: String!
+                actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            }
+
+            interface ActedIn @relationshipProperties {
+                pay: [Float]
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            mutation Mutation($id: ID, $payIncrement: [Float]) {
+                ${actor.operations.update}(where: { id: $id }, update: {
+                    actedIn: [
+                        {
+                            update: {
+                                edge: {
+                                    pay_PUSH: $payIncrement
+                                }
+                            }
+                        }
+                    ]
+                }) {
+                    ${actor.plural} {
+                        name
+                        actedIn {
+                            title
+                        }
+                        actedInConnection {
+                            edges {
+                                pay
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        // Create new movie
+        await session.run(
+            `
+                CREATE (a:${movie.name} {title: "The Matrix"}), (b:${actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ pay: $initialPay }]-(b) RETURN a, actedIn, b
+                `,
+            {
+                id,
+                initialPay: [initialPay],
+            }
+        );
+        // Update movie
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            variableValues: { id, payIncrement },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        const storedValue = await session.run(
+            `
+                MATCH(b: ${actor.name}{id: $id}) -[c: ACTED_IN]-> (a: ${movie.name}) RETURN c.pay as pay
+                `,
+            {
+                id,
+            }
+        );
+        expect(storedValue.records[0].get("pay")).toEqual([initialPay, payIncrement]);
+    });
 });
