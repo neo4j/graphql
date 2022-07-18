@@ -25,11 +25,11 @@ import { IncomingMessage } from "http";
 import { Socket } from "net";
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType } from "../../../utils/graphql-types";
-import Neo4j from "../../neo4j";
+import { Neo4jGraphQL } from "../../../src/classes";
+import { generateUniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
 
-describe("array-pop-errors", () => {
+describe("array-pop-and-push", () => {
     let driver: Driver;
     let session: Session;
     let neo4j: Neo4j;
@@ -53,6 +53,7 @@ describe("array-pop-errors", () => {
     afterEach(async () => {
         await session.close();
     });
+
     test("should throw an error when trying to pop an element from a non-existing array", async () => {
         const typeMovie = generateUniqueType("Movie");
 
@@ -60,6 +61,7 @@ describe("array-pop-errors", () => {
             type ${typeMovie} {
                 title: String
                 tags: [String]
+                moreTags: [String]
             }
         `;
 
@@ -71,18 +73,18 @@ describe("array-pop-errors", () => {
 
         const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: 1 }) {
+                ${typeMovie.operations.update} (update: { tags_PUSH: "xyz", moreTags_POP: 2 }) {
                     ${typeMovie.plural} {
                         title
                         tags
+                        moreTags
                     }
                 }
             }
         `;
 
-        // Created deliberately without the tags property.
         const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle})
+            CREATE (m:${typeMovie} {title:$movieTitle, tags: ["abc"] })
         `;
 
         await session.run(cypher, { movieTitle });
@@ -99,59 +101,7 @@ describe("array-pop-errors", () => {
 
         expect(gqlResult.errors).toBeDefined();
         expect(
-            (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Property tags cannot be NULL"))
-        ).toBeTruthy();
-
-        expect(gqlResult.data).toBeNull();
-    });
-
-    test("should throw an error when trying to pop an element from multiple non-existing arrays", async () => {
-        const typeMovie = generateUniqueType("Movie");
-
-        const typeDefs = gql`
-            type ${typeMovie} {
-                title: String
-                tags: [String]
-                otherTags: [String]
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-
-        const movieTitle = generate({
-            charset: "alphabetic",
-        });
-
-        const update = `
-            mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: 1, otherTags_POP: 1 }) {
-                    ${typeMovie.plural} {
-                        title
-                        tags
-                        otherTags
-                    }
-                }
-            }
-        `;
-
-        // Created deliberately without the tags or otherTags properties.
-        const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle})
-        `;
-
-        await session.run(cypher, { movieTitle });
-
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: update,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-        });
-
-        expect(gqlResult.errors).toBeDefined();
-        expect(
-            (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("Properties tags, otherTags cannot be NULL")
-            )
+            (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("moreTags cannot be NULL"))
         ).toBeTruthy();
 
         expect(gqlResult.data).toBeNull();
@@ -166,6 +116,7 @@ describe("array-pop-errors", () => {
                     operations: [UPDATE],
                     isAuthenticated: true
                 }])
+                moreTags: [String]
             }
         `;
 
@@ -177,17 +128,18 @@ describe("array-pop-errors", () => {
 
         const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: 1 }) {
+                ${typeMovie.operations.update} (update: { tags_POP: 1, moreTags_PUSH: "new tag" }) {
                     ${typeMovie.plural} {
                         title
                         tags
+                        moreTags
                     }
                 }
             }
         `;
 
         const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: ['a', 'b']})
+            CREATE (m:${typeMovie} {title:$movieTitle, tags: ['a', 'b'], moreTags: []})
         `;
 
         await session.run(cypher, { movieTitle });
@@ -204,10 +156,6 @@ describe("array-pop-errors", () => {
             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
-
         expect(gqlResult.errors).toBeDefined();
         expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Unauthenticated"))).toBeTruthy();
         expect(gqlResult.data).toBeNull();
@@ -220,6 +168,7 @@ describe("array-pop-errors", () => {
             type ${typeMovie} {
                 title: String
                 tags: [String]
+                moreTags: [String]
             }
         `;
 
@@ -231,17 +180,18 @@ describe("array-pop-errors", () => {
 
         const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: a }) {
+                ${typeMovie.operations.update} (update: { tags_PUSH: 1, moreTags_POP: 2 }) {
                     ${typeMovie.plural} {
                         title
                         tags
+                        moreTags
                     }
                 }
             }
         `;
 
         const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: ["abc", "xyz"]})
+            CREATE (m:${typeMovie} {title:$movieTitle, tags: ["abc"], moreTags: ["this", "that", "them"] })
         `;
 
         await session.run(cypher, { movieTitle });
@@ -252,14 +202,10 @@ describe("array-pop-errors", () => {
             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
-
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("Int cannot represent non-integer value")
+                el.message.includes("String cannot represent a non string value")
             )
         ).toBeTruthy();
 

@@ -22,9 +22,9 @@ import { gql } from "apollo-server";
 import type { Driver, Session } from "neo4j-driver";
 import { generate } from "randomstring";
 
-import { generateUniqueType } from "../../../utils/graphql-types";
-import Neo4j from "../../neo4j";
-import { Neo4jGraphQL } from "../../../../src/classes";
+import { generateUniqueType } from "../../utils/graphql-types";
+import Neo4j from "../neo4j";
+import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("array-pop-and-push", () => {
     let driver: Driver;
