@@ -196,7 +196,7 @@ function createElementWhereAndParams({
                         listPredicates: [currentListPredicate, ...(listPredicates || [])],
                     });
 
-                    // => This connectionWhere here needs to be genresConnection_SOME. I think..
+                    // => This connectionWhere here needs to be genresConnection_SOME. I think...
                     resultArr.push(connectionWhere[0]);
                     resultArr.push(")"); // close NONE/ANY
 
