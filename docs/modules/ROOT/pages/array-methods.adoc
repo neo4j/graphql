@@ -32,8 +32,9 @@ type Movie {
 
 We can pop from this `tags` property array.
 
-Before: ['a', 'b', 'c']
-After: ['a', 'b']
+Before: `['a', 'b', 'c']`
+
+After: `['a', 'b']`
 
 
 [source, graphql, indent=0]
@@ -50,8 +51,9 @@ mutation {
 
 Or, for more than one property from the array:
 
-Before: ['a', 'b', 'c']
-After: ['a']
+Before: `['a', 'b', 'c']`
+
+After: `['a']`
 
 [source, graphql, indent=0]
 ----
@@ -81,11 +83,16 @@ We can push to both the `tags` and `moreTags` property arrays.
 
 
 Before: 
+```
     tags: ['a', 'b', 'c']
     moreTags: ['x', 'y', 'z']
+```
+
 After:
+```
     tags: ['a', 'b']
     moreTags: ['x']
+```
 
 [source, graphql, indent=0]
 ----
@@ -114,8 +121,9 @@ type Movie {
 We can push to this `tags` property array.
 
 
-Before: ['some tag']
-After: ['some tag', 'another tag']
+Before: `['some tag']`
+
+After: `['some tag', 'another tag']`
 
 [source, graphql, indent=0]
 ----
@@ -142,12 +150,17 @@ type Movie {
 
 We can push to both the `tags` and `moreTags` property arrays.
 
-Before: 
+Before:
+```
     tags: ['some tag']
     moreTags: []
-After: 
+```
+
+After:
+```
     tags: ['some tag', 'another tag']
     moreTags ['a different tag']
+```
 
 [source, graphql, indent=0]
 ----
@@ -179,12 +192,17 @@ type Movie {
 
 We can then update both property arrays with either _POP or _PUSH operators.
 
-Before: 
+Before:
+```
     tags: ['some tag']
     moreTags: []
-After: 
+```
+
+After:
+```
     tags: []
     moreTags ['a different tag']
+```
 
 [source, graphql, indent=0]
 ----
