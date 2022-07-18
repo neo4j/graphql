@@ -90,7 +90,6 @@ export function createConnectionOperation({
         const subquery = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
             const patternStr = matchPattern.getCypher(env);
             const whereStr = compileCypherIfExists(whereOperator, env, {});
-            // HERE
             const clause = listPredicateToSizeFunction(listPredicateStr, patternStr, whereStr);
             return [clause, {}];
         });
