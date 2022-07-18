@@ -85,6 +85,30 @@ function createSetRelationshipProperties({
             return;
         }
 
+        const arrayPushField = relationship.primitiveFields.find((x) => `${x.fieldName}_PUSH` === key);
+
+        if (arrayPushField) {
+            const pointArrayField = relationship.pointFields.find((x) => `${x.fieldName}_PUSH` === key);
+            if (pointArrayField) {
+                strs.push(
+                    `SET ${varName}.${arrayPushField.dbPropertyName} = ${varName}.${arrayPushField.dbPropertyName} + [p in $${paramName} | point(p)]`
+                );
+            } else {
+                strs.push(
+                    `SET ${varName}.${arrayPushField.dbPropertyName} = ${varName}.${arrayPushField.dbPropertyName} + $${paramName}`
+                );
+            }
+
+            return;
+        }
+
+        const arrayPopField = relationship.primitiveFields.find((x) => `${x.fieldName}_POP` === key);
+        if (arrayPopField) {
+            strs.push(
+                `SET ${varName}.${arrayPopField.dbPropertyName} = ${varName}.${arrayPopField.dbPropertyName}[0..-$${paramName}]`
+            );
+        }
+
         const mathMatch = matchMathField(key);
         const { hasMatched } = mathMatch;
         if (hasMatched) {
