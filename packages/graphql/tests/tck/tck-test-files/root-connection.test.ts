@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 import { createJwtRequest } from "../../utils/create-jwt-request";
@@ -203,7 +203,7 @@ describe("Root Connection Query tests", () => {
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WITH collect({ node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
             }
             WITH COLLECT({ node: this { .title, actorsConnection } }) as edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } as this"

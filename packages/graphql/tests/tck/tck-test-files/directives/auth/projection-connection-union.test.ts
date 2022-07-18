@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
@@ -103,7 +103,7 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
             CALL apoc.util.validate(NOT (this_Post_user.id IS NOT NULL AND this_Post_user.id = $this_Post_user_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { name: this_Post_user.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS creatorConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS creatorConnection
             }
             WITH { node: { __resolveType: \\"Post\\", content: this_Post.content, creatorConnection: creatorConnection } } AS edge
             RETURN edge

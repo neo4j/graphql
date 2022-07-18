@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import { GraphQLResolveInfo } from "graphql";
+import type { GraphQLResolveInfo } from "graphql";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { execute } from "../../../utils";
 import { translateDelete } from "../../../translate";
-import { Context } from "../../../types";
-import { Node } from "../../../classes";
+import type { Context } from "../../../types";
+import type { Node } from "../../../classes";
 import { publishEventsToPlugin } from "../../subscriptions/publish-events-to-plugin";
 
 export function deleteResolver({ node }: { node: Node }) {

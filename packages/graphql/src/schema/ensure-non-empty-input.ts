@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { InputTypeComposer, SchemaComposer } from "graphql-compose";
+import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { isString } from "../utils/utils";
 
 export function ensureNonEmptyInput(composer: SchemaComposer, nameOrInput: string | InputTypeComposer<any>) {

@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
@@ -104,7 +104,7 @@ describe("Relationship Properties Create Cypher", () => {
             MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
             WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
             }
             RETURN [
             this0 { .title, actorsConnection }] AS data"

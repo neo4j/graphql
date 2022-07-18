@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -345,7 +345,7 @@ describe("Interface Relationships", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
             }
             RETURN this { actedInConnection } as this"
         `);
@@ -399,7 +399,7 @@ describe("Interface Relationships", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
             }
             RETURN this { actedInConnection } as this"
         `);
@@ -464,7 +464,7 @@ describe("Interface Relationships", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
             }
             RETURN this { actedInConnection } as this"
         `);
@@ -545,7 +545,7 @@ describe("Interface Relationships", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
             }
             RETURN this { actedInConnection } as this"
         `);

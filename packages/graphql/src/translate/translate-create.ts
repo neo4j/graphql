@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { Node } from "../classes";
+import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import { Context, ConnectionField, RelationField } from "../types";
+import type { Context, ConnectionField, RelationField } from "../types";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";

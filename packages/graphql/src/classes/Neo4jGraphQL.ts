@@ -17,21 +17,24 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import { GraphQLSchema } from "graphql";
-import { addResolversToSchema, IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
+import type { Driver } from "neo4j-driver";
+import type { GraphQLSchema } from "graphql";
+import type { IExecutableSchemaDefinition} from "@graphql-tools/schema";
+import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
-import { forEachField, IResolvers } from "@graphql-tools/utils";
+import type { IResolvers } from "@graphql-tools/utils";
+import { forEachField } from "@graphql-tools/utils";
 import { mergeResolvers } from "@graphql-tools/merge";
 import Debug from "debug";
 import type { DriverConfig, CypherQueryOptions, Neo4jGraphQLPlugins, Neo4jGraphQLCallbacks, Neo4jFeaturesSettings} from "../types";
 import { makeAugmentedSchema } from "../schema";
-import Node from "./Node";
-import Relationship from "./Relationship";
+import type Node from "./Node";
+import type Relationship from "./Relationship";
 import checkNeo4jCompat from "./utils/verify-database";
-import assertIndexesAndConstraints, {
+import type {
     AssertIndexesAndConstraintsOptions,
 } from "./utils/asserts-indexes-and-constraints";
+import assertIndexesAndConstraints from "./utils/asserts-indexes-and-constraints";
 import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
 import { asArray } from "../utils/utils";
@@ -140,7 +143,7 @@ class Neo4jGraphQL {
     private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
         forEachField(schema, (field) => {
             if (!field.resolve) {
-                // eslint-disable-next-line no-param-reassign
+                 
                 field.resolve = defaultFieldResolver;
             }
         });

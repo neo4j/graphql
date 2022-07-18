@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Session } from "neo4j-driver";
+import type { Session } from "neo4j-driver";
 import { REQUIRED_APOC_FUNCTIONS } from "../../constants";
 
 export async function verifyFunctions(sessionFactory: () => Session): Promise<void> {

@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -98,7 +98,7 @@ describe("#601", () => {
             CALL apoc.util.validate(NOT (any(r IN [\\\\\\"view\\\\\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
             WITH collect({ fileId: this_documents_uploaded_relationship.fileId, uploadedAt: apoc.date.convertFormat(toString(this_documents_uploaded_relationship.uploadedAt), \\\\\\"iso_zoned_date_time\\\\\\", \\\\\\"iso_offset_date_time\\\\\\") }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS customerContactConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS customerContactConnection
             } RETURN customerContactConnection\\", { this_documents: this_documents, auth: $auth }, false) } ] } as this"
         `);
 

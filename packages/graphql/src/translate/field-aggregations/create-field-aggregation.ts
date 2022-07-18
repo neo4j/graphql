@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
-import { Node, Relationship } from "../../classes";
-import { Context, RelationField, GraphQLWhereArg } from "../../types";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { Node, Relationship } from "../../classes";
+import type { Context, RelationField, GraphQLWhereArg } from "../../types";
 import {
     getFieldType,
     AggregationType,

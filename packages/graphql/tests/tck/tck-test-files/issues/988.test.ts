@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -142,14 +142,14 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
             MATCH (this)-[this_manufacturer_relationship:MANUFACTURER]->(this_manufacturer:Manufacturer)
             WITH collect({ current: this_manufacturer_relationship.current, node: { name: this_manufacturer.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS manufacturerConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS manufacturerConnection
             }
             CALL {
             WITH this
             MATCH (this)-[this_brand_relationship:BRAND]->(this_brand:Brand)
             WITH collect({ current: this_brand_relationship.current, node: { name: this_brand.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS brandConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS brandConnection
             }
             RETURN this { .name, .current, manufacturerConnection, brandConnection } as this"
         `);

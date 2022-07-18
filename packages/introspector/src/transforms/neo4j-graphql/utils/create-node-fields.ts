@@ -18,7 +18,7 @@
  */
 
 import Debug from "debug";
-import Property from "../../../classes/Property";
+import type Property from "../../../classes/Property";
 import { NodeField } from "../NodeField";
 import { DEBUG_INFER_SCHEMA } from "../../../constants";
 import mapNeo4jToGraphQLType from "./map-neo4j-to-graphql-type";

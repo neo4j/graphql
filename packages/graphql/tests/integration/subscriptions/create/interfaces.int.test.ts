@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import { Driver, Session } from "neo4j-driver";
-import { DocumentNode, graphql } from "graphql";
+import type { Driver, Session } from "neo4j-driver";
+import type { DocumentNode} from "graphql";
+import { graphql } from "graphql";
 import { faker } from "@faker-js/faker";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";

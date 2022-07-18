@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { Node } from "../classes";
+import type { Node } from "../classes";
 import { RELATIONSHIP_REQUIREMENT_PREFIX } from "../constants";
-import { Context } from "../types";
+import type { Context } from "../types";
 
 function createRelationshipValidationString({
     node,

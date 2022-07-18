@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
@@ -260,7 +260,7 @@ describe("Math operators", () => {
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
             WITH collect({ pay: this_acted_in_relationship.pay }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
             }
             RETURN collect(DISTINCT this { .name, actedIn: [ (this)-[:ACTED_IN]->(this_actedIn:Movie)   | this_actedIn { .title } ], actedInConnection }) AS data"
         `);

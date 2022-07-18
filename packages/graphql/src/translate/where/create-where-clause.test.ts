@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { PointField, PrimitiveField } from "../../types";
+import type { PointField, PrimitiveField } from "../../types";
 import createWhereClause from "./create-where-clause";
-import { NumericalWhereOperator, SpatialWhereOperator, WhereOperator } from "./types";
+import type { NumericalWhereOperator, SpatialWhereOperator, WhereOperator } from "./types";
 
 describe("createWhereClause", () => {
     const property = "field";

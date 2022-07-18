@@ -18,7 +18,7 @@
  */
 
 import { RelationshipQueryDirectionOption } from "../constants";
-import { RelationField } from "../types";
+import type { RelationField } from "../types";
 
 export type DirectedArgument = {
     type: "Boolean";

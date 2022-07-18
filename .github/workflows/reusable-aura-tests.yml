@@ -1,0 +1,80 @@
+name: "Aura tests"
+
+on:
+  workflow_call:
+    inputs:
+      BRANCH:
+        required: false
+        type: string
+        description: "Which branch to run tests against"
+      CONTINUE_ON_ERROR:
+        required: false
+        type: boolean
+        default: false
+        description: "Should the workflow execution continue if the tests against Aura fail"
+    secrets:
+      URI:
+        required: true
+        description: "The URI locating the AuraDB instance to be tested against"
+      PASSWORD:
+        required: true
+        description: "The password needed to access the AuraDB instance"
+
+jobs:
+  teardown:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.BRANCH || github.ref }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Install ts-node and typescript
+        run: npm install -g ts-node typescript
+      - name: Delete all data in instance
+        run: ts-node tests/integration/teardown.ts
+        working-directory: packages/graphql
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: ${{ secrets.PASSWORD }}
+          NEO_URL: ${{ secrets.URI }}
+
+  test:
+    needs:
+      - teardown
+
+    continue-on-error: ${{ inputs.CONTINUE_ON_ERROR }}
+
+    strategy:
+      max-parallel: 1
+      matrix:
+        package:
+          - graphql
+          - introspector
+          - ogm
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: yarn
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Run @neo4j/graphql integration tests
+        run: |
+          yarn test:int
+        working-directory: packages/${{ matrix.package }}
+        env:
+          NEO_USER: neo4j
+          NEO_PASSWORD: ${{ secrets.PASSWORD }}
+          NEO_URL: ${{ secrets.URI }}

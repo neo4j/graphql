@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 import { GraphQLUnionType } from "graphql";
 import { mergeDeep } from "@graphql-tools/utils";
-import { Node } from "../classes";
+import type { Node } from "../classes";
 import createWhereAndParams from "./where/create-where-and-params";
-import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
+import type { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
@@ -329,7 +329,7 @@ function createProjectionAndParams({
             // push the fieldName into the projection and stash the apocStr in the
             // returned meta object
             if (isRootConnectionField) {
-                const sortInput = context.resolveTree.args.sort as GraphQLSortArg[];
+                const sortInput = (context.resolveTree.args.sort ?? []) as GraphQLSortArg[];
                 const isSortArg = sortInput.find((obj) => Object.keys(obj)[0] === alias);
                 if (isSortArg) {
                     if (!res.meta.rootConnectionCypherSortFields) {

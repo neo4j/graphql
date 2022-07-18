@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { InputTypeComposer } from "graphql-compose";
+import type { InputTypeComposer } from "graphql-compose";
 
 export function addMathOperatorsToITC(itc: InputTypeComposer): void {
     // Add mathematical operators for Int/BigInt/Float fields

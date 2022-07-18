@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
@@ -87,7 +87,7 @@ describe("Cypher Auth Projection On Connections", () => {
             CALL apoc.util.validate(NOT (exists((this_post)<-[:HAS_POST]-(:User)) AND any(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { content: this_post.content } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS postsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS postsConnection
             }
             RETURN this { .name, postsConnection } as this"
         `);
@@ -141,11 +141,11 @@ describe("Cypher Auth Projection On Connections", () => {
             CALL apoc.util.validate(NOT (this_post_user.id IS NOT NULL AND this_post_user.id = $this_post_user_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { name: this_post_user.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS creatorConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS creatorConnection
             }
             WITH collect({ node: { content: this_post.content, creatorConnection: creatorConnection } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS postsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS postsConnection
             }
             RETURN this { .name, postsConnection } as this"
         `);

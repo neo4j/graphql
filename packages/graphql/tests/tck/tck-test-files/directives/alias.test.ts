@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -111,7 +111,7 @@ describe("Cypher alias directive", () => {
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
             WITH collect({ character: this_acted_in_relationship.characterPropInDb, screenTime: this_acted_in_relationship.screenTime, node: { title: this_movie.title, rating: this_movie.ratingPropInDb } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
             }
             RETURN this { .name, city: this.cityPropInDb, actedInConnection } as this"
         `);
@@ -182,7 +182,7 @@ describe("Cypher alias directive", () => {
             MATCH (this0)-[this0_acted_in_relationship:ACTED_IN]->(this0_movie:Movie)
             WITH collect({ character: this0_acted_in_relationship.characterPropInDb, screenTime: this0_acted_in_relationship.screenTime, node: { title: this0_movie.title, rating: this0_movie.ratingPropInDb } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
             }
             RETURN [
             this0 { .name, city: this0.cityPropInDb, actedIn: [ (this0)-[:ACTED_IN]->(this0_actedIn:Movie)   | this0_actedIn { .title, rating: this0_actedIn.ratingPropInDb } ], actedInConnection }] AS data"

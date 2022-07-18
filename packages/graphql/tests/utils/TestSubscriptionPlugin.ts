@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 import { EventEmitter } from "events";
-import { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "../../src/types";
+import type { Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "../../src/types";
 
 export class TestSubscriptionsPlugin implements Neo4jGraphQLSubscriptionsPlugin {
     public events = new EventEmitter();

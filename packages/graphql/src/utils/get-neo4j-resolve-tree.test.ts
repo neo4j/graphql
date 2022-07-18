@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import { GraphQLResolveInfo } from "graphql";
+import type { GraphQLResolveInfo } from "graphql";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-import getNeo4jResolveTree, { GetNeo4jResolveTreeOptions } from "./get-neo4j-resolve-tree";
+import type { GetNeo4jResolveTreeOptions } from "./get-neo4j-resolve-tree";
+import getNeo4jResolveTree from "./get-neo4j-resolve-tree";
 
 describe("getNeo4jResolveTree", () => {
     const schema = makeExecutableSchema({

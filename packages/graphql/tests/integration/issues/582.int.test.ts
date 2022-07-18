@@ -18,9 +18,10 @@
  */
 
 import { graphql } from "graphql";
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import type { UniqueType } from "../../utils/graphql-types";
+import { generateUniqueType } from "../../utils/graphql-types";
 import Neo4j from "../neo4j";
 
 describe("582", () => {

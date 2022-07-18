@@ -1,6 +1,7 @@
 {
     "name": "graphql-manual",
     "version": "3.0.0",
+    "private": true,
     "description": "= GraphQL Manual",
     "main": "server.js",
     "scripts": {

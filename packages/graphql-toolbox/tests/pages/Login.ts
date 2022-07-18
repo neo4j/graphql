@@ -27,6 +27,11 @@ export class Login extends Screen {
         await this.page.fill("[data-test-login-username]", username);
     }
 
+    public async getUsername(): Promise<string> {
+        await this.page.waitForSelector("[data-test-login-username]");
+        return await this.page.inputValue("[data-test-login-username]");
+    }
+
     public async setPassword(password: string) {
         await this.page.waitForSelector("[data-test-login-password]");
         await this.page.fill("[data-test-login-password]", password);
@@ -35,6 +40,11 @@ export class Login extends Screen {
     public async setURL(url: string) {
         await this.page.waitForSelector("[data-test-login-url]");
         await this.page.fill("[data-test-login-url]", url);
+    }
+
+    public async getURL(): Promise<string> {
+        await this.page.waitForSelector("[data-test-login-url]");
+        return await this.page.inputValue("[data-test-login-url]");
     }
 
     public async submit() {

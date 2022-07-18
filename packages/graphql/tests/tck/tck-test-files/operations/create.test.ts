@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -351,7 +351,7 @@ describe("Cypher Create", () => {
             WHERE this0_movies_actor.name = $projection_movies_actorsConnection.args.where.node.name
             WITH collect({ node: { name: this0_movies_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
             } RETURN actorsConnection\\", { this0_movies: this0_movies, projection_movies_actorsConnection: $projection_movies_actorsConnection, auth: $auth }, false) } ] }] AS data"
         `);
 

@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -104,7 +104,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
         `);
@@ -159,7 +159,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
         `);
@@ -228,7 +228,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
         `);
@@ -308,7 +308,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
         `);
@@ -381,7 +381,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     UNWIND edges as edge
                     WITH edges, edge
                     ORDER BY edge.screenTime ASC
-                    RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+                    RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
                     }
                     RETURN this { .name, actedInConnection } as this"
                 `);
@@ -437,7 +437,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     UNWIND edges as edge
                     WITH edges, edge
                     ORDER BY edge.node.title ASC
-                    RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+                    RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
                     }
                     RETURN this { .name, actedInConnection } as this"
                 `);
@@ -494,7 +494,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     UNWIND edges as edge
                     WITH edges, edge
                     ORDER BY edge.screenTime ASC
-                    RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+                    RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
                     }
                     RETURN this { .name, actedInConnection } as this"
                 `);
@@ -549,7 +549,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     UNWIND edges as edge
                     WITH edges, edge
                     ORDER BY edge.node.title ASC
-                    RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+                    RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actedInConnection
                     }
                     RETURN this { .name, actedInConnection } as this"
                 `);

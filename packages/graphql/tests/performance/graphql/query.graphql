@@ -7,6 +7,13 @@ query SimpleQuery {
     }
 }
 
+# https://github.com/neo4j/graphql/issues/187
+query QueryWhere {
+    movies(where: { actors: { name: "Keanu Reeves" } }) {
+        released
+    }
+}
+
 query SimpleQueryWithNestedWhere {
     movies(where: { actors_SOME: { name: "Keanu Reeves" } }) {
         title
@@ -88,5 +95,16 @@ query QueryWithNestedIn {
             name
             born
         }
+    }
+}
+
+# From https://github.com/neo4j/graphql/issues/1262
+query NestedConnectionWhere {
+    movies(
+        where: {
+            actorsConnection_SOME: { node: { name: "Hugo Weaving", moviesConnection_NONE: { node: { title: "No" } } } }
+        }
+    ) {
+        title
     }
 }

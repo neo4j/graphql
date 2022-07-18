@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DocumentNode, ObjectTypeDefinitionNode } from "graphql";
+import type { DocumentNode, ObjectTypeDefinitionNode } from "graphql";
 import { isRootType } from "../utils/is-root-type";
 
 interface CustomResolvers {

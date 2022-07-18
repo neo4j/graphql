@@ -31,12 +31,60 @@ export async function collectTests(
         files.map(async (filePath) => {
             const fileData = await fs.readFile(filePath, "utf-8");
             const rawQueries = fileData.split(/^query\s/gm);
+            const rawMutations = fileData.split(/^mutation\s/gm);
             rawQueries.shift();
-            return rawQueries.map((query: string) => {
+            rawMutations.shift();
+            // TODO: remove duplicate
+            const queries = rawQueries.map((query: string) => {
                 const name = query.split(" {")[0].trim();
                 if (name.match(onlyRegex)) onlyFilter = true;
                 return {
                     query: `query ${query}`,
+                    name,
+                    filename: path.basename(filePath).split(path.extname(filePath))[0],
+                };
+            });
+            const mutations = rawMutations.map((query: string) => {
+                const name = query.split(" {")[0].trim();
+                if (name.match(onlyRegex)) onlyFilter = true;
+                return {
+                    query: `mutation ${query}`,
+                    name,
+                    filename: path.basename(filePath).split(path.extname(filePath))[0],
+                };
+            });
+            return [...queries, ...mutations];
+        })
+    );
+
+    const tests = testFilesData.flat().filter((t) => !t.name.match(skipRegex));
+
+    if (onlyFilter) {
+        return tests.filter((t) => t.name.match(onlyRegex));
+    }
+    return tests;
+}
+
+export async function collectCypherTests(
+    rootPath: string
+): Promise<Array<{ query: string; name: string; filename: string }>> {
+    const files = await filesFromDir(rootPath, ".cypher");
+
+    let onlyFilter = false;
+    const onlyRegex = /_only$/i;
+    const skipRegex = /_skip$/i;
+    const testFilesData = await Promise.all(
+        files.map(async (filePath) => {
+            const fileData = await fs.readFile(filePath, "utf-8");
+            const rawQueries = fileData.split(/^#\s?Test:\s/gim);
+            rawQueries.shift();
+            return rawQueries.map((query: string) => {
+                const tokens = query.trim().split("\n");
+                const name = tokens.shift()?.trim() as string;
+                if (name.match(onlyRegex)) onlyFilter = true;
+                const cypher = tokens.join("\n");
+                return {
+                    query: cypher,
                     name,
                     filename: path.basename(filePath).split(path.extname(filePath))[0],
                 };

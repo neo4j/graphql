@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import path from "path";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { gql } from "apollo-server";
 import neo4j from "./utils/neo4j";
 import { setupDatabase, cleanDatabase } from "./utils/setup-database";
 import { Neo4jGraphQL } from "../../src";
-import { collectTests } from "./utils/collect-test-files";
+import { collectTests, collectCypherTests } from "./utils/collect-test-files";
 import { ResultsWriter } from "./utils/ResultsWriter";
 import { ResultsDisplay } from "./utils/ResultsDisplay";
 import { TestRunner } from "./utils/TestRunner";
@@ -47,6 +47,7 @@ const typeDefs = gql`
         id: ID!
         title: String!
         tagline: String
+        released: Int
         actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
         directors: [Person!]! @relationship(type: "DIRECTED", direction: IN)
         reviewers: [Person!]! @relationship(type: "REVIEWED", direction: IN)
@@ -84,7 +85,10 @@ async function main() {
         await beforeAll();
         const resultsWriter = new ResultsWriter(path.join(__dirname, "/performance.json"));
         const oldResults = await resultsWriter.readPreviousResults();
-        const results = await runTests();
+
+        const withCypher = process.argv.includes("--cypher");
+
+        const results = await runTests(withCypher);
 
         const resultsDisplay = new ResultsDisplay();
         await resultsDisplay.display(results, oldResults);
@@ -101,11 +105,18 @@ async function main() {
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 main();
 
-async function runTests() {
-    const tests = await collectTests(__dirname);
-
+async function runTests(cypher: boolean) {
+    const gqltests = await collectTests(path.join(__dirname, "graphql"));
     const runner = new TestRunner(driver, neoSchema);
-    return runner.runTests(tests);
+
+    const gqlTestsResuts = await runner.runTests(gqltests);
+    if (cypher) {
+        const cypherTests = await collectCypherTests(path.join(__dirname, "cypher"));
+        const cypherTestsResults = await runner.runCypherTests(cypherTests);
+        return [...gqlTestsResuts, ...cypherTestsResults];
+    }
+
+    return gqlTestsResuts;
 }
 
 async function dbReset() {

@@ -1,5 +1,6 @@
 {
     "name": "migration",
+    "private": true,
     "scripts": {
         "start": "node src/index.js"
     },

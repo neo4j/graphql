@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { Node, Relationship } from "../classes";
-import { Context } from "../types";
+import type { Node, Relationship } from "../classes";
+import type { Context } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
