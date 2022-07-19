@@ -96,7 +96,8 @@ describe("https://github.com/neo4j/graphql/issues/1263", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+            WITH edges, size(edges) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
         `);
