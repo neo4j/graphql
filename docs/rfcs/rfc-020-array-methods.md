@@ -201,6 +201,19 @@ N/A
 
 ## Out of Scope
 
+Instead of throwing an error on ambiguous updates, it could be nice to instead ensure an order of updates. This would enable users to perform something like clearing an array and then adding to it in one update.
+
+Where this would now error, it would instead ensure that the database value is `["Emil"]`.
+
+```
+updateNodes(
+  where: { id: "e9bc687a-efd1-419d-b208" }
+  update: {
+    middleNames: [],
+    middleNames_PUSH: ["Emil"]
+  }
+)
+```
 
 ### Array methods
 
