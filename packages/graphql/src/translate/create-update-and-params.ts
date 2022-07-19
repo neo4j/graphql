@@ -528,9 +528,44 @@ export default function createUpdateAndParams({
             }
         }
 
-        arrayPush(node, key, res, varName, param, value);
+        const pushSuffix = "_PUSH";
+        const pushField = node.mutableFields.find((x) => `${x.fieldName}${pushSuffix}` === key);
+        if (pushField) {
+            if (pushField.dbPropertyName && updateInput[pushField.dbPropertyName]) {
+                throw new Error(`Ambiguous property: ${pushField.dbPropertyName}`);
+            }
 
-        arrayPop(node, key, res, varName, param, value);
+            validateNonNullProperty(res, varName, pushField);
+
+            const pointArrayField = node.pointFields.find((x) => `${x.fieldName}_PUSH` === key);
+            if (pointArrayField) {
+                res.strs.push(
+                    `SET ${varName}.${pushField.dbPropertyName} = ${varName}.${pushField.dbPropertyName} + [p in $${param} | point(p)]`
+                );
+            } else {
+                res.strs.push(
+                    `SET ${varName}.${pushField.dbPropertyName} = ${varName}.${pushField.dbPropertyName} + $${param}`
+                );
+            }
+
+            res.params[param] = value;
+        }
+
+        const popSuffix = `_POP`;
+        const popField = node.mutableFields.find((x) => `${x.fieldName}${popSuffix}` === key);
+        if (popField) {
+            if (popField.dbPropertyName && updateInput[popField.dbPropertyName]) {
+                throw new Error(`Ambiguous property: ${popField.dbPropertyName}`);
+            }
+
+            validateNonNullProperty(res, varName, popField);
+
+            res.strs.push(
+                `SET ${varName}.${popField.dbPropertyName} = ${varName}.${popField.dbPropertyName}[0..-$${param}]`
+            );
+
+            res.params[param] = value;
+        }
 
         return res;
     }
@@ -634,40 +669,6 @@ function validateNonNullProperty(res: Res, varName: string, field: BaseField) {
     }
 
     res.meta.preArrayMethodValidationStrs.push([`${varName}.${field.dbPropertyName}`, `${field.dbPropertyName}`]);
-}
-
-function arrayPush(node: Node, key: string, res: Res, varName: string, param: string, value: any) {
-    const arrayFieldsPush = node.mutableFields.find((x) => `${x.fieldName}_PUSH` === key);
-
-    if (arrayFieldsPush) {
-        validateNonNullProperty(res, varName, arrayFieldsPush);
-
-        const pointArrayField = node.pointFields.find((x) => `${x.fieldName}_PUSH` === key);
-        if (pointArrayField) {
-            res.strs.push(
-                `SET ${varName}.${arrayFieldsPush.dbPropertyName} = ${varName}.${arrayFieldsPush.dbPropertyName} + [p in $${param} | point(p)]`
-            );
-        } else {
-            res.strs.push(
-                `SET ${varName}.${arrayFieldsPush.dbPropertyName} = ${varName}.${arrayFieldsPush.dbPropertyName} + $${param}`
-            );
-        }
-
-        res.params[param] = value;
-    }
-}
-
-function arrayPop(node: Node, key: string, res: Res, varName: string, param: string, value: any) {
-    const arrayFieldsPop = node.mutableFields.find((x) => `${x.fieldName}_POP` === key);
-    if (arrayFieldsPop) {
-        validateNonNullProperty(res, varName, arrayFieldsPop);
-
-        res.strs.push(
-            `SET ${varName}.${arrayFieldsPop.dbPropertyName} = ${varName}.${arrayFieldsPop.dbPropertyName}[0..-$${param}]`
-        );
-
-        res.params[param] = value;
-    }
 }
 
 function wrapInSubscriptionsMetaCall({

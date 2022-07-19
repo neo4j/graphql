@@ -201,4 +201,52 @@ describe("array-push", () => {
         ).toBeTruthy();
         expect(gqlResult.data).toBeUndefined();
     });
+
+    test("should throw an error when performing an ambiguous property update", async () => {
+        const typeMovie = generateUniqueType("Movie");
+
+        const typeDefs = gql`
+            type ${typeMovie} {
+                title: String
+                tags: [String]
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const movieTitle = generate({
+            charset: "alphabetic",
+        });
+
+        const update = `
+            mutation {
+                ${typeMovie.operations.update} (update: { tags_PUSH: "test", tags: [] }) {
+                    ${typeMovie.plural} {
+                        title
+                        tags
+                    }
+                }
+            }
+        `;
+
+        const cypher = `
+            CREATE (m:${typeMovie} {title:$movieTitle, tags:["existing value"]})
+        `;
+
+        await session.run(cypher, { movieTitle });
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: update,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
+        expect(gqlResult.errors).toBeDefined();
+        expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Ambiguous"))).toBeTruthy();
+        expect(gqlResult.data).toBeNull();
+    });
 });
