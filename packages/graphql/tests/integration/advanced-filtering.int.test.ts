@@ -708,17 +708,19 @@ describe("Advanced Filtering", () => {
                 typeDefs,
             });
 
+            const animatrix = "The Animatrix";
             const matrix = "The Matrix";
             const matrixReloaded = "The Matrix Reloaded";
             const matrixRevolutions = "The Matrix Revolutions";
 
             try {
                 await session.run(`
+                            CREATE (:${movieType.name} {title: $animatrix})
                             CREATE (:${movieType.name} {title: $matrix})
                             CREATE (:${movieType.name} {title: $matrixReloaded})
                             CREATE (:${movieType.name} {title: $matrixRevolutions})
                         `,
-                    { matrix, matrixReloaded,  matrixRevolutions }
+                    { animatrix, matrix, matrixReloaded,  matrixRevolutions }
                 );
 
                 const query = `
@@ -781,14 +783,16 @@ describe("Advanced Filtering", () => {
             const matrix = "The Matrix";
             const matrixReloaded = "The Matrix Reloaded";
             const matrixRevolutions = "The Matrix Revolutions";
+            const matrixResurrections = "The Matrix Resurrections";
 
             try {
                 await session.run(`
                             CREATE (:${movieType.name} {title: $matrix})
                             CREATE (:${movieType.name} {title: $matrixReloaded})
                             CREATE (:${movieType.name} {title: $matrixRevolutions})
+                            CREATE (:${movieType.name} {title: $matrixResurrections})
                         `,
-                    { matrix, matrixReloaded,  matrixRevolutions }
+                    { matrix, matrixReloaded,  matrixRevolutions, matrixResurrections }
                 );
 
                 const query = `
@@ -811,10 +815,11 @@ describe("Advanced Filtering", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[movieType.plural]).toHaveLength(2);
+                expect((gqlResult.data as any)[movieType.plural]).toHaveLength(3);
                 expect((gqlResult.data as any)[movieType.plural]).toEqual([
                     { title: matrix },
                     { title: matrixReloaded },
+                    { title: matrixResurrections }
                 ]);
             } finally {
                 await session.close();
@@ -848,17 +853,19 @@ describe("Advanced Filtering", () => {
                 typeDefs,
             });
 
+            const animatrix = "The Animatrix";
             const matrix = "The Matrix";
             const matrixReloaded = "The Matrix Reloaded";
             const matrixRevolutions = "The Matrix Revolutions";
 
             try {
                 await session.run(`
+                            CREATE (:${movieType.name} {title: $animatrix})
                             CREATE (:${movieType.name} {title: $matrix})
                             CREATE (:${movieType.name} {title: $matrixReloaded})
                             CREATE (:${movieType.name} {title: $matrixRevolutions})
                         `,
-                    { matrix, matrixReloaded,  matrixRevolutions }
+                    { animatrix, matrix, matrixReloaded,  matrixRevolutions }
                 );
 
                 const query = `
@@ -922,14 +929,17 @@ describe("Advanced Filtering", () => {
             const matrix = "The Matrix";
             const matrixReloaded = "The Matrix Reloaded";
             const matrixRevolutions = "The Matrix Revolutions";
+            const matrixResurrections = "The Matrix Resurrections";
 
             try {
                 await session.run(`
                             CREATE (:${movieType.name} {title: $matrix})
                             CREATE (:${movieType.name} {title: $matrixReloaded})
                             CREATE (:${movieType.name} {title: $matrixRevolutions})
+                            CREATE (:${movieType.name} {title: $matrixResurrections})
+
                         `,
-                    { matrix, matrixReloaded,  matrixRevolutions }
+                    { matrix, matrixReloaded,  matrixRevolutions, matrixResurrections }
                 );
 
                 const query = `
@@ -952,11 +962,12 @@ describe("Advanced Filtering", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                expect((gqlResult.data as any)[movieType.plural]).toHaveLength(3);
+                expect((gqlResult.data as any)[movieType.plural]).toHaveLength(4);
                 expect((gqlResult.data as any)[movieType.plural]).toEqual([
                     { title: matrix },
                     { title: matrixReloaded },
                     { title: matrixRevolutions },
+                    { title: matrixResurrections },
                 ]);
             } finally {
                 await session.close();

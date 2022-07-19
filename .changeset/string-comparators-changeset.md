@@ -1,6 +1,6 @@
 ---
-"graphql-manual": patch
-"@neo4j/graphql": patch
+"graphql-manual": minor
+"@neo4j/graphql": minor
 ---
 
 Comparators `LT`, `LTE`, `GT`, and `GTE` now are included for string fields.
