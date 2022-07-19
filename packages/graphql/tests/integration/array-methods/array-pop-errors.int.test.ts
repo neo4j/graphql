@@ -313,4 +313,87 @@ describe("array-pop-errors", () => {
         expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Ambiguous"))).toBeTruthy();
         expect(gqlResult.data).toBeNull();
     });
+
+    test("should throw an error when performing an ambiguous property update on relationship properties", async () => {
+        const initialPay = 100;
+        const movie = generateUniqueType("Movie");
+        const actor = generateUniqueType("Actor");
+        const typeDefs = `
+            type ${movie.name} {
+                title: String
+                actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            }
+            
+            type ${actor.name} {
+                id: ID!
+                name: String!
+                actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            }
+
+            interface ActedIn @relationshipProperties {
+                pay: [Float]
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            mutation Mutation($id: ID, $numberToPop: Int) {
+                ${actor.operations.update}(where: { id: $id }, update: {
+                    actedIn: [
+                        {
+                            update: {
+                                edge: {
+                                    pay: [],
+                                    pay_POP: $numberToPop
+                                }
+                            }
+                        }
+                    ]
+                }) {
+                    ${actor.plural} {
+                        name
+                        actedIn {
+                            title
+                        }
+                        actedInConnection {
+                            edges {
+                                pay
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        // Create new movie
+        await session.run(
+            `
+                CREATE (a:${movie.name} {title: "The Matrix"}), (b:${actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ pay: $initialPay }]-(b) RETURN a, actedIn, b
+                `,
+            {
+                id,
+                initialPay: [initialPay],
+            }
+        );
+        // Update movie
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            variableValues: { id, numberToPop: 1 },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
+        }
+
+        expect(gqlResult.errors).toBeDefined();
+        expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Ambiguous"))).toBeTruthy();
+        expect(gqlResult.data).toBeNull();
+    });
 });

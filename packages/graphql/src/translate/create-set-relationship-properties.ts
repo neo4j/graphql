@@ -88,6 +88,9 @@ function createSetRelationshipProperties({
         const arrayPushField = relationship.primitiveFields.find((x) => `${x.fieldName}_PUSH` === key);
 
         if (arrayPushField) {
+            if (propertiesEntries.find(([entryKey]) => entryKey === arrayPushField.dbPropertyName)) {
+                throw new Error(`Ambiguous property: ${arrayPushField.dbPropertyName}`);
+            }
             const pointArrayField = relationship.pointFields.find((x) => `${x.fieldName}_PUSH` === key);
             if (pointArrayField) {
                 strs.push(
@@ -104,6 +107,9 @@ function createSetRelationshipProperties({
 
         const arrayPopField = relationship.primitiveFields.find((x) => `${x.fieldName}_POP` === key);
         if (arrayPopField) {
+            if (propertiesEntries.find(([entryKey]) => entryKey === arrayPopField.dbPropertyName)) {
+                throw new Error(`Ambiguous property: ${arrayPopField.dbPropertyName}`);
+            }
             strs.push(
                 `SET ${varName}.${arrayPopField.dbPropertyName} = ${varName}.${arrayPopField.dbPropertyName}[0..-$${paramName}]`
             );
