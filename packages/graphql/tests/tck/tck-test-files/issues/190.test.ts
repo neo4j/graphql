@@ -69,7 +69,7 @@ describe("#190", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WHERE EXISTS { (this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics) WHERE this_demographics.type = $this_demographics_type AND this_demographics.value = $this_demographics_value }
+            WHERE size([(this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics) WHERE this_demographics.type = $this_demographics_type AND this_demographics.value = $this_demographics_value | 1]) > 0
             RETURN this { .uid, demographics: [ (this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics)   | this_demographics { .type, .value } ] } as this"
         `);
 
@@ -105,7 +105,7 @@ describe("#190", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
-            WHERE EXISTS { (this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics) WHERE (this_demographics.type = $this_demographics_OR_type AND this_demographics.value = $this_demographics_OR_value OR this_demographics.type = $this_demographics_OR1_type OR this_demographics.type = $this_demographics_OR2_type) }
+            WHERE size([(this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics) WHERE (this_demographics.type = $this_demographics_OR_type AND this_demographics.value = $this_demographics_OR_value OR this_demographics.type = $this_demographics_OR1_type OR this_demographics.type = $this_demographics_OR2_type) | 1]) > 0
             RETURN this { .uid, demographics: [ (this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics)   | this_demographics { .type, .value } ] } as this"
         `);
 
