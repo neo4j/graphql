@@ -130,6 +130,26 @@ mutation {
 }
 ```
 
+#### PUSH and POP operations
+
+We could also perform both PUSH and POP operations in a single mutation:
+
+
+```graphql
+mutation {
+  updateRecord(
+    where: { name: "Some Person" }
+    update: { middleNames_POP: 1, otherNames_PUSH: ["Michael"]  }
+  ) {
+    records {
+      name
+      middleNames
+      otherNames
+    }
+  }
+}
+```
+
 ### Technical considerations
 
 In an update mutation when the POP method is not used, the `info` object will contain the field `poppedElements` with a value of `[]`.
