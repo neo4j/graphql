@@ -23,7 +23,7 @@ import createAuthAndParams from "./create-auth-and-params";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { createCypherWhereParams } from "./where/create-cypher-where-params";
 
-function translateTopLevelMatch({
+export function translateTopLevelMatch({
     node,
     context,
     varName,
@@ -33,9 +33,7 @@ function translateTopLevelMatch({
     node: Node;
     varName: string;
     operation: AuthOperations;
-}): [string, Record<string, unknown>] {
-    const cyphers: string[] = [];
-    let cypherParams = {};
+}): CypherBuilder.CypherResult {
     const { resolveTree } = context;
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
@@ -51,11 +49,9 @@ function translateTopLevelMatch({
             throw new Error("Can only call one search at any given time");
         }
         const [indexName, indexInput] = Object.entries(fulltextInput)[0];
-        const baseParamName = `${varName}_fulltext_${indexName}`;
-        const paramPhraseName = `${baseParamName}_phrase`;
-        cypherParams[paramPhraseName] = indexInput.phrase;
 
-        matchQuery = new CypherBuilder.db.FullTextQueryNodes(matchNode, indexName, paramPhraseName);
+        const phrase = new CypherBuilder.Param(indexInput.phrase);
+        matchQuery = new CypherBuilder.db.FullTextQueryNodes(matchNode, indexName, phrase);
 
         const labelsChecks = node.getLabels(context).map((label) => {
             return CypherBuilder.in(new CypherBuilder.Literal(`"${label}"`), CypherBuilder.labels(matchNode));
@@ -91,10 +87,5 @@ function translateTopLevelMatch({
     }
 
     const result = matchQuery.build();
-    cyphers.push(result.cypher);
-    cypherParams = { ...cypherParams, ...result.params };
-
-    return [cyphers.join("\n"), cypherParams];
+    return result;
 }
-
-export default translateTopLevelMatch;

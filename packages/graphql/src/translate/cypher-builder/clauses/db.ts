@@ -18,6 +18,7 @@
  */
 
 import { dedent } from "graphql-compose";
+import type { Param } from "../CypherBuilder";
 import type { CypherEnvironment } from "../Environment";
 import { Where, WhereParams } from "../sub-clauses/Where";
 import type { NodeRef } from "../variables/NodeRef";
@@ -27,12 +28,12 @@ import { Return } from "./Return";
 export class FullTextQueryNodes extends Clause {
     private targetNode: NodeRef;
     private indexName: string;
-    private phrase: string;
+    private phrase: Param;
 
     private whereClause: Where | undefined;
     private returnClause: Return | undefined;
 
-    constructor(targetNode: NodeRef, indexName: string, phrase: string, parent?: Clause) {
+    constructor(targetNode: NodeRef, indexName: string, phrase: Param, parent?: Clause) {
         super(parent);
         this.targetNode = targetNode;
         this.indexName = indexName;
@@ -58,7 +59,7 @@ export class FullTextQueryNodes extends Clause {
 
         const textSearchStr = dedent`CALL db.index.fulltext.queryNodes(
             "${this.indexName}",
-            $${this.phrase}
+            ${this.phrase.getCypher(env)}
         ) YIELD node as ${targetId}`;
 
         return `${textSearchStr}\n

@@ -43,7 +43,7 @@ interface Res {
     meta: ProjectionMeta;
 }
 
-interface ProjectionMeta {
+export interface ProjectionMeta {
     authValidateStrs?: string[];
     connectionFields?: ResolveTree[];
     interfaceFields?: ResolveTree[];
@@ -142,7 +142,7 @@ function createProjectionAndParams({
     resolveType?: boolean;
     inRelationshipProjection?: boolean;
     isRootConnectionField?: boolean;
-}): [string, any, ProjectionMeta?] {
+}): [string, any, ProjectionMeta | undefined] {
     function reducer(res: Res, field: ResolveTree): Res {
         const alias = field.alias;
         let param = "";

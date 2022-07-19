@@ -41,10 +41,7 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         const secret = "shh-its-a-secret";
 
-        const sub = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
+        const sub = "myvalue";
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
@@ -70,16 +67,18 @@ describe("Cypher -> fulltext -> Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
-                $this_fulltext_MovieTitle_phrase
+                $param1
             ) YIELD node as this
                         WHERE (\\"Movie\\" IN labels(this) AND exists((this)<-[:DIRECTED]-(:Person)) AND all(director IN [(this)<-[:DIRECTED]-(director:Person) | director] WHERE director.id IS NOT NULL AND director.id = $this_auth_where0_director_id))
             RETURN this { .title } as this"
         `);
 
-        expect(result.params).toMatchObject({
-            this_fulltext_MovieTitle_phrase: "something AND something",
-            this_auth_where0_director_id: sub,
-        });
+        expect(result.params).toMatchInlineSnapshot(`
+            Object {
+              "param1": "something AND something",
+              "this_auth_where0_director_id": "myvalue",
+            }
+        `);
     });
 
     test("simple match with auth allow", async () => {
@@ -98,11 +97,7 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         const secret = "shh-its-a-secret";
 
-        const sub = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
-
+        const sub = "my sub";
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
@@ -127,16 +122,18 @@ describe("Cypher -> fulltext -> Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
-                $this_fulltext_MovieTitle_phrase
+                $param0
             ) YIELD node as this
                         WHERE \\"Movie\\" IN labels(this)
             CALL apoc.util.validate(NOT (exists((this)<-[:DIRECTED]-(:Person)) AND any(director IN [(this)<-[:DIRECTED]-(director:Person) | director] WHERE director.id IS NOT NULL AND director.id = $this_auth_allow0_director_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } as this"
         `);
 
-        expect(result.params).toMatchObject({
-            this_fulltext_MovieTitle_phrase: "something AND something",
-            this_auth_allow0_director_id: sub,
-        });
+        expect(result.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": "something AND something",
+              "this_auth_allow0_director_id": "my sub",
+            }
+        `);
     });
 });
