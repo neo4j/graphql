@@ -2483,7 +2483,7 @@ __metadata:
     "@neo4j-ndl/react": ^0.6.0
     "@neo4j/graphql": ^3.5.0
     "@neo4j/introspector": ^1.0.1
-    "@playwright/test": 1.23.3
+    "@playwright/test": 1.23.4
     "@tsconfig/create-react-app": 1.0.2
     "@types/codemirror": 5.60.5
     "@types/crypto-js": 4.1.1
@@ -2695,15 +2695,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.23.3":
-  version: 1.23.3
-  resolution: "@playwright/test@npm:1.23.3"
+"@playwright/test@npm:1.23.4":
+  version: 1.23.4
+  resolution: "@playwright/test@npm:1.23.4"
   dependencies:
     "@types/node": "*"
-    playwright-core: 1.23.3
+    playwright-core: 1.23.4
   bin:
     playwright: cli.js
-  checksum: 77e1ac3064c05cfb9d7ea165a2654433711f653cdf63e5040c08779002d1bdfcac4d55f4abd932e086d400fb4a84e37c5023f9535967d005f96b99aed4d3b858
+  checksum: 7004308fde2c3ff1062b50115f9db9eb74d3e0c6cdee42d723a3a4ccbf811c3cf2be934c75d706c464c17a8839ae9237c2abbf90ec46bd3ddec8d34c24dc9c4b
   languageName: node
   linkType: hard
 
@@ -14951,12 +14951,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.23.3":
-  version: 1.23.3
-  resolution: "playwright-core@npm:1.23.3"
+"playwright-core@npm:1.23.4":
+  version: 1.23.4
+  resolution: "playwright-core@npm:1.23.4"
   bin:
     playwright: cli.js
-  checksum: e83cf0b05d791ded54e155fc8cb5689dcb57e02f315f23f5955d769fbb40685ce085218debbc6e617280b0d432e857631762c010586dfd19a6f14a5149384ecd
+  checksum: 347a40f2fbcc9ee896c5cf8d8211ffa7a200e22f154e879d9e829ee6bd365acc1c69c8b11a64a96a9d2fae9c85e859c995680be1a15b5e74c367ffa53425c9c9
   languageName: node
   linkType: hard
 
