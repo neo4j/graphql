@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -79,22 +79,22 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
             	WITH this
             CALL {
             	WITH this
-            	CALL apoc.util.validate(NOT(ANY(r IN [\\"upstream\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	CALL apoc.util.validate(NOT (any(r IN [\\"upstream\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             MERGE (this_connectOrCreate_children_this1:\`Child\` { tcId: $this_connectOrCreate_children_param0 })
             ON CREATE SET
                     this_connectOrCreate_children_this1.tcId = $this_connectOrCreate_children_param1
             MERGE (this_connectOrCreate_children_this1)-[this_connectOrCreate_children_this0:\`HAS\`]->(this)
-            	RETURN COUNT(*)
+            	RETURN COUNT(*) AS _
             }
             	WITH this
             CALL {
             	WITH this
-            	CALL apoc.util.validate(NOT(ANY(r IN [\\"upstream\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	CALL apoc.util.validate(NOT (any(r IN [\\"upstream\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             MERGE (this_connectOrCreate_children_this4:\`Child\` { tcId: $this_connectOrCreate_children_param2 })
             ON CREATE SET
                     this_connectOrCreate_children_this4.tcId = $this_connectOrCreate_children_param3
             MERGE (this_connectOrCreate_children_this4)-[this_connectOrCreate_children_this3:\`HAS\`]->(this)
-            	RETURN COUNT(*)
+            	RETURN COUNT(*) AS _
             }
             RETURN 'Query cannot conclude with CALL'"
         `);

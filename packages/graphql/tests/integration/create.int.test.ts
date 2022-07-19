@@ -17,17 +17,19 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "./neo4j";
+import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
 describe("create", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -35,7 +37,7 @@ describe("create", () => {
     });
 
     test("should create a single movie", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Actor {
@@ -68,7 +70,7 @@ describe("create", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -90,7 +92,7 @@ describe("create", () => {
     });
 
     test("should create actor and resolve actorsConnection with where clause on movie field", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Actor {
@@ -148,7 +150,7 @@ describe("create", () => {
             const result = await graphql({
                 schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieTitle, actorName },
             });
 
@@ -181,7 +183,7 @@ describe("create", () => {
     });
 
     test("should create 2 movies", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Actor {
@@ -217,7 +219,7 @@ describe("create", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id1, id2 },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -241,7 +243,7 @@ describe("create", () => {
     });
 
     test("should create and return pringles product", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Product {
@@ -367,7 +369,7 @@ describe("create", () => {
                     },
                 ],
             },
-            contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeFalsy();

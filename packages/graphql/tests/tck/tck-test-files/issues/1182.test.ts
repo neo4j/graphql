@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
@@ -92,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             this0_actors_connectOrCreate_this1.homeAddress = $this0_actors_connectOrCreate_param2,
             this0_actors_connectOrCreate_this1.dob = $this0_actors_connectOrCreate_param3
             MERGE (this0_actors_connectOrCreate_this1)-[this0_actors_connectOrCreate_this0:\`ACTED_IN\`]->(this0)
-            	RETURN COUNT(*)
+            	RETURN COUNT(*) AS _
             }
             RETURN this0
             }

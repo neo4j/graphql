@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -138,11 +138,11 @@ describe("Cypher Disconnect", () => {
             FOREACH(_ IN CASE this_colors0_disconnect0_photos0_color0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_colors0_disconnect0_photos0_color0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             WITH this
             CALL {
@@ -160,9 +160,9 @@ describe("Cypher Disconnect", () => {
             FOREACH(_ IN CASE this_photos0_disconnect0_color0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_photos0_disconnect0_color0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             WITH this
             CALL {
@@ -180,9 +180,9 @@ describe("Cypher Disconnect", () => {
             FOREACH(_ IN CASE this_photos0_disconnect1_color0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_photos0_disconnect1_color0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);

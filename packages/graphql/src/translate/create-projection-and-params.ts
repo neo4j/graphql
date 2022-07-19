@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 import { GraphQLUnionType } from "graphql";
 import { mergeDeep } from "@graphql-tools/utils";
-import { Node } from "../classes";
+import type { Node } from "../classes";
 import createWhereAndParams from "./where/create-where-and-params";
-import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
+import type { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
@@ -109,13 +109,13 @@ function createNodeWhereAndParams({
         },
     });
     if (preAuth[0]) {
-        whereStrs.push(`apoc.util.validatePredicate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        whereStrs.push(`apoc.util.validatePredicate(NOT (${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         params = { ...params, ...preAuth[1] };
     }
 
     if (authValidateStrs?.length) {
         whereStrs.push(
-            `apoc.util.validatePredicate(NOT(${authValidateStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+            `apoc.util.validatePredicate(NOT (${authValidateStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
         );
     }
 
@@ -229,7 +229,7 @@ function createProjectionAndParams({
                     if (refNode) {
                         const labelsStatements = refNode
                             .getLabels(context)
-                            .map((label) => `"${label}" IN labels(${varName}_${alias})`);
+                            .map((label) => `${varName}_${alias}:\`${label}\``);
                         unionWheres.push(`(${labelsStatements.join("AND")})`);
 
                         const innerHeadStr: string[] = [
@@ -303,9 +303,10 @@ function createProjectionAndParams({
                 ...(context.cypherParams ? { cypherParams: context.cypherParams } : {}),
             };
 
-            const expectMultipleValues = referenceNode && cypherField.typeMeta.array ? "true" : "false";
+            const expectMultipleValues =
+                (referenceNode || referenceUnion) && cypherField.typeMeta.array ? "true" : "false";
             const apocWhere = projectionAuthStrs.length
-                ? `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStrs.join(
+                ? `WHERE apoc.util.validatePredicate(NOT (${projectionAuthStrs.join(
                       " AND "
                   )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
                 : "";
@@ -328,7 +329,7 @@ function createProjectionAndParams({
             // push the fieldName into the projection and stash the apocStr in the
             // returned meta object
             if (isRootConnectionField) {
-                const sortInput = context.resolveTree.args.sort as GraphQLSortArg[];
+                const sortInput = (context.resolveTree.args.sort ?? []) as GraphQLSortArg[];
                 const isSortArg = sortInput.find((obj) => Object.keys(obj)[0] === alias);
                 if (isSortArg) {
                     if (!res.meta.rootConnectionCypherSortFields) {
@@ -347,6 +348,12 @@ function createProjectionAndParams({
 
             if (cypherField.isScalar || cypherField.isEnum) {
                 res.projection.push(`${alias}: ${apocStr}`);
+
+                return res;
+            }
+
+            if (referenceUnion && cypherField.typeMeta.array) {
+                res.projection.push(`${alias}: apoc.coll.flatten([${apocStr}])`);
 
                 return res;
             }
@@ -403,7 +410,7 @@ function createProjectionAndParams({
                     }
                 }
 
-                res.projection.push(`${field.alias}: ${field.alias}${offsetLimitStr}`);
+                res.projection.push(`${field.alias}: ${field.name}${offsetLimitStr}`);
 
                 return res;
             }

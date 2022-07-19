@@ -17,21 +17,24 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import { GraphQLSchema } from "graphql";
-import { addResolversToSchema, IExecutableSchemaDefinition, makeExecutableSchema } from "@graphql-tools/schema";
+import type { Driver } from "neo4j-driver";
+import type { GraphQLSchema } from "graphql";
+import type { IExecutableSchemaDefinition} from "@graphql-tools/schema";
+import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
-import { forEachField, IResolvers } from "@graphql-tools/utils";
+import type { IResolvers } from "@graphql-tools/utils";
+import { forEachField } from "@graphql-tools/utils";
 import { mergeResolvers } from "@graphql-tools/merge";
 import Debug from "debug";
 import type { DriverConfig, CypherQueryOptions, Neo4jGraphQLPlugins, Neo4jGraphQLCallbacks } from "../types";
 import { makeAugmentedSchema } from "../schema";
-import Node from "./Node";
-import Relationship from "./Relationship";
+import type Node from "./Node";
+import type Relationship from "./Relationship";
 import checkNeo4jCompat from "./utils/verify-database";
-import assertIndexesAndConstraints, {
+import type {
     AssertIndexesAndConstraintsOptions,
 } from "./utils/asserts-indexes-and-constraints";
+import assertIndexesAndConstraints from "./utils/asserts-indexes-and-constraints";
 import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
 import { asArray } from "../utils/utils";
@@ -97,18 +100,16 @@ class Neo4jGraphQL {
         return this._relationships;
     }
 
-    async getSchema(): Promise<GraphQLSchema> {
+    public async getSchema(): Promise<GraphQLSchema> {
         if (!this.schema) {
             this.schema = this.generateSchema();
-            if (this.plugins?.subscriptions?.init) {
-                await this.plugins.subscriptions.init();
-            }
+            await this.pluginsSetup();
         }
 
         return this.schema;
     }
 
-    async checkNeo4jCompat(input: { driver?: Driver; driverConfig?: DriverConfig } = {}): Promise<void> {
+    public async checkNeo4jCompat(input: { driver?: Driver; driverConfig?: DriverConfig } = {}): Promise<void> {
         const driver = input.driver || this.driver;
         const driverConfig = input.driverConfig || this.config?.driverConfig;
 
@@ -119,7 +120,7 @@ class Neo4jGraphQL {
         return checkNeo4jCompat({ driver, driverConfig });
     }
 
-    async assertIndexesAndConstraints(
+    public async assertIndexesAndConstraints(
         input: { driver?: Driver; driverConfig?: DriverConfig; options?: AssertIndexesAndConstraintsOptions } = {}
     ): Promise<void> {
         if (!this.schema) {
@@ -141,7 +142,7 @@ class Neo4jGraphQL {
     private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
         forEachField(schema, (field) => {
             if (!field.resolve) {
-                // eslint-disable-next-line no-param-reassign
+                 
                 field.resolve = defaultFieldResolver;
             }
         });
@@ -209,6 +210,16 @@ class Neo4jGraphQL {
 
             resolve(schema);
         });
+    }
+
+    private async pluginsSetup(): Promise<void> {
+        const subscriptionsPlugin = this.plugins?.subscriptions;
+        if (subscriptionsPlugin) {
+            subscriptionsPlugin.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
+            if (subscriptionsPlugin.init) {
+                await subscriptionsPlugin.init();
+            }
+        }
     }
 }
 

@@ -17,14 +17,19 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { generateUniqueType } from "../../../utils/graphql-types";
 
 describe("aggregations-top_level-string", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
+    let typeMovie: UniqueType;
+    let session: Session;
 
     const titles = [10, 11, 12, 13, 14].map((length) =>
         generate({
@@ -35,7 +40,17 @@ describe("aggregations-top_level-string", () => {
     );
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+    });
+
+    beforeEach(async () => {
+        typeMovie = generateUniqueType("Movie");
+        session = await neo4j.getSession();
+    });
+
+    afterEach(async () => {
+        await session.close();
     });
 
     afterAll(async () => {
@@ -43,10 +58,8 @@ describe("aggregations-top_level-string", () => {
     });
 
     test("should return the shortest of node properties", async () => {
-        const session = driver.session();
-
         const typeDefs = `
-            type Movie {
+            type ${typeMovie} {
                 testId: ID
                 title: String
             }
@@ -59,22 +72,21 @@ describe("aggregations-top_level-string", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        try {
-            await session.run(
-                `
-                    CREATE (:Movie {testId: $id, title: "${titles[0]}"})
-                    CREATE (:Movie {testId: $id, title: "${titles[1]}"})
-                    CREATE (:Movie {testId: $id, title: "${titles[2]}"})
-                    CREATE (:Movie {testId: $id, title: "${titles[3]}"})
+        await session.run(
+            `
+                    CREATE (:${typeMovie} {testId: $id, title: "${titles[0]}"})
+                    CREATE (:${typeMovie} {testId: $id, title: "${titles[1]}"})
+                    CREATE (:${typeMovie} {testId: $id, title: "${titles[2]}"})
+                    CREATE (:${typeMovie} {testId: $id, title: "${titles[3]}"})
                 `,
-                {
-                    id,
-                }
-            );
+            {
+                id,
+            }
+        );
 
-            const query = `
+        const query = `
                 {
-                    moviesAggregate(where: {testId: "${id}"}) {
+                    ${typeMovie.operations.aggregate}(where: {testId: "${id}"}) {
                         title {
                             shortest
                         }
@@ -82,33 +94,28 @@ describe("aggregations-top_level-string", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
-            });
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any).moviesAggregate).toEqual({
-                title: {
-                    shortest: titles[0],
-                },
-            });
-        } finally {
-            await session.close();
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[typeMovie.operations.aggregate]).toEqual({
+            title: {
+                shortest: titles[0],
+            },
+        });
     });
 
     test("should return the longest of node properties", async () => {
-        const session = driver.session();
-
         const typeDefs = `
-            type Movie {
+            type ${typeMovie} {
                 testId: ID
                 title: String
             }
@@ -121,22 +128,21 @@ describe("aggregations-top_level-string", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        try {
-            await session.run(
-                `
-                CREATE (:Movie {testId: $id, title: "${titles[0]}"})
-                CREATE (:Movie {testId: $id, title: "${titles[1]}"})
-                CREATE (:Movie {testId: $id, title: "${titles[2]}"})
-                CREATE (:Movie {testId: $id, title: "${titles[3]}"})
+        await session.run(
+            `
+                CREATE (:${typeMovie} {testId: $id, title: "${titles[0]}"})
+                CREATE (:${typeMovie} {testId: $id, title: "${titles[1]}"})
+                CREATE (:${typeMovie} {testId: $id, title: "${titles[2]}"})
+                CREATE (:${typeMovie} {testId: $id, title: "${titles[3]}"})
             `,
-                {
-                    id,
-                }
-            );
+            {
+                id,
+            }
+        );
 
-            const query = `
+        const query = `
                 {
-                    moviesAggregate(where: {testId: "${id}"}) {
+                    ${typeMovie.operations.aggregate}(where: {testId: "${id}"}) {
                         title {
                             longest
                         }
@@ -144,33 +150,28 @@ describe("aggregations-top_level-string", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
-            });
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any).moviesAggregate).toEqual({
-                title: {
-                    longest: titles[3],
-                },
-            });
-        } finally {
-            await session.close();
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[typeMovie.operations.aggregate]).toEqual({
+            title: {
+                longest: titles[3],
+            },
+        });
     });
 
     test("should return the shortest and longest of node properties", async () => {
-        const session = driver.session();
-
         const typeDefs = `
-            type Movie {
+            type ${typeMovie} {
                 testId: ID
                 title: String
             }
@@ -183,22 +184,21 @@ describe("aggregations-top_level-string", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        try {
-            await session.run(
-                `
-                    CREATE (:Movie {testId: $id, title: "${titles[0]}"})
-                    CREATE (:Movie {testId: $id, title: "${titles[1]}"})
-                    CREATE (:Movie {testId: $id, title: "${titles[2]}"})
-                    CREATE (:Movie {testId: $id, title: "${titles[3]}"})
+        await session.run(
+            `
+                    CREATE (:${typeMovie} {testId: $id, title: "${titles[0]}"})
+                    CREATE (:${typeMovie} {testId: $id, title: "${titles[1]}"})
+                    CREATE (:${typeMovie} {testId: $id, title: "${titles[2]}"})
+                    CREATE (:${typeMovie} {testId: $id, title: "${titles[3]}"})
                 `,
-                {
-                    id,
-                }
-            );
+            {
+                id,
+            }
+        );
 
-            const query = `
+        const query = `
                 {
-                    moviesAggregate(where: {testId: "${id}"}) {
+                    ${typeMovie.operations.aggregate}(where: {testId: "${id}"}) {
                         title {
                             shortest
                             longest
@@ -207,26 +207,23 @@ describe("aggregations-top_level-string", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
-            });
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any).moviesAggregate).toEqual({
-                title: {
-                    shortest: titles[0],
-                    longest: titles[3],
-                },
-            });
-        } finally {
-            await session.close();
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[typeMovie.operations.aggregate]).toEqual({
+            title: {
+                shortest: titles[0],
+                longest: titles[3],
+            },
+        });
     });
 });

@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
@@ -99,7 +99,7 @@ describe("Create or Connect", () => {
                 MERGE (this0)-[this0_movies_connectOrCreate_this0:\`ACTED_IN\`]->(this0_movies_connectOrCreate_this2)
                 ON CREATE SET
                         this0_movies_connectOrCreate_this0.screentime = $this0_movies_connectOrCreate_param0
-                	RETURN COUNT(*)
+                	RETURN COUNT(*) AS _
                 }
                 RETURN this0
                 }
@@ -161,7 +161,7 @@ describe("Create or Connect", () => {
                 MERGE (this)-[this_movies0_connectOrCreate_this0:\`ACTED_IN\`]->(this_movies0_connectOrCreate_this2)
                 ON CREATE SET
                         this_movies0_connectOrCreate_this0.screentime = $this_movies0_connectOrCreate_param0
-                	RETURN COUNT(*)
+                	RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .name }) AS data"
             `);
@@ -260,7 +260,7 @@ describe("Create or Connect", () => {
                 MERGE (this0)-[this0_movies_connectOrCreate_this0:\`ACTED_IN\`]->(this0_movies_connectOrCreate_this2)
                 ON CREATE SET
                         this0_movies_connectOrCreate_this0.screentime = $this0_movies_connectOrCreate_param0
-                	RETURN COUNT(*)
+                	RETURN COUNT(*) AS _
                 }
                 RETURN this0
                 }
@@ -324,7 +324,7 @@ describe("Create or Connect", () => {
                 MERGE (this0)-[this0_movies_connectOrCreate_this0:\`ACTED_IN\`]->(this0_movies_connectOrCreate_this2)
                 ON CREATE SET
                         this0_movies_connectOrCreate_this0.screentime = $this0_movies_connectOrCreate_param0
-                	RETURN COUNT(*)
+                	RETURN COUNT(*) AS _
                 }
                 RETURN this0
                 }
@@ -388,7 +388,7 @@ describe("Create or Connect", () => {
                 MERGE (this)-[this_movies0_connectOrCreate_this0:\`ACTED_IN\`]->(this_movies0_connectOrCreate_this2)
                 ON CREATE SET
                         this_movies0_connectOrCreate_this0.screentime = $this_movies0_connectOrCreate_param0
-                	RETURN COUNT(*)
+                	RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .name }) AS data"
             `);
@@ -449,7 +449,7 @@ describe("Create or Connect", () => {
                 MERGE (this)-[this_movies0_connectOrCreate_this0:\`ACTED_IN\`]->(this_movies0_connectOrCreate_this2)
                 ON CREATE SET
                         this_movies0_connectOrCreate_this0.screentime = $this_movies0_connectOrCreate_param0
-                	RETURN COUNT(*)
+                	RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .name }) AS data"
             `);
@@ -549,7 +549,7 @@ describe("Create or Connect", () => {
                         this0_movies_connectOrCreate_this0.createdAt = datetime(),
                 this0_movies_connectOrCreate_this0.id = randomUUID(),
                 this0_movies_connectOrCreate_this0.screentime = $this0_movies_connectOrCreate_param0
-                	RETURN COUNT(*)
+                	RETURN COUNT(*) AS _
                 }
                 RETURN this0
                 }
@@ -613,7 +613,7 @@ describe("Create or Connect", () => {
                         this_movies0_connectOrCreate_this0.createdAt = datetime(),
                 this_movies0_connectOrCreate_this0.id = randomUUID(),
                 this_movies0_connectOrCreate_this0.screentime = $this_movies0_connectOrCreate_param0
-                	RETURN COUNT(*)
+                	RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .name }) AS data"
             `);

@@ -17,16 +17,19 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import supertest, { Response } from "supertest";
+import type { Driver } from "neo4j-driver";
+import type { Response } from "supertest";
+import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
-import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
+import type { TestGraphQLServer } from "../setup/apollo-server";
+import { ApolloTestServer } from "../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../setup/ws-client";
-import neo4j from "../setup/neo4j";
+import Neo4j from "../setup/neo4j";
 
 describe("Update Subscriptions", () => {
+    let neo4j: Neo4j;
     let driver: Driver;
 
     const typeMovie = generateUniqueType("Movie");
@@ -46,11 +49,17 @@ describe("Update Subscriptions", () => {
          }
          `;
 
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
+            config: {
+                driverConfig: {
+                    database: neo4j.getIntegrationDatabaseName(),
+                },
+            },
             plugins: {
                 subscriptions: new TestSubscriptionsPlugin(),
             },
@@ -64,20 +73,20 @@ describe("Update Subscriptions", () => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
+    afterEach(async () => {
+        await wsClient.close();
+    });
+
     afterAll(async () => {
         await server.close();
         await driver.close();
-    });
-
-    afterEach(async () => {
-        await wsClient.close();
     });
 
     test("update subscription", async () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.updated} {
-                    ${typeMovie.fieldNames.subscriptions.updated} {
+                    ${typeMovie.operations.subscribe.payload.updated} {
                         title
                     }
                     previousState {
@@ -99,7 +108,7 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.fieldNames.subscriptions.updated]: { title: "movie3" },
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie3" },
                     previousState: { title: "movie1" },
                     event: "UPDATE",
                     timestamp: expect.any(Number),
@@ -107,7 +116,7 @@ describe("Update Subscriptions", () => {
             },
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.fieldNames.subscriptions.updated]: { title: "movie4" },
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie4" },
                     previousState: { title: "movie2" },
                     event: "UPDATE",
                     timestamp: expect.any(Number),
@@ -120,7 +129,7 @@ describe("Update Subscriptions", () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { title: "movie5" }) {
-                    ${typeMovie.fieldNames.subscriptions.updated} {
+                    ${typeMovie.operations.subscribe.payload.updated} {
                         title
                     }
                 }
@@ -137,7 +146,7 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.fieldNames.subscriptions.updated]: { title: "movie7" },
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie7" },
                 },
             },
         ]);
@@ -147,7 +156,7 @@ describe("Update Subscriptions", () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.updated} {
-                    ${typeMovie.fieldNames.subscriptions.updated} {
+                    ${typeMovie.operations.subscribe.payload.updated} {
                         title
                     }
                     event
@@ -164,7 +173,7 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.fieldNames.subscriptions.updated]: { title: "movie20" },
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie20" },
                     event: "UPDATE",
                 },
             },

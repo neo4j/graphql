@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { FieldDefinitionNode, Kind } from "graphql";
+import type { FieldDefinitionNode} from "graphql";
+import { Kind } from "graphql";
 import getComputedMeta, { ERROR_MESSAGE } from "./get-computed-meta";
 
 describe("getComputedMeta", () => {

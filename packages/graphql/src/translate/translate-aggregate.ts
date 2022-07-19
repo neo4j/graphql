@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { Node } from "../classes";
+import type { Node } from "../classes";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import { BaseField, Context, PrimitiveField, TemporalField } from "../types";
+import type { BaseField, Context, PrimitiveField, TemporalField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import translateTopLevelMatch from "./translate-top-level-match";
@@ -44,7 +44,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
         },
     });
     if (allowAuth[0]) {
-        cypherStrs.push(`CALL apoc.util.validate(NOT(${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        cypherStrs.push(`CALL apoc.util.validate(NOT (${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         cypherParams = { ...cypherParams, ...allowAuth[1] };
     }
 
@@ -72,7 +72,7 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     });
 
     if (authStrs.length) {
-        cypherStrs.push(`CALL apoc.util.validate(NOT(${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        cypherStrs.push(`CALL apoc.util.validate(NOT (${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
     }
 
     Object.entries(selections).forEach((selection) => {
@@ -131,13 +131,12 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                     const lessOrGreaterThan = entry[1].name === "shortest" ? "<" : ">";
 
                     const reduce = `
-                            reduce(shortest = collect(this.${fieldName})[0], current IN collect(this.${fieldName}) | apoc.cypher.runFirstColumn("
-                                RETURN
-                                CASE size(current) ${lessOrGreaterThan} size(shortest)
+                            reduce(aggVar = collect(this.${fieldName})[0], current IN collect(this.${fieldName}) | 
+                                CASE size(current) ${lessOrGreaterThan} size(aggVar)
                                 WHEN true THEN current
-                                ELSE shortest
-                                END AS result
-                            ", { current: current, shortest: shortest }, false))
+                                ELSE aggVar
+                                END
+                            )
                         `;
 
                     thisProjections.push(`${entry[1].alias || entry[1].name}: ${reduce}`);

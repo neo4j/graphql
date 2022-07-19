@@ -1,0 +1,19 @@
+type Pixel @exclude(operations: [CREATE, DELETE]) {
+    position: [Int!]! @readonly @unique
+    color: String
+}
+
+type Query {
+    canvas: [String]
+        @cypher(
+            statement: """
+            MATCH(p:Pixel)
+            WITH p.color as color
+            ORDER BY p.position ASC
+            RETURN collect(color) as canvas
+            """
+        )
+        @auth(rules: [{ isAuthenticated: true }])
+}
+
+extend type Pixel @auth(rules: [{ isAuthenticated: true }])

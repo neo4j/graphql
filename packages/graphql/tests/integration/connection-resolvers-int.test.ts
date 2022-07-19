@@ -17,18 +17,20 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { offsetToCursor } from "graphql-relay";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
-import neo4j from "./neo4j";
+import Neo4j from "./neo4j";
 
 describe("Connection Resolvers", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -36,7 +38,7 @@ describe("Connection Resolvers", () => {
     });
 
     test("should define a connection field resolver and resolve it", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Actor {
@@ -112,7 +114,7 @@ describe("Connection Resolvers", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -144,7 +146,7 @@ describe("Connection Resolvers", () => {
     });
 
     test("it should provide an after offset that correctly results in the next batch of items", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Actor {
@@ -216,7 +218,7 @@ describe("Connection Resolvers", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: create,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: {
                     input: [
                         {
@@ -282,7 +284,7 @@ describe("Connection Resolvers", () => {
             const result2 = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: secondQuery,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: {
                     movieId,
                     endCursor: (result?.data as any)?.createMovies.movies[0].actorsConnection.pageInfo.endCursor,
@@ -312,7 +314,7 @@ describe("Connection Resolvers", () => {
             const result3 = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: secondQuery,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: {
                     movieId,
                     endCursor: (result2?.data as any)?.movies[0].actorsConnection.pageInfo.endCursor,
@@ -345,7 +347,7 @@ describe("Connection Resolvers", () => {
     });
 
     test("should return a total count of zero and correct pageInfo if no edges", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Actor {
@@ -391,7 +393,7 @@ describe("Connection Resolvers", () => {
             const gqlResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { movieId },
             });
 

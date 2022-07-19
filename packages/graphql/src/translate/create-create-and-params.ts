@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { Node, Relationship } from "../classes";
-import { CallbackBucket } from "../classes/CallbackBucket";
-import { Context } from "../types";
+import type { Node, Relationship } from "../classes";
+import type { CallbackBucket } from "../classes/CallbackBucket";
+import type { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
@@ -89,6 +89,20 @@ function createCreateAndParams({
                 const unionTypeName = relationField.union || relationField.interface ? refNode.name : "";
 
                 if (v.create) {
+                    const isInterfaceAnArray = relationField.interface?.typeMeta.array;
+                    const createNodeInputIsOfTypeRefNode = !!v.create.node?.[refNode.name];
+                    const createNodeInputKeys = createNodeInputIsOfTypeRefNode
+                        ? Object.keys((v.create.node as any[]) || [])
+                        : [];
+                    const isCreatingMultipleNodesForOneToOneRel = !isInterfaceAnArray && createNodeInputKeys.length > 1;
+                    if (isCreatingMultipleNodesForOneToOneRel) {
+                        throw new Error(
+                            `Relationship field "${relationField.connectionPrefix}.${
+                                relationField.interface?.dbPropertyName || relationField.interface?.fieldName
+                            }" cannot have more than one node linked`
+                        );
+                    }
+
                     const creates = relationField.typeMeta.array ? v.create : [v.create];
                     creates.forEach((create, index) => {
                         if (relationField.interface && !create.node[refNode.name]) {
@@ -283,14 +297,14 @@ function createCreateAndParams({
         });
         if (bindAndParams[0]) {
             creates.push(`WITH ${withVars.join(", ")}`);
-            creates.push(`CALL apoc.util.validate(NOT(${bindAndParams[0]}), ${forbiddenString}, [0])`);
+            creates.push(`CALL apoc.util.validate(NOT (${bindAndParams[0]}), ${forbiddenString}, [0])`);
             params = { ...params, ...bindAndParams[1] };
         }
     }
 
     if (meta?.authStrs.length) {
         creates.push(`WITH ${withVars.join(", ")}`);
-        creates.push(`CALL apoc.util.validate(NOT(${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);
+        creates.push(`CALL apoc.util.validate(NOT (${meta.authStrs.join(" AND ")}), ${forbiddenString}, [0])`);
     }
 
     if (includeRelationshipValidation) {

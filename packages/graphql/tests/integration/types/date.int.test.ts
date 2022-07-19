@@ -17,18 +17,21 @@
  * limitations under the License.
  */
 
-import neo4jDriver, { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
+import neo4jDriver from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("Date", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -37,7 +40,7 @@ describe("Date", () => {
 
     describe("create", () => {
         test("should create a movie (with a Date)", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Movie {
@@ -70,7 +73,7 @@ describe("Date", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -93,7 +96,7 @@ describe("Date", () => {
         });
 
         test("should create a movie (with many Dates)", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Movie {
@@ -129,7 +132,7 @@ describe("Date", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -157,7 +160,7 @@ describe("Date", () => {
 
     describe("find", () => {
         test("should find a movie (with a Date)", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const randomType = generateUniqueType("Movie");
 
@@ -195,7 +198,7 @@ describe("Date", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -210,7 +213,7 @@ describe("Date", () => {
 
     describe("update", () => {
         test("should update a movie (with a Date)", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Movie {
@@ -248,7 +251,7 @@ describe("Date", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();

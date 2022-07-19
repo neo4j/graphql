@@ -19,13 +19,14 @@
 
 import { gql } from "apollo-server";
 import { graphql } from "graphql";
-import { Driver, Session } from "neo4j-driver";
-import neo4j from "../neo4j";
+import type { Driver, Session } from "neo4j-driver";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/620", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
 
@@ -33,7 +34,8 @@ describe("https://github.com/neo4j/graphql/issues/620", () => {
     const typeBusiness = generateUniqueType("Business");
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const typeDefs = gql`
             type ${typeUser.name} {
@@ -48,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/620", () => {
 
         neoSchema = new Neo4jGraphQL({ typeDefs });
         try {
-            session = driver.session();
+            session = await neo4j.getSession();
             await session.run(`
               CREATE (u:${typeUser.name} {id: "1234", name: "arthur"})
               CREATE (b:${typeBusiness.name} {id: "1234", name: "ford"})
@@ -58,8 +60,8 @@ describe("https://github.com/neo4j/graphql/issues/620", () => {
         }
     });
 
-    beforeEach(() => {
-        session = driver.session();
+    beforeEach(async () => {
+        session = await neo4j.getSession();
     });
 
     afterEach(async () => {
@@ -87,7 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/620", () => {
         const gqlResult: any = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();

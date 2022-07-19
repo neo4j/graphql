@@ -1,5 +1,7 @@
 name: "dev"
 
+concurrency: "dev"
+
 on:
   push:
     branches:
@@ -10,85 +12,15 @@ on:
     - cron: "0 3 * * *"
 
 jobs:
-  cache-dependencies:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-
+  # Let's consider the value of testing examples
+  # Perhaps we need some newer, better examples for testing
   neo-push-tests:
-    needs:
-      - cache-dependencies
-
-    runs-on: ubuntu-latest
-
-    services:
-      neo4j:
-        image: neo4j:latest
-        env:
-          NEO4J_AUTH: neo4j/password
-          NEO4JLABS_PLUGINS: '["apoc"]'
-        ports:
-          - 7687:7687
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Run neo-push tests
-        run: yarn --cwd examples/neo-push/server run test
-        env:
-          NEO_USER: neo4j
-          NEO_PASSWORD: password
-          NEO_URL: bolt://localhost:7687
+    uses: ./.github/workflows/reusable-neo-push-tests.yml
 
   unit-tests:
-    needs:
-      - cache-dependencies
-
-    strategy:
-      matrix:
-        package:
-          - graphql
-          - ogm
-          - introspector
-          - plugins/graphql-plugin-auth
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
-      - name: Run packages/${{ matrix.package }} unit tests
-        run: yarn run test:unit --coverage
-        working-directory: packages/${{ matrix.package }}
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/${{ matrix.package }}/coverage/
-          flags: ${{ matrix.package }},unit
-          fail_ci_if_error: true
+    uses: ./.github/workflows/reusable-unit-tests.yml
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   api-library-tests:
     uses: ./.github/workflows/reusable-api-library-tests.yml
@@ -100,172 +32,30 @@ jobs:
     uses: ./.github/workflows/reusable-package-tests.yml
 
   integration-tests-on-prem:
-    needs:
-      - cache-dependencies
-
-    strategy:
-      matrix:
-        package:
-          - graphql
-          - ogm
-          - introspector
-        neo4j-version:
-          - 4.2.9
-          - 4.2
-          - 4.3.2
-          - 4.3
-          - 4.4
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
-
-    runs-on: ubuntu-latest
-
-    services:
-      neo4j:
-        image: neo4j:${{ matrix.neo4j-version }}-enterprise
-        env:
-          NEO4J_AUTH: neo4j/testpassword
-          NEO4JLABS_PLUGINS: '["apoc"]'
-          NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
-        ports:
-          - 7687:7687
-
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
-      - name: Run @neo4j/graphql integration tests and move coverage
-        run: |
-          yarn test:int --coverage
-          mv coverage coverage-${{ matrix.neo4j-version }}
-        working-directory: packages/${{ matrix.package }}
-        env:
-          NEO_USER: neo4j
-          NEO_PASSWORD: testpassword
-          NEO_URL: bolt://localhost:7687
-      - name: Archive coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: integration-coverage-${{ matrix.package }}
-          path: packages/${{ matrix.package }}/coverage-${{ matrix.neo4j-version }}/
+    uses: ./.github/workflows/reusable-integration-tests-on-prem.yml
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   toolbox-tests:
     uses: ./.github/workflows/reusable-toolbox-tests.yml
 
-  aura-teardown:
-    needs:
-      - cache-dependencies
+  aura-free-tests:
+    uses: ./.github/workflows/reusable-aura-tests.yml
+    secrets:
+      URI: ${{ secrets.AURA_FREE_URI }}
+      PASSWORD: ${{ secrets.AURA_FREE_PASSWORD }}
+    concurrency: aura-free
 
-    strategy:
-      matrix:
-        aura-instance:
-          - free
-          - professional
+  aura-professional-tests:
+    uses: ./.github/workflows/reusable-aura-tests.yml
+    secrets:
+      URI: ${{ secrets.AURA_PROFESSIONAL_URI }}
+      PASSWORD: ${{ secrets.AURA_PROFESSIONAL_PASSWORD }}
+    concurrency: aura-professional
 
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Install ts-node and typescript
-        run: npm install -g ts-node typescript
-      - name: Uppercase instance name
-        run: |
-          lowercase_instance=${{ matrix.aura-instance }}
-          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>"${GITHUB_ENV}"
-          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>"${GITHUB_ENV}"
-      - name: Delete all data in instance
-        run: ts-node tests/integration/teardown.ts
-        working-directory: packages/graphql
-        env:
-          NEO_USER: neo4j
-          NEO_PASSWORD: ${{ secrets[env.AURA_PASSWORD_SECRET] }}
-          NEO_URL: ${{ secrets[env.AURA_URI_SECRET] }}
-
-  integration-tests-aura:
-    needs:
-      - cache-dependencies
-      - aura-teardown
-
-    strategy:
-      matrix:
-        package:
-          - graphql
-          - ogm
-          - introspector
-        aura-instance:
-          - free
-          - professional
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Uppercase instance name
-        run: |
-          lowercase_instance=${{ matrix.aura-instance }}
-          echo "AURA_URI_SECRET=AURA_${lowercase_instance^^}_URI" >>"${GITHUB_ENV}"
-          echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>"${GITHUB_ENV}"
-      - name: Run @neo4j/graphql integration tests
-        run: |
-          yarn test:int --coverage
-          mv coverage coverage-aura-${{ matrix.aura-instance }}
-        working-directory: packages/${{ matrix.package }}
-        env:
-          NEO_USER: neo4j
-          NEO_PASSWORD: ${{ secrets[env.AURA_PASSWORD_SECRET] }}
-          NEO_URL: ${{ secrets[env.AURA_URI_SECRET] }}
-      - name: Archive coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: integration-coverage-${{ matrix.package }}
-          path: packages/${{ matrix.package }}/coverage-aura-${{ matrix.aura-instance }}/
-
-  upload-integration-coverage:
-    needs:
-      - cache-dependencies
-      - integration-tests-on-prem
-      - aura-teardown
-      - integration-tests-aura
-
-    strategy:
-      matrix:
-        package:
-          - graphql
-          - ogm
-          - introspector
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: integration-coverage-${{ matrix.package }}
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          flags: ${{ matrix.package }},integration
-          fail_ci_if_error: true
-          verbose: true
+  aura-5-tests:
+    uses: ./.github/workflows/reusable-aura-tests.yml
+    secrets:
+      URI: ${{ secrets.AURA_5_URI }}
+      PASSWORD: ${{ secrets.AURA_5_PASSWORD }}
+    concurrency: aura-5

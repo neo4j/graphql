@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, ArgumentNode, ListValueNode, StringValueNode } from "graphql";
-import { Callback, CallbackOperations, Neo4jGraphQLCallbacks } from "../types";
+import type { DirectiveNode, ArgumentNode, ListValueNode, StringValueNode } from "graphql";
+import type { Callback, CallbackOperations, Neo4jGraphQLCallbacks } from "../types";
 
 function getCallbackMeta(directive: DirectiveNode, callbacks?: Neo4jGraphQLCallbacks): Callback {
     const operationsArg = directive.arguments?.find((x) => x.name.value === "operations") as ArgumentNode;

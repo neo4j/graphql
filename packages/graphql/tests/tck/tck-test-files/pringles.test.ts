@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
@@ -154,7 +154,7 @@ describe("Cypher Create Pringles", () => {
             	WITH this0_photos0_node
             	MATCH (this0_photos0_node)-[this0_photos0_node_color_Color_unique:OF_COLOR]->(:Color)
             	WITH count(this0_photos0_node_color_Color_unique) as c
-            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
             	RETURN c AS this0_photos0_node_color_Color_unique_ignored
             }
             WITH this0
@@ -172,7 +172,7 @@ describe("Cypher Create Pringles", () => {
             			MERGE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             MERGE (this0)-[:HAS_PHOTO]->(this0_photos1_node)
             WITH this0, this0_photos1_node
@@ -180,7 +180,7 @@ describe("Cypher Create Pringles", () => {
             	WITH this0_photos1_node
             	MATCH (this0_photos1_node)-[this0_photos1_node_color_Color_unique:OF_COLOR]->(:Color)
             	WITH count(this0_photos1_node_color_Color_unique) as c
-            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
             	RETURN c AS this0_photos1_node_color_Color_unique_ignored
             }
             WITH this0
@@ -198,7 +198,7 @@ describe("Cypher Create Pringles", () => {
             			MERGE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             MERGE (this0)-[:HAS_PHOTO]->(this0_photos2_node)
             WITH this0, this0_photos2_node
@@ -206,7 +206,7 @@ describe("Cypher Create Pringles", () => {
             	WITH this0_photos2_node
             	MATCH (this0_photos2_node)-[this0_photos2_node_color_Color_unique:OF_COLOR]->(:Color)
             	WITH count(this0_photos2_node_color_Color_unique) as c
-            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
             	RETURN c AS this0_photos2_node_color_Color_unique_ignored
             }
             RETURN this0
@@ -293,7 +293,7 @@ describe("Cypher Create Pringles", () => {
             FOREACH(_ IN CASE this_photos0_color0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_photos0_color0_disconnect0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             WITH this, this_photos0
             CALL {
@@ -305,17 +305,17 @@ describe("Cypher Create Pringles", () => {
             			MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             WITH this, this_photos0
             CALL {
             	WITH this_photos0
             	MATCH (this_photos0)-[this_photos0_color_Color_unique:OF_COLOR]->(:Color)
             	WITH count(this_photos0_color_Color_unique) as c
-            	CALL apoc.util.validate(NOT(c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
             	RETURN c AS this_photos0_color_Color_unique_ignored
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateProducts: $updateProducts, this_photos0:this_photos0, auth:$auth,this_update_photos0_description:$this_update_photos0_description,this_photos0_color0_connect0_node_name:$this_photos0_color0_connect0_node_name})
             YIELD value AS _
             RETURN collect(DISTINCT this { .id }) AS data"

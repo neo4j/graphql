@@ -18,19 +18,21 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 
 describe("326", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     const secret = "secret";
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -38,7 +40,7 @@ describe("326", () => {
     });
 
     test("should throw forbidden when user does not have correct allow on projection field(using Query)", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const id = generate({
             charset: "alphabetic",
@@ -92,7 +94,7 @@ describe("326", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
-                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -102,7 +104,7 @@ describe("326", () => {
     });
 
     test("should throw forbidden when user does not have correct allow on projection field(using Mutation)", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const id = generate({
             charset: "alphabetic",
@@ -156,7 +158,7 @@ describe("326", () => {
                 schema: await neoSchema.getSchema(),
                 source: query,
                 variableValues: { id },
-                contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
             });
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");

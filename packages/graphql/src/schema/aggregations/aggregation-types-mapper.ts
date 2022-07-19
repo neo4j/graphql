@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import { idResolver } from "../resolvers/field/id";
 import { numericalResolver } from "../resolvers/field/numerical";
 

@@ -17,18 +17,21 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import { graphql, GraphQLSchema } from "graphql";
+import type { Driver } from "neo4j-driver";
+import type { GraphQLSchema } from "graphql";
+import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 const testLabel = generate({ charset: "alphabetic" });
 describe("@computed directive", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -60,7 +63,7 @@ describe("@computed directive", () => {
         };
 
         beforeAll(async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
             schema = await neoSchema.getSchema();
@@ -75,7 +78,7 @@ describe("@computed directive", () => {
         });
 
         afterAll(async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
             await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
             await session.close();
         });
@@ -95,7 +98,7 @@ describe("@computed directive", () => {
             const gqlResult = await graphql({
                 schema,
                 source,
-                contextValue: { driver },
+                contextValue: neo4j.getContextValues(),
                 variableValues: { userId: user.id },
             });
 
@@ -119,7 +122,7 @@ describe("@computed directive", () => {
             const gqlResult = await graphql({
                 schema,
                 source,
-                contextValue: { driver },
+                contextValue: neo4j.getContextValues(),
                 variableValues: { userId: user.id },
             });
 
@@ -144,7 +147,7 @@ describe("@computed directive", () => {
             const gqlResult = await graphql({
                 schema,
                 source,
-                contextValue: { driver },
+                contextValue: neo4j.getContextValues(),
                 variableValues: { userId: user.id },
             });
 
@@ -182,7 +185,7 @@ describe("@computed directive", () => {
         let schema: GraphQLSchema;
 
         beforeAll(async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
             schema = await neoSchema.getSchema();
@@ -197,7 +200,7 @@ describe("@computed directive", () => {
         });
 
         afterAll(async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
             await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
             await session.close();
         });
@@ -217,7 +220,7 @@ describe("@computed directive", () => {
             const gqlResult = await graphql({
                 schema,
                 source,
-                contextValue: { driver },
+                contextValue: neo4j.getContextValues(),
                 variableValues: { userId: user.id },
             });
 
@@ -241,7 +244,7 @@ describe("@computed directive", () => {
             const gqlResult = await graphql({
                 schema,
                 source,
-                contextValue: { driver },
+                contextValue: neo4j.getContextValues(),
                 variableValues: { userId: user.id },
             });
 
@@ -266,7 +269,7 @@ describe("@computed directive", () => {
             const gqlResult = await graphql({
                 schema,
                 source,
-                contextValue: { driver },
+                contextValue: neo4j.getContextValues(),
                 variableValues: { userId: user.id },
             });
 

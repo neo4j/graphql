@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import { GraphQLResolveInfo, GraphQLUnionType } from "graphql";
+import type { GraphQLResolveInfo} from "graphql";
+import { GraphQLUnionType } from "graphql";
 import { execute } from "../../../utils";
-import { ConnectionField, Context, CypherField } from "../../../types";
+import type { ConnectionField, Context, CypherField } from "../../../types";
 import { graphqlArgsToCompose } from "../../to-compose";
 import createAuthAndParams from "../../../translate/create-auth-and-params";
 import createAuthParam from "../../../translate/create-auth-param";
@@ -56,7 +57,7 @@ export function cypherResolver({
         const preAuth = createAuthAndParams({ entity: field, context });
         if (preAuth[0]) {
             params = { ...params, ...preAuth[1] };
-            cypherStrs.push(`CALL apoc.util.validate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+            cypherStrs.push(`CALL apoc.util.validate(NOT (${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         }
 
         const referenceNode = context.nodes.find((x) => x.name === field.typeMeta.name);
@@ -185,7 +186,7 @@ export function cypherResolver({
 
         if (projectionAuthStrs.length) {
             cypherStrs.push(
-                `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStrs.join(
+                `WHERE apoc.util.validatePredicate(NOT (${projectionAuthStrs.join(
                     " AND "
                 )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
             );

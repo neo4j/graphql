@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import { DocumentNode, graphql, GraphQLSchema } from "graphql";
-import { Driver, Integer, Session } from "neo4j-driver";
+import type { DocumentNode, GraphQLSchema } from "graphql";
+import { graphql } from "graphql";
+import type { Driver, Integer, Session } from "neo4j-driver";
 import { gql } from "apollo-server";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { getQuerySource } from "../../utils/get-query-source";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
@@ -30,20 +31,20 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
     const testConcept = generateUniqueType("Concept");
     let schema: GraphQLSchema;
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
 
     async function graphqlQuery(query: DocumentNode) {
         return graphql({
             schema,
             source: getQuerySource(query),
-            contextValue: {
-                driver,
-            },
+            contextValue: neo4j.getContextValues(),
         });
     }
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const typeDefs = `
             type ${testBibliographicReference.name} @node(additionalLabels: ["Resource"]){
@@ -61,8 +62,8 @@ describe("https://github.com/neo4j/graphql/issues/976", () => {
         schema = await neoGraphql.getSchema();
     });
 
-    beforeEach(() => {
-        session = driver.session();
+    beforeEach(async () => {
+        session = await neo4j.getSession();
     });
 
     afterEach(async () => {

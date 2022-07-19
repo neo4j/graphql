@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:User)
             WHERE this.id = $this_id
-            RETURN this { updates: [this_updates IN apoc.cypher.runFirstColumn(\\"MATCH (this)-[a:WROTE]->(wrote:Post)
+            RETURN this { updates: apoc.coll.flatten([this_updates IN apoc.cypher.runFirstColumn(\\"MATCH (this)-[a:WROTE]->(wrote:Post)
             WHERE a.date_added IS NOT NULL
             WITH COLLECT(wrote{ .*, date_added: a.date_added, typename: 'WROTE' }) as updates1, this
             MATCH (this)-[a:FOLLOWS]->(umb)
@@ -88,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
             UNWIND allUpdates as update
             RETURN update
             ORDER BY update.date_added DESC
-            LIMIT 5\\", {this: this, auth: $auth}, false) WHERE (\\"Post\\" IN labels(this_updates)) OR (\\"Movie\\" IN labels(this_updates)) OR (\\"User\\" IN labels(this_updates))  |  head( [ this_updates IN [this_updates] WHERE (\\"Post\\" IN labels(this_updates)) | this_updates { __resolveType: \\"Post\\" }  ] + [ this_updates IN [this_updates] WHERE (\\"Movie\\" IN labels(this_updates)) | this_updates { __resolveType: \\"Movie\\" }  ] + [ this_updates IN [this_updates] WHERE (\\"User\\" IN labels(this_updates)) | this_updates { __resolveType: \\"User\\" }  ] )] } as this"
+            LIMIT 5\\", {this: this, auth: $auth}, true) WHERE (this_updates:\`Post\`) OR (this_updates:\`Movie\`) OR (this_updates:\`User\`)  |  head( [ this_updates IN [this_updates] WHERE (this_updates:\`Post\`) | this_updates { __resolveType: \\"Post\\" }  ] + [ this_updates IN [this_updates] WHERE (this_updates:\`Movie\`) | this_updates { __resolveType: \\"Movie\\" }  ] + [ this_updates IN [this_updates] WHERE (this_updates:\`User\`) | this_updates { __resolveType: \\"User\\" }  ] )]) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

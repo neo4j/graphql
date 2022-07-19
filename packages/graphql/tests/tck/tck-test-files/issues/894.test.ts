@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -80,7 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             			MERGE (this)-[:ACTIVELY_MANAGING]->(this_connect_activeOrganization0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             WITH this
             CALL {
@@ -90,14 +90,14 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             FOREACH(_ IN CASE this_disconnect_activeOrganization0 WHEN NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_activeOrganization0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             WITH this
             CALL {
             	WITH this
             	MATCH (this)-[this_activeOrganization_Organization_unique:ACTIVELY_MANAGING]->(:Organization)
             	WITH count(this_activeOrganization_Organization_unique) as c
-            	CALL apoc.util.validate(NOT(c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDUser.activeOrganization must be less than or equal to one', [0])
+            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDUser.activeOrganization must be less than or equal to one', [0])
             	RETURN c AS this_activeOrganization_Organization_unique_ignored
             }
             RETURN collect(DISTINCT this { id: this._id }) AS data"

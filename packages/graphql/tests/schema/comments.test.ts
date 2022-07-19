@@ -172,7 +172,13 @@ describe("Comments", () => {
 
             input MovieUpdateInput {
               actorCount: Int
+              actorCount_DECREMENT: Int
+              actorCount_INCREMENT: Int
               averageRating: Float
+              averageRating_ADD: Float
+              averageRating_DIVIDE: Float
+              averageRating_MULTIPLY: Float
+              averageRating_SUBTRACT: Float
               customScalar: CustomScalar
               genre: Genre
               id: ID
@@ -683,6 +689,8 @@ describe("Comments", () => {
 
                 input ActedInUpdateInput {
                   screenTime: Int
+                  screenTime_DECREMENT: Int
+                  screenTime_INCREMENT: Int
                 }
 
                 input ActedInWhere {
@@ -921,6 +929,8 @@ describe("Comments", () => {
 
                 input MovieUpdateInput {
                   runtime: Int
+                  runtime_DECREMENT: Int
+                  runtime_INCREMENT: Int
                   title: String
                 }
 
@@ -1089,6 +1099,8 @@ describe("Comments", () => {
 
                 input SeriesUpdateInput {
                   episodes: Int
+                  episodes_DECREMENT: Int
+                  episodes_INCREMENT: Int
                   title: String
                 }
 

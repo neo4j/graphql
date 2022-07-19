@@ -18,14 +18,14 @@
  */
 
 import { joinStrings } from "../../../utils/utils";
-import { CypherContext } from "../CypherContext";
+import type { CypherContext } from "../CypherContext";
 import { Query } from "./Query";
 
 export class Call extends Query {
     private withStatement: Array<string>;
     private returnStatement: string;
 
-    constructor(query: Query, withVars: Array<string> = [], returnStatement = "RETURN COUNT(*)", parent?: Query) {
+    constructor(query: Query, withVars: Array<string> = [], returnStatement = "RETURN COUNT(*) AS _", parent?: Query) {
         super(parent);
         this.withStatement = withVars;
         this.returnStatement = returnStatement;

@@ -17,15 +17,16 @@
  * limitations under the License.
  */
 
-import {
+import type {
     BooleanValueNode,
     DirectiveNode,
     InterfaceTypeDefinitionNode,
-    Kind,
     ObjectTypeDefinitionNode,
-    StringValueNode,
+    StringValueNode} from "graphql";
+import {
+    Kind
 } from "graphql";
-import { Unique } from "../../types";
+import type { Unique } from "../../types";
 
 // eslint-disable-next-line consistent-return
 function getUniqueMeta(

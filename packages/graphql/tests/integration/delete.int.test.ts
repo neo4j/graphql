@@ -17,18 +17,20 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { gql } from "apollo-server";
-import neo4j from "./neo4j";
+import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 
 describe("delete", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -36,7 +38,7 @@ describe("delete", () => {
     });
 
     test("should delete a single movie", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Movie {
@@ -71,7 +73,7 @@ describe("delete", () => {
                 schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -93,7 +95,7 @@ describe("delete", () => {
     });
 
     test("should not delete a movie if predicate does not yield true", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = `
             type Movie {
@@ -128,7 +130,7 @@ describe("delete", () => {
                 schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id: "NOT FOUND" },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -150,7 +152,7 @@ describe("delete", () => {
     });
 
     test("should delete a single movie and a single nested actor", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = gql`
             type Actor {
@@ -200,7 +202,7 @@ describe("delete", () => {
                 schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id, name },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -232,7 +234,7 @@ describe("delete", () => {
     });
 
     test("should delete a movie, a single nested actor and another movie they act in", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = gql`
             type Actor {
@@ -292,7 +294,7 @@ describe("delete", () => {
                 schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { id1, name, id2 },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();
@@ -334,7 +336,7 @@ describe("delete", () => {
     });
 
     test("should delete a movie using a connection where filter", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = gql`
             type Actor {
@@ -383,7 +385,7 @@ describe("delete", () => {
                 schema: await neoSchema.getSchema(),
                 source: mutation,
                 variableValues: { name },
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();

@@ -17,15 +17,16 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("Connections -> Interfaces", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let bookmarks: string[];
 
     const typeMovie = generateUniqueType("Movie");
@@ -72,8 +73,9 @@ describe("Connections -> Interfaces", () => {
     const movie2ScreenTime = 120;
 
     beforeAll(async () => {
-        driver = await neo4j();
-        const session = driver.session();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+        const session = await neo4j.getSession();
 
         try {
             await session.run(
@@ -103,7 +105,7 @@ describe("Connections -> Interfaces", () => {
     });
 
     afterAll(async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         try {
             await session.run(
@@ -129,7 +131,7 @@ describe("Connections -> Interfaces", () => {
     });
 
     test("Projecting node and relationship properties with no arguments", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -161,7 +163,7 @@ describe("Connections -> Interfaces", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     name: actorName,
                 },
@@ -205,7 +207,7 @@ describe("Connections -> Interfaces", () => {
     });
 
     test("Projecting node and relationship properties with shared where argument", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -237,7 +239,7 @@ describe("Connections -> Interfaces", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     name: actorName,
                 },
@@ -267,7 +269,7 @@ describe("Connections -> Interfaces", () => {
     });
 
     test("Projecting node and relationship properties with shared where override", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -299,7 +301,7 @@ describe("Connections -> Interfaces", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     name: actorName,
                 },
@@ -336,7 +338,7 @@ describe("Connections -> Interfaces", () => {
     });
 
     test("Projecting node and relationship properties with sort argument", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -368,7 +370,7 @@ describe("Connections -> Interfaces", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     name: actorName,
                 },
@@ -412,7 +414,7 @@ describe("Connections -> Interfaces", () => {
     });
 
     test("Projecting node and relationship properties with pagination", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -449,7 +451,7 @@ describe("Connections -> Interfaces", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     name: actorName,
                 },
@@ -489,7 +491,7 @@ describe("Connections -> Interfaces", () => {
             const nextResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     name: actorName,
                     after: (result as any).data[typeActor.plural][0].actedInConnection.pageInfo.endCursor,
@@ -525,7 +527,7 @@ describe("Connections -> Interfaces", () => {
     });
 
     test("With where argument for shared field on node with node in database", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -557,7 +559,7 @@ describe("Connections -> Interfaces", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     name: actorName,
                     title: movie1Title,

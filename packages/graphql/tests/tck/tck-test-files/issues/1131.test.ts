@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -99,7 +99,7 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
                     this_isInPublication0_connectOrCreate_this2.uri = $this_isInPublication0_connectOrCreate_param1,
             this_isInPublication0_connectOrCreate_this2.prefLabel = $this_isInPublication0_connectOrCreate_param2
             MERGE (this)-[this_isInPublication0_connectOrCreate_this0:\`isInPublication\`]->(this_isInPublication0_connectOrCreate_this2)
-            	RETURN COUNT(*)
+            	RETURN COUNT(*) AS _
             }
             	WITH this
             CALL {
@@ -109,7 +109,7 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
                     this_isInPublication1_connectOrCreate_this2.uri = $this_isInPublication1_connectOrCreate_param1,
             this_isInPublication1_connectOrCreate_this2.prefLabel = $this_isInPublication1_connectOrCreate_param2
             MERGE (this)-[this_isInPublication1_connectOrCreate_this0:\`isInPublication\`]->(this_isInPublication1_connectOrCreate_this2)
-            	RETURN COUNT(*)
+            	RETURN COUNT(*) AS _
             }
             RETURN collect(DISTINCT this { iri: this.uri, .prefLabel, isInPublication: [ (this)-[:isInPublication]->(this_isInPublication:\`Concept\`:\`Resource\`)  WHERE this_isInPublication.uri IN $this_isInPublication_iri_IN | this_isInPublication { iri: this_isInPublication.uri, .prefLabel } ] }) AS data"
         `);

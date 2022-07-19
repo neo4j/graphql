@@ -18,12 +18,12 @@
  */
 
 import { on } from "events";
-import { Neo4jGraphQLAuthenticationError, Neo4jGraphQLError } from "../../../classes";
-import Node from "../../../classes/Node";
-import { SubscriptionsEvent } from "../../../types";
+import { Neo4jGraphQLError } from "../../../classes";
+import type Node from "../../../classes/Node";
+import type { SubscriptionsEvent } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
 import { SubscriptionAuth } from "./subscription-auth";
-import { SubscriptionContext } from "./types";
+import type { SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where";
 

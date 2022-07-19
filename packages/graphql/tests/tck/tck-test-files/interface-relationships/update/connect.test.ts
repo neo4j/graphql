@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
@@ -93,7 +93,7 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             UNION
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
@@ -104,7 +104,7 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
@@ -169,9 +169,9 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_node_actors0_relationship.screenTime = $this_connect_actedIn0_node_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
-            	RETURN count(*)
+            	RETURN count(*) AS _
             UNION
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
@@ -193,9 +193,9 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_node_actors0_relationship.screenTime = $this_connect_actedIn0_node_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
@@ -269,9 +269,9 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_node_on_Movie0_actors0_relationship.screenTime = $this_connect_actedIn0_node_on_Movie0_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
-            	RETURN count(*)
+            	RETURN count(*) AS _
             UNION
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
@@ -282,7 +282,7 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
@@ -362,9 +362,9 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_node_on_Movie0_actors0_relationship.screenTime = $this_connect_actedIn0_node_on_Movie0_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
-            	RETURN count(*)
+            	RETURN count(*) AS _
             UNION
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
@@ -386,9 +386,9 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_node_actors0_relationship.screenTime = $this_connect_actedIn0_node_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .name }) AS data"
         `);

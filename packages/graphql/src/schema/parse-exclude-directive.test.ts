@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, parse } from "graphql";
+import type { DirectiveNode} from "graphql";
+import { parse } from "graphql";
 import parseExcludeDirective from "./parse-exclude-directive";
 import { Exclude } from "../classes";
 

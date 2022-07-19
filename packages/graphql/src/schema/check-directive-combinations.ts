@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DirectiveNode } from "graphql";
+import type { DirectiveNode } from "graphql";
 
 function checkDirectiveCombinations(directives: readonly DirectiveNode[] = []) {
     const invalidCombinations = {

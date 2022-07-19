@@ -17,17 +17,32 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { generateUniqueType } from "../../../utils/graphql-types";
 
 describe("aggregations-top_level-many", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
+    let typeMovie: UniqueType;
+    let session: Session;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+    });
+
+    beforeEach(async () => {
+        typeMovie = generateUniqueType("Movie");
+        session = await neo4j.getSession();
+    });
+
+    afterEach(async () => {
+        await session.close();
     });
 
     afterAll(async () => {
@@ -35,10 +50,8 @@ describe("aggregations-top_level-many", () => {
     });
 
     test("should preform many aggregations and return correct data", async () => {
-        const session = driver.session();
-
         const typeDefs = `
-            type Movie {
+            type ${typeMovie} {
                 testId: ID!
                 id: ID!
                 title: String!
@@ -59,19 +72,18 @@ describe("aggregations-top_level-many", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
-        try {
-            await session.run(
+        await session.run(
+            `
+                    CREATE (:${typeMovie} {testId: "${testId}", id: "1", title: "1", imdbRating: 1, createdAt: datetime("${minDate.toISOString()}")})
+                    CREATE (:${typeMovie} {testId: "${testId}", id: "22", title: "22", imdbRating: 2, createdAt: datetime()})
+                    CREATE (:${typeMovie} {testId: "${testId}", id: "333", title: "333", imdbRating: 3, createdAt: datetime()})
+                    CREATE (:${typeMovie} {testId: "${testId}", id: "4444", title: "4444", imdbRating: 4, createdAt: datetime("${maxDate.toISOString()}")})
                 `
-                    CREATE (:Movie {testId: "${testId}", id: "1", title: "1", imdbRating: 1, createdAt: datetime("${minDate.toISOString()}")})
-                    CREATE (:Movie {testId: "${testId}", id: "22", title: "22", imdbRating: 2, createdAt: datetime()})
-                    CREATE (:Movie {testId: "${testId}", id: "333", title: "333", imdbRating: 3, createdAt: datetime()})
-                    CREATE (:Movie {testId: "${testId}", id: "4444", title: "4444", imdbRating: 4, createdAt: datetime("${maxDate.toISOString()}")})
-                `
-            );
+        );
 
-            const query = `
+        const query = `
                 {
-                    moviesAggregate(where: { testId: "${testId}" }) {
+                    ${typeMovie.operations.aggregate}(where: { testId: "${testId}" }) {
                         id {
                             shortest
                             longest
@@ -93,39 +105,36 @@ describe("aggregations-top_level-many", () => {
                 }
             `;
 
-            const gqlResult = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
-            });
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
-            expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any).moviesAggregate).toEqual({
-                id: {
-                    shortest: "1",
-                    longest: "4444",
-                },
-                title: {
-                    shortest: "1",
-                    longest: "4444",
-                },
-                imdbRating: {
-                    min: 1,
-                    max: 4,
-                    average: 2.5,
-                },
-                createdAt: {
-                    min: minDate.toISOString(),
-                    max: maxDate.toISOString(),
-                },
-            });
-        } finally {
-            await session.close();
+        if (gqlResult.errors) {
+            console.log(JSON.stringify(gqlResult.errors, null, 2));
         }
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[typeMovie.operations.aggregate]).toEqual({
+            id: {
+                shortest: "1",
+                longest: "4444",
+            },
+            title: {
+                shortest: "1",
+                longest: "4444",
+            },
+            imdbRating: {
+                min: 1,
+                max: 4,
+                average: 2.5,
+            },
+            createdAt: {
+                min: minDate.toISOString(),
+                max: maxDate.toISOString(),
+            },
+        });
     });
 });

@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { Node, Relationship } from "../classes";
-import { Context, RelationField, ConnectionField } from "../types";
+import type { Node, Relationship } from "../classes";
+import type { Context, RelationField, ConnectionField } from "../types";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import createUpdateAndParams from "./create-update-and-params";
@@ -182,6 +182,15 @@ export default async function translateUpdate({
             }
 
             if (relationField.interface) {
+                if (!relationField.typeMeta.array) {
+                    const inStr = relationField.direction === "IN" ? "<-" : "-";
+                    const outStr = relationField.direction === "OUT" ? "->" : "-";
+                    refNodes.forEach((refNode) => {
+                        const validateRelationshipExistance = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
+                        connectStrs.push(validateRelationshipExistance);
+                    });
+                }
+
                 const connectAndParams = createConnectAndParams({
                     context,
                     callbackBucket,
@@ -267,6 +276,11 @@ export default async function translateUpdate({
                     const nodeName = `${baseName}_node${relationField.interface ? `_${refNode.name}` : ""}`;
                     const propertiesName = `${baseName}_relationship`;
                     const relTypeStr = `[${relationField.properties ? propertiesName : ""}:${relationField.type}]`;
+
+                    if (!relationField.typeMeta.array) {
+                        const validateRelationshipExistance = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
+                        createStrs.push(validateRelationshipExistance);
+                    }
 
                     const createAndParams = createCreateAndParams({
                         context,
@@ -366,7 +380,7 @@ export default async function translateUpdate({
         [projStr] = projection;
         cypherParams = { ...cypherParams, ...projection[1] };
         if (projection[2]?.authValidateStrs?.length) {
-            projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
+            projAuth = `CALL apoc.util.validate(NOT (${projection[2].authValidateStrs.join(
                 " AND "
             )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
         }

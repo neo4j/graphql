@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
@@ -116,7 +116,7 @@ describe("Cypher NULL", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            WHERE NOT EXISTS((this)<-[:ACTED_IN]-(:Actor))
+            WHERE NOT EXISTS { (this)<-[:ACTED_IN]-(this_actors:Actor) }
             RETURN this { .title } as this"
         `);
 
@@ -139,7 +139,7 @@ describe("Cypher NULL", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Movie)
-            WHERE EXISTS((this)<-[:ACTED_IN]-(:Actor))
+            WHERE EXISTS { (this)<-[:ACTED_IN]-(this_actors_NOT:Actor) }
             RETURN this { .title } as this"
         `);
 

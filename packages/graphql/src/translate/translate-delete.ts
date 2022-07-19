@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { Node } from "../classes";
-import { Context } from "../types";
+import type { Node } from "../classes";
+import type { Context } from "../types";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createAuthAndParams from "./create-auth-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
@@ -55,7 +55,7 @@ export default function translateDelete({ context, node }: { context: Context; n
     });
     if (allowAuth[0]) {
         cypherParams = { ...cypherParams, ...allowAuth[1] };
-        allowStr = `WITH ${withVars.join(", ")}\nCALL apoc.util.validate(NOT(${
+        allowStr = `WITH ${withVars.join(", ")}\nCALL apoc.util.validate(NOT (${
             allowAuth[0]
         }), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }

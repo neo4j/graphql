@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import { mergeDeep } from "@graphql-tools/utils";
-import { Integer } from "neo4j-driver";
-import { ConnectionField, ConnectionSortArg, ConnectionWhereArg, Context } from "../../types";
-import { Node } from "../../classes";
+import type { Integer } from "neo4j-driver";
+import type { ConnectionField, ConnectionSortArg, ConnectionWhereArg, Context } from "../../types";
+import type { Node } from "../../classes";
 // eslint-disable-next-line import/no-cycle
 import createProjectionAndParams from "../create-projection-and-params";
-import Relationship from "../../classes/Relationship";
+import type Relationship from "../../classes/Relationship";
 import createRelationshipPropertyElement from "../projection/elements/create-relationship-property-element";
 import createConnectionWhereAndParams from "../where/create-connection-where-and-params";
 import createAuthAndParams from "../create-auth-and-params";
@@ -271,7 +271,7 @@ function createConnectionAndParams({
                 if (allowAndParams[0]) {
                     globalParams = { ...globalParams, ...allowAndParams[1] };
                     unionInterfaceSubquery.push(
-                        `CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+                        `CALL apoc.util.validate(NOT (${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
                     );
                 }
 
@@ -353,7 +353,7 @@ function createConnectionAndParams({
         });
         if (allowAndParams[0]) {
             globalParams = { ...globalParams, ...allowAndParams[1] };
-            subquery.push(`CALL apoc.util.validate(NOT(${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+            subquery.push(`CALL apoc.util.validate(NOT (${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         }
 
         if (sortInput.length) {
@@ -385,7 +385,7 @@ function createConnectionAndParams({
 
             if (projectionMeta?.authValidateStrs?.length) {
                 subquery.push(
-                    `CALL apoc.util.validate(NOT(${projectionMeta.authValidateStrs.join(
+                    `CALL apoc.util.validate(NOT (${projectionMeta.authValidateStrs.join(
                         " AND "
                     )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
                 );
@@ -444,9 +444,27 @@ function createConnectionAndParams({
         ];
     } else if (!firstInput && !afterInput) {
         if (connection.edges || connection.pageInfo) {
-            returnValues.push("edges: edges");
+            if (elementsToCollect.length > 0) {
+                subquery.push("UNWIND edges as edge");
+                returnValues.push("edges: collect(edge)");
+                returnValues.push("totalCount: size(collect(edge))");
+            } else {
+                returnValues.push("edges: edges");
+                returnValues.push("totalCount: size(edges)");
+            }
+        } else {
+            returnValues.push("totalCount: size(edges)");
         }
-        returnValues.push("totalCount: size(edges)");
+        if (sortInput.length && elementsToCollect.length > 0) {
+            subquery.push("WITH edges, edge");
+            const sort = sortInput.map((s) =>
+                [
+                    ...Object.entries(s.edge || []).map(([f, direction]) => `edge.${f} ${direction}`),
+                    ...Object.entries(s.node || []).map(([f, direction]) => `edge.node.${f} ${direction}`),
+                ].join(", ")
+            );
+            subquery.push(`ORDER BY ${sort.join(", ")}`);
+        }
         subquery.push(`RETURN { ${returnValues.join(", ")} } AS ${resolveTree.alias}`);
     } else {
         subquery = [

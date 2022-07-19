@@ -17,19 +17,22 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { gql } from "apollo-server";
-import { graphql, defaultFieldResolver, GraphQLSchema } from "graphql";
+import type { GraphQLSchema } from "graphql";
+import { graphql, defaultFieldResolver } from "graphql";
 import { getDirective, MapperKind, mapSchema } from "@graphql-tools/utils";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../src/classes";
-import neo4j from "./neo4j";
+import Neo4j from "./neo4j";
 
 describe("Custom Directives", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -37,7 +40,7 @@ describe("Custom Directives", () => {
     });
 
     test("should define a custom schemaDirective and resolve it", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         function upperDirective(directiveName: string) {
             return {
@@ -48,7 +51,7 @@ describe("Custom Directives", () => {
                             const fieldDirective = getDirective(schema, fieldConfig, directiveName)?.[0];
                             if (fieldDirective) {
                                 const { resolve = defaultFieldResolver } = fieldConfig;
-                                // eslint-disable-next-line no-param-reassign
+                                 
                                 fieldConfig.resolve = async (source, args, context, info) => {
                                     const result = await resolve(source, args, context, info);
                                     if (typeof result === "string") {
@@ -99,7 +102,7 @@ describe("Custom Directives", () => {
             const gqlResult = await graphql({
                 schema,
                 source: create,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(gqlResult.errors).toBeFalsy();

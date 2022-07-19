@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { parse, ValueNode } from "graphql";
+import type { ValueNode } from "graphql";
+import { parse } from "graphql";
 import parseValueNode from "./parse-value-node";
 
 describe("parseValueNode", () => {

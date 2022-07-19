@@ -17,24 +17,26 @@
  * limitations under the License.
  */
 
-import { IResolvers, TypeSource } from "@graphql-tools/utils";
-import {
+import type { IResolvers, TypeSource } from "@graphql-tools/utils";
+import type {
     DefinitionNode,
     DocumentNode,
-    GraphQLID,
-    GraphQLNonNull,
     GraphQLScalarType,
     InterfaceTypeDefinitionNode,
-    Kind,
     NameNode,
-    ObjectTypeDefinitionNode,
+    ObjectTypeDefinitionNode} from "graphql";
+import {
+    GraphQLID,
+    GraphQLNonNull,
+    Kind,
     parse,
     print,
 } from "graphql";
-import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import type { ObjectTypeComposer} from "graphql-compose";
+import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { validateDocument } from "./validation";
-import { BaseField, Neo4jGraphQLCallbacks } from "../types";
+import type { BaseField, Neo4jGraphQLCallbacks } from "../types";
 import { cypherResolver } from "./resolvers/field/cypher";
 import { numericalResolver } from "./resolvers/field/numerical";
 import { aggregateResolver } from "./resolvers/query/aggregate";
@@ -46,12 +48,13 @@ import { updateResolver } from "./resolvers/mutation/update";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import * as constants from "../constants";
 import * as Scalars from "../graphql/scalars";
-import { Node } from "../classes";
-import Relationship from "../classes/Relationship";
+import type { Node } from "../classes";
+import type Relationship from "../classes/Relationship";
 import createConnectionFields from "./create-connection-fields";
 import createRelationshipFields from "./create-relationship-fields";
 import getCustomResolvers from "./get-custom-resolvers";
-import getObjFieldMeta, { ObjectFields } from "./get-obj-field-meta";
+import type { ObjectFields } from "./get-obj-field-meta";
+import getObjFieldMeta from "./get-obj-field-meta";
 import getSortableFields from "./get-sortable-fields";
 import {
     graphqlDirectivesToCompose,
@@ -84,6 +87,7 @@ import getNodes from "./get-nodes";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
 import { addGlobalNodeFields } from "./create-global-nodes";
+import { addMathOperatorsToITC } from "./math";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -222,7 +226,7 @@ function makeAugmentedSchema(
             }, {}),
         });
 
-        composer.createInputTC({
+        const relationshipUpdateITC = composer.createInputTC({
             name: `${relationship.name.value}UpdateInput`,
             fields: objectFieldsToUpdateInputFields([
                 ...relFields.primitiveFields.filter(
@@ -234,6 +238,8 @@ function makeAugmentedSchema(
                 ...relFields.pointFields,
             ]),
         });
+
+        addMathOperatorsToITC(relationshipUpdateITC);
 
         const relationshipWhereFields = getWhereFields({
             typeName: relationship.name.value,
@@ -364,7 +370,7 @@ function makeAugmentedSchema(
 
         const interfaceCreateInput = composer.createInputTC(`${interfaceRelationship.name.value}CreateInput`);
 
-        composer.getOrCreateITC(`${interfaceRelationship.name.value}UpdateInput`, (tc) => {
+        const interfaceRelationshipITC = composer.getOrCreateITC(`${interfaceRelationship.name.value}UpdateInput`, (tc) => {
             tc.addFields({
                 ...objectFieldsToUpdateInputFields([
                     ...interfaceFields.primitiveFields,
@@ -376,6 +382,8 @@ function makeAugmentedSchema(
                 _on: implementationsUpdateInput,
             });
         });
+
+        addMathOperatorsToITC(interfaceRelationshipITC);
 
         createRelationshipFields({
             relationshipFields: interfaceFields.relationFields,
@@ -664,7 +672,7 @@ function makeAugmentedSchema(
             ]),
         });
 
-        composer.createInputTC({
+        const nodeUpdateITC = composer.createInputTC({
             name: `${node.name}UpdateInput`,
             fields: objectFieldsToUpdateInputFields([
                 ...node.primitiveFields.filter((field) => !field.callback),
@@ -674,6 +682,8 @@ function makeAugmentedSchema(
                 ...node.pointFields,
             ]),
         });
+
+        addMathOperatorsToITC(nodeUpdateITC);
 
         const mutationResponseTypeNames = node.mutationResponseTypeNames;
 

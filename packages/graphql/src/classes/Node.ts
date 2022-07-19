@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, NamedTypeNode } from "graphql";
+import type { DirectiveNode, NamedTypeNode } from "graphql";
 import camelcase from "camelcase";
 import pluralize from "pluralize";
 import type {
@@ -37,11 +37,13 @@ import type {
     TemporalField,
     UnionField,
 } from "../types";
-import Exclude from "./Exclude";
-import { GraphElement, GraphElementConstructor } from "./GraphElement";
-import { NodeDirective } from "./NodeDirective";
-import { DecodedGlobalId, fromGlobalId, toGlobalId } from "../utils/global-ids";
-import { QueryOptionsDirective } from "./QueryOptionsDirective";
+import type Exclude from "./Exclude";
+import type { GraphElementConstructor } from "./GraphElement";
+import { GraphElement } from "./GraphElement";
+import type { NodeDirective } from "./NodeDirective";
+import type { DecodedGlobalId} from "../utils/global-ids";
+import { fromGlobalId, toGlobalId } from "../utils/global-ids";
+import type { QueryOptionsDirective } from "./QueryOptionsDirective";
 import { upperFirst } from "../utils/upper-first";
 import { NodeAuth } from "./NodeAuth";
 
@@ -69,6 +71,7 @@ export interface NodeConstructor extends GraphElementConstructor {
     queryOptionsDirective?: QueryOptionsDirective;
     isGlobalNode?: boolean;
     globalIdField?: string;
+    globalIdFieldIsInt?: boolean;
 }
 
 type MutableField =
@@ -141,6 +144,7 @@ class Node extends GraphElement {
     public plural: string;
     public isGlobalNode: boolean | undefined;
     private _idField: string | undefined;
+    private _idFieldIsInt?: boolean;
 
     constructor(input: NodeConstructor) {
         super(input);
@@ -159,6 +163,7 @@ class Node extends GraphElement {
         this.queryOptions = input.queryOptionsDirective;
         this.isGlobalNode = input.isGlobalNode;
         this._idField = input.globalIdField;
+        this._idFieldIsInt = input.globalIdFieldIsInt;
         this.singular = this.generateSingular();
         this.plural = this.generatePlural();
     }
@@ -295,7 +300,7 @@ class Node extends GraphElement {
     }
 
     public fromGlobalId(relayId: string): DecodedGlobalId {
-        return fromGlobalId(relayId);
+        return fromGlobalId(relayId, this._idFieldIsInt);
     }
 
     private generateSingular(): string {

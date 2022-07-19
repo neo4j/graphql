@@ -32,6 +32,7 @@ export type TestDisplayData = {
     name: string;
     result: Result;
     file: string;
+    type: "cypher" | "graphql";
 };
 
 export type TestInfo = { query: string; name: string; filename: string };

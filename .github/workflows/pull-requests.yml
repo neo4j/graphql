@@ -1,5 +1,9 @@
 name: "Pull Request"
 
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
     branches:
@@ -9,22 +13,7 @@ on:
       - "docs/**"
 
 jobs:
-  cache-dependencies:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-
   reviewdog-eslint:
-    needs:
-      - cache-dependencies
-
     runs-on: ubuntu-latest
 
     steps:
@@ -35,7 +24,7 @@ jobs:
           cache: yarn
       - name: Install dependencies
         run: yarn --immutable
-      - uses: reviewdog/action-eslint@v1
+      - uses: reviewdog/action-eslint@d3395027ea2cfc5cf8f460b1ea939b6c86fea656 # renovate: tag=v1.17.0
         with:
           fail_on_error: true
           eslint_flags: "."
@@ -44,34 +33,7 @@ jobs:
     uses: ./.github/workflows/reusable-package-tests.yml
 
   neo-push-tests:
-    needs:
-      - cache-dependencies
-
-    runs-on: ubuntu-latest
-
-    services:
-      neo4j:
-        image: neo4j:latest
-        env:
-          NEO4J_AUTH: neo4j/password
-          NEO4JLABS_PLUGINS: '["apoc"]'
-        ports:
-          - 7687:7687
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Run neo-push tests
-        run: yarn --cwd examples/neo-push/server run test
-        env:
-          NEO_USER: neo4j
-          NEO_PASSWORD: password
-          NEO_URL: bolt://localhost:7687
+    uses: ./.github/workflows/reusable-neo-push-tests.yml
 
   typescript-changes:
     runs-on: ubuntu-latest
@@ -82,7 +44,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v2
+      - uses: dorny/paths-filter@b2feaf19c27470162a626bd6fa8438ae5b263721 # renovate: tag=v2.10.2
         id: filter
         with:
           list-files: shell
@@ -107,75 +69,7 @@ jobs:
         run: addlicense -f ./addlicense -check ${{ needs.typescript-changes.outputs.typescript_files }}
 
   unit-tests:
-    needs:
-      - cache-dependencies
-
-    strategy:
-      fail-fast: false
-      matrix:
-        package:
-          - graphql
-          - ogm
-          - introspector
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
-      - name: Run packages/${{ matrix.package }} unit tests
-        run: yarn run test:unit --coverage
-        working-directory: packages/${{ matrix.package }}
-      - name: Archive coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: unit-coverage-${{ matrix.package }}
-          path: packages/${{ matrix.package }}/coverage/
-
-  unit-tests-plugins:
-    needs:
-      - cache-dependencies
-
-    strategy:
-      fail-fast: false
-      matrix:
-        package:
-          - graphql-plugin-auth
-          - graphql-plugin-subscriptions-amqp
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
-      - name: Run packages/plugins/${{ matrix.package }} unit tests
-        run: yarn run test:unit --coverage
-        working-directory: packages/plugins/${{ matrix.package }}
-      - name: Archive coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: unit-coverage-${{ matrix.package }}
-          path: packages/plugins/${{ matrix.package }}/coverage/
+    uses: ./.github/workflows/reusable-unit-tests.yml
 
   e2e-tests-plugins:
     uses: ./.github/workflows/reusable-subscriptions-plugin-amqp-e2e-test.yml
@@ -190,60 +84,21 @@ jobs:
     uses: ./.github/workflows/reusable-toolbox-tests.yml
 
   integration-tests-on-prem:
-    needs:
-      - cache-dependencies
+    uses: ./.github/workflows/reusable-integration-tests-on-prem.yml
 
-    strategy:
-      fail-fast: false
-      matrix:
-        package:
-          - graphql
-          - ogm
-          - introspector
-        neo4j-version:
-          - 4.2.9
-          - 4.2
-          - 4.3.2
-          - 4.3
-          - 4.4
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
+  quality-gate:
+    needs:
+      - reviewdog-eslint
+      - package-tests
+      - neo-push-tests
+      - license-header-check
+      - unit-tests
+      - e2e-tests-plugins
+      - api-library-tests
+      - toolbox-tests
+      - integration-tests-on-prem
 
     runs-on: ubuntu-latest
 
-    services:
-      neo4j:
-        image: neo4j:${{ matrix.neo4j-version }}-enterprise
-        env:
-          NEO4J_AUTH: neo4j/password
-          NEO4JLABS_PLUGINS: '["apoc"]'
-          NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
-        ports:
-          - 7687:7687
-
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn --immutable
-      - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
-      - name: Run @neo4j/graphql integration tests and move coverage
-        run: |
-          yarn test:int --coverage
-          mv coverage coverage-${{ matrix.neo4j-version }}
-        working-directory: packages/${{ matrix.package }}
-        env:
-          NEO_USER: neo4j
-          NEO_PASSWORD: password
-          NEO_URL: bolt://localhost:7687
-      - name: Archive coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: integration-coverage-${{ matrix.package }}
-          path: packages/${{ matrix.package }}/coverage-${{ matrix.neo4j-version }}/
+      - run: echo "Passed!"
