@@ -93,3 +93,5 @@ scratchpad/
 
 tsconfig.tsbuildinfo
 tsconfig.*.tsbuildinfo
+
+performance.json
