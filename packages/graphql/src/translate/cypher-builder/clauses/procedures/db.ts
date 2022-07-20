@@ -18,11 +18,11 @@
  */
 
 import { dedent } from "graphql-compose";
-import type { CypherEnvironment } from "../Environment";
-import { Where, WhereParams } from "../sub-clauses/Where";
-import type { NodeRef } from "../variables/NodeRef";
-import { Clause } from "./Clause";
-import { Return } from "./Return";
+import type { CypherEnvironment } from "../../Environment";
+import { Where, WhereParams } from "../../sub-clauses/Where";
+import type { NodeRef } from "../../variables/NodeRef";
+import { Clause } from "../Clause";
+import { Return } from "../Return";
 
 export class FullTextQueryNodes extends Clause {
     private targetNode: NodeRef;

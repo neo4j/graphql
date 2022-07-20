@@ -103,8 +103,7 @@ describe("Node Directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Comment\`)
-            WHERE size([ (this0:\`Person\`)-[:HAS_POST]->(this)
-            WHERE this0.id = $param0 | 1]) > 0
+            WHERE size([(this0:\`Person\`)-[:HAS_POST]->(this) WHERE this0.id = $param0 | 1]) > 0
             WITH this
             CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             DETACH DELETE this"
