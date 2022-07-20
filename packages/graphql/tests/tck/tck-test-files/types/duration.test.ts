@@ -56,14 +56,14 @@ describe("Cypher Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.duration = $this_duration
+            "MATCH (this:\`Movie\`)
+            WHERE this.duration = $param0
             RETURN this { .duration } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_duration\\": {
+                \\"param0\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -94,14 +94,14 @@ describe("Cypher Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE datetime() + this.duration >= datetime() + $this_duration_GTE
+            "MATCH (this:\`Movie\`)
+            WHERE datetime() + this.duration >= datetime() + $param0
             RETURN this { .duration } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_duration_GTE\\": {
+                \\"param0\\": {
                     \\"months\\": 40,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -180,7 +180,7 @@ describe("Cypher Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             SET this.duration = $this_update_duration
             RETURN collect(DISTINCT this { .id, .duration }) AS data"
         `);

@@ -83,16 +83,16 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             CREATE (this0:Movie)
             SET this0.id = randomUUID()
             SET this0.title = $this0_title
-            	WITH this0
+            WITH this0
             CALL {
-            	WITH this0
-            	MERGE (this0_actors_connectOrCreate_this1:\`Actor\` { id: $this0_actors_connectOrCreate_param0 })
-            ON CREATE SET
-                    this0_actors_connectOrCreate_this1.name = $this0_actors_connectOrCreate_param1,
-            this0_actors_connectOrCreate_this1.homeAddress = $this0_actors_connectOrCreate_param2,
-            this0_actors_connectOrCreate_this1.dob = $this0_actors_connectOrCreate_param3
-            MERGE (this0_actors_connectOrCreate_this1)-[this0_actors_connectOrCreate_this0:\`ACTED_IN\`]->(this0)
-            	RETURN COUNT(*) AS _
+                WITH this0
+                MERGE (this0_actors_connectOrCreate_this0:\`Actor\` { id: $this0_actors_connectOrCreate_param0 })
+                ON CREATE SET
+                    this0_actors_connectOrCreate_this0.name = $this0_actors_connectOrCreate_param1,
+                    this0_actors_connectOrCreate_this0.homeAddress = $this0_actors_connectOrCreate_param2,
+                    this0_actors_connectOrCreate_this0.dob = $this0_actors_connectOrCreate_param3
+                MERGE (this0_actors_connectOrCreate_this0)-[this0_actors_connectOrCreate_this1:ACTED_IN]->(this0)
+                RETURN COUNT(*) AS _
             }
             RETURN this0
             }

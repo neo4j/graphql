@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:ProgrammeItem)
+            "MATCH (this:\`ProgrammeItem\`)
             WITH this
             CALL {
             WITH this
@@ -134,7 +134,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:ProgrammeItem)
+            "MATCH (this:\`ProgrammeItem\`)
             CALL {
             WITH this
             CALL {
@@ -154,7 +154,8 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS releatsToConnection
+            WITH edges, size(edges) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS releatsToConnection
             }
             RETURN this { .productTitle, .episodeNumber, releatsToConnection } as this"
         `);

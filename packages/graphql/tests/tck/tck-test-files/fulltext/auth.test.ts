@@ -19,7 +19,6 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery } from "../../utils/tck-test-utils";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
@@ -41,10 +40,7 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         const secret = "shh-its-a-secret";
 
-        const sub = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
+        const sub = "my-sub";
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
@@ -70,16 +66,18 @@ describe("Cypher -> fulltext -> Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
-                $this_fulltext_MovieTitle_phrase
+                $param1
             ) YIELD node as this
-            WHERE \\"Movie\\" IN labels(this) AND exists((this)<-[:DIRECTED]-(:Person)) AND all(director IN [(this)<-[:DIRECTED]-(director:Person) | director] WHERE director.id IS NOT NULL AND director.id = $this_auth_where0_director_id)
+                        WHERE (\\"Movie\\" IN labels(this) AND exists((this)<-[:DIRECTED]-(:Person)) AND all(director IN [(this)<-[:DIRECTED]-(director:Person) | director] WHERE director.id IS NOT NULL AND director.id = $this_auth_where0_director_id))
             RETURN this { .title } as this"
         `);
 
-        expect(result.params).toMatchObject({
-            this_fulltext_MovieTitle_phrase: "something AND something",
-            this_auth_where0_director_id: sub,
-        });
+        expect(result.params).toMatchInlineSnapshot(`
+            Object {
+              "param1": "something AND something",
+              "this_auth_where0_director_id": "my-sub",
+            }
+        `);
     });
 
     test("simple match with auth allow", async () => {
@@ -98,10 +96,7 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         const secret = "shh-its-a-secret";
 
-        const sub = generate({
-            readable: true,
-            charset: "alphabetic",
-        });
+        const sub = "my-sub";
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
@@ -127,16 +122,18 @@ describe("Cypher -> fulltext -> Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
-                $this_fulltext_MovieTitle_phrase
+                $param0
             ) YIELD node as this
-            WHERE \\"Movie\\" IN labels(this)
+                        WHERE \\"Movie\\" IN labels(this)
             CALL apoc.util.validate(NOT (exists((this)<-[:DIRECTED]-(:Person)) AND any(director IN [(this)<-[:DIRECTED]-(director:Person) | director] WHERE director.id IS NOT NULL AND director.id = $this_auth_allow0_director_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } as this"
         `);
 
-        expect(result.params).toMatchObject({
-            this_fulltext_MovieTitle_phrase: "something AND something",
-            this_auth_allow0_director_id: sub,
-        });
+        expect(result.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": "something AND something",
+              "this_auth_allow0_director_id": "my-sub",
+            }
+        `);
     });
 });

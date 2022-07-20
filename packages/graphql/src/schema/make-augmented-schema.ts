@@ -24,15 +24,10 @@ import type {
     GraphQLScalarType,
     InterfaceTypeDefinitionNode,
     NameNode,
-    ObjectTypeDefinitionNode} from "graphql";
-import {
-    GraphQLID,
-    GraphQLNonNull,
-    Kind,
-    parse,
-    print,
+    ObjectTypeDefinitionNode,
 } from "graphql";
-import type { ObjectTypeComposer} from "graphql-compose";
+import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
+import type { ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { validateDocument } from "./validation";
@@ -88,6 +83,7 @@ import { generateSubscriptionTypes } from "./subscriptions/generate-subscription
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { addMathOperatorsToITC } from "./math";
+import { addArrayMethodsToITC } from "./array-methods";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -243,6 +239,9 @@ function makeAugmentedSchema(
 
         addMathOperatorsToITC(relationshipUpdateITC);
 
+        addArrayMethodsToITC(relationshipUpdateITC, relFields.primitiveFields);
+        addArrayMethodsToITC(relationshipUpdateITC, relFields.pointFields);
+
         const relationshipWhereFields = getWhereFields({
             typeName: relationship.name.value,
             fields: {
@@ -374,18 +373,21 @@ function makeAugmentedSchema(
 
         const interfaceCreateInput = composer.createInputTC(`${interfaceRelationship.name.value}CreateInput`);
 
-        const interfaceRelationshipITC = composer.getOrCreateITC(`${interfaceRelationship.name.value}UpdateInput`, (tc) => {
-            tc.addFields({
-                ...objectFieldsToUpdateInputFields([
-                    ...interfaceFields.primitiveFields,
-                    ...interfaceFields.scalarFields,
-                    ...interfaceFields.enumFields,
-                    ...interfaceFields.temporalFields.filter((field) => !field.timestamps),
-                    ...interfaceFields.pointFields,
-                ]),
-                _on: implementationsUpdateInput,
-            });
-        });
+        const interfaceRelationshipITC = composer.getOrCreateITC(
+            `${interfaceRelationship.name.value}UpdateInput`,
+            (tc) => {
+                tc.addFields({
+                    ...objectFieldsToUpdateInputFields([
+                        ...interfaceFields.primitiveFields,
+                        ...interfaceFields.scalarFields,
+                        ...interfaceFields.enumFields,
+                        ...interfaceFields.temporalFields.filter((field) => !field.timestamps),
+                        ...interfaceFields.pointFields,
+                    ]),
+                    _on: implementationsUpdateInput,
+                });
+            }
+        );
 
         addMathOperatorsToITC(interfaceRelationshipITC);
 
@@ -689,6 +691,8 @@ function makeAugmentedSchema(
         });
 
         addMathOperatorsToITC(nodeUpdateITC);
+
+        addArrayMethodsToITC(nodeUpdateITC, node.mutableFields);
 
         const mutationResponseTypeNames = node.mutationResponseTypeNames;
 

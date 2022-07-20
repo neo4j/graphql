@@ -79,8 +79,8 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:ABCE)
-            WHERE this.id = $this_id
+            "MATCH (this:\`ABCE\`)
+            WHERE this.id = $param0
             CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
             CREATE (this_create_interface_ChildOne0_node_ChildOne:ChildOne)
             SET this_create_interface_ChildOne0_node_ChildOne.id = randomUUID()
@@ -101,7 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"TestID\\",
+                \\"param0\\": \\"TestID\\",
                 \\"this_create_interface_ChildOne0_node_ChildOne_name\\": \\"childone name2\\",
                 \\"resolvedCallbacks\\": {}
             }"
@@ -130,15 +130,15 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:ABCE)
-            WHERE this.id = $this_id
+            "MATCH (this:\`ABCE\`)
+            WHERE this.id = $param0
             CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
             CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildTwo)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_interface0_node:ChildOne)
-            	WHERE this_connect_interface0_node.name = $this_connect_interface0_node_name
+            	WHERE this_connect_interface0_node.name = $this_connect_interface0_node_param0
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this_connect_interface0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface0_node)
@@ -148,7 +148,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             UNION
             	WITH this
             	OPTIONAL MATCH (this_connect_interface0_node:ChildTwo)
-            	WHERE this_connect_interface0_node.name = $this_connect_interface0_node_name
+            	WHERE this_connect_interface0_node.name = $this_connect_interface0_node_param0
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this_connect_interface0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface0_node)
@@ -171,8 +171,8 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"TestId\\",
-                \\"this_connect_interface0_node_name\\": \\"childone name connect\\",
+                \\"param0\\": \\"TestId\\",
+                \\"this_connect_interface0_node_param0\\": \\"childone name connect\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

@@ -95,7 +95,7 @@ describe("Cypher autogenerate directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             SET this.name = $this_update_name
             RETURN collect(DISTINCT this { .id, .name }) AS data"
         `);

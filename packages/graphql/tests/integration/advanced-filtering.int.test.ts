@@ -92,10 +92,6 @@ describe("Advanced Filtering", () => {
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
-
                         expect(gqlResult.errors).toBeUndefined();
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
                         expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value);
@@ -147,10 +143,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
-
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
 
                         expect(gqlResult.errors).toBeUndefined();
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -209,10 +201,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
-
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -280,10 +268,6 @@ describe("Advanced Filtering", () => {
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -341,10 +325,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
-
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -407,10 +387,6 @@ describe("Advanced Filtering", () => {
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -468,10 +444,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
-
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -536,10 +508,6 @@ describe("Advanced Filtering", () => {
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -601,10 +569,6 @@ describe("Advanced Filtering", () => {
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
@@ -665,10 +629,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
-
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -1030,10 +990,6 @@ describe("Advanced Filtering", () => {
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -1105,10 +1061,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
-
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -1184,10 +1136,6 @@ describe("Advanced Filtering", () => {
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -1246,10 +1194,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
-
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -1310,10 +1254,6 @@ describe("Advanced Filtering", () => {
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
@@ -1371,10 +1311,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
-
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -1435,10 +1371,6 @@ describe("Advanced Filtering", () => {
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
@@ -1488,10 +1420,6 @@ describe("Advanced Filtering", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
                 expect(gqlResult.errors).toBeUndefined();
 
                 expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -1536,10 +1464,6 @@ describe("Advanced Filtering", () => {
                     source: query,
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
-
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
 
                 expect(gqlResult.errors).toBeUndefined();
 
@@ -1612,10 +1536,6 @@ describe("Advanced Filtering", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
-
                     expect(gqlResult.errors).toBeUndefined();
 
                     expect((gqlResult.data as any)[randomType1.plural]).toHaveLength(1);
@@ -1675,10 +1595,6 @@ describe("Advanced Filtering", () => {
                         source: query,
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
-
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -1748,10 +1664,6 @@ describe("Advanced Filtering", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
-
                     expect(gqlResult.errors).toBeUndefined();
 
                     expect((gqlResult.data as any).movies).toHaveLength(1);
@@ -1819,10 +1731,6 @@ describe("Advanced Filtering", () => {
                         source: query,
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
-
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -1901,10 +1809,6 @@ describe("Advanced Filtering", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
-
                     expect(gqlResult.errors).toBeUndefined();
 
                     expect((gqlResult.data as any)[randomType1.plural]).toHaveLength(1);
@@ -1975,10 +1879,6 @@ describe("Advanced Filtering", () => {
                         source: query,
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
-
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -2057,10 +1957,6 @@ describe("Advanced Filtering", () => {
                         source: query,
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
-
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -2148,6 +2044,7 @@ describe("Advanced Filtering", () => {
                         }
                     }
                 `;
+
                 test("ALL", async () => {
                     const gqlResult = await graphql({
                         schema,
@@ -2391,10 +2288,6 @@ describe("Advanced Filtering", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
-                if (nullResult.errors) {
-                    console.log(JSON.stringify(nullResult.errors, null, 2));
-                }
-
                 expect(nullResult.errors).toBeUndefined();
 
                 expect((nullResult.data as any)[randomType1.plural]).toHaveLength(1);
@@ -2418,10 +2311,6 @@ describe("Advanced Filtering", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
-                if (notNullResult.errors) {
-                    console.log(JSON.stringify(notNullResult.errors, null, 2));
-                }
-
                 expect(notNullResult.errors).toBeUndefined();
 
                 expect((notNullResult.data as any)[randomType1.plural]).toHaveLength(1);
@@ -2435,6 +2324,7 @@ describe("Advanced Filtering", () => {
     });
 
     describe("NULL Filtering", () => {
+        // TODO: split in 2 tests
         test("should work for existence and non-existence", async () => {
             const session = await neo4j.getSession();
 
@@ -2489,10 +2379,6 @@ describe("Advanced Filtering", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
-                if (nullResult.errors) {
-                    console.log(JSON.stringify(nullResult.errors, null, 2));
-                }
-
                 expect(nullResult.errors).toBeUndefined();
 
                 expect((nullResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -2514,10 +2400,6 @@ describe("Advanced Filtering", () => {
                     source: notNullQuery,
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
-
-                if (notNullResult.errors) {
-                    console.log(JSON.stringify(notNullResult.errors, null, 2));
-                }
 
                 expect(notNullResult.errors).toBeUndefined();
 

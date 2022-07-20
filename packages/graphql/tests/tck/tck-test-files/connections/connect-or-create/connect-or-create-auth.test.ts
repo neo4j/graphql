@@ -83,15 +83,15 @@ describe("connectOrCreate", () => {
                 "CALL {
                 CREATE (this0:Movie)
                 SET this0.title = $this0_title
-                	WITH this0
+                WITH this0
                 CALL {
-                	WITH this0
-                	CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                MERGE (this0_genres_connectOrCreate_this2:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
-                ON CREATE SET
-                        this0_genres_connectOrCreate_this2.name = $this0_genres_connectOrCreate_param1
-                MERGE (this0)-[this0_genres_connectOrCreate_this0:\`IN_GENRE\`]->(this0_genres_connectOrCreate_this2)
-                	RETURN COUNT(*) AS _
+                    WITH this0
+                    CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    MERGE (this0_genres_connectOrCreate_this0:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
+                    ON CREATE SET
+                        this0_genres_connectOrCreate_this0.name = $this0_genres_connectOrCreate_param1
+                    MERGE (this0)-[this0_genres_connectOrCreate_this1:IN_GENRE]->(this0_genres_connectOrCreate_this0)
+                    RETURN COUNT(*) AS _
                 }
                 RETURN this0
                 }
@@ -136,15 +136,15 @@ describe("connectOrCreate", () => {
                 "CALL {
                 CREATE (this0:Movie)
                 SET this0.title = $this0_title
-                	WITH this0
+                WITH this0
                 CALL {
-                	WITH this0
-                	CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                MERGE (this0_genres_connectOrCreate_this2:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
-                ON CREATE SET
-                        this0_genres_connectOrCreate_this2.name = $this0_genres_connectOrCreate_param1
-                MERGE (this0)-[this0_genres_connectOrCreate_this0:\`IN_GENRE\`]->(this0_genres_connectOrCreate_this2)
-                	RETURN COUNT(*) AS _
+                    WITH this0
+                    CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    MERGE (this0_genres_connectOrCreate_this0:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
+                    ON CREATE SET
+                        this0_genres_connectOrCreate_this0.name = $this0_genres_connectOrCreate_param1
+                    MERGE (this0)-[this0_genres_connectOrCreate_this1:IN_GENRE]->(this0_genres_connectOrCreate_this0)
+                    RETURN COUNT(*) AS _
                 }
                 RETURN this0
                 }
@@ -189,15 +189,15 @@ describe("connectOrCreate", () => {
                 "CALL {
                 CREATE (this0:Movie)
                 SET this0.title = $this0_title
-                	WITH this0
+                WITH this0
                 CALL {
-                	WITH this0
-                	CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                MERGE (this0_genres_connectOrCreate_this2:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
-                ON CREATE SET
-                        this0_genres_connectOrCreate_this2.name = $this0_genres_connectOrCreate_param1
-                MERGE (this0)-[this0_genres_connectOrCreate_this0:\`IN_GENRE\`]->(this0_genres_connectOrCreate_this2)
-                	RETURN COUNT(*) AS _
+                    WITH this0
+                    CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    MERGE (this0_genres_connectOrCreate_this0:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
+                    ON CREATE SET
+                        this0_genres_connectOrCreate_this0.name = $this0_genres_connectOrCreate_param1
+                    MERGE (this0)-[this0_genres_connectOrCreate_this1:IN_GENRE]->(this0_genres_connectOrCreate_this0)
+                    RETURN COUNT(*) AS _
                 }
                 RETURN this0
                 }
@@ -242,14 +242,15 @@ describe("connectOrCreate", () => {
                 "CALL {
                 CREATE (this0:Movie)
                 SET this0.title = $this0_title
-                	WITH this0
+                WITH this0
                 CALL {
-                	WITH this0
-                	MERGE (this0_genres_connectOrCreate_this2:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
-                ON CREATE SET
-                        this0_genres_connectOrCreate_this2.name = $this0_genres_connectOrCreate_param1
-                MERGE (this0)-[this0_genres_connectOrCreate_this0:\`IN_GENRE\`]->(this0_genres_connectOrCreate_this2)
-                	RETURN COUNT(*) AS _
+                    WITH this0
+                    CALL apoc.util.validate(NOT (), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    MERGE (this0_genres_connectOrCreate_this0:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
+                    ON CREATE SET
+                        this0_genres_connectOrCreate_this0.name = $this0_genres_connectOrCreate_param1
+                    MERGE (this0)-[this0_genres_connectOrCreate_this1:IN_GENRE]->(this0_genres_connectOrCreate_this0)
+                    RETURN COUNT(*) AS _
                 }
                 RETURN this0
                 }
@@ -305,17 +306,17 @@ describe("connectOrCreate", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "MATCH (this:\`Movie\`)
                 SET this.title = $this_update_title
-                	WITH this
+                WITH this
                 CALL {
-                	WITH this
-                	CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                MERGE (this_genres0_connectOrCreate_this2:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
-                ON CREATE SET
-                        this_genres0_connectOrCreate_this2.name = $this_genres0_connectOrCreate_param1
-                MERGE (this)-[this_genres0_connectOrCreate_this0:\`IN_GENRE\`]->(this_genres0_connectOrCreate_this2)
-                	RETURN COUNT(*) AS _
+                    WITH this
+                    CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    MERGE (this_genres0_connectOrCreate_this0:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
+                    ON CREATE SET
+                        this_genres0_connectOrCreate_this0.name = $this_genres0_connectOrCreate_param1
+                    MERGE (this)-[this_genres0_connectOrCreate_this1:IN_GENRE]->(this_genres0_connectOrCreate_this0)
+                    RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);
@@ -354,17 +355,17 @@ describe("connectOrCreate", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "MATCH (this:\`Movie\`)
                 SET this.title = $this_update_title
-                	WITH this
+                WITH this
                 CALL {
-                	WITH this
-                	CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                MERGE (this_genres0_connectOrCreate_this2:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
-                ON CREATE SET
-                        this_genres0_connectOrCreate_this2.name = $this_genres0_connectOrCreate_param1
-                MERGE (this)-[this_genres0_connectOrCreate_this0:\`IN_GENRE\`]->(this_genres0_connectOrCreate_this2)
-                	RETURN COUNT(*) AS _
+                    WITH this
+                    CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    MERGE (this_genres0_connectOrCreate_this0:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
+                    ON CREATE SET
+                        this_genres0_connectOrCreate_this0.name = $this_genres0_connectOrCreate_param1
+                    MERGE (this)-[this_genres0_connectOrCreate_this1:IN_GENRE]->(this_genres0_connectOrCreate_this0)
+                    RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);
@@ -403,17 +404,17 @@ describe("connectOrCreate", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "MATCH (this:\`Movie\`)
                 SET this.title = $this_update_title
-                	WITH this
+                WITH this
                 CALL {
-                	WITH this
-                	CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                MERGE (this_genres0_connectOrCreate_this2:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
-                ON CREATE SET
-                        this_genres0_connectOrCreate_this2.name = $this_genres0_connectOrCreate_param1
-                MERGE (this)-[this_genres0_connectOrCreate_this0:\`IN_GENRE\`]->(this_genres0_connectOrCreate_this2)
-                	RETURN COUNT(*) AS _
+                    WITH this
+                    CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    MERGE (this_genres0_connectOrCreate_this0:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
+                    ON CREATE SET
+                        this_genres0_connectOrCreate_this0.name = $this_genres0_connectOrCreate_param1
+                    MERGE (this)-[this_genres0_connectOrCreate_this1:IN_GENRE]->(this_genres0_connectOrCreate_this0)
+                    RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);
@@ -452,16 +453,17 @@ describe("connectOrCreate", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "MATCH (this:\`Movie\`)
                 SET this.title = $this_update_title
-                	WITH this
+                WITH this
                 CALL {
-                	WITH this
-                	MERGE (this_genres0_connectOrCreate_this2:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
-                ON CREATE SET
-                        this_genres0_connectOrCreate_this2.name = $this_genres0_connectOrCreate_param1
-                MERGE (this)-[this_genres0_connectOrCreate_this0:\`IN_GENRE\`]->(this_genres0_connectOrCreate_this2)
-                	RETURN COUNT(*) AS _
+                    WITH this
+                    CALL apoc.util.validate(NOT (), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    MERGE (this_genres0_connectOrCreate_this0:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
+                    ON CREATE SET
+                        this_genres0_connectOrCreate_this0.name = $this_genres0_connectOrCreate_param1
+                    MERGE (this)-[this_genres0_connectOrCreate_this1:IN_GENRE]->(this_genres0_connectOrCreate_this0)
+                    RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);
@@ -510,17 +512,17 @@ describe("connectOrCreate", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "MATCH (this:\`Movie\`)
                 SET this.title = $this_update_title
-                	WITH this
+                WITH this
                 CALL {
-                	WITH this
-                	CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                MERGE (this_connectOrCreate_genres_this2:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
-                ON CREATE SET
-                        this_connectOrCreate_genres_this2.name = $this_connectOrCreate_genres_param1
-                MERGE (this)-[this_connectOrCreate_genres_this0:\`IN_GENRE\`]->(this_connectOrCreate_genres_this2)
-                	RETURN COUNT(*) AS _
+                    WITH this
+                    CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    MERGE (this_connectOrCreate_genres_this0:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
+                    ON CREATE SET
+                        this_connectOrCreate_genres_this0.name = $this_connectOrCreate_genres_param1
+                    MERGE (this)-[this_connectOrCreate_genres_this1:IN_GENRE]->(this_connectOrCreate_genres_this0)
+                    RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);
@@ -559,17 +561,17 @@ describe("connectOrCreate", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "MATCH (this:\`Movie\`)
                 SET this.title = $this_update_title
-                	WITH this
+                WITH this
                 CALL {
-                	WITH this
-                	CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                MERGE (this_connectOrCreate_genres_this2:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
-                ON CREATE SET
-                        this_connectOrCreate_genres_this2.name = $this_connectOrCreate_genres_param1
-                MERGE (this)-[this_connectOrCreate_genres_this0:\`IN_GENRE\`]->(this_connectOrCreate_genres_this2)
-                	RETURN COUNT(*) AS _
+                    WITH this
+                    CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    MERGE (this_connectOrCreate_genres_this0:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
+                    ON CREATE SET
+                        this_connectOrCreate_genres_this0.name = $this_connectOrCreate_genres_param1
+                    MERGE (this)-[this_connectOrCreate_genres_this1:IN_GENRE]->(this_connectOrCreate_genres_this0)
+                    RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);
@@ -608,17 +610,17 @@ describe("connectOrCreate", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "MATCH (this:\`Movie\`)
                 SET this.title = $this_update_title
-                	WITH this
+                WITH this
                 CALL {
-                	WITH this
-                	CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                MERGE (this_connectOrCreate_genres_this2:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
-                ON CREATE SET
-                        this_connectOrCreate_genres_this2.name = $this_connectOrCreate_genres_param1
-                MERGE (this)-[this_connectOrCreate_genres_this0:\`IN_GENRE\`]->(this_connectOrCreate_genres_this2)
-                	RETURN COUNT(*) AS _
+                    WITH this
+                    CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    MERGE (this_connectOrCreate_genres_this0:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
+                    ON CREATE SET
+                        this_connectOrCreate_genres_this0.name = $this_connectOrCreate_genres_param1
+                    MERGE (this)-[this_connectOrCreate_genres_this1:IN_GENRE]->(this_connectOrCreate_genres_this0)
+                    RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);
@@ -657,16 +659,17 @@ describe("connectOrCreate", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "MATCH (this:\`Movie\`)
                 SET this.title = $this_update_title
-                	WITH this
+                WITH this
                 CALL {
-                	WITH this
-                	MERGE (this_connectOrCreate_genres_this2:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
-                ON CREATE SET
-                        this_connectOrCreate_genres_this2.name = $this_connectOrCreate_genres_param1
-                MERGE (this)-[this_connectOrCreate_genres_this0:\`IN_GENRE\`]->(this_connectOrCreate_genres_this2)
-                	RETURN COUNT(*) AS _
+                    WITH this
+                    CALL apoc.util.validate(NOT (), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    MERGE (this_connectOrCreate_genres_this0:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
+                    ON CREATE SET
+                        this_connectOrCreate_genres_this0.name = $this_connectOrCreate_genres_param1
+                    MERGE (this)-[this_connectOrCreate_genres_this1:IN_GENRE]->(this_connectOrCreate_genres_this0)
+                    RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);
@@ -713,17 +716,17 @@ describe("connectOrCreate", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "MATCH (this:\`Movie\`)
                 SET this.title = $this_update_title
-                	WITH this
+                WITH this
                 CALL {
-                	WITH this
-                	CALL apoc.util.validate(NOT (this_connectOrCreate_genres0.name IS NOT NULL AND this_connectOrCreate_genres0.name = $this_connectOrCreate_genres0Genre_allow_auth_allow0_name), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                MERGE (this_connectOrCreate_genres_this2:\`Genre\` { name: $this_connectOrCreate_genres_param1 })
-                ON CREATE SET
-                        this_connectOrCreate_genres_this2.name = $this_connectOrCreate_genres_param2
-                MERGE (this)-[this_connectOrCreate_genres_this0:\`IN_GENRE\`]->(this_connectOrCreate_genres_this2)
-                	RETURN COUNT(*) AS _
+                    WITH this
+                    CALL apoc.util.validate(NOT (this_connectOrCreate_genres0.name IS NOT NULL AND this_connectOrCreate_genres0.name = $this_connectOrCreate_genres0Genre_allow_auth_allow0_name), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    MERGE (this_connectOrCreate_genres_this0:\`Genre\` { name: $this_connectOrCreate_genres_param1 })
+                    ON CREATE SET
+                        this_connectOrCreate_genres_this0.name = $this_connectOrCreate_genres_param2
+                    MERGE (this)-[this_connectOrCreate_genres_this1:IN_GENRE]->(this_connectOrCreate_genres_this0)
+                    RETURN COUNT(*) AS _
                 }
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);

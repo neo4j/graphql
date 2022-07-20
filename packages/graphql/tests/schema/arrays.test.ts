@@ -117,6 +117,8 @@ describe("Arrays", () => {
               averageRating_SUBTRACT: Float
               id: ID
               ratings: [Float!]
+              ratings_POP: Int
+              ratings_PUSH: [Float!]
             }
 
             input MovieWhere {

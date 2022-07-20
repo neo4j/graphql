@@ -195,7 +195,6 @@ function createPredicate({
     context,
     chainStr,
     field,
-    varName,
     nodeVariable,
     edgeVariable,
     relationship,
@@ -205,7 +204,6 @@ function createPredicate({
     context: Context;
     chainStr: string;
     field: RelationField;
-    varName: string;
     nodeVariable: string;
     edgeVariable: string;
     relationship: Relationship;
@@ -224,7 +222,6 @@ function createPredicate({
                     chainStr: `${chainStr}_${key}_${i}`,
                     context,
                     field,
-                    varName,
                     aggregation: v,
                     nodeVariable,
                     edgeVariable,
@@ -323,7 +320,6 @@ function createAggregateWhereAndParams({
         node,
         nodeVariable,
         edgeVariable,
-        varName,
         relationship,
     });
 

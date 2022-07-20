@@ -22,6 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("BigInt", () => {
     let driver: Driver;
@@ -139,6 +140,62 @@ describe("BigInt", () => {
                 expect((gqlResult?.data as any)?.files[0]).toEqual({
                     name,
                     size: "9223372036854775807",
+                });
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should successfully query an node with a BigInt property using in where", async () => {
+            const session = driver.session();
+            const fileType = generateUniqueType("File");
+
+            const typeDefs = `
+                type ${fileType} {
+                  name: String!
+                  size: BigInt!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            const name = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                query {
+                    ${fileType.plural}(where: { size: 8323372036854775807 }) {
+                        name
+                        size
+                    }
+                }
+            `;
+
+            try {
+                await session.run(`
+                   CREATE (f:${fileType})
+                   SET f.name = "${name}"
+                   SET f.size = 8323372036854775807
+               `);
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                });
+
+                expect(gqlResult.errors).toBeFalsy();
+
+                expect(gqlResult?.data as any).toEqual({
+                    [fileType.plural]: [
+                        {
+                            name,
+                            size: "8323372036854775807",
+                        },
+                    ],
                 });
             } finally {
                 await session.close();
