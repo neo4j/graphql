@@ -56,9 +56,10 @@ export function createRelationshipOperation({
     });
 
     const existsSubquery = new CypherBuilder.Match(matchPattern, {});
-    const exists = new CypherBuilder.Exists(existsSubquery);
 
+    // TODO: check null in return projection
     if (value === null) {
+        const exists = new CypherBuilder.Exists(existsSubquery);
         if (!isNot) {
             // Bit confusing, but basically checking for not null is the same as checking for relationship exists
             return CypherBuilder.not(exists);
@@ -78,33 +79,35 @@ export function createRelationshipOperation({
         return undefined;
     }
 
+    // TODO: use EXISTS in top-level where
     switch (operator) {
         case "ALL": {
             const notProperties = CypherBuilder.not(relationOperator);
 
             existsSubquery.where(notProperties);
-            return CypherBuilder.not(exists);
+            const listOperation = createSizeStatement(existsSubquery, "= 0");
+            return listOperation;
         }
         case "NOT":
-        case "NONE":
+        case "NONE": {
             existsSubquery.where(relationOperator);
-            return CypherBuilder.not(exists);
-
+            return createSizeStatement(existsSubquery, "= 0");
+        }
         case "SINGLE": {
             existsSubquery.where(relationOperator);
-            return createSizeStatement(existsSubquery);
+            return createSizeStatement(existsSubquery, "= 1");
         }
         case "SOME":
         default:
             existsSubquery.where(relationOperator);
-            return exists;
+            return createSizeStatement(existsSubquery, "> 0");
     }
 }
 
-function createSizeStatement(existsSubquery: CypherBuilder.Match): CypherBuilder.RawCypher {
+function createSizeStatement(existsSubquery: CypherBuilder.Match, operation: string): CypherBuilder.RawCypher {
     return new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
         const subqueryStr = existsSubquery.getCypher(env).replace("MATCH", ""); // This should be part of list comprehension, match clause
-        const str = `size([${subqueryStr} | 1]) = 1`; // TODO: change this into a patternComprehension
+        const str = `size([${subqueryStr} | 1]) ${operation}`; // TODO: change this into a patternComprehension
         return [str, {}];
     });
 }

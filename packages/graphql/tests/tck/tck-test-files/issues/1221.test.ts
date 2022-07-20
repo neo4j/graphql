@@ -100,11 +100,13 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             WHERE this_masterdata_has_name_relationship.current = $this_architectureConnection.edges.node.nameDetailsConnection.args.where.edge.current
             WITH collect({ node: { fullName: this_masterdata_namedetails.fullName } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS nameDetailsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
             }
             WITH collect({ node: { nameDetailsConnection: nameDetailsConnection } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS architectureConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS architectureConnection
             }
             RETURN this { .id, architectureConnection } as this"
         `);
@@ -244,15 +246,18 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             WHERE this_series_masterdata_has_name_relationship.current = $this_mainConnection.edges.node.architectureConnection.edges.node.nameDetailsConnection.args.where.edge.current
             WITH collect({ node: { fullName: this_series_masterdata_namedetails.fullName } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS nameDetailsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
             }
             WITH collect({ node: { nameDetailsConnection: nameDetailsConnection } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS architectureConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS architectureConnection
             }
             WITH collect({ node: { architectureConnection: architectureConnection } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS mainConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS mainConnection
             }
             RETURN this { .id, mainConnection } as this"
         `);
