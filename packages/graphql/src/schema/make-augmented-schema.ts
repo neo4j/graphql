@@ -83,7 +83,7 @@ import { generateSubscriptionTypes } from "./subscriptions/generate-subscription
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { addMathOperatorsToITC } from "./math";
-import { addArrayMethodsToITC, addRelationshipArrayMethodsToITC } from "./array-methods";
+import { addArrayMethodsToITC } from "./array-methods";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -237,7 +237,7 @@ function makeAugmentedSchema(
 
         addMathOperatorsToITC(relationshipUpdateITC);
 
-        addRelationshipArrayMethodsToITC(relationshipUpdateITC, relFields.primitiveFields);
+        addArrayMethodsToITC(relationshipUpdateITC, relFields.primitiveFields);
 
         const relationshipWhereFields = getWhereFields({
             typeName: relationship.name.value,
@@ -686,7 +686,7 @@ function makeAugmentedSchema(
 
         addMathOperatorsToITC(nodeUpdateITC);
 
-        addArrayMethodsToITC(nodeUpdateITC, node);
+        addArrayMethodsToITC(nodeUpdateITC, node.mutableFields);
 
         const mutationResponseTypeNames = node.mutationResponseTypeNames;
 
