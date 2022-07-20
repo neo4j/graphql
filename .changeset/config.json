@@ -7,5 +7,5 @@
     "access": "public",
     "baseBranch": "dev",
     "updateInternalDependencies": "patch",
-    "ignore": []
+    "ignore": ["@neo4j/graphql-plugin-subscriptions-amqp"]
 }
