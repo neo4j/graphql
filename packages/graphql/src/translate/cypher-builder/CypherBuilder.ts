@@ -35,7 +35,7 @@ export * as db from "./clauses/procedures/db";
 export { NodeRef as Node, NamedNode } from "./variables/NodeRef";
 export { RelationshipRef as Relationship } from "./variables/RelationshipRef";
 export { Param, RawParam } from "./variables/Param";
-export { RawVariable, Variable } from "./variables/Variable";
+export { NamedVariable, Variable } from "./variables/Variable";
 export { CypherNull as Null } from "./variables/Null";
 export { Literal } from "./variables/Literal";
 

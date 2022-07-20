@@ -120,7 +120,7 @@ The are different types of variables:
 -   **Param**: Params behave like any variable, however, its value will be pushed to the `params` result, and an arbitrary id will be used in the cypher query.
     -   **RawParam** Like with nodes, in some cases a param may already exists, and a reference to it needs to be made.
 -   **Variable**: A plain value that does not hold any value at compile time,can be used to reference new variables created in the cypher (e.g. `WITH $param as var1`).
-    -   **RawVariable**: For keeping track of variables that already exist in the Cypher strings.
+    -   **NamedVariable**: For keeping track of variables that already exist in the Cypher strings.
 -   **Literal**: Will get translated to a literal value in the Cypher. Useful for static values (e.g. `count(*) > 1`).
     -   **Null**: A literal holding the `null` value, that needs to be rendered differently.
 

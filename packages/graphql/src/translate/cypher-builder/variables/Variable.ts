@@ -42,7 +42,7 @@ export class Variable implements CypherCompilable {
 }
 
 /** For compatibility reasons, represents a plain string variable */
-export class RawVariable extends Variable {
+export class NamedVariable extends Variable {
     constructor(name: string) {
         super("", name);
     }
