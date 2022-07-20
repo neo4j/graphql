@@ -480,7 +480,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 current: true,
                 mainConnection_SINGLE: {
                     node: {
-                        architectureConnection: {
+                        architectureConnection_SINGLE: {
                             node: {
                                 nameDetailsConnection: {
                                     node: {
@@ -598,7 +598,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 current: true,
                 mainConnection_SINGLE: {
                     node: {
-                        architectureConnection: {
+                        architectureConnection_SINGLE: {
                             node: {
                                 nameDetailsConnection: {
                                     node: {

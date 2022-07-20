@@ -730,17 +730,13 @@ describe("Cypher Advanced Filtering", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WHERE size([(this)-[this0:IN_GENRE]->(this1:\`Genre\`) WHERE this1.name = $nestedParam0.node.name | 1]) > 0
+                WHERE size([(this)-[this0:IN_GENRE]->(this1:\`Genre\`) WHERE this1.name = $param0 | 1]) > 0
                 RETURN this { .actorCount } as this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
-                    \\"nestedParam0\\": {
-                        \\"node\\": {
-                            \\"name\\": \\"some genre\\"
-                        }
-                    }
+                    \\"param0\\": \\"some genre\\"
                 }"
             `);
         });
@@ -761,17 +757,13 @@ describe("Cypher Advanced Filtering", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WHERE size([(this)-[this0:IN_GENRE]->(this1:\`Genre\`) WHERE this1.name = $nestedParam0.node.name | 1]) = 0
+                WHERE size([(this)-[this0:IN_GENRE]->(this1:\`Genre\`) WHERE this1.name = $param0 | 1]) = 0
                 RETURN this { .actorCount } as this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
-                    \\"nestedParam0\\": {
-                        \\"node\\": {
-                            \\"name\\": \\"some genre\\"
-                        }
-                    }
+                    \\"param0\\": \\"some genre\\"
                 }"
             `);
         });
@@ -795,16 +787,12 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
-                    WHERE size([(this)-[this0:IN_GENRE]->(this1:\`Genre\`) WHERE NOT this1.name = $nestedParam0.node.name | 1]) = 0
+                    WHERE size([(this)-[this0:IN_GENRE]->(this1:\`Genre\`) WHERE NOT this1.name = $param0 | 1]) = 0
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"nestedParam0\\": {
-                            \\"node\\": {
-                                \\"name\\": \\"some genre\\"
-                            }
-                        }
+                        \\"param0\\": \\"some genre\\"
                     }"
                 `);
             });
@@ -816,16 +804,12 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
-                    WHERE size([(this)-[this0:IN_GENRE]->(this1:\`Genre\`) WHERE this1.name = $nestedParam0.node.name | 1]) = 0
+                    WHERE size([(this)-[this0:IN_GENRE]->(this1:\`Genre\`) WHERE this1.name = $param0 | 1]) = 0
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"nestedParam0\\": {
-                            \\"node\\": {
-                                \\"name\\": \\"some genre\\"
-                            }
-                        }
+                        \\"param0\\": \\"some genre\\"
                     }"
                 `);
             });
@@ -837,16 +821,12 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
-                    WHERE size([(this)-[this0:IN_GENRE]->(this1:\`Genre\`) WHERE this1.name = $nestedParam0.node.name | 1]) = 1
+                    WHERE size([(this)-[this0:IN_GENRE]->(this1:\`Genre\`) WHERE this1.name = $param0 | 1]) = 1
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"nestedParam0\\": {
-                            \\"node\\": {
-                                \\"name\\": \\"some genre\\"
-                            }
-                        }
+                        \\"param0\\": \\"some genre\\"
                     }"
                 `);
             });
@@ -858,16 +838,12 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
-                    WHERE size([(this)-[this0:IN_GENRE]->(this1:\`Genre\`) WHERE this1.name = $nestedParam0.node.name | 1]) > 0
+                    WHERE size([(this)-[this0:IN_GENRE]->(this1:\`Genre\`) WHERE this1.name = $param0 | 1]) > 0
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                     "{
-                        \\"nestedParam0\\": {
-                            \\"node\\": {
-                                \\"name\\": \\"some genre\\"
-                            }
-                        }
+                        \\"param0\\": \\"some genre\\"
                     }"
                 `);
             });

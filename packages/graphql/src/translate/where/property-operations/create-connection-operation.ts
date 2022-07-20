@@ -17,13 +17,17 @@
  * limitations under the License.
  */
 
-import type { ConnectionField, Context } from "../../../types";
+import type { ConnectionField, ConnectionWhereArg, Context } from "../../../types";
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 import type { Node, Relationship } from "../../../classes";
-import createConnectionWhereAndParams from "../create-connection-where-and-params";
 import { getListPredicate } from "../utils";
 import { listPredicateToSizeFunction } from "../list-predicate-to-size-function";
 import type { WhereOperator } from "../types";
+// Recursive function
+// eslint-disable-next-line import/no-cycle
+import { createCypherWhereParams } from "../create-cypher-where-params";
+import { filterTruthy } from "../../../utils/utils";
+import { compileCypherIfExists } from "../../cypher-builder/utils";
 
 export function createConnectionOperation({
     connectionField,
@@ -66,29 +70,26 @@ export function createConnectionOperation({
             relationship: { variable: true },
         });
 
-        const listPredicateStr = getListPredicate(operator as WhereOperator);
-        const rawWhereQuery = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
-            const contextRelationship = context.relationships.find(
-                (x) => x.name === connectionField.relationshipTypeName
-            ) as Relationship;
+        let listPredicateStr = getListPredicate(operator as WhereOperator);
 
-            const prefix = `nestedParam${env.getParamsSize()}`; // Generates unique name for nested reference
-            const result = createConnectionWhereAndParams({
-                whereInput: entry[1] as any,
-                context,
-                node: refNode,
-                nodeVariable: env.getVariableId(childNode),
-                relationship: contextRelationship,
-                relationshipVariable: env.getVariableId(relationship),
-                parameterPrefix: prefix,
-                listPredicates: [listPredicateStr],
-            });
-            return [result[0], { [prefix]: result[1] }];
+        const contextRelationship = context.relationships.find(
+            (x) => x.name === connectionField.relationshipTypeName
+        ) as Relationship;
+        const whereOperator = createConnectionWherePropertyOperation({
+            context,
+            whereInput: entry[1] as any,
+            relationshipRef: relationship,
+            targetNode: childNode,
+            edge: contextRelationship,
+            node: refNode,
         });
 
+        if (listPredicateStr === "any" && !connectionField.relationship.typeMeta.array) {
+            listPredicateStr = "single";
+        }
         const subquery = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
             const patternStr = matchPattern.getCypher(env);
-            const whereStr = rawWhereQuery.getCypher(env);
+            const whereStr = compileCypherIfExists(whereOperator, env, {});
             const clause = listPredicateToSizeFunction(listPredicateStr, patternStr, whereStr);
             return [clause, {}];
         });
@@ -97,4 +98,80 @@ export function createConnectionOperation({
     });
 
     return CypherBuilder.and(...operations) as CypherBuilder.BooleanOp | undefined;
+}
+
+function createConnectionWherePropertyOperation({
+    context,
+    whereInput,
+    relationshipRef,
+    targetNode,
+    node,
+    edge,
+}: {
+    whereInput: ConnectionWhereArg;
+    context: Context;
+    node: Node;
+    edge: Relationship;
+    relationshipRef: CypherBuilder.Relationship;
+    targetNode: CypherBuilder.Node;
+}): CypherBuilder.ComparisonOp | CypherBuilder.BooleanOp | CypherBuilder.RawCypher | CypherBuilder.Exists | undefined {
+    const params = Object.entries(whereInput).map(([key, value]) => {
+        if (key === "AND" || key === "OR") {
+            const subOperations = (value as Array<any>).map((input) => {
+                return createConnectionWherePropertyOperation({
+                    context,
+                    whereInput: input,
+                    relationshipRef,
+                    targetNode,
+                    node,
+                    edge,
+                });
+            });
+            if (key === "AND") {
+                return CypherBuilder.and(...filterTruthy(subOperations));
+            }
+            if (key === "OR") {
+                return CypherBuilder.or(...filterTruthy(subOperations));
+            }
+        }
+
+        if (key.startsWith("edge")) {
+            const nestedProperties: Record<string, any> = value;
+            const result = createCypherWhereParams({
+                targetElement: relationshipRef,
+                whereInput: nestedProperties,
+                context,
+                element: edge,
+            });
+
+            return result;
+        }
+
+        if (key.startsWith("node") || key.startsWith(node.name)) {
+            // TODO: improve nodeOn properties generation
+            const nodeOnProperties = value._on?.[node.name] || {};
+            const nestedProperties = { ...value, ...nodeOnProperties };
+            delete nestedProperties._on;
+
+            if (
+                Object.keys(value as Record<string, any>).length === 1 &&
+                value._on &&
+                !Object.prototype.hasOwnProperty.call(value._on, node.name)
+            ) {
+                throw new Error("_on is used as the only argument and node is not present within");
+            }
+
+            const result = createCypherWhereParams({
+                targetElement: targetNode,
+                whereInput: nestedProperties,
+                context,
+                element: node,
+            });
+
+            // NOTE: _NOT is handled by the size()=0
+            return result;
+        }
+        return undefined;
+    });
+    return CypherBuilder.and(...filterTruthy(params));
 }

@@ -19,7 +19,7 @@
 
 import type { Context } from "../../../types";
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
-import type { Node } from "../../../classes";
+import { GraphElement, Node } from "../../../classes";
 import { whereRegEx, WhereRegexGroups } from "../utils";
 import mapToDbProperty from "../../../utils/map-to-db-property";
 import { createGlobalNodeOperation } from "./create-global-node-operation";
@@ -34,89 +34,103 @@ import { createRelationshipOperation } from "./create-relationship-operation";
 export function createWherePropertyOperation({
     key,
     value,
-    node,
+    element,
     targetElement,
     context,
 }: {
     key: string;
     value: any;
-    node: Node;
+    element: GraphElement;
     targetElement: CypherBuilder.Variable;
     context: Context;
 }): CypherBuilder.ComparisonOp | CypherBuilder.BooleanOp | CypherBuilder.RawCypher | CypherBuilder.Exists | undefined {
     const match = whereRegEx.exec(key);
+    if (!match) {
+        throw new Error(`Failed to match key in filter: ${key}`);
+    }
 
     const { prefix, fieldName, isAggregate, operator } = match?.groups as WhereRegexGroups;
+
+    if (!fieldName) {
+        throw new Error(`Failed to find field name in filter: ${key}`);
+    }
+
     const isNot = operator?.startsWith("NOT") ?? false;
-    const coalesceValue = [...node.primitiveFields, ...node.temporalFields, ...node.enumFields].find(
+    const coalesceValue = [...element.primitiveFields, ...element.temporalFields, ...element.enumFields].find(
         (f) => fieldName === f.fieldName
     )?.coalesceValue as string | undefined;
 
-    let dbFieldName = mapToDbProperty(node, fieldName);
+    let dbFieldName = mapToDbProperty(element, fieldName);
     if (prefix) {
         dbFieldName = `${prefix}${dbFieldName}`;
     }
-    if (node.isGlobalNode && key === "id") {
-        return createGlobalNodeOperation({
-            node,
-            value,
-            targetElement,
-            coalesceValue,
-        });
-    }
 
     let propertyRef: CypherBuilder.PropertyRef | CypherBuilder.Function = targetElement.property(dbFieldName);
-    if (coalesceValue) {
-        propertyRef = CypherBuilder.coalesce(
-            propertyRef as CypherBuilder.PropertyRef,
-            new CypherBuilder.Literal(coalesceValue)
-        );
-    }
 
-    const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
-
-    if (isAggregate) {
-        if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
-
-        return createAggregateOperation({
-            relationField,
-            context,
-            value,
-            parentNode: targetElement as CypherBuilder.Node,
-        });
-    }
-
-    if (relationField) {
-        return createRelationshipOperation({
-            relationField,
-            context,
-            parentNode: targetElement as CypherBuilder.Node,
-            operator,
-            value,
-            isNot,
-        });
-    }
-
-    const connectionField = node.connectionFields.find((x) => x.fieldName === fieldName);
-    if (connectionField) {
-        return createConnectionOperation({
-            value,
-            connectionField,
-            context,
-            parentNode: targetElement as CypherBuilder.Node,
-            operator,
-        });
-    }
-
-    if (value === null) {
-        if (isNot) {
-            return CypherBuilder.isNotNull(propertyRef);
+    if (element instanceof Node) {
+        const node = element;
+        if (node.isGlobalNode && key === "id") {
+            return createGlobalNodeOperation({
+                node,
+                value,
+                targetElement,
+                coalesceValue,
+            });
         }
-        return CypherBuilder.isNull(propertyRef);
-    }
 
-    const pointField = node.pointFields.find((x) => x.fieldName === fieldName);
-    const durationField = node.primitiveFields.find((x) => x.fieldName === fieldName && x.typeMeta.name === "Duration");
+        if (coalesceValue) {
+            propertyRef = CypherBuilder.coalesce(
+                propertyRef as CypherBuilder.PropertyRef,
+                new CypherBuilder.Literal(coalesceValue)
+            );
+        }
+
+        const relationField = node.relationFields.find((x) => x.fieldName === fieldName);
+
+        if (isAggregate) {
+            if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
+
+            return createAggregateOperation({
+                relationField,
+                context,
+                value,
+                parentNode: targetElement as CypherBuilder.Node,
+            });
+        }
+
+        if (relationField) {
+            return createRelationshipOperation({
+                relationField,
+                context,
+                parentNode: targetElement as CypherBuilder.Node,
+                operator,
+                value,
+                isNot,
+            });
+        }
+
+        const connectionField = node.connectionFields.find((x) => x.fieldName === fieldName);
+        if (connectionField) {
+            return createConnectionOperation({
+                value,
+                connectionField,
+                context,
+                parentNode: targetElement as CypherBuilder.Node,
+                operator,
+            });
+        }
+
+        if (value === null) {
+            if (isNot) {
+                return CypherBuilder.isNotNull(propertyRef);
+            }
+            return CypherBuilder.isNull(propertyRef);
+        }
+    }
+    const pointField = element.pointFields.find((x) => x.fieldName === fieldName);
+    const durationField = element.primitiveFields.find(
+        (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
+    );
 
     const comparisonOp = createComparisonOperation({
         propertyRefOrCoalesce: propertyRef,

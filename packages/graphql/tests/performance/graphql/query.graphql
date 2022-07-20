@@ -108,3 +108,20 @@ query NestedConnectionWhere {
         title
     }
 }
+
+query DeeplyNestedConnectionWhere {
+    movies(
+        where: {
+            actorsConnection_SOME: {
+                node: {
+                    name: "Hugo Weaving"
+                    moviesConnection_NONE: {
+                        node: { title: "The Matrix", directorsConnection_SOME: { node: { name_CONTAINS: "Lana" } } }
+                    }
+                }
+            }
+        }
+    ) {
+        title
+    }
+}

@@ -42,7 +42,7 @@ export default function createWhereAndParams({
     const nodeRef = new CypherBuilder.NamedNode(varName);
 
     const whereParams = createCypherWhereParams({
-        node,
+        element: node,
         context,
         whereInput,
         targetElement: nodeRef,
