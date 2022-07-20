@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
+import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
 import Neo4j from "../neo4j";
-import { graphql } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 
