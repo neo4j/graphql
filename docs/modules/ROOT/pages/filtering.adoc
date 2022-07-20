@@ -32,14 +32,14 @@ The following case-sensitive comparison operators are only available for use on 
 * `_CONTAINS`
 * `_NOT_CONTAINS`
 
-The following operators:
+The following operators are disabled by default:
 
 * `_LT`
 * `_LTE`
 * `_GT`
 * `_GTE`
 
-are disabled by default, they can be enabled by explicitly adding them in the config options:
+They can be enabled by explicitly adding them in the config options:
 
 [source, javascript, indent=0]
 ----
