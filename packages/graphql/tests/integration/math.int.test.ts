@@ -245,7 +245,9 @@ describe("Mathematical operations tests", () => {
         });
         expect(gqlResult.errors).toBeDefined();
         expect(
-            (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Ambiguous property"))
+            (gqlResult.errors as GraphQLError[]).some((el) =>
+                el.message.includes("Cannot mutate the same field multiple times in one Mutation")
+            )
         ).toBeTruthy();
         const storedValue = await session.run(
             `
@@ -801,7 +803,9 @@ describe("Mathematical operations tests", () => {
 
         expect(gqlResult.errors).toBeDefined();
         expect(
-            (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Ambiguous property"))
+            (gqlResult.errors as GraphQLError[]).some((el) =>
+                el.message.includes("Cannot mutate the same field multiple times in one Mutation")
+            )
         ).toBeTruthy();
         const storedValue = await session.run(
             `
