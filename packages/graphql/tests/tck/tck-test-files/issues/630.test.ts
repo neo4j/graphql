@@ -78,7 +78,8 @@ describe("Cypher directive", () => {
             WITH this_movies
             MATCH (this_movies)<-[this_movies_acted_in_relationship:ACTED_IN]-(this_movies_actor:Actor)
             WITH collect({  }) AS edges
-            RETURN { totalCount: size(edges) } AS actorsConnection
+            WITH size(edges) AS totalCount
+            RETURN { totalCount: totalCount } AS actorsConnection
             } RETURN actorsConnection\\", { this_movies: this_movies, auth: $auth }, false) }] } as this"
         `);
 

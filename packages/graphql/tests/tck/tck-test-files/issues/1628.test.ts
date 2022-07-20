@@ -62,7 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`frbr__Work\`:\`Resource\`)
-            WHERE EXISTS { (this)-[:dcterms__title]->(this_dcterms__title:\`dcterms_title\`:\`property\`) WHERE this_dcterms__title.value CONTAINS $this_dcterms__title_value_CONTAINS }
+            WHERE size([(this)-[:dcterms__title]->(this_dcterms__title:\`dcterms_title\`:\`property\`) WHERE this_dcterms__title.value CONTAINS $this_dcterms__title_value_CONTAINS | 1]) > 0
             RETURN this { iri: this.uri, dcterms__title: [ (this)-[:dcterms__title]->(this_dcterms__title:\`dcterms_title\`:\`property\`)  WHERE this_dcterms__title.value CONTAINS $this_dcterms__title_value_CONTAINS | this_dcterms__title { .value } ] } as this
             LIMIT $this_limit"
         `);

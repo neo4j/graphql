@@ -171,7 +171,7 @@ function createWhereAndParams({
             });
 
             if (recurse[0]) {
-                const clause = listPredicateToClause(listPredicate, matchPattern, recurse[0]);
+                const clause = listPredicateToSizeFunction(listPredicate, matchPattern, recurse[0]);
                 res.clauses.push(clause);
                 res.params = { ...res.params, ...recurse[1] };
             }

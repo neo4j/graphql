@@ -380,6 +380,8 @@ describe("Point", () => {
 
             input MovieUpdateInput {
               filmedAt: [PointInput!]
+              filmedAt_POP: Int
+              filmedAt_PUSH: [PointInput!]
             }
 
             input MovieWhere {
@@ -516,6 +518,8 @@ describe("Point", () => {
 
             input MachineUpdateInput {
               partLocations: [CartesianPointInput!]
+              partLocations_POP: Int
+              partLocations_PUSH: [CartesianPointInput!]
             }
 
             input MachineWhere {
