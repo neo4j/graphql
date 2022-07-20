@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
+import pluralize from "pluralize";
 import type { Node, Relationship } from "../classes";
-import type { Context } from "../types";
+import type { BaseField, Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createCreateAndParams from "./create-create-and-params";
@@ -38,6 +39,7 @@ import type { CallbackBucket } from "../classes/CallbackBucket";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { buildMathStatements, matchMathField, mathDescriptorBuilder } from "./utils/math";
 import { indentBlock } from "./utils/indent-block";
+import { wrapStringInApostrophes } from "../utils/wrap-string-in-apostrophes";
 
 interface Res {
     strs: string[];
@@ -46,6 +48,7 @@ interface Res {
 }
 
 interface UpdateMeta {
+    preArrayMethodValidationStrs: [string, string][];
     preAuthStrs: string[];
     postAuthStrs: string[];
 }
@@ -282,7 +285,9 @@ export default function createUpdateAndParams({
                             });
 
                             const updateStrs = [escapeQuery(setProperties), escapeQuery("RETURN count(*) AS _")];
-                            const varsAsArgumentString = withVars.map(variable => `${variable}:${variable}`).join(", ");
+                            const varsAsArgumentString = withVars
+                                .map((variable) => `${variable}:${variable}`)
+                                .join(", ");
                             const apocArgs = `{${varsAsArgumentString}, ${relationshipVariable}:${relationshipVariable}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}, resolvedCallbacks: $resolvedCallbacks}`;
@@ -461,7 +466,9 @@ export default function createUpdateAndParams({
         const { hasMatched, propertyName } = mathMatch;
         const settableFieldComparator = hasMatched ? propertyName : key;
         const settableField = node.mutableFields.find((x) => x.fieldName === settableFieldComparator);
-        const authableField = node.authableFields.find((x) => x.fieldName === key);
+        const authableField = node.authableFields.find(
+            (x) => x.fieldName === key || `${x.fieldName}_PUSH` === key || `${x.fieldName}_POP` === key
+        );
 
         if (settableField) {
             if (settableField.typeMeta.required && value === null) {
@@ -477,7 +484,7 @@ export default function createUpdateAndParams({
             } else if (hasMatched) {
                 const mathDescriptor = mathDescriptorBuilder(value as number, node, mathMatch);
                 if (updateInput[mathDescriptor.dbName]) {
-                    throw new Error(`Ambiguous property: ${mathDescriptor.dbName}`);
+                    throw new Error(`Cannot mutate the same field multiple times in one Mutation: ${mathDescriptor.dbName}`);
                 }
 
                 const mathStatements = buildMathStatements(mathDescriptor, varName, withVars, param);
@@ -506,7 +513,7 @@ export default function createUpdateAndParams({
                 });
 
                 if (!res.meta) {
-                    res.meta = { preAuthStrs: [], postAuthStrs: [] };
+                    res.meta = { preArrayMethodValidationStrs: [], preAuthStrs: [], postAuthStrs: [] };
                 }
 
                 if (preAuth[0]) {
@@ -521,6 +528,45 @@ export default function createUpdateAndParams({
             }
         }
 
+        const pushSuffix = "_PUSH";
+        const pushField = node.mutableFields.find((x) => `${x.fieldName}${pushSuffix}` === key);
+        if (pushField) {
+            if (pushField.dbPropertyName && updateInput[pushField.dbPropertyName]) {
+                throw new Error(`Cannot mutate the same field multiple times in one Mutation: ${pushField.dbPropertyName}`);
+            }
+
+            validateNonNullProperty(res, varName, pushField);
+
+            const pointArrayField = node.pointFields.find((x) => `${x.fieldName}_PUSH` === key);
+            if (pointArrayField) {
+                res.strs.push(
+                    `SET ${varName}.${pushField.dbPropertyName} = ${varName}.${pushField.dbPropertyName} + [p in $${param} | point(p)]`
+                );
+            } else {
+                res.strs.push(
+                    `SET ${varName}.${pushField.dbPropertyName} = ${varName}.${pushField.dbPropertyName} + $${param}`
+                );
+            }
+
+            res.params[param] = value;
+        }
+
+        const popSuffix = `_POP`;
+        const popField = node.mutableFields.find((x) => `${x.fieldName}${popSuffix}` === key);
+        if (popField) {
+            if (popField.dbPropertyName && updateInput[popField.dbPropertyName]) {
+                throw new Error(`Cannot mutate the same field multiple times in one Mutation: ${popField.dbPropertyName}`);
+            }
+
+            validateNonNullProperty(res, varName, popField);
+
+            res.strs.push(
+                `SET ${varName}.${popField.dbPropertyName} = ${varName}.${popField.dbPropertyName}[0..-$${param}]`
+            );
+
+            res.params[param] = value;
+        }
+
         return res;
     }
 
@@ -529,7 +575,7 @@ export default function createUpdateAndParams({
         params: {},
     });
 
-    const { strs, meta = { preAuthStrs: [], postAuthStrs: [] } } = reducedUpdate;
+    const { strs, meta = { preArrayMethodValidationStrs: [], preAuthStrs: [], postAuthStrs: [] } } = reducedUpdate;
     let params = reducedUpdate.params;
 
     let preAuthStrs: string[] = [];
@@ -565,6 +611,7 @@ export default function createUpdateAndParams({
         postAuthStrs = [...postAuthStrs, ...meta.postAuthStrs];
     }
 
+    let preArrayMethodValidationStr = "";
     let preAuthStr = "";
     let postAuthStr = "";
     const relationshipValidationStr = includeRelationshipValidation
@@ -572,6 +619,18 @@ export default function createUpdateAndParams({
         : "";
 
     const forbiddenString = `"${AUTH_FORBIDDEN_ERROR}"`;
+
+    if (meta.preArrayMethodValidationStrs.length) {
+        const nullChecks = meta.preArrayMethodValidationStrs.map((validationStr) => `${validationStr[0]} IS NULL`);
+        const propertyNames = meta.preArrayMethodValidationStrs.map((validationStr) => validationStr[1]);
+
+        preArrayMethodValidationStr = `CALL apoc.util.validate(${nullChecks.join(" OR ")}, "${pluralize(
+            "Property",
+            propertyNames.length
+        )} ${propertyNames.map(() => "%s").join(", ")} cannot be NULL", [${wrapStringInApostrophes(propertyNames).join(
+            ", "
+        )}])`;
+    }
 
     if (preAuthStrs.length) {
         const apocStr = `CALL apoc.util.validate(NOT (${preAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
@@ -595,12 +654,21 @@ export default function createUpdateAndParams({
     return [
         [
             preAuthStr,
+            preArrayMethodValidationStr,
             ...statements,
             postAuthStr,
             ...(relationshipValidationStr ? [withStr, relationshipValidationStr] : []),
         ].join("\n"),
         params,
     ];
+}
+
+function validateNonNullProperty(res: Res, varName: string, field: BaseField) {
+    if (!res.meta) {
+        res.meta = { preArrayMethodValidationStrs: [], preAuthStrs: [], postAuthStrs: [] };
+    }
+
+    res.meta.preArrayMethodValidationStrs.push([`${varName}.${field.dbPropertyName}`, `${field.dbPropertyName}`]);
 }
 
 function wrapInSubscriptionsMetaCall({
