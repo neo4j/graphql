@@ -29,7 +29,7 @@ export function createResolver({ node }: { node: Node }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         context.resolveTree = getNeo4jResolveTree(info, { args });
-        const [cypher, params] = await translateCreate({ context, node });
+        const { cypher, params } = await translateCreate({ context, node });
 
         const executeResult = await execute({
             cypher,

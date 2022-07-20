@@ -22,7 +22,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import type { BaseField, Context, PrimitiveField, TemporalField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
-import translateTopLevelMatch from "./translate-top-level-match";
+import { translateTopLevelMatch } from "./translate-top-level-match";
 
 function translateAggregate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { fieldsByTypeName } = context.resolveTree;
@@ -31,8 +31,8 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
     const cypherStrs: string[] = [];
 
     const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "READ" });
-    cypherStrs.push(topLevelMatch[0]);
-    cypherParams = { ...cypherParams, ...topLevelMatch[1] };
+    cypherStrs.push(topLevelMatch.cypher);
+    cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
     const allowAuth = createAuthAndParams({
         operations: "READ",

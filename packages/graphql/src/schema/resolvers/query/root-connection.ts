@@ -40,7 +40,7 @@ export function rootConnectionResolver({ node, composer }: { node: Node; compose
 
         context.resolveTree = { ...resolveTreeForContext, args: resolveTree.args };
 
-        const [cypher, params] = translateRead({ context, node, isRootConnectionField: true });
+        const { cypher, params } = translateRead({ context, node, isRootConnectionField: true });
 
         const executeResult = await execute({
             cypher,

@@ -18,7 +18,7 @@
  */
 
 import type { GraphQLResolveInfo } from "graphql";
-import type { FieldsByTypeName} from "graphql-parse-resolve-info";
+import type { FieldsByTypeName } from "graphql-parse-resolve-info";
 import { parseResolveInfo } from "graphql-parse-resolve-info";
 import { execute } from "../../../utils";
 import { translateRead } from "../../../translate";
@@ -60,7 +60,7 @@ export function globalNodeResolver({ nodes }: { nodes: Node[] }) {
 
         context.resolveTree = getNeo4jResolveTree(info, { resolveTree });
 
-        const [cypher, params] = translateRead({ context, node });
+        const { cypher, params } = translateRead({ context, node });
         const executeResult = await execute({
             cypher,
             params,
