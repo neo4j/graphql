@@ -154,7 +154,7 @@ function createConnectionWherePropertyOperation({
             delete nestedProperties._on;
 
             if (
-                Object.keys(value).length === 1 &&
+                Object.keys(value as Record<string, any>).length === 1 &&
                 value._on &&
                 !Object.prototype.hasOwnProperty.call(value._on, node.name)
             ) {
