@@ -148,7 +148,7 @@ function createConnectionWherePropertyOperation({
         }
 
         if (key.startsWith("node") || key.startsWith(node.name)) {
-            // TODO: improve
+            // TODO: improve nodeOn properties generation
             const nodeOnProperties = value._on?.[node.name] || {};
             const nestedProperties = { ...value, ...nodeOnProperties };
             delete nestedProperties._on;
