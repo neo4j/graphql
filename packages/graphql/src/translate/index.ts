@@ -18,7 +18,7 @@
  */
 
 export { default as translateCreate } from "./translate-create";
-export { default as translateRead } from "./translate-read";
+export { translateRead } from "./translate-read";
 export { default as translateUpdate } from "./translate-update";
-export { default as translateDelete } from "./translate-delete";
+export { translateDelete } from "./translate-delete";
 export { default as translateAggregate } from "./translate-aggregate";

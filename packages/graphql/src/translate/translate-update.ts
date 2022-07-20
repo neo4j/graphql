@@ -29,7 +29,7 @@ import createDeleteAndParams from "./create-delete-and-params";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
-import translateTopLevelMatch from "./translate-top-level-match";
+import { translateTopLevelMatch } from "./translate-top-level-match";
 import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 import { CallbackBucket } from "../classes/CallbackBucket";
@@ -69,8 +69,8 @@ export default async function translateUpdate({
     const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
 
     const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "UPDATE" });
-    matchAndWhereStr = topLevelMatch[0];
-    cypherParams = { ...cypherParams, ...topLevelMatch[1] };
+    matchAndWhereStr = topLevelMatch.cypher;
+    cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
