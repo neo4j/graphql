@@ -191,18 +191,23 @@ function createElementWhereAndParams({
                         nodeVariable: `${collectedMap}.node`,
                         relationship,
                         relationshipVariable: `${collectedMap}.relationship`,
-                        parameterPrefix: `${parameterPrefix}.${fieldName}`,
+                        parameterPrefix: operator ? `${parameterPrefix}.${fieldName}_${operator}` : `${parameterPrefix}.${fieldName}`,
                         // listPredicates stores all list predicates (SINGLE, ANY, NONE,..) while (recursively) translating the where clauses
                         listPredicates: [currentListPredicate, ...(listPredicates || [])],
                     });
 
-                    // => This connectionWhere here needs to be genresConnection_SOME. I think...
                     resultArr.push(connectionWhere[0]);
                     resultArr.push(")"); // close NONE/ANY
 
-                    // => This expectMultipleValues needs to be 'false' for issue 1685 to work.
-                    const expectMultipleValues = listPredicates?.length ? !listPredicates.includes("single") : true;
+                    let expectMultipleValues: boolean;
 
+                    if (operator) {
+                        expectMultipleValues = false;
+                    } else if (listPredicates?.length) {
+                        expectMultipleValues = !listPredicates.includes("single");
+                    } else {
+                        expectMultipleValues = true;
+                    }
                     const apocRunFirstColumn = wrapInApocRunFirstColumn(
                         resultArr.join("\n"),
                         {
