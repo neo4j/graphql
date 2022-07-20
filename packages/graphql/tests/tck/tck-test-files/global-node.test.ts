@@ -62,8 +62,8 @@ describe("Global nodes", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             RETURN this { .title } as this"
         `);
     });
@@ -102,9 +102,15 @@ describe("Global nodes", () => {
             variableValues: { id: toGlobalId({ typeName: "Actor", field: "dbId", id: "123455" }) },
         });
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            WHERE this.id = $this_dbId
+            "MATCH (this:\`Actor\`)
+            WHERE this.id = $param0
             RETURN this { .name, dbId: this.id } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"123455\\"
+            }"
         `);
     });
     test("it should project the correct selectionSet when id is used as a where argument", async () => {
@@ -143,16 +149,16 @@ describe("Global nodes", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            WHERE this.id = $this_dbId
+            "MATCH (this:\`Actor\`)
+            WHERE this.id = $param0
             RETURN this { .name } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                    "{
-                        \\"this_dbId\\": \\"12345\\"
-                    }"
-                `);
+            "{
+                \\"param0\\": \\"12345\\"
+            }"
+        `);
     });
     test("it should project the param as an integer when the underlying field is a number (fixes 1560)", async () => {
         const typeDefs = gql`
@@ -188,15 +194,15 @@ describe("Global nodes", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            WHERE this.dbId = $this_dbId
+            "MATCH (this:\`Actor\`)
+            WHERE this.dbId = $param0
             RETURN this { .dbId, .name } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                    "{
-                        \\"this_dbId\\": 12345
-                    }"
+            "{
+                \\"param0\\": 12345
+            }"
         `);
     });
 });

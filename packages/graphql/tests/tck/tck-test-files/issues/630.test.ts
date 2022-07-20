@@ -72,7 +72,7 @@ describe("Cypher directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             RETURN this { movies: [this_movies IN apoc.cypher.runFirstColumn(\\"MATCH (m:Movie {title: $title})
             RETURN m\\", {this: this, auth: $auth, title: $this_movies_title}, true) | this_movies { actorsConnection: apoc.cypher.runFirstColumn(\\"CALL {
             WITH this_movies

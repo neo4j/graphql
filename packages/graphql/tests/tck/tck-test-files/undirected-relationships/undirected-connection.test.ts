@@ -61,7 +61,7 @@ describe("Undirected connections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             CALL {
             WITH this
             MATCH (this)-[this_friends_with_relationship:FRIENDS_WITH]-(this_user:User)

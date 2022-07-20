@@ -135,8 +135,8 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Series)
-            WHERE ((size([(this)-[this_AND_OR_manufacturerConnection_Manufacturer_SeriesManufacturerRelationship:MANUFACTURER]->(this_AND_OR_manufacturerConnection_Manufacturer:Manufacturer) WHERE this_AND_OR_manufacturerConnection_Manufacturer_SeriesManufacturerRelationship.current = $this_AND_OR_series.where.manufacturerConnection.edge.current AND this_AND_OR_manufacturerConnection_Manufacturer.name = $this_AND_OR_series.where.manufacturerConnection.node.name | 1]) > 0 OR size([(this)-[this_AND_OR1_manufacturerConnection_Manufacturer_SeriesManufacturerRelationship:MANUFACTURER]->(this_AND_OR1_manufacturerConnection_Manufacturer:Manufacturer) WHERE this_AND_OR1_manufacturerConnection_Manufacturer_SeriesManufacturerRelationship.current = $this_AND_OR1_series.where.manufacturerConnection.edge.current AND this_AND_OR1_manufacturerConnection_Manufacturer.name = $this_AND_OR1_series.where.manufacturerConnection.node.name | 1]) > 0) AND (size([(this)-[this_AND1_OR_brandConnection_Brand_SeriesBrandRelationship:BRAND]->(this_AND1_OR_brandConnection_Brand:Brand) WHERE this_AND1_OR_brandConnection_Brand_SeriesBrandRelationship.current = $this_AND1_OR_series.where.brandConnection.edge.current AND this_AND1_OR_brandConnection_Brand.name = $this_AND1_OR_series.where.brandConnection.node.name | 1]) > 0)) AND this.current = $this_current
+            "MATCH (this:\`Series\`)
+            WHERE (((size([(this)-[this0:MANUFACTURER]->(this1:\`Manufacturer\`) WHERE this0.current = $nestedParam0.edge.current AND this1.name = $nestedParam0.node.name | 1]) > 0 OR size([(this)-[this2:MANUFACTURER]->(this3:\`Manufacturer\`) WHERE this2.current = $nestedParam1.edge.current AND this3.name = $nestedParam1.node.name | 1]) > 0) AND size([(this)-[this4:BRAND]->(this5:\`Brand\`) WHERE this4.current = $nestedParam2.edge.current AND this5.name = $nestedParam2.node.name | 1]) > 0) AND this.current = $param3)
             CALL {
             WITH this
             MATCH (this)-[this_manufacturer_relationship:MANUFACTURER]->(this_manufacturer:Manufacturer)
@@ -157,43 +157,31 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_AND_OR_series\\": {
-                    \\"where\\": {
-                        \\"manufacturerConnection\\": {
-                            \\"edge\\": {
-                                \\"current\\": true
-                            },
-                            \\"node\\": {
-                                \\"name\\": \\"C\\"
-                            }
-                        }
+                \\"nestedParam0\\": {
+                    \\"edge\\": {
+                        \\"current\\": true
+                    },
+                    \\"node\\": {
+                        \\"name\\": \\"C\\"
                     }
                 },
-                \\"this_AND_OR1_series\\": {
-                    \\"where\\": {
-                        \\"manufacturerConnection\\": {
-                            \\"edge\\": {
-                                \\"current\\": false
-                            },
-                            \\"node\\": {
-                                \\"name\\": \\"AM\\"
-                            }
-                        }
+                \\"nestedParam1\\": {
+                    \\"edge\\": {
+                        \\"current\\": false
+                    },
+                    \\"node\\": {
+                        \\"name\\": \\"AM\\"
                     }
                 },
-                \\"this_AND1_OR_series\\": {
-                    \\"where\\": {
-                        \\"brandConnection\\": {
-                            \\"edge\\": {
-                                \\"current\\": true
-                            },
-                            \\"node\\": {
-                                \\"name\\": \\"smart\\"
-                            }
-                        }
+                \\"nestedParam2\\": {
+                    \\"edge\\": {
+                        \\"current\\": true
+                    },
+                    \\"node\\": {
+                        \\"name\\": \\"smart\\"
                     }
                 },
-                \\"this_current\\": true
+                \\"param3\\": true
             }"
         `);
     });

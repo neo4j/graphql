@@ -72,7 +72,7 @@ describe("Cypher alias directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             RETURN this { .name, city: this.cityPropInDb, actedIn: [ (this)-[:ACTED_IN]->(this_actedIn:Movie)   | this_actedIn { .title, rating: this_actedIn.ratingPropInDb } ] } as this"
         `);
 
@@ -105,7 +105,7 @@ describe("Cypher alias directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             CALL {
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)

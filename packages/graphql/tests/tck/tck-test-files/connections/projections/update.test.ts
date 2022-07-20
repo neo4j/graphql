@@ -82,8 +82,8 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             WITH this
             CALL {
             WITH this
@@ -98,7 +98,7 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\",
+                \\"param0\\": \\"Forrest Gump\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

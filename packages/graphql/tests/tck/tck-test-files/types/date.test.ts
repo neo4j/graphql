@@ -56,14 +56,14 @@ describe("Cypher Date", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.date = $this_date
+            "MATCH (this:\`Movie\`)
+            WHERE this.date = $param0
             RETURN this { .date } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_date\\": {
+                \\"param0\\": {
                     \\"year\\": 1970,
                     \\"month\\": 1,
                     \\"day\\": 1
@@ -87,14 +87,14 @@ describe("Cypher Date", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.date >= $this_date_GTE
+            "MATCH (this:\`Movie\`)
+            WHERE this.date >= $param0
             RETURN this { .date } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_date_GTE\\": {
+                \\"param0\\": {
                     \\"year\\": 1980,
                     \\"month\\": 4,
                     \\"day\\": 8
@@ -159,7 +159,7 @@ describe("Cypher Date", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             SET this.date = $this_update_date
             RETURN collect(DISTINCT this { .id, .date }) AS data"
         `);

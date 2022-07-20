@@ -92,7 +92,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id, .name } as this"
         `);
@@ -132,7 +132,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -174,7 +174,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -316,8 +316,8 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $this_id
+            "MATCH (this:\`User\`)
+            WHERE this.id = $param0
             WITH this
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.id = $this_update_id
@@ -326,7 +326,7 @@ describe("Cypher Auth isAuthenticated", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"1\\",
+                \\"param0\\": \\"1\\",
                 \\"this_update_id\\": \\"id-1\\",
                 \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
@@ -362,8 +362,8 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $this_id
+            "MATCH (this:\`User\`)
+            WHERE this.id = $param0
             WITH this
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.password = $this_update_password
@@ -372,7 +372,7 @@ describe("Cypher Auth isAuthenticated", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"1\\",
+                \\"param0\\": \\"1\\",
                 \\"this_update_password\\": \\"password\\",
                 \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
@@ -408,7 +408,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             WITH this
             CALL {
             	WITH this
@@ -461,7 +461,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             WITH this
             CALL {
             WITH this
@@ -519,7 +519,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             WITH this
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             DETACH DELETE this"
@@ -558,7 +558,7 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             WITH this
             OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
             WITH this, this_posts0

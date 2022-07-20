@@ -162,7 +162,7 @@ describe("Relationship Properties Connect Cypher", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-            	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_name
+            	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_param0
             	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
@@ -188,7 +188,7 @@ describe("Relationship Properties Connect Cypher", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_title\\": \\"Forrest Gump\\",
-                \\"this0_actors_connect0_node_name\\": \\"Tom Hanks\\",
+                \\"this0_actors_connect0_node_param0\\": \\"Tom Hanks\\",
                 \\"this0_actors_connect0_relationship_screenTime\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
@@ -223,8 +223,8 @@ describe("Relationship Properties Connect Cypher", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             WITH this
             CALL {
             	WITH this
@@ -251,7 +251,7 @@ describe("Relationship Properties Connect Cypher", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\",
+                \\"param0\\": \\"Forrest Gump\\",
                 \\"this_connect_actors0_relationship_screenTime\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
@@ -289,13 +289,13 @@ describe("Relationship Properties Connect Cypher", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)
-            	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
+            	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
@@ -318,8 +318,8 @@ describe("Relationship Properties Connect Cypher", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\",
-                \\"this_connect_actors0_node_name\\": \\"Tom Hanks\\",
+                \\"param0\\": \\"Forrest Gump\\",
+                \\"this_connect_actors0_node_param0\\": \\"Tom Hanks\\",
                 \\"this_connect_actors0_relationship_screenTime\\": {
                     \\"low\\": 60,
                     \\"high\\": 0

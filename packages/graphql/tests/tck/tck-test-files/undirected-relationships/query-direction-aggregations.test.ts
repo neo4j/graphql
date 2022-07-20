@@ -62,9 +62,9 @@ describe("QueryDirection in relationships aggregations", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:User)
-RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:FRIENDS_WITH]-(n:User)      RETURN COUNT(n)\\", { this: this })) } } as this"
-`);
+            "MATCH (this:\`User\`)
+            RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:FRIENDS_WITH]-(n:User)      RETURN COUNT(n)\\", { this: this })) } } as this"
+        `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
@@ -100,9 +100,9 @@ RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATC
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:User)
-RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:FRIENDS_WITH]->(n:User)      RETURN COUNT(n)\\", { this: this })) } } as this"
-`);
+            "MATCH (this:\`User\`)
+            RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:FRIENDS_WITH]->(n:User)      RETURN COUNT(n)\\", { this: this })) } } as this"
+        `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
@@ -138,9 +138,9 @@ RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATC
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:User)
-RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:FRIENDS_WITH]-(n:User)      RETURN COUNT(n)\\", { this: this })) } } as this"
-`);
+            "MATCH (this:\`User\`)
+            RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:FRIENDS_WITH]-(n:User)      RETURN COUNT(n)\\", { this: this })) } } as this"
+        `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });

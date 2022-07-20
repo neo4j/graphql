@@ -109,8 +109,8 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Drive)
-            WHERE this.current = $this_current
+            "MATCH (this:\`Drive\`)
+            WHERE this.current = $param0
             CALL {
             WITH this
             MATCH (this)-[this_consists_of_relationship:CONSISTS_OF]->(this_drivecomposition:DriveComposition)
@@ -146,7 +146,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_current\\": true,
+                \\"param0\\": true,
                 \\"this_driveCompositionsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

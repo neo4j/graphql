@@ -73,8 +73,8 @@ describe("Relationship Properties Cypher", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
@@ -88,7 +88,7 @@ describe("Relationship Properties Cypher", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
     });
@@ -116,8 +116,8 @@ describe("Relationship Properties Cypher", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
@@ -132,7 +132,7 @@ describe("Relationship Properties Cypher", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\",
+                \\"param0\\": \\"Forrest Gump\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -169,8 +169,8 @@ describe("Relationship Properties Cypher", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
@@ -188,7 +188,7 @@ describe("Relationship Properties Cypher", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
     });
@@ -224,8 +224,8 @@ describe("Relationship Properties Cypher", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
@@ -247,7 +247,7 @@ describe("Relationship Properties Cypher", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
     });
@@ -291,8 +291,8 @@ describe("Relationship Properties Cypher", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
@@ -322,7 +322,7 @@ describe("Relationship Properties Cypher", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
     });

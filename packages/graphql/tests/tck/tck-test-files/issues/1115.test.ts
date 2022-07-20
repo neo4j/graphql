@@ -75,26 +75,26 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Parent)
-            	WITH this
+            "MATCH (this:\`Parent\`)
+            WITH this
             CALL {
-            	WITH this
-            	CALL apoc.util.validate(NOT (any(r IN [\\"upstream\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            MERGE (this_connectOrCreate_children_this1:\`Child\` { tcId: $this_connectOrCreate_children_param0 })
-            ON CREATE SET
-                    this_connectOrCreate_children_this1.tcId = $this_connectOrCreate_children_param1
-            MERGE (this_connectOrCreate_children_this1)-[this_connectOrCreate_children_this0:\`HAS\`]->(this)
-            	RETURN COUNT(*) AS _
+                WITH this
+                CALL apoc.util.validate(NOT (any(r IN [\\"upstream\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MERGE (this_connectOrCreate_children_this0:\`Child\` { tcId: $this_connectOrCreate_children_param0 })
+                ON CREATE SET
+                    this_connectOrCreate_children_this0.tcId = $this_connectOrCreate_children_param1
+                MERGE (this_connectOrCreate_children_this0)-[this_connectOrCreate_children_this1:HAS]->(this)
+                RETURN COUNT(*) AS _
             }
-            	WITH this
+            WITH this
             CALL {
-            	WITH this
-            	CALL apoc.util.validate(NOT (any(r IN [\\"upstream\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            MERGE (this_connectOrCreate_children_this4:\`Child\` { tcId: $this_connectOrCreate_children_param2 })
-            ON CREATE SET
-                    this_connectOrCreate_children_this4.tcId = $this_connectOrCreate_children_param3
-            MERGE (this_connectOrCreate_children_this4)-[this_connectOrCreate_children_this3:\`HAS\`]->(this)
-            	RETURN COUNT(*) AS _
+                WITH this
+                CALL apoc.util.validate(NOT (any(r IN [\\"upstream\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MERGE (this_connectOrCreate_children_this2:\`Child\` { tcId: $this_connectOrCreate_children_param2 })
+                ON CREATE SET
+                    this_connectOrCreate_children_this2.tcId = $this_connectOrCreate_children_param3
+                MERGE (this_connectOrCreate_children_this2)-[this_connectOrCreate_children_this3:HAS]->(this)
+                RETURN COUNT(*) AS _
             }
             RETURN 'Query cannot conclude with CALL'"
         `);

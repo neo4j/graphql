@@ -17,14 +17,12 @@
  * limitations under the License.
  */
 
-import { CypherContext } from "./CypherContext";
-import type { Param } from "./references/Param";
+import type { CypherEnvironment } from "./Environment";
+import type { CypherCompilable } from "./types";
 
 /** Abstract class representing a Cypher Statement in the AST */
-export abstract class CypherASTNode {
-    protected children: Array<CypherASTNode> = [];
+export abstract class CypherASTNode implements CypherCompilable {
     protected parent?: CypherASTNode;
-    protected namedParams: Record<string, Param> = {}; // Only for compatibility reasons
 
     constructor(parent?: CypherASTNode) {
         this.parent = parent;
@@ -37,31 +35,18 @@ export abstract class CypherASTNode {
         return this;
     }
 
-    /** Visitor pattern to generate the Cypher on nested nodes */
-    public getCypher(context: CypherContext, separator = "\n"): string {
-        Object.entries(this.namedParams).forEach(([name, param]) => {
-            context.addNamedParamReference(name, param); // Only for compatibility reasons
-        });
+    /** Concrete tree traversal pattern to generate the Cypher on nested nodes */
+    public abstract getCypher(env: CypherEnvironment): string;
 
-        const childrenCypher = this.children.map((value) => value.getCypher(context)).join(separator);
-        return this.cypher(context, childrenCypher);
+    /** Sets the parent-child relationship for build traversal */
+    protected addChildren(...nodes: CypherASTNode[]): void {
+        for (const node of nodes) {
+            node.setParent(this);
+        }
     }
 
-    /** Defines the internal Cypher to generate by the ASTNode */
-    protected abstract cypher(context: CypherContext, childrenCypher: string): string;
-
-    protected getContext(prefix?: string): CypherContext {
-        return new CypherContext(prefix);
-    }
-
-    protected addStatement<C extends CypherASTNode>(astNode: C): C {
-        this.children.push(astNode);
-        astNode.parent = this;
-        return astNode;
-    }
-
-    public addNamedParams(params: Record<string, Param>) {
-        this.namedParams = { ...this.namedParams, ...params };
+    protected setParent(node: CypherASTNode): void {
+        this.parent = node;
     }
 
     protected get isRoot() {
