@@ -110,8 +110,8 @@ describe("Nested Unions", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors_LeadActor0_node:LeadActor)
             	WHERE this_connect_actors_LeadActor0_node.name = $this_connect_actors_LeadActor0_node_param0
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actors_LeadActor0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actors_LeadActor0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)<-[:ACTED_IN]-(this_connect_actors_LeadActor0_node)
             		)
             	)
@@ -120,8 +120,8 @@ describe("Nested Unions", () => {
             	WITH this, this_connect_actors_LeadActor0_node
             	OPTIONAL MATCH (this_connect_actors_LeadActor0_node_actedIn_Series0_node:Series)
             	WHERE this_connect_actors_LeadActor0_node_actedIn_Series0_node.name = $this_connect_actors_LeadActor0_node_actedIn_Series0_node_param0
-            	FOREACH(_ IN CASE this_connect_actors_LeadActor0_node WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actors_LeadActor0_node_actedIn_Series0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this_connect_actors_LeadActor0_node IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actors_LeadActor0_node_actedIn_Series0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this_connect_actors_LeadActor0_node)-[:ACTED_IN]->(this_connect_actors_LeadActor0_node_actedIn_Series0_node)
             		)
             	)
@@ -186,7 +186,7 @@ describe("Nested Unions", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors_LeadActor0_rel:ACTED_IN]-(this_disconnect_actors_LeadActor0:LeadActor)
             WHERE this_disconnect_actors_LeadActor0.name = $updateMovies.args.disconnect.actors.LeadActor[0].where.node.name
-            FOREACH(_ IN CASE this_disconnect_actors_LeadActor0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_actors_LeadActor0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actors_LeadActor0_rel
             )
             WITH this, this_disconnect_actors_LeadActor0
@@ -194,7 +194,7 @@ describe("Nested Unions", () => {
             WITH this, this_disconnect_actors_LeadActor0
             OPTIONAL MATCH (this_disconnect_actors_LeadActor0)-[this_disconnect_actors_LeadActor0_actedIn_Series0_rel:ACTED_IN]->(this_disconnect_actors_LeadActor0_actedIn_Series0:Series)
             WHERE this_disconnect_actors_LeadActor0_actedIn_Series0.name = $updateMovies.args.disconnect.actors.LeadActor[0].disconnect.actedIn.Series[0].where.node.name
-            FOREACH(_ IN CASE this_disconnect_actors_LeadActor0_actedIn_Series0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_actors_LeadActor0_actedIn_Series0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actors_LeadActor0_actedIn_Series0_rel
             )
             RETURN count(*) AS _

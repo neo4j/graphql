@@ -278,8 +278,8 @@ describe("Cypher Create", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
             	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_param0
-            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_actors_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
             		)
             	)
@@ -335,8 +335,8 @@ describe("Cypher Create", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_movies_connect0_node:Movie)
             	WHERE this0_movies_connect0_node.id = $this0_movies_connect0_node_param0
-            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this0_movies_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_movies_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
             		)
             	)

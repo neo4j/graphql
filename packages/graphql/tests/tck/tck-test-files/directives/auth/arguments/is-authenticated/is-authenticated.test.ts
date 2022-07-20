@@ -415,8 +415,8 @@ describe("Cypher Auth isAuthenticated", () => {
             	OPTIONAL MATCH (this_connect_posts0_node:Post)
             	WITH this, this_connect_posts0_node
             	CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_posts0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
             		)
             	)
@@ -468,7 +468,7 @@ describe("Cypher Auth isAuthenticated", () => {
             OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
             WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_posts0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_posts0_rel
             )
             RETURN count(*) AS _

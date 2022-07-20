@@ -90,7 +90,7 @@ describe("Relationship Properties Connect Cypher", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_actors_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
             SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
             		)
@@ -163,8 +163,8 @@ describe("Relationship Properties Connect Cypher", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
             	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_param0
-            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_actors_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
             SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
             		)
@@ -229,8 +229,8 @@ describe("Relationship Properties Connect Cypher", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actors0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
             SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
             		)
@@ -296,8 +296,8 @@ describe("Relationship Properties Connect Cypher", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)
             	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actors0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
             SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
             		)

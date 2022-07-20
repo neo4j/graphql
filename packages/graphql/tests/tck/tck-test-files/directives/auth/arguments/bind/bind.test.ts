@@ -338,8 +338,8 @@ describe("Cypher Auth Allow", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_creator0_node:User)
             	WHERE this_connect_creator0_node.id = $this_connect_creator0_node_param0
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_creator0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_creator0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)<-[:HAS_POST]-(this_connect_creator0_node)
             		)
             	)
@@ -393,7 +393,7 @@ describe("Cypher Auth Allow", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_creator0_rel:HAS_POST]-(this_disconnect_creator0:User)
             WHERE this_disconnect_creator0.id = $updatePosts.args.disconnect.creator.where.node.id
-            FOREACH(_ IN CASE this_disconnect_creator0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_creator0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_creator0_rel
             )
             WITH this, this_disconnect_creator0

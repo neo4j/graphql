@@ -701,8 +701,8 @@ describe("Cypher Auth Where", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_posts_connect0_node:Post)
             	WHERE exists((this0_posts_connect0_node)<-[:HAS_POST]-(:User)) AND all(creator IN [(this0_posts_connect0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_posts_connect0_node_auth_where0_creator_id)
-            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this0_posts_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_posts_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
             		)
             	)
@@ -761,8 +761,8 @@ describe("Cypher Auth Where", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_posts_connect0_node:Post)
             	WHERE this0_posts_connect0_node.id = $this0_posts_connect0_node_param0 AND exists((this0_posts_connect0_node)<-[:HAS_POST]-(:User)) AND all(creator IN [(this0_posts_connect0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_posts_connect0_node_auth_where0_creator_id)
-            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this0_posts_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_posts_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
             		)
             	)
@@ -812,8 +812,8 @@ describe("Cypher Auth Where", () => {
             	WITH this
             	OPTIONAL MATCH (this_posts0_connect0_node:Post)
             	WHERE exists((this_posts0_connect0_node)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_posts0_connect0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_connect0_node_auth_where0_creator_id)
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_posts0_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_posts0_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
             		)
             	)
@@ -857,8 +857,8 @@ describe("Cypher Auth Where", () => {
             	WITH this
             	OPTIONAL MATCH (this_posts0_connect0_node:Post)
             	WHERE this_posts0_connect0_node.id = $this_posts0_connect0_node_param0 AND exists((this_posts0_connect0_node)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_posts0_connect0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_connect0_node_auth_where0_creator_id)
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_posts0_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_posts0_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
             		)
             	)
@@ -903,8 +903,8 @@ describe("Cypher Auth Where", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_posts0_node:Post)
             	WHERE exists((this_connect_posts0_node)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_connect_posts0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_posts0_node_auth_where0_creator_id)
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_posts0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
             		)
             	)
@@ -948,8 +948,8 @@ describe("Cypher Auth Where", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_posts0_node:Post)
             	WHERE this_connect_posts0_node.id = $this_connect_posts0_node_param0 AND exists((this_connect_posts0_node)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_connect_posts0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_posts0_node_auth_where0_creator_id)
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_posts0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_posts0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
             		)
             	)
@@ -994,7 +994,7 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post)
             WHERE exists((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id)
-            FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_posts0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_posts0_disconnect0_rel
             )
             RETURN count(*) AS _
@@ -1037,7 +1037,7 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post)
             WHERE this_posts0_disconnect0.id = $updateUsers.args.update.posts[0].disconnect[0].where.node.id AND exists((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id)
-            FOREACH(_ IN CASE this_posts0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_posts0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_posts0_disconnect0_rel
             )
             RETURN count(*) AS _
@@ -1099,7 +1099,7 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
             WHERE exists((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_posts0_auth_where0_creator_id)
-            FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_posts0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_posts0_rel
             )
             RETURN count(*) AS _
@@ -1153,7 +1153,7 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
             WHERE this_disconnect_posts0.id = $updateUsers.args.disconnect.posts[0].where.node.id AND exists((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_posts0_auth_where0_creator_id)
-            FOREACH(_ IN CASE this_disconnect_posts0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_posts0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_posts0_rel
             )
             RETURN count(*) AS _

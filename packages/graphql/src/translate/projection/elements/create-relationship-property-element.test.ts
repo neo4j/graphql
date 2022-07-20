@@ -180,8 +180,8 @@ describe("createRelationshipPropertyElement", () => {
 
         expect(element).toMatchInlineSnapshot(`
             "point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point, crs: this.point.crs }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
             	ELSE NULL
             END AS result',{ this: this },false)"
         `);
