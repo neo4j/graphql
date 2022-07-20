@@ -647,7 +647,6 @@ describe("Arrays Methods", () => {
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
             SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay[0..-$updateActors.args.update.actedIn[0].update.edge.pay_POP]
-            SET this_acted_in0_relationship.pay_POP = $updateActors.args.update.actedIn[0].update.edge.pay_POP
             RETURN count(*) AS _
             \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, resolvedCallbacks: $resolvedCallbacks})
             YIELD value AS this_acted_in0_relationship_actedIn0_edge

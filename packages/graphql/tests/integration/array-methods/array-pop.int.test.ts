@@ -808,4 +808,92 @@ describe("array-pop", () => {
         );
         expect(storedValue.records[0].get("pay")).toEqual([]);
     });
+
+    test("should be possible to update Point relationship properties", async () => {
+        const movie = generateUniqueType("Movie");
+        const actor = generateUniqueType("Actor");
+        const typeDefs = `
+            type ${movie.name} {
+                title: String
+                actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            }
+            
+            type ${actor.name} {
+                id: ID!
+                name: String!
+                actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            }
+
+            interface ActedIn @relationshipProperties {
+                locations: [Point]
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            mutation Mutation($id: ID, $numberToPop: Int) {
+                ${actor.operations.update}(where: { id: $id }, update: {
+                    actedIn: [
+                        {
+                            update: {
+                                edge: {
+                                    locations_POP: $numberToPop
+                                }
+                            }
+                        }
+                    ]
+                }) {
+                    ${actor.plural} {
+                        name
+                        actedIn {
+                            title
+                        }
+                        actedInConnection {
+                            edges {
+                                locations {
+                                    latitude
+                                    longitude
+                                    height
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        // Create new movie
+        await session.run(
+            `
+                CREATE (a:${movie.name} {title: "The Matrix"}), (b:${actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ locations: [point($initialLocation)] }]-(b) RETURN a, actedIn, b
+                `,
+            {
+                id,
+                initialLocation: point,
+            }
+        );
+        // Update movie
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            variableValues: { id, numberToPop: 1 },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult.data as any)[actor.operations.update][actor.plural]).toEqual(
+            expect.arrayContaining([
+                {
+                    name: "Keanu",
+                    actedIn: [{ title: "The Matrix" }],
+                    actedInConnection: { edges: [{ locations: [] }] },
+                },
+            ])
+        );
+    });
 });

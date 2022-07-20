@@ -238,6 +238,7 @@ function makeAugmentedSchema(
         addMathOperatorsToITC(relationshipUpdateITC);
 
         addArrayMethodsToITC(relationshipUpdateITC, relFields.primitiveFields);
+        addArrayMethodsToITC(relationshipUpdateITC, relFields.pointFields);
 
         const relationshipWhereFields = getWhereFields({
             typeName: relationship.name.value,

@@ -86,48 +86,54 @@ function createSetRelationshipProperties({
         }
 
         const arrayPushField = relationship.primitiveFields.find((x) => `${x.fieldName}_PUSH` === key);
+        if (arrayPushField && arrayPushField.dbPropertyName) {
+            assertNonAmbiguousUpdate(propertiesEntries, arrayPushField.dbPropertyName);
 
-        if (arrayPushField) {
-            if (propertiesEntries.find(([entryKey]) => entryKey === arrayPushField.dbPropertyName)) {
-                throw new Error(
-                    `Cannot mutate the same field multiple times in one Mutation: ${arrayPushField.dbPropertyName}`
-                );
-            }
-            const pointArrayField = relationship.pointFields.find((x) => `${x.fieldName}_PUSH` === key);
-            if (pointArrayField) {
-                strs.push(
-                    `SET ${varName}.${arrayPushField.dbPropertyName} = ${varName}.${arrayPushField.dbPropertyName} + [p in $${paramName} | point(p)]`
-                );
-            } else {
-                strs.push(
-                    `SET ${varName}.${arrayPushField.dbPropertyName} = ${varName}.${arrayPushField.dbPropertyName} + $${paramName}`
-                );
-            }
+            strs.push(
+                `SET ${varName}.${arrayPushField.dbPropertyName} = ${varName}.${arrayPushField.dbPropertyName} + $${paramName}`
+            );
+
+            return;
+        }
+
+        const pointArrayPushField = relationship.pointFields.find((x) => `${x.fieldName}_PUSH` === key);
+        if (pointArrayPushField && pointArrayPushField.dbPropertyName) {
+            assertNonAmbiguousUpdate(propertiesEntries, pointArrayPushField.dbPropertyName);
+
+            strs.push(
+                `SET ${varName}.${pointArrayPushField.dbPropertyName} = ${varName}.${pointArrayPushField.dbPropertyName} + [p in $${paramName} | point(p)]`
+            );
 
             return;
         }
 
         const arrayPopField = relationship.primitiveFields.find((x) => `${x.fieldName}_POP` === key);
-        if (arrayPopField) {
-            if (propertiesEntries.find(([entryKey]) => entryKey === arrayPopField.dbPropertyName)) {
-                throw new Error(
-                    `Cannot mutate the same field multiple times in one Mutation: ${arrayPopField.dbPropertyName}`
-                );
-            }
+        if (arrayPopField && arrayPopField.dbPropertyName) {
+            assertNonAmbiguousUpdate(propertiesEntries, arrayPopField.dbPropertyName);
+
             strs.push(
                 `SET ${varName}.${arrayPopField.dbPropertyName} = ${varName}.${arrayPopField.dbPropertyName}[0..-$${paramName}]`
             );
+
+            return;
+        }
+
+        const pointArrayPopField = relationship.pointFields.find((x) => `${x.fieldName}_POP` === key);
+        if (pointArrayPopField && pointArrayPopField.dbPropertyName) {
+            assertNonAmbiguousUpdate(propertiesEntries, pointArrayPopField.dbPropertyName);
+
+            strs.push(
+                `SET ${varName}.${pointArrayPopField.dbPropertyName} = ${varName}.${pointArrayPopField.dbPropertyName}[0..-$${paramName}]`
+            );
+
+            return;
         }
 
         const mathMatch = matchMathField(key);
         const { hasMatched } = mathMatch;
         if (hasMatched) {
             const mathDescriptor = mathDescriptorBuilder(value as number, relationship, mathMatch);
-            if (propertiesEntries.find(([entryKey]) => entryKey === mathDescriptor.dbName)) {
-                throw new Error(
-                    `Cannot mutate the same field multiple times in one Mutation: ${mathDescriptor.dbName}`
-                );
-            }
+            assertNonAmbiguousUpdate(propertiesEntries, mathDescriptor.dbName);
 
             const mathStatements = buildMathStatements(mathDescriptor, varName, withVars, paramName);
             strs.push(...mathStatements);
@@ -139,6 +145,12 @@ function createSetRelationshipProperties({
     });
 
     return strs.join("\n");
+
+    function assertNonAmbiguousUpdate(propertiesEntries: [string, unknown][], propertyName: string) {
+        if (propertiesEntries.find(([entryKey]) => entryKey === propertyName)) {
+            throw new Error(`Cannot mutate the same field multiple times in one Mutation: ${propertyName}`);
+        }
+    }
 }
 
 export default createSetRelationshipProperties;
