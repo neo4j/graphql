@@ -246,7 +246,11 @@ describe("array-push", () => {
         }
 
         expect(gqlResult.errors).toBeDefined();
-        expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Ambiguous"))).toBeTruthy();
+        expect(
+            (gqlResult.errors as GraphQLError[]).some((el) =>
+                el.message.includes("Cannot mutate the same field multiple times in one Mutation")
+            )
+        ).toBeTruthy();
         expect(gqlResult.data).toBeNull();
     });
 
@@ -330,7 +334,11 @@ describe("array-push", () => {
         }
 
         expect(gqlResult.errors).toBeDefined();
-        expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Ambiguous"))).toBeTruthy();
+        expect(
+            (gqlResult.errors as GraphQLError[]).some((el) =>
+                el.message.includes("Cannot mutate the same field multiple times in one Mutation")
+            )
+        ).toBeTruthy();
         expect(gqlResult.data).toBeNull();
     });
 });

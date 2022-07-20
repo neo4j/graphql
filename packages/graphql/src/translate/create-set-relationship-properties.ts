@@ -89,7 +89,9 @@ function createSetRelationshipProperties({
 
         if (arrayPushField) {
             if (propertiesEntries.find(([entryKey]) => entryKey === arrayPushField.dbPropertyName)) {
-                throw new Error(`Ambiguous property: ${arrayPushField.dbPropertyName}`);
+                throw new Error(
+                    `Cannot mutate the same field multiple times in one Mutation: ${arrayPushField.dbPropertyName}`
+                );
             }
             const pointArrayField = relationship.pointFields.find((x) => `${x.fieldName}_PUSH` === key);
             if (pointArrayField) {
@@ -108,7 +110,9 @@ function createSetRelationshipProperties({
         const arrayPopField = relationship.primitiveFields.find((x) => `${x.fieldName}_POP` === key);
         if (arrayPopField) {
             if (propertiesEntries.find(([entryKey]) => entryKey === arrayPopField.dbPropertyName)) {
-                throw new Error(`Ambiguous property: ${arrayPopField.dbPropertyName}`);
+                throw new Error(
+                    `Cannot mutate the same field multiple times in one Mutation: ${arrayPopField.dbPropertyName}`
+                );
             }
             strs.push(
                 `SET ${varName}.${arrayPopField.dbPropertyName} = ${varName}.${arrayPopField.dbPropertyName}[0..-$${paramName}]`
@@ -120,7 +124,9 @@ function createSetRelationshipProperties({
         if (hasMatched) {
             const mathDescriptor = mathDescriptorBuilder(value as number, relationship, mathMatch);
             if (propertiesEntries.find(([entryKey]) => entryKey === mathDescriptor.dbName)) {
-                throw new Error(`Ambiguous property: ${mathDescriptor.dbName}`);
+                throw new Error(
+                    `Cannot mutate the same field multiple times in one Mutation: ${mathDescriptor.dbName}`
+                );
             }
 
             const mathStatements = buildMathStatements(mathDescriptor, varName, withVars, paramName);
