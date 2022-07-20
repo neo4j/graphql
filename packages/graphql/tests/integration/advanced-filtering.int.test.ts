@@ -693,15 +693,13 @@ describe("Advanced Filtering", () => {
                     `;
 
             const neoSchema = new Neo4jGraphQL({
-                config: {
-                    features: {
-                        filters: {
-                            String: {
-                                LT: true,
-                                GT: true,
-                                LTE: true,
-                                GTE: true,
-                            },
+                features: {
+                    filters: {
+                        String: {
+                            LT: true,
+                            GT: true,
+                            LTE: true,
+                            GTE: true,
                         },
                     },
                 },
@@ -714,13 +712,14 @@ describe("Advanced Filtering", () => {
             const matrixRevolutions = "The Matrix Revolutions";
 
             try {
-                await session.run(`
+                await session.run(
+                    `
                             CREATE (:${movieType.name} {title: $animatrix})
                             CREATE (:${movieType.name} {title: $matrix})
                             CREATE (:${movieType.name} {title: $matrixReloaded})
                             CREATE (:${movieType.name} {title: $matrixRevolutions})
                         `,
-                    { animatrix, matrix, matrixReloaded,  matrixRevolutions }
+                    { animatrix, matrix, matrixReloaded, matrixRevolutions }
                 );
 
                 const query = `
@@ -765,15 +764,13 @@ describe("Advanced Filtering", () => {
                     `;
 
             const neoSchema = new Neo4jGraphQL({
-                config: {
-                    features: {
-                        filters: {
-                            String: {
-                                LT: true,
-                                GT: true,
-                                LTE: true,
-                                GTE: true,
-                            },
+                features: {
+                    filters: {
+                        String: {
+                            LT: true,
+                            GT: true,
+                            LTE: true,
+                            GTE: true,
                         },
                     },
                 },
@@ -786,13 +783,14 @@ describe("Advanced Filtering", () => {
             const matrixResurrections = "The Matrix Resurrections";
 
             try {
-                await session.run(`
+                await session.run(
+                    `
                             CREATE (:${movieType.name} {title: $matrix})
                             CREATE (:${movieType.name} {title: $matrixReloaded})
                             CREATE (:${movieType.name} {title: $matrixRevolutions})
                             CREATE (:${movieType.name} {title: $matrixResurrections})
                         `,
-                    { matrix, matrixReloaded,  matrixRevolutions, matrixResurrections }
+                    { matrix, matrixReloaded, matrixRevolutions, matrixResurrections }
                 );
 
                 const query = `
@@ -819,7 +817,7 @@ describe("Advanced Filtering", () => {
                 expect((gqlResult.data as any)[movieType.plural]).toEqual([
                     { title: matrix },
                     { title: matrixReloaded },
-                    { title: matrixResurrections }
+                    { title: matrixResurrections },
                 ]);
             } finally {
                 await session.close();
@@ -838,15 +836,13 @@ describe("Advanced Filtering", () => {
                     `;
 
             const neoSchema = new Neo4jGraphQL({
-                config: {
-                    features: {
-                        filters: {
-                            String: {
-                                LT: true,
-                                GT: true,
-                                LTE: true,
-                                GTE: true,
-                            },
+                features: {
+                    filters: {
+                        String: {
+                            LT: true,
+                            GT: true,
+                            LTE: true,
+                            GTE: true,
                         },
                     },
                 },
@@ -859,13 +855,14 @@ describe("Advanced Filtering", () => {
             const matrixRevolutions = "The Matrix Revolutions";
 
             try {
-                await session.run(`
+                await session.run(
+                    `
                             CREATE (:${movieType.name} {title: $animatrix})
                             CREATE (:${movieType.name} {title: $matrix})
                             CREATE (:${movieType.name} {title: $matrixReloaded})
                             CREATE (:${movieType.name} {title: $matrixRevolutions})
                         `,
-                    { animatrix, matrix, matrixReloaded,  matrixRevolutions }
+                    { animatrix, matrix, matrixReloaded, matrixRevolutions }
                 );
 
                 const query = `
@@ -911,15 +908,13 @@ describe("Advanced Filtering", () => {
                     `;
 
             const neoSchema = new Neo4jGraphQL({
-                config: {
-                    features: {
-                        filters: {
-                            String: {
-                                LT: true,
-                                GT: true,
-                                LTE: true,
-                                GTE: true,
-                            },
+                features: {
+                    filters: {
+                        String: {
+                            LT: true,
+                            GT: true,
+                            LTE: true,
+                            GTE: true,
                         },
                     },
                 },
@@ -932,14 +927,15 @@ describe("Advanced Filtering", () => {
             const matrixResurrections = "The Matrix Resurrections";
 
             try {
-                await session.run(`
+                await session.run(
+                    `
                             CREATE (:${movieType.name} {title: $matrix})
                             CREATE (:${movieType.name} {title: $matrixReloaded})
                             CREATE (:${movieType.name} {title: $matrixRevolutions})
                             CREATE (:${movieType.name} {title: $matrixResurrections})
 
                         `,
-                    { matrix, matrixReloaded,  matrixRevolutions, matrixResurrections }
+                    { matrix, matrixReloaded, matrixRevolutions, matrixResurrections }
                 );
 
                 const query = `

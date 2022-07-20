@@ -39,7 +39,7 @@ The following operators are disabled by default:
 * `_GT`
 * `_GTE`
 
-They can be enabled by explicitly adding them in the config options:
+They can be enabled by explicitly adding them in the features options:
 
 [source, javascript, indent=0]
 ----
@@ -57,20 +57,18 @@ const driver = neo4j.driver(
     neo4j.auth.basic("neo4j", "password")
 );
 
-const config = {
-    features: {
-        filters: {
-            String: {
-                LT: true,
-                GT: true,
-                LTE: true,
-                GTE: true
-            }
-       }
+const features = {
+    filters: {
+        String: {
+            LT: true,
+            GT: true,
+            LTE: true,
+            GTE: true
+        }
     }
 };
 
-const neoSchema = new Neo4jGraphQL({ typeDefs, driver, config });
+const neoSchema = new Neo4jGraphQL({ features, typeDefs, driver });
 ----
 
 
