@@ -128,7 +128,8 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
             WHERE this_has_name_relationship.current = $this_nameDetailsConnection.args.where.edge.current
             WITH collect({ node: { fullName: this_namedetails.fullName } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS nameDetailsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
             }
             CALL {
             WITH this
@@ -140,11 +141,13 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
             WHERE this_masterdata_has_name_relationship.current = $this_architectureConnection.edges.node.nameDetailsConnection.args.where.edge.current
             WITH collect({ node: { fullName: this_masterdata_namedetails.fullName } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS nameDetailsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
             }
             WITH collect({ node: { nameDetailsConnection: nameDetailsConnection } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS architectureConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS architectureConnection
             }
             RETURN this { .id, nameDetailsConnection, architectureConnection } as this"
         `);

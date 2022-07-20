@@ -20,16 +20,23 @@
 import { gql } from "apollo-server";
 import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
-describe("Cypher -> fulltext -> Aggregate", () => {
+describe("https://github.com/neo4j/graphql/issues/1779", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = gql`
-            type Movie @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }]) {
-                title: String
+            type Person {
+                name: String
+                age: Int
+                attends: [School!]! @relationship(type: "attends", direction: OUT)
+            }
+
+            type School {
+                name: String
+                students: [Person!]! @relationship(type: "attends", direction: IN)
             }
         `;
 
@@ -38,29 +45,31 @@ describe("Cypher -> fulltext -> Aggregate", () => {
         });
     });
 
-    test("simple aggregate with single fulltext property", async () => {
+    test("EXISTS should not be within return clause", async () => {
         const query = gql`
-            query {
-                moviesAggregate(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                    count
+            {
+                people {
+                    name
+                    attends(where: { students_ALL: { age_GT: 23 } }) {
+                        name
+                    }
                 }
             }
         `;
 
-        const result = await translateQuery(neoSchema, query, {});
+        const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(
-                \\"MovieTitle\\",
-                $param0
-            ) YIELD node as this
-                        WHERE \\"Movie\\" IN labels(this)
-            RETURN { count: count(this) }"
+            "MATCH (this:\`Person\`)
+            RETURN this { .name, attends: [ (this)-[:attends]->(this_attends:School)  WHERE size([(this_attends_this0:\`Person\`)-[:attends]->(this_attends) WHERE NOT this_attends_this0.age > $this_attends_param0 | 1]) = 0 | this_attends { .name } ] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"something AND something\\"
+                \\"this_attends_param0\\": {
+                    \\"low\\": 23,
+                    \\"high\\": 0
+                }
             }"
         `);
     });

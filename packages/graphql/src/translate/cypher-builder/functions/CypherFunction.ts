@@ -22,7 +22,7 @@ import type { CypherEnvironment } from "../Environment";
 import type { Expr } from "../types";
 import type { NodeRef } from "../variables/NodeRef";
 
-type FunctionType = "coalesce" | "point" | "distance" | "datetime" | "labels";
+type FunctionType = "coalesce" | "point" | "distance" | "datetime" | "labels" | "size";
 
 export class CypherFunction extends CypherASTNode {
     protected name: FunctionType;
@@ -32,6 +32,11 @@ export class CypherFunction extends CypherASTNode {
         super();
         this.name = name;
         this.params = params;
+        for (const param of params) {
+            if (param instanceof CypherASTNode) {
+                this.addChildren(param);
+            }
+        }
     }
 
     public getCypher(env: CypherEnvironment): string {
@@ -59,4 +64,8 @@ export function labels(nodeRef: NodeRef): CypherFunction {
 
 export function cypherDatetime(): CypherFunction {
     return new CypherFunction("datetime");
+}
+
+export function size(expr: Expr): CypherFunction {
+    return new CypherFunction("size", [expr]);
 }

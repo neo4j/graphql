@@ -223,7 +223,8 @@ describe("Cypher coalesce()", () => {
             WHERE coalesce(this_movie.status, \\"ACTIVE\\") = $this_moviesConnection.args.where.node.status
             WITH collect({ node: { id: this_movie.id, status: this_movie.status } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS moviesConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
             }
             RETURN this { moviesConnection } as this"
         `);

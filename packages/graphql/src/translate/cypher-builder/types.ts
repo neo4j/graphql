@@ -24,9 +24,9 @@ import type { CypherFunction } from "./functions/CypherFunction";
 import type { Literal } from "./variables/Literal";
 import type { Exists } from "./Exists";
 import type { CypherEnvironment } from "./Environment";
-import type { CypherList } from "./list/List";
+import type { ComprehensionExpr } from "./list/ComprehensionExpr";
 
-export type Expr = Operation | Variable | PropertyRef | CypherFunction | Literal | Exists | CypherList;
+export type Expr = Operation | Variable | PropertyRef | CypherFunction | Literal | Exists | ComprehensionExpr;
 
 export type CypherResult = {
     cypher: string;

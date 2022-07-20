@@ -84,7 +84,8 @@ describe("Relay Cursor Connection projections", () => {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WITH collect({  }) AS edges
-            RETURN { totalCount: size(edges) } AS actorsConnection
+            WITH size(edges) AS totalCount
+            RETURN { totalCount: totalCount } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
@@ -125,7 +126,8 @@ describe("Relay Cursor Connection projections", () => {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WITH collect({  }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            WITH edges, size(edges) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
@@ -208,7 +210,8 @@ describe("Relay Cursor Connection projections", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { totalCount: size(edges) } AS productionsConnection
+            WITH size(edges) AS totalCount
+            RETURN { totalCount: totalCount } AS productionsConnection
             }
             RETURN this { .name, productionsConnection } as this"
         `);
@@ -259,7 +262,8 @@ describe("Relay Cursor Connection projections", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS productionsConnection
+            WITH edges, size(edges) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS productionsConnection
             }
             RETURN this { .name, productionsConnection } as this"
         `);
@@ -301,7 +305,8 @@ describe("Relay Cursor Connection projections", () => {
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WITH collect({ node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);

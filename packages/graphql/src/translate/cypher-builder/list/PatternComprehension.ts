@@ -18,27 +18,25 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
+import { MatchableElement, Pattern } from "../Pattern";
 import { Where, WhereParams } from "../sub-clauses/Where";
 import type { Expr } from "../types";
 import { compileCypherIfExists } from "../utils";
-import type { Variable } from "../variables/Variable";
 import { ComprehensionExpr } from "./ComprehensionExpr";
 
-export class ListComprehension extends ComprehensionExpr {
+export class PatternComprehension extends ComprehensionExpr {
+    private pattern: Pattern;
     private whereClause: Where | undefined;
-    private variable: Variable;
-    private listExpr: Expr;
     private mapExpr: Expr | undefined;
 
-    constructor(variable: Variable, listExpr: Expr, whereFilter?: WhereParams | undefined, mapExpr?: Expr) {
+    constructor(pattern: Pattern | MatchableElement, mapExpr?: Expr) {
         super();
-        this.variable = variable;
-        this.listExpr = listExpr;
-        this.mapExpr = mapExpr;
-
-        if (whereFilter) {
-            this.whereClause = new Where(this, whereFilter);
+        if (pattern instanceof Pattern) {
+            this.pattern = pattern;
+        } else {
+            this.pattern = new Pattern(pattern);
         }
+        this.mapExpr = mapExpr;
     }
 
     where(filter: WhereParams): this {
@@ -53,9 +51,8 @@ export class ListComprehension extends ComprehensionExpr {
     getCypher(env: CypherEnvironment): string {
         const whereStr = compileCypherIfExists(this.whereClause, env, { prefix: " " });
         const mapStr = compileCypherIfExists(this.mapExpr, env, { prefix: " | " });
-        const listExprStr = this.listExpr.getCypher(env);
-        const varCypher = this.variable.getCypher(env);
+        const patternStr = this.pattern.getCypher(env);
 
-        return `[${varCypher} IN ${listExprStr}${whereStr}${mapStr}]`;
+        return `[${patternStr}${whereStr}${mapStr}]`;
     }
 }

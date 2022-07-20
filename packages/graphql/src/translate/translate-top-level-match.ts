@@ -42,8 +42,7 @@ function translateTopLevelMatch({
 
     const matchNode = new CypherBuilder.NamedNode(varName, { labels: node.getLabels(context) });
 
-    let matchQuery: CypherBuilder.Match<CypherBuilder.Node> | CypherBuilder.db.FullTextQueryNodes =
-        new CypherBuilder.Match(matchNode);
+    let matchQuery: CypherBuilder.Match<CypherBuilder.Node> | CypherBuilder.db.FullTextQueryNodes;
 
     if (Object.entries(fulltextInput).length) {
         // This is only for fulltext search
@@ -51,11 +50,9 @@ function translateTopLevelMatch({
             throw new Error("Can only call one search at any given time");
         }
         const [indexName, indexInput] = Object.entries(fulltextInput)[0];
-        const baseParamName = `${varName}_fulltext_${indexName}`;
-        const paramPhraseName = `${baseParamName}_phrase`;
-        cypherParams[paramPhraseName] = indexInput.phrase;
+        const phraseParam = new CypherBuilder.Param(indexInput.phrase);
 
-        matchQuery = new CypherBuilder.db.FullTextQueryNodes(matchNode, indexName, paramPhraseName);
+        matchQuery = new CypherBuilder.db.FullTextQueryNodes(matchNode, indexName, phraseParam);
 
         const labelsChecks = node.getLabels(context).map((label) => {
             return CypherBuilder.in(new CypherBuilder.Literal(`"${label}"`), CypherBuilder.labels(matchNode));
@@ -63,6 +60,8 @@ function translateTopLevelMatch({
 
         const andChecks = CypherBuilder.and(...labelsChecks);
         if (andChecks) matchQuery.where(andChecks);
+    } else {
+        matchQuery = new CypherBuilder.Match(matchNode);
     }
 
     if (whereInput) {

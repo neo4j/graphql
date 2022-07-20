@@ -32,7 +32,7 @@ export function createCypherWhereParams({
     context,
     element,
 }: {
-    targetElement: CypherBuilder.Node | CypherBuilder.Relationship;
+    targetElement: CypherBuilder.Variable;
     whereInput: GraphQLWhereArg;
     context: Context;
     element: GraphElement;
@@ -44,6 +44,7 @@ export function createCypherWhereParams({
         context,
     });
 
+    // Implicit AND
     return CypherBuilder.and(...mappedProperties);
 }
 
@@ -55,7 +56,7 @@ function mapPropertiesToOperators({
 }: {
     whereInput: GraphQLWhereArg;
     element: GraphElement;
-    targetElement: CypherBuilder.Node | CypherBuilder.Variable;
+    targetElement: CypherBuilder.Variable;
     context: Context;
 }): Array<CypherBuilder.ComparisonOp | CypherBuilder.BooleanOp | CypherBuilder.RawCypher | CypherBuilder.Exists> {
     const whereFields = Object.entries(whereInput);
@@ -83,12 +84,12 @@ function mapBooleanPropertiesToOperators({
 }: {
     value: Array<any>;
     element: GraphElement;
-    targetElement: CypherBuilder.Node | CypherBuilder.Variable;
+    targetElement: CypherBuilder.Variable;
     context: Context;
 }): Array<CypherBuilder.ComparisonOp | CypherBuilder.BooleanOp | CypherBuilder.RawCypher | CypherBuilder.Exists> {
-    return value
-        .map((v) => {
-            return mapPropertiesToOperators({ whereInput: v, element, targetElement, context });
-        })
-        .flat();
+    const nestedOperations = value.map((v) => {
+        return createCypherWhereParams({ whereInput: v, element, targetElement, context });
+    });
+
+    return filterTruthy(nestedOperations);
 }

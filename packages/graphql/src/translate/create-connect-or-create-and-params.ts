@@ -52,7 +52,7 @@ export function createConnectOrCreateAndParams({
     context: Context;
     withVars: string[];
 }): CypherBuilder.CypherResult {
-    const withVarsVariables = withVars.map((name) => new CypherBuilder.RawVariable(name));
+    const withVarsVariables = withVars.map((name) => new CypherBuilder.NamedVariable(name));
 
     const statements = asArray(input).map((inputItem, index) => {
         const subqueryBaseName = `${varName}${index}`;
