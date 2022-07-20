@@ -195,7 +195,8 @@ describe("Cypher Auth Where", () => {
             WHERE exists((this_post)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_where0_creator_id)
             WITH collect({ node: { content: this_post.content } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS postsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS postsConnection
             }
             RETURN this { .id, postsConnection } as this"
         `);
@@ -238,7 +239,8 @@ describe("Cypher Auth Where", () => {
             WHERE this_post.id = $this_postsConnection.args.where.node.id AND exists((this_post)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_where0_creator_id)
             WITH collect({ node: { content: this_post.content } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS postsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS postsConnection
             }
             RETURN this { .id, postsConnection } as this"
         `);
@@ -361,7 +363,8 @@ describe("Cypher Auth Where", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS contentConnection
+            WITH edges, size(edges) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS contentConnection
             }
             RETURN this { .id, contentConnection } as this"
         `);
@@ -410,7 +413,8 @@ describe("Cypher Auth Where", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS contentConnection
+            WITH edges, size(edges) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS contentConnection
             }
             RETURN this { .id, contentConnection } as this"
         `);

@@ -2483,7 +2483,7 @@ __metadata:
     "@neo4j-ndl/react": ^0.6.0
     "@neo4j/graphql": ^3.5.0
     "@neo4j/introspector": ^1.0.1
-    "@playwright/test": 1.23.3
+    "@playwright/test": 1.23.4
     "@tsconfig/create-react-app": 1.0.2
     "@types/codemirror": 5.60.5
     "@types/crypto-js": 4.1.1
@@ -2581,7 +2581,7 @@ __metadata:
     koa-router: 12.0.0
     libnpmsearch: 5.0.3
     mock-jwks: 1.0.3
-    nock: 13.2.8
+    nock: 13.2.9
     npm-run-all: 4.1.5
     pluralize: ^8.0.0
     randomstring: 1.2.2
@@ -2695,15 +2695,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.23.3":
-  version: 1.23.3
-  resolution: "@playwright/test@npm:1.23.3"
+"@playwright/test@npm:1.23.4":
+  version: 1.23.4
+  resolution: "@playwright/test@npm:1.23.4"
   dependencies:
     "@types/node": "*"
-    playwright-core: 1.23.3
+    playwright-core: 1.23.4
   bin:
     playwright: cli.js
-  checksum: 77e1ac3064c05cfb9d7ea165a2654433711f653cdf63e5040c08779002d1bdfcac4d55f4abd932e086d400fb4a84e37c5023f9535967d005f96b99aed4d3b858
+  checksum: 7004308fde2c3ff1062b50115f9db9eb74d3e0c6cdee42d723a3a4ccbf811c3cf2be934c75d706c464c17a8839ae9237c2abbf90ec46bd3ddec8d34c24dc9c4b
   languageName: node
   linkType: hard
 
@@ -8152,9 +8152,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-import-resolver-typescript@npm:3.2.7":
-  version: 3.2.7
-  resolution: "eslint-import-resolver-typescript@npm:3.2.7"
+"eslint-import-resolver-typescript@npm:3.3.0":
+  version: 3.3.0
+  resolution: "eslint-import-resolver-typescript@npm:3.3.0"
   dependencies:
     debug: ^4.3.4
     enhanced-resolve: ^5.10.0
@@ -8166,7 +8166,7 @@ __metadata:
   peerDependencies:
     eslint: "*"
     eslint-plugin-import: "*"
-  checksum: 7f63d58182b77adac3f2cbc4ac5dcd487a5b9acf125ff59d1731dd0e74ffbad7fdbb9ac71c893963e84255cd4d5ff6a6ef3078e5b9ed180c713a2fa82797a51f
+  checksum: c5ccb5c15dbf7a7cddcb5daca9d7a412d523f8009a82e5869ef131f3e8717d501fddd1707528f516d9e54aef2936ea2d1e0f39ae7bfc62efa35ed7e329590c05
   languageName: node
   linkType: hard
 
@@ -13670,7 +13670,7 @@ __metadata:
     eslint: 8.20.0
     eslint-config-airbnb-typescript: 17.0.0
     eslint-config-prettier: 8.5.0
-    eslint-import-resolver-typescript: 3.2.7
+    eslint-import-resolver-typescript: 3.3.0
     eslint-plugin-eslint-comments: 3.2.0
     eslint-plugin-import: 2.26.0
     eslint-plugin-jest: 26.6.0
@@ -13715,15 +13715,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nock@npm:13.2.8":
-  version: 13.2.8
-  resolution: "nock@npm:13.2.8"
+"nock@npm:13.2.9":
+  version: 13.2.9
+  resolution: "nock@npm:13.2.9"
   dependencies:
     debug: ^4.1.0
     json-stringify-safe: ^5.0.1
     lodash: ^4.17.21
     propagate: ^2.0.0
-  checksum: 656f696d3c1b6267b8ec366f5cc464306d2aa308ce9b41414e9992eea5b0b71e475a582945b936e16263961c3a0f9e1c388a3a36da53c1e300398a7826550f96
+  checksum: 04a2dc60b4b55fd1240f28fe34865bbc744088a4570db3781fcf66021644cc3cc9178fd86a0cb0c1f28ea77b83e8f1c9288535f6b39a6d07100059f156ccc23b
   languageName: node
   linkType: hard
 
@@ -14951,12 +14951,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.23.3":
-  version: 1.23.3
-  resolution: "playwright-core@npm:1.23.3"
+"playwright-core@npm:1.23.4":
+  version: 1.23.4
+  resolution: "playwright-core@npm:1.23.4"
   bin:
     playwright: cli.js
-  checksum: e83cf0b05d791ded54e155fc8cb5689dcb57e02f315f23f5955d769fbb40685ce085218debbc6e617280b0d432e857631762c010586dfd19a6f14a5149384ecd
+  checksum: 347a40f2fbcc9ee896c5cf8d8211ffa7a200e22f154e879d9e829ee6bd365acc1c69c8b11a64a96a9d2fae9c85e859c995680be1a15b5e74c367ffa53425c9c9
   languageName: node
   linkType: hard
 

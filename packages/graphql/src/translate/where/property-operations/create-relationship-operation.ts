@@ -37,7 +37,7 @@ export function createRelationshipOperation({
     operator: string | undefined;
     value: GraphQLWhereArg;
     isNot: boolean;
-}): CypherBuilder.BooleanOp | CypherBuilder.Exists | CypherBuilder.RawCypher | undefined {
+}): CypherBuilder.BooleanOp | CypherBuilder.Exists | CypherBuilder.ComparisonOp | undefined {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
 
@@ -55,10 +55,10 @@ export function createRelationshipOperation({
         relationship: { variable: false },
     });
 
-    const existsSubquery = new CypherBuilder.Match(matchPattern, {});
-    const exists = new CypherBuilder.Exists(existsSubquery);
-
+    // TODO: check null in return projection
     if (value === null) {
+        const existsSubquery = new CypherBuilder.Match(matchPattern, {});
+        const exists = new CypherBuilder.Exists(existsSubquery);
         if (!isNot) {
             // Bit confusing, but basically checking for not null is the same as checking for relationship exists
             return CypherBuilder.not(exists);
@@ -78,33 +78,29 @@ export function createRelationshipOperation({
         return undefined;
     }
 
+    const patternComprehension = new CypherBuilder.PatternComprehension(matchPattern, new CypherBuilder.Literal(1));
+    const sizeFunction = CypherBuilder.size(patternComprehension);
+
+    // TODO: use EXISTS in top-level where
     switch (operator) {
         case "ALL": {
             const notProperties = CypherBuilder.not(relationOperator);
 
-            existsSubquery.where(notProperties);
-            return CypherBuilder.not(exists);
+            patternComprehension.where(notProperties);
+            return CypherBuilder.eq(sizeFunction, new CypherBuilder.Literal(0));
         }
         case "NOT":
-        case "NONE":
-            existsSubquery.where(relationOperator);
-            return CypherBuilder.not(exists);
-
+        case "NONE": {
+            patternComprehension.where(relationOperator);
+            return CypherBuilder.eq(sizeFunction, new CypherBuilder.Literal(0));
+        }
         case "SINGLE": {
-            existsSubquery.where(relationOperator);
-            return createSizeStatement(existsSubquery);
+            patternComprehension.where(relationOperator);
+            return CypherBuilder.eq(sizeFunction, new CypherBuilder.Literal(1));
         }
         case "SOME":
         default:
-            existsSubquery.where(relationOperator);
-            return exists;
+            patternComprehension.where(relationOperator);
+            return CypherBuilder.gt(sizeFunction, new CypherBuilder.Literal(0));
     }
-}
-
-function createSizeStatement(existsSubquery: CypherBuilder.Match): CypherBuilder.RawCypher {
-    return new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
-        const subqueryStr = existsSubquery.getCypher(env).replace("MATCH", ""); // This should be part of list comprehension, match clause
-        const str = `size([${subqueryStr} | 1]) = 1`; // TODO: change this into a patternComprehension
-        return [str, {}];
-    });
 }

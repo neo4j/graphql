@@ -18,7 +18,7 @@
  */
 
 import { isString } from "graphql-compose";
-import { RawVariable, Variable } from "../variables/Variable";
+import { NamedVariable, Variable } from "../variables/Variable";
 import type { CypherEnvironment } from "../Environment";
 import { Clause } from "./Clause";
 import { compileCypherIfExists } from "../utils";
@@ -80,7 +80,7 @@ export class With extends Clause {
 
     private varOrStringToVar(rawVar: Variable | string): Variable {
         if (isString(rawVar)) {
-            return new RawVariable(rawVar);
+            return new NamedVariable(rawVar);
         }
         return rawVar;
     }

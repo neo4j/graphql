@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
+import { CypherASTNode } from "../CypherASTNode";
 import type { CypherEnvironment } from "../Environment";
-import type { CypherCompilable } from "../types";
 
-export abstract class CypherList implements CypherCompilable {
+/** Groups both comprehension expressions into a single type */
+export abstract class ComprehensionExpr extends CypherASTNode {
     abstract getCypher(env: CypherEnvironment): string;
 }

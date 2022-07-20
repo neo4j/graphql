@@ -87,7 +87,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Equality", () => {
             WHERE this_actor.name = $this_actorsConnection.args.where.node.name
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
@@ -137,7 +138,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Equality", () => {
             WHERE (NOT this_actor.name = $this_actorsConnection.args.where.node.name_NOT)
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);

@@ -18,22 +18,22 @@
  */
 
 import { dedent } from "graphql-compose";
-import type { Param } from "../CypherBuilder";
-import type { CypherEnvironment } from "../Environment";
-import { Where, WhereParams } from "../sub-clauses/Where";
-import type { NodeRef } from "../variables/NodeRef";
-import { Clause } from "./Clause";
-import { Return } from "./Return";
+import type { Variable } from "../../CypherBuilder";
+import type { CypherEnvironment } from "../../Environment";
+import { Where, WhereParams } from "../../sub-clauses/Where";
+import type { NodeRef } from "../../variables/NodeRef";
+import { Clause } from "../Clause";
+import { Return } from "../Return";
 
 export class FullTextQueryNodes extends Clause {
     private targetNode: NodeRef;
     private indexName: string;
-    private phrase: Param;
+    private phrase: Variable;
 
     private whereClause: Where | undefined;
     private returnClause: Return | undefined;
 
-    constructor(targetNode: NodeRef, indexName: string, phrase: Param, parent?: Clause) {
+    constructor(targetNode: NodeRef, indexName: string, phrase: Variable, parent?: Clause) {
         super(parent);
         this.targetNode = targetNode;
         this.indexName = indexName;

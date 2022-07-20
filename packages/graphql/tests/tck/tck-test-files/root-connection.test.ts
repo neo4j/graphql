@@ -203,7 +203,8 @@ describe("Root Connection Query tests", () => {
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WITH collect({ node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             WITH COLLECT({ node: this { .title, actorsConnection } }) as edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } as this"

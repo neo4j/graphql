@@ -19,7 +19,6 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery } from "../../utils/tck-test-utils";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
@@ -41,7 +40,7 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         const secret = "shh-its-a-secret";
 
-        const sub = "myvalue";
+        const sub = "my-sub";
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
@@ -76,7 +75,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         expect(result.params).toMatchInlineSnapshot(`
             Object {
               "param1": "something AND something",
-              "this_auth_where0_director_id": "myvalue",
+              "this_auth_where0_director_id": "my-sub",
             }
         `);
     });
@@ -97,7 +96,8 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         const secret = "shh-its-a-secret";
 
-        const sub = "my sub";
+        const sub = "my-sub";
+
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
@@ -132,7 +132,7 @@ describe("Cypher -> fulltext -> Auth", () => {
         expect(result.params).toMatchInlineSnapshot(`
             Object {
               "param0": "something AND something",
-              "this_auth_allow0_director_id": "my sub",
+              "this_auth_allow0_director_id": "my-sub",
             }
         `);
     });
