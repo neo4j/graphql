@@ -53,12 +53,12 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
             type ${movieType.name} implements ${productionType.name} {
                 id: ID
                 title: String
-                ${genreType.plural}: [${genreType.name}!]! @relationship(type: "HAS_GENRE", direction: OUT)
+                genres: [${genreType.name}!]! @relationship(type: "HAS_GENRE", direction: OUT)
             }
             
             type ${genreType.name} {
                 name: String
-                ${movieType.plural}: [${productionType.name}!]! @relationship(type: "HAS_GENRE", direction: IN)
+                movies: [${productionType.name}!]! @relationship(type: "HAS_GENRE", direction: IN)
             }
         `;
         const neoGraphql = new Neo4jGraphQL({
@@ -76,10 +76,10 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
         const query = `
             query Genres {
                 ${genreType.plural} {
-                    ${movieType.operations.connection}(
+                    moviesConnection(
                         where: {
                             node: {
-                                _on: { ${movieType.name}: { ${genreType.operations.connection}_SOME: { node: { name: "Fantasy" } } } }
+                                _on: { ${movieType.name}: { genresConnection_SOME: { node: { name: "Fantasy" } } } }
                             }
                         }) {
                     totalCount
@@ -109,19 +109,19 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
             [genreType.plural]: [
                 {
                     name: "Sci-fi",
-                    [movieType.operations.connection]: {
+                    moviesConnection: {
                         totalCount: 0,
                     },
                 },
                 {
                     name: "Action",
-                    [movieType.operations.connection]: {
+                    moviesConnection: {
                         totalCount: 0,
                     },
                 },
                 {
                     name: "Fantasy",
-                    [movieType.operations.connection]: {
+                    moviesConnection: {
                         totalCount: 1,
                     },
                 },
