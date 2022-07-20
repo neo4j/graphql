@@ -68,13 +68,13 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.name = $this_name
+            "MATCH (this:\`User\`)
+            WHERE this.name = $param0
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_activeOrganization0_node:Organization)
-            	WHERE this_connect_activeOrganization0_node._id = $this_connect_activeOrganization0_node_id
+            	WHERE this_connect_activeOrganization0_node._id = $this_connect_activeOrganization0_node_param0
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this_connect_activeOrganization0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:ACTIVELY_MANAGING]->(this_connect_activeOrganization0_node)
@@ -105,8 +105,8 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_name\\": \\"Luke Skywalker\\",
-                \\"this_connect_activeOrganization0_node_id\\": \\"test-id\\",
+                \\"param0\\": \\"Luke Skywalker\\",
+                \\"this_connect_activeOrganization0_node_param0\\": \\"test-id\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
                         \\"disconnect\\": {

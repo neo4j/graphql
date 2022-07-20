@@ -17,15 +17,64 @@
  * limitations under the License.
  */
 
-export { Query } from "./statements/Query";
-export { Create } from "./statements/Create";
-export { Merge } from "./statements/Merge";
-export { Apoc } from "./statements/Apoc";
-export { Call } from "./statements/Call";
-export { Match } from "./statements/Match";
+// Clauses
+export { Match } from "./clauses/Match";
+export { Create } from "./clauses/Create";
+export { Merge } from "./clauses/Merge";
+export { Call } from "./clauses/Call";
+export { Return } from "./clauses/Return";
+export { RawCypher } from "./clauses/RawCypher";
+export { With } from "./clauses/With";
 
-export { Node, NamedNode } from "./references/Node";
-export { Param, RawParam } from "./references/Param";
-export { Relationship } from "./references/Relationship";
+// Clauses-like things
+export { Exists } from "./Exists";
+export { concat } from "./clauses/utils/concat";
+export * as db from "./clauses/procedures/db";
 
-export { CypherResult } from "./types";
+// Variables and references
+export { NodeRef as Node, NamedNode } from "./variables/NodeRef";
+export { RelationshipRef as Relationship } from "./variables/RelationshipRef";
+export { Param, RawParam } from "./variables/Param";
+export { NamedVariable, Variable } from "./variables/Variable";
+export { CypherNull as Null } from "./variables/Null";
+export { Literal } from "./variables/Literal";
+
+// Lists
+export { ListComprehension } from "./list/ListComprehension";
+export { PatternComprehension } from "./list/PatternComprehension";
+
+export { Pattern } from "./Pattern"; // TODO: Maybe this should not be exported
+
+// Operations
+export { or, and, not } from "./operations/boolean";
+export {
+    eq,
+    gt,
+    gte,
+    lt,
+    lte,
+    isNull,
+    isNotNull,
+    inOp as in,
+    contains,
+    startsWith,
+    endsWith,
+    matches,
+} from "./operations/comparison";
+export { plus, minus } from "./operations/math";
+
+// Functions
+export { coalesce, point, distance, cypherDatetime as datetime, labels, size } from "./functions/CypherFunction";
+
+// Types
+export type { CypherResult } from "./types";
+export type { PropertyRef } from "./PropertyRef";
+export type { Clause } from "./clauses/Clause";
+export type { CypherEnvironment as Environment } from "./Environment";
+export type { Operation } from "./operations/Operation";
+export type { ComparisonOp } from "./operations/comparison";
+export type { BooleanOp } from "./operations/boolean";
+export type { WhereParams } from "./sub-clauses/Where";
+export type { Expr } from "./types";
+export type { CypherFunction as Function } from "./functions/CypherFunction";
+export type { ComprehensionExpr } from "./list/ComprehensionExpr";

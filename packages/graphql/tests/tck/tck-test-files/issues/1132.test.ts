@@ -58,12 +58,12 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Source)
+            "MATCH (this:\`Source\`)
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_targets0_node:Target)
-            	WHERE this_connect_targets0_node.id = $this_connect_targets0_node_id
+            	WHERE this_connect_targets0_node.id = $this_connect_targets0_node_param0
             	WITH this, this_connect_targets0_node
             	CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $thisSource1_allow_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
@@ -78,7 +78,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connect_targets0_node_id\\": \\"1\\",
+                \\"this_connect_targets0_node_param0\\": \\"1\\",
                 \\"thisSource1_allow_auth_allow0_id\\": \\"1\\",
                 \\"resolvedCallbacks\\": {}
             }"
@@ -119,7 +119,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Source)
+            "MATCH (this:\`Source\`)
             WITH this
             CALL {
             WITH this

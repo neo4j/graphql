@@ -65,7 +65,7 @@ describe("tck/rfcs/query-limits", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "MATCH (this:\`Movie\`)
                 RETURN this { .id } as this
                 LIMIT $this_limit"
             `);
@@ -95,7 +95,7 @@ describe("tck/rfcs/query-limits", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Show)
+                "MATCH (this:\`Show\`)
                 RETURN this { .id } as this
                 LIMIT $this_limit"
             `);
@@ -125,7 +125,7 @@ describe("tck/rfcs/query-limits", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Show)
+                "MATCH (this:\`Show\`)
                 RETURN this { .id } as this
                 LIMIT $this_limit"
             `);
@@ -160,7 +160,7 @@ describe("tck/rfcs/query-limits", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "MATCH (this:\`Movie\`)
                 RETURN this { .id, actors: [ (this)<-[:ACTED_IN]-(this_actors:Person)   | this_actors { .id } ][..2] } as this
                 LIMIT $this_limit"
             `);
@@ -197,7 +197,7 @@ describe("tck/rfcs/query-limits", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "MATCH (this:\`Movie\`)
                 CALL {
                 WITH this
                 MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_person:Person)
@@ -237,19 +237,19 @@ describe("tck/rfcs/query-limits", () => {
             });
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:Movie)
-RETURN this { .id, actors: [ (this)<-[:ACTED_IN]-(this_actors:Person)   | this_actors { .id } ][..2] } as this
-LIMIT $this_limit"
-`);
+                "MATCH (this:\`Movie\`)
+                RETURN this { .id, actors: [ (this)<-[:ACTED_IN]-(this_actors:Person)   | this_actors { .id } ][..2] } as this
+                LIMIT $this_limit"
+            `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
-"{
-    \\"this_limit\\": {
-        \\"low\\": 3,
-        \\"high\\": 0
-    }
-}"
-`);
+                "{
+                    \\"this_limit\\": {
+                        \\"low\\": 3,
+                        \\"high\\": 0
+                    }
+                }"
+            `);
         });
     });
 });

@@ -50,15 +50,15 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
-                $this_fulltext_MovieTitle_phrase
+                $param0
             ) YIELD node as this
-            WHERE \\"Movie\\" IN labels(this) AND \\"AnotherLabel\\" IN labels(this)
+                        WHERE (\\"Movie\\" IN labels(this) AND \\"AnotherLabel\\" IN labels(this))
             RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_fulltext_MovieTitle_phrase\\": \\"something AND something\\"
+                \\"param0\\": \\"something AND something\\"
             }"
         `);
     });
@@ -101,15 +101,15 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
-                $this_fulltext_MovieTitle_phrase
+                $param0
             ) YIELD node as this
-            WHERE \\"Movie\\" IN labels(this) AND \\"some-label\\" IN labels(this)
+                        WHERE (\\"Movie\\" IN labels(this) AND \\"some-label\\" IN labels(this))
             RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_fulltext_MovieTitle_phrase\\": \\"something AND something\\"
+                \\"param0\\": \\"something AND something\\"
             }"
         `);
     });

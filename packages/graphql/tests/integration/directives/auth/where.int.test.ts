@@ -71,6 +71,7 @@ describe("auth/where", () => {
             try {
                 await session.run(`
                     CREATE (:User {id: "${userId}"})
+                    CREATE (:User {id: "anotherUser"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: userId });

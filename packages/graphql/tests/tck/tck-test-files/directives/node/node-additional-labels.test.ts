@@ -173,13 +173,13 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`:\`Multimedia\`)
-            WHERE this.id = $this_id
+            WHERE this.id = $param0
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"123\\"
+                \\"param0\\": \\"123\\"
             }"
         `);
     });
@@ -202,14 +202,14 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`:\`Multimedia\`)
-            WHERE this.id = $this_id
+            WHERE this.id = $param0
             SET this.id = $this_update_id
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"1\\",
+                \\"param0\\": \\"1\\",
                 \\"this_update_id\\": \\"2\\",
                 \\"resolvedCallbacks\\": {}
             }"

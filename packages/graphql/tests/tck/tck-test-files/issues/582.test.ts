@@ -72,27 +72,23 @@ describe("#582", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Entity)
-            WHERE this.type = $this_type AND size([(this)-[this_childrenConnection_Entity_EntityChildrenRelationship:EDGE]->(this_childrenConnection_Entity:Entity) WHERE this_childrenConnection_Entity.type = $this_entities.where.childrenConnection.node.type AND apoc.cypher.runFirstColumn(\\"RETURN exists((this_childrenConnection_Entity)<-[:EDGE]-(:Entity))
-            AND any(this_childrenConnection_Entity_Entity_map IN [(this_childrenConnection_Entity)<-[this_childrenConnection_Entity_Entity_EntityParentsRelationship:EDGE]-(this_childrenConnection_Entity_Entity:Entity) | { node: this_childrenConnection_Entity_Entity, relationship: this_childrenConnection_Entity_Entity_EntityParentsRelationship } ] WHERE
-            this_childrenConnection_Entity_Entity_map.node.type = $this_entities.where.childrenConnection.node.parentsConnection.node.type
-            )\\", { this_childrenConnection_Entity: this_childrenConnection_Entity, this_entities: $this_entities }) | 1]) > 0
+            "MATCH (this:\`Entity\`)
+            WHERE (this.type = $param0 AND size([(this)-[this0:EDGE]->(this1:\`Entity\`) WHERE this1.type = $nestedParam1.node.type AND apoc.cypher.runFirstColumn(\\"RETURN exists((this1)<-[:EDGE]-(:Entity))
+            AND any(this1_Entity_map IN [(this1)<-[this1_Entity_EntityParentsRelationship:EDGE]-(this1_Entity:Entity) | { node: this1_Entity, relationship: this1_Entity_EntityParentsRelationship } ] WHERE
+            this1_Entity_map.node.type = $nestedParam1.node.parentsConnection.node.type
+            )\\", { this1: this1, nestedParam1: $nestedParam1 }) | 1]) > 0)
             RETURN this { .type } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_type\\": \\"Cat\\",
-                \\"this_entities\\": {
-                    \\"where\\": {
-                        \\"childrenConnection\\": {
+                \\"param0\\": \\"Cat\\",
+                \\"nestedParam1\\": {
+                    \\"node\\": {
+                        \\"type\\": \\"Dog\\",
+                        \\"parentsConnection\\": {
                             \\"node\\": {
-                                \\"type\\": \\"Dog\\",
-                                \\"parentsConnection\\": {
-                                    \\"node\\": {
-                                        \\"type\\": \\"Bird\\"
-                                    }
-                                }
+                                \\"type\\": \\"Bird\\"
                             }
                         }
                     }
@@ -134,33 +130,29 @@ describe("#582", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Entity)
-            WHERE this.type = $this_type AND size([(this)-[this_childrenConnection_Entity_EntityChildrenRelationship:EDGE]->(this_childrenConnection_Entity:Entity) WHERE this_childrenConnection_Entity.type = $this_entities.where.childrenConnection.node.type AND apoc.cypher.runFirstColumn(\\"RETURN exists((this_childrenConnection_Entity)<-[:EDGE]-(:Entity))
-            AND any(this_childrenConnection_Entity_Entity_map IN [(this_childrenConnection_Entity)<-[this_childrenConnection_Entity_Entity_EntityParentsRelationship:EDGE]-(this_childrenConnection_Entity_Entity:Entity) | { node: this_childrenConnection_Entity_Entity, relationship: this_childrenConnection_Entity_Entity_EntityParentsRelationship } ] WHERE
-            this_childrenConnection_Entity_Entity_map.node.type = $this_entities.where.childrenConnection.node.parentsConnection.node.type AND apoc.cypher.runFirstColumn(\\\\\\"RETURN exists((this_childrenConnection_Entity_Entity_map_node)-[:EDGE]->(:Entity))
-            AND any(this_childrenConnection_Entity_Entity_map_node_Entity_map IN [(this_childrenConnection_Entity_Entity_map_node)-[this_childrenConnection_Entity_Entity_map_node_Entity_EntityChildrenRelationship:EDGE]->(this_childrenConnection_Entity_Entity_map_node_Entity:Entity) | { node: this_childrenConnection_Entity_Entity_map_node_Entity, relationship: this_childrenConnection_Entity_Entity_map_node_Entity_EntityChildrenRelationship } ] WHERE
-            this_childrenConnection_Entity_Entity_map_node_Entity_map.node.type = $this_entities.where.childrenConnection.node.parentsConnection.node.childrenConnection.node.type
-            )\\\\\\", { this_childrenConnection_Entity_Entity_map_node: this_childrenConnection_Entity_Entity_map.node, this_entities: $this_entities })
-            )\\", { this_childrenConnection_Entity: this_childrenConnection_Entity, this_entities: $this_entities }) | 1]) > 0
+            "MATCH (this:\`Entity\`)
+            WHERE (this.type = $param0 AND size([(this)-[this0:EDGE]->(this1:\`Entity\`) WHERE this1.type = $nestedParam1.node.type AND apoc.cypher.runFirstColumn(\\"RETURN exists((this1)<-[:EDGE]-(:Entity))
+            AND any(this1_Entity_map IN [(this1)<-[this1_Entity_EntityParentsRelationship:EDGE]-(this1_Entity:Entity) | { node: this1_Entity, relationship: this1_Entity_EntityParentsRelationship } ] WHERE
+            this1_Entity_map.node.type = $nestedParam1.node.parentsConnection.node.type AND apoc.cypher.runFirstColumn(\\\\\\"RETURN exists((this1_Entity_map_node)-[:EDGE]->(:Entity))
+            AND any(this1_Entity_map_node_Entity_map IN [(this1_Entity_map_node)-[this1_Entity_map_node_Entity_EntityChildrenRelationship:EDGE]->(this1_Entity_map_node_Entity:Entity) | { node: this1_Entity_map_node_Entity, relationship: this1_Entity_map_node_Entity_EntityChildrenRelationship } ] WHERE
+            this1_Entity_map_node_Entity_map.node.type = $nestedParam1.node.parentsConnection.node.childrenConnection.node.type
+            )\\\\\\", { this1_Entity_map_node: this1_Entity_map.node, nestedParam1: $nestedParam1 })
+            )\\", { this1: this1, nestedParam1: $nestedParam1 }) | 1]) > 0)
             RETURN this { .type } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_type\\": \\"Cat\\",
-                \\"this_entities\\": {
-                    \\"where\\": {
-                        \\"childrenConnection\\": {
+                \\"param0\\": \\"Cat\\",
+                \\"nestedParam1\\": {
+                    \\"node\\": {
+                        \\"type\\": \\"Dog\\",
+                        \\"parentsConnection\\": {
                             \\"node\\": {
-                                \\"type\\": \\"Dog\\",
-                                \\"parentsConnection\\": {
+                                \\"type\\": \\"Bird\\",
+                                \\"childrenConnection\\": {
                                     \\"node\\": {
-                                        \\"type\\": \\"Bird\\",
-                                        \\"childrenConnection\\": {
-                                            \\"node\\": {
-                                                \\"type\\": \\"Fish\\"
-                                            }
-                                        }
+                                        \\"type\\": \\"Fish\\"
                                     }
                                 }
                             }

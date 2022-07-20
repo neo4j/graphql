@@ -60,8 +60,8 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
-            WHERE this.points = [p in $this_points | point(p)]
+            "MATCH (this:\`PointContainer\`)
+            WHERE this.points = [var0 IN $param0 | point(var0)]
             RETURN this { points: apoc.cypher.runFirstColumn('RETURN
             CASE this.points IS NOT NULL
             	WHEN true THEN [p in this.points | { point:p, crs: p.crs }]
@@ -71,7 +71,7 @@ describe("Cypher Points", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_points\\": [
+                \\"param0\\": [
                     {
                         \\"longitude\\": 1,
                         \\"latitude\\": 2
@@ -99,8 +99,8 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
-            WHERE (NOT this.points = [p in $this_points_NOT | point(p)])
+            "MATCH (this:\`PointContainer\`)
+            WHERE NOT this.points = [var0 IN $param0 | point(var0)]
             RETURN this { points: apoc.cypher.runFirstColumn('RETURN
             CASE this.points IS NOT NULL
             	WHEN true THEN [p in this.points | { point:p }]
@@ -110,7 +110,7 @@ describe("Cypher Points", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_points_NOT\\": [
+                \\"param0\\": [
                     {
                         \\"longitude\\": 1,
                         \\"latitude\\": 2
@@ -139,8 +139,8 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
-            WHERE point($this_points_INCLUDES) IN this.points
+            "MATCH (this:\`PointContainer\`)
+            WHERE point($param0) IN this.points
             RETURN this { points: apoc.cypher.runFirstColumn('RETURN
             CASE this.points IS NOT NULL
             	WHEN true THEN [p in this.points | { point:p, crs: p.crs }]
@@ -150,7 +150,7 @@ describe("Cypher Points", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_points_INCLUDES\\": {
+                \\"param0\\": {
                     \\"longitude\\": 1,
                     \\"latitude\\": 2
                 }
@@ -177,8 +177,8 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
-            WHERE (NOT point($this_points_NOT_INCLUDES) IN this.points)
+            "MATCH (this:\`PointContainer\`)
+            WHERE NOT point($param0) IN this.points
             RETURN this { points: apoc.cypher.runFirstColumn('RETURN
             CASE this.points IS NOT NULL
             	WHEN true THEN [p in this.points | { point:p, crs: p.crs }]
@@ -188,7 +188,7 @@ describe("Cypher Points", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_points_NOT_INCLUDES\\": {
+                \\"param0\\": {
                     \\"longitude\\": 1,
                     \\"latitude\\": 2
                 }
@@ -264,8 +264,8 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
-            WHERE this.id = $this_id
+            "MATCH (this:\`PointContainer\`)
+            WHERE this.id = $param0
             SET this.points = [p in $this_update_points | point(p)]
             RETURN collect(DISTINCT this { points: apoc.cypher.runFirstColumn('RETURN
             CASE this.points IS NOT NULL
@@ -276,7 +276,7 @@ describe("Cypher Points", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"id\\",
+                \\"param0\\": \\"id\\",
                 \\"this_update_points\\": [
                     {
                         \\"longitude\\": 1,
