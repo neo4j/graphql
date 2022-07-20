@@ -137,6 +137,24 @@ mutation {
 }
 ----
 
+Or push multiple elements in a single update:
+
+Before: `['some tag']`
+
+After: `['some tag', 'another tag', 'one more tag']`
+
+[source, graphql, indent=0]
+----
+mutation {
+    updateMovies (update: { tags_PUSH: ["another tag", "one more tag"] }) {
+        movies {
+            title
+            tags
+        }
+    }
+}
+----
+
 Similarly, you can have multiple array property fields and update them in the same query:
 
 [source, graphql, indent=0]
