@@ -52,7 +52,7 @@ describe("Cypher -> fulltext -> Aggregate", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
-                $this_fulltext_MovieTitle_phrase
+                $param0
             ) YIELD node as this
                         WHERE \\"Movie\\" IN labels(this)
             RETURN { count: count(this) }"
@@ -60,7 +60,7 @@ describe("Cypher -> fulltext -> Aggregate", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_fulltext_MovieTitle_phrase\\": \\"something AND something\\"
+                \\"param0\\": \\"something AND something\\"
             }"
         `);
     });
