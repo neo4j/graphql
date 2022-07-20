@@ -89,7 +89,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> AND", () => {
             WHERE ((this_acted_in_relationship.role ENDS WITH $this_actorsConnection.args.where.edge.AND[0].role_ENDS_WITH) AND (this_acted_in_relationship.screenTime < $this_actorsConnection.args.where.edge.AND[1].screenTime_LT))
             WITH collect({ role: this_acted_in_relationship.role, screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(collect(edge)) } AS actorsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);

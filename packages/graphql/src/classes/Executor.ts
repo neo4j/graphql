@@ -165,7 +165,8 @@ export class Executor {
     }
 
     private getSessionParam(defaultAccessMode: SessionMode): SessionParam {
-        const sessionParam: SessionParam = { defaultAccessMode };
+        // Always specify a default database to avoid requests for routing table
+        const sessionParam: SessionParam = { defaultAccessMode, database: "neo4j" };
 
         if (this.database) {
             sessionParam.database = this.database;
