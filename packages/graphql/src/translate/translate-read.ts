@@ -58,71 +58,71 @@ export function translateRead({
     matchAndWhereStr = topLevelMatch.cypher;
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
-    const projection = createProjectionAndParams({
-        node,
-        context,
-        resolveTree,
-        varName,
-        isRootConnectionField,
-    });
-    cypherParams = { ...cypherParams, ...projection[1] };
-    if (projection[2]?.authValidateStrs?.length) {
-        projAuth = `CALL apoc.util.validate(NOT (${projection[2].authValidateStrs.join(
-            " AND "
-        )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-    }
-
-    if (projection[2]?.connectionFields?.length) {
-        projection[2].connectionFields.forEach((connectionResolveTree) => {
-            const connectionField = node.connectionFields.find(
-                (x) => x.fieldName === connectionResolveTree.name
-            ) as ConnectionField;
-            const connection = createConnectionAndParams({
-                resolveTree: connectionResolveTree,
-                field: connectionField,
-                context,
-                nodeVariable: varName,
-            });
-            connectionStrs.push(connection[0]);
-            cypherParams = { ...cypherParams, ...connection[1] };
-        });
-    }
-
-    if (projection[2]?.interfaceFields?.length) {
-        const prevRelationshipFields: string[] = [];
-        projection[2].interfaceFields.forEach((interfaceResolveTree) => {
-            const relationshipField = node.relationFields.find(
-                (x) => x.fieldName === interfaceResolveTree.name
-            ) as RelationField;
-            const interfaceProjection = createInterfaceProjectionAndParams({
-                resolveTree: interfaceResolveTree,
-                field: relationshipField,
-                context,
-                nodeVariable: varName,
-                withVars: prevRelationshipFields,
-            });
-            prevRelationshipFields.push(relationshipField.dbPropertyName || relationshipField.fieldName);
-            interfaceStrs.push(interfaceProjection.cypher);
-            cypherParams = { ...cypherParams, ...interfaceProjection.params };
-        });
-    }
-
-    const allowAndParams = createAuthAndParams({
-        operations: "READ",
-        entity: node,
-        context,
-        allow: {
-            parentNode: node,
-            varName,
-        },
-    });
-    if (allowAndParams[0]) {
-        cypherParams = { ...cypherParams, ...allowAndParams[1] };
-        authStr = `CALL apoc.util.validate(NOT (${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-    }
-
     // TODO: concatenate with "translateTopLevelMatch" result to avoid param collision
     const readQuery = new CypherBuilder.RawCypher((_env: CypherBuilder.Environment) => {
+        const projection = createProjectionAndParams({
+            node,
+            context,
+            resolveTree,
+            varName,
+            isRootConnectionField,
+        });
+        cypherParams = { ...cypherParams, ...projection[1] };
+        if (projection[2]?.authValidateStrs?.length) {
+            projAuth = `CALL apoc.util.validate(NOT (${projection[2].authValidateStrs.join(
+                " AND "
+            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+        }
+
+        if (projection[2]?.connectionFields?.length) {
+            projection[2].connectionFields.forEach((connectionResolveTree) => {
+                const connectionField = node.connectionFields.find(
+                    (x) => x.fieldName === connectionResolveTree.name
+                ) as ConnectionField;
+                const connection = createConnectionAndParams({
+                    resolveTree: connectionResolveTree,
+                    field: connectionField,
+                    context,
+                    nodeVariable: varName,
+                });
+                connectionStrs.push(connection[0]);
+                cypherParams = { ...cypherParams, ...connection[1] };
+            });
+        }
+
+        if (projection[2]?.interfaceFields?.length) {
+            const prevRelationshipFields: string[] = [];
+            projection[2].interfaceFields.forEach((interfaceResolveTree) => {
+                const relationshipField = node.relationFields.find(
+                    (x) => x.fieldName === interfaceResolveTree.name
+                ) as RelationField;
+                const interfaceProjection = createInterfaceProjectionAndParams({
+                    resolveTree: interfaceResolveTree,
+                    field: relationshipField,
+                    context,
+                    nodeVariable: varName,
+                    withVars: prevRelationshipFields,
+                });
+                prevRelationshipFields.push(relationshipField.dbPropertyName || relationshipField.fieldName);
+                interfaceStrs.push(interfaceProjection.cypher);
+                cypherParams = { ...cypherParams, ...interfaceProjection.params };
+            });
+        }
+
+        const allowAndParams = createAuthAndParams({
+            operations: "READ",
+            entity: node,
+            context,
+            allow: {
+                parentNode: node,
+                varName,
+            },
+        });
+        if (allowAndParams[0]) {
+            cypherParams = { ...cypherParams, ...allowAndParams[1] };
+            authStr = `CALL apoc.util.validate(NOT (${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+        }
+
         if (isRootConnectionField) {
             return translateRootConnectionField({
                 context,
