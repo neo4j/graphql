@@ -79,20 +79,16 @@ describe("#488", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Journalist)
-            WHERE size([(this)-[this_keywordsConnection_Emoji_JournalistKeywordsRelationship:HAS_KEYWORD]->(this_keywordsConnection_Emoji:Emoji) WHERE this_keywordsConnection_Emoji.type = $this_journalists.where.keywordsConnection.node.type | 1]) > 0
+            "MATCH (this:\`Journalist\`)
+            WHERE size([(this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`) WHERE this1.type = $nestedParam0.node.type | 1]) > 0
             RETURN this { .name, keywords:  [this_keywords IN [(this)-[:HAS_KEYWORD]->(this_keywords) WHERE (\\"Emoji\\" IN labels(this_keywords)) OR (\\"Hashtag\\" IN labels(this_keywords)) OR (\\"Text\\" IN labels(this_keywords)) | head( [ this_keywords IN [this_keywords] WHERE (\\"Emoji\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Emoji\\",  .id, .type } ] + [ this_keywords IN [this_keywords] WHERE (\\"Hashtag\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Hashtag\\" }  ] + [ this_keywords IN [this_keywords] WHERE (\\"Text\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Text\\" }  ] ) ] WHERE this_keywords IS NOT NULL]  } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_journalists\\": {
-                    \\"where\\": {
-                        \\"keywordsConnection\\": {
-                            \\"node\\": {
-                                \\"type\\": \\"Smile\\"
-                            }
-                        }
+                \\"nestedParam0\\": {
+                    \\"node\\": {
+                        \\"type\\": \\"Smile\\"
                     }
                 }
             }"
@@ -120,20 +116,16 @@ describe("#488", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Journalist)
-            WHERE size([(this)-[this_keywordsConnection_NOT_Emoji_JournalistKeywordsRelationship:HAS_KEYWORD]->(this_keywordsConnection_NOT_Emoji:Emoji) WHERE this_keywordsConnection_NOT_Emoji.type = $this_journalists.where.keywordsConnection_NOT.node.type | 1]) = 0
+            "MATCH (this:\`Journalist\`)
+            WHERE size([(this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`) WHERE this1.type = $nestedParam0.node.type | 1]) = 0
             RETURN this { .name, keywords:  [this_keywords IN [(this)-[:HAS_KEYWORD]->(this_keywords) WHERE (\\"Emoji\\" IN labels(this_keywords)) OR (\\"Hashtag\\" IN labels(this_keywords)) OR (\\"Text\\" IN labels(this_keywords)) | head( [ this_keywords IN [this_keywords] WHERE (\\"Emoji\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Emoji\\",  .id, .type } ] + [ this_keywords IN [this_keywords] WHERE (\\"Hashtag\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Hashtag\\" }  ] + [ this_keywords IN [this_keywords] WHERE (\\"Text\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Text\\" }  ] ) ] WHERE this_keywords IS NOT NULL]  } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_journalists\\": {
-                    \\"where\\": {
-                        \\"keywordsConnection_NOT\\": {
-                            \\"node\\": {
-                                \\"type\\": \\"Smile\\"
-                            }
-                        }
+                \\"nestedParam0\\": {
+                    \\"node\\": {
+                        \\"type\\": \\"Smile\\"
                     }
                 }
             }"

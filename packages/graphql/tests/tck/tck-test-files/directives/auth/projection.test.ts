@@ -69,7 +69,7 @@ describe("Cypher Auth Projection", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             WITH this
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_update_id_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.id = $this_update_id

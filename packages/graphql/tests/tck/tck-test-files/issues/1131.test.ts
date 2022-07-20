@@ -89,33 +89,33 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`BibliographicReference\`:\`Resource\`)
-            WHERE this.uri = $this_iri
+            WHERE this.uri = $param0
             SET this.prefLabel = $this_update_prefLabel
-            	WITH this
+            WITH this
             CALL {
-            	WITH this
-            	MERGE (this_isInPublication0_connectOrCreate_this2:\`Concept\`:\`Resource\` { uri: $this_isInPublication0_connectOrCreate_param0 })
-            ON CREATE SET
-                    this_isInPublication0_connectOrCreate_this2.uri = $this_isInPublication0_connectOrCreate_param1,
-            this_isInPublication0_connectOrCreate_this2.prefLabel = $this_isInPublication0_connectOrCreate_param2
-            MERGE (this)-[this_isInPublication0_connectOrCreate_this0:\`isInPublication\`]->(this_isInPublication0_connectOrCreate_this2)
-            	RETURN COUNT(*) AS _
+                WITH this
+                MERGE (this_isInPublication0_connectOrCreate_this0:\`Concept\`:\`Resource\` { uri: $this_isInPublication0_connectOrCreate_param0 })
+                ON CREATE SET
+                    this_isInPublication0_connectOrCreate_this0.uri = $this_isInPublication0_connectOrCreate_param1,
+                    this_isInPublication0_connectOrCreate_this0.prefLabel = $this_isInPublication0_connectOrCreate_param2
+                MERGE (this)-[this_isInPublication0_connectOrCreate_this1:isInPublication]->(this_isInPublication0_connectOrCreate_this0)
+                RETURN COUNT(*) AS _
             }
-            	WITH this
+            WITH this
             CALL {
-            	WITH this
-            	MERGE (this_isInPublication1_connectOrCreate_this2:\`Concept\`:\`Resource\` { uri: $this_isInPublication1_connectOrCreate_param0 })
-            ON CREATE SET
-                    this_isInPublication1_connectOrCreate_this2.uri = $this_isInPublication1_connectOrCreate_param1,
-            this_isInPublication1_connectOrCreate_this2.prefLabel = $this_isInPublication1_connectOrCreate_param2
-            MERGE (this)-[this_isInPublication1_connectOrCreate_this0:\`isInPublication\`]->(this_isInPublication1_connectOrCreate_this2)
-            	RETURN COUNT(*) AS _
+                WITH this
+                MERGE (this_isInPublication1_connectOrCreate_this0:\`Concept\`:\`Resource\` { uri: $this_isInPublication1_connectOrCreate_param0 })
+                ON CREATE SET
+                    this_isInPublication1_connectOrCreate_this0.uri = $this_isInPublication1_connectOrCreate_param1,
+                    this_isInPublication1_connectOrCreate_this0.prefLabel = $this_isInPublication1_connectOrCreate_param2
+                MERGE (this)-[this_isInPublication1_connectOrCreate_this1:isInPublication]->(this_isInPublication1_connectOrCreate_this0)
+                RETURN COUNT(*) AS _
             }
-            RETURN collect(DISTINCT this { iri: this.uri, .prefLabel, isInPublication: [ (this)-[:isInPublication]->(this_isInPublication:\`Concept\`:\`Resource\`)  WHERE this_isInPublication.uri IN $this_isInPublication_iri_IN | this_isInPublication { iri: this_isInPublication.uri, .prefLabel } ] }) AS data"
+            RETURN collect(DISTINCT this { iri: this.uri, .prefLabel, isInPublication: [ (this)-[:isInPublication]->(this_isInPublication:\`Concept\`:\`Resource\`)  WHERE this_isInPublication.uri IN $this_isInPublication_param0 | this_isInPublication { iri: this_isInPublication.uri, .prefLabel } ] }) AS data"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_iri\\": \\"urn:myiri2\\",
+                \\"param0\\": \\"urn:myiri2\\",
                 \\"this_update_prefLabel\\": [
                     \\"Updated Label:My BRS with Resource\\"
                 ],
@@ -129,7 +129,7 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
                 \\"this_isInPublication1_connectOrCreate_param2\\": [
                     \\"pub\\"
                 ],
-                \\"this_isInPublication_iri_IN\\": [
+                \\"this_isInPublication_param0\\": [
                     \\"new-f\\",
                     \\"new-e\\"
                 ],

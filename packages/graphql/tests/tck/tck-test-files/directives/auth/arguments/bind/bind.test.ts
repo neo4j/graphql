@@ -191,8 +191,8 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $this_id
+            "MATCH (this:\`User\`)
+            WHERE this.id = $param0
             SET this.id = $this_update_id
             WITH this
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -201,7 +201,7 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"id-01\\",
+                \\"param0\\": \\"id-01\\",
                 \\"this_update_id\\": \\"not bound\\",
                 \\"this_auth_bind0_id\\": \\"id-01\\",
                 \\"resolvedCallbacks\\": {}
@@ -234,8 +234,8 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $this_id
+            "MATCH (this:\`User\`)
+            WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_has_post0_relationship:HAS_POST]->(this_posts0:Post)
             WHERE this_posts0.id = $updateUsers.args.update.posts[0].where.node.id
@@ -267,7 +267,7 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"id-01\\",
+                \\"param0\\": \\"id-01\\",
                 \\"this_update_posts0_creator0_id\\": \\"not bound\\",
                 \\"this_posts0_creator0_auth_bind0_id\\": \\"id-01\\",
                 \\"auth\\": {
@@ -331,13 +331,13 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE this.id = $this_id
+            "MATCH (this:\`Post\`)
+            WHERE this.id = $param0
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_creator0_node:User)
-            	WHERE this_connect_creator0_node.id = $this_connect_creator0_node_id
+            	WHERE this_connect_creator0_node.id = $this_connect_creator0_node_param0
             	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this_connect_creator0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this)<-[:HAS_POST]-(this_connect_creator0_node)
@@ -360,8 +360,8 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"post-id\\",
-                \\"this_connect_creator0_node_id\\": \\"user-id\\",
+                \\"param0\\": \\"post-id\\",
+                \\"this_connect_creator0_node_param0\\": \\"user-id\\",
                 \\"this_connect_creator0_nodePost0_bind_auth_bind0_creator_id\\": \\"id-01\\",
                 \\"this_connect_creator0_nodeUser1_bind_auth_bind0_id\\": \\"id-01\\",
                 \\"resolvedCallbacks\\": {}
@@ -386,8 +386,8 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE this.id = $this_id
+            "MATCH (this:\`Post\`)
+            WHERE this.id = $param0
             WITH this
             CALL {
             WITH this
@@ -413,7 +413,7 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"post-id\\",
+                \\"param0\\": \\"post-id\\",
                 \\"this_disconnect_creator0Post0_bind_auth_bind0_creator_id\\": \\"id-01\\",
                 \\"this_disconnect_creator0User1_bind_auth_bind0_id\\": \\"id-01\\",
                 \\"updatePosts\\": {
