@@ -1372,7 +1372,6 @@ describe("Advanced Filtering", () => {
                     });
 
                     expect(gqlResult.errors).toBeUndefined();
-
                     expect((gqlResult.data as any).movies).toHaveLength(1);
                     expect((gqlResult.data as any).movies[0]).toMatchObject({
                         id: movieId,

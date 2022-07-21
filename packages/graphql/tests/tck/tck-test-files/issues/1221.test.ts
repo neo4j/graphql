@@ -86,10 +86,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
-            WHERE (this.current = $param0 AND size([(this)-[this0:ARCHITECTURE]->(this1:\`MasterData\`) WHERE apoc.cypher.runFirstColumn(\\"RETURN exists((this1)-[:HAS_NAME]->(:NameDetails))
-            AND single(this1_NameDetails_map IN [(this1)-[this1_NameDetails_MasterDataNameDetailsRelationship:HAS_NAME]->(this1_NameDetails:NameDetails) | { node: this1_NameDetails, relationship: this1_NameDetails_MasterDataNameDetailsRelationship } ] WHERE
-            this1_NameDetails_map.node.fullName = $nestedParam1.node.nameDetailsConnection.node.fullName
-            )\\", { this1: this1, nestedParam1: $nestedParam1 }, false) | 1]) = 1)
+            WHERE (this.current = $param0 AND size([(this)-[this0:ARCHITECTURE]->(this1:\`MasterData\`) WHERE size([(this1)-[this2:HAS_NAME]->(this3:\`NameDetails\`) WHERE this3.fullName = $param1 | 1]) = 1 | 1]) = 1)
             CALL {
             WITH this
             MATCH (this)-[this_architecture_relationship:ARCHITECTURE]->(this_masterdata:MasterData)
@@ -114,15 +111,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
-                \\"nestedParam1\\": {
-                    \\"node\\": {
-                        \\"nameDetailsConnection\\": {
-                            \\"node\\": {
-                                \\"fullName\\": \\"MHA\\"
-                            }
-                        }
-                    }
-                },
+                \\"param1\\": \\"MHA\\",
                 \\"this_architectureConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -225,13 +214,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Main\`)
-            WHERE (this.current = $param0 AND size([(this)-[this0:MAIN]->(this1:\`Series\`) WHERE apoc.cypher.runFirstColumn(\\"RETURN exists((this1)-[:ARCHITECTURE]->(:MasterData))
-            AND single(this1_MasterData_map IN [(this1)-[this1_MasterData_SeriesArchitectureRelationship:ARCHITECTURE]->(this1_MasterData:MasterData) | { node: this1_MasterData, relationship: this1_MasterData_SeriesArchitectureRelationship } ] WHERE
-            apoc.cypher.runFirstColumn(\\\\\\"RETURN exists((this1_MasterData_map_node)-[:HAS_NAME]->(:NameDetails))
-            AND single(this1_MasterData_map_node_NameDetails_map IN [(this1_MasterData_map_node)-[this1_MasterData_map_node_NameDetails_MasterDataNameDetailsRelationship:HAS_NAME]->(this1_MasterData_map_node_NameDetails:NameDetails) | { node: this1_MasterData_map_node_NameDetails, relationship: this1_MasterData_map_node_NameDetails_MasterDataNameDetailsRelationship } ] WHERE
-            this1_MasterData_map_node_NameDetails_map.node.fullName = $nestedParam1.node.architectureConnection.node.nameDetailsConnection.node.fullName
-            )\\\\\\", { this1_MasterData_map_node: this1_MasterData_map.node, nestedParam1: $nestedParam1 }, false)
-            )\\", { this1: this1, nestedParam1: $nestedParam1 }, false) | 1]) = 1)
+            WHERE (this.current = $param0 AND size([(this)-[this0:MAIN]->(this1:\`Series\`) WHERE size([(this1)-[this2:ARCHITECTURE]->(this3:\`MasterData\`) WHERE size([(this3)-[this4:HAS_NAME]->(this5:\`NameDetails\`) WHERE this5.fullName = $param1 | 1]) = 1 | 1]) > 0 | 1]) = 1)
             CALL {
             WITH this
             MATCH (this)-[this_main_relationship:MAIN]->(this_series:Series)
@@ -265,19 +248,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
-                \\"nestedParam1\\": {
-                    \\"node\\": {
-                        \\"architectureConnection\\": {
-                            \\"node\\": {
-                                \\"nameDetailsConnection\\": {
-                                    \\"node\\": {
-                                        \\"fullName\\": \\"MHA\\"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
+                \\"param1\\": \\"MHA\\",
                 \\"this_mainConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

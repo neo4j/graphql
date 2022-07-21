@@ -65,7 +65,7 @@ export function translateTopLevelMatch({
     if (whereInput) {
         const whereOp = createCypherWhereParams({
             whereInput,
-            node,
+            element: node,
             context,
             targetElement: matchNode,
         });
