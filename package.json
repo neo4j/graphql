@@ -23,7 +23,8 @@
         "test-docker": "docker-compose up --build --abort-on-container-exit",
         "prepare": "husky install",
         "changeset-version": "changeset version && yarn",
-        "changeset-version-master": "changeset version --since master && yarn"
+        "changeset-version-master": "changeset version --since master && yarn",
+        "release": "yarn build && changeset publish"
     },
     "devDependencies": {
         "@tsconfig/node14": "1.0.3",
