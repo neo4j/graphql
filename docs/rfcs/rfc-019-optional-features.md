@@ -8,7 +8,7 @@ A solution to reduce the size of the problem is to introduce the possibility to 
 
 ## Proposed Solution (Config)
 
-The Config solution is to extend the `Neo4jGraphQLConfig` to support the list of features to be included with the `features` attribute.
+The Config solution is to add to the `Neo4jGraphQL` constructor the argument features which could be used to enable, disable and configure specific features.
 
 ### Usage Examples
 
@@ -16,16 +16,16 @@ The Config solution is to extend the `Neo4jGraphQLConfig` to support the list of
   const neoSchema = new Neo4jGraphQL({
         config: {
             enableDebug: true,
-            features: {
-                filters: {
-                    String: {
-                        GT: true,
-                        LT: false,
-                    }
+        },
+        features: {
+            filters: {
+                String: {
+                    GT: true,
+                    LT: false,
                 }
             }
         },
-        typeDefs: typeDefs,
+        typeDefs,
         driver,
         plugins: {
             auth: new Neo4jGraphQLAuthJWTPlugin({
@@ -55,7 +55,7 @@ const neoSchema = new Neo4jGraphQL({
     config: {
         enableDebug: true,
     },
-    typeDefs: typeDefs,
+    typeDefs,
     driver,
     plugins: {
         auth: new Neo4jGraphQLAuthJWTPlugin({
