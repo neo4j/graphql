@@ -31,5 +31,11 @@ describe("CypherBuilder Return", () => {
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
     });
 
-    // test("Return *", () => {});
+    test("Return *", () => {
+        const returnQuery = new CypherBuilder.Return("*");
+
+        const queryResult = returnQuery.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"RETURN *"`);
+        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+    });
 });
