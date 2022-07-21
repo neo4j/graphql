@@ -18,11 +18,10 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import type { NodeRef } from "../variables/NodeRef";
 import { MatchableElement, MatchParams, Pattern } from "../Pattern";
 import { Where, WhereParams } from "../sub-clauses/Where";
 import { Clause } from "./Clause";
-import { Return } from "./Return";
+import { Return, ReturnColumn } from "./Return";
 import { Variable } from "../variables/Variable";
 import { ComparisonOp, eq } from "../operations/comparison";
 import { PropertyRef } from "../PropertyRef";
@@ -81,11 +80,17 @@ export class Match<T extends MatchableElement = any> extends Clause {
         return this;
     }
 
-    public return(node: NodeRef, fields?: string[], alias?: string): Return {
-        const returnStatement = new Return([node, fields, alias]);
-        this.addChildren(returnStatement);
-        this.returnStatement = returnStatement;
-        return returnStatement;
+    public return(...columns: ReturnColumn[]): Return;
+    public return(starOrColumn: "*" | ReturnColumn, ...columns: ReturnColumn[]): Return;
+    public return(starOrColumn: "*" | ReturnColumn | undefined, ...columns: ReturnColumn[]): Return {
+        if (this.returnStatement) throw new Error("Cannot set multiple return statements in Match clause");
+        if (!starOrColumn) {
+            this.returnStatement = new Return();
+        } else {
+            this.returnStatement = new Return(starOrColumn, ...columns);
+        }
+        this.addChildren(this.returnStatement);
+        return this.returnStatement;
     }
 
     public getCypher(env: CypherEnvironment): string {
@@ -103,26 +108,26 @@ export class Match<T extends MatchableElement = any> extends Clause {
         params: Record<string, Variable> | undefined
     ): WhereParams | undefined {
         if (input instanceof Variable) {
-            const generatedOp = variableAndObjectToOperation(input, params || {});
+            const generatedOp = this.variableAndObjectToOperation(input, params || {});
             return generatedOp;
         }
         return input;
     }
-}
 
-/** Transforms a simple input into an operation sub tree */
-function variableAndObjectToOperation(
-    target: Variable,
-    params: Record<string, Variable>
-): BooleanOp | ComparisonOp | undefined {
-    let operation: BooleanOp | ComparisonOp | undefined;
-    for (const [key, value] of Object.entries(params)) {
-        const property = new PropertyRef(target, key);
-        const eqOp = eq(property, value);
-        if (!operation) operation = eqOp;
-        else {
-            operation = and(operation, eqOp);
+    /** Transforms a simple input into an operation sub tree */
+    private variableAndObjectToOperation(
+        target: Variable,
+        params: Record<string, Variable>
+    ): BooleanOp | ComparisonOp | undefined {
+        let operation: BooleanOp | ComparisonOp | undefined;
+        for (const [key, value] of Object.entries(params)) {
+            const property = new PropertyRef(target, key);
+            const eqOp = eq(property, value);
+            if (!operation) operation = eqOp;
+            else {
+                operation = and(operation, eqOp);
+            }
         }
+        return operation;
     }
-    return operation;
 }

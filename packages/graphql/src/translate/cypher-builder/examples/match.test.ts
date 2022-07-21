@@ -41,13 +41,13 @@ describe("CypherBuilder Match Examples", () => {
         const matchQuery = new CypherBuilder.Match(relationship)
             .where(personNode, { name: nameParam })
             .and(movieNode, { released: releasedParam })
-            .return(movieNode, ["title", "released"], "movie");
+            .return(movieNode.property("title"), [movieNode.property("released"), "year"]);
 
         const queryResult = matchQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "MATCH (this1:\`Person\`)-[this0:ACTED_IN]->(this2:\`Movie\`)
             WHERE (this1.name = $param0 AND this2.released = $param1)
-            RETURN this2 {.title, .released} AS movie"
+            RETURN this2.title, this2.released AS year"
         `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`
@@ -86,13 +86,13 @@ describe("CypherBuilder Match Examples", () => {
                     )
                 )
             )
-            .return(movieNode, ["title", "released"], "movie");
+            .return(movieNode.property("title"));
 
         const queryResult = matchQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "MATCH (this1:\`Person\`)-[this0:ACTED_IN]->(this2:\`Movie\`)
             WHERE (this1.name = $param0 AND (this2.year = $param1 OR this2.year = $param2))
-            RETURN this2 {.title, .released} AS movie"
+            RETURN this2.title"
         `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`

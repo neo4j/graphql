@@ -60,14 +60,14 @@ describe("CypherBuilder Match", () => {
 
         const matchQuery = new CypherBuilder.Match(movieNode, { test: new CypherBuilder.Param("test-value") })
             .where(movieNode, { id: idParam, name: nameParam })
-            .return(movieNode, ["name"], "myAlias");
+            .return([movieNode.property("name"), "myAlias"]);
 
         const queryResult = matchQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
-                "MATCH (this0:\`Movie\` { test: $param0 })
-                WHERE (this0.id = $param1 AND this0.name = $param2)
-                RETURN this0 {.name} AS myAlias"
-            `);
+            "MATCH (this0:\`Movie\` { test: $param0 })
+            WHERE (this0.id = $param1 AND this0.name = $param2)
+            RETURN this0.name AS myAlias"
+        `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`
                 Object {
@@ -215,13 +215,13 @@ describe("CypherBuilder Match", () => {
                     CypherBuilder.eq(new CypherBuilder.Param("aa"), new CypherBuilder.Param("bb"))
                 )
             )
-            .return(node, ["title"], "movie");
+            .return([node.property("title"), "movie"]);
 
         const queryResult = clause.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "MATCH (this0:\`Movie\`)
             WHERE (($param0 > $param1 OR $param0 < $param2) AND $param3 = $param4)
-            RETURN this0 {.title} AS movie"
+            RETURN this0.title AS movie"
         `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`

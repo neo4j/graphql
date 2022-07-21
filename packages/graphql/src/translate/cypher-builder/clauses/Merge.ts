@@ -23,7 +23,7 @@ import { NodeRef } from "../variables/NodeRef";
 import { MatchParams, Pattern } from "../Pattern";
 import { Clause } from "./Clause";
 import { OnCreate, OnCreateParam } from "../sub-clauses/OnCreate";
-import { Return } from "./Return";
+import { Return, ReturnColumn } from "./Return";
 
 export class Merge<T extends NodeRef | RelationshipRef> extends Clause {
     private pattern: Pattern<T>;
@@ -49,11 +49,17 @@ export class Merge<T extends NodeRef | RelationshipRef> extends Clause {
         return this;
     }
 
-    public return(node: NodeRef, fields?: string[], alias?: string): Return {
-        const returnStatement = new Return([node, fields, alias]);
-        this.addChildren(returnStatement);
-        this.returnStatement = returnStatement;
-        return returnStatement;
+    public return(...columns: ReturnColumn[]): Return;
+    public return(starOrColumn: "*" | ReturnColumn, ...columns: ReturnColumn[]): Return;
+    public return(starOrColumn: "*" | ReturnColumn | undefined, ...columns: ReturnColumn[]): Return {
+        if (this.returnStatement) throw new Error("Cannot set multiple return statements in Match clause");
+        if (!starOrColumn) {
+            this.returnStatement = new Return();
+        } else {
+            this.returnStatement = new Return(starOrColumn, ...columns);
+        }
+        this.addChildren(this.returnStatement);
+        return this.returnStatement;
     }
 
     public getCypher(env: CypherEnvironment): string {

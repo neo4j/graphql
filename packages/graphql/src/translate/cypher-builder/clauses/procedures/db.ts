@@ -23,7 +23,7 @@ import type { CypherEnvironment } from "../../Environment";
 import { Where, WhereParams } from "../../sub-clauses/Where";
 import type { NodeRef } from "../../variables/NodeRef";
 import { Clause } from "../Clause";
-import { Return } from "../Return";
+import { Return, ReturnColumn } from "../Return";
 
 export class FullTextQueryNodes extends Clause {
     private targetNode: NodeRef;
@@ -31,7 +31,7 @@ export class FullTextQueryNodes extends Clause {
     private phrase: Variable;
 
     private whereClause: Where | undefined;
-    private returnClause: Return | undefined;
+    private returnStatement: Return | undefined;
 
     constructor(targetNode: NodeRef, indexName: string, phrase: Variable, parent?: Clause) {
         super(parent);
@@ -55,7 +55,7 @@ export class FullTextQueryNodes extends Clause {
         const targetId = env.getVariableId(this.targetNode);
 
         const whereStr = this.whereClause?.getCypher(env) || "";
-        const returnStr = this.returnClause?.getCypher(env) || "";
+        const returnStr = this.returnStatement?.getCypher(env) || "";
 
         const textSearchStr = dedent`CALL db.index.fulltext.queryNodes(
             "${this.indexName}",
@@ -68,9 +68,16 @@ export class FullTextQueryNodes extends Clause {
         `;
     }
 
-    public return(node: NodeRef, fields?: string[], alias?: string): Return {
-        this.returnClause = new Return([node, fields, alias]);
-        this.addChildren(this.returnClause);
-        return this.returnClause;
+    public return(...columns: ReturnColumn[]): Return;
+    public return(starOrColumn: "*" | ReturnColumn, ...columns: ReturnColumn[]): Return;
+    public return(starOrColumn: "*" | ReturnColumn | undefined, ...columns: ReturnColumn[]): Return {
+        if (this.returnStatement) throw new Error("Cannot set multiple return statements in Match clause");
+        if (!starOrColumn) {
+            this.returnStatement = new Return();
+        } else {
+            this.returnStatement = new Return(starOrColumn, ...columns);
+        }
+        this.addChildren(this.returnStatement);
+        return this.returnStatement;
     }
 }

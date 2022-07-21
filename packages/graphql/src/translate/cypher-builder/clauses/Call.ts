@@ -20,16 +20,15 @@
 import type { CypherEnvironment } from "../Environment";
 import type { CypherASTNode } from "../CypherASTNode";
 import type { Variable } from "../variables/Variable";
-import type { NodeRef } from "../variables/NodeRef";
 import { Clause } from "./Clause";
 import { compileCypherIfExists, padBlock } from "../utils";
 import { ImportWith } from "../sub-clauses/ImportWith";
-import { Return } from "./Return";
+import { Return, ReturnColumn } from "./Return";
 
 export class Call extends Clause {
     private subQuery: CypherASTNode;
     private importWith: ImportWith | undefined;
-    private returnClause: Return | undefined;
+    private returnStatement: Return | undefined;
 
     constructor(subQuery: Clause, parent?: Clause) {
         super(parent);
@@ -44,17 +43,23 @@ export class Call extends Clause {
         return this;
     }
 
-    public return(node: NodeRef, fields?: string[], alias?: string): Return {
-        const returnClause = new Return([node, fields, alias]);
-        this.addChildren(returnClause);
-        this.returnClause = returnClause;
-        return returnClause;
+    public return(...columns: ReturnColumn[]): Return;
+    public return(starOrColumn: "*" | ReturnColumn, ...columns: ReturnColumn[]): Return;
+    public return(starOrColumn: "*" | ReturnColumn | undefined, ...columns: ReturnColumn[]): Return {
+        if (this.returnStatement) throw new Error("Cannot set multiple return statements in Match clause");
+        if (!starOrColumn) {
+            this.returnStatement = new Return();
+        } else {
+            this.returnStatement = new Return(starOrColumn, ...columns);
+        }
+        this.addChildren(this.returnStatement);
+        return this.returnStatement;
     }
 
     public getCypher(env: CypherEnvironment): string {
         const subQueryStr = this.subQuery.getCypher(env);
         const withCypher = compileCypherIfExists(this.importWith, env, { suffix: "\n" });
-        const returnCypher = compileCypherIfExists(this.returnClause, env, { prefix: "\n" });
+        const returnCypher = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
         const inCallBlock = `${withCypher}${subQueryStr}`;
 
         return `CALL {\n${padBlock(inCallBlock)}\n}${returnCypher}`;

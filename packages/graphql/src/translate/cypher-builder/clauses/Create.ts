@@ -24,7 +24,7 @@ import { Pattern } from "../Pattern";
 import { PropertyRef } from "../PropertyRef";
 import { SetClause } from "../sub-clauses/Set";
 import { Clause } from "./Clause";
-import { Return } from "./Return";
+import { Return, ReturnColumn } from "./Return";
 import { compileCypherIfExists } from "../utils";
 import type { Variable } from "../CypherBuilder";
 
@@ -67,10 +67,16 @@ export class Create extends Clause {
         return `CREATE ${nodeCypher}${setCypher}${returnCypher}`;
     }
 
-    public return(node: NodeRef, fields?: string[], alias?: string): Return {
-        const returnStatement = new Return([node, fields, alias]);
-        this.addChildren(returnStatement);
-        this.returnStatement = returnStatement;
-        return returnStatement;
+    public return(...columns: ReturnColumn[]): Return;
+    public return(starOrColumn: "*" | ReturnColumn, ...columns: ReturnColumn[]): Return;
+    public return(starOrColumn: "*" | ReturnColumn | undefined, ...columns: ReturnColumn[]): Return {
+        if (this.returnStatement) throw new Error("Cannot set multiple return statements in Match clause");
+        if (!starOrColumn) {
+            this.returnStatement = new Return();
+        } else {
+            this.returnStatement = new Return(starOrColumn, ...columns);
+        }
+        this.addChildren(this.returnStatement);
+        return this.returnStatement;
     }
 }

@@ -48,7 +48,7 @@ describe("Field Level Aggregations", () => {
         });
     });
 
-    test("Count Aggregation", async () => {
+    test.only("Count Aggregation", async () => {
         const query = gql`
             query {
                 movies {
