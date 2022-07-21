@@ -23,7 +23,8 @@ import type { CypherEnvironment } from "../../Environment";
 import { Where, WhereParams } from "../../sub-clauses/Where";
 import type { NodeRef } from "../../variables/NodeRef";
 import { Clause } from "../Clause";
-import { Return, ReturnColumn } from "../Return";
+import { WithReturn } from "../mixins/WithReturn";
+import { applyMixins } from "../utils/apply-mixin";
 
 export class FullTextQueryNodes extends Clause {
     private targetNode: NodeRef;
@@ -31,7 +32,6 @@ export class FullTextQueryNodes extends Clause {
     private phrase: Variable;
 
     private whereClause: Where | undefined;
-    private returnStatement: Return | undefined;
 
     constructor(targetNode: NodeRef, indexName: string, phrase: Variable, parent?: Clause) {
         super(parent);
@@ -67,17 +67,7 @@ export class FullTextQueryNodes extends Clause {
             ${returnStr}
         `;
     }
-
-    public return(...columns: ReturnColumn[]): Return;
-    public return(starOrColumn: "*" | ReturnColumn, ...columns: ReturnColumn[]): Return;
-    public return(starOrColumn: "*" | ReturnColumn | undefined, ...columns: ReturnColumn[]): Return {
-        if (this.returnStatement) throw new Error("Cannot set multiple return statements in Match clause");
-        if (!starOrColumn) {
-            this.returnStatement = new Return();
-        } else {
-            this.returnStatement = new Return(starOrColumn, ...columns);
-        }
-        this.addChildren(this.returnStatement);
-        return this.returnStatement;
-    }
 }
+
+export interface FullTextQueryNodes extends WithReturn {}
+applyMixins(FullTextQueryNodes, [WithReturn]);

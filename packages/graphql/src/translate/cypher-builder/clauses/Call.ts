@@ -23,12 +23,12 @@ import type { Variable } from "../variables/Variable";
 import { Clause } from "./Clause";
 import { compileCypherIfExists, padBlock } from "../utils";
 import { ImportWith } from "../sub-clauses/ImportWith";
-import { Return, ReturnColumn } from "./Return";
+import { applyMixins } from "./utils/apply-mixin";
+import { WithReturn } from "./mixins/WithReturn";
 
 export class Call extends Clause {
     private subQuery: CypherASTNode;
     private importWith: ImportWith | undefined;
-    private returnStatement: Return | undefined;
 
     constructor(subQuery: Clause, parent?: Clause) {
         super(parent);
@@ -43,19 +43,6 @@ export class Call extends Clause {
         return this;
     }
 
-    public return(...columns: ReturnColumn[]): Return;
-    public return(starOrColumn: "*" | ReturnColumn, ...columns: ReturnColumn[]): Return;
-    public return(starOrColumn: "*" | ReturnColumn | undefined, ...columns: ReturnColumn[]): Return {
-        if (this.returnStatement) throw new Error("Cannot set multiple return statements in Match clause");
-        if (!starOrColumn) {
-            this.returnStatement = new Return();
-        } else {
-            this.returnStatement = new Return(starOrColumn, ...columns);
-        }
-        this.addChildren(this.returnStatement);
-        return this.returnStatement;
-    }
-
     public getCypher(env: CypherEnvironment): string {
         const subQueryStr = this.subQuery.getCypher(env);
         const withCypher = compileCypherIfExists(this.importWith, env, { suffix: "\n" });
@@ -65,3 +52,6 @@ export class Call extends Clause {
         return `CALL {\n${padBlock(inCallBlock)}\n}${returnCypher}`;
     }
 }
+
+export interface Call extends WithReturn {}
+applyMixins(Call, [WithReturn]);
