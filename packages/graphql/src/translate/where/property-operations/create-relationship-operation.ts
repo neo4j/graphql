@@ -70,7 +70,7 @@ export function createRelationshipOperation({
         // Nested properties here
         whereInput: value,
         targetElement: childNode,
-        node: refNode,
+        element: refNode,
         context,
     });
 

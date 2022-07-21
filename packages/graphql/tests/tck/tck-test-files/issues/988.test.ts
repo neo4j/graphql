@@ -136,7 +136,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Series\`)
-            WHERE (((size([(this)-[this0:MANUFACTURER]->(this1:\`Manufacturer\`) WHERE this0.current = $nestedParam0.edge.current AND this1.name = $nestedParam0.node.name | 1]) > 0 OR size([(this)-[this2:MANUFACTURER]->(this3:\`Manufacturer\`) WHERE this2.current = $nestedParam1.edge.current AND this3.name = $nestedParam1.node.name | 1]) > 0) AND size([(this)-[this4:BRAND]->(this5:\`Brand\`) WHERE this4.current = $nestedParam2.edge.current AND this5.name = $nestedParam2.node.name | 1]) > 0) AND this.current = $param3)
+            WHERE (((size([(this)-[this0:MANUFACTURER]->(this1:\`Manufacturer\`) WHERE (this0.current = $param0 AND this1.name = $param1) | 1]) > 0 OR size([(this)-[this2:MANUFACTURER]->(this3:\`Manufacturer\`) WHERE (this2.current = $param2 AND this3.name = $param3) | 1]) > 0) AND size([(this)-[this4:BRAND]->(this5:\`Brand\`) WHERE (this4.current = $param4 AND this5.name = $param5) | 1]) > 0) AND this.current = $param6)
             CALL {
             WITH this
             MATCH (this)-[this_manufacturer_relationship:MANUFACTURER]->(this_manufacturer:Manufacturer)
@@ -157,31 +157,13 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"nestedParam0\\": {
-                    \\"edge\\": {
-                        \\"current\\": true
-                    },
-                    \\"node\\": {
-                        \\"name\\": \\"C\\"
-                    }
-                },
-                \\"nestedParam1\\": {
-                    \\"edge\\": {
-                        \\"current\\": false
-                    },
-                    \\"node\\": {
-                        \\"name\\": \\"AM\\"
-                    }
-                },
-                \\"nestedParam2\\": {
-                    \\"edge\\": {
-                        \\"current\\": true
-                    },
-                    \\"node\\": {
-                        \\"name\\": \\"smart\\"
-                    }
-                },
-                \\"param3\\": true
+                \\"param0\\": true,
+                \\"param1\\": \\"C\\",
+                \\"param2\\": false,
+                \\"param3\\": \\"AM\\",
+                \\"param4\\": true,
+                \\"param5\\": \\"smart\\",
+                \\"param6\\": true
             }"
         `);
     });
