@@ -24,19 +24,14 @@ import type {
     GraphQLScalarType,
     InterfaceTypeDefinitionNode,
     NameNode,
-    ObjectTypeDefinitionNode} from "graphql";
-import {
-    GraphQLID,
-    GraphQLNonNull,
-    Kind,
-    parse,
-    print,
+    ObjectTypeDefinitionNode,
 } from "graphql";
-import type { ObjectTypeComposer} from "graphql-compose";
+import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
+import type { ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { validateDocument } from "./validation";
-import type { BaseField, Neo4jGraphQLCallbacks } from "../types";
+import type { BaseField, Neo4jGraphQLCallbacks, Neo4jFeaturesSettings } from "../types";
 import { cypherResolver } from "./resolvers/field/cypher";
 import { numericalResolver } from "./resolvers/field/numerical";
 import { aggregateResolver } from "./resolvers/query/aggregate";
@@ -88,15 +83,18 @@ import { generateSubscriptionTypes } from "./subscriptions/generate-subscription
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { addMathOperatorsToITC } from "./math";
+import { addArrayMethodsToITC } from "./array-methods";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
-    {
+    {   
+        features,
         enableRegex,
         skipValidateTypeDefs,
         generateSubscriptions,
         callbacks,
     }: {
+        features?: Neo4jFeaturesSettings;
         enableRegex?: boolean;
         skipValidateTypeDefs?: boolean;
         generateSubscriptions?: boolean;
@@ -241,6 +239,9 @@ function makeAugmentedSchema(
 
         addMathOperatorsToITC(relationshipUpdateITC);
 
+        addArrayMethodsToITC(relationshipUpdateITC, relFields.primitiveFields);
+        addArrayMethodsToITC(relationshipUpdateITC, relFields.pointFields);
+
         const relationshipWhereFields = getWhereFields({
             typeName: relationship.name.value,
             fields: {
@@ -251,6 +252,7 @@ function makeAugmentedSchema(
                 primitiveFields: relFields.primitiveFields,
             },
             enableRegex,
+            features
         });
 
         composer.createInputTC({
@@ -348,6 +350,7 @@ function makeAugmentedSchema(
             },
             enableRegex,
             isInterface: true,
+            features
         });
 
         const [
@@ -370,18 +373,21 @@ function makeAugmentedSchema(
 
         const interfaceCreateInput = composer.createInputTC(`${interfaceRelationship.name.value}CreateInput`);
 
-        const interfaceRelationshipITC = composer.getOrCreateITC(`${interfaceRelationship.name.value}UpdateInput`, (tc) => {
-            tc.addFields({
-                ...objectFieldsToUpdateInputFields([
-                    ...interfaceFields.primitiveFields,
-                    ...interfaceFields.scalarFields,
-                    ...interfaceFields.enumFields,
-                    ...interfaceFields.temporalFields.filter((field) => !field.timestamps),
-                    ...interfaceFields.pointFields,
-                ]),
-                _on: implementationsUpdateInput,
-            });
-        });
+        const interfaceRelationshipITC = composer.getOrCreateITC(
+            `${interfaceRelationship.name.value}UpdateInput`,
+            (tc) => {
+                tc.addFields({
+                    ...objectFieldsToUpdateInputFields([
+                        ...interfaceFields.primitiveFields,
+                        ...interfaceFields.scalarFields,
+                        ...interfaceFields.enumFields,
+                        ...interfaceFields.temporalFields.filter((field) => !field.timestamps),
+                        ...interfaceFields.pointFields,
+                    ]),
+                    _on: implementationsUpdateInput,
+                });
+            }
+        );
 
         addMathOperatorsToITC(interfaceRelationshipITC);
 
@@ -599,6 +605,7 @@ function makeAugmentedSchema(
                 primitiveFields: node.primitiveFields,
                 scalarFields: node.scalarFields,
             },
+            features
         });
 
         const countField = {
@@ -684,6 +691,8 @@ function makeAugmentedSchema(
         });
 
         addMathOperatorsToITC(nodeUpdateITC);
+
+        addArrayMethodsToITC(nodeUpdateITC, node.mutableFields);
 
         const mutationResponseTypeNames = node.mutationResponseTypeNames;
 

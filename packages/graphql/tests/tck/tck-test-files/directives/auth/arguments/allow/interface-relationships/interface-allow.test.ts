@@ -103,7 +103,7 @@ describe("@auth allow with interface relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
             CALL {
@@ -155,8 +155,8 @@ describe("@auth allow with interface relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $this_id
+            "MATCH (this:\`User\`)
+            WHERE this.id = $param0
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
             CALL {
@@ -172,7 +172,7 @@ describe("@auth allow with interface relationships", () => {
             MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
             CALL apoc.util.validate(NOT (exists((this_Post)<-[:HAS_CONTENT]-(:User)) AND any(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WHERE this_Post.id = $this_content.args.where.id
-            RETURN { __resolveType: \\"Post\\", comments: [ (this_Post)-[:HAS_COMMENT]->(this_Post_comments:Comment)  WHERE this_Post_comments.id = $this_Post_comments_id AND apoc.util.validatePredicate(NOT (exists((this_Post_comments)<-[:HAS_CONTENT]-(:User)) AND any(creator IN [(this_Post_comments)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_comments_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_Post_comments { .content } ] } AS content
+            RETURN { __resolveType: \\"Post\\", comments: [ (this_Post)-[:HAS_COMMENT]->(this_Post_comments:Comment)  WHERE this_Post_comments.id = $this_Post_comments_param0 AND apoc.util.validatePredicate(NOT (exists((this_Post_comments)<-[:HAS_CONTENT]-(:User)) AND any(creator IN [(this_Post_comments)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_comments_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_Post_comments { .content } ] } AS content
             }
             RETURN collect(content) AS content
             }
@@ -181,10 +181,10 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"1\\",
+                \\"param0\\": \\"1\\",
                 \\"this_Comment_auth_allow0_creator_id\\": \\"id-01\\",
                 \\"this_Post_auth_allow0_creator_id\\": \\"id-01\\",
-                \\"this_Post_comments_id\\": \\"1\\",
+                \\"this_Post_comments_param0\\": \\"1\\",
                 \\"this_Post_comments_auth_allow0_creator_id\\": \\"id-01\\",
                 \\"this_content\\": {
                     \\"args\\": {
@@ -218,8 +218,8 @@ describe("@auth allow with interface relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $this_id
+            "MATCH (this:\`User\`)
+            WHERE this.id = $param0
             WITH this
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
@@ -290,7 +290,7 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"user-id\\",
+                \\"param0\\": \\"user-id\\",
                 \\"this_update_content0_id\\": \\"new-id\\",
                 \\"this_content0_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"auth\\": {
@@ -348,8 +348,8 @@ describe("@auth allow with interface relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE this.id = $this_id
+            "MATCH (this:\`Post\`)
+            WHERE this.id = $param0
             WITH this
             CALL apoc.util.validate(NOT (exists((this)<-[:HAS_CONTENT]-(:User)) AND any(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
@@ -374,7 +374,7 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"post-id\\",
+                \\"param0\\": \\"post-id\\",
                 \\"this_update_creator0_password\\": \\"new-password\\",
                 \\"this_update_creator0_password_auth_allow0_id\\": \\"user-id\\",
                 \\"this_creator0_auth_allow0_id\\": \\"user-id\\",
@@ -424,8 +424,8 @@ describe("@auth allow with interface relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $this_id
+            "MATCH (this:\`User\`)
+            WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
             WHERE this_content_Comment0.id = $this_deleteUsers.args.delete.content[0].where.node.id
@@ -447,7 +447,7 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"user-id\\",
+                \\"param0\\": \\"user-id\\",
                 \\"this_auth_allow0_id\\": \\"user-id\\",
                 \\"this_deleteUsers\\": {
                     \\"args\\": {
@@ -487,8 +487,8 @@ describe("@auth allow with interface relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $this_id
+            "MATCH (this:\`User\`)
+            WHERE this.id = $param0
             WITH this
             CALL {
             WITH this
@@ -496,7 +496,7 @@ describe("@auth allow with interface relationships", () => {
             WHERE this_disconnect_content0.id = $updateUsers.args.disconnect.content[0].where.node.id
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $thisUser0_allow_auth_allow0_id AND exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:User)) AND any(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_content0Comment1_allow_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
             RETURN count(*) AS _
@@ -506,7 +506,7 @@ describe("@auth allow with interface relationships", () => {
             WHERE this_disconnect_content0.id = $updateUsers.args.disconnect.content[0].where.node.id
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $thisUser0_allow_auth_allow0_id AND exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:User)) AND any(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_content0Post1_allow_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
             RETURN count(*) AS _
@@ -516,7 +516,7 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"user-id\\",
+                \\"param0\\": \\"user-id\\",
                 \\"thisUser0_allow_auth_allow0_id\\": \\"user-id\\",
                 \\"this_disconnect_content0Comment1_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"this_disconnect_content0Post1_allow_auth_allow0_creator_id\\": \\"user-id\\",
@@ -567,8 +567,8 @@ describe("@auth allow with interface relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $this_id
+            "MATCH (this:\`User\`)
+            WHERE this.id = $param0
             WITH this
             CALL {
             WITH this
@@ -576,7 +576,7 @@ describe("@auth allow with interface relationships", () => {
             WHERE this_disconnect_content0.id = $updateUsers.args.disconnect.content[0].where.node.id
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $thisUser0_allow_auth_allow0_id AND exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:User)) AND any(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_content0Comment1_allow_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
             RETURN count(*) AS _
@@ -586,7 +586,7 @@ describe("@auth allow with interface relationships", () => {
             WHERE this_disconnect_content0.id = $updateUsers.args.disconnect.content[0].where.node.id
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $thisUser0_allow_auth_allow0_id AND exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:User)) AND any(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_content0Post1_allow_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            FOREACH(_ IN CASE this_disconnect_content0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
             WITH this, this_disconnect_content0
@@ -596,7 +596,7 @@ describe("@auth allow with interface relationships", () => {
             WHERE this_disconnect_content0_comments0.id = $updateUsers.args.disconnect.content[0].disconnect._on.Post[0].comments[0].where.node.id
             WITH this, this_disconnect_content0, this_disconnect_content0_comments0, this_disconnect_content0_comments0_rel
             CALL apoc.util.validate(NOT (exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:User)) AND any(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_content0Post0_allow_auth_allow0_creator_id) AND exists((this_disconnect_content0_comments0)<-[:HAS_CONTENT]-(:User)) AND any(creator IN [(this_disconnect_content0_comments0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_content0_comments0Comment1_allow_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            FOREACH(_ IN CASE this_disconnect_content0_comments0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_content0_comments0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_comments0_rel
             )
             RETURN count(*) AS _
@@ -608,7 +608,7 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"user-id\\",
+                \\"param0\\": \\"user-id\\",
                 \\"thisUser0_allow_auth_allow0_id\\": \\"user-id\\",
                 \\"this_disconnect_content0Comment1_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"this_disconnect_content0Post1_allow_auth_allow0_creator_id\\": \\"user-id\\",
@@ -668,17 +668,17 @@ describe("@auth allow with interface relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.id = $this_id
+            "MATCH (this:\`User\`)
+            WHERE this.id = $param0
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Comment)
-            	WHERE this_connect_content0_node.id = $this_connect_content0_node_id
+            	WHERE this_connect_content0_node.id = $this_connect_content0_node_param0
             	WITH this, this_connect_content0_node
             	CALL apoc.util.validate(NOT (exists((this_connect_content0_node)<-[:HAS_CONTENT]-(:User)) AND any(creator IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_content0_nodeComment0_allow_auth_allow0_creator_id) AND this.id IS NOT NULL AND this.id = $thisUser1_allow_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_content0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_content0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
             		)
             	)
@@ -686,11 +686,11 @@ describe("@auth allow with interface relationships", () => {
             UNION
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
-            	WHERE this_connect_content0_node.id = $this_connect_content0_node_id
+            	WHERE this_connect_content0_node.id = $this_connect_content0_node_param0
             	WITH this, this_connect_content0_node
             	CALL apoc.util.validate(NOT (exists((this_connect_content0_node)<-[:HAS_CONTENT]-(:User)) AND any(creator IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_content0_nodePost0_allow_auth_allow0_creator_id) AND this.id IS NOT NULL AND this.id = $thisUser1_allow_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_content0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_content0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
             		)
             	)
@@ -701,8 +701,8 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"user-id\\",
-                \\"this_connect_content0_node_id\\": \\"post-id\\",
+                \\"param0\\": \\"user-id\\",
+                \\"this_connect_content0_node_param0\\": \\"post-id\\",
                 \\"this_connect_content0_nodeComment0_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"thisUser1_allow_auth_allow0_id\\": \\"user-id\\",
                 \\"this_connect_content0_nodePost0_allow_auth_allow0_creator_id\\": \\"user-id\\",

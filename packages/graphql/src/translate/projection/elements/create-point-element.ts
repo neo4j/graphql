@@ -51,7 +51,7 @@ function createPointElement({
 
     const cypher = [
         "apoc.cypher.runFirstColumn(",
-        `'RETURN\nCASE ${variable}.${dbFieldName} IS NOT NULL\n\tWHEN true THEN ${projection}\n\tELSE NULL\nEND AS result',`,
+        `'RETURN\nCASE\n\tWHEN ${variable}.${dbFieldName} IS NOT NULL THEN ${projection}\n\tELSE NULL\nEND AS result',`,
         `{ ${variable}: ${variable} },`,
         "false",
         ")",

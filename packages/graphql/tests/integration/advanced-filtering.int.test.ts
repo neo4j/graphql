@@ -92,10 +92,6 @@ describe("Advanced Filtering", () => {
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
-
                         expect(gqlResult.errors).toBeUndefined();
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
                         expect((gqlResult.data as any)[randomType.plural][0].property).toEqual(value);
@@ -147,10 +143,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
-
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
 
                         expect(gqlResult.errors).toBeUndefined();
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -209,10 +201,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
-
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -280,10 +268,6 @@ describe("Advanced Filtering", () => {
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -341,10 +325,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
-
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -407,10 +387,6 @@ describe("Advanced Filtering", () => {
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -468,10 +444,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
-
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -536,10 +508,6 @@ describe("Advanced Filtering", () => {
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -600,10 +568,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
-
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -666,10 +630,6 @@ describe("Advanced Filtering", () => {
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -679,6 +639,295 @@ describe("Advanced Filtering", () => {
                     }
                 })
             );
+        });
+
+        test("should find Movies GT string", async () => {
+            const session = await neo4j.getSession();
+
+            const movieType = generateUniqueType("Movie");
+
+            const typeDefs = `
+                        type ${movieType.name} {
+                            title: String
+                        }
+                    `;
+
+            const neoSchema = new Neo4jGraphQL({
+                features: {
+                    filters: {
+                        String: {
+                            LT: true,
+                            GT: true,
+                            LTE: true,
+                            GTE: true,
+                        },
+                    },
+                },
+                typeDefs,
+            });
+
+            const animatrix = "The Animatrix";
+            const matrix = "The Matrix";
+            const matrixReloaded = "The Matrix Reloaded";
+            const matrixRevolutions = "The Matrix Revolutions";
+
+            try {
+                await session.run(
+                    `
+                            CREATE (:${movieType.name} {title: $animatrix})
+                            CREATE (:${movieType.name} {title: $matrix})
+                            CREATE (:${movieType.name} {title: $matrixReloaded})
+                            CREATE (:${movieType.name} {title: $matrixRevolutions})
+                        `,
+                    { animatrix, matrix, matrixReloaded, matrixRevolutions }
+                );
+
+                const query = `
+                            {
+                                ${movieType.plural}(where: { title_GT: "${matrix}" }) {
+                                    title
+                                }
+                            }
+                        `;
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                expect((gqlResult.data as any)[movieType.plural]).toHaveLength(2);
+                expect((gqlResult.data as any)[movieType.plural]).toEqual([
+                    { title: matrixReloaded },
+                    { title: matrixRevolutions },
+                ]);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should find Movies LT string", async () => {
+            const session = await neo4j.getSession();
+
+            const movieType = generateUniqueType("Movie");
+
+            const typeDefs = `
+                        type ${movieType.name} {
+                            title: String
+                        }
+                    `;
+
+            const neoSchema = new Neo4jGraphQL({
+                features: {
+                    filters: {
+                        String: {
+                            LT: true,
+                            GT: true,
+                            LTE: true,
+                            GTE: true,
+                        },
+                    },
+                },
+                typeDefs,
+            });
+
+            const matrix = "The Matrix";
+            const matrixReloaded = "The Matrix Reloaded";
+            const matrixRevolutions = "The Matrix Revolutions";
+            const matrixResurrections = "The Matrix Resurrections";
+
+            try {
+                await session.run(
+                    `
+                            CREATE (:${movieType.name} {title: $matrix})
+                            CREATE (:${movieType.name} {title: $matrixReloaded})
+                            CREATE (:${movieType.name} {title: $matrixRevolutions})
+                            CREATE (:${movieType.name} {title: $matrixResurrections})
+                        `,
+                    { matrix, matrixReloaded, matrixRevolutions, matrixResurrections }
+                );
+
+                const query = `
+                            {
+                                ${movieType.plural}(where: { title_LT: "${matrixRevolutions}" }) {
+                                    title
+                                }
+                            }
+                        `;
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                expect((gqlResult.data as any)[movieType.plural]).toHaveLength(3);
+                expect((gqlResult.data as any)[movieType.plural]).toEqual([
+                    { title: matrix },
+                    { title: matrixReloaded },
+                    { title: matrixResurrections },
+                ]);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should find Movies GTE string", async () => {
+            const session = await neo4j.getSession();
+
+            const movieType = generateUniqueType("Movie");
+
+            const typeDefs = `
+                        type ${movieType.name} {
+                            title: String
+                        }
+                    `;
+
+            const neoSchema = new Neo4jGraphQL({
+                features: {
+                    filters: {
+                        String: {
+                            LT: true,
+                            GT: true,
+                            LTE: true,
+                            GTE: true,
+                        },
+                    },
+                },
+                typeDefs,
+            });
+
+            const animatrix = "The Animatrix";
+            const matrix = "The Matrix";
+            const matrixReloaded = "The Matrix Reloaded";
+            const matrixRevolutions = "The Matrix Revolutions";
+
+            try {
+                await session.run(
+                    `
+                            CREATE (:${movieType.name} {title: $animatrix})
+                            CREATE (:${movieType.name} {title: $matrix})
+                            CREATE (:${movieType.name} {title: $matrixReloaded})
+                            CREATE (:${movieType.name} {title: $matrixRevolutions})
+                        `,
+                    { animatrix, matrix, matrixReloaded, matrixRevolutions }
+                );
+
+                const query = `
+                            {
+                                ${movieType.plural}(where: { title_GTE: "${matrix}" }) {
+                                    title
+                                }
+                            }
+                        `;
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                expect((gqlResult.data as any)[movieType.plural]).toHaveLength(3);
+                expect((gqlResult.data as any)[movieType.plural]).toEqual([
+                    { title: matrix },
+                    { title: matrixReloaded },
+                    { title: matrixRevolutions },
+                ]);
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("should find Movies LTE string", async () => {
+            const session = await neo4j.getSession();
+
+            const movieType = generateUniqueType("Movie");
+
+            const typeDefs = `
+                        type ${movieType.name} {
+                            title: String
+                        }
+                    `;
+
+            const neoSchema = new Neo4jGraphQL({
+                features: {
+                    filters: {
+                        String: {
+                            LT: true,
+                            GT: true,
+                            LTE: true,
+                            GTE: true,
+                        },
+                    },
+                },
+                typeDefs,
+            });
+
+            const matrix = "The Matrix";
+            const matrixReloaded = "The Matrix Reloaded";
+            const matrixRevolutions = "The Matrix Revolutions";
+            const matrixResurrections = "The Matrix Resurrections";
+
+            try {
+                await session.run(
+                    `
+                            CREATE (:${movieType.name} {title: $matrix})
+                            CREATE (:${movieType.name} {title: $matrixReloaded})
+                            CREATE (:${movieType.name} {title: $matrixRevolutions})
+                            CREATE (:${movieType.name} {title: $matrixResurrections})
+
+                        `,
+                    { matrix, matrixReloaded, matrixRevolutions, matrixResurrections }
+                );
+
+                const query = `
+                            {
+                                ${movieType.plural}(where: { title_LTE: "${matrixRevolutions}" }) {
+                                    title
+                                }
+                            }
+                        `;
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                });
+
+                if (gqlResult.errors) {
+                    console.log(JSON.stringify(gqlResult.errors, null, 2));
+                }
+
+                expect(gqlResult.errors).toBeUndefined();
+
+                expect((gqlResult.data as any)[movieType.plural]).toHaveLength(4);
+                expect((gqlResult.data as any)[movieType.plural]).toEqual([
+                    { title: matrix },
+                    { title: matrixReloaded },
+                    { title: matrixRevolutions },
+                    { title: matrixResurrections },
+                ]);
+            } finally {
+                await session.close();
+            }
         });
     });
 
@@ -736,10 +985,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
-
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -812,10 +1057,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
-
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -891,10 +1132,6 @@ describe("Advanced Filtering", () => {
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -953,10 +1190,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
-
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -1017,10 +1250,6 @@ describe("Advanced Filtering", () => {
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
@@ -1078,10 +1307,6 @@ describe("Advanced Filtering", () => {
                             source: query,
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
-
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
 
                         expect(gqlResult.errors).toBeUndefined();
 
@@ -1142,10 +1367,6 @@ describe("Advanced Filtering", () => {
                             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                         });
 
-                        if (gqlResult.errors) {
-                            console.log(JSON.stringify(gqlResult.errors, null, 2));
-                        }
-
                         expect(gqlResult.errors).toBeUndefined();
 
                         expect((gqlResult.data as any)[randomType.plural]).toHaveLength(2);
@@ -1195,10 +1416,6 @@ describe("Advanced Filtering", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
                 expect(gqlResult.errors).toBeUndefined();
 
                 expect((gqlResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -1243,10 +1460,6 @@ describe("Advanced Filtering", () => {
                     source: query,
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
-
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
 
                 expect(gqlResult.errors).toBeUndefined();
 
@@ -1319,10 +1532,6 @@ describe("Advanced Filtering", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
-
                     expect(gqlResult.errors).toBeUndefined();
 
                     expect((gqlResult.data as any)[randomType1.plural]).toHaveLength(1);
@@ -1382,10 +1591,6 @@ describe("Advanced Filtering", () => {
                         source: query,
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
-
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -1455,12 +1660,7 @@ describe("Advanced Filtering", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
-
                     expect(gqlResult.errors).toBeUndefined();
-
                     expect((gqlResult.data as any).movies).toHaveLength(1);
                     expect((gqlResult.data as any).movies[0]).toMatchObject({
                         id: movieId,
@@ -1526,10 +1726,6 @@ describe("Advanced Filtering", () => {
                         source: query,
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
-
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -1608,10 +1804,6 @@ describe("Advanced Filtering", () => {
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
 
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
-
                     expect(gqlResult.errors).toBeUndefined();
 
                     expect((gqlResult.data as any)[randomType1.plural]).toHaveLength(1);
@@ -1682,10 +1874,6 @@ describe("Advanced Filtering", () => {
                         source: query,
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
-
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -1764,10 +1952,6 @@ describe("Advanced Filtering", () => {
                         source: query,
                         contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     });
-
-                    if (gqlResult.errors) {
-                        console.log(JSON.stringify(gqlResult.errors, null, 2));
-                    }
 
                     expect(gqlResult.errors).toBeUndefined();
 
@@ -1855,6 +2039,7 @@ describe("Advanced Filtering", () => {
                         }
                     }
                 `;
+
                 test("ALL", async () => {
                     const gqlResult = await graphql({
                         schema,
@@ -2098,10 +2283,6 @@ describe("Advanced Filtering", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
-                if (nullResult.errors) {
-                    console.log(JSON.stringify(nullResult.errors, null, 2));
-                }
-
                 expect(nullResult.errors).toBeUndefined();
 
                 expect((nullResult.data as any)[randomType1.plural]).toHaveLength(1);
@@ -2125,10 +2306,6 @@ describe("Advanced Filtering", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
-                if (notNullResult.errors) {
-                    console.log(JSON.stringify(notNullResult.errors, null, 2));
-                }
-
                 expect(notNullResult.errors).toBeUndefined();
 
                 expect((notNullResult.data as any)[randomType1.plural]).toHaveLength(1);
@@ -2142,6 +2319,7 @@ describe("Advanced Filtering", () => {
     });
 
     describe("NULL Filtering", () => {
+        // TODO: split in 2 tests
         test("should work for existence and non-existence", async () => {
             const session = await neo4j.getSession();
 
@@ -2196,10 +2374,6 @@ describe("Advanced Filtering", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
-                if (nullResult.errors) {
-                    console.log(JSON.stringify(nullResult.errors, null, 2));
-                }
-
                 expect(nullResult.errors).toBeUndefined();
 
                 expect((nullResult.data as any)[randomType.plural]).toHaveLength(1);
@@ -2221,10 +2395,6 @@ describe("Advanced Filtering", () => {
                     source: notNullQuery,
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
-
-                if (notNullResult.errors) {
-                    console.log(JSON.stringify(notNullResult.errors, null, 2));
-                }
 
                 expect(notNullResult.errors).toBeUndefined();
 

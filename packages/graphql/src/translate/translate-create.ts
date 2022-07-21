@@ -26,6 +26,7 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
+import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 
 export default async function translateCreate({
     context,
@@ -33,7 +34,7 @@ export default async function translateCreate({
 }: {
     context: Context;
     node: Node;
-}): Promise<[string, any]> {
+}): Promise<CypherBuilder.CypherResult> {
     const { resolveTree } = context;
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
@@ -235,16 +236,20 @@ export default async function translateCreate({
 
     ({ cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({ cypher }));
 
-    return [
-        cypher,
-        {
-            ...params,
-            ...replacedProjectionParams,
-            ...replacedConnectionParams,
-            ...replacedInterfaceParams,
-            resolvedCallbacks,
-        },
-    ];
+    const createQuery = new CypherBuilder.RawCypher(() => {
+        return [
+            cypher,
+            {
+                ...params,
+                ...replacedProjectionParams,
+                ...replacedConnectionParams,
+                ...replacedInterfaceParams,
+                resolvedCallbacks,
+            },
+        ];
+    });
+
+    return createQuery.build();
 }
 
 function generateCreateReturnStatement(projectionStr: string | undefined, subscriptionsEnabled: boolean): string {

@@ -93,6 +93,8 @@ describe("200", () => {
             input CategoryUpdateInput {
               description: String
               exampleImageLocations: [String!]
+              exampleImageLocations_POP: Int
+              exampleImageLocations_PUSH: [String!]
               name: String
             }
 

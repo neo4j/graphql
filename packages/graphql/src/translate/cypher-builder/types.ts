@@ -17,7 +17,23 @@
  * limitations under the License.
  */
 
+import type { Variable } from "./variables/Variable";
+import type { Operation } from "./operations/Operation";
+import type { PropertyRef } from "./PropertyRef";
+import type { CypherFunction } from "./functions/CypherFunction";
+import type { Literal } from "./variables/Literal";
+import type { Exists } from "./Exists";
+import type { CypherEnvironment } from "./Environment";
+import type { ComprehensionExpr } from "./list/ComprehensionExpr";
+
+export type Expr = Operation | Variable | PropertyRef | CypherFunction | Literal | Exists | ComprehensionExpr;
+
 export type CypherResult = {
     cypher: string;
     params: Record<string, string>;
 };
+
+/** Defines the interface for a class that can be compiled into Cypher */
+export interface CypherCompilable {
+    getCypher(env: CypherEnvironment): string;
+}

@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { Integer} from "neo4j-driver";
+import type { Integer } from "neo4j-driver";
 import { isInt } from "neo4j-driver";
 
 /** Checks if value is string */
 export function isString(value: unknown): value is string {
-    return typeof value === "string" || value instanceof String;
+    return typeof value === "string";
 }
 
 /** Checks if value is a Neo4j int object */

@@ -68,8 +68,8 @@ describe("Root Connection Query tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-            MATCH (this:Movie)
-            WHERE this.title = $this_title
+            MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             WITH COLLECT(this) as edges
             WITH edges, size(edges) as totalCount
             UNWIND edges as this
@@ -81,10 +81,10 @@ describe("Root Connection Query tests", () => {
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                    "{
-                        \\"this_title\\": \\"River Runs Through It, A\\"
-                    }"
-              `);
+            "{
+                \\"param0\\": \\"River Runs Through It, A\\"
+            }"
+        `);
     });
     test("should apply limit and sort before return", async () => {
         const query = gql`
@@ -104,7 +104,7 @@ describe("Root Connection Query tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-            MATCH (this:Movie)
+            MATCH (this:\`Movie\`)
             WITH COLLECT(this) as edges
             WITH edges, size(edges) as totalCount
             UNWIND edges as this
@@ -142,8 +142,8 @@ describe("Root Connection Query tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-            MATCH (this:Movie)
-            WHERE this.title CONTAINS $this_title_CONTAINS
+            MATCH (this:\`Movie\`)
+            WHERE this.title CONTAINS $param0
             WITH COLLECT(this) as edges
             WITH edges, size(edges) as totalCount
             UNWIND edges as this
@@ -156,14 +156,14 @@ describe("Root Connection Query tests", () => {
             RETURN { edges: edges, totalCount: totalCount } as this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
-               "{
-                   \\"this_title_CONTAINS\\": \\"Matrix\\",
-                   \\"this_limit\\": {
-                       \\"low\\": 20,
-                       \\"high\\": 0
-                   }
-               }"
-           `);
+            "{
+                \\"param0\\": \\"Matrix\\",
+                \\"this_limit\\": {
+                    \\"low\\": 20,
+                    \\"high\\": 0
+                }
+            }"
+        `);
     });
     test("should correctly place any connection strings", async () => {
         const query = gql`
@@ -189,7 +189,7 @@ describe("Root Connection Query tests", () => {
         const result = await translateQuery(neoSchema, query, { req });
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-            MATCH (this:Movie)
+            MATCH (this:\`Movie\`)
             WITH COLLECT(this) as edges
             WITH edges, size(edges) as totalCount
             UNWIND edges as this
@@ -203,7 +203,8 @@ describe("Root Connection Query tests", () => {
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WITH collect({ node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             WITH COLLECT({ node: this { .title, actorsConnection } }) as edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } as this"

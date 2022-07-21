@@ -191,7 +191,7 @@ function createElementWhereAndParams({
                         nodeVariable: `${collectedMap}.node`,
                         relationship,
                         relationshipVariable: `${collectedMap}.relationship`,
-                        parameterPrefix: `${parameterPrefix}.${fieldName}`,
+                        parameterPrefix: operator ? `${parameterPrefix}.${fieldName}_${operator}` : `${parameterPrefix}.${fieldName}`,
                         // listPredicates stores all list predicates (SINGLE, ANY, NONE,..) while (recursively) translating the where clauses
                         listPredicates: [currentListPredicate, ...(listPredicates || [])],
                     });
@@ -199,8 +199,15 @@ function createElementWhereAndParams({
                     resultArr.push(connectionWhere[0]);
                     resultArr.push(")"); // close NONE/ANY
 
-                    const expectMultipleValues = listPredicates?.length ? !listPredicates.includes("single") : true;
+                    let expectMultipleValues: boolean;
 
+                    if (operator) {
+                        expectMultipleValues = false;
+                    } else if (listPredicates?.length) {
+                        expectMultipleValues = !listPredicates.includes("single");
+                    } else {
+                        expectMultipleValues = true;
+                    }
                     const apocRunFirstColumn = wrapInApocRunFirstColumn(
                         resultArr.join("\n"),
                         {

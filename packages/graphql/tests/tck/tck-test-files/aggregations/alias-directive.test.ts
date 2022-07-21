@@ -74,18 +74,18 @@ describe("Cypher Aggregations Many with Alias directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { id: { shortest: min(this._id), longest: max(this._id) }, title: { shortest:
                                         reduce(aggVar = collect(this._title)[0], current IN collect(this._title) |
-                                            CASE size(current) < size(aggVar)
-                                            WHEN true THEN current
+                                            CASE
+                                            WHEN size(current) < size(aggVar) THEN current
                                             ELSE aggVar
                                             END
                                         )
                                     , longest:
                                         reduce(aggVar = collect(this._title)[0], current IN collect(this._title) |
-                                            CASE size(current) > size(aggVar)
-                                            WHEN true THEN current
+                                            CASE
+                                            WHEN size(current) > size(aggVar) THEN current
                                             ELSE aggVar
                                             END
                                         )

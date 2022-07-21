@@ -10,10 +10,22 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 jobs:
   release:
     name: Release
+
     runs-on: ubuntu-latest
+
+    environment:
+      name: npm
+
+    outputs:
+      published: ${{ steps.changesets.outputs.published }}
+      published-packages: ${{ steps.changesets.outputs.publishedPackages }}
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -24,10 +36,61 @@ jobs:
       - name: Install Dependencies
         run: yarn
 
-      - name: Create Release Pull Request
+      - name: Configure git
+        run: |
+          git config --global user.name 'Neo4j Team GraphQL'
+          git config --global user.email 'team-graphql@neotechnology.com'
+
+      - name: Creating .npmrc
+        run: |
+          cat << EOF > "$HOME/.npmrc"
+            @neo4j:registry https://registry.npmjs.org
+            //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          EOF
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create release PR or release
+        id: changesets
         uses: changesets/action@2a025e8ab1cfa4312c2868cb6aa3cd3b473b84bf
         with:
           title: changesets for branch `dev`
-          version: yarn changeset version && yarn
+          version: yarn changeset-version
+          publish: yarn release
+          setupGitUser: false
         env:
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false
+
+      - uses: actions/checkout@v3
+        with:
+          ref: master
+          fetch-depth: 0
+          token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
+
+      - name: Merge into master if publish happens
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          git merge --no-ff origin/dev --strategy-option theirs
+          git push
+
+  slack-notify:
+    needs:
+      - release
+
+    if: ${{ needs.release.outputs.published == 'true' }}
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: ${{ fromJson(needs.release.outputs.published-packages) }}
+
+    steps:
+      - name: Send Slack announcement of release
+        if: matrix.package.name == '@neo4j/graphql'
+        uses: slackapi/slack-github-action@v1.19.0
+        with:
+          payload: '{"version":"${{ matrix.package.version }}"}'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_RELEASE_ANNOUNCEMENT_WEBHOOK_URL }}

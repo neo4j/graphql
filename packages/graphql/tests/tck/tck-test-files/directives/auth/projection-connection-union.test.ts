@@ -89,7 +89,7 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
             WITH this
@@ -103,13 +103,15 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
             CALL apoc.util.validate(NOT (this_Post_user.id IS NOT NULL AND this_Post_user.id = $this_Post_user_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { name: this_Post_user.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS creatorConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS creatorConnection
             }
             WITH { node: { __resolveType: \\"Post\\", content: this_Post.content, creatorConnection: creatorConnection } } AS edge
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS contentConnection
+            WITH edges, size(edges) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS contentConnection
             }
             RETURN this { contentConnection } as this"
         `);

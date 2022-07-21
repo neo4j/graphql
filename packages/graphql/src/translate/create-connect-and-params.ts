@@ -207,8 +207,8 @@ function createConnectAndParams({
            Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
         */
-        subquery.push(`\tFOREACH(_ IN CASE ${parentVar} WHEN NULL THEN [] ELSE [1] END | `);
-        subquery.push(`\t\tFOREACH(_ IN CASE ${nodeName} WHEN NULL THEN [] ELSE [1] END | `);
+        subquery.push(`\tFOREACH(_ IN CASE WHEN ${parentVar} IS NULL THEN [] ELSE [1] END | `);
+        subquery.push(`\t\tFOREACH(_ IN CASE WHEN ${nodeName} IS NULL THEN [] ELSE [1] END | `);
         subquery.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
         if (relationField.properties) {

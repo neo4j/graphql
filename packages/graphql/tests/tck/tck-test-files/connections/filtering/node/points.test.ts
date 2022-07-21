@@ -91,18 +91,19 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WHERE distance(this_actor.currentLocation, point($this_actorsConnection.args.where.node.currentLocation_DISTANCE.point)) = $this_actorsConnection.args.where.node.currentLocation_DISTANCE.distance
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, currentLocation: apoc.cypher.runFirstColumn('RETURN
-            CASE this_actor.currentLocation IS NOT NULL
-            	WHEN true THEN { point: this_actor.currentLocation }
+            CASE
+            	WHEN this_actor.currentLocation IS NOT NULL THEN { point: this_actor.currentLocation }
             	ELSE NULL
             END AS result',{ this_actor: this_actor },false) } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);

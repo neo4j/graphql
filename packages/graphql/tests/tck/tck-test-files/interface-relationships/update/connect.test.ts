@@ -81,14 +81,14 @@ describe("Interface Relationships - Update connect", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
-            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_title_STARTS_WITH
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actedIn0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
             		)
@@ -97,9 +97,9 @@ describe("Interface Relationships - Update connect", () => {
             UNION
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
-            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_title_STARTS_WITH
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actedIn0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
             		)
@@ -111,7 +111,7 @@ describe("Interface Relationships - Update connect", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connect_actedIn0_node_title_STARTS_WITH\\": \\"The \\",
+                \\"this_connect_actedIn0_node_param0\\": \\"The \\",
                 \\"this_connect_actedIn0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
@@ -146,14 +146,14 @@ describe("Interface Relationships - Update connect", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
-            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_title_STARTS_WITH
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actedIn0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
             		)
@@ -162,9 +162,9 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             	WITH this, this_connect_actedIn0_node
             	OPTIONAL MATCH (this_connect_actedIn0_node_actors0_node:Actor)
-            	WHERE this_connect_actedIn0_node_actors0_node.name = $this_connect_actedIn0_node_actors0_node_name
-            	FOREACH(_ IN CASE this_connect_actedIn0_node WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actedIn0_node_actors0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this_connect_actedIn0_node_actors0_node.name = $this_connect_actedIn0_node_actors0_node_param0
+            	FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node_actors0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_actors0_node)
             SET this_connect_actedIn0_node_actors0_relationship.screenTime = $this_connect_actedIn0_node_actors0_relationship_screenTime
             		)
@@ -175,9 +175,9 @@ describe("Interface Relationships - Update connect", () => {
             UNION
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
-            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_title_STARTS_WITH
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actedIn0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
             		)
@@ -186,9 +186,9 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             	WITH this, this_connect_actedIn0_node
             	OPTIONAL MATCH (this_connect_actedIn0_node_actors0_node:Actor)
-            	WHERE this_connect_actedIn0_node_actors0_node.name = $this_connect_actedIn0_node_actors0_node_name
-            	FOREACH(_ IN CASE this_connect_actedIn0_node WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actedIn0_node_actors0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this_connect_actedIn0_node_actors0_node.name = $this_connect_actedIn0_node_actors0_node_param0
+            	FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node_actors0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_actors0_node)
             SET this_connect_actedIn0_node_actors0_relationship.screenTime = $this_connect_actedIn0_node_actors0_relationship_screenTime
             		)
@@ -202,12 +202,12 @@ describe("Interface Relationships - Update connect", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connect_actedIn0_node_title_STARTS_WITH\\": \\"The \\",
+                \\"this_connect_actedIn0_node_param0\\": \\"The \\",
                 \\"this_connect_actedIn0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
-                \\"this_connect_actedIn0_node_actors0_node_name\\": \\"Actor\\",
+                \\"this_connect_actedIn0_node_actors0_node_param0\\": \\"Actor\\",
                 \\"this_connect_actedIn0_node_actors0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
@@ -246,14 +246,14 @@ describe("Interface Relationships - Update connect", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
-            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_title_STARTS_WITH
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actedIn0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
             		)
@@ -262,9 +262,9 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             	WITH this, this_connect_actedIn0_node
             	OPTIONAL MATCH (this_connect_actedIn0_node_on_Movie0_actors0_node:Actor)
-            	WHERE this_connect_actedIn0_node_on_Movie0_actors0_node.name = $this_connect_actedIn0_node_on_Movie0_actors0_node_name
-            	FOREACH(_ IN CASE this_connect_actedIn0_node WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actedIn0_node_on_Movie0_actors0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this_connect_actedIn0_node_on_Movie0_actors0_node.name = $this_connect_actedIn0_node_on_Movie0_actors0_node_param0
+            	FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node_on_Movie0_actors0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_on_Movie0_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_on_Movie0_actors0_node)
             SET this_connect_actedIn0_node_on_Movie0_actors0_relationship.screenTime = $this_connect_actedIn0_node_on_Movie0_actors0_relationship_screenTime
             		)
@@ -275,9 +275,9 @@ describe("Interface Relationships - Update connect", () => {
             UNION
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
-            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_title_STARTS_WITH
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actedIn0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
             		)
@@ -289,12 +289,12 @@ describe("Interface Relationships - Update connect", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connect_actedIn0_node_title_STARTS_WITH\\": \\"The \\",
+                \\"this_connect_actedIn0_node_param0\\": \\"The \\",
                 \\"this_connect_actedIn0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
-                \\"this_connect_actedIn0_node_on_Movie0_actors0_node_name\\": \\"Actor\\",
+                \\"this_connect_actedIn0_node_on_Movie0_actors0_node_param0\\": \\"Actor\\",
                 \\"this_connect_actedIn0_node_on_Movie0_actors0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
@@ -339,14 +339,14 @@ describe("Interface Relationships - Update connect", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
-            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_title_STARTS_WITH
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actedIn0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
             		)
@@ -355,9 +355,9 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             	WITH this, this_connect_actedIn0_node
             	OPTIONAL MATCH (this_connect_actedIn0_node_on_Movie0_actors0_node:Actor)
-            	WHERE this_connect_actedIn0_node_on_Movie0_actors0_node.name = $this_connect_actedIn0_node_on_Movie0_actors0_node_name
-            	FOREACH(_ IN CASE this_connect_actedIn0_node WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actedIn0_node_on_Movie0_actors0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this_connect_actedIn0_node_on_Movie0_actors0_node.name = $this_connect_actedIn0_node_on_Movie0_actors0_node_param0
+            	FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node_on_Movie0_actors0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_on_Movie0_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_on_Movie0_actors0_node)
             SET this_connect_actedIn0_node_on_Movie0_actors0_relationship.screenTime = $this_connect_actedIn0_node_on_Movie0_actors0_relationship_screenTime
             		)
@@ -368,9 +368,9 @@ describe("Interface Relationships - Update connect", () => {
             UNION
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
-            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_title_STARTS_WITH
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actedIn0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
             		)
@@ -379,9 +379,9 @@ describe("Interface Relationships - Update connect", () => {
             CALL {
             	WITH this, this_connect_actedIn0_node
             	OPTIONAL MATCH (this_connect_actedIn0_node_actors0_node:Actor)
-            	WHERE this_connect_actedIn0_node_actors0_node.name = $this_connect_actedIn0_node_actors0_node_name
-            	FOREACH(_ IN CASE this_connect_actedIn0_node WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actedIn0_node_actors0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this_connect_actedIn0_node_actors0_node.name = $this_connect_actedIn0_node_actors0_node_param0
+            	FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node_actors0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_actors0_node)
             SET this_connect_actedIn0_node_actors0_relationship.screenTime = $this_connect_actedIn0_node_actors0_relationship_screenTime
             		)
@@ -395,17 +395,17 @@ describe("Interface Relationships - Update connect", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connect_actedIn0_node_title_STARTS_WITH\\": \\"The \\",
+                \\"this_connect_actedIn0_node_param0\\": \\"The \\",
                 \\"this_connect_actedIn0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
-                \\"this_connect_actedIn0_node_on_Movie0_actors0_node_name\\": \\"Different Actor\\",
+                \\"this_connect_actedIn0_node_on_Movie0_actors0_node_param0\\": \\"Different Actor\\",
                 \\"this_connect_actedIn0_node_on_Movie0_actors0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
-                \\"this_connect_actedIn0_node_actors0_node_name\\": \\"Actor\\",
+                \\"this_connect_actedIn0_node_actors0_node_param0\\": \\"Actor\\",
                 \\"this_connect_actedIn0_node_actors0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0

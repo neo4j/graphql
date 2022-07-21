@@ -79,19 +79,19 @@ describe("Cypher Union", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
-            RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search) WHERE (\\"Genre\\" IN labels(this_search)) OR (\\"Movie\\" IN labels(this_search)) | head( [ this_search IN [this_search] WHERE (\\"Genre\\" IN labels(this_search)) AND this_search.name = $this_search_Genre_name AND apoc.util.validatePredicate(NOT (this_search.name IS NOT NULL AND this_search.name = $this_search_Genre_auth_allow0_name), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"Movie\\" IN labels(this_search)) AND this_search.title = $this_search_Movie_title | this_search { __resolveType: \\"Movie\\",  .title } ] ) ] WHERE this_search IS NOT NULL] [1..11]  } as this"
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
+            RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search) WHERE (\\"Genre\\" IN labels(this_search)) OR (\\"Movie\\" IN labels(this_search)) | head( [ this_search IN [this_search] WHERE (\\"Genre\\" IN labels(this_search)) AND this_search.name = $this_search_Genrethis_search_param0 AND apoc.util.validatePredicate(NOT (this_search.name IS NOT NULL AND this_search.name = $this_search_Genre_auth_allow0_name), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"Movie\\" IN labels(this_search)) AND this_search.title = $this_search_Moviethis_search_param0 | this_search { __resolveType: \\"Movie\\",  .title } ] ) ] WHERE this_search IS NOT NULL] [1..11]  } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"some title\\",
-                \\"this_search_Genre_name\\": \\"Horror\\",
+                \\"param0\\": \\"some title\\",
+                \\"this_search_Genrethis_search_param0\\": \\"Horror\\",
                 \\"this_search_Genre_auth_allow0_name\\": [
                     \\"Horror\\"
                 ],
-                \\"this_search_Movie_title\\": \\"The Matrix\\"
+                \\"this_search_Moviethis_search_param0\\": \\"The Matrix\\"
             }"
         `);
     });
@@ -154,7 +154,7 @@ describe("Cypher Union", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             CREATE (this_create_search_Genre0_node:Genre)
             SET this_create_search_Genre0_node.name = $this_create_search_Genre0_node_name
             MERGE (this)-[:SEARCH]->(this_create_search_Genre0_node)
@@ -200,9 +200,9 @@ describe("Cypher Union", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_search_Genre_connect0_node:Genre)
-            	WHERE this0_search_Genre_connect0_node.name = $this0_search_Genre_connect0_node_name
-            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this0_search_Genre_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this0_search_Genre_connect0_node.name = $this0_search_Genre_connect0_node_param0
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_search_Genre_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
             		)
             	)
@@ -217,7 +217,7 @@ describe("Cypher Union", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_title\\": \\"some movie\\",
-                \\"this0_search_Genre_connect0_node_name\\": \\"some genre\\",
+                \\"this0_search_Genre_connect0_node_param0\\": \\"some genre\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -250,8 +250,8 @@ describe("Cypher Union", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_search0_relationship:SEARCH]->(this_search_Genre0:Genre)
             WHERE this_search_Genre0.name = $updateMovies.args.update.search.Genre[0].where.node.name
@@ -265,7 +265,7 @@ describe("Cypher Union", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"some movie\\",
+                \\"param0\\": \\"some movie\\",
                 \\"this_update_search_Genre0_name\\": \\"some new genre\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
@@ -321,14 +321,14 @@ describe("Cypher Union", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             WITH this
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_search_Genre0_disconnect0_rel:SEARCH]->(this_search_Genre0_disconnect0:Genre)
             WHERE this_search_Genre0_disconnect0.name = $updateMovies.args.update.search.Genre[0].disconnect[0].where.node.name
-            FOREACH(_ IN CASE this_search_Genre0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_search_Genre0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_search_Genre0_disconnect0_rel
             )
             RETURN count(*) AS _
@@ -338,7 +338,7 @@ describe("Cypher Union", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"some movie\\",
+                \\"param0\\": \\"some movie\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -385,14 +385,14 @@ describe("Cypher Union", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             WITH this
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_search_Genre0_rel:SEARCH]->(this_disconnect_search_Genre0:Genre)
             WHERE this_disconnect_search_Genre0.name = $updateMovies.args.disconnect.search.Genre[0].where.node.name
-            FOREACH(_ IN CASE this_disconnect_search_Genre0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_search_Genre0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_search_Genre0_rel
             )
             RETURN count(*) AS _
@@ -402,7 +402,7 @@ describe("Cypher Union", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"some movie\\",
+                \\"param0\\": \\"some movie\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -445,15 +445,15 @@ describe("Cypher Union", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_search_Genre0_node:Genre)
-            	WHERE this_connect_search_Genre0_node.name = $this_connect_search_Genre0_node_name
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_search_Genre0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this_connect_search_Genre0_node.name = $this_connect_search_Genre0_node_param0
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_search_Genre0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
             		)
             	)
@@ -464,8 +464,8 @@ describe("Cypher Union", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"some movie\\",
-                \\"this_connect_search_Genre0_node_name\\": \\"some genre\\",
+                \\"param0\\": \\"some movie\\",
+                \\"this_connect_search_Genre0_node_param0\\": \\"some genre\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -491,8 +491,8 @@ describe("Cypher Union", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_delete_search_Genre0_relationship:SEARCH]->(this_delete_search_Genre0:Genre)
             WHERE this_delete_search_Genre0.name = $updateMovies.args.delete.search.Genre[0].where.node.name
@@ -503,7 +503,7 @@ describe("Cypher Union", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"some movie\\",
+                \\"param0\\": \\"some movie\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"delete\\": {

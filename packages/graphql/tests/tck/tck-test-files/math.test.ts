@@ -81,7 +81,7 @@ describe("Math operators", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             WITH this
             CALL {
             WITH this
@@ -122,7 +122,7 @@ describe("Math operators", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             WITH this
             CALL {
             WITH this
@@ -162,7 +162,7 @@ describe("Math operators", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
@@ -238,7 +238,7 @@ describe("Math operators", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, \\"
@@ -260,7 +260,8 @@ describe("Math operators", () => {
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
             WITH collect({ pay: this_acted_in_relationship.pay }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actedInConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
             RETURN collect(DISTINCT this { .name, actedIn: [ (this)-[:ACTED_IN]->(this_actedIn:Movie)   | this_actedIn { .title } ], actedInConnection }) AS data"
         `);
@@ -306,7 +307,7 @@ describe("Math operators", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             WITH this
             CALL {
             WITH this
@@ -395,7 +396,7 @@ describe("Math operators", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             WITH this
             CALL {
             WITH this
