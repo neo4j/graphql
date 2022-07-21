@@ -1,5 +1,4 @@
 ---
-"graphql-manual": minor
 "@neo4j/graphql": minor
 ---
 
