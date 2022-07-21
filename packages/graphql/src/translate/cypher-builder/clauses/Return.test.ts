@@ -38,4 +38,15 @@ describe("CypherBuilder Return", () => {
         expect(queryResult.cypher).toMatchInlineSnapshot(`"RETURN *"`);
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
     });
+
+    test("Alias with a variable", () => {
+        const node = new CypherBuilder.Node({
+            labels: ["MyLabel"],
+        });
+        const returnQuery = new CypherBuilder.Return([node, new CypherBuilder.Variable()]);
+
+        const queryResult = returnQuery.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"RETURN this0 AS var1"`);
+        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+    });
 });
