@@ -160,7 +160,7 @@ function createDisconnectAndParams({
         Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
         https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
         */
-        subquery.push(`FOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END | `);
+        subquery.push(`FOREACH(_ IN CASE WHEN ${_varName} IS NULL THEN [] ELSE [1] END | `);
         subquery.push(`DELETE ${_varName}_rel`);
         subquery.push(`)`); // close FOREACH
 

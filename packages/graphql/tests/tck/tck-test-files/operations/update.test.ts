@@ -281,8 +281,8 @@ describe("Cypher Update", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)
             	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actors0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
             		)
             	)
@@ -329,8 +329,8 @@ describe("Cypher Update", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)
             	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actors0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
             		)
             	)
@@ -341,8 +341,8 @@ describe("Cypher Update", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors1_node:Actor)
             	WHERE this_connect_actors1_node.name = $this_connect_actors1_node_param0
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actors1_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actors1_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)<-[this_connect_actors1_relationship:ACTED_IN]-(this_connect_actors1_node)
             		)
             	)
@@ -385,7 +385,7 @@ describe("Cypher Update", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
             WHERE this_disconnect_actors0.name = $updateMovies.args.disconnect.actors[0].where.node.name
-            FOREACH(_ IN CASE this_disconnect_actors0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_actors0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actors0_rel
             )
             RETURN count(*) AS _
@@ -445,7 +445,7 @@ describe("Cypher Update", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
             WHERE this_disconnect_actors0.name = $updateMovies.args.disconnect.actors[0].where.node.name
-            FOREACH(_ IN CASE this_disconnect_actors0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_actors0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actors0_rel
             )
             RETURN count(*) AS _
@@ -455,7 +455,7 @@ describe("Cypher Update", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors1_rel:ACTED_IN]-(this_disconnect_actors1:Actor)
             WHERE this_disconnect_actors1.name = $updateMovies.args.disconnect.actors[1].where.node.name
-            FOREACH(_ IN CASE this_disconnect_actors1 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_actors1 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actors1_rel
             )
             RETURN count(*) AS _

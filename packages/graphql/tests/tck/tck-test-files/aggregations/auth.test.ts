@@ -273,15 +273,15 @@ describe("Cypher Aggregations with Auth", () => {
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $name_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN { name: { shortest:
                                         reduce(aggVar = collect(this.name)[0], current IN collect(this.name) |
-                                            CASE size(current) < size(aggVar)
-                                            WHEN true THEN current
+                                            CASE
+                                            WHEN size(current) < size(aggVar) THEN current
                                             ELSE aggVar
                                             END
                                         )
                                     , longest:
                                         reduce(aggVar = collect(this.name)[0], current IN collect(this.name) |
-                                            CASE size(current) > size(aggVar)
-                                            WHEN true THEN current
+                                            CASE
+                                            WHEN size(current) > size(aggVar) THEN current
                                             ELSE aggVar
                                             END
                                         )

@@ -63,8 +63,8 @@ describe("Cypher Points", () => {
             "MATCH (this:\`PointContainer\`)
             WHERE this.point = point($param0)
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point, crs: this.point.crs }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
@@ -100,8 +100,8 @@ describe("Cypher Points", () => {
             "MATCH (this:\`PointContainer\`)
             WHERE NOT this.point = point($param0)
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
@@ -138,8 +138,8 @@ describe("Cypher Points", () => {
             "MATCH (this:\`PointContainer\`)
             WHERE this.point IN [var0 IN $param0 | point(var0)]
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point, crs: this.point.crs }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
@@ -178,8 +178,8 @@ describe("Cypher Points", () => {
             "MATCH (this:\`PointContainer\`)
             WHERE NOT this.point IN [var0 IN $param0 | point(var0)]
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point, crs: this.point.crs }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
@@ -217,8 +217,8 @@ describe("Cypher Points", () => {
             "MATCH (this:\`PointContainer\`)
             WHERE distance(this.point, point($param0.point)) < $param0.distance
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
@@ -257,8 +257,8 @@ describe("Cypher Points", () => {
             "MATCH (this:\`PointContainer\`)
             WHERE distance(this.point, point($param0.point)) <= $param0.distance
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
@@ -297,8 +297,8 @@ describe("Cypher Points", () => {
             "MATCH (this:\`PointContainer\`)
             WHERE distance(this.point, point($param0.point)) > $param0.distance
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
@@ -337,8 +337,8 @@ describe("Cypher Points", () => {
             "MATCH (this:\`PointContainer\`)
             WHERE distance(this.point, point($param0.point)) >= $param0.distance
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
@@ -379,8 +379,8 @@ describe("Cypher Points", () => {
             "MATCH (this:\`PointContainer\`)
             WHERE distance(this.point, point($param0.point)) = $param0.distance
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
@@ -426,8 +426,8 @@ describe("Cypher Points", () => {
             }
             RETURN [
             this0 { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this0.point IS NOT NULL
-            	WHEN true THEN { point: this0.point, crs: this0.point.crs }
+            CASE
+            	WHEN this0.point IS NOT NULL THEN { point: this0.point, crs: this0.point.crs }
             	ELSE NULL
             END AS result',{ this0: this0 },false) }] AS data"
         `);
@@ -468,8 +468,8 @@ describe("Cypher Points", () => {
             WHERE this.id = $param0
             SET this.point = point($this_update_point)
             RETURN collect(DISTINCT this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point, crs: this.point.crs }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
             	ELSE NULL
             END AS result',{ this: this },false) }) AS data"
         `);

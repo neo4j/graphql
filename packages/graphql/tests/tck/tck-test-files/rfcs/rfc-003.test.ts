@@ -924,8 +924,8 @@ describe("integration/rfs/003", () => {
                         	WITH this0
                         	OPTIONAL MATCH (this0_director_connect0_node:Director)
                         	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_param0
-                        	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
-                        		FOREACH(_ IN CASE this0_director_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                        	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+                        		FOREACH(_ IN CASE WHEN this0_director_connect0_node IS NULL THEN [] ELSE [1] END |
                         			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
                         		)
                         	)
@@ -993,8 +993,8 @@ describe("integration/rfs/003", () => {
                         	WITH this0
                         	OPTIONAL MATCH (this0_director_connect0_node:Director)
                         	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_param0
-                        	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
-                        		FOREACH(_ IN CASE this0_director_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                        	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+                        		FOREACH(_ IN CASE WHEN this0_director_connect0_node IS NULL THEN [] ELSE [1] END |
                         			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
                         		)
                         	)
@@ -1080,8 +1080,8 @@ describe("integration/rfs/003", () => {
                             	WITH this0
                             	OPTIONAL MATCH (this0_director_connect0_node:Director)
                             	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_param0
-                            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
-                            		FOREACH(_ IN CASE this0_director_connect0_node WHEN NULL THEN [] ELSE [1] END |
+                            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+                            		FOREACH(_ IN CASE WHEN this0_director_connect0_node IS NULL THEN [] ELSE [1] END |
                             			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
                             		)
                             	)
@@ -1090,8 +1090,8 @@ describe("integration/rfs/003", () => {
                             	WITH this0, this0_director_connect0_node
                             	OPTIONAL MATCH (this0_director_connect0_node_address0_node:Address)
                             	WHERE this0_director_connect0_node_address0_node.street = $this0_director_connect0_node_address0_node_param0
-                            	FOREACH(_ IN CASE this0_director_connect0_node WHEN NULL THEN [] ELSE [1] END |
-                            		FOREACH(_ IN CASE this0_director_connect0_node_address0_node WHEN NULL THEN [] ELSE [1] END |
+                            	FOREACH(_ IN CASE WHEN this0_director_connect0_node IS NULL THEN [] ELSE [1] END |
+                            		FOREACH(_ IN CASE WHEN this0_director_connect0_node_address0_node IS NULL THEN [] ELSE [1] END |
                             			MERGE (this0_director_connect0_node)-[:HAS_ADDRESS]->(this0_director_connect0_node_address0_node)
                             		)
                             	)
@@ -1172,7 +1172,7 @@ describe("integration/rfs/003", () => {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
                         WHERE this_disconnect_director0.id = $updateMovies.args.disconnect.director.where.node.id
-                        FOREACH(_ IN CASE this_disconnect_director0 WHEN NULL THEN [] ELSE [1] END |
+                        FOREACH(_ IN CASE WHEN this_disconnect_director0 IS NULL THEN [] ELSE [1] END |
                         DELETE this_disconnect_director0_rel
                         )
                         RETURN count(*) AS _
@@ -1262,8 +1262,8 @@ describe("integration/rfs/003", () => {
                         	WITH this
                         	OPTIONAL MATCH (this_connect_director0_node:Director)
                         	WHERE this_connect_director0_node.id = $this_connect_director0_node_param0
-                        	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-                        		FOREACH(_ IN CASE this_connect_director0_node WHEN NULL THEN [] ELSE [1] END |
+                        	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+                        		FOREACH(_ IN CASE WHEN this_connect_director0_node IS NULL THEN [] ELSE [1] END |
                         			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
                         		)
                         	)
@@ -1274,7 +1274,7 @@ describe("integration/rfs/003", () => {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
                         WHERE this_disconnect_director0.id = $updateMovies.args.disconnect.director.where.node.id
-                        FOREACH(_ IN CASE this_disconnect_director0 WHEN NULL THEN [] ELSE [1] END |
+                        FOREACH(_ IN CASE WHEN this_disconnect_director0 IS NULL THEN [] ELSE [1] END |
                         DELETE this_disconnect_director0_rel
                         )
                         RETURN count(*) AS _
@@ -1363,8 +1363,8 @@ describe("integration/rfs/003", () => {
                         	WITH this
                         	OPTIONAL MATCH (this_connect_director0_node:Director)
                         	WHERE this_connect_director0_node.id = $this_connect_director0_node_param0
-                        	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-                        		FOREACH(_ IN CASE this_connect_director0_node WHEN NULL THEN [] ELSE [1] END |
+                        	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+                        		FOREACH(_ IN CASE WHEN this_connect_director0_node IS NULL THEN [] ELSE [1] END |
                         			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
                         		)
                         	)
@@ -1375,7 +1375,7 @@ describe("integration/rfs/003", () => {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
                         WHERE this_disconnect_director0.id = $updateMovies.args.disconnect.director.where.node.id
-                        FOREACH(_ IN CASE this_disconnect_director0 WHEN NULL THEN [] ELSE [1] END |
+                        FOREACH(_ IN CASE WHEN this_disconnect_director0 IS NULL THEN [] ELSE [1] END |
                         DELETE this_disconnect_director0_rel
                         )
                         RETURN count(*) AS _

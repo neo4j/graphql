@@ -119,7 +119,7 @@ describe("Cypher Disconnect", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_colors0_disconnect0_rel:HAS_COLOR]->(this_colors0_disconnect0:Color)
             WHERE this_colors0_disconnect0.name = $updateProducts.args.update.colors[0].disconnect[0].where.node.name
-            FOREACH(_ IN CASE this_colors0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_colors0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_colors0_disconnect0_rel
             )
             WITH this, this_colors0_disconnect0
@@ -127,7 +127,7 @@ describe("Cypher Disconnect", () => {
             WITH this, this_colors0_disconnect0
             OPTIONAL MATCH (this_colors0_disconnect0)<-[this_colors0_disconnect0_photos0_rel:OF_COLOR]-(this_colors0_disconnect0_photos0:Photo)
             WHERE this_colors0_disconnect0_photos0.id = $updateProducts.args.update.colors[0].disconnect[0].disconnect.photos[0].where.node.id
-            FOREACH(_ IN CASE this_colors0_disconnect0_photos0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_colors0_disconnect0_photos0 IS NULL THEN [] ELSE [1] END |
             DELETE this_colors0_disconnect0_photos0_rel
             )
             WITH this, this_colors0_disconnect0, this_colors0_disconnect0_photos0
@@ -135,7 +135,7 @@ describe("Cypher Disconnect", () => {
             WITH this, this_colors0_disconnect0, this_colors0_disconnect0_photos0
             OPTIONAL MATCH (this_colors0_disconnect0_photos0)-[this_colors0_disconnect0_photos0_color0_rel:OF_COLOR]->(this_colors0_disconnect0_photos0_color0:Color)
             WHERE this_colors0_disconnect0_photos0_color0.id = $updateProducts.args.update.colors[0].disconnect[0].disconnect.photos.disconnect.color.where.node.id
-            FOREACH(_ IN CASE this_colors0_disconnect0_photos0_color0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_colors0_disconnect0_photos0_color0 IS NULL THEN [] ELSE [1] END |
             DELETE this_colors0_disconnect0_photos0_color0_rel
             )
             RETURN count(*) AS _
@@ -149,7 +149,7 @@ describe("Cypher Disconnect", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_photos0_disconnect0_rel:HAS_PHOTO]->(this_photos0_disconnect0:Photo)
             WHERE this_photos0_disconnect0.id = $updateProducts.args.update.photos[0].disconnect[0].where.node.id
-            FOREACH(_ IN CASE this_photos0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_photos0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_photos0_disconnect0_rel
             )
             WITH this, this_photos0_disconnect0
@@ -157,7 +157,7 @@ describe("Cypher Disconnect", () => {
             WITH this, this_photos0_disconnect0
             OPTIONAL MATCH (this_photos0_disconnect0)-[this_photos0_disconnect0_color0_rel:OF_COLOR]->(this_photos0_disconnect0_color0:Color)
             WHERE this_photos0_disconnect0_color0.name = $updateProducts.args.update.photos[0].disconnect.disconnect.color.where.node.name
-            FOREACH(_ IN CASE this_photos0_disconnect0_color0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_photos0_disconnect0_color0 IS NULL THEN [] ELSE [1] END |
             DELETE this_photos0_disconnect0_color0_rel
             )
             RETURN count(*) AS _
@@ -169,7 +169,7 @@ describe("Cypher Disconnect", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_photos0_disconnect1_rel:HAS_PHOTO]->(this_photos0_disconnect1:Photo)
             WHERE this_photos0_disconnect1.id = $updateProducts.args.update.photos[0].disconnect[1].where.node.id
-            FOREACH(_ IN CASE this_photos0_disconnect1 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_photos0_disconnect1 IS NULL THEN [] ELSE [1] END |
             DELETE this_photos0_disconnect1_rel
             )
             WITH this, this_photos0_disconnect1
@@ -177,7 +177,7 @@ describe("Cypher Disconnect", () => {
             WITH this, this_photos0_disconnect1
             OPTIONAL MATCH (this_photos0_disconnect1)-[this_photos0_disconnect1_color0_rel:OF_COLOR]->(this_photos0_disconnect1_color0:Color)
             WHERE this_photos0_disconnect1_color0.name = $updateProducts.args.update.photos[0].disconnect.disconnect.color.where.node.name
-            FOREACH(_ IN CASE this_photos0_disconnect1_color0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_photos0_disconnect1_color0 IS NULL THEN [] ELSE [1] END |
             DELETE this_photos0_disconnect1_color0_rel
             )
             RETURN count(*) AS _
