@@ -20,7 +20,7 @@
 import { Clause } from "./Clause";
 import type { CypherEnvironment } from "../Environment";
 import type { Expr } from "../types";
-import { Literal, Variable } from "../CypherBuilder";
+import type { Literal, Variable } from "../CypherBuilder";
 
 export type ReturnColumn = Expr | [Expr, string | Variable | Literal];
 
@@ -63,12 +63,15 @@ export class Return extends Clause {
         const hasAlias = Array.isArray(column);
         if (hasAlias) {
             const exprStr = column[0].getCypher(env);
-            let alias = column[1];
+            const alias = column[1];
+            let aliasStr: string;
             if (typeof alias === "string") {
-                alias = new Literal(alias);
+                aliasStr = alias;
+            } else {
+                aliasStr = alias.getCypher(env);
             }
 
-            return `${exprStr} AS ${alias.getCypher(env)}`;
+            return `${exprStr} AS ${aliasStr}`;
         }
         return column.getCypher(env);
     }
