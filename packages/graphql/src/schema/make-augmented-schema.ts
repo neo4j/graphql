@@ -31,7 +31,7 @@ import type { ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { validateDocument } from "./validation";
-import type { BaseField, Neo4jGraphQLCallbacks } from "../types";
+import type { BaseField, Neo4jGraphQLCallbacks, Neo4jFeaturesSettings } from "../types";
 import { cypherResolver } from "./resolvers/field/cypher";
 import { numericalResolver } from "./resolvers/field/numerical";
 import { aggregateResolver } from "./resolvers/query/aggregate";
@@ -87,12 +87,14 @@ import { addArrayMethodsToITC } from "./array-methods";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
-    {
+    {   
+        features,
         enableRegex,
         skipValidateTypeDefs,
         generateSubscriptions,
         callbacks,
     }: {
+        features?: Neo4jFeaturesSettings;
         enableRegex?: boolean;
         skipValidateTypeDefs?: boolean;
         generateSubscriptions?: boolean;
@@ -250,6 +252,7 @@ function makeAugmentedSchema(
                 primitiveFields: relFields.primitiveFields,
             },
             enableRegex,
+            features
         });
 
         composer.createInputTC({
@@ -347,6 +350,7 @@ function makeAugmentedSchema(
             },
             enableRegex,
             isInterface: true,
+            features
         });
 
         const [
@@ -601,6 +605,7 @@ function makeAugmentedSchema(
                 primitiveFields: node.primitiveFields,
                 scalarFields: node.scalarFields,
             },
+            features
         });
 
         const countField = {
