@@ -43,6 +43,9 @@ export { Literal } from "./variables/Literal";
 export { ListComprehension } from "./list/ListComprehension";
 export { PatternComprehension } from "./list/PatternComprehension";
 
+// Map
+export { MapExpr as Map } from "./map/MapExpr";
+
 export { Pattern } from "./Pattern"; // TODO: Maybe this should not be exported
 
 // Operations

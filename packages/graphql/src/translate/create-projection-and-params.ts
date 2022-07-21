@@ -36,6 +36,7 @@ import { addGlobalIdField } from "../utils/global-node-projection";
 import { getRelationshipDirection } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
+import type * as CypherBuilder from "./cypher-builder/CypherBuilder";
 
 interface Res {
     projection: string[];
@@ -48,6 +49,8 @@ export interface ProjectionMeta {
     connectionFields?: ResolveTree[];
     interfaceFields?: ResolveTree[];
     rootConnectionCypherSortFields?: { alias: string; apocStr: string }[];
+    subQueries: Array<CypherBuilder.Clause>;
+    subQueryVariables: Record<string, CypherBuilder.Variable>;
 }
 
 function createNodeWhereAndParams({
@@ -570,8 +573,10 @@ function createProjectionAndParams({
         });
 
         if (aggregationFieldProjection) {
-            res.projection.push(`${alias}: ${aggregationFieldProjection.query}`);
-            res.params = { ...res.params, ...aggregationFieldProjection.params };
+            // res.projection.push(`${alias}: ${aggregationFieldProjection.query}`);
+            // res.params = { ...res.params, ...aggregationFieldProjection.params };
+            res.meta.subQueries.push(aggregationFieldProjection.clause);
+            res.meta.subQueryVariables[alias] = aggregationFieldProjection.variable;
             return res;
         }
 
@@ -687,10 +692,14 @@ function createProjectionAndParams({
     const { projection, params, meta } = Object.values(mergedFields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
         params: {},
-        meta: {},
+        meta: {
+            subQueries: [],
+            subQueryVariables: {},
+        },
     });
 
-    return [`{ ${projection.join(", ")} }`, params, meta];
+    // return [`{ ${projection.join(", ")} }`, params, meta];
+    return [projection.join(", "), params, meta];
 }
 
 function sortReducer(s: string[], sort: GraphQLSortArg) {

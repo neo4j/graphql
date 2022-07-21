@@ -38,6 +38,9 @@ import { serializeParamsForApocRun, wrapInApocRunFirstColumn } from "../utils/ap
 import { FieldAggregationSchemaTypes } from "../../schema/aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
+import * as CypherBuilder from "../cypher-builder/CypherBuilder";
+import { createCypherWhereParams } from "../where/create-cypher-where-params";
+// import { connectionFieldResolver } from "src/schema/pagination";
 
 const subqueryNodeAlias = "n";
 const subqueryRelationAlias = "r";
@@ -49,6 +52,88 @@ type AggregationFields = {
 };
 
 export function createFieldAggregation({
+    context,
+    nodeLabel,
+    node,
+    field,
+}: {
+    context: Context;
+    nodeLabel: string;
+    node: Node;
+    field: ResolveTree;
+}): { clause: CypherBuilder.Clause; variable: CypherBuilder.Variable } | undefined {
+    const relationAggregationField = node.relationFields.find((x) => {
+        return `${x.fieldName}Aggregate` === field.name;
+    });
+
+    const connectionField = node.connectionFields.find((x) => {
+        return `${relationAggregationField?.fieldName}Connection` === x.fieldName;
+    });
+
+    if (!relationAggregationField || !connectionField) return undefined;
+    const referenceNode = getReferenceNode(context, relationAggregationField);
+    const referenceRelation = getReferenceRelation(context, connectionField);
+
+    if (!referenceNode || !referenceRelation) return undefined;
+
+    const fieldPathBase = `${node.name}${referenceNode.name}${upperFirst(relationAggregationField.fieldName)}`;
+    const aggregationFields = getAggregationFields(fieldPathBase, field);
+    // const authData = createFieldAggregationAuth({
+    //     node: referenceNode,
+    //     context,
+    //     subqueryNodeAlias,
+    //     nodeFields: aggregationFields.node,
+    // });
+
+    // const [whereQuery, whereParams] = createWhereAndParams({
+    //     whereInput: (field.args.where as GraphQLWhereArg) || {},
+    //     varName: subqueryNodeAlias,
+    //     node: referenceNode,
+    //     context,
+    //     recursing: true,
+    //     chainStr: `${nodeLabel}_${field.alias}_${subqueryNodeAlias}`,
+    // });
+    const sourceNode = new CypherBuilder.NamedNode(nodeLabel);
+    const targetNode = new CypherBuilder.Node({ labels: referenceNode.getLabels(context) });
+
+    // TODO: getRelationshipDirection
+    const relationship = new CypherBuilder.Relationship({
+        source: sourceNode,
+        target: targetNode,
+    });
+
+    // const targetPattern = createTargetPattern({
+    //     nodeLabel,
+    //     relationField: relationAggregationField,
+    //     referenceNode,
+    //     context,
+    //     directed: field.args.directed as boolean | undefined,
+    // });
+
+    const whereParams = createCypherWhereParams({
+        element: node,
+        context,
+        whereInput: (field.args.where as GraphQLWhereArg) || {},
+        targetElement: targetNode,
+    });
+
+    const match = new CypherBuilder.Match(relationship);
+    if (whereParams) {
+        match.where(whereParams);
+    }
+
+    const countVar = new CypherBuilder.Variable();
+    const mapReturn = new CypherBuilder.Map({ count: CypherBuilder.count(targetNode) });
+    match.return([mapReturn, countVar]);
+    const call = new CypherBuilder.Call(match).with(sourceNode);
+
+    return {
+        clause: call,
+        variable: countVar,
+    };
+}
+
+export function createFieldAggregationOld({
     context,
     nodeLabel,
     node,
