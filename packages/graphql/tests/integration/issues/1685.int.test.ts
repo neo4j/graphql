@@ -105,8 +105,9 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
 
         const result = await graphqlQuery(query);
         expect(result.errors).toBeUndefined();
-        expect(result.data as any).toEqual({
-            [genreType.plural]: [
+        expect((result?.data as any)[genreType.plural]).toHaveLength(3);
+        expect((result?.data as any)[genreType.plural]).toEqual(
+            expect.arrayContaining([
                 {
                     name: "Sci-fi",
                     moviesConnection: {
@@ -125,7 +126,7 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
                         totalCount: 1,
                     },
                 },
-            ],
-        });
+            ])
+        );
     });
 });
