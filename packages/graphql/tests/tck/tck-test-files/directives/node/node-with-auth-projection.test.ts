@@ -87,7 +87,8 @@ describe("Cypher Auth Projection On Connections", () => {
             CALL apoc.util.validate(NOT (exists((this_post)<-[:HAS_POST]-(:\`Person\`)) AND any(creator IN [(this_post)<-[:HAS_POST]-(creator:\`Person\`) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { content: this_post.content } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS postsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS postsConnection
             }
             RETURN this { .name, postsConnection } as this"
         `);

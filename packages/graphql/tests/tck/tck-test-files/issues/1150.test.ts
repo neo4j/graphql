@@ -109,8 +109,8 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Drive)
-            WHERE this.current = $this_current
+            "MATCH (this:\`Drive\`)
+            WHERE this.current = $param0
             CALL {
             WITH this
             MATCH (this)-[this_consists_of_relationship:CONSISTS_OF]->(this_drivecomposition:DriveComposition)
@@ -133,18 +133,20 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS driveComponentConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS driveComponentConnection
             }
             WITH collect({ node: { driveComponentConnection: driveComponentConnection } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS driveCompositionsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS driveCompositionsConnection
             }
             RETURN this { .current, driveCompositionsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_current\\": true,
+                \\"param0\\": true,
                 \\"this_driveCompositionsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

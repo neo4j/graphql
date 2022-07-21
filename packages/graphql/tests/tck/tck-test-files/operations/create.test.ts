@@ -277,7 +277,7 @@ describe("Cypher Create", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-            	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_name
+            	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_param0
             	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this0_actors_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
@@ -294,7 +294,7 @@ describe("Cypher Create", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_id\\": \\"1\\",
-                \\"this0_actors_connect0_node_name\\": \\"Dan\\",
+                \\"this0_actors_connect0_node_param0\\": \\"Dan\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -334,7 +334,7 @@ describe("Cypher Create", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_movies_connect0_node:Movie)
-            	WHERE this0_movies_connect0_node.id = $this0_movies_connect0_node_id
+            	WHERE this0_movies_connect0_node.id = $this0_movies_connect0_node_param0
             	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this0_movies_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
@@ -351,14 +351,15 @@ describe("Cypher Create", () => {
             WHERE this0_movies_actor.name = $projection_movies_actorsConnection.args.where.node.name
             WITH collect({ node: { name: this0_movies_actor.name } }) AS edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS actorsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             } RETURN actorsConnection\\", { this0_movies: this0_movies, projection_movies_actorsConnection: $projection_movies_actorsConnection, auth: $auth }, false) } ] }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_name\\": \\"Dan\\",
-                \\"this0_movies_connect0_node_id\\": \\"1\\",
+                \\"this0_movies_connect0_node_param0\\": \\"1\\",
                 \\"projection_movies_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

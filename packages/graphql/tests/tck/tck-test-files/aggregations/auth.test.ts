@@ -69,7 +69,7 @@ describe("Cypher Aggregations with Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN { count: count(this) }"
@@ -98,15 +98,15 @@ describe("Cypher Aggregations with Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE this.name = $this_name AND this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            "MATCH (this:\`User\`)
+            WHERE (this.name = $param0 AND this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN { count: count(this) }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_name\\": \\"some-name\\",
+                \\"param0\\": \\"some-name\\",
                 \\"this_auth_where0_id\\": \\"super_admin\\",
                 \\"this_auth_allow0_id\\": \\"super_admin\\"
             }"
@@ -131,7 +131,7 @@ describe("Cypher Aggregations with Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $imdbRatingInt_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -165,7 +165,7 @@ describe("Cypher Aggregations with Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $imdbRatingFloat_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -199,7 +199,7 @@ describe("Cypher Aggregations with Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $imdbRatingBigInt_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -233,7 +233,7 @@ describe("Cypher Aggregations with Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $id_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -267,7 +267,7 @@ describe("Cypher Aggregations with Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $name_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -315,7 +315,7 @@ describe("Cypher Aggregations with Auth", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $createdAt_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])

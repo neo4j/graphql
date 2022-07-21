@@ -93,8 +93,8 @@ describe("#324", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
-            WHERE this.identifier = $this_identifier
+            "MATCH (this:\`Person\`)
+            WHERE this.identifier = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_car0_relationship:CAR]->(this_car0:Car)
             CALL apoc.do.when(this_car0 IS NOT NULL, \\"
@@ -106,7 +106,7 @@ describe("#324", () => {
             CALL {
             	WITH this, this_car0, this_car0_manufacturer0
             	OPTIONAL MATCH (this_car0_manufacturer0_logo0_connect0_node:Logo)
-            	WHERE this_car0_manufacturer0_logo0_connect0_node.identifier = $this_car0_manufacturer0_logo0_connect0_node_identifier
+            	WHERE this_car0_manufacturer0_logo0_connect0_node.identifier = $this_car0_manufacturer0_logo0_connect0_node_param0
             	FOREACH(_ IN CASE this_car0_manufacturer0 WHEN NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE this_car0_manufacturer0_logo0_connect0_node WHEN NULL THEN [] ELSE [1] END |
             			MERGE (this_car0_manufacturer0)-[:LOGO]->(this_car0_manufacturer0_logo0_connect0_node)
@@ -123,7 +123,7 @@ describe("#324", () => {
             	RETURN c AS this_car0_manufacturer0_logo_Logo_unique_ignored
             }
             RETURN count(*) AS _
-            \\\\\\", \\\\\\"\\\\\\", {this:this, this_car0:this_car0, updatePeople: $updatePeople, this_car0_manufacturer0:this_car0_manufacturer0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_identifier:$this_car0_manufacturer0_logo0_connect0_node_identifier})
+            \\\\\\", \\\\\\"\\\\\\", {this:this, this_car0:this_car0, updatePeople: $updatePeople, this_car0_manufacturer0:this_car0_manufacturer0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_param0:$this_car0_manufacturer0_logo0_connect0_node_param0})
             YIELD value AS _
             WITH this, this_car0
             CALL {
@@ -134,7 +134,7 @@ describe("#324", () => {
             	RETURN c AS this_car0_manufacturer_Manufacturer_unique_ignored
             }
             RETURN count(*) AS _
-            \\", \\"\\", {this:this, updatePeople: $updatePeople, this_car0:this_car0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_identifier:$this_car0_manufacturer0_logo0_connect0_node_identifier})
+            \\", \\"\\", {this:this, updatePeople: $updatePeople, this_car0:this_car0, auth:$auth,this_update_car0_manufacturer0_name:$this_update_car0_manufacturer0_name,this_car0_manufacturer0_logo0_connect0_node_param0:$this_car0_manufacturer0_logo0_connect0_node_param0})
             YIELD value AS _
             WITH this
             CALL {
@@ -149,9 +149,9 @@ describe("#324", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_identifier\\": \\"Someone\\",
+                \\"param0\\": \\"Someone\\",
                 \\"this_update_car0_manufacturer0_name\\": \\"Manufacturer\\",
-                \\"this_car0_manufacturer0_logo0_connect0_node_identifier\\": \\"Opel Logo\\",
+                \\"this_car0_manufacturer0_logo0_connect0_node_param0\\": \\"Opel Logo\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": false,
                     \\"roles\\": []

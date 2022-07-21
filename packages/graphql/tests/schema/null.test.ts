@@ -166,21 +166,35 @@ describe("Null", () => {
               actorCount_DECREMENT: Int
               actorCount_INCREMENT: Int
               actorCounts: [Int!]
+              actorCounts_POP: Int
+              actorCounts_PUSH: [Int!]
               averageRating: Float
               averageRating_ADD: Float
               averageRating_DIVIDE: Float
               averageRating_MULTIPLY: Float
               averageRating_SUBTRACT: Float
               averageRatings: [Float!]
+              averageRatings_POP: Int
+              averageRatings_PUSH: [Float!]
               createdAt: DateTime
               createdAts: [DateTime!]
+              createdAts_POP: Int
+              createdAts_PUSH: [DateTime!]
               filmedAt: PointInput
               filmedAts: [PointInput!]
+              filmedAts_POP: Int
+              filmedAts_PUSH: [PointInput!]
               id: ID
               ids: [ID!]
+              ids_POP: Int
+              ids_PUSH: [ID!]
               isActives: [Boolean!]
+              isActives_POP: Int
+              isActives_PUSH: [Boolean!]
               name: String
               names: [String!]
+              names_POP: Int
+              names_PUSH: [String!]
             }
 
             input MovieWhere {

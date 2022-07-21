@@ -435,6 +435,7 @@ function createConnectionAndParams({
         subquery.push(`WITH collect({ ${elementsToCollect.join(", ")} }) AS edges`);
     }
 
+    const withValues: string[] = [];
     const returnValues: string[] = [];
 
     if (relatedNode && relatedNode.queryOptions?.getLimit()) {
@@ -446,12 +447,20 @@ function createConnectionAndParams({
         if (connection.edges || connection.pageInfo) {
             if (elementsToCollect.length > 0) {
                 subquery.push("UNWIND edges as edge");
-                returnValues.push("edges: collect(edge)");
-            } else {
+                withValues.push("collect(edge) AS edges");
                 returnValues.push("edges: edges");
+                withValues.push("size(collect(edge)) AS totalCount");
+                returnValues.push("totalCount: totalCount");
+            } else {
+                withValues.push("edges");
+                returnValues.push("edges: edges");
+                withValues.push("size(edges) AS totalCount");
+                returnValues.push("totalCount: totalCount");
             }
+        } else {
+            withValues.push("size(edges) AS totalCount");
+            returnValues.push("totalCount: totalCount");
         }
-        returnValues.push("totalCount: size(edges)");
         if (sortInput.length && elementsToCollect.length > 0) {
             subquery.push("WITH edges, edge");
             const sort = sortInput.map((s) =>
@@ -462,6 +471,7 @@ function createConnectionAndParams({
             );
             subquery.push(`ORDER BY ${sort.join(", ")}`);
         }
+        subquery.push(`WITH ${withValues.join(", ")}`);
         subquery.push(`RETURN { ${returnValues.join(", ")} } AS ${resolveTree.alias}`);
     } else {
         subquery = [

@@ -25,10 +25,10 @@ import { Neo4jGraphQL } from "../../src";
 describe("Algebraic", () => {
     test("Int fields should be extended with Increment/Decrement operators", async () => {
         const typeDefs = gql`
-          type Movie {
-            id: ID
-            viewers: Int!
-          }
+            type Movie {
+                id: ID
+                viewers: Int!
+            }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
@@ -184,15 +184,15 @@ describe("Algebraic", () => {
     });
 
     test("BigInt fields should be extended with Increment/Decrement operators", async () => {
-      const typeDefs = gql`
-        type Movie {
-          id: ID
-          viewers: BigInt!
-        }
-      `;
-      const neoSchema = new Neo4jGraphQL({ typeDefs });
-      const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-      expect(printedSchema).toMatchInlineSnapshot(`
+        const typeDefs = gql`
+            type Movie {
+                id: ID
+                viewers: BigInt!
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+        expect(printedSchema).toMatchInlineSnapshot(`
       "schema {
         query: Query
         mutation: Mutation
@@ -349,16 +349,16 @@ describe("Algebraic", () => {
     });
 
     test("Float fields should be extended with Add/Subtract/Multiply/Divide operators", async () => {
-      const typeDefs = gql`
-        type Movie {
-          id: ID
-          viewers: Float!
-        }
-      `;
-      const neoSchema = new Neo4jGraphQL({ typeDefs });
-      const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-      
-      expect(printedSchema).toMatchInlineSnapshot(`
+        const typeDefs = gql`
+            type Movie {
+                id: ID
+                viewers: Float!
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
       "schema {
         query: Query
         mutation: Mutation
@@ -512,21 +512,21 @@ describe("Algebraic", () => {
     });
 
     test("Operators should be presents in nested updates", async () => {
-      const typeDefs = gql`
-        type Movie {
-          id: ID
-          viewers: Int!
-          directedBy: Director @relationship(type: "DIRECTS", direction: IN)
-        }
+        const typeDefs = gql`
+            type Movie {
+                id: ID
+                viewers: Int!
+                directedBy: Director @relationship(type: "DIRECTS", direction: IN)
+            }
 
-        type Director {
-          lastName: String!
-          directs: [Movie!]! @relationship(type: "DIRECTS", direction: OUT)
-        }
-      `;
-      const neoSchema = new Neo4jGraphQL({ typeDefs });
-      const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-      expect(printedSchema).toMatchInlineSnapshot(`
+            type Director {
+                lastName: String!
+                directs: [Movie!]! @relationship(type: "DIRECTS", direction: OUT)
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+        expect(printedSchema).toMatchInlineSnapshot(`
       "schema {
         query: Query
         mutation: Mutation
@@ -1043,27 +1043,27 @@ describe("Algebraic", () => {
       }"
       `);
     });
-  
-    test("Should be supported in interfaces", async () => {
-      const typeDefs = gql`
-        interface Production {
-          viewers: Int!
-        }
-    
-        type Movie implements Production {
-          id: ID
-          viewers: Int!
-          workers: [Person!]! @relationship(type: "WORKED_IN", direction: IN)
-        }
 
-        type Person {
-          name: String!
-          worksInProduction: [Production!]! @relationship(type: "WORKED_IN", direction: OUT)
-        }
-      `;
-      const neoSchema = new Neo4jGraphQL({ typeDefs });
-      const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-      expect(printedSchema).toMatchInlineSnapshot(`
+    test("Should be supported in interfaces", async () => {
+        const typeDefs = gql`
+            interface Production {
+                viewers: Int!
+            }
+
+            type Movie implements Production {
+                id: ID
+                viewers: Int!
+                workers: [Person!]! @relationship(type: "WORKED_IN", direction: IN)
+            }
+
+            type Person {
+                name: String!
+                worksInProduction: [Production!]! @relationship(type: "WORKED_IN", direction: OUT)
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+        expect(printedSchema).toMatchInlineSnapshot(`
       "schema {
         query: Query
         mutation: Mutation
@@ -1605,26 +1605,26 @@ describe("Algebraic", () => {
     });
 
     test("Should be supported in Relationship properties", async () => {
-      const typeDefs = gql`
-      type Person {
-        name: String!
-        actedInMovies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
-      }
-      
-      type Movie {
-          title: String!
-          actors: [Person!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
-      }
-      
-      interface ActedIn @relationshipProperties {
-          roles: [String!]
-          pay: Float
-      }
-      `;
-      const neoSchema = new Neo4jGraphQL({ typeDefs });
-      const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-      
-      expect(printedSchema).toMatchInlineSnapshot(`
+        const typeDefs = gql`
+            type Person {
+                name: String!
+                actedInMovies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            }
+
+            type Movie {
+                title: String!
+                actors: [Person!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            }
+
+            interface ActedIn @relationshipProperties {
+                roles: [String!]
+                pay: Float
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
       "schema {
         query: Query
         mutation: Mutation
@@ -1652,6 +1652,8 @@ describe("Algebraic", () => {
         pay_MULTIPLY: Float
         pay_SUBTRACT: Float
         roles: [String!]
+        roles_POP: Int
+        roles_PUSH: [String!]
       }
       
       input ActedInWhere {

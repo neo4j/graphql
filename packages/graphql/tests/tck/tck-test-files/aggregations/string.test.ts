@@ -57,7 +57,7 @@ describe("Cypher Aggregations String", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { title: { shortest:
                                         reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
                                             CASE size(current) < size(aggVar)
@@ -88,7 +88,7 @@ describe("Cypher Aggregations String", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { title: { longest:
                                         reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
                                             CASE size(current) > size(aggVar)
@@ -120,7 +120,7 @@ describe("Cypher Aggregations String", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { title: { shortest:
                                         reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
                                             CASE size(current) < size(aggVar)

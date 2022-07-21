@@ -94,37 +94,17 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Series)
-            WHERE (size([(this)-[this_OR_manufacturerConnection_Series_SeriesManufacturerRelationship:HAS_MANUFACTURER]->(this_OR_manufacturerConnection_Series:Series) WHERE this_OR_manufacturerConnection_Series_SeriesManufacturerRelationship.current = $this_OR_series.where.manufacturerConnection.edge.current AND this_OR_manufacturerConnection_Series.name = $this_OR_series.where.manufacturerConnection.node.name | 1]) > 0 OR size([(this)-[this_OR1_brandConnection_Series_SeriesBrandRelationship:HAS_BRAND]->(this_OR1_brandConnection_Series:Series) WHERE this_OR1_brandConnection_Series_SeriesBrandRelationship.current = $this_OR1_series.where.brandConnection.edge.current AND this_OR1_brandConnection_Series.name = $this_OR1_series.where.brandConnection.node.name | 1]) > 0)
+            "MATCH (this:\`Series\`)
+            WHERE (size([(this)-[this0:HAS_MANUFACTURER]->(this1:\`Series\`) WHERE (this0.current = $param0 AND this1.name = $param1) | 1]) = 1 OR size([(this)-[this2:HAS_BRAND]->(this3:\`Series\`) WHERE (this2.current = $param2 AND this3.name = $param3) | 1]) = 1)
             RETURN this { .name, brand: head([ (this)-[:HAS_BRAND]->(this_brand:Series)   | this_brand { .name } ]), manufacturer: head([ (this)-[:HAS_MANUFACTURER]->(this_manufacturer:Series)   | this_manufacturer { .name } ]) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_OR_series\\": {
-                    \\"where\\": {
-                        \\"manufacturerConnection\\": {
-                            \\"edge\\": {
-                                \\"current\\": true
-                            },
-                            \\"node\\": {
-                                \\"name\\": \\"abc\\"
-                            }
-                        }
-                    }
-                },
-                \\"this_OR1_series\\": {
-                    \\"where\\": {
-                        \\"brandConnection\\": {
-                            \\"edge\\": {
-                                \\"current\\": true
-                            },
-                            \\"node\\": {
-                                \\"name\\": \\"smart\\"
-                            }
-                        }
-                    }
-                }
+                \\"param0\\": true,
+                \\"param1\\": \\"abc\\",
+                \\"param2\\": true,
+                \\"param3\\": \\"smart\\"
             }"
         `);
     });

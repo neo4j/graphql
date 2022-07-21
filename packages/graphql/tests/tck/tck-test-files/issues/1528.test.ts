@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Genre)
+            "MATCH (this:\`Genre\`)
             CALL {
             WITH this
             MATCH (this)<-[this_is_genre_relationship:IS_GENRE]-(this_movie:Movie)
@@ -87,7 +87,8 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
             UNWIND edges as edge
             WITH edges, edge
             ORDER BY edge.node.actorsCount DESC
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS moviesConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
             }
             RETURN this { moviesConnection } as this"
         `);

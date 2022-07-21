@@ -85,7 +85,7 @@ describe("Cypher -> Connections -> Unions", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Author)
+            "MATCH (this:\`Author\`)
             CALL {
             WITH this
             CALL {
@@ -101,7 +101,8 @@ describe("Cypher -> Connections -> Unions", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS publicationsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
@@ -142,7 +143,7 @@ describe("Cypher -> Connections -> Unions", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Author)
+            "MATCH (this:\`Author\`)
             CALL {
             WITH this
             CALL {
@@ -160,7 +161,8 @@ describe("Cypher -> Connections -> Unions", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS publicationsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
@@ -217,7 +219,7 @@ describe("Cypher -> Connections -> Unions", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Author)
+            "MATCH (this:\`Author\`)
             CALL {
             WITH this
             CALL {
@@ -235,7 +237,8 @@ describe("Cypher -> Connections -> Unions", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS publicationsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
@@ -301,7 +304,7 @@ describe("Cypher -> Connections -> Unions", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Author)
+            "MATCH (this:\`Author\`)
             CALL {
             WITH this
             CALL {
@@ -319,7 +322,8 @@ describe("Cypher -> Connections -> Unions", () => {
             }
             WITH collect(edge) as edges
             UNWIND edges as edge
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS publicationsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);
@@ -386,7 +390,7 @@ describe("Cypher -> Connections -> Unions", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Author)
+            "MATCH (this:\`Author\`)
             CALL {
             WITH this
             CALL {
@@ -405,7 +409,8 @@ describe("Cypher -> Connections -> Unions", () => {
             UNWIND edges as edge
             WITH edges, edge
             ORDER BY edge.words ASC
-            RETURN { edges: collect(edge), totalCount: size(edges) } AS publicationsConnection
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
             }
             RETURN this { .name, publicationsConnection } as this"
         `);

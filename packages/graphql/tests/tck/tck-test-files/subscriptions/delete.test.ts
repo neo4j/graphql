@@ -68,8 +68,8 @@ describe("Subscriptions metadata on delete", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
-            MATCH (this:Movie)
-            WHERE this.id = $this_id
+            MATCH (this:\`Movie\`)
+            WHERE this.id = $param0
             WITH this, meta + { event: \\"delete\\", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             DETACH DELETE this
             WITH meta
@@ -79,7 +79,7 @@ describe("Subscriptions metadata on delete", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"1\\"
+                \\"param0\\": \\"1\\"
             }"
         `);
     });
@@ -100,8 +100,8 @@ describe("Subscriptions metadata on delete", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
-            MATCH (this:Movie)
-            WHERE this.id = $this_id
+            MATCH (this:\`Movie\`)
+            WHERE this.id = $param0
             WITH this, meta + { event: \\"delete\\", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             WITH this, meta
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
@@ -117,7 +117,7 @@ describe("Subscriptions metadata on delete", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"1\\",
+                \\"param0\\": \\"1\\",
                 \\"this_deleteMovies\\": {
                     \\"args\\": {
                         \\"delete\\": {
@@ -165,8 +165,8 @@ describe("Subscriptions metadata on delete", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "WITH [] AS meta
-            MATCH (this:Movie)
-            WHERE this.id = $this_id
+            MATCH (this:\`Movie\`)
+            WHERE this.id = $param0
             WITH this, meta + { event: \\"delete\\", id: id(this), properties: { old: this { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
             WITH this, meta
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
@@ -194,7 +194,7 @@ describe("Subscriptions metadata on delete", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"123\\",
+                \\"param0\\": \\"123\\",
                 \\"this_deleteMovies\\": {
                     \\"args\\": {
                         \\"delete\\": {

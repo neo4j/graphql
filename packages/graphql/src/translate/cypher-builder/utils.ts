@@ -17,19 +17,9 @@
  * limitations under the License.
  */
 
-import { Param } from "./references/Param";
-
-export function convertToCypherParams<T>(original: Record<string, T>): Record<string, Param<T>> {
-    return Object.entries(original).reduce((acc, [key, value]) => {
-        acc[key] = new Param(value);
-        return acc;
-    }, {});
-}
-
-/** Generates a string to be used as parameter key */
-export function generateParameterKey(prefix: string, key: string): string {
-    return `${prefix}_${key}`;
-}
+import type { CypherEnvironment } from "./Environment";
+import type { CypherCompilable } from "./types";
+import { Param } from "./variables/Param";
 
 /** Adds spaces to the left of the string, returns empty string is variable is undefined or empty string */
 export function padLeft(str: string | undefined): string {
@@ -40,4 +30,29 @@ export function padLeft(str: string | undefined): string {
 export function escapeLabel(label: string): string {
     const escapedLabel = label.replace(/`/g, "``");
     return `\`${escapedLabel}\``;
+}
+
+export function padBlock(block: string, spaces = 4): string {
+    const paddingStr = " ".repeat(spaces);
+    const paddedNewLines = block.replace(/\n/g, `\n${paddingStr}`);
+    return `${paddingStr}${paddedNewLines}`;
+}
+
+export function convertToCypherParams<T>(original: Record<string, T>): Record<string, Param<T>> {
+    return Object.entries(original).reduce((acc, [key, value]) => {
+        acc[key] = new Param(value);
+        return acc;
+    }, {});
+}
+
+/** Compiles the cypher of an element, if the resulting cypher is not empty adds a prefix */
+export function compileCypherIfExists(
+    element: CypherCompilable | undefined,
+    env: CypherEnvironment,
+    { prefix = "", suffix = "" }
+): string {
+    if (!element) return "";
+    const cypher = element.getCypher(env);
+    if (!cypher) return "";
+    return `${prefix}${cypher}${suffix}`;
 }

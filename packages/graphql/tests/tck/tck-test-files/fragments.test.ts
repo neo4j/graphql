@@ -89,7 +89,7 @@ describe("Cypher Fragment", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             RETURN this { .id, .username } as this"
         `);
 
@@ -117,7 +117,7 @@ describe("Cypher Fragment", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             RETURN this { .id, owns:  [this_owns IN [(this)-[:OWNS]->(this_owns) WHERE (\\"Tile\\" IN labels(this_owns)) OR (\\"Character\\" IN labels(this_owns)) | head( [ this_owns IN [this_owns] WHERE (\\"Tile\\" IN labels(this_owns)) | this_owns { __resolveType: \\"Tile\\",  .id } ] + [ this_owns IN [this_owns] WHERE (\\"Character\\" IN labels(this_owns)) | this_owns { __resolveType: \\"Character\\",  .id } ] ) ] WHERE this_owns IS NOT NULL]  } as this"
         `);
 
@@ -144,7 +144,7 @@ describe("Cypher Fragment", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "MATCH (this:\`User\`)
             RETURN this { .id, .username } as this"
         `);
 

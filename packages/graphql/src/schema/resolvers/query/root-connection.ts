@@ -18,7 +18,7 @@
  */
 
 import type { GraphQLResolveInfo } from "graphql";
-import type { InputTypeComposer, SchemaComposer} from "graphql-compose";
+import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { upperFirst } from "graphql-compose";
 import type { PageInfo } from "graphql-relay";
 import { execute } from "../../../utils";
@@ -35,11 +35,12 @@ export function rootConnectionResolver({ node, composer }: { node: Node; compose
         const resolveTree = getNeo4jResolveTree(info);
 
         const edgeTree = resolveTree.fieldsByTypeName[`${upperFirst(node.plural)}Connection`].edges;
-        const nodeTree = edgeTree.fieldsByTypeName[`${node.name}Edge`].node;
+        const nodeTree = edgeTree?.fieldsByTypeName[`${node.name}Edge`].node;
+        const resolveTreeForContext = nodeTree || resolveTree;
 
-        context.resolveTree = { ...nodeTree, args: resolveTree.args };
+        context.resolveTree = { ...resolveTreeForContext, args: resolveTree.args };
 
-        const [cypher, params] = translateRead({ context, node, isRootConnectionField: true });
+        const { cypher, params } = translateRead({ context, node, isRootConnectionField: true });
 
         const executeResult = await execute({
             cypher,
