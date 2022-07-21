@@ -26,7 +26,7 @@ import type { IResolvers } from "@graphql-tools/utils";
 import { forEachField } from "@graphql-tools/utils";
 import { mergeResolvers } from "@graphql-tools/merge";
 import Debug from "debug";
-import type { DriverConfig, CypherQueryOptions, Neo4jGraphQLPlugins, Neo4jGraphQLCallbacks } from "../types";
+import type { DriverConfig, CypherQueryOptions, Neo4jGraphQLPlugins, Neo4jGraphQLCallbacks, Neo4jFeaturesSettings} from "../types";
 import { makeAugmentedSchema } from "../schema";
 import type Node from "./Node";
 import type Relationship from "./Relationship";
@@ -57,6 +57,7 @@ export interface Neo4jGraphQLConfig {
 }
 
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
+    features?: Neo4jFeaturesSettings;
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
     plugins?: Neo4jGraphQLPlugins;
@@ -65,7 +66,7 @@ export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
 class Neo4jGraphQL {
     private config: Neo4jGraphQLConfig;
     private driver?: Driver;
-
+    private features?: Neo4jFeaturesSettings;
     private schemaDefinition: IExecutableSchemaDefinition;
 
     private _nodes?: Node[];
@@ -74,11 +75,12 @@ class Neo4jGraphQL {
     private schema?: Promise<GraphQLSchema>;
 
     constructor(input: Neo4jGraphQLConstructor) {
-        const { config = {}, driver, plugins, ...schemaDefinition } = input;
+        const { config = {}, driver, plugins, features, ...schemaDefinition } = input;
 
         this.driver = driver;
         this.config = config;
         this.plugins = plugins;
+        this.features = features;
         this.schemaDefinition = schemaDefinition;
 
         this.checkEnableDebug();
@@ -189,6 +191,7 @@ class Neo4jGraphQL {
     private generateSchema(): Promise<GraphQLSchema> {
         return new Promise((resolve) => {
             const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema(this.schemaDefinition.typeDefs, {
+                features: this.features,
                 enableRegex: this.config?.enableRegex,
                 skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
