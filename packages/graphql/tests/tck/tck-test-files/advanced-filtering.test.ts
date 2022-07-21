@@ -421,14 +421,14 @@ describe("Cypher Advanced Filtering", () => {
         });
         console.log(result.params);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title < $this_title_LT
+            "MATCH (this:\`Movie\`)
+            WHERE this.title < $param0
             RETURN this { .title } as this"
         `);
-    
+
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title_LT\\": \\"The Matrix Revolutions\\"
+                \\"param0\\": \\"The Matrix Revolutions\\"
             }"
         `);
     });
@@ -508,14 +508,14 @@ describe("Cypher Advanced Filtering", () => {
         });
         console.log(result.params);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title <= $this_title_LTE
+            "MATCH (this:\`Movie\`)
+            WHERE this.title <= $param0
             RETURN this { .title } as this"
         `);
-    
+
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title_LTE\\": \\"The Matrix Revolutions\\"
+                \\"param0\\": \\"The Matrix Revolutions\\"
             }"
         `);
     });
@@ -595,14 +595,14 @@ describe("Cypher Advanced Filtering", () => {
         });
         console.log(result.params);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title > $this_title_GT
+            "MATCH (this:\`Movie\`)
+            WHERE this.title > $param0
             RETURN this { .title } as this"
         `);
-    
+
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title_GT\\": \\"The Matrix Revolutions\\"
+                \\"param0\\": \\"The Matrix Revolutions\\"
             }"
         `);
     });
@@ -682,14 +682,14 @@ describe("Cypher Advanced Filtering", () => {
         });
         console.log(result.params);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title >= $this_title_GTE
+            "MATCH (this:\`Movie\`)
+            WHERE this.title >= $param0
             RETURN this { .title } as this"
         `);
-    
+
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title_GTE\\": \\"The Matrix Revolutions\\"
+                \\"param0\\": \\"The Matrix Revolutions\\"
             }"
         `);
     });

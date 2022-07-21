@@ -30,15 +30,13 @@ describe("String Comparators", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({
-            config: {
-                features: {
-                    filters: {
-                        String: {
-                            LT: true,
-                            GT: true,
-                            GTE: true,
-                            LTE: true,
-                        },
+            features: {
+                filters: {
+                    String: {
+                        LT: true,
+                        GT: true,
+                        GTE: true,
+                        LTE: true,
                     },
                 },
             },
@@ -326,14 +324,12 @@ describe("String Comparators", () => {
             }
         `;
         const neoSchema = new Neo4jGraphQL({
-            config: {
-                features: {
-                    filters: {
-                        String: {
-                            LT: true,
-                            GT: true,
-                            LTE: false,
-                        },
+            features: {
+                filters: {
+                    String: {
+                        LT: true,
+                        GT: true,
+                        LTE: false,
                     },
                 },
             },
@@ -490,15 +486,13 @@ describe("String Comparators", () => {
         `;
 
         const neoSchema = new Neo4jGraphQL({
-            config: {
-                features: {
-                    filters: {
-                        String: {
-                            LT: true,
-                            GT: true,
-                            LTE: true,
-                            GTE: true,
-                        },
+            features: {
+                filters: {
+                    String: {
+                        LT: true,
+                        GT: true,
+                        LTE: true,
+                        GTE: true,
                     },
                 },
             },
