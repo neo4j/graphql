@@ -417,7 +417,7 @@ jobs:
           echo "::set-output name=prerelease::$prerelease"
       - name: Build Changelog
         id: github-release
-        uses: mikepenz/release-changelog-builder-action@c9066537c0c7bc5c7b0ec7722cefc02524c7c005 # renovate: tag=v3.1.0
+        uses: mikepenz/release-changelog-builder-action@f3776883ea2e511b41298ec5853017efecd7c2ee # tag=v3.1.1
         with:
           configuration: "config/release-changelog-builder-action/configuration-${{ steps.get-label.outputs.label }}-hotfix.json"
           toTag: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
