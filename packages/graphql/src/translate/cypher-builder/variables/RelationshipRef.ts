@@ -40,7 +40,6 @@ export class RelationshipRef extends Variable {
         this.type = input.type || undefined;
         this._source = input.source;
         this._target = input.target;
-
         this.directed = input.directed === undefined ? true : input.directed;
     }
 

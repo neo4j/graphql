@@ -28,12 +28,12 @@ export abstract class ProjectionClause extends Clause {
     private columns: ProjectionColumn[] = [];
     private isStar = false;
 
-    constructor(...columns: ("*" | ProjectionColumn)[]) {
+    constructor(...columns: Array<"*" | ProjectionColumn>) {
         super();
         this.addColumns(...columns);
     }
 
-    public addColumns(...columns: (ProjectionColumn | "*")[]): void {
+    public addColumns(...columns: Array<"*" | ProjectionColumn>): void {
         const filteredColumns = columns.filter((v) => {
             if (v === "*") {
                 this.isStar = true;
@@ -44,7 +44,7 @@ export abstract class ProjectionClause extends Clause {
         this.columns.push(...filteredColumns);
     }
 
-    protected getProjectionCypher(env: CypherEnvironment): string {
+    public getProjectionCypher(env: CypherEnvironment): string {
         let columnsStrs = this.columns.map((column) => {
             return this.serializeColumn(column, env);
         });
@@ -54,7 +54,7 @@ export abstract class ProjectionClause extends Clause {
             columnsStrs = ["*", ...columnsStrs];
         }
 
-        return `${columnsStrs.join(", ")}`;
+        return columnsStrs.join(", ");
     }
 
     private serializeColumn(column: ProjectionColumn, env: CypherEnvironment): string {

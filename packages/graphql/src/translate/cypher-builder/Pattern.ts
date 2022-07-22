@@ -91,7 +91,6 @@ export class Pattern<T extends MatchableElement = any> extends CypherASTNode {
         if (this.isRelationship(this.matchElement)) {
             return this.getRelationshipCypher(env, this.matchElement);
         }
-
         return this.getNodeCypher(env, this.matchElement, this.parameters as MatchParams<NodeRef>);
     }
 

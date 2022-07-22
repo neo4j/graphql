@@ -25,6 +25,7 @@ export { Call } from "./clauses/Call";
 export { Return } from "./clauses/projection/Return";
 export { RawCypher } from "./clauses/RawCypher";
 export { With } from "./clauses/projection/With";
+export { Unwind } from "./clauses/projection/Unwind";
 
 // Clauses-like things
 export { Exists } from "./Exists";
