@@ -22,9 +22,10 @@ export { Match } from "./clauses/Match";
 export { Create } from "./clauses/Create";
 export { Merge } from "./clauses/Merge";
 export { Call } from "./clauses/Call";
-export { Return } from "./clauses/Return";
+export { Return } from "./clauses/projection/Return";
 export { RawCypher } from "./clauses/RawCypher";
-export { With } from "./clauses/With";
+export { With } from "./clauses/projection/With";
+export { Unwind } from "./clauses/projection/Unwind";
 
 // Clauses-like things
 export { Exists } from "./Exists";
@@ -42,6 +43,9 @@ export { Literal } from "./variables/Literal";
 // Lists
 export { ListComprehension } from "./list/ListComprehension";
 export { PatternComprehension } from "./list/PatternComprehension";
+
+// Map
+export { MapExpr as Map } from "./map/MapExpr";
 
 export { Pattern } from "./Pattern"; // TODO: Maybe this should not be exported
 

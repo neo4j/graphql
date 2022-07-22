@@ -20,8 +20,8 @@
 import { CypherASTNode } from "./CypherASTNode";
 import { stringifyObject } from "../utils/stringify-object";
 import { padLeft } from "./utils";
-import { NodeRef } from "./variables/NodeRef";
-import { RelationshipRef } from "./variables/RelationshipRef";
+import type { NodeRef } from "./variables/NodeRef";
+import type { RelationshipRef } from "./variables/RelationshipRef";
 import type { CypherEnvironment } from "./Environment";
 import type { Param } from "./variables/Param";
 
@@ -29,13 +29,14 @@ export type MatchableElement = NodeRef | RelationshipRef;
 
 type ItemOption = { labels?: boolean; variable?: boolean };
 
-type MatchPatternOptions = {
+export type MatchPatternOptions = {
     source?: ItemOption;
     target?: ItemOption;
     relationship?: {
         type?: boolean;
         variable?: boolean;
     };
+    directed?: boolean;
 };
 
 type ParamsRecord = Record<string, Param<any>>;
@@ -87,13 +88,10 @@ export class Pattern<T extends MatchableElement = any> extends CypherASTNode {
     }
 
     public getCypher(env: CypherEnvironment): string {
-        if (this.matchElement instanceof NodeRef) {
-            return this.getNodeCypher(env, this.matchElement, this.parameters as MatchParams<NodeRef>);
-        }
-        if (this.matchElement instanceof RelationshipRef) {
+        if (this.isRelationship(this.matchElement)) {
             return this.getRelationshipCypher(env, this.matchElement);
         }
-        throw new Error("Invalid element in match pattern");
+        return this.getNodeCypher(env, this.matchElement, this.parameters as MatchParams<NodeRef>);
     }
 
     private getRelationshipCypher(env: CypherEnvironment, relationship: RelationshipRef): string {
@@ -106,15 +104,20 @@ export class Pattern<T extends MatchableElement = any> extends CypherASTNode {
 
         const sourceStr = this.getNodeCypher(env, relationship.source, parameterOptions.source, "source");
         const targetStr = this.getNodeCypher(env, relationship.target, parameterOptions.target, "target");
-        const arrowStr = this.getRelationshipArrow(relationship);
+        const arrowStr = this.getRelationshipArrow();
 
         const relationshipStr = `${referenceId}${relationshipType}${relationshipParamsStr}`;
 
         return `${sourceStr}-[${relationshipStr}]${arrowStr}${targetStr}`;
     }
 
-    private getRelationshipArrow(relationship: RelationshipRef): "-" | "->" {
-        return relationship.directed ? "->" : "-";
+    private getRelationshipArrow(): "-" | "->" {
+        return this.options.directed === false ? "-" : "->";
+    }
+
+    // Note: This allows us to remove cycle dependency between pattern and relationship
+    private isRelationship(x: NodeRef | RelationshipRef): x is RelationshipRef {
+        return Boolean((x as any).source);
     }
 
     private getNodeCypher(

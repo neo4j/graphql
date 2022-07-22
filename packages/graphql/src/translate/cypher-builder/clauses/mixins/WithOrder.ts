@@ -17,20 +17,18 @@
  * limitations under the License.
  */
 
-import type { ProjectionColumn } from "../projection/ProjectionClause";
-import { Return } from "../projection/Return";
+import { Order, OrderBy } from "../../sub-clauses/OrderBy";
 import { ClauseMixin } from "./ClauseMixin";
+import { asArray } from "../../../../utils/utils";
+import type { Expr } from "../../types";
 
-export abstract class WithReturn extends ClauseMixin {
-    protected returnStatement: Return | undefined;
+export abstract class WithOrder extends ClauseMixin {
+    protected orderByStatement: OrderBy | undefined;
 
-    public return(...columns: ("*" | ProjectionColumn)[]): Return {
-        if (this.returnStatement) {
-            this.returnStatement.addColumns(...columns);
-        } else {
-            this.returnStatement = new Return(...columns);
-            this.addChildren(this.returnStatement);
-        }
-        return this.returnStatement;
+    public orderBy(expr: Expr | Expr[], order: Order = "ASC"): this {
+        const exprs = asArray(expr);
+        this.orderByStatement = new OrderBy(exprs, order);
+
+        return this;
     }
 }

@@ -17,36 +17,34 @@
  * limitations under the License.
  */
 
-import { Clause } from "./Clause";
-import type { CypherEnvironment } from "../Environment";
-import type { Expr } from "../types";
-import type { Literal, Variable } from "../CypherBuilder";
+import { Clause } from "../Clause";
+import type { CypherEnvironment } from "../../Environment";
+import type { Expr } from "../../types";
+import type { Literal, Variable } from "../../CypherBuilder";
 
-export type ReturnColumn = Expr | [Expr, string | Variable | Literal];
+export type ProjectionColumn = Expr | [Expr, string | Variable | Literal];
 
-export class Return extends Clause {
-    private columns: ReturnColumn[] = [];
+export abstract class ProjectionClause extends Clause {
+    private columns: ProjectionColumn[] = [];
     private isStar = false;
 
-    constructor(...columns: ReturnColumn[]);
-    constructor(starOrColumn: "*" | ReturnColumn, ...columns: ReturnColumn[]);
-    constructor(starOrColumn: "*" | ReturnColumn | undefined, ...columns: ReturnColumn[]) {
+    constructor(...columns: Array<"*" | ProjectionColumn>) {
         super();
-        if (starOrColumn === "*") {
-            this.isStar = true;
-            this.columns = columns;
-        } else if (starOrColumn) {
-            this.columns = [starOrColumn, ...columns];
-        } else {
-            this.columns = columns;
-        }
+        this.addColumns(...columns);
     }
 
-    public addReturnColumn(...columns: ReturnColumn[]): void {
-        this.columns.push(...columns);
+    public addColumns(...columns: Array<"*" | ProjectionColumn>): void {
+        const filteredColumns = columns.filter((v) => {
+            if (v === "*") {
+                this.isStar = true;
+                return false;
+            }
+            return true;
+        }) as ProjectionColumn[];
+        this.columns.push(...filteredColumns);
     }
 
-    public getCypher(env: CypherEnvironment): string {
+    public getProjectionCypher(env: CypherEnvironment): string {
         let columnsStrs = this.columns.map((column) => {
             return this.serializeColumn(column, env);
         });
@@ -56,10 +54,10 @@ export class Return extends Clause {
             columnsStrs = ["*", ...columnsStrs];
         }
 
-        return `RETURN ${columnsStrs.join(", ")}`;
+        return columnsStrs.join(", ");
     }
 
-    private serializeColumn(column: ReturnColumn, env: CypherEnvironment): string {
+    private serializeColumn(column: ProjectionColumn, env: CypherEnvironment): string {
         const hasAlias = Array.isArray(column);
         if (hasAlias) {
             const exprStr = column[0].getCypher(env);

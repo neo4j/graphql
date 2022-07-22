@@ -17,20 +17,17 @@
  * limitations under the License.
  */
 
-import type { ProjectionColumn } from "../projection/ProjectionClause";
-import { Return } from "../projection/Return";
-import { ClauseMixin } from "./ClauseMixin";
+import { WithOrder } from "../mixins/WithOrder";
+import { applyMixins } from "../utils/apply-mixin";
+import { ProjectionClause } from "./ProjectionClause";
+import type { CypherEnvironment } from "../../Environment";
 
-export abstract class WithReturn extends ClauseMixin {
-    protected returnStatement: Return | undefined;
-
-    public return(...columns: ("*" | ProjectionColumn)[]): Return {
-        if (this.returnStatement) {
-            this.returnStatement.addColumns(...columns);
-        } else {
-            this.returnStatement = new Return(...columns);
-            this.addChildren(this.returnStatement);
-        }
-        return this.returnStatement;
+export class Return extends ProjectionClause {
+    public getCypher(env: CypherEnvironment): string {
+        const projectionStr = this.getProjectionCypher(env);
+        return `RETURN ${projectionStr}`;
     }
 }
+
+export interface Return extends WithOrder {}
+applyMixins(Return, [WithOrder]);
