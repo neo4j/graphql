@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { Node, Relationship } from "../classes";
-import { RelationField, Context } from "../types";
+import type { Node, Relationship } from "../classes";
+import type { RelationField, Context } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
@@ -149,7 +149,7 @@ function createDisconnectAndParams({
             const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`WITH ${[...withVars, _varName, relVarName].join(", ")}`);
             subquery.push(
-                `CALL apoc.util.validate(NOT(${preAuth.disconnects.join(
+                `CALL apoc.util.validate(NOT (${preAuth.disconnects.join(
                     " AND "
                 )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
             );
@@ -160,7 +160,7 @@ function createDisconnectAndParams({
         Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
         https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
         */
-        subquery.push(`FOREACH(_ IN CASE ${_varName} WHEN NULL THEN [] ELSE [1] END | `);
+        subquery.push(`FOREACH(_ IN CASE WHEN ${_varName} IS NULL THEN [] ELSE [1] END | `);
         subquery.push(`DELETE ${_varName}_rel`);
         subquery.push(`)`); // close FOREACH
 
@@ -317,14 +317,14 @@ function createDisconnectAndParams({
             const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`WITH ${[...withVars, _varName].join(", ")}`);
             subquery.push(
-                `CALL apoc.util.validate(NOT(${postAuth.disconnects.join(
+                `CALL apoc.util.validate(NOT (${postAuth.disconnects.join(
                     " AND "
                 )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
             );
             params = { ...params, ...postAuth.params };
         }
 
-        subquery.push("RETURN count(*)");
+        subquery.push("RETURN count(*) AS _");
 
         return { subquery: subquery.join("\n"), params };
     }

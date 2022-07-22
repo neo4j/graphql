@@ -17,13 +17,16 @@
  * limitations under the License.
  */
 
-import { GraphQLWhereArg, ConnectionWhereArg, Context } from "../../types";
-import { GraphElement, Node, Relationship } from "../../classes";
+import type { GraphQLWhereArg, ConnectionWhereArg, Context } from "../../types";
+import type { GraphElement, Relationship } from "../../classes";
+import { Node } from "../../classes";
 import createConnectionWhereAndParams from "./create-connection-where-and-params";
 import createWhereClause from "./create-where-clause";
-import { whereRegEx, WhereRegexGroups, getListPredicate } from "./utils";
+import type { WhereRegexGroups, ListPredicate } from "./utils";
+import { whereRegEx, getListPredicate } from "./utils";
 import { wrapInApocRunFirstColumn } from "../utils/apoc-run";
 import mapToDbProperty from "../../utils/map-to-db-property";
+import { listPredicateToClause } from "./list-predicate-to-clause";
 
 interface Res {
     clauses: string[];
@@ -36,12 +39,14 @@ function createElementWhereAndParams({
     varName,
     context,
     parameterPrefix,
+    listPredicates,
 }: {
     whereInput: GraphQLWhereArg;
     element: GraphElement;
     varName: string;
     context: Context;
     parameterPrefix: string;
+    listPredicates?: ListPredicate[];
 }): [string, any] {
     if (!Object.keys(whereInput).length) {
         return ["", {}];
@@ -108,21 +113,12 @@ function createElementWhereAndParams({
                 const relatedNodeVariable = `${varName}_${relationField.fieldName}`;
                 const labels = refNode.getLabelString(context);
 
+                const matchPattern = `(${varName})${inStr}${relTypeStr}${outStr}(${relatedNodeVariable}${labels})`;
+
                 if (value === null) {
-                    res.clauses.push(
-                        `${isNot ? "" : "NOT "}EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${
-                            relationField.typeMeta.name
-                        }))`
-                    );
+                    res.clauses.push(`${isNot ? "" : "NOT "}EXISTS { ${matchPattern} }`);
                     return res;
                 }
-
-                let resultStr = [
-                    `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(:${relationField.typeMeta.name}))`,
-                    `AND ${getListPredicate(
-                        operator
-                    )}(${relatedNodeVariable} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relatedNodeVariable}${labels}) | ${relatedNodeVariable}] INNER_WHERE `,
-                ].join(" ");
 
                 const recurse = createElementWhereAndParams({
                     whereInput: value,
@@ -132,10 +128,14 @@ function createElementWhereAndParams({
                     parameterPrefix: `${parameterPrefix}.${fieldName}`,
                 });
 
-                resultStr += recurse[0];
-                resultStr += ")"; // close NONE/ANY
-                res.clauses.push(resultStr);
-                res.params = { ...res.params, fieldName: recurse[1] };
+                if (recurse[0]) {
+                    const listPredicate = getListPredicate(operator);
+
+                    const clause = listPredicateToClause(listPredicate, matchPattern, recurse[0]);
+                    res.clauses.push(clause);
+                    res.params = { ...res.params, ...recurse[1] };
+                }
+
                 return res;
             }
             const connectionField = element.connectionFields.find((x) => fieldName === x.fieldName);
@@ -166,20 +166,22 @@ function createElementWhereAndParams({
 
                     const rootParam = parameterPrefix.split(".", 1)[0];
 
-                    const existsStr = `EXISTS((${safeNodeVariable})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`;
+                    const existsStr = `exists((${safeNodeVariable})${inStr}[:${connectionField.relationship.type}]${outStr}(${labels}))`;
 
                     if (value === null) {
                         res.clauses.push(isNot ? `NOT ${existsStr}` : existsStr);
                         return;
                     }
 
+                    const hasPreviousSinglePredicate = listPredicates?.length
+                        ? listPredicates.includes("single")
+                        : null;
+
+                    const currentListPredicate = hasPreviousSinglePredicate ? "single" : getListPredicate(operator);
+
                     const resultArr = [
                         `RETURN ${existsStr}`,
-                        `AND ${getListPredicate(
-                            operator
-                        )}(${collectedMap} IN [(${safeNodeVariable})${inStr}[${relationshipVariable}:${
-                            connectionField.relationship.type
-                        }]${outStr}(${relatedNodeVariable}${labels}) | { node: ${relatedNodeVariable}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
+                        `AND ${currentListPredicate}(${collectedMap} IN [(${safeNodeVariable})${inStr}[${relationshipVariable}:${connectionField.relationship.type}]${outStr}(${relatedNodeVariable}${labels}) | { node: ${relatedNodeVariable}, relationship: ${relationshipVariable} } ] INNER_WHERE `,
                     ];
 
                     const connectionWhere = createConnectionWhereAndParams({
@@ -189,16 +191,31 @@ function createElementWhereAndParams({
                         nodeVariable: `${collectedMap}.node`,
                         relationship,
                         relationshipVariable: `${collectedMap}.relationship`,
-                        parameterPrefix: `${parameterPrefix}.${fieldName}`,
+                        parameterPrefix: operator ? `${parameterPrefix}.${fieldName}_${operator}` : `${parameterPrefix}.${fieldName}`,
+                        // listPredicates stores all list predicates (SINGLE, ANY, NONE,..) while (recursively) translating the where clauses
+                        listPredicates: [currentListPredicate, ...(listPredicates || [])],
                     });
 
                     resultArr.push(connectionWhere[0]);
                     resultArr.push(")"); // close NONE/ANY
 
-                    const apocRunFirstColumn = wrapInApocRunFirstColumn(resultArr.join("\n"), {
-                        [safeNodeVariable]: varName,
-                        [rootParam]: `$${rootParam}`,
-                    });
+                    let expectMultipleValues: boolean;
+
+                    if (operator) {
+                        expectMultipleValues = false;
+                    } else if (listPredicates?.length) {
+                        expectMultipleValues = !listPredicates.includes("single");
+                    } else {
+                        expectMultipleValues = true;
+                    }
+                    const apocRunFirstColumn = wrapInApocRunFirstColumn(
+                        resultArr.join("\n"),
+                        {
+                            [safeNodeVariable]: varName,
+                            [rootParam]: `$${rootParam}`,
+                        },
+                        expectMultipleValues
+                    );
 
                     res.clauses.push(apocRunFirstColumn);
 

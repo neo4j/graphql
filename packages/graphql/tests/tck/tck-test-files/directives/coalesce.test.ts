@@ -103,23 +103,23 @@ describe("Cypher coalesce()", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE coalesce(this.id, \\"00000000-00000000-00000000-00000000\\") = $this_id AND coalesce(this.name, \\"Jane Smith\\") =~ $this_name_MATCHES AND (NOT coalesce(this.verified, false) = $this_verified_NOT) AND coalesce(this.numberOfFriends, 0) > $this_numberOfFriends_GT AND coalesce(this.rating, 2.5) < $this_rating_LT AND coalesce(this.fromInterface, \\"From Interface\\") = $this_fromInterface AND coalesce(this.toBeOverridden, \\"Overridden\\") = $this_toBeOverridden
+            "MATCH (this:\`User\`)
+            WHERE (coalesce(this.id, \\"00000000-00000000-00000000-00000000\\") = $param0 AND coalesce(this.name, \\"Jane Smith\\") =~ $param1 AND NOT this.verified = $param2 AND this.numberOfFriends > $param3 AND coalesce(this.rating, 2.5) < $param4 AND coalesce(this.fromInterface, \\"From Interface\\") = $param5 AND coalesce(this.toBeOverridden, \\"Overridden\\") = $param6)
             RETURN this { .name } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"Some ID\\",
-                \\"this_name_MATCHES\\": \\"Some name\\",
-                \\"this_verified_NOT\\": true,
-                \\"this_numberOfFriends_GT\\": {
+                \\"param0\\": \\"Some ID\\",
+                \\"param1\\": \\"Some name\\",
+                \\"param2\\": true,
+                \\"param3\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"this_rating_LT\\": 3.5,
-                \\"this_fromInterface\\": \\"Some string\\",
-                \\"this_toBeOverridden\\": \\"Some string\\"
+                \\"param4\\": 3.5,
+                \\"param5\\": \\"Some string\\",
+                \\"param6\\": \\"Some string\\"
             }"
         `);
     });
@@ -159,16 +159,16 @@ describe("Cypher coalesce()", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:Movie)
-WHERE coalesce(this.status, \\"ACTIVE\\") = $this_status
-RETURN this { .id, .status } as this"
-`);
+            "MATCH (this:\`Movie\`)
+            WHERE coalesce(this.status, \\"ACTIVE\\") = $param0
+            RETURN this { .id, .status } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
-"{
-    \\"this_status\\": \\"ACTIVE\\"
-}"
-`);
+            "{
+                \\"param0\\": \\"ACTIVE\\"
+            }"
+        `);
     });
 
     test("Coalesce with enum in projection", async () => {
@@ -216,29 +216,31 @@ RETURN this { .id, .status } as this"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:Actor)
-CALL {
-WITH this
-MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
-WHERE coalesce(this_movie.status, \\"ACTIVE\\") = $this_moviesConnection.args.where.node.status
-WITH collect({ node: { id: this_movie.id, status: this_movie.status } }) AS edges
-RETURN { edges: edges, totalCount: size(edges) } AS moviesConnection
-}
-RETURN this { moviesConnection } as this"
-`);
+            "MATCH (this:\`Actor\`)
+            CALL {
+            WITH this
+            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
+            WHERE coalesce(this_movie.status, \\"ACTIVE\\") = $this_moviesConnection.args.where.node.status
+            WITH collect({ node: { id: this_movie.id, status: this_movie.status } }) AS edges
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
+            }
+            RETURN this { moviesConnection } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
-"{
-    \\"this_moviesConnection\\": {
-        \\"args\\": {
-            \\"where\\": {
-                \\"node\\": {
-                    \\"status\\": \\"ACTIVE\\"
+            "{
+                \\"this_moviesConnection\\": {
+                    \\"args\\": {
+                        \\"where\\": {
+                            \\"node\\": {
+                                \\"status\\": \\"ACTIVE\\"
+                            }
+                        }
+                    }
                 }
-            }
-        }
-    }
-}"
-`);
+            }"
+        `);
     });
 });

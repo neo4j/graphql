@@ -18,17 +18,20 @@
  */
 
 import { graphql } from "graphql";
-import neo4jDriver, { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
+import neo4jDriver from "neo4j-driver";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { parseDuration } from "../../../src/schema/types/scalars/Duration";
+import { parseDuration } from "../../../src/graphql/scalars/Duration";
 
 describe("Duration", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -37,7 +40,7 @@ describe("Duration", () => {
 
     describe("create", () => {
         test("should create a movie (with a Duration)", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Movie {
@@ -74,7 +77,7 @@ describe("Duration", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id, duration },
                 });
 
@@ -105,7 +108,7 @@ describe("Duration", () => {
         });
 
         test("should create a movie (with many Durations)", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Movie {
@@ -136,7 +139,7 @@ describe("Duration", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id, durations },
                 });
 
@@ -184,7 +187,7 @@ describe("Duration", () => {
 
     describe("update", () => {
         test("should update a movie (with a Duration)", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Movie {
@@ -223,7 +226,7 @@ describe("Duration", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: mutation,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id, duration },
                 });
 
@@ -256,7 +259,7 @@ describe("Duration", () => {
 
     describe("filter", () => {
         test("should filter based on duration equality", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Movie {
@@ -295,7 +298,7 @@ describe("Duration", () => {
                 const graphqlResult = await graphql({
                     schema,
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { id, duration },
                 });
 
@@ -312,7 +315,7 @@ describe("Duration", () => {
         test("should filter based on duration comparison", () =>
             Promise.all(
                 ["LT", "LTE", "GT", "GTE"].map(async (filter) => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const typeDefs = `
                         type Movie {
@@ -386,7 +389,7 @@ describe("Duration", () => {
                         const graphqlResult = await graphql({
                             schema,
                             source: query,
-                            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                             variableValues: {
                                 where: { id_IN: [longId, mediumId, shortId], [`duration_${filter}`]: medium },
                             },

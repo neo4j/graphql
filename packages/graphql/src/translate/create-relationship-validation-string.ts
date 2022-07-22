@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { Node } from "../classes";
+import type { Node } from "../classes";
 import { RELATIONSHIP_REQUIREMENT_PREFIX } from "../constants";
-import { Context } from "../types";
+import type { Context } from "../types";
 
 function createRelationshipValidationString({
     node,
@@ -59,7 +59,7 @@ function createRelationshipValidationString({
             `\tWITH ${varName}`,
             `\tMATCH (${varName})${inStr}[${relVarname}:${field.type}]${outStr}(${toNode.getLabelString(context)})`,
             `\tWITH count(${relVarname}) as c`,
-            `\tCALL apoc.util.validate(NOT(${predicate}), '${errorMsg}', [0])`,
+            `\tCALL apoc.util.validate(NOT (${predicate}), '${errorMsg}', [0])`,
             `\tRETURN c AS ${relVarname}_ignored`,
             `}`,
         ].join("\n");

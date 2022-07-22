@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
@@ -103,15 +103,15 @@ describe("Nested Unions", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors_LeadActor0_node:LeadActor)
-            	WHERE this_connect_actors_LeadActor0_node.name = $this_connect_actors_LeadActor0_node_name
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actors_LeadActor0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this_connect_actors_LeadActor0_node.name = $this_connect_actors_LeadActor0_node_param0
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actors_LeadActor0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)<-[:ACTED_IN]-(this_connect_actors_LeadActor0_node)
             		)
             	)
@@ -119,24 +119,24 @@ describe("Nested Unions", () => {
             CALL {
             	WITH this, this_connect_actors_LeadActor0_node
             	OPTIONAL MATCH (this_connect_actors_LeadActor0_node_actedIn_Series0_node:Series)
-            	WHERE this_connect_actors_LeadActor0_node_actedIn_Series0_node.name = $this_connect_actors_LeadActor0_node_actedIn_Series0_node_name
-            	FOREACH(_ IN CASE this_connect_actors_LeadActor0_node WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actors_LeadActor0_node_actedIn_Series0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this_connect_actors_LeadActor0_node_actedIn_Series0_node.name = $this_connect_actors_LeadActor0_node_actedIn_Series0_node_param0
+            	FOREACH(_ IN CASE WHEN this_connect_actors_LeadActor0_node IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actors_LeadActor0_node_actedIn_Series0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this_connect_actors_LeadActor0_node)-[:ACTED_IN]->(this_connect_actors_LeadActor0_node_actedIn_Series0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .title, actors:  [this_actors IN [(this)<-[:ACTED_IN]-(this_actors) WHERE (\\"LeadActor\\" IN labels(this_actors)) OR (\\"Extra\\" IN labels(this_actors)) | head( [ this_actors IN [this_actors] WHERE (\\"LeadActor\\" IN labels(this_actors)) | this_actors { __resolveType: \\"LeadActor\\",  .name, actedIn:  [this_actors_actedIn IN [(this_actors)-[:ACTED_IN]->(this_actors_actedIn) WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) OR (\\"Series\\" IN labels(this_actors_actedIn)) | head( [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Movie\\" }  ] + [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Series\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Series\\",  .name } ] ) ] WHERE this_actors_actedIn IS NOT NULL]  } ] + [ this_actors IN [this_actors] WHERE (\\"Extra\\" IN labels(this_actors)) | this_actors { __resolveType: \\"Extra\\" }  ] ) ] WHERE this_actors IS NOT NULL]  }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Movie\\",
-                \\"this_connect_actors_LeadActor0_node_name\\": \\"Actor\\",
-                \\"this_connect_actors_LeadActor0_node_actedIn_Series0_node_name\\": \\"Series\\",
+                \\"param0\\": \\"Movie\\",
+                \\"this_connect_actors_LeadActor0_node_param0\\": \\"Actor\\",
+                \\"this_connect_actors_LeadActor0_node_actedIn_Series0_node_param0\\": \\"Series\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -179,14 +179,14 @@ describe("Nested Unions", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             WITH this
             CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors_LeadActor0_rel:ACTED_IN]-(this_disconnect_actors_LeadActor0:LeadActor)
             WHERE this_disconnect_actors_LeadActor0.name = $updateMovies.args.disconnect.actors.LeadActor[0].where.node.name
-            FOREACH(_ IN CASE this_disconnect_actors_LeadActor0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_actors_LeadActor0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actors_LeadActor0_rel
             )
             WITH this, this_disconnect_actors_LeadActor0
@@ -194,19 +194,19 @@ describe("Nested Unions", () => {
             WITH this, this_disconnect_actors_LeadActor0
             OPTIONAL MATCH (this_disconnect_actors_LeadActor0)-[this_disconnect_actors_LeadActor0_actedIn_Series0_rel:ACTED_IN]->(this_disconnect_actors_LeadActor0_actedIn_Series0:Series)
             WHERE this_disconnect_actors_LeadActor0_actedIn_Series0.name = $updateMovies.args.disconnect.actors.LeadActor[0].disconnect.actedIn.Series[0].where.node.name
-            FOREACH(_ IN CASE this_disconnect_actors_LeadActor0_actedIn_Series0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_actors_LeadActor0_actedIn_Series0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actors_LeadActor0_actedIn_Series0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .title, actors:  [this_actors IN [(this)<-[:ACTED_IN]-(this_actors) WHERE (\\"LeadActor\\" IN labels(this_actors)) OR (\\"Extra\\" IN labels(this_actors)) | head( [ this_actors IN [this_actors] WHERE (\\"LeadActor\\" IN labels(this_actors)) | this_actors { __resolveType: \\"LeadActor\\",  .name, actedIn:  [this_actors_actedIn IN [(this_actors)-[:ACTED_IN]->(this_actors_actedIn) WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) OR (\\"Series\\" IN labels(this_actors_actedIn)) | head( [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Movie\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Movie\\" }  ] + [ this_actors_actedIn IN [this_actors_actedIn] WHERE (\\"Series\\" IN labels(this_actors_actedIn)) | this_actors_actedIn { __resolveType: \\"Series\\",  .name } ] ) ] WHERE this_actors_actedIn IS NOT NULL]  } ] + [ this_actors IN [this_actors] WHERE (\\"Extra\\" IN labels(this_actors)) | this_actors { __resolveType: \\"Extra\\" }  ] ) ] WHERE this_actors IS NOT NULL]  }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Movie\\",
+                \\"param0\\": \\"Movie\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"disconnect\\": {

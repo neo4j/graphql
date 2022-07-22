@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -94,37 +94,17 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Series)
-            WHERE (EXISTS((this)-[:HAS_MANUFACTURER]->(:Series)) AND ANY(this_OR_manufacturerConnection_Series_map IN [(this)-[this_OR_manufacturerConnection_Series_SeriesManufacturerRelationship:HAS_MANUFACTURER]->(this_OR_manufacturerConnection_Series:Series)  | { node: this_OR_manufacturerConnection_Series, relationship: this_OR_manufacturerConnection_Series_SeriesManufacturerRelationship } ] WHERE this_OR_manufacturerConnection_Series_map.relationship.current = $this_OR_series.where.manufacturerConnection.edge.current AND this_OR_manufacturerConnection_Series_map.node.name = $this_OR_series.where.manufacturerConnection.node.name) OR EXISTS((this)-[:HAS_BRAND]->(:Series)) AND ANY(this_OR1_brandConnection_Series_map IN [(this)-[this_OR1_brandConnection_Series_SeriesBrandRelationship:HAS_BRAND]->(this_OR1_brandConnection_Series:Series)  | { node: this_OR1_brandConnection_Series, relationship: this_OR1_brandConnection_Series_SeriesBrandRelationship } ] WHERE this_OR1_brandConnection_Series_map.relationship.current = $this_OR1_series.where.brandConnection.edge.current AND this_OR1_brandConnection_Series_map.node.name = $this_OR1_series.where.brandConnection.node.name))
+            "MATCH (this:\`Series\`)
+            WHERE (size([(this)-[this0:HAS_MANUFACTURER]->(this1:\`Series\`) WHERE (this0.current = $param0 AND this1.name = $param1) | 1]) = 1 OR size([(this)-[this2:HAS_BRAND]->(this3:\`Series\`) WHERE (this2.current = $param2 AND this3.name = $param3) | 1]) = 1)
             RETURN this { .name, brand: head([ (this)-[:HAS_BRAND]->(this_brand:Series)   | this_brand { .name } ]), manufacturer: head([ (this)-[:HAS_MANUFACTURER]->(this_manufacturer:Series)   | this_manufacturer { .name } ]) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_OR_series\\": {
-                    \\"where\\": {
-                        \\"manufacturerConnection\\": {
-                            \\"edge\\": {
-                                \\"current\\": true
-                            },
-                            \\"node\\": {
-                                \\"name\\": \\"abc\\"
-                            }
-                        }
-                    }
-                },
-                \\"this_OR1_series\\": {
-                    \\"where\\": {
-                        \\"brandConnection\\": {
-                            \\"edge\\": {
-                                \\"current\\": true
-                            },
-                            \\"node\\": {
-                                \\"name\\": \\"smart\\"
-                            }
-                        }
-                    }
-                }
+                \\"param0\\": true,
+                \\"param1\\": \\"abc\\",
+                \\"param2\\": true,
+                \\"param3\\": \\"smart\\"
             }"
         `);
     });

@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -72,7 +72,7 @@ describe("Cypher relationship", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor)   | this_topActor { .name } ]) } as this"
         `);
 
@@ -97,7 +97,7 @@ describe("Cypher relationship", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor)   | this_actors { .name } ] } as this"
         `);
 
@@ -125,7 +125,7 @@ describe("Cypher relationship", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor)   | this_topActor { .name, movies: [ (this_topActor)-[:ACTED_IN]->(this_topActor_movies:Movie)   | this_topActor_movies { .title } ] } ]) } as this"
         `);
 
@@ -153,16 +153,16 @@ describe("Cypher relationship", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
-            RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor)  WHERE this_topActor.name = $this_topActor_name | this_topActor { .name, movies: [ (this_topActor)-[:ACTED_IN]->(this_topActor_movies:Movie)  WHERE this_topActor_movies.title = $this_topActor_movies_title | this_topActor_movies { .title } ] } ]) } as this"
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
+            RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor)  WHERE this_topActor.name = $this_topActor_param0 | this_topActor { .name, movies: [ (this_topActor)-[:ACTED_IN]->(this_topActor_movies:Movie)  WHERE this_topActor_movies.title = $this_topActor_movies_param0 | this_topActor_movies { .title } ] } ]) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"some title\\",
-                \\"this_topActor_movies_title\\": \\"top actor movie\\",
-                \\"this_topActor_name\\": \\"top actor\\"
+                \\"param0\\": \\"some title\\",
+                \\"this_topActor_movies_param0\\": \\"top actor movie\\",
+                \\"this_topActor_param0\\": \\"top actor\\"
             }"
         `);
     });

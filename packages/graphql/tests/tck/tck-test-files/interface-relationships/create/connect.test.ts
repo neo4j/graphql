@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
@@ -101,28 +101,30 @@ describe("Interface Relationships - Create connect", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect0_node:Movie)
-            	WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_title_STARTS_WITH
-            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this0_actedIn_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_param0
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_actedIn_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
             SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             UNION
             	WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect0_node:Series)
-            	WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_title_STARTS_WITH
-            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this0_actedIn_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_param0
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_actedIn_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
             SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN this0
             }
+            WITH this0
+            CALL {
             WITH this0
             CALL {
             WITH this0
@@ -133,7 +135,8 @@ describe("Interface Relationships - Create connect", () => {
             MATCH (this0)-[:ACTED_IN]->(this0_Series:Series)
             RETURN { __resolveType: \\"Series\\", episodes: this0_Series.episodes, title: this0_Series.title } AS actedIn
             }
-            WITH this0, collect(actedIn) AS actedIn
+            RETURN collect(actedIn) AS actedIn
+            }
             RETURN [
             this0 { .name, actedIn: actedIn }] AS data"
         `);
@@ -141,7 +144,7 @@ describe("Interface Relationships - Create connect", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_name\\": \\"Actor Name\\",
-                \\"this0_actedIn_connect0_node_title_STARTS_WITH\\": \\"The \\",
+                \\"this0_actedIn_connect0_node_param0\\": \\"The \\",
                 \\"this0_actedIn_connect0_relationship_screenTime\\": {
                     \\"low\\": 90,
                     \\"high\\": 0

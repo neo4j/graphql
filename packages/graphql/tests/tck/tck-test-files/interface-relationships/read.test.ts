@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -83,7 +83,9 @@ describe("Interface Relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
+            WITH this
+            CALL {
             WITH this
             CALL {
             WITH this
@@ -94,7 +96,8 @@ describe("Interface Relationships", () => {
             MATCH (this)-[:ACTED_IN]->(this_Series:Series)
             RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
-            WITH this, collect(actedIn) AS actedIn
+            RETURN collect(actedIn) AS actedIn
+            }
             RETURN this { actedIn: actedIn } as this"
         `);
 
@@ -124,7 +127,7 @@ describe("Interface Relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             WITH this
             CALL {
             WITH this
@@ -164,7 +167,9 @@ describe("Interface Relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
+            WITH this
+            CALL {
             WITH this
             CALL {
             WITH this
@@ -175,7 +180,8 @@ describe("Interface Relationships", () => {
             MATCH (this)-[:ACTED_IN]->(this_Series:Series)
             RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
-            WITH this, collect(actedIn) AS actedIn
+            RETURN collect(actedIn) AS actedIn
+            }
             RETURN this { actedIn: apoc.coll.sortMulti(actedIn, ['title'])[5..15] } as this"
         `);
 
@@ -202,7 +208,9 @@ describe("Interface Relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
+            WITH this
+            CALL {
             WITH this
             CALL {
             WITH this
@@ -210,7 +218,8 @@ describe("Interface Relationships", () => {
             WHERE this_Movie.title STARTS WITH $this_actedIn.args.where._on.Movie.title_STARTS_WITH
             RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
             }
-            WITH this, collect(actedIn) AS actedIn
+            RETURN collect(actedIn) AS actedIn
+            }
             RETURN this { actedIn: actedIn } as this"
         `);
 
@@ -254,7 +263,9 @@ describe("Interface Relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
+            WITH this
+            CALL {
             WITH this
             CALL {
             WITH this
@@ -267,7 +278,8 @@ describe("Interface Relationships", () => {
             WHERE this_Series.title STARTS WITH $this_actedIn.args.where.title_STARTS_WITH
             RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
-            WITH this, collect(actedIn) AS actedIn
+            RETURN collect(actedIn) AS actedIn
+            }
             RETURN this { actedIn: actedIn } as this"
         `);
 
@@ -317,7 +329,7 @@ describe("Interface Relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             CALL {
             WITH this
             CALL {
@@ -332,7 +344,9 @@ describe("Interface Relationships", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
             RETURN this { actedInConnection } as this"
         `);
@@ -368,7 +382,7 @@ describe("Interface Relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             CALL {
             WITH this
             CALL {
@@ -385,7 +399,9 @@ describe("Interface Relationships", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
             RETURN this { actedInConnection } as this"
         `);
@@ -438,7 +454,7 @@ describe("Interface Relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             CALL {
             WITH this
             CALL {
@@ -449,7 +465,9 @@ describe("Interface Relationships", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
             RETURN this { actedInConnection } as this"
         `);
@@ -512,7 +530,7 @@ describe("Interface Relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             CALL {
             WITH this
             CALL {
@@ -529,7 +547,9 @@ describe("Interface Relationships", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
             RETURN this { actedInConnection } as this"
         `);

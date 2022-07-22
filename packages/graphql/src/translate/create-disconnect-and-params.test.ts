@@ -18,8 +18,8 @@
  */
 
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import { Neo4jGraphQL } from "../classes";
-import { Context } from "../types";
+import type { Neo4jGraphQL } from "../classes";
+import type { Context } from "../types";
 import { trimmer } from "../utils";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { RelationshipQueryDirectionOption } from "../constants";
@@ -105,18 +105,18 @@ describe("createDisconnectAndParams", () => {
                 WITH this
                 OPTIONAL MATCH (this)-[this0_rel:SIMILAR]->(this0:Movie)
                 WHERE this0.title = $this[0].where.node.title
-                FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END | DELETE this0_rel )
+                FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END | DELETE this0_rel )
 
                 WITH this, this0
                 CALL {
                     WITH this, this0
                     OPTIONAL MATCH (this0)-[this0_similarMovies0_rel:SIMILAR]->(this0_similarMovies0:Movie)
                     WHERE this0_similarMovies0.title = $this[0].disconnect.similarMovies[0].where.node.title
-                    FOREACH(_ IN CASE this0_similarMovies0 WHEN NULL THEN [] ELSE [1] END | DELETE this0_similarMovies0_rel )
-                    RETURN count(*)
+                    FOREACH(_ IN CASE WHEN this0_similarMovies0 IS NULL THEN [] ELSE [1] END | DELETE this0_similarMovies0_rel )
+                    RETURN count(*) AS _
                 }
 
-                RETURN count(*)
+                RETURN count(*) AS _
             }
             `)
         );

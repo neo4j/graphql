@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { Node, Relationship } from "../classes";
-import { Context } from "../types";
+import type { Node, Relationship } from "../classes";
+import type { Context } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
@@ -144,7 +144,7 @@ function createDeleteAndParams({
                         const quote = insideDoWhen ? `\\"` : `"`;
                         res.strs.push(`WITH ${[...withVars, _varName].join(", ")}`);
                         res.strs.push(
-                            `CALL apoc.util.validate(NOT(${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
+                            `CALL apoc.util.validate(NOT (${allowAuth[0]}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
                         );
                         res.params = { ...res.params, ...allowAuth[1] };
                     }

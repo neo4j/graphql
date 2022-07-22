@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
@@ -62,7 +62,7 @@ describe("Cypher pagination tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN this { .title } as this
             SKIP $this_offset"
         `);
@@ -92,7 +92,7 @@ describe("Cypher pagination tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN this { .title } as this
             LIMIT $this_limit"
         `);
@@ -122,7 +122,7 @@ describe("Cypher pagination tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN this { .title } as this
             SKIP $this_offset
             LIMIT $this_limit"
@@ -158,7 +158,7 @@ describe("Cypher pagination tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN this { .title } as this
             SKIP $this_offset
             LIMIT $this_limit"
@@ -194,8 +194,8 @@ describe("Cypher pagination tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             RETURN this { .title } as this
             SKIP $this_offset
             LIMIT $this_limit"
@@ -203,7 +203,7 @@ describe("Cypher pagination tests", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"some title\\",
+                \\"param0\\": \\"some title\\",
                 \\"this_offset\\": {
                     \\"low\\": 2,
                     \\"high\\": 0

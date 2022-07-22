@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import { graphql, GraphQLSchema } from "graphql";
-import { Driver } from "neo4j-driver";
-import neo4j from "../neo4j";
+import type { GraphQLSchema } from "graphql";
+import { graphql } from "graphql";
+import type { Driver } from "neo4j-driver";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 
@@ -30,9 +31,11 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
 
     let schema: GraphQLSchema;
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const typeDefs = `
             type ${seriesType.name} {
@@ -62,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
     });
 
     beforeEach(async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
         await session.run(
             `CREATE (:${manufacturerType.name} {name: "C", id: "a"})<-[:MANUFACTURER {current: true}]-(:${seriesType.name} {name: "123", current: true})-[:BRAND {current: true}]->(:${brandType.name} {name: "smart"})<-[:BRAND {current: true}]-(:${seriesType.name} {name: "456", current: true})-[:MANUFACTURER {current: false}]->(:${manufacturerType.name} {name: "AM"})`
         );
@@ -70,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
     });
 
     afterEach(async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         await session.run(`MATCH (s:${seriesType.name}) DETACH DELETE s`);
         await session.run(`MATCH (b:${brandType.name}) DETACH DELETE b`);
@@ -112,9 +115,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         const res = await graphql({
             schema,
             source: query,
-            contextValue: {
-                driver,
-            },
+            contextValue: neo4j.getContextValues(),
             variableValues: {
                 where: {
                     current: true,

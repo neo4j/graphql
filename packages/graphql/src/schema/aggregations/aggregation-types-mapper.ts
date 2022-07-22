@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
-import { numericalResolver, idResolver } from "../resolvers";
+import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import { idResolver } from "../resolvers/field/id";
+import { numericalResolver } from "../resolvers/field/numerical";
 
 export class AggregationTypesMapper {
     private requiredAggregationSelectionTypes: Record<string, ObjectTypeComposer<unknown, unknown>>;

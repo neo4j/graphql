@@ -17,13 +17,15 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLAuthenticationError, Node } from "../classes";
-import { AuthOperations, BaseField, AuthRule, BaseAuthRule, Context } from "../types";
+import type { Node } from "../classes";
+import { Neo4jGraphQLAuthenticationError } from "../classes";
+import type { AuthOperations, BaseField, AuthRule, BaseAuthRule, Context } from "../types";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import mapToDbProperty from "../utils/map-to-db-property";
 import joinPredicates, { isPredicateJoin, PREDICATE_JOINS } from "../utils/join-predicates";
 import ContextParser from "../utils/context-parser";
-import { isString, asArray, haveSharedElement } from "../utils/utils";
+import { isString } from "../utils/utils";
+import { NodeAuth } from "../classes/NodeAuth";
 
 interface Res {
     strs: string[];
@@ -47,7 +49,7 @@ function createRolesStr({ roles, escapeQuotes }: { roles: string[]; escapeQuotes
 
     const joined = roles.map((r) => `${quote}${r}${quote}`).join(", ");
 
-    return `ANY(r IN [${joined}] WHERE ANY(rr IN $auth.roles WHERE r = rr))`;
+    return `any(r IN [${joined}] WHERE any(rr IN $auth.roles WHERE r = rr))`;
 }
 
 function createAuthPredicate({
@@ -133,9 +135,9 @@ function createAuthPredicate({
                 const relationVarName = relationField.fieldName;
                 const labels = refNode.getLabelString(context);
                 let resultStr = [
-                    `EXISTS((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
+                    `exists((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
                     `AND ${
-                        kind === "allow" ? "ANY" : "ALL"
+                        kind === "allow" ? "any" : "all"
                     }(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}${labels}) | ${relationVarName}] WHERE `,
                 ].join(" ");
 
@@ -191,15 +193,9 @@ function createAuthAndParams({
         return ["", {}];
     }
 
-    let authRules: AuthRule[] = [];
-    if (operations) {
-        const operationsList = asArray(operations);
-        authRules = entity?.auth.rules.filter(
-            (r) => !r.operations || haveSharedElement(operationsList, r.operations || [])
-        );
-    } else {
-        authRules = entity?.auth.rules;
-    }
+    /** FIXME: this is required to keep compatibility with BaseField type */
+    const nodeAuth = new NodeAuth(entity.auth);
+    const authRules = nodeAuth.getRules(operations);
 
     const hasWhere = (rule: BaseAuthRule): boolean =>
         !!(rule.where || rule.AND?.some(hasWhere) || rule.OR?.some(hasWhere));
@@ -227,7 +223,7 @@ function createAuthAndParams({
         const quotes = escapeQuotes ? '\\"' : '"';
         if (!skipIsAuthenticated && (authRule.isAuthenticated === true || authRule.isAuthenticated === false)) {
             thisPredicates.push(
-                `apoc.util.validatePredicate(NOT($auth.isAuthenticated = ${Boolean(
+                `apoc.util.validatePredicate(NOT ($auth.isAuthenticated = ${Boolean(
                     authRule.isAuthenticated
                 )}), ${quotes}${AUTH_UNAUTHENTICATED_ERROR}${quotes}, [0])`
             );

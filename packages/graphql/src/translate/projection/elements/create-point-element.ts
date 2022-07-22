@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
-import { PointField } from "../../../types";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { PointField } from "../../../types";
 
 function createPointElement({
     resolveTree,
@@ -51,7 +51,7 @@ function createPointElement({
 
     const cypher = [
         "apoc.cypher.runFirstColumn(",
-        `'RETURN\nCASE ${variable}.${dbFieldName} IS NOT NULL\n\tWHEN true THEN ${projection}\n\tELSE NULL\nEND AS result',`,
+        `'RETURN\nCASE\n\tWHEN ${variable}.${dbFieldName} IS NOT NULL THEN ${projection}\n\tELSE NULL\nEND AS result',`,
         `{ ${variable}: ${variable} },`,
         "false",
         ")",

@@ -18,9 +18,9 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 
@@ -29,9 +29,11 @@ import { createJwtRequest } from "../../utils/create-jwt-request";
 describe("unauthenticated-requests", () => {
     const secret = "secret";
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -69,7 +71,7 @@ describe("unauthenticated-requests", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, req },
+            contextValue: neo4j.getContextValues({ req }),
         });
 
         expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -106,7 +108,7 @@ describe("unauthenticated-requests", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, req },
+            contextValue: neo4j.getContextValues({ req }),
         });
 
         expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
@@ -145,7 +147,7 @@ describe("unauthenticated-requests", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, req },
+            contextValue: neo4j.getContextValues({ req }),
         });
 
         expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");

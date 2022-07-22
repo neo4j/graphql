@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { RelationshipWhereOperator, WhereOperator } from "./types";
+import type { RelationshipWhereOperator, WhereOperator } from "./types";
 
 export const comparisonMap: Record<Exclude<WhereOperator, RelationshipWhereOperator>, string> = {
     NOT: "=",
@@ -45,26 +45,27 @@ export const comparisonMap: Record<Exclude<WhereOperator, RelationshipWhereOpera
 };
 
 export const whereRegEx =
-    /(?<fieldName>[_A-Za-z]\w*?)(?<isAggregate>Aggregate)?(?:_(?<operator>NOT|NOT_IN|IN|NOT_INCLUDES|INCLUDES|MATCHES|NOT_CONTAINS|CONTAINS|NOT_STARTS_WITH|STARTS_WITH|NOT_ENDS_WITH|ENDS_WITH|LT|LTE|GT|GTE|DISTANCE|ALL|NONE|SINGLE|SOME))?$/;
+    /(?<prefix>\w*\.)?(?<fieldName>[_A-Za-z]\w*?)(?<isAggregate>Aggregate)?(?:_(?<operator>NOT|NOT_IN|IN|NOT_INCLUDES|INCLUDES|MATCHES|NOT_CONTAINS|CONTAINS|NOT_STARTS_WITH|STARTS_WITH|NOT_ENDS_WITH|ENDS_WITH|LT|LTE|GT|GTE|DISTANCE|ALL|NONE|SINGLE|SOME))?$/;
 export type WhereRegexGroups = {
     fieldName: string;
     isAggregate?: string;
     operator?: WhereOperator;
+    prefix?: string;
 };
 
-type ListPredicate = "ALL" | "NONE" | "SINGLE" | "ANY";
+export type ListPredicate = "all" | "none" | "single" | "any";
 
 export const getListPredicate = (operator?: WhereOperator): ListPredicate => {
     switch (operator) {
         case "ALL":
-            return "ALL";
+            return "all";
         case "NOT":
         case "NONE":
-            return "NONE";
+            return "none";
         case "SINGLE":
-            return "SINGLE";
+            return "single";
         case "SOME":
         default:
-            return "ANY";
+            return "any";
     }
 };

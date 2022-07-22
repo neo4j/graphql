@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import createAuthAndParams from "../create-auth-and-params";
-import { Context } from "../../types";
-import { Node } from "../../classes";
+import type { Context } from "../../types";
+import type { Node } from "../../classes";
 
 export type AggregationAuth = {
     query: string;
@@ -77,7 +77,7 @@ function getAllowAuth({
 
     if (allowAuth[0]) {
         return {
-            queries: [`CALL apoc.util.validate(NOT(${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`],
+            queries: [`CALL apoc.util.validate(NOT (${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`],
             params: allowAuth[1],
         };
     }
@@ -150,7 +150,7 @@ function getFieldAuth({
 
     if (authStrs.length > 0) {
         return {
-            queries: [`CALL apoc.util.validate(NOT(${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`],
+            queries: [`CALL apoc.util.validate(NOT (${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`],
             params: authParams,
         };
     }

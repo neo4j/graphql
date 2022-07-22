@@ -18,19 +18,21 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("auth/allow", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     const secret = "secret";
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -39,7 +41,7 @@ describe("auth/allow", () => {
 
     describe("read", () => {
         test("should throw forbidden when reading a node with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -80,7 +82,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -90,7 +92,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw forbidden when reading a property with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -133,7 +135,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -143,7 +145,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw forbidden when reading a nested property with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Post {
@@ -197,7 +199,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -207,7 +209,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw forbidden when reading a nested property with invalid allow (using connections)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Post {
@@ -265,7 +267,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -275,7 +277,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw forbidden when reading a node with invalid allow (across a single relationship)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Post {
@@ -331,7 +333,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -341,7 +343,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw forbidden when reading a node with invalid allow (across a single relationship)(using connections)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Post {
@@ -401,7 +403,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -411,7 +413,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw forbidden when reading a node with invalid allow (across multi relationship)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Comment {
@@ -481,7 +483,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -493,7 +495,7 @@ describe("auth/allow", () => {
 
     describe("update", () => {
         test("should throw Forbidden when editing a node with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -537,7 +539,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -547,7 +549,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw Forbidden when editing a property with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -593,7 +595,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -603,7 +605,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw Forbidden when editing a nested node with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Post {
@@ -659,7 +661,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -669,7 +671,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw Forbidden when editing a nested node property with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type Post {
@@ -727,7 +729,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -739,7 +741,7 @@ describe("auth/allow", () => {
 
     describe("delete", () => {
         test("should throw Forbidden when deleting a node with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -782,7 +784,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -792,7 +794,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw Forbidden when deleting a nested node with invalid allow", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -855,7 +857,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -867,7 +869,7 @@ describe("auth/allow", () => {
 
     describe("disconnect", () => {
         test("should throw Forbidden when disconnecting a node with invalid allow", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Post {
@@ -923,7 +925,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -933,7 +935,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw Forbidden when disconnecting a nested node with invalid allow", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Comment {
@@ -1012,7 +1014,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -1024,7 +1026,7 @@ describe("auth/allow", () => {
 
     describe("connect", () => {
         test("should throw Forbidden when connecting a node with invalid allow", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Post {
@@ -1081,7 +1083,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
@@ -1091,7 +1093,7 @@ describe("auth/allow", () => {
         });
 
         test("should throw Forbidden when connecting a nested node with invalid allow", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Comment {
@@ -1169,7 +1171,7 @@ describe("auth/allow", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");

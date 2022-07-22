@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
@@ -61,15 +61,16 @@ describe("Undirected connections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:User)
-CALL {
-WITH this
-MATCH (this)-[this_friends_with_relationship:FRIENDS_WITH]-(this_user:User)
-WITH collect({  }) AS edges
-RETURN { totalCount: size(edges) } AS friendsConnection
-}
-RETURN this { friendsConnection } as this"
-`);
+            "MATCH (this:\`User\`)
+            CALL {
+            WITH this
+            MATCH (this)-[this_friends_with_relationship:FRIENDS_WITH]-(this_user:User)
+            WITH collect({  }) AS edges
+            WITH size(edges) AS totalCount
+            RETURN { totalCount: totalCount } AS friendsConnection
+            }
+            RETURN this { friendsConnection } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });

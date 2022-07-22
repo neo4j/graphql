@@ -17,17 +17,19 @@
  * limitations under the License.
  */
 
-import { Driver, DateTime } from "neo4j-driver";
+import type { Driver, DateTime } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 
 describe("timestamp/datetime", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -36,7 +38,7 @@ describe("timestamp/datetime", () => {
 
     describe("create", () => {
         test("should create a movie (with timestamps)", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Movie {
@@ -67,7 +69,7 @@ describe("timestamp/datetime", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -90,7 +92,7 @@ describe("timestamp/datetime", () => {
         });
 
         test("create timestamp on relationship property", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Actor {
@@ -139,7 +141,7 @@ describe("timestamp/datetime", () => {
                 const result = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { title, name },
                 });
 
@@ -156,7 +158,7 @@ describe("timestamp/datetime", () => {
 
     describe("update", () => {
         test("should update a movie (with timestamps)", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Movie {
@@ -191,7 +193,7 @@ describe("timestamp/datetime", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -214,7 +216,7 @@ describe("timestamp/datetime", () => {
         });
 
         test("update timestamp on relationship property", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Actor {
@@ -269,7 +271,7 @@ describe("timestamp/datetime", () => {
                 const result = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: update,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { title },
                 });
 
@@ -286,7 +288,7 @@ describe("timestamp/datetime", () => {
 
     describe("create/update (explicit)", () => {
         test("should create a movie (with timestamps)", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Movie {
@@ -317,7 +319,7 @@ describe("timestamp/datetime", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -340,7 +342,7 @@ describe("timestamp/datetime", () => {
         });
 
         test("create timestamp on relationship property", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Actor {
@@ -389,7 +391,7 @@ describe("timestamp/datetime", () => {
                 const result = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { title, name },
                 });
 
@@ -404,7 +406,7 @@ describe("timestamp/datetime", () => {
         });
 
         test("update timestamp on relationship property", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Actor {
@@ -459,7 +461,7 @@ describe("timestamp/datetime", () => {
                 const result = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: update,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { title },
                 });
 
@@ -474,7 +476,7 @@ describe("timestamp/datetime", () => {
         });
 
         test("should update a movie (with timestamps)", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Movie {
@@ -509,7 +511,7 @@ describe("timestamp/datetime", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -534,7 +536,7 @@ describe("timestamp/datetime", () => {
 
     describe("create/update (implicit)", () => {
         test("should create a movie (with timestamps)", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Movie {
@@ -565,7 +567,7 @@ describe("timestamp/datetime", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -588,7 +590,7 @@ describe("timestamp/datetime", () => {
         });
 
         test("create timestamp on relationship property", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Actor {
@@ -637,7 +639,7 @@ describe("timestamp/datetime", () => {
                 const result = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { title, name },
                 });
 
@@ -652,7 +654,7 @@ describe("timestamp/datetime", () => {
         });
 
         test("update timestamp on relationship property", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Actor {
@@ -707,7 +709,7 @@ describe("timestamp/datetime", () => {
                 const result = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: update,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { title },
                 });
 
@@ -722,7 +724,7 @@ describe("timestamp/datetime", () => {
         });
 
         test("should update a movie (with timestamps)", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type Movie {
@@ -757,7 +759,7 @@ describe("timestamp/datetime", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();

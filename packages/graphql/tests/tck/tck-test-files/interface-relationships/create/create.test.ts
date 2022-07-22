@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
@@ -111,6 +111,8 @@ describe("Interface Relationships - Create create", () => {
             WITH this0
             CALL {
             WITH this0
+            CALL {
+            WITH this0
             MATCH (this0)-[:ACTED_IN]->(this0_Movie:Movie)
             RETURN { __resolveType: \\"Movie\\", runtime: this0_Movie.runtime, title: this0_Movie.title } AS actedIn
             UNION
@@ -118,7 +120,8 @@ describe("Interface Relationships - Create create", () => {
             MATCH (this0)-[:ACTED_IN]->(this0_Series:Series)
             RETURN { __resolveType: \\"Series\\", episodes: this0_Series.episodes, title: this0_Series.title } AS actedIn
             }
-            WITH this0, collect(actedIn) AS actedIn
+            RETURN collect(actedIn) AS actedIn
+            }
             RETURN [
             this0 { .name, actedIn: actedIn }] AS data"
         `);

@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
@@ -61,15 +61,15 @@ describe("Cypher Where Aggregations with @node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`_Post\`:\`additionalPost\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:\`_User\`:\`additionalUser\`)
-            RETURN size(this_likesAggregate_node.someName) > $this_likesAggregate_node_someName_GT
-            \\", { this: this, this_likesAggregate_node_someName_GT: $this_likesAggregate_node_someName_GT }, false )
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:\`_User\`:\`additionalUser\`)
+            RETURN size(aggr_node.someName) > $aggr_node_someName_GT
+            \\", { this: this, aggr_node_someName_GT: $aggr_node_someName_GT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someName_GT\\": {
+                \\"aggr_node_someName_GT\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
                 }

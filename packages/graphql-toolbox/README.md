@@ -1,6 +1,6 @@
 # @neo4j/graphql-toolbox
 
-Experiment with your Neo4j GraphQL API on Neo4j Desktop.
+Experiment with your Neo4j GraphQL API.
 
 <p align="center">
   <a href="https://badge.fury.io/js/%40neo4j%2Fgraphql-toolbox">
@@ -25,14 +25,6 @@ Experiment with your Neo4j GraphQL API on Neo4j Desktop.
 3. Build Neo4j GraphQL schema
 4. Experiment and play
 
-## Installation
-
-This application is distributed via NPM. The NPM package contains a static bundle that you could serve over HTTP or use the Neo4j Graph app instructions.
-
-Follow this guide to install the Neo4j GraphQL Toolbox from NPM in Neo4j Desktop:
-
-https://neo4j.com/developer/graph-apps/#_installation_from_package_managers_npm
-
 ## Devleopment
 
 On the `root` of the project, install the dependencies.
@@ -52,6 +44,20 @@ Run this command to start the development server. See the output in the console 
 ```
 yarn start
 ```
+
+## GraphQL Toolbox URL parameters
+
+The GraphQL Toolbox supports some URL parameters defined in the query string, see below. These URL parameters are optional and can be provided for convenience.
+The query string is preceded by a question mark (?) and contains key-value pairs separated by an ampersand (&).
+
+| URL parameter | Description                                                                                                                                            | Example                     |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------- |
+| connectURL    | Form: scheme://username@bolt-url:port; Used at login, pre-populates the Username and Connection URI input field with the provided value                | bolt://admin@localhost:7687 |
+| db            | Only applicable for multi-database supported Neo4j DBMSs. The provided value is used as the selected database name. This will be applied _after_ login | neo4j                       |
+
+An example with the URL parameters `connectURL` and `db`: `http://localhost:4242?connectURL=bolt%2Bs://testuser@xxxx.databases.neo4j.io&db=mydatabase`. This will pre-fill the login window input fields `Username` with `testuser` and `Connect URI` with `bolt+s://xxxx.databases.neo4j.io`. After a successful login, the selected database will be set according to the provided `db` parameter.
+
+Note: The plus symbol (+) in the connectURL needs to be URL encoded to become `%2B`. For example `bolt+s` becomes `bolt%2Bs`.
 
 ## Licence
 

@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, valueFromASTUntyped } from "graphql";
+import type { DirectiveNode} from "graphql";
+import { valueFromASTUntyped } from "graphql";
 import { NodeDirective } from "../classes/NodeDirective";
 
 function parseNodeDirective(nodeDirective: DirectiveNode | undefined) {

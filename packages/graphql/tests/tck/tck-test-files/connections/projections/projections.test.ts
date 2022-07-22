@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
@@ -78,20 +78,21 @@ describe("Relay Cursor Connection projections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WITH collect({  }) AS edges
-            RETURN { totalCount: size(edges) } AS actorsConnection
+            WITH size(edges) AS totalCount
+            RETURN { totalCount: totalCount } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
     });
@@ -119,20 +120,21 @@ describe("Relay Cursor Connection projections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WITH collect({  }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            WITH edges, size(edges) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
     });
@@ -155,8 +157,8 @@ describe("Relay Cursor Connection projections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
@@ -169,7 +171,7 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
     });
@@ -192,8 +194,8 @@ describe("Relay Cursor Connection projections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            WHERE this.name = $this_name
+            "MATCH (this:\`Actor\`)
+            WHERE this.name = $param0
             CALL {
             WITH this
             CALL {
@@ -208,14 +210,15 @@ describe("Relay Cursor Connection projections", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { totalCount: size(edges) } AS productionsConnection
+            WITH size(edges) AS totalCount
+            RETURN { totalCount: totalCount } AS productionsConnection
             }
             RETURN this { .name, productionsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_name\\": \\"Tom Hanks\\"
+                \\"param0\\": \\"Tom Hanks\\"
             }"
         `);
     });
@@ -243,8 +246,8 @@ describe("Relay Cursor Connection projections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            WHERE this.name = $this_name
+            "MATCH (this:\`Actor\`)
+            WHERE this.name = $param0
             CALL {
             WITH this
             CALL {
@@ -259,14 +262,15 @@ describe("Relay Cursor Connection projections", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS productionsConnection
+            WITH edges, size(edges) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS productionsConnection
             }
             RETURN this { .name, productionsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_name\\": \\"Tom Hanks\\"
+                \\"param0\\": \\"Tom Hanks\\"
             }"
         `);
     });
@@ -294,20 +298,22 @@ describe("Relay Cursor Connection projections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WITH collect({ node: { name: this_actor.name } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
     });
@@ -335,8 +341,8 @@ describe("Relay Cursor Connection projections", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
@@ -349,7 +355,7 @@ describe("Relay Cursor Connection projections", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\"
+                \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
     });

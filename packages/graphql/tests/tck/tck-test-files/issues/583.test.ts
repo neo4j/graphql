@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -86,7 +86,9 @@ describe("#583", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
+            WITH this
+            CALL {
             WITH this
             CALL {
             WITH this
@@ -101,7 +103,8 @@ describe("#583", () => {
             MATCH (this)-[:ACTED_IN]->(this_ShortFilm:ShortFilm)
             RETURN { __resolveType: \\"ShortFilm\\", title: this_ShortFilm.title } AS actedIn
             }
-            WITH this, collect(actedIn) AS actedIn
+            RETURN collect(actedIn) AS actedIn
+            }
             RETURN this { .name, actedIn: actedIn } as this"
         `);
 

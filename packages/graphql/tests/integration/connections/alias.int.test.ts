@@ -17,22 +17,24 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { gql } from "apollo-server";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("Connections Alias", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     const typeMovie = generateUniqueType("Movie");
     const typeActor = generateUniqueType("Actor");
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -41,7 +43,7 @@ describe("Connections Alias", () => {
 
     // using totalCount as the bear minimal selection
     test("should alias top level connection field and return correct totalCount", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = gql`
             type ${typeMovie.name} {
@@ -87,7 +89,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(result.errors).toBeUndefined();
@@ -101,7 +103,7 @@ describe("Connections Alias", () => {
     });
 
     test("should alias totalCount", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = gql`
             type ${typeMovie.name} {
@@ -147,7 +149,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(result.errors).toBeUndefined();
@@ -162,7 +164,7 @@ describe("Connections Alias", () => {
 
     // using hasNextPage as the bear minimal selection
     test("should alias pageInfo top level key", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = gql`
             type ${typeMovie.name} {
@@ -210,7 +212,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(result.errors).toBeUndefined();
@@ -224,7 +226,7 @@ describe("Connections Alias", () => {
     });
 
     test("should alias startCursor", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = gql`
             type ${typeMovie.name} {
@@ -272,7 +274,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(result.errors).toBeUndefined();
@@ -284,7 +286,7 @@ describe("Connections Alias", () => {
     });
 
     test("should alias endCursor", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = gql`
             type ${typeMovie.name} {
@@ -332,7 +334,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(result.errors).toBeUndefined();
@@ -344,7 +346,7 @@ describe("Connections Alias", () => {
     });
 
     test("should alias hasPreviousPage", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = gql`
             type ${typeMovie.name} {
@@ -392,7 +394,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(result.errors).toBeUndefined();
@@ -404,7 +406,7 @@ describe("Connections Alias", () => {
     });
 
     test("should alias hasNextPage", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = gql`
             type ${typeMovie.name} {
@@ -452,7 +454,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(result.errors).toBeUndefined();
@@ -464,7 +466,7 @@ describe("Connections Alias", () => {
     });
 
     test("should alias the top level edges key", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = gql`
             type ${typeMovie.name} {
@@ -512,7 +514,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(result.errors).toBeUndefined();
@@ -524,7 +526,7 @@ describe("Connections Alias", () => {
     });
 
     test("should alias cursor", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = gql`
             type ${typeMovie.name} {
@@ -572,7 +574,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(result.errors).toBeUndefined();
@@ -584,7 +586,7 @@ describe("Connections Alias", () => {
     });
 
     test("should alias the top level node key", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = gql`
             type ${typeMovie.name} {
@@ -634,7 +636,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(result.errors).toBeUndefined();
@@ -646,7 +648,7 @@ describe("Connections Alias", () => {
     });
 
     test("should alias a property on the node", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = gql`
             type ${typeMovie.name} {
@@ -696,7 +698,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(result.errors).toBeUndefined();
@@ -708,7 +710,7 @@ describe("Connections Alias", () => {
     });
 
     test("should alias a property on the relationship", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = gql`
             type ${typeMovie.name} {
@@ -760,7 +762,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(result.errors).toBeUndefined();
@@ -772,7 +774,7 @@ describe("Connections Alias", () => {
     });
 
     test("should alias many keys on a connection", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = gql`
             type ${typeMovie.name} {
@@ -839,7 +841,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(result.errors).toBeUndefined();
@@ -864,7 +866,7 @@ describe("Connections Alias", () => {
     });
 
     test("should allow multiple aliases on the same connection", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeDefs = gql`
             type Post {
@@ -925,7 +927,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(result.errors).toBeUndefined();
@@ -962,7 +964,7 @@ describe("Connections Alias", () => {
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         const schema = await neoSchema.getSchema();
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const query = `
             {
@@ -1007,7 +1009,7 @@ describe("Connections Alias", () => {
             const result = await graphql({
                 schema,
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
             expect(result.errors).toBeUndefined();

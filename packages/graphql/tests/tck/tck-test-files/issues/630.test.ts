@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -72,13 +72,14 @@ describe("Cypher directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             RETURN this { movies: [this_movies IN apoc.cypher.runFirstColumn(\\"MATCH (m:Movie {title: $title})
             RETURN m\\", {this: this, auth: $auth, title: $this_movies_title}, true) | this_movies { actorsConnection: apoc.cypher.runFirstColumn(\\"CALL {
             WITH this_movies
             MATCH (this_movies)<-[this_movies_acted_in_relationship:ACTED_IN]-(this_movies_actor:Actor)
             WITH collect({  }) AS edges
-            RETURN { totalCount: size(edges) } AS actorsConnection
+            WITH size(edges) AS totalCount
+            RETURN { totalCount: totalCount } AS actorsConnection
             } RETURN actorsConnection\\", { this_movies: this_movies, auth: $auth }, false) }] } as this"
         `);
 

@@ -17,44 +17,63 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
+import type { Driver, Session } from "neo4j-driver";
+import { graphql, GraphQLSchema } from "graphql";
 import { generate } from "randomstring";
 import { gql } from "apollo-server";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 
 describe("Connections Filtering", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
+    let schema: GraphQLSchema;
+    let session: Session;
+    let actorType: UniqueType;
+    let movieType: UniqueType;
+
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+    });
+
+    beforeEach(async () => {
+        movieType = generateUniqueType("Movie");
+        actorType = generateUniqueType("Actor");
+
+        const typeDefs = gql`
+            type ${movieType} {
+                title: String!
+                actors: [${actorType}!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+
+            type ${actorType} {
+                name: String!
+                movies: [${movieType}!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+        schema = await neoSchema.getSchema();
+        session = await neo4j.getSession();
+    });
+
+    afterEach(async () => {
+        await session.close();
     });
 
     afterAll(async () => {
         await driver.close();
     });
+
     test("should allow where clause on relationship property of node", async () => {
-        const movieTitle = generate({ charset: "alphabetic" });
-        const actorOneName = generate({ charset: "alphabetic" });
-        const actorTwoName = generate({ charset: "alphabetic" });
-
-        const typeDefs = gql`
-            type Movie {
-                title: String!
-                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
-            }
-
-            type Actor {
-                name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
-            }
-        `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
-        const schema = await neoSchema.getSchema();
+        const movieTitle = "My title";
+        const actorOneName = "Arthur";
+        const actorTwoName = "Zaphod";
 
         const query = `
 			query ($movieTitle: String!) {
-				movies(where: { title: $movieTitle }) {
+				${movieType.plural}(where: { title: $movieTitle }) {
 					actorsConnection(where: {node: {movies: { title: $movieTitle } } }) {
 						edges {
 							node {
@@ -66,38 +85,88 @@ describe("Connections Filtering", () => {
 			}
 		`;
 
-        const session = driver.session();
-        try {
-            await session.run(
-                `
-					CREATE (movie:Movie {title: $movieTitle})
-					CREATE (actorOne:Actor {name: $actorOneName})
-					CREATE (actorTwo:Actor {name: $actorTwoName})
+        await session.run(
+            `
+					CREATE (movie:${movieType} {title: $movieTitle})
+					CREATE (actorOne:${actorType} {name: $actorOneName})
+					CREATE (actorTwo:${actorType} {name: $actorTwoName})
 					CREATE (actorOne)-[:ACTED_IN]->(movie)<-[:ACTED_IN]-(actorTwo)
                 `,
-                {
-                    movieTitle,
-                    actorOneName,
-                    actorTwoName,
-                }
-            );
-            const result = await graphql({
-                schema,
-                source: query,
-                contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
-                variableValues: {
-                    movieTitle,
+            {
+                movieTitle,
+                actorOneName,
+                actorTwoName,
+            }
+        );
+        const result = await graphql({
+            schema,
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            variableValues: {
+                movieTitle,
+            },
+        });
+        expect(result.errors).toBeFalsy();
+        expect((result?.data as any)?.[movieType.plural][0].actorsConnection.edges).toContainEqual({
+            node: { name: actorOneName },
+        });
+        expect((result?.data as any)?.[movieType.plural][0].actorsConnection.edges).toContainEqual({
+            node: { name: actorTwoName },
+        });
+    });
+
+    it("allows for OR boolean operators on nested connections filters", async () => {
+        const movieTitle = "My title";
+        const actor1Name = "Arthur";
+        const actor2Name = "Zaphod";
+
+        const query = `
+			query {
+				${movieType.plural} (where: {actorsConnection: { OR: [{ node: { name: "${actor1Name}" } }, { node: { name: "${actor2Name}" } }]}}){
+                    actorsConnection {
+						edges {
+							node {
+								name
+							}
+						}
+					}
+				}
+			}
+		`;
+
+        await session.run(
+            `
+					CREATE (movie:${movieType} {title: $movieTitle})
+					CREATE (actorOne:${actorType} {name: $actor1Name})
+					CREATE (actorTwo:${actorType} {name: $actor2Name})
+					CREATE (actorOne)-[:ACTED_IN]->(movie)<-[:ACTED_IN]-(actorTwo)
+                `,
+            {
+                actor1Name,
+                actor2Name,
+                movieTitle,
+            }
+        );
+        const result = await graphql({
+            schema,
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+        expect(result.errors).toBeFalsy();
+        expect((result?.data as any)?.[movieType.plural][0].actorsConnection.edges).toHaveLength(2);
+        expect((result?.data as any)?.[movieType.plural]).toEqual([
+            {
+                actorsConnection: {
+                    edges: expect.arrayContaining([
+                        {
+                            node: { name: actor1Name },
+                        },
+                        {
+                            node: { name: actor2Name },
+                        },
+                    ]),
                 },
-            });
-            expect(result.errors).toBeFalsy();
-            expect((result?.data as any)?.movies[0].actorsConnection.edges).toContainEqual({
-                node: { name: actorOneName },
-            });
-            expect((result?.data as any)?.movies[0].actorsConnection.edges).toContainEqual({
-                node: { name: actorTwoName },
-            });
-        } finally {
-            await session.close();
-        }
+            },
+        ]);
     });
 });

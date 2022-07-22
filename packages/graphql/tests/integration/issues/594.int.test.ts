@@ -19,13 +19,14 @@
 
 import { gql } from "apollo-server";
 import { graphql } from "graphql";
-import { Driver, Session } from "neo4j-driver";
-import neo4j from "../neo4j";
+import type { Driver, Session } from "neo4j-driver";
+import Neo4j from "../neo4j";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("https://github.com/neo4j/graphql/issues/594", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
     let neoSchema: Neo4jGraphQL;
 
@@ -33,7 +34,8 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
     const typePerson = generateUniqueType("Person");
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
         const typeDefs = gql`
             type ${typeMovie.name} {
                 title: String!
@@ -49,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
 
         neoSchema = new Neo4jGraphQL({ typeDefs });
         try {
-            session = driver.session();
+            session = await neo4j.getSession();
             await session.run(`CREATE (:${typeMovie.name} {title: "Cool Movie"})<-[:ACTED_IN]-(:${typePerson.name} {name: "Some Name", nickname: "SName"})
                 CREATE (:${typeMovie.name} {title: "Super Cool Movie"})<-[:ACTED_IN]-(:${typePerson.name} {name: "Super Cool Some Name"})`);
         } finally {
@@ -57,8 +59,8 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
         }
     });
 
-    beforeEach(() => {
-        session = driver.session();
+    beforeEach(async () => {
+        session = await neo4j.getSession();
     });
 
     afterEach(async () => {
@@ -87,15 +89,17 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
         const gqlResult: any = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data[typeMovie.plural]).toHaveLength(2);
-        expect(gqlResult.data[typeMovie.plural]).toEqual([
-            { actorsAggregate: { node: { nickname: { shortest: "SName" } } } },
-            { actorsAggregate: { node: { nickname: { shortest: null } } } },
-        ]);
+        expect(gqlResult.data[typeMovie.plural]).toEqual(
+            expect.arrayContaining([
+                { actorsAggregate: { node: { nickname: { shortest: "SName" } } } },
+                { actorsAggregate: { node: { nickname: { shortest: null } } } },
+            ])
+        );
     });
 
     test("should support nullable fields in aggregations", async () => {
@@ -112,7 +116,7 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
         const gqlResult: any = await graphql({
             schema: await neoSchema.getSchema(),
             source: query,
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();

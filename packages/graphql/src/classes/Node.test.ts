@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import Node, { MutationResponseTypeNames, NodeConstructor, RootTypeFieldNames, SubscriptionEvents } from "./Node";
+import type { MutationResponseTypeNames, NodeConstructor, RootTypeFieldNames, SubscriptionEvents } from "./Node";
+import Node from "./Node";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { NodeDirective } from "./NodeDirective";
@@ -712,6 +713,55 @@ describe("Node", () => {
                 expect(node.subscriptionEventPayloadFieldNames).toStrictEqual(subscriptionEventPayloadFieldNames);
             }
         );
+    });
+
+    describe("global node resolution", () => {
+        test("should return true if it is a global node", () => {
+            const node = new NodeBuilder({
+                name: "Film",
+                primitiveFields: [],
+                isGlobalNode: true,
+                globalIdField: "dbId",
+            }).instance();
+
+            const isGlobalNode = node.isGlobalNode;
+            expect(isGlobalNode).toBe(true);
+        });
+
+        test("should convert the db id to a global relay id with the correct typename", () => {
+            const node = new NodeBuilder({
+                name: "Film",
+                primitiveFields: [],
+                isGlobalNode: true,
+                globalIdField: "title",
+            }).instance();
+
+            const value = "the Matrix";
+
+            const relayId = node.toGlobalId(value);
+
+            expect(relayId).toBe("RmlsbTp0aXRsZTp0aGUgTWF0cml4");
+
+            expect(node.fromGlobalId(relayId)).toEqual({
+                typeName: "Film",
+                field: "title",
+                id: value,
+            });
+        });
+        test("should properly convert a relay id to an object when the id has a colon in the name", () => {
+            const node = new NodeBuilder({
+                name: "Film",
+                primitiveFields: [],
+                isGlobalNode: true,
+                globalIdField: "title",
+            }).instance();
+
+            const value = "2001: A Space Odyssey";
+
+            const relayId = node.toGlobalId(value);
+
+            expect(node.fromGlobalId(relayId)).toMatchObject({ field: "title", typeName: "Film", id: value });
+        });
     });
 
     describe("NodeDirective", () => {

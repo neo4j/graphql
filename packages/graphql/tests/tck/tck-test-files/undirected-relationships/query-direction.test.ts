@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
@@ -66,9 +66,9 @@ describe("QueryDirection in relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:User)
-RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | this_friends { .name } ], directedFriends: [ (this)-[:FRIENDS_WITH]->(this_directedFriends:User)   | this_directedFriends { .name } ] } as this"
-`);
+            "MATCH (this:\`User\`)
+            RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | this_friends { .name } ], directedFriends: [ (this)-[:FRIENDS_WITH]->(this_directedFriends:User)   | this_directedFriends { .name } ] } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -109,9 +109,9 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | t
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:User)
-RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | this_friends { .name } ], undirectedFriends: [ (this)-[:FRIENDS_WITH]-(this_undirectedFriends:User)   | this_undirectedFriends { .name } ] } as this"
-`);
+            "MATCH (this:\`User\`)
+            RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | this_friends { .name } ], undirectedFriends: [ (this)-[:FRIENDS_WITH]-(this_undirectedFriends:User)   | this_undirectedFriends { .name } ] } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -149,9 +149,9 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | 
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:User)
-RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | this_friends { .name } ] } as this"
-`);
+            "MATCH (this:\`User\`)
+            RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | this_friends { .name } ] } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -188,9 +188,9 @@ RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | 
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:User)
-RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | this_friends { .name } ] } as this"
-`);
+            "MATCH (this:\`User\`)
+            RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | this_friends { .name } ] } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });

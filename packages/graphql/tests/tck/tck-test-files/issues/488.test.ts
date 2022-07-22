@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -79,22 +79,14 @@ describe("#488", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Journalist)
-            WHERE EXISTS((this)-[:HAS_KEYWORD]->(:Emoji)) AND ANY(this_keywordsConnection_Emoji_map IN [(this)-[this_keywordsConnection_Emoji_JournalistKeywordsRelationship:HAS_KEYWORD]->(this_keywordsConnection_Emoji:Emoji)  | { node: this_keywordsConnection_Emoji, relationship: this_keywordsConnection_Emoji_JournalistKeywordsRelationship } ] WHERE this_keywordsConnection_Emoji_map.node.type = $this_journalists.where.keywordsConnection.node.type)
+            "MATCH (this:\`Journalist\`)
+            WHERE size([(this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`) WHERE this1.type = $param0 | 1]) > 0
             RETURN this { .name, keywords:  [this_keywords IN [(this)-[:HAS_KEYWORD]->(this_keywords) WHERE (\\"Emoji\\" IN labels(this_keywords)) OR (\\"Hashtag\\" IN labels(this_keywords)) OR (\\"Text\\" IN labels(this_keywords)) | head( [ this_keywords IN [this_keywords] WHERE (\\"Emoji\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Emoji\\",  .id, .type } ] + [ this_keywords IN [this_keywords] WHERE (\\"Hashtag\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Hashtag\\" }  ] + [ this_keywords IN [this_keywords] WHERE (\\"Text\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Text\\" }  ] ) ] WHERE this_keywords IS NOT NULL]  } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_journalists\\": {
-                    \\"where\\": {
-                        \\"keywordsConnection\\": {
-                            \\"node\\": {
-                                \\"type\\": \\"Smile\\"
-                            }
-                        }
-                    }
-                }
+                \\"param0\\": \\"Smile\\"
             }"
         `);
     });
@@ -120,22 +112,14 @@ describe("#488", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Journalist)
-            WHERE EXISTS((this)-[:HAS_KEYWORD]->(:Emoji)) AND NONE(this_keywordsConnection_NOT_Emoji_map IN [(this)-[this_keywordsConnection_NOT_Emoji_JournalistKeywordsRelationship:HAS_KEYWORD]->(this_keywordsConnection_NOT_Emoji:Emoji)  | { node: this_keywordsConnection_NOT_Emoji, relationship: this_keywordsConnection_NOT_Emoji_JournalistKeywordsRelationship } ] WHERE this_keywordsConnection_NOT_Emoji_map.node.type = $this_journalists.where.keywordsConnection_NOT.node.type)
+            "MATCH (this:\`Journalist\`)
+            WHERE size([(this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`) WHERE this1.type = $param0 | 1]) = 0
             RETURN this { .name, keywords:  [this_keywords IN [(this)-[:HAS_KEYWORD]->(this_keywords) WHERE (\\"Emoji\\" IN labels(this_keywords)) OR (\\"Hashtag\\" IN labels(this_keywords)) OR (\\"Text\\" IN labels(this_keywords)) | head( [ this_keywords IN [this_keywords] WHERE (\\"Emoji\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Emoji\\",  .id, .type } ] + [ this_keywords IN [this_keywords] WHERE (\\"Hashtag\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Hashtag\\" }  ] + [ this_keywords IN [this_keywords] WHERE (\\"Text\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Text\\" }  ] ) ] WHERE this_keywords IS NOT NULL]  } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_journalists\\": {
-                    \\"where\\": {
-                        \\"keywordsConnection_NOT\\": {
-                            \\"node\\": {
-                                \\"type\\": \\"Smile\\"
-                            }
-                        }
-                    }
-                }
+                \\"param0\\": \\"Smile\\"
             }"
         `);
     });

@@ -19,26 +19,26 @@
 
 import { codegen } from "@graphql-codegen/core";
 import * as typescriptPlugin from "@graphql-codegen/typescript";
-import { Types } from "@graphql-codegen/plugin-helpers";
+import type { Types } from "@graphql-codegen/plugin-helpers";
 import * as fs from "fs";
 import * as graphql from "graphql";
 import prettier from "prettier";
-import { OGM } from "./index";
+import type { OGM } from "./index";
 import { getReferenceNode } from "./utils";
 import { upperFirst } from "./utils/upper-first";
 
 export interface IGenerateOptions {
     /**
-        File to write types to
-    */
+      File to write types to
+  */
     outFile?: string;
     /**
-        If specified will return the string contents of file and not write
-    */
+      If specified will return the string contents of file and not write
+  */
     noWrite?: boolean;
     /**
-        Instance of @neo4j/graphql-ogm
-    */
+      Instance of @neo4j/graphql-ogm
+  */
     ogm: OGM;
 }
 
@@ -153,7 +153,7 @@ async function generate(options: IGenerateOptions): Promise<undefined | string> 
 
     const output = await codegen(config);
 
-    const content: string[] = [`import { SelectionSetNode, DocumentNode } from "graphql";`, output];
+    const content: string[] = [`import type { SelectionSetNode, DocumentNode } from "graphql";`, output];
 
     const aggregateSelections: any = {};
     const modeMap: Record<string, string> = {};

@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
@@ -62,9 +62,9 @@ describe("QueryDirection in relationships aggregations", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:User)
-RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:FRIENDS_WITH]-(n:User)      RETURN COUNT(n)\\", { this: this })) } } as this"
-`);
+            "MATCH (this:\`User\`)
+            RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:FRIENDS_WITH]-(n:User)      RETURN COUNT(n)\\", { this: this })) } } as this"
+        `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
@@ -100,9 +100,9 @@ RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATC
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:User)
-RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:FRIENDS_WITH]->(n:User)      RETURN COUNT(n)\\", { this: this })) } } as this"
-`);
+            "MATCH (this:\`User\`)
+            RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:FRIENDS_WITH]->(n:User)      RETURN COUNT(n)\\", { this: this })) } } as this"
+        `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
@@ -138,9 +138,9 @@ RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATC
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:User)
-RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:FRIENDS_WITH]-(n:User)      RETURN COUNT(n)\\", { this: this })) } } as this"
-`);
+            "MATCH (this:\`User\`)
+            RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:FRIENDS_WITH]-(n:User)      RETURN COUNT(n)\\", { this: this })) } } as this"
+        `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });

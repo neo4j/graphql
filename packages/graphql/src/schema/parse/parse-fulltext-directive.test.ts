@@ -19,7 +19,7 @@
 
 /* eslint-disable-next-line import/no-extraneous-dependencies */
 import { gql } from "apollo-server-core";
-import { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
+import type { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
 import getObjFieldMeta from "../get-obj-field-meta";
 import parseFulltextDirective from "./parse-fulltext-directive";
 

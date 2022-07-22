@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, StringValueNode } from "graphql";
+import type { DirectiveNode, StringValueNode } from "graphql";
 
 type AliasMeta = {
     property: string;

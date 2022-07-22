@@ -16,7 +16,8 @@ jobs:
           - graphql
           - introspector
           - ogm
-          - graphql-plugin-auth
+          - plugins/graphql-plugin-auth
+          - plugins/graphql-plugin-subscriptions-amqp
 
     runs-on: ubuntu-latest
 
@@ -30,12 +31,12 @@ jobs:
       - name: Uppercase package name
         run: |
           lowercase_package=${{ matrix.package }}
-          lowercase_package=$(echo "$lowercase_package" | tr - _)
+          lowercase_package=$(echo "$lowercase_package" | tr - _ | sed 's/plugins\///g')
           echo "SONAR_TOKEN_SECRET=SONAR_TOKEN_${lowercase_package^^}" >>"${GITHUB_ENV}"
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
           projectBaseDir: packages/${{ matrix.package }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets[env.SONAR_TOKEN_SECRET] }}

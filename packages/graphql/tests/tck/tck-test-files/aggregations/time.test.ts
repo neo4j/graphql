@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -57,7 +57,7 @@ describe("Cypher Aggregations Time", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { createdAt: { min: min(this.createdAt) } }"
         `);
 
@@ -81,7 +81,7 @@ describe("Cypher Aggregations Time", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { createdAt: { max: max(this.createdAt) } }"
         `);
 
@@ -106,7 +106,7 @@ describe("Cypher Aggregations Time", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { createdAt: { min: min(this.createdAt), max: max(this.createdAt) } }"
         `);
 

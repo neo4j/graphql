@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -62,14 +62,14 @@ describe("Cypher Delete", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.id = $this_id
+            "MATCH (this:\`Movie\`)
+            WHERE this.id = $param0
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"123\\"
+                \\"param0\\": \\"123\\"
             }"
         `);
     });
@@ -89,8 +89,8 @@ describe("Cypher Delete", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.id = $this_id
+            "MATCH (this:\`Movie\`)
+            WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
@@ -101,7 +101,7 @@ describe("Cypher Delete", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"123\\",
+                \\"param0\\": \\"123\\",
                 \\"this_deleteMovies\\": {
                     \\"args\\": {
                         \\"delete\\": {
@@ -144,8 +144,8 @@ describe("Cypher Delete", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.id = $this_id
+            "MATCH (this:\`Movie\`)
+            WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
@@ -161,7 +161,7 @@ describe("Cypher Delete", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"123\\",
+                \\"param0\\": \\"123\\",
                 \\"this_deleteMovies\\": {
                     \\"args\\": {
                         \\"delete\\": {
@@ -211,8 +211,8 @@ describe("Cypher Delete", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.id = $this_id
+            "MATCH (this:\`Movie\`)
+            WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
@@ -228,7 +228,7 @@ describe("Cypher Delete", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"123\\",
+                \\"param0\\": \\"123\\",
                 \\"this_deleteMovies\\": {
                     \\"args\\": {
                         \\"delete\\": {
@@ -287,8 +287,8 @@ describe("Cypher Delete", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.id = $this_id
+            "MATCH (this:\`Movie\`)
+            WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
@@ -309,7 +309,7 @@ describe("Cypher Delete", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"123\\",
+                \\"param0\\": \\"123\\",
                 \\"this_deleteMovies\\": {
                     \\"args\\": {
                         \\"delete\\": {

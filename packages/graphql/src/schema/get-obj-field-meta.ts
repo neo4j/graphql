@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import {
+import type {
     BooleanValueNode,
     EnumTypeDefinitionNode,
     FloatValueNode,
     InterfaceTypeDefinitionNode,
     IntValueNode,
-    Kind,
     ListValueNode,
     NamedTypeNode,
     ObjectTypeDefinitionNode,
@@ -31,7 +30,9 @@ import {
     StringValueNode,
     EnumValueNode,
     UnionTypeDefinitionNode,
-    ValueNode,
+    ValueNode} from "graphql";
+import {
+    Kind
 } from "graphql";
 import getAuth from "./get-auth";
 import getAliasMeta from "./get-alias-meta";
@@ -41,7 +42,7 @@ import getComputedMeta from "./get-computed-meta";
 import getRelationshipMeta from "./get-relationship-meta";
 import getUniqueMeta from "./parse/get-unique-meta";
 import { SCALAR_TYPES } from "../constants";
-import {
+import type {
     RelationField,
     CypherField,
     PrimitiveField,
@@ -465,6 +466,10 @@ function getObjFieldMeta({
                             }
 
                             primitiveField.autogenerate = true;
+                        }
+                        const global = idDirective.arguments?.find((a) => a.name.value === "global");
+                        if (global) {
+                            primitiveField.isGlobalIdField = true;
                         }
                     }
 

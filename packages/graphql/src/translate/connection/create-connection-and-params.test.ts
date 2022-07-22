@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 import { offsetToCursor } from "graphql-relay";
 import dedent from "dedent";
-import { ConnectionField, Context } from "../../types";
+import type { ConnectionField, Context } from "../../types";
 import createConnectionAndParams from "./create-connection-and-params";
 import Neo4jGraphQL from "../../classes/Neo4jGraphQL";
 import { NodeBuilder } from "../../../tests/utils/builders/node-builder";
@@ -110,12 +110,16 @@ describe("createConnectionAndParams", () => {
 
         const entry = createConnectionAndParams({ resolveTree, field, context, nodeVariable: "this" });
 
-        expect(dedent(entry[0])).toEqual(dedent`CALL {
-        WITH this
-        MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-        WITH collect({ screenTime: this_acted_in_relationship.screenTime }) AS edges
-        RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
-        }`);
+        expect(entry[0]).toMatchInlineSnapshot(`
+            "CALL {
+            WITH this
+            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
+            WITH collect({ screenTime: this_acted_in_relationship.screenTime }) AS edges
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+            }"
+        `);
     });
 
     test("Returns entry with sort arg", () => {
@@ -210,14 +214,20 @@ describe("createConnectionAndParams", () => {
 
         const entry = createConnectionAndParams({ resolveTree, field, context, nodeVariable: "this" });
 
-        expect(dedent(entry[0])).toEqual(dedent`CALL {
+        expect(entry[0]).toMatchInlineSnapshot(`
+            "CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WITH this_acted_in_relationship, this_actor
             ORDER BY this_acted_in_relationship.screenTime DESC, this_actor.name ASC
             WITH collect({ screenTime: this_acted_in_relationship.screenTime }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
-            }`);
+            UNWIND edges as edge
+            WITH edges, edge
+            ORDER BY edge.screenTime DESC, edge.node.name ASC
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+            }"
+        `);
     });
 
     test("Returns an entry with offset and limit args", () => {

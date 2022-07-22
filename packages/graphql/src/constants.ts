@@ -21,14 +21,12 @@ const DEBUG_PREFIX = "@neo4j/graphql";
 
 export const AUTH_FORBIDDEN_ERROR = "@neo4j/graphql/FORBIDDEN";
 export const AUTH_UNAUTHENTICATED_ERROR = "@neo4j/graphql/UNAUTHENTICATED";
-export const MIN_VERSIONS = [
-    { majorMinor: "4.2", neo4j: "4.2.9" },
-    { majorMinor: "4.3", neo4j: "4.3.2" },
-];
+export const MIN_VERSIONS = [{ majorMinor: "4.3", neo4j: "4.3.2" }];
 export const REQUIRED_APOC_FUNCTIONS = [
     "apoc.util.validatePredicate",
     "apoc.cypher.runFirstColumn",
     "apoc.coll.sortMulti",
+    "apoc.coll.flatten",
     "apoc.date.convertFormat",
     "apoc.map.values",
 ];

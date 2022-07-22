@@ -31,8 +31,13 @@ Accepts all of the options from https://www.graphql-tools.com/docs/generate-sche
 
 |`config` +
  +
- Type: `Neo4jGraphQLConfig`
+ Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jgraphqlconfig[`Neo4jGraphQLConfig`]
 |Additional Neo4j GraphQL configuration options.
+
+|`features` +
+ +
+ Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jfeaturessettings[`Neo4jFeaturesSettings`]
+|Could be used for configure/enable/disable specific features. 
 
 |`plugins` +
  +
@@ -65,6 +70,7 @@ Accepts all of the options from https://www.graphql-tools.com/docs/generate-sche
  +
  Type: `boolean`
 |Can be used to disable strict type definition validation if you are encountering unexpected errors.
+
 |===
 
 [[api-reference-neo4jgraphql-input-neo4jgraphqlconfig-driverconfig]]
@@ -169,6 +175,59 @@ const { CypherRuntime } = require("@neo4j/graphql");
  - `CypherReplanning.SKIP`
 |===
 
+[[api-reference-neo4jgraphql-input-neo4jfeaturessettings]]
+==== `Neo4jFeaturesSettings`
+
+|===
+|Name and Type |Description
+
+|`filters` +
+ +
+ Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jfilterssettings[`Neo4jFiltersSettings`]
+|Additional configuration for filters.
+|===
+
+[[api-reference-neo4jgraphql-input-neo4jfilterssettings]]
+==== `Neo4jFiltersSettings`
+
+|===
+|Name and Type |Description
+
+|`String` +
+ +
+ Type: xref::api-reference/neo4jgraphql.adoc#api-reference-neo4jgraphql-input-neo4jstringfilterssettings[`Neo4jStringFiltersSettings`]
+|Additional configuration for String filters.
+|===
+
+
+[[api-reference-neo4jgraphql-input-neo4jstringfilterssettings]]
+==== `Neo4jStringFiltersSettings`
+
+|===
+|Name and Type |Description
+
+|`GT` +
+ +
+ Type: `boolean`
+| Enables GT comparator.
+
+|`GTE` +
+ +
+ Type: `boolean`
+| Enables GTE comparator.
+
+|`LT` +
+ +
+ Type: `boolean`
+| Enables LT comparator.
+
+|`LTE` +
+ +
+ Type: `boolean`
+| Enables LTE comparator.
+
+|===
+
 [[api-reference-neo4jgraphql-input-neo4jgraphqlplugins]]
 ==== `Neo4jGraphQLPlugins`
 
@@ -242,7 +301,7 @@ Accepts the arguments below:
 [[api-reference-assertconstraints]]
 == `assertIndexesAndConstraints`
 
-Asynchronous method to assert the existence of database constraints, that either resolves to `void` in a successful scenario, or throws an error if the necessary consraints do not exist following its execution.
+Asynchronous method to assert the existence of database constraints, that either resolves to `void` in a successful scenario, or throws an error if the necessary constraints do not exist following its execution.
 
 Takes an `input` object as a parameter, the supported fields of which are described below.
 
@@ -331,3 +390,4 @@ Accepts the arguments below:
  Type: `boolean`
 |Whether or not to create constraints if they do not yet exist. Disabled by default.
 |===
+

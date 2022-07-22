@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { GraphElement, Node, Relationship } from "../classes";
-import { RelationField, Context, BaseField } from "../types";
+import type { GraphElement, Node, Relationship } from "../classes";
+import type { RelationField, Context, BaseField } from "../types";
 
 type Operator = "=" | "<" | "<=" | ">" | ">=";
 
@@ -195,7 +195,6 @@ function createPredicate({
     context,
     chainStr,
     field,
-    varName,
     nodeVariable,
     edgeVariable,
     relationship,
@@ -205,7 +204,6 @@ function createPredicate({
     context: Context;
     chainStr: string;
     field: RelationField;
-    varName: string;
     nodeVariable: string;
     edgeVariable: string;
     relationship: Relationship;
@@ -224,7 +222,6 @@ function createPredicate({
                     chainStr: `${chainStr}_${key}_${i}`,
                     context,
                     field,
-                    varName,
                     aggregation: v,
                     nodeVariable,
                     edgeVariable,
@@ -323,7 +320,6 @@ function createAggregateWhereAndParams({
         node,
         nodeVariable,
         edgeVariable,
-        varName,
         relationship,
     });
 

@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
@@ -46,7 +46,7 @@ describe("#582", () => {
 
     test("should be able to nest connection where inputs", async () => {
         const query = gql`
-            query($where: EntityWhere) {
+            query ($where: EntityWhere) {
                 entities(where: $where) {
                     type
                 }
@@ -72,38 +72,23 @@ describe("#582", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Entity)
-            WHERE this.type = $this_type AND EXISTS((this)-[:EDGE]->(:Entity)) AND ANY(this_childrenConnection_Entity_map IN [(this)-[this_childrenConnection_Entity_EntityChildrenRelationship:EDGE]->(this_childrenConnection_Entity:Entity)  | { node: this_childrenConnection_Entity, relationship: this_childrenConnection_Entity_EntityChildrenRelationship } ] WHERE this_childrenConnection_Entity_map.node.type = $this_entities.where.childrenConnection.node.type AND apoc.cypher.runFirstColumn(\\"RETURN EXISTS((this_childrenConnection_Entity_map_node)<-[:EDGE]-(:Entity))
-            AND ANY(this_childrenConnection_Entity_map_node_Entity_map IN [(this_childrenConnection_Entity_map_node)<-[this_childrenConnection_Entity_map_node_Entity_EntityParentsRelationship:EDGE]-(this_childrenConnection_Entity_map_node_Entity:Entity) | { node: this_childrenConnection_Entity_map_node_Entity, relationship: this_childrenConnection_Entity_map_node_Entity_EntityParentsRelationship } ] WHERE
-            this_childrenConnection_Entity_map_node_Entity_map.node.type = $this_entities.where.childrenConnection.node.parentsConnection.node.type
-            )\\", { this_childrenConnection_Entity_map_node: this_childrenConnection_Entity_map.node, this_entities: $this_entities }))
+            "MATCH (this:\`Entity\`)
+            WHERE (this.type = $param0 AND size([(this)-[this0:EDGE]->(this1:\`Entity\`) WHERE (this1.type = $param1 AND size([(this3:\`Entity\`)-[this2:EDGE]->(this1) WHERE this3.type = $param2 | 1]) > 0) | 1]) > 0)
             RETURN this { .type } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_type\\": \\"Cat\\",
-                \\"this_entities\\": {
-                    \\"where\\": {
-                        \\"childrenConnection\\": {
-                            \\"node\\": {
-                                \\"type\\": \\"Dog\\",
-                                \\"parentsConnection\\": {
-                                    \\"node\\": {
-                                        \\"type\\": \\"Bird\\"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                \\"param0\\": \\"Cat\\",
+                \\"param1\\": \\"Dog\\",
+                \\"param2\\": \\"Bird\\"
             }"
         `);
     });
 
     test("should be able to nest connection where inputs down more levels", async () => {
         const query = gql`
-            query($where: EntityWhere) {
+            query ($where: EntityWhere) {
                 entities(where: $where) {
                     type
                 }
@@ -134,39 +119,17 @@ describe("#582", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Entity)
-            WHERE this.type = $this_type AND EXISTS((this)-[:EDGE]->(:Entity)) AND ANY(this_childrenConnection_Entity_map IN [(this)-[this_childrenConnection_Entity_EntityChildrenRelationship:EDGE]->(this_childrenConnection_Entity:Entity)  | { node: this_childrenConnection_Entity, relationship: this_childrenConnection_Entity_EntityChildrenRelationship } ] WHERE this_childrenConnection_Entity_map.node.type = $this_entities.where.childrenConnection.node.type AND apoc.cypher.runFirstColumn(\\"RETURN EXISTS((this_childrenConnection_Entity_map_node)<-[:EDGE]-(:Entity))
-            AND ANY(this_childrenConnection_Entity_map_node_Entity_map IN [(this_childrenConnection_Entity_map_node)<-[this_childrenConnection_Entity_map_node_Entity_EntityParentsRelationship:EDGE]-(this_childrenConnection_Entity_map_node_Entity:Entity) | { node: this_childrenConnection_Entity_map_node_Entity, relationship: this_childrenConnection_Entity_map_node_Entity_EntityParentsRelationship } ] WHERE
-            this_childrenConnection_Entity_map_node_Entity_map.node.type = $this_entities.where.childrenConnection.node.parentsConnection.node.type AND apoc.cypher.runFirstColumn(\\\\\\"RETURN EXISTS((this_childrenConnection_Entity_map_node_Entity_map_node)-[:EDGE]->(:Entity))
-            AND ANY(this_childrenConnection_Entity_map_node_Entity_map_node_Entity_map IN [(this_childrenConnection_Entity_map_node_Entity_map_node)-[this_childrenConnection_Entity_map_node_Entity_map_node_Entity_EntityChildrenRelationship:EDGE]->(this_childrenConnection_Entity_map_node_Entity_map_node_Entity:Entity) | { node: this_childrenConnection_Entity_map_node_Entity_map_node_Entity, relationship: this_childrenConnection_Entity_map_node_Entity_map_node_Entity_EntityChildrenRelationship } ] WHERE
-            this_childrenConnection_Entity_map_node_Entity_map_node_Entity_map.node.type = $this_entities.where.childrenConnection.node.parentsConnection.node.childrenConnection.node.type
-            )\\\\\\", { this_childrenConnection_Entity_map_node_Entity_map_node: this_childrenConnection_Entity_map_node_Entity_map.node, this_entities: $this_entities })
-            )\\", { this_childrenConnection_Entity_map_node: this_childrenConnection_Entity_map.node, this_entities: $this_entities }))
+            "MATCH (this:\`Entity\`)
+            WHERE (this.type = $param0 AND size([(this)-[this0:EDGE]->(this1:\`Entity\`) WHERE (this1.type = $param1 AND size([(this3:\`Entity\`)-[this2:EDGE]->(this1) WHERE (this3.type = $param2 AND size([(this3)-[this4:EDGE]->(this5:\`Entity\`) WHERE this5.type = $param3 | 1]) > 0) | 1]) > 0) | 1]) > 0)
             RETURN this { .type } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_type\\": \\"Cat\\",
-                \\"this_entities\\": {
-                    \\"where\\": {
-                        \\"childrenConnection\\": {
-                            \\"node\\": {
-                                \\"type\\": \\"Dog\\",
-                                \\"parentsConnection\\": {
-                                    \\"node\\": {
-                                        \\"type\\": \\"Bird\\",
-                                        \\"childrenConnection\\": {
-                                            \\"node\\": {
-                                                \\"type\\": \\"Fish\\"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                \\"param0\\": \\"Cat\\",
+                \\"param1\\": \\"Dog\\",
+                \\"param2\\": \\"Bird\\",
+                \\"param3\\": \\"Fish\\"
             }"
         `);
     });

@@ -18,7 +18,7 @@
  */
 
 import { Neo4jGraphQLError } from "./Error";
-import { Context } from "../types";
+import type { Context } from "../types";
 import ContextParser from "../utils/context-parser";
 
 export interface NodeDirectiveConstructor {

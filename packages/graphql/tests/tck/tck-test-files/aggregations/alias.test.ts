@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -75,23 +75,21 @@ describe("Cypher Aggregations Many while Alias fields", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { _count: count(this), _id: { _shortest: min(this.id), _longest: max(this.id) }, _title: { _shortest:
-                                        reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(\\"
-                                            RETURN
-                                            CASE size(current) < size(shortest)
-                                            WHEN true THEN current
-                                            ELSE shortest
-                                            END AS result
-                                        \\", { current: current, shortest: shortest }, false))
+                                        reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
+                                            CASE
+                                            WHEN size(current) < size(aggVar) THEN current
+                                            ELSE aggVar
+                                            END
+                                        )
                                     , _longest:
-                                        reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(\\"
-                                            RETURN
-                                            CASE size(current) > size(shortest)
-                                            WHEN true THEN current
-                                            ELSE shortest
-                                            END AS result
-                                        \\", { current: current, shortest: shortest }, false))
+                                        reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
+                                            CASE
+                                            WHEN size(current) > size(aggVar) THEN current
+                                            ELSE aggVar
+                                            END
+                                        )
                                      }, _imdbRating: { _min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating) }, _createdAt: { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } }"
         `);
 

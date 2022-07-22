@@ -57,136 +57,14 @@ jobs:
           flags: ${{ matrix.package }},unit
           fail_ci_if_error: true
 
-  tck-tests:
-    needs:
-      - cache-dependencies
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn
-      - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
-      - name: Run TCK tests
-        run: yarn --cwd packages/graphql run test:tck --coverage
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/graphql/coverage/
-          flags: graphql,tck
-          fail_ci_if_error: true
-
-  schema-tests:
-    needs:
-      - cache-dependencies
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn
-      - name: Run Schema tests
-        run: yarn --cwd packages/graphql run test:schema --coverage
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/graphql/coverage/
-          flags: graphql,schema
-          fail_ci_if_error: true
+  api-library-tests:
+    uses: ./.github/workflows/reusable-api-library-tests.yml
 
   # nextjs-app-setup:
-  #   needs:
-  #     - cache-dependencies
-
-  #   runs-on: ubuntu-latest
-
-  #   services:
-  #     neo4j:
-  #       image: neo4j:latest
-  #       env:
-  #         NEO4J_AUTH: neo4j/mypassword
-  #         NEO4JLABS_PLUGINS: '["apoc"]'
-  #       ports:
-  #         - 7687:7687
-
-  #   strategy:
-  #     matrix:
-  #       graphql-version:
-  #         - "^15.0.0"
-  #         - "^16.0.0"
-
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/setup-node@v3
-  #       with:
-  #         node-version: lts/*
-  #         cache: yarn
-  #     - name: Install dependencies
-  #       run: yarn --immutable
-  #     - name: Build and pack @neo4j/graphql
-  #       run: |
-  #         yarn build
-  #         yarn pack
-  #       working-directory: packages/graphql
-  #     - name: Setup Nextjs app
-  #       run: chmod +x docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh && cd packages && ../docs/modules/ROOT/examples/code-partials/nextjs/create-app.sh
-  #     - name: Install dependencies
-  #       run: |
-  #         chmod +x ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh && ../../docs/modules/ROOT/examples/code-partials/nextjs/add-dependencies.sh
-  #         npm install ../graphql/package.tgz
-  #         npm install graphql@${{ matrix.graphql-version }}
-  #       working-directory: packages/neo4j-graphql-nextjs
-  #     - name: Copy .env file
-  #       run: cp docs/modules/ROOT/examples/code-partials/nextjs/env.example packages/neo4j-graphql-nextjs/.env.local
-  #     - name: Create GraphQL endpoint
-  #       run: cp docs/modules/ROOT/examples/code-partials/nextjs/graphql.js packages/neo4j-graphql-nextjs/pages/api/graphql.js
-  #     - name: Start server
-  #       run: cd packages/neo4j-graphql-nextjs && yarn dev &
-  #     - name: Query the API and assert that there are no errors
-  #       run: |
-  #         sleep 10 &&
-  #         RES=$(curl 'http://localhost:3000/api/graphql' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Accept: application/json' -H 'Connection: keep-alive' -H 'DNT: 1' -H 'Origin: http://localhost:3000' --data-binary '{"query":"{\n  movies {\n    title\n  }\n}"}' --compressed --silent)
-  #         echo "$RES"
-  #         echo "$RES" | grep -qv "error"
+  #   uses: ./.github/workflows/reusable-nextjs-app-setup.yml
 
   package-tests:
-    needs:
-      - cache-dependencies
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: lts/*
-          cache: yarn
-      - name: Install dependencies
-        run: yarn
-      - name: Build graphql
-        run: yarn build
-        working-directory: packages/graphql
-      - name: Run @neo4j/graphql package tests
-        run: yarn --cwd packages/graphql run test:package-tests
+    uses: ./.github/workflows/reusable-package-tests.yml
 
   integration-tests-on-prem:
     needs:
@@ -194,12 +72,15 @@ jobs:
 
     strategy:
       matrix:
-        package:
-          - graphql
-          - ogm
+        packages:
+          [
+            { package: "ogm", shard: 1/1 },
+            { package: "graphql", shard: 1/4 },
+            { package: "graphql", shard: 2/4 },
+            { package: "graphql", shard: 3/4 },
+            { package: "graphql", shard: 4/4 },
+          ]
         neo4j-version:
-          - 4.2.9
-          - 4.2
           - 4.3.2
           - 4.3
           - 4.4
@@ -232,9 +113,9 @@ jobs:
         run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
-          yarn test:int --coverage
+          yarn test:int --shard=${{ matrix.packages.shard }} --coverage
           mv coverage coverage-${{ matrix.neo4j-version }}
-        working-directory: packages/${{ matrix.package }}
+        working-directory: packages/${{ matrix.packages.package }}
         env:
           NEO_USER: neo4j
           NEO_PASSWORD: testpassword
@@ -242,8 +123,8 @@ jobs:
       - name: Archive coverage report
         uses: actions/upload-artifact@v3
         with:
-          name: integration-coverage-${{ matrix.package }}
-          path: packages/${{ matrix.package }}/coverage-${{ matrix.neo4j-version }}/
+          name: integration-coverage-${{ matrix.packages.package }}
+          path: packages/${{ matrix.packages.package }}/coverage-${{ matrix.neo4j-version }}/
 
   aura-teardown:
     needs:
@@ -287,9 +168,14 @@ jobs:
 
     strategy:
       matrix:
-        package:
-          - graphql
-          - ogm
+        packages:
+          [
+            { package: "ogm", shard: 1/1 },
+            { package: "graphql", shard: 1/4 },
+            { package: "graphql", shard: 2/4 },
+            { package: "graphql", shard: 3/4 },
+            { package: "graphql", shard: 4/4 },
+          ]
         aura-instance:
           - free
           - professional
@@ -312,9 +198,9 @@ jobs:
           echo "AURA_PASSWORD_SECRET=AURA_${lowercase_instance^^}_PASSWORD" >>"${GITHUB_ENV}"
       - name: Run @neo4j/graphql integration tests
         run: |
-          yarn test:int -t '^(?!delete should delete a movie, a single nested actor and another movie they act in|update should delete a nested actor and one of their nested movies, within an update block)' --coverage
+          yarn test:int -t '^(?!delete should delete a movie, a single nested actor and another movie they act in|update should delete a nested actor and one of their nested movies, within an update block)' --shard=${{ matrix.packages.shard }} --coverage
           mv coverage coverage-aura-${{ matrix.aura-instance }}
-        working-directory: packages/${{ matrix.package }}
+        working-directory: packages/${{ matrix.packages.package }}
         env:
           NEO_USER: neo4j
           NEO_PASSWORD: ${{ secrets[env.AURA_PASSWORD_SECRET] }}
@@ -322,8 +208,8 @@ jobs:
       - name: Archive coverage report
         uses: actions/upload-artifact@v3
         with:
-          name: integration-coverage-${{ matrix.package }}
-          path: packages/${{ matrix.package }}/coverage-aura-${{ matrix.aura-instance }}/
+          name: integration-coverage-${{ matrix.packages.package }}
+          path: packages/${{ matrix.packages.package }}/coverage-aura-${{ matrix.aura-instance }}/
 
   upload-integration-coverage:
     needs:
@@ -354,7 +240,7 @@ jobs:
   bump-version:
     needs:
       - unit-tests
-      - tck-tests
+      - api-library-tests
       - package-tests
       - upload-integration-coverage
 
@@ -401,7 +287,7 @@ jobs:
     steps:
       - name: Send Slack notification of upcoming release
         id: slack-notification
-        uses: slackapi/slack-github-action@v1.18.0
+        uses: slackapi/slack-github-action@v1.19.0
         with:
           payload: '{"version":"${{ needs.bump-version.outputs.version }}"}'
         env:
@@ -531,14 +417,14 @@ jobs:
           echo "::set-output name=prerelease::$prerelease"
       - name: Build Changelog
         id: github-release
-        uses: mikepenz/release-changelog-builder-action@v3
+        uses: mikepenz/release-changelog-builder-action@c9066537c0c7bc5c7b0ec7722cefc02524c7c005 # renovate: tag=v3.1.0
         with:
           configuration: "config/release-changelog-builder-action/configuration-${{ steps.get-label.outputs.label }}-hotfix.json"
           toTag: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # renovate: tag=v0.1.14
         with:
           body: ${{ steps.github-release.outputs.changelog }}
           name: "@neo4j/${{ matrix.package }}@${{ needs.bump-version.outputs.version }}"
@@ -558,7 +444,7 @@ jobs:
     steps:
       - name: Send Slack announcement of release
         id: slack-announcement
-        uses: slackapi/slack-github-action@v1.18.0
+        uses: slackapi/slack-github-action@v1.19.0
         with:
           payload: '{"version":"${{ needs.bump-version.outputs.version }}"}'
         env:
@@ -574,7 +460,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: pull-request
-        uses: repo-sync/pull-request@v2
+        uses: repo-sync/pull-request@65785d95a5a466e46a9d0708933a3bd51bbf9dde # renovate: tag=v2.6.2
         with:
           destination_branch: "dev"
           pr_title: "Merge ${{ github.ref }} into dev"

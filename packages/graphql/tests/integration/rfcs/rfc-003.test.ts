@@ -17,18 +17,20 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("integration/rfc/003", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -68,7 +70,7 @@ describe("integration/rfc/003", () => {
                 const result = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: mutation,
-                    contextValue: { driver },
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(result.errors).toBeTruthy();
@@ -116,7 +118,7 @@ describe("integration/rfc/003", () => {
                     const result = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: mutation,
-                        contextValue: { driver },
+                        contextValue: neo4j.getContextValues(),
                     });
 
                     expect(result.errors).toBeTruthy();
@@ -127,7 +129,7 @@ describe("integration/rfc/003", () => {
 
         describe("update", () => {
             test("should throw error when updating a node without a required relationship", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const typeDefs = gql`
                     type Director {
@@ -164,7 +166,7 @@ describe("integration/rfc/003", () => {
                     const result = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: mutation,
-                        contextValue: { driver },
+                        contextValue: neo4j.getContextValues(),
                     });
 
                     expect(result.errors).toBeTruthy();
@@ -176,7 +178,7 @@ describe("integration/rfc/003", () => {
 
             describe("nested mutations", () => {
                 test("should throw when creating node without relationship", async () => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const typeDefs = gql`
                         type Address {
@@ -225,7 +227,7 @@ describe("integration/rfc/003", () => {
                         const result = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: mutation,
-                            contextValue: { driver },
+                            contextValue: neo4j.getContextValues(),
                         });
 
                         expect(result.errors).toBeTruthy();
@@ -236,7 +238,7 @@ describe("integration/rfc/003", () => {
                 });
 
                 test("should throw error when creating a node without a required relationship through a nested mutation", async () => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const typeDefs = gql`
                         type Address {
@@ -285,7 +287,7 @@ describe("integration/rfc/003", () => {
                         const result = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: mutation,
-                            contextValue: { driver },
+                            contextValue: neo4j.getContextValues(),
                         });
 
                         expect(result.errors).toBeTruthy();
@@ -300,7 +302,7 @@ describe("integration/rfc/003", () => {
         describe("delete", () => {
             describe("nested mutations", () => {
                 test("should throw error when deleting a required relationship", async () => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const typeDefs = gql`
                         type Director {
@@ -349,7 +351,7 @@ describe("integration/rfc/003", () => {
                         const result = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: mutation,
-                            contextValue: { driver },
+                            contextValue: neo4j.getContextValues(),
                         });
 
                         expect(result.errors).toBeTruthy();
@@ -397,7 +399,7 @@ describe("integration/rfc/003", () => {
                 const result = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: mutation,
-                    contextValue: { driver },
+                    contextValue: neo4j.getContextValues(),
                 });
 
                 expect(result.errors).toBeTruthy();
@@ -406,7 +408,7 @@ describe("integration/rfc/003", () => {
 
             describe("nested mutations", () => {
                 test("should throw error when connecting to a required node that is not found", async () => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const typeDefs = gql`
                         type Address {
@@ -464,7 +466,7 @@ describe("integration/rfc/003", () => {
                         const result = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: mutation,
-                            contextValue: { driver },
+                            contextValue: neo4j.getContextValues(),
                         });
 
                         expect(result.errors).toBeTruthy();
@@ -479,7 +481,7 @@ describe("integration/rfc/003", () => {
         describe("disconnect", () => {
             describe("nested mutations", () => {
                 test("should throw error when disconnecting a required relationship", async () => {
-                    const session = driver.session();
+                    const session = await neo4j.getSession();
 
                     const typeDefs = gql`
                         type Director {
@@ -520,7 +522,7 @@ describe("integration/rfc/003", () => {
                         const result = await graphql({
                             schema: await neoSchema.getSchema(),
                             source: mutation,
-                            contextValue: { driver },
+                            contextValue: neo4j.getContextValues(),
                         });
 
                         expect(result.errors).toBeTruthy();
@@ -534,7 +536,7 @@ describe("integration/rfc/003", () => {
 
         describe("reconnect", () => {
             test("should disconnect and then reconnect to a new node on a required relationship", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const typeDefs = gql`
                     type Director {
@@ -591,7 +593,7 @@ describe("integration/rfc/003", () => {
                     const result = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: mutation,
-                        contextValue: { driver },
+                        contextValue: neo4j.getContextValues(),
                     });
 
                     expect(result.errors).toBeUndefined();
@@ -610,7 +612,7 @@ describe("integration/rfc/003", () => {
             });
 
             test("should disconnect and then reconnect to a new node on a non required relationship", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const typeDefs = gql`
                     type Director {
@@ -667,7 +669,7 @@ describe("integration/rfc/003", () => {
                     const result = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: mutation,
-                        contextValue: { driver },
+                        contextValue: neo4j.getContextValues(),
                     });
 
                     expect(result.errors).toBeUndefined();
@@ -688,7 +690,7 @@ describe("integration/rfc/003", () => {
 
         describe("relationship length", () => {
             test("should throw if connecting to more than one node", async () => {
-                const session = driver.session();
+                const session = await neo4j.getSession();
 
                 const typeDefs = gql`
                     type Director {
@@ -743,7 +745,7 @@ describe("integration/rfc/003", () => {
                     const result = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: mutation,
-                        contextValue: { driver },
+                        contextValue: neo4j.getContextValues(),
                     });
 
                     expect(result.errors).toBeTruthy();

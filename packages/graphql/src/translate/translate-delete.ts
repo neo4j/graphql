@@ -17,15 +17,16 @@
  * limitations under the License.
  */
 
-import { Node } from "../classes";
-import { Context } from "../types";
+import type { Node } from "../classes";
+import type { Context } from "../types";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createAuthAndParams from "./create-auth-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
-import translateTopLevelMatch from "./translate-top-level-match";
+import { translateTopLevelMatch } from "./translate-top-level-match";
 import { createEventMeta } from "./subscriptions/create-event-meta";
+import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 
-export default function translateDelete({ context, node }: { context: Context; node: Node }): [string, any] {
+export function translateDelete({ context, node }: { context: Context; node: Node }): CypherBuilder.CypherResult {
     const { resolveTree } = context;
     const deleteInput = resolveTree.args.delete;
     const varName = "this";
@@ -41,8 +42,8 @@ export default function translateDelete({ context, node }: { context: Context; n
     }
 
     const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "DELETE" });
-    matchAndWhereStr = topLevelMatch[0];
-    cypherParams = { ...cypherParams, ...topLevelMatch[1] };
+    matchAndWhereStr = topLevelMatch.cypher;
+    cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
     const allowAuth = createAuthAndParams({
         operations: "DELETE",
@@ -55,7 +56,7 @@ export default function translateDelete({ context, node }: { context: Context; n
     });
     if (allowAuth[0]) {
         cypherParams = { ...cypherParams, ...allowAuth[1] };
-        allowStr = `WITH ${withVars.join(", ")}\nCALL apoc.util.validate(NOT(${
+        allowStr = `WITH ${withVars.join(", ")}\nCALL apoc.util.validate(NOT (${
             allowAuth[0]
         }), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
@@ -80,19 +81,22 @@ export default function translateDelete({ context, node }: { context: Context; n
         };
     }
 
-    const eventMeta = createEventMeta({ event: "delete", nodeVariable: varName, typename: node.name });
+    const deleteQuery = new CypherBuilder.RawCypher((_env: CypherBuilder.Environment) => {
+        const eventMeta = createEventMeta({ event: "delete", nodeVariable: varName, typename: node.name });
+        const cypher = [
+            ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
+            matchAndWhereStr,
+            ...(context.subscriptionsEnabled ? [`WITH ${varName}, ${eventMeta}`] : []),
+            deleteStr,
+            allowStr,
+            `DETACH DELETE ${varName}`,
+            ...getDeleteReturn(context),
+        ];
 
-    const cypher = [
-        ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
-        matchAndWhereStr,
-        ...(context.subscriptionsEnabled ? [`WITH ${varName}, ${eventMeta}`] : []),
-        deleteStr,
-        allowStr,
-        `DETACH DELETE ${varName}`,
-        ...getDeleteReturn(context),
-    ];
+        return [cypher.filter(Boolean).join("\n"), cypherParams];
+    });
 
-    return [cypher.filter(Boolean).join("\n"), cypherParams];
+    return deleteQuery.build(varName);
 }
 
 function getDeleteReturn(context: Context): Array<string> {

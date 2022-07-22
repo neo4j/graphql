@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
@@ -96,17 +96,17 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`:\`Person\`)
-            WHERE this.age > $this_age_GT
-            RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:\`Film\`)  WHERE this_movies.title = $this_movies_title | this_movies { .title } ] } as this"
+            WHERE this.age > $param0
+            RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:\`Film\`)  WHERE this_movies.title = $this_movies_param0 | this_movies { .title } ] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_age_GT\\": {
+                \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"this_movies_title\\": \\"terminator\\"
+                \\"this_movies_param0\\": \\"terminator\\"
             }"
         `);
     });

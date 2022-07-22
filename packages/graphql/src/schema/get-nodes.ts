@@ -17,18 +17,19 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, NamedTypeNode } from "graphql";
-import { Exclude, Node } from "../classes";
-import { NodeDirective } from "../classes/NodeDirective";
-import { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
-import { Auth, FullText, Neo4jGraphQLCallbacks } from "../types";
+import type { DirectiveNode, NamedTypeNode } from "graphql";
+import type { Exclude} from "../classes";
+import { Node } from "../classes";
+import type { NodeDirective } from "../classes/NodeDirective";
+import type { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
+import type { Auth, FullText, Neo4jGraphQLCallbacks } from "../types";
 import getObjFieldMeta from "./get-obj-field-meta";
 import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
 import parseFulltextDirective from "./parse/parse-fulltext-directive";
 import parseNodeDirective from "./parse-node-directive";
 import parseExcludeDirective from "./parse-exclude-directive";
 import getAuth from "./get-auth";
-import { DefinitionNodes } from "./get-definition-nodes";
+import type { DefinitionNodes } from "./get-definition-nodes";
 
 type Nodes = {
     nodes: Node[];
@@ -186,6 +187,33 @@ function getNodes(definitionNodes: DefinitionNodes, options: { callbacks?: Neo4j
             cartesianPointInTypeDefs = nodeFields.pointFields.some((field) => field.typeMeta.name === "CartesianPoint");
         }
 
+        const globalIdFields = nodeFields.primitiveFields.filter((field) => field.isGlobalIdField);
+
+        if (globalIdFields.length > 1) {
+            throw new Error(
+                "Only one field may be decorated with an '@id' directive with the global argument set to `true`"
+            );
+        }
+
+        const globalIdField = globalIdFields[0];
+
+        const idField = definition.fields?.find((x) => x.name.value === "id");
+
+        if (globalIdField && idField) {
+            const hasAlias = idField.directives?.find((x) => x.name.value === "alias");
+            if (!hasAlias) {
+                throw new Error(
+                    `Type ${definition.name.value} already has a field "id." Either remove it, or if you need access to this property, consider using the "@alias" directive to access it via another field`
+                );
+            }
+        }
+
+        if (globalIdField && !globalIdField.unique) {
+            throw new Error(
+                `Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique`
+            );
+        }
+
         const node = new Node({
             name: definition.name.value,
             interfaces: nodeInterfaces,
@@ -201,6 +229,9 @@ function getNodes(definitionNodes: DefinitionNodes, options: { callbacks?: Neo4j
             fulltextDirective,
             queryOptionsDirective,
             description: definition.description?.value,
+            isGlobalNode: Boolean(globalIdField),
+            globalIdField: globalIdField?.fieldName,
+            globalIdFieldIsInt: globalIdField?.typeMeta?.name === "Int",
         });
 
         return node;

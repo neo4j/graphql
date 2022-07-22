@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../src";
 import { createJwtRequest } from "../../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../../utils/tck-test-utils";
@@ -65,16 +65,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN this_likesAggregate_edge.someDuration = $this_likesAggregate_edge_someDuration_EQUAL
-            \\", { this: this, this_likesAggregate_edge_someDuration_EQUAL: $this_likesAggregate_edge_someDuration_EQUAL }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN aggr_edge.someDuration = $aggr_edge_someDuration_EQUAL
+            \\", { this: this, aggr_edge_someDuration_EQUAL: $aggr_edge_someDuration_EQUAL }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_EQUAL\\": {
+                \\"aggr_edge_someDuration_EQUAL\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -105,16 +105,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN this_likesAggregate_edge._someDurationAlias = $this_likesAggregate_edge_someDurationAlias_EQUAL
-            \\", { this: this, this_likesAggregate_edge_someDurationAlias_EQUAL: $this_likesAggregate_edge_someDurationAlias_EQUAL }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN aggr_edge._someDurationAlias = $aggr_edge_someDurationAlias_EQUAL
+            \\", { this: this, aggr_edge_someDurationAlias_EQUAL: $aggr_edge_someDurationAlias_EQUAL }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDurationAlias_EQUAL\\": {
+                \\"aggr_edge_someDurationAlias_EQUAL\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -145,16 +145,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN this_likesAggregate_edge.someDuration > $this_likesAggregate_edge_someDuration_GT
-            \\", { this: this, this_likesAggregate_edge_someDuration_GT: $this_likesAggregate_edge_someDuration_GT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN aggr_edge.someDuration > $aggr_edge_someDuration_GT
+            \\", { this: this, aggr_edge_someDuration_GT: $aggr_edge_someDuration_GT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_GT\\": {
+                \\"aggr_edge_someDuration_GT\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -185,16 +185,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN this_likesAggregate_edge.someDuration >= $this_likesAggregate_edge_someDuration_GTE
-            \\", { this: this, this_likesAggregate_edge_someDuration_GTE: $this_likesAggregate_edge_someDuration_GTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN aggr_edge.someDuration >= $aggr_edge_someDuration_GTE
+            \\", { this: this, aggr_edge_someDuration_GTE: $aggr_edge_someDuration_GTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_GTE\\": {
+                \\"aggr_edge_someDuration_GTE\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -225,16 +225,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN this_likesAggregate_edge.someDuration < $this_likesAggregate_edge_someDuration_LT
-            \\", { this: this, this_likesAggregate_edge_someDuration_LT: $this_likesAggregate_edge_someDuration_LT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN aggr_edge.someDuration < $aggr_edge_someDuration_LT
+            \\", { this: this, aggr_edge_someDuration_LT: $aggr_edge_someDuration_LT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_LT\\": {
+                \\"aggr_edge_someDuration_LT\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -265,16 +265,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN this_likesAggregate_edge.someDuration <= $this_likesAggregate_edge_someDuration_LTE
-            \\", { this: this, this_likesAggregate_edge_someDuration_LTE: $this_likesAggregate_edge_someDuration_LTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN aggr_edge.someDuration <= $aggr_edge_someDuration_LTE
+            \\", { this: this, aggr_edge_someDuration_LTE: $aggr_edge_someDuration_LTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_LTE\\": {
+                \\"aggr_edge_someDuration_LTE\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -305,16 +305,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN avg(this_likesAggregate_edge.someDuration) = $this_likesAggregate_edge_someDuration_AVERAGE_EQUAL
-            \\", { this: this, this_likesAggregate_edge_someDuration_AVERAGE_EQUAL: $this_likesAggregate_edge_someDuration_AVERAGE_EQUAL }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN avg(aggr_edge.someDuration) = $aggr_edge_someDuration_AVERAGE_EQUAL
+            \\", { this: this, aggr_edge_someDuration_AVERAGE_EQUAL: $aggr_edge_someDuration_AVERAGE_EQUAL }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_AVERAGE_EQUAL\\": {
+                \\"aggr_edge_someDuration_AVERAGE_EQUAL\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -345,16 +345,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN avg(this_likesAggregate_edge.someDuration) > $this_likesAggregate_edge_someDuration_AVERAGE_GT
-            \\", { this: this, this_likesAggregate_edge_someDuration_AVERAGE_GT: $this_likesAggregate_edge_someDuration_AVERAGE_GT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN avg(aggr_edge.someDuration) > $aggr_edge_someDuration_AVERAGE_GT
+            \\", { this: this, aggr_edge_someDuration_AVERAGE_GT: $aggr_edge_someDuration_AVERAGE_GT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_AVERAGE_GT\\": {
+                \\"aggr_edge_someDuration_AVERAGE_GT\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -385,16 +385,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN avg(this_likesAggregate_edge.someDuration) >= $this_likesAggregate_edge_someDuration_AVERAGE_GTE
-            \\", { this: this, this_likesAggregate_edge_someDuration_AVERAGE_GTE: $this_likesAggregate_edge_someDuration_AVERAGE_GTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN avg(aggr_edge.someDuration) >= $aggr_edge_someDuration_AVERAGE_GTE
+            \\", { this: this, aggr_edge_someDuration_AVERAGE_GTE: $aggr_edge_someDuration_AVERAGE_GTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_AVERAGE_GTE\\": {
+                \\"aggr_edge_someDuration_AVERAGE_GTE\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -425,16 +425,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN avg(this_likesAggregate_edge.someDuration) < $this_likesAggregate_edge_someDuration_AVERAGE_LT
-            \\", { this: this, this_likesAggregate_edge_someDuration_AVERAGE_LT: $this_likesAggregate_edge_someDuration_AVERAGE_LT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN avg(aggr_edge.someDuration) < $aggr_edge_someDuration_AVERAGE_LT
+            \\", { this: this, aggr_edge_someDuration_AVERAGE_LT: $aggr_edge_someDuration_AVERAGE_LT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_AVERAGE_LT\\": {
+                \\"aggr_edge_someDuration_AVERAGE_LT\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -465,16 +465,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN avg(this_likesAggregate_edge.someDuration) <= $this_likesAggregate_edge_someDuration_AVERAGE_LTE
-            \\", { this: this, this_likesAggregate_edge_someDuration_AVERAGE_LTE: $this_likesAggregate_edge_someDuration_AVERAGE_LTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN avg(aggr_edge.someDuration) <= $aggr_edge_someDuration_AVERAGE_LTE
+            \\", { this: this, aggr_edge_someDuration_AVERAGE_LTE: $aggr_edge_someDuration_AVERAGE_LTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_AVERAGE_LTE\\": {
+                \\"aggr_edge_someDuration_AVERAGE_LTE\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -505,16 +505,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  min(this_likesAggregate_edge.someDuration) = $this_likesAggregate_edge_someDuration_MIN_EQUAL
-            \\", { this: this, this_likesAggregate_edge_someDuration_MIN_EQUAL: $this_likesAggregate_edge_someDuration_MIN_EQUAL }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  min(aggr_edge.someDuration) = $aggr_edge_someDuration_MIN_EQUAL
+            \\", { this: this, aggr_edge_someDuration_MIN_EQUAL: $aggr_edge_someDuration_MIN_EQUAL }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_MIN_EQUAL\\": {
+                \\"aggr_edge_someDuration_MIN_EQUAL\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -545,16 +545,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  min(this_likesAggregate_edge.someDuration) > $this_likesAggregate_edge_someDuration_MIN_GT
-            \\", { this: this, this_likesAggregate_edge_someDuration_MIN_GT: $this_likesAggregate_edge_someDuration_MIN_GT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  min(aggr_edge.someDuration) > $aggr_edge_someDuration_MIN_GT
+            \\", { this: this, aggr_edge_someDuration_MIN_GT: $aggr_edge_someDuration_MIN_GT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_MIN_GT\\": {
+                \\"aggr_edge_someDuration_MIN_GT\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -585,16 +585,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  min(this_likesAggregate_edge.someDuration) >= $this_likesAggregate_edge_someDuration_MIN_GTE
-            \\", { this: this, this_likesAggregate_edge_someDuration_MIN_GTE: $this_likesAggregate_edge_someDuration_MIN_GTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  min(aggr_edge.someDuration) >= $aggr_edge_someDuration_MIN_GTE
+            \\", { this: this, aggr_edge_someDuration_MIN_GTE: $aggr_edge_someDuration_MIN_GTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_MIN_GTE\\": {
+                \\"aggr_edge_someDuration_MIN_GTE\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -625,16 +625,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  min(this_likesAggregate_edge.someDuration) < $this_likesAggregate_edge_someDuration_MIN_LT
-            \\", { this: this, this_likesAggregate_edge_someDuration_MIN_LT: $this_likesAggregate_edge_someDuration_MIN_LT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  min(aggr_edge.someDuration) < $aggr_edge_someDuration_MIN_LT
+            \\", { this: this, aggr_edge_someDuration_MIN_LT: $aggr_edge_someDuration_MIN_LT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_MIN_LT\\": {
+                \\"aggr_edge_someDuration_MIN_LT\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -665,16 +665,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  min(this_likesAggregate_edge.someDuration) <= $this_likesAggregate_edge_someDuration_MIN_LTE
-            \\", { this: this, this_likesAggregate_edge_someDuration_MIN_LTE: $this_likesAggregate_edge_someDuration_MIN_LTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  min(aggr_edge.someDuration) <= $aggr_edge_someDuration_MIN_LTE
+            \\", { this: this, aggr_edge_someDuration_MIN_LTE: $aggr_edge_someDuration_MIN_LTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_MIN_LTE\\": {
+                \\"aggr_edge_someDuration_MIN_LTE\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -705,16 +705,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  max(this_likesAggregate_edge.someDuration) = $this_likesAggregate_edge_someDuration_MAX_EQUAL
-            \\", { this: this, this_likesAggregate_edge_someDuration_MAX_EQUAL: $this_likesAggregate_edge_someDuration_MAX_EQUAL }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  max(aggr_edge.someDuration) = $aggr_edge_someDuration_MAX_EQUAL
+            \\", { this: this, aggr_edge_someDuration_MAX_EQUAL: $aggr_edge_someDuration_MAX_EQUAL }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_MAX_EQUAL\\": {
+                \\"aggr_edge_someDuration_MAX_EQUAL\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -745,16 +745,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  max(this_likesAggregate_edge.someDuration) > $this_likesAggregate_edge_someDuration_MAX_GT
-            \\", { this: this, this_likesAggregate_edge_someDuration_MAX_GT: $this_likesAggregate_edge_someDuration_MAX_GT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  max(aggr_edge.someDuration) > $aggr_edge_someDuration_MAX_GT
+            \\", { this: this, aggr_edge_someDuration_MAX_GT: $aggr_edge_someDuration_MAX_GT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_MAX_GT\\": {
+                \\"aggr_edge_someDuration_MAX_GT\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -785,16 +785,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  max(this_likesAggregate_edge.someDuration) >= $this_likesAggregate_edge_someDuration_MAX_GTE
-            \\", { this: this, this_likesAggregate_edge_someDuration_MAX_GTE: $this_likesAggregate_edge_someDuration_MAX_GTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  max(aggr_edge.someDuration) >= $aggr_edge_someDuration_MAX_GTE
+            \\", { this: this, aggr_edge_someDuration_MAX_GTE: $aggr_edge_someDuration_MAX_GTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_MAX_GTE\\": {
+                \\"aggr_edge_someDuration_MAX_GTE\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -825,16 +825,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  max(this_likesAggregate_edge.someDuration) < $this_likesAggregate_edge_someDuration_MAX_LT
-            \\", { this: this, this_likesAggregate_edge_someDuration_MAX_LT: $this_likesAggregate_edge_someDuration_MAX_LT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  max(aggr_edge.someDuration) < $aggr_edge_someDuration_MAX_LT
+            \\", { this: this, aggr_edge_someDuration_MAX_LT: $aggr_edge_someDuration_MAX_LT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_MAX_LT\\": {
+                \\"aggr_edge_someDuration_MAX_LT\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {
@@ -865,16 +865,16 @@ describe("Cypher Aggregations where edge with Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  max(this_likesAggregate_edge.someDuration) <= $this_likesAggregate_edge_someDuration_MAX_LTE
-            \\", { this: this, this_likesAggregate_edge_someDuration_MAX_LTE: $this_likesAggregate_edge_someDuration_MAX_LTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  max(aggr_edge.someDuration) <= $aggr_edge_someDuration_MAX_LTE
+            \\", { this: this, aggr_edge_someDuration_MAX_LTE: $aggr_edge_someDuration_MAX_LTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_someDuration_MAX_LTE\\": {
+                \\"aggr_edge_someDuration_MAX_LTE\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
                     \\"seconds\\": {

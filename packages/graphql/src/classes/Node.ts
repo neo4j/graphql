@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, NamedTypeNode } from "graphql";
+import type { DirectiveNode, NamedTypeNode } from "graphql";
 import camelcase from "camelcase";
 import pluralize from "pluralize";
 import type {
@@ -37,11 +37,15 @@ import type {
     TemporalField,
     UnionField,
 } from "../types";
-import Exclude from "./Exclude";
-import { GraphElement, GraphElementConstructor } from "./GraphElement";
-import { NodeDirective } from "./NodeDirective";
-import { QueryOptionsDirective } from "./QueryOptionsDirective";
+import type Exclude from "./Exclude";
+import type { GraphElementConstructor } from "./GraphElement";
+import { GraphElement } from "./GraphElement";
+import type { NodeDirective } from "./NodeDirective";
+import type { DecodedGlobalId} from "../utils/global-ids";
+import { fromGlobalId, toGlobalId } from "../utils/global-ids";
+import type { QueryOptionsDirective } from "./QueryOptionsDirective";
 import { upperFirst } from "../utils/upper-first";
+import { NodeAuth } from "./NodeAuth";
 
 export interface NodeConstructor extends GraphElementConstructor {
     name: string;
@@ -65,6 +69,9 @@ export interface NodeConstructor extends GraphElementConstructor {
     nodeDirective?: NodeDirective;
     description?: string;
     queryOptionsDirective?: QueryOptionsDirective;
+    isGlobalNode?: boolean;
+    globalIdField?: string;
+    globalIdFieldIsInt?: boolean;
 }
 
 type MutableField =
@@ -130,11 +137,14 @@ class Node extends GraphElement {
     public exclude?: Exclude;
     public nodeDirective?: NodeDirective;
     public fulltextDirective?: FullText;
-    public auth?: Auth;
+    public auth?: NodeAuth;
     public description?: string;
     public queryOptions?: QueryOptionsDirective;
     public singular: string;
     public plural: string;
+    public isGlobalNode: boolean | undefined;
+    private _idField: string | undefined;
+    private _idFieldIsInt?: boolean;
 
     constructor(input: NodeConstructor) {
         super(input);
@@ -149,8 +159,11 @@ class Node extends GraphElement {
         this.exclude = input.exclude;
         this.nodeDirective = input.nodeDirective;
         this.fulltextDirective = input.fulltextDirective;
-        this.auth = input.auth;
+        this.auth = input.auth ? new NodeAuth(input.auth) : undefined;
         this.queryOptions = input.queryOptionsDirective;
+        this.isGlobalNode = input.isGlobalNode;
+        this._idField = input.globalIdField;
+        this._idFieldIsInt = input.globalIdFieldIsInt;
         this.singular = this.generateSingular();
         this.plural = this.generatePlural();
     }
@@ -269,6 +282,25 @@ class Node extends GraphElement {
 
     public getMainLabel(): string {
         return this.nodeDirective?.label || this.name;
+    }
+
+    public getGlobalIdField(): string {
+        if (!this.isGlobalNode || !this._idField) {
+            throw new Error(
+                "The 'global' property needs to be set to true on an @id directive before accessing the unique node id field"
+            );
+        }
+        return this._idField;
+    }
+
+    public toGlobalId(id: string): string {
+        const typeName = this.name;
+        const field = this.getGlobalIdField();
+        return toGlobalId({ typeName, field, id });
+    }
+
+    public fromGlobalId(relayId: string): DecodedGlobalId {
+        return fromGlobalId(relayId, this._idFieldIsInt);
     }
 
     private generateSingular(): string {

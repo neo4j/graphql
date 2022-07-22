@@ -17,18 +17,20 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { gql } from "apollo-server";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("https://github.com/neo4j/graphql/issues/247", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -96,7 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
             schema: await neoSchema.getSchema(),
             source: createUsers,
             variableValues: { name },
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(createUsersResult.errors).toBeFalsy();
@@ -106,7 +108,7 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
             schema: await neoSchema.getSchema(),
             source: createMovies,
             variableValues: { title1, title2, title3 },
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(createMoviesResult.errors).toBeFalsy();
@@ -120,7 +122,7 @@ describe("https://github.com/neo4j/graphql/issues/247", () => {
             schema: await neoSchema.getSchema(),
             source: connect,
             variableValues: { name, title2, title3 },
-            contextValue: { driver },
+            contextValue: neo4j.getContextValues(),
         });
 
         expect(connectResult.errors).toBeFalsy();

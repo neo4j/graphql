@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
@@ -89,12 +89,14 @@ describe("Interface Relationships - Update create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             CREATE (this_create_actedIn_Movie0_node_Movie:Movie)
             SET this_create_actedIn_Movie0_node_Movie.title = $this_create_actedIn_Movie0_node_Movie_title
             SET this_create_actedIn_Movie0_node_Movie.runtime = $this_create_actedIn_Movie0_node_Movie_runtime
             MERGE (this)-[this_create_actedIn_Movie0_relationship:ACTED_IN]->(this_create_actedIn_Movie0_node_Movie)
             SET this_create_actedIn_Movie0_relationship.screenTime = $this_create_actedIn_Movie0_relationship_screenTime
+            WITH this
+            CALL {
             WITH this
             CALL {
             WITH this
@@ -105,7 +107,8 @@ describe("Interface Relationships - Update create", () => {
             MATCH (this)-[:ACTED_IN]->(this_Series:Series)
             RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
-            WITH this, collect(actedIn) AS actedIn
+            RETURN collect(actedIn) AS actedIn
+            }
             RETURN collect(DISTINCT this { .name, actedIn: actedIn }) AS data"
         `);
 

@@ -109,8 +109,8 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Drive)
-            WHERE this.current = $this_current
+            "MATCH (this:\`Drive\`)
+            WHERE this.current = $param0
             CALL {
             WITH this
             MATCH (this)-[this_consists_of_relationship:CONSISTS_OF]->(this_drivecomposition:DriveComposition)
@@ -121,7 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             WITH this_drivecomposition
             MATCH (this_drivecomposition)-[this_drivecomposition_has_relationship:HAS]->(this_drivecomposition_Battery:Battery)
             WHERE this_drivecomposition_has_relationship.current = $this_driveCompositionsConnection.edges.node.driveComponentConnection.args.where.Battery.edge.current
-            CALL apoc.util.validate(NOT((ANY(r IN [\\"admin\\"] WHERE ANY(rr IN $auth.roles WHERE r = rr)) AND apoc.util.validatePredicate(NOT($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH { current: this_drivecomposition_has_relationship.current, node: { __resolveType: \\"Battery\\", id: this_drivecomposition_Battery.id } } AS edge
             RETURN edge
             UNION
@@ -132,17 +132,21 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS driveComponentConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS driveComponentConnection
             }
             WITH collect({ node: { driveComponentConnection: driveComponentConnection } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS driveCompositionsConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS driveCompositionsConnection
             }
             RETURN this { .current, driveCompositionsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_current\\": true,
+                \\"param0\\": true,
                 \\"this_driveCompositionsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

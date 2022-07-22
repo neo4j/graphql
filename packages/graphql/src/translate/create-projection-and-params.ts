@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 import { GraphQLUnionType } from "graphql";
 import { mergeDeep } from "@graphql-tools/utils";
-import { Node } from "../classes";
+import type { Node } from "../classes";
 import createWhereAndParams from "./where/create-where-and-params";
-import { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
+import type { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
@@ -32,8 +32,9 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
+import { addGlobalIdField } from "../utils/global-node-projection";
 import { getRelationshipDirection } from "../utils/get-relationship-direction";
-import { generateMissingOrAliasedFields, filterFieldsInSelection } from "./utils/resolveTree";
+import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 
 interface Res {
@@ -42,10 +43,11 @@ interface Res {
     meta: ProjectionMeta;
 }
 
-interface ProjectionMeta {
+export interface ProjectionMeta {
     authValidateStrs?: string[];
     connectionFields?: ResolveTree[];
     interfaceFields?: ResolveTree[];
+    rootConnectionCypherSortFields?: { alias: string; apocStr: string }[];
 }
 
 function createNodeWhereAndParams({
@@ -107,13 +109,13 @@ function createNodeWhereAndParams({
         },
     });
     if (preAuth[0]) {
-        whereStrs.push(`apoc.util.validatePredicate(NOT(${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        whereStrs.push(`apoc.util.validatePredicate(NOT (${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
         params = { ...params, ...preAuth[1] };
     }
 
     if (authValidateStrs?.length) {
         whereStrs.push(
-            `apoc.util.validatePredicate(NOT(${authValidateStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+            `apoc.util.validatePredicate(NOT (${authValidateStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
         );
     }
 
@@ -129,6 +131,7 @@ function createProjectionAndParams({
     literalElements,
     resolveType,
     inRelationshipProjection,
+    isRootConnectionField,
 }: {
     resolveTree: ResolveTree;
     node: Node;
@@ -138,7 +141,8 @@ function createProjectionAndParams({
     literalElements?: boolean;
     resolveType?: boolean;
     inRelationshipProjection?: boolean;
-}): [string, any, ProjectionMeta?] {
+    isRootConnectionField?: boolean;
+}): [string, any, ProjectionMeta | undefined] {
     function reducer(res: Res, field: ResolveTree): Res {
         const alias = field.alias;
         let param = "";
@@ -196,6 +200,7 @@ function createProjectionAndParams({
                     context,
                     varName: `${varName}_${alias}`,
                     chainStr: param,
+                    isRootConnectionField,
                     inRelationshipProjection: true,
                 });
                 const [str, p, meta] = recurse;
@@ -224,7 +229,7 @@ function createProjectionAndParams({
                     if (refNode) {
                         const labelsStatements = refNode
                             .getLabels(context)
-                            .map((label) => `"${label}" IN labels(${varName}_${alias})`);
+                            .map((label) => `${varName}_${alias}:\`${label}\``);
                         unionWheres.push(`(${labelsStatements.join("AND")})`);
 
                         const innerHeadStr: string[] = [
@@ -298,9 +303,10 @@ function createProjectionAndParams({
                 ...(context.cypherParams ? { cypherParams: context.cypherParams } : {}),
             };
 
-            const expectMultipleValues = referenceNode && cypherField.typeMeta.array ? "true" : "false";
+            const expectMultipleValues =
+                (referenceNode || referenceUnion) && cypherField.typeMeta.array ? "true" : "false";
             const apocWhere = projectionAuthStrs.length
-                ? `WHERE apoc.util.validatePredicate(NOT(${projectionAuthStrs.join(
+                ? `WHERE apoc.util.validatePredicate(NOT (${projectionAuthStrs.join(
                       " AND "
                   )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
                 : "";
@@ -319,8 +325,35 @@ function createProjectionAndParams({
                 !isProjectionStrEmpty ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ""
             }`;
 
+            // if this is a root connection field, and is also the sort argument
+            // push the fieldName into the projection and stash the apocStr in the
+            // returned meta object
+            if (isRootConnectionField) {
+                const sortInput = (context.resolveTree.args.sort ?? []) as GraphQLSortArg[];
+                const isSortArg = sortInput.find((obj) => Object.keys(obj)[0] === alias);
+                if (isSortArg) {
+                    if (!res.meta.rootConnectionCypherSortFields) {
+                        res.meta.rootConnectionCypherSortFields = [];
+                    }
+
+                    res.meta.rootConnectionCypherSortFields.push({
+                        alias,
+                        apocStr,
+                    });
+                    res.projection.push(`${alias}: edges.${alias}`);
+
+                    return res;
+                }
+            }
+
             if (cypherField.isScalar || cypherField.isEnum) {
                 res.projection.push(`${alias}: ${apocStr}`);
+
+                return res;
+            }
+
+            if (referenceUnion && cypherField.typeMeta.array) {
+                res.projection.push(`${alias}: apoc.coll.flatten([${apocStr}])`);
 
                 return res;
             }
@@ -377,7 +410,7 @@ function createProjectionAndParams({
                     }
                 }
 
-                res.projection.push(`${field.alias}: ${field.alias}${offsetLimitStr}`);
+                res.projection.push(`${field.alias}: ${field.name}${offsetLimitStr}`);
 
                 return res;
             }
@@ -428,6 +461,7 @@ function createProjectionAndParams({
                             node: refNode,
                             context,
                             varName: param,
+                            isRootConnectionField,
                         });
 
                         const nodeWhereAndParams = createNodeWhereAndParams({
@@ -485,6 +519,7 @@ function createProjectionAndParams({
                 varName: `${varName}_${alias}`,
                 chainStr: param,
                 inRelationshipProjection: true,
+                isRootConnectionField,
             });
             [projectionStr] = recurse;
             res.params = { ...res.params, ...recurse[1] };
@@ -606,10 +641,38 @@ function createProjectionAndParams({
         return res;
     }
 
+    let existingProjection = { ...resolveTree.fieldsByTypeName[node.name] };
+
+    // If we have a query for a globalNode and it includes the "id" field
+    // we modify the projection to include the appropriate db fields
+
+    if (node.isGlobalNode && existingProjection.id) {
+        existingProjection = addGlobalIdField(existingProjection, node.getGlobalIdField());
+    }
+
+    // Fields of reference node to sort on. Since sorting is done on projection, if field is not selected
+    // sort will fail silently
+
+    const sortFieldNames = ((resolveTree.args.options as GraphQLOptionsArg)?.sort ?? []).map(Object.keys).flat();
+
+    // Iterate over fields name in sort argument
+    const nodeFields = sortFieldNames.reduce(
+        (acc, sortFieldName) => ({
+            ...acc,
+            // If fieldname is not found in fields of selection set
+            ...(!Object.values(existingProjection).find((field) => field.name === sortFieldName)
+                ? // generate a basic resolve tree
+                  generateProjectionField({ name: sortFieldName })
+                : {}),
+        }),
+        // and add it to existing fields for projection
+        existingProjection
+    );
+
     // Include fields of implemented interfaces to allow for fragments on interfaces
     // cf. https://github.com/neo4j/graphql/issues/476
     const mergedSelectedFields: Record<string, ResolveTree> = mergeDeep<Record<string, ResolveTree>[]>([
-        resolveTree.fieldsByTypeName[node.name],
+        nodeFields,
         ...node.interfaces.map((i) => resolveTree.fieldsByTypeName[i.name.value]),
     ]);
 

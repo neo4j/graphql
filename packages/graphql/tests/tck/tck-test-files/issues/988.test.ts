@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -135,61 +135,35 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Series)
-            WHERE ((EXISTS((this)-[:MANUFACTURER]->(:Manufacturer)) AND ANY(this_AND_OR_manufacturerConnection_Manufacturer_map IN [(this)-[this_AND_OR_manufacturerConnection_Manufacturer_SeriesManufacturerRelationship:MANUFACTURER]->(this_AND_OR_manufacturerConnection_Manufacturer:Manufacturer)  | { node: this_AND_OR_manufacturerConnection_Manufacturer, relationship: this_AND_OR_manufacturerConnection_Manufacturer_SeriesManufacturerRelationship } ] WHERE this_AND_OR_manufacturerConnection_Manufacturer_map.relationship.current = $this_AND_OR_series.where.manufacturerConnection.edge.current AND this_AND_OR_manufacturerConnection_Manufacturer_map.node.name = $this_AND_OR_series.where.manufacturerConnection.node.name) OR EXISTS((this)-[:MANUFACTURER]->(:Manufacturer)) AND ANY(this_AND_OR1_manufacturerConnection_Manufacturer_map IN [(this)-[this_AND_OR1_manufacturerConnection_Manufacturer_SeriesManufacturerRelationship:MANUFACTURER]->(this_AND_OR1_manufacturerConnection_Manufacturer:Manufacturer)  | { node: this_AND_OR1_manufacturerConnection_Manufacturer, relationship: this_AND_OR1_manufacturerConnection_Manufacturer_SeriesManufacturerRelationship } ] WHERE this_AND_OR1_manufacturerConnection_Manufacturer_map.relationship.current = $this_AND_OR1_series.where.manufacturerConnection.edge.current AND this_AND_OR1_manufacturerConnection_Manufacturer_map.node.name = $this_AND_OR1_series.where.manufacturerConnection.node.name)) AND (EXISTS((this)-[:BRAND]->(:Brand)) AND ANY(this_AND1_OR_brandConnection_Brand_map IN [(this)-[this_AND1_OR_brandConnection_Brand_SeriesBrandRelationship:BRAND]->(this_AND1_OR_brandConnection_Brand:Brand)  | { node: this_AND1_OR_brandConnection_Brand, relationship: this_AND1_OR_brandConnection_Brand_SeriesBrandRelationship } ] WHERE this_AND1_OR_brandConnection_Brand_map.relationship.current = $this_AND1_OR_series.where.brandConnection.edge.current AND this_AND1_OR_brandConnection_Brand_map.node.name = $this_AND1_OR_series.where.brandConnection.node.name))) AND this.current = $this_current
+            "MATCH (this:\`Series\`)
+            WHERE (((size([(this)-[this0:MANUFACTURER]->(this1:\`Manufacturer\`) WHERE (this0.current = $param0 AND this1.name = $param1) | 1]) > 0 OR size([(this)-[this2:MANUFACTURER]->(this3:\`Manufacturer\`) WHERE (this2.current = $param2 AND this3.name = $param3) | 1]) > 0) AND size([(this)-[this4:BRAND]->(this5:\`Brand\`) WHERE (this4.current = $param4 AND this5.name = $param5) | 1]) > 0) AND this.current = $param6)
             CALL {
             WITH this
             MATCH (this)-[this_manufacturer_relationship:MANUFACTURER]->(this_manufacturer:Manufacturer)
             WITH collect({ current: this_manufacturer_relationship.current, node: { name: this_manufacturer.name } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS manufacturerConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS manufacturerConnection
             }
             CALL {
             WITH this
             MATCH (this)-[this_brand_relationship:BRAND]->(this_brand:Brand)
             WITH collect({ current: this_brand_relationship.current, node: { name: this_brand.name } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS brandConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS brandConnection
             }
             RETURN this { .name, .current, manufacturerConnection, brandConnection } as this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_AND_OR_series\\": {
-                    \\"where\\": {
-                        \\"manufacturerConnection\\": {
-                            \\"edge\\": {
-                                \\"current\\": true
-                            },
-                            \\"node\\": {
-                                \\"name\\": \\"C\\"
-                            }
-                        }
-                    }
-                },
-                \\"this_AND_OR1_series\\": {
-                    \\"where\\": {
-                        \\"manufacturerConnection\\": {
-                            \\"edge\\": {
-                                \\"current\\": false
-                            },
-                            \\"node\\": {
-                                \\"name\\": \\"AM\\"
-                            }
-                        }
-                    }
-                },
-                \\"this_AND1_OR_series\\": {
-                    \\"where\\": {
-                        \\"brandConnection\\": {
-                            \\"edge\\": {
-                                \\"current\\": true
-                            },
-                            \\"node\\": {
-                                \\"name\\": \\"smart\\"
-                            }
-                        }
-                    }
-                },
-                \\"this_current\\": true
+                \\"param0\\": true,
+                \\"param1\\": \\"C\\",
+                \\"param2\\": false,
+                \\"param3\\": \\"AM\\",
+                \\"param4\\": true,
+                \\"param5\\": \\"smart\\",
+                \\"param6\\": true
             }"
         `);
     });

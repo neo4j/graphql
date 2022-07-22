@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { graphql, GraphQLError } from "graphql";
+import type { GraphQLError } from "graphql";
+import { graphql } from "graphql";
 import { Neo4jGraphQL } from "../../src/classes";
 
 describe("Errors", () => {
@@ -45,7 +46,7 @@ describe("Errors", () => {
 
         expect(gqlResult.errors).toHaveLength(1);
         expect((gqlResult.errors as GraphQLError[])[0].message).toBe(
-            "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or passed as context.driver in each request."
+            "A Neo4j driver instance must either be passed to Neo4jGraphQL on construction, or a driver, session or transaction passed as context.executionContext in each request."
         );
     });
 });

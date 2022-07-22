@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../src";
 import { createJwtRequest } from "../../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../../utils/tck-test-utils";
@@ -62,16 +62,16 @@ describe("Cypher Aggregations where node with ID", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN this_likesAggregate_node.id = $this_likesAggregate_node_id_EQUAL
-            \\", { this: this, this_likesAggregate_node_id_EQUAL: $this_likesAggregate_node_id_EQUAL }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN aggr_node.id = $aggr_node_id_EQUAL
+            \\", { this: this, aggr_node_id_EQUAL: $aggr_node_id_EQUAL }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_id_EQUAL\\": \\"10\\"
+                \\"aggr_node_id_EQUAL\\": \\"10\\"
             }"
         `);
     });
@@ -91,16 +91,16 @@ describe("Cypher Aggregations where node with ID", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN this_likesAggregate_node._someIdAlias = $this_likesAggregate_node_someIdAlias_EQUAL
-            \\", { this: this, this_likesAggregate_node_someIdAlias_EQUAL: $this_likesAggregate_node_someIdAlias_EQUAL }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN aggr_node._someIdAlias = $aggr_node_someIdAlias_EQUAL
+            \\", { this: this, aggr_node_someIdAlias_EQUAL: $aggr_node_someIdAlias_EQUAL }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someIdAlias_EQUAL\\": \\"10\\"
+                \\"aggr_node_someIdAlias_EQUAL\\": \\"10\\"
             }"
         `);
     });

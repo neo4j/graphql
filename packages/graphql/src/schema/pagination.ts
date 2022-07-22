@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { FieldNode, GraphQLResolveInfo, SelectionSetNode } from "graphql";
+import type { FieldNode, GraphQLResolveInfo, SelectionSetNode } from "graphql";
 import { getOffsetWithDefault, offsetToCursor } from "graphql-relay/connection/arrayConnection";
-import { Integer } from "neo4j-driver";
-import { ConnectionField, ConnectionQueryArgs } from "../types";
+import type { Integer } from "neo4j-driver";
+import type { ConnectionField, ConnectionQueryArgs } from "../types";
 import { isNeoInt } from "../utils/utils";
 
 function getAliasKey({ selectionSet, key }: { selectionSet: SelectionSetNode | undefined; key: string }): string {

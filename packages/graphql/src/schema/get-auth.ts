@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import { DirectiveNode, valueFromASTUntyped } from "graphql";
-import { Auth, AuthRule, AuthOperations } from "../types";
+import type { DirectiveNode} from "graphql";
+import { valueFromASTUntyped } from "graphql";
+import type { Auth, AuthRule, AuthOperations } from "../types";
 
-const validOperations: AuthOperations[] = ["CREATE", "READ", "UPDATE", "DELETE", "CONNECT", "DISCONNECT"];
+const validOperations: AuthOperations[] = ["CREATE", "READ", "UPDATE", "DELETE", "CONNECT", "DISCONNECT", "SUBSCRIBE"];
 const validFields = [
     "operations",
     "AND",

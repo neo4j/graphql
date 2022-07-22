@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import { Node, Relationship } from "../classes";
-import { RelationField, Context } from "../types";
+import type { Node, Relationship } from "../classes";
+import type { RelationField, Context } from "../types";
 import createWhereAndParams from "./where/create-where-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import createRelationshipValidationString from "./create-relationship-validation-string";
-import { CallbackBucket } from "../classes/CallbackBucket";
+import type { CallbackBucket } from "../classes/CallbackBucket";
 
 interface Res {
     connects: string[];
@@ -195,7 +195,7 @@ function createConnectAndParams({
             const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}`);
             subquery.push(
-                `\tCALL apoc.util.validate(NOT(${preAuth.connects.join(
+                `\tCALL apoc.util.validate(NOT (${preAuth.connects.join(
                     " AND "
                 )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
             );
@@ -207,8 +207,8 @@ function createConnectAndParams({
            Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
         */
-        subquery.push(`\tFOREACH(_ IN CASE ${parentVar} WHEN NULL THEN [] ELSE [1] END | `);
-        subquery.push(`\t\tFOREACH(_ IN CASE ${nodeName} WHEN NULL THEN [] ELSE [1] END | `);
+        subquery.push(`\tFOREACH(_ IN CASE WHEN ${parentVar} IS NULL THEN [] ELSE [1] END | `);
+        subquery.push(`\t\tFOREACH(_ IN CASE WHEN ${nodeName} IS NULL THEN [] ELSE [1] END | `);
         subquery.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
         if (relationField.properties) {
@@ -255,6 +255,7 @@ function createConnectAndParams({
 
         if (connect.connect) {
             const connects = (Array.isArray(connect.connect) ? connect.connect : [connect.connect]) as any[];
+
             connects.forEach((c) => {
                 const reduced = Object.entries(c)
                     .filter(([k]) => {
@@ -396,14 +397,14 @@ function createConnectAndParams({
             const quote = insideDoWhen ? `\\"` : `"`;
             subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}`);
             subquery.push(
-                `\tCALL apoc.util.validate(NOT(${postAuth.connects.join(
+                `\tCALL apoc.util.validate(NOT (${postAuth.connects.join(
                     " AND "
                 )}), ${quote}${AUTH_FORBIDDEN_ERROR}${quote}, [0])`
             );
             params = { ...params, ...postAuth.params };
         }
 
-        subquery.push("\tRETURN count(*)");
+        subquery.push("\tRETURN count(*) AS _");
 
         return { subquery: subquery.join("\n"), params };
     }

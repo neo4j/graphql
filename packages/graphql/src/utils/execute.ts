@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import { SessionMode, Transaction, QueryResult, Neo4jError } from "neo4j-driver";
+import type { SessionMode, QueryResult, Session, Transaction } from "neo4j-driver";
+import { Neo4jError } from "neo4j-driver";
 import Debug from "debug";
 import {
     Neo4jGraphQLForbiddenError,
@@ -32,7 +33,7 @@ import {
     RELATIONSHIP_REQUIREMENT_PREFIX,
 } from "../constants";
 import createAuthParam from "../translate/create-auth-param";
-import { Context, DriverConfig } from "../types";
+import type { Context, DriverConfig } from "../types";
 import environment from "../environment";
 
 const debug = Debug(DEBUG_EXECUTE);
@@ -44,114 +45,33 @@ export interface ExecuteResult {
     records: Record<PropertyKey, any>[];
 }
 
-async function execute(input: {
+async function execute({
+    cypher,
+    params,
+    defaultAccessMode,
+    context,
+}: {
     cypher: string;
     params: any;
     defaultAccessMode: SessionMode;
     context: Context;
 }): Promise<ExecuteResult> {
-    const sessionParams: {
-        defaultAccessMode?: SessionMode;
-        bookmarks?: string | string[];
-        database?: string;
-    } = { defaultAccessMode: input.defaultAccessMode };
+    const result = await context.executor.execute(cypher, params, defaultAccessMode);
 
-    const driverConfig = input.context.driverConfig as DriverConfig;
-    if (driverConfig) {
-        if (driverConfig.database) {
-            sessionParams.database = driverConfig.database;
-        }
-
-        if (driverConfig.bookmarks) {
-            sessionParams.bookmarks = driverConfig.bookmarks;
-        }
+    if (!result) {
+        throw new Error("Unable to execute query against Neo4j database");
     }
 
-    const session = input.context.driver.session(sessionParams);
+    const records = result.records.map((r) => r.toObject());
 
-    // Its really difficult to know when users are using the `auth` param. For Simplicity it better to do the check here
-    if (
-        input.cypher.includes("$auth.") ||
-        input.cypher.includes("auth: $auth") ||
-        input.cypher.includes("auth:$auth")
-    ) {
-        input.params.auth = createAuthParam({ context: input.context });
-    }
+    debug(`Execute successful, received ${records.length} records`);
 
-    const cypher =
-        input.context.queryOptions && Object.keys(input.context.queryOptions).length
-            ? `CYPHER ${Object.entries(input.context.queryOptions)
-                  .map(([key, value]) => `${key}=${value}`)
-                  .join(" ")}\n${input.cypher}`
-            : input.cypher;
-
-    try {
-        debug("%s", `About to execute Cypher:\nCypher:\n${cypher}\nParams:\n${JSON.stringify(input.params, null, 2)}`);
-
-        const app = `${environment.NPM_PACKAGE_NAME}@${environment.NPM_PACKAGE_VERSION}`;
-
-        let result: QueryResult | undefined;
-        const transactionWork = (tx: Transaction) => tx.run(cypher, input.params);
-        const transactionConfig = {
-            metadata: {
-                app,
-                type: "user-transpiled",
-            },
-        };
-
-        switch (input.defaultAccessMode) {
-            case "READ":
-                result = await session.readTransaction(transactionWork, transactionConfig);
-                break;
-            case "WRITE":
-                result = await session.writeTransaction(transactionWork, transactionConfig);
-                break;
-            // no default
-        }
-
-        if (!result) {
-            throw new Error("Unable to execute query against Neo4j database");
-        }
-
-        const records = result.records.map((r) => r.toObject());
-
-        debug(`Execute successful, received ${records.length} records`);
-
-        const bookmark = session.lastBookmark();
-
-        return {
-            // Despite being typed as `string | null`, seems to return `string[]`
-            bookmark: Array.isArray(bookmark) ? bookmark[0] : bookmark,
-            result,
-            statistics: result.summary.counters.updates(),
-            records: result.records.map((r) => r.toObject()),
-        };
-    } catch (error) {
-        if (error instanceof Neo4jError) {
-            if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_FORBIDDEN_ERROR}`)) {
-                throw new Neo4jGraphQLForbiddenError("Forbidden");
-            }
-
-            if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_UNAUTHENTICATED_ERROR}`)) {
-                throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
-            }
-
-            if (error.message.includes(`Caused by: java.lang.RuntimeException: ${RELATIONSHIP_REQUIREMENT_PREFIX}`)) {
-                const [, message] = error.message.split(RELATIONSHIP_REQUIREMENT_PREFIX);
-                throw new Neo4jGraphQLRelationshipValidationError(message);
-            }
-
-            if (error.code === "Neo.ClientError.Schema.ConstraintValidationFailed") {
-                throw new Neo4jGraphQLConstraintValidationError("Constraint validation failed");
-            }
-        }
-
-        debug("%s", error);
-
-        throw error;
-    } finally {
-        await session.close();
-    }
+    return {
+        bookmark: context.executor.lastBookmark,
+        result,
+        statistics: result.summary.counters.updates(),
+        records,
+    };
 }
 
 export default execute;

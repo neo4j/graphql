@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { Driver, Session } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import checkNeo4jCompat from "./verify-database";
 import { REQUIRED_APOC_FUNCTIONS, REQUIRED_APOC_PROCEDURES, MIN_VERSIONS } from "../../constants";
-import { DriverConfig } from "../../types";
+import type { DriverConfig } from "../../types";
 
 describe("checkNeo4jCompat", () => {
     test("should add driver config to session", async () => {
@@ -100,7 +100,7 @@ describe("checkNeo4jCompat", () => {
         );
     });
 
-    test("should not throw Error that 4.2.10 is less than 4.2.5", async () => {
+    test("should not throw Error that 4.3.10 is less than 4.3.5", async () => {
         // @ts-ignore
         const fakeSession: Session = {
             // @ts-ignore
@@ -108,8 +108,8 @@ describe("checkNeo4jCompat", () => {
                 records: [
                     {
                         toObject: () => ({
-                            version: "4.2.10",
-                            apocVersion: "4.2.0.0",
+                            version: "4.3.10",
+                            apocVersion: "4.3.0.0",
                             functions: REQUIRED_APOC_FUNCTIONS,
                             procedures: REQUIRED_APOC_PROCEDURES,
                         }),
@@ -160,41 +160,6 @@ describe("checkNeo4jCompat", () => {
         };
 
         await expect(checkNeo4jCompat({ driver: fakeDriver })).resolves.not.toThrow();
-    });
-
-    test("should throw expected APOC version", async () => {
-        const invalidApocVersion = "2.3.1";
-
-        // @ts-ignore
-        const fakeSession: Session = {
-            // @ts-ignore
-            run: () => ({
-                records: [
-                    {
-                        toObject: () => ({
-                            version: MIN_VERSIONS[0].neo4j,
-                            apocVersion: invalidApocVersion,
-                            functions: REQUIRED_APOC_FUNCTIONS,
-                            procedures: REQUIRED_APOC_PROCEDURES,
-                        }),
-                    },
-                ],
-            }),
-            // @ts-ignore
-            close: () => undefined,
-        };
-
-        // @ts-ignore
-        const fakeDriver: Driver = {
-            // @ts-ignore
-            session: () => fakeSession,
-            // @ts-ignore
-            verifyConnectivity: () => undefined,
-        };
-
-        await expect(checkNeo4jCompat({ driver: fakeDriver })).rejects.toThrow(
-            `Encountered the following DBMS compatiblility issues:\nAPOC version does not match Neo4j version '4.2', received: '${invalidApocVersion}'`
-        );
     });
 
     test("should throw missing APOC functions", async () => {

@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import { Node, Relationship } from "../classes";
-import { Context } from "../types";
+import pluralize from "pluralize";
+import type { Node, Relationship } from "../classes";
+import type { BaseField, Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
 import createCreateAndParams from "./create-create-and-params";
@@ -34,8 +35,11 @@ import createRelationshipValidationStr from "./create-relationship-validation-st
 import { createEventMeta } from "./subscriptions/create-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { escapeQuery } from "./utils/escape-query";
-import { CallbackBucket } from "../classes/CallbackBucket";
+import type { CallbackBucket } from "../classes/CallbackBucket";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
+import { buildMathStatements, matchMathField, mathDescriptorBuilder } from "./utils/math";
+import { indentBlock } from "./utils/indent-block";
+import { wrapStringInApostrophes } from "../utils/wrap-string-in-apostrophes";
 
 interface Res {
     strs: string[];
@@ -44,11 +48,12 @@ interface Res {
 }
 
 interface UpdateMeta {
+    preArrayMethodValidationStrs: [string, string][];
     preAuthStrs: string[];
     postAuthStrs: string[];
 }
 
-function createUpdateAndParams({
+export default function createUpdateAndParams({
     updateInput,
     varName,
     node,
@@ -238,7 +243,7 @@ function createUpdateAndParams({
                             if (context.subscriptionsEnabled) {
                                 updateStrs.push(`RETURN ${META_CYPHER_VARIABLE}`);
                             } else {
-                                updateStrs.push("RETURN count(*)");
+                                updateStrs.push("RETURN count(*) AS _");
                             }
                             const apocArgs = `{${withVars.map((withVar) => `${withVar}:${withVar}`).join(", ")}, ${
                                 parameterPrefix?.split(".")[0]
@@ -270,6 +275,7 @@ function createUpdateAndParams({
                             const setProperties = createSetRelationshipProperties({
                                 properties: update.update.edge,
                                 varName: relationshipVariable,
+                                withVars,
                                 relationship,
                                 callbackBucket,
                                 operation: "UPDATE",
@@ -278,9 +284,11 @@ function createUpdateAndParams({
                                 }${relationField.typeMeta.array ? `[${index}]` : ``}.update.edge`,
                             });
 
-                            const updateStrs = [escapeQuery(setProperties), escapeQuery("RETURN count(*)")];
-
-                            const apocArgs = `{${relationshipVariable}:${relationshipVariable}, ${
+                            const updateStrs = [escapeQuery(setProperties), escapeQuery("RETURN count(*) AS _")];
+                            const varsAsArgumentString = withVars
+                                .map((variable) => `${variable}:${variable}`)
+                                .join(", ");
+                            const apocArgs = `{${varsAsArgumentString}, ${relationshipVariable}:${relationshipVariable}, ${
                                 parameterPrefix?.split(".")[0]
                             }: $${parameterPrefix?.split(".")[0]}, resolvedCallbacks: $resolvedCallbacks}`;
 
@@ -364,7 +372,6 @@ function createUpdateAndParams({
                         if (withVars) {
                             subquery.push(`WITH ${withVars.join(", ")}`);
                         }
-
                         const creates = relationField.typeMeta.array ? update.create : [update.create];
                         creates.forEach((create, i) => {
                             const baseName = `${_varName}_create${i}`;
@@ -392,6 +399,7 @@ function createUpdateAndParams({
                                 const setA = createSetRelationshipProperties({
                                     properties: create.edge,
                                     varName: propertiesName,
+                                    withVars,
                                     relationship,
                                     callbackBucket,
                                     operation: "CREATE",
@@ -415,7 +423,7 @@ function createUpdateAndParams({
                     }
 
                     if (relationField.interface) {
-                        subquery.push("RETURN count(*)");
+                        subquery.push("RETURN count(*) AS _");
                     }
                 });
 
@@ -436,11 +444,6 @@ function createUpdateAndParams({
             return res;
         }
 
-        if (context.subscriptionsEnabled) {
-            const oldProps = `WITH ${varName} { .* } AS ${META_OLD_PROPS_CYPHER_VARIABLE}, ${withVars.join(", ")}`;
-            res.strs.push(oldProps);
-        }
-
         if (!hasAppliedTimeStamps) {
             const timestampedFields = node.temporalFields.filter(
                 (temporalField) =>
@@ -456,29 +459,40 @@ function createUpdateAndParams({
         }
 
         node.primitiveFields.forEach((field) =>
-            addCallbackAndSetParam(field, varName, updateInput, callbackBucket, res.strs)
+            addCallbackAndSetParam(field, varName, updateInput, callbackBucket, res.strs, "UPDATE")
         );
 
-        const settableField = node.mutableFields.find((x) => x.fieldName === key);
-        const authableField = node.authableFields.find((x) => x.fieldName === key);
+        const mathMatch = matchMathField(key);
+        const { hasMatched, propertyName } = mathMatch;
+        const settableFieldComparator = hasMatched ? propertyName : key;
+        const settableField = node.mutableFields.find((x) => x.fieldName === settableFieldComparator);
+        const authableField = node.authableFields.find(
+            (x) => x.fieldName === key || `${x.fieldName}_PUSH` === key || `${x.fieldName}_POP` === key
+        );
 
         if (settableField) {
+            if (settableField.typeMeta.required && value === null) {
+                throw new Error(`Cannot set non-nullable field ${node.name}.${settableField.fieldName} to null`);
+            }
+
             if (pointField) {
                 if (pointField.typeMeta.array) {
                     res.strs.push(`SET ${varName}.${dbFieldName} = [p in $${param} | point(p)]`);
                 } else {
                     res.strs.push(`SET ${varName}.${dbFieldName} = point($${param})`);
                 }
+            } else if (hasMatched) {
+                const mathDescriptor = mathDescriptorBuilder(value as number, node, mathMatch);
+                if (updateInput[mathDescriptor.dbName]) {
+                    throw new Error(`Cannot mutate the same field multiple times in one Mutation: ${mathDescriptor.dbName}`);
+                }
+
+                const mathStatements = buildMathStatements(mathDescriptor, varName, withVars, param);
+                res.strs.push(...mathStatements);
             } else {
                 res.strs.push(`SET ${varName}.${dbFieldName} = $${param}`);
             }
-
             res.params[param] = value;
-        }
-
-        if (context.subscriptionsEnabled) {
-            const eventMeta = createEventMeta({ event: "update", nodeVariable: varName, typename: node.name });
-            res.strs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, ${eventMeta}`);
         }
 
         if (authableField) {
@@ -499,7 +513,7 @@ function createUpdateAndParams({
                 });
 
                 if (!res.meta) {
-                    res.meta = { preAuthStrs: [], postAuthStrs: [] };
+                    res.meta = { preArrayMethodValidationStrs: [], preAuthStrs: [], postAuthStrs: [] };
                 }
 
                 if (preAuth[0]) {
@@ -514,6 +528,45 @@ function createUpdateAndParams({
             }
         }
 
+        const pushSuffix = "_PUSH";
+        const pushField = node.mutableFields.find((x) => `${x.fieldName}${pushSuffix}` === key);
+        if (pushField) {
+            if (pushField.dbPropertyName && updateInput[pushField.dbPropertyName]) {
+                throw new Error(`Cannot mutate the same field multiple times in one Mutation: ${pushField.dbPropertyName}`);
+            }
+
+            validateNonNullProperty(res, varName, pushField);
+
+            const pointArrayField = node.pointFields.find((x) => `${x.fieldName}_PUSH` === key);
+            if (pointArrayField) {
+                res.strs.push(
+                    `SET ${varName}.${pushField.dbPropertyName} = ${varName}.${pushField.dbPropertyName} + [p in $${param} | point(p)]`
+                );
+            } else {
+                res.strs.push(
+                    `SET ${varName}.${pushField.dbPropertyName} = ${varName}.${pushField.dbPropertyName} + $${param}`
+                );
+            }
+
+            res.params[param] = value;
+        }
+
+        const popSuffix = `_POP`;
+        const popField = node.mutableFields.find((x) => `${x.fieldName}${popSuffix}` === key);
+        if (popField) {
+            if (popField.dbPropertyName && updateInput[popField.dbPropertyName]) {
+                throw new Error(`Cannot mutate the same field multiple times in one Mutation: ${popField.dbPropertyName}`);
+            }
+
+            validateNonNullProperty(res, varName, popField);
+
+            res.strs.push(
+                `SET ${varName}.${popField.dbPropertyName} = ${varName}.${popField.dbPropertyName}[0..-$${param}]`
+            );
+
+            res.params[param] = value;
+        }
+
         return res;
     }
 
@@ -522,7 +575,7 @@ function createUpdateAndParams({
         params: {},
     });
 
-    const { strs, meta = { preAuthStrs: [], postAuthStrs: [] } } = reducedUpdate;
+    const { strs, meta = { preArrayMethodValidationStrs: [], preAuthStrs: [], postAuthStrs: [] } } = reducedUpdate;
     let params = reducedUpdate.params;
 
     let preAuthStrs: string[] = [];
@@ -558,6 +611,7 @@ function createUpdateAndParams({
         postAuthStrs = [...postAuthStrs, ...meta.postAuthStrs];
     }
 
+    let preArrayMethodValidationStr = "";
     let preAuthStr = "";
     let postAuthStr = "";
     const relationshipValidationStr = includeRelationshipValidation
@@ -566,19 +620,42 @@ function createUpdateAndParams({
 
     const forbiddenString = `"${AUTH_FORBIDDEN_ERROR}"`;
 
+    if (meta.preArrayMethodValidationStrs.length) {
+        const nullChecks = meta.preArrayMethodValidationStrs.map((validationStr) => `${validationStr[0]} IS NULL`);
+        const propertyNames = meta.preArrayMethodValidationStrs.map((validationStr) => validationStr[1]);
+
+        preArrayMethodValidationStr = `CALL apoc.util.validate(${nullChecks.join(" OR ")}, "${pluralize(
+            "Property",
+            propertyNames.length
+        )} ${propertyNames.map(() => "%s").join(", ")} cannot be NULL", [${wrapStringInApostrophes(propertyNames).join(
+            ", "
+        )}])`;
+    }
+
     if (preAuthStrs.length) {
-        const apocStr = `CALL apoc.util.validate(NOT(${preAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
+        const apocStr = `CALL apoc.util.validate(NOT (${preAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
         preAuthStr = `${withStr}\n${apocStr}`;
     }
 
     if (postAuthStrs.length) {
-        const apocStr = `CALL apoc.util.validate(NOT(${postAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
+        const apocStr = `CALL apoc.util.validate(NOT (${postAuthStrs.join(" AND ")}), ${forbiddenString}, [0])`;
         postAuthStr = `${withStr}\n${apocStr}`;
+    }
+
+    let statements = strs;
+    if (context.subscriptionsEnabled) {
+        statements = wrapInSubscriptionsMetaCall({
+            withVars,
+            nodeVariable: varName,
+            typename: node.name,
+            statements: strs,
+        });
     }
     return [
         [
             preAuthStr,
-            ...strs,
+            preArrayMethodValidationStr,
+            ...statements,
             postAuthStr,
             ...(relationshipValidationStr ? [withStr, relationshipValidationStr] : []),
         ].join("\n"),
@@ -586,4 +663,33 @@ function createUpdateAndParams({
     ];
 }
 
-export default createUpdateAndParams;
+function validateNonNullProperty(res: Res, varName: string, field: BaseField) {
+    if (!res.meta) {
+        res.meta = { preArrayMethodValidationStrs: [], preAuthStrs: [], postAuthStrs: [] };
+    }
+
+    res.meta.preArrayMethodValidationStrs.push([`${varName}.${field.dbPropertyName}`, `${field.dbPropertyName}`]);
+}
+
+function wrapInSubscriptionsMetaCall({
+    statements,
+    nodeVariable,
+    typename,
+    withVars,
+}: {
+    statements: string[];
+    nodeVariable: string;
+    typename: string;
+    withVars: string[];
+}): string[] {
+    const updateMetaVariable = "update_meta";
+    const preCallWith = `WITH ${nodeVariable} { .* } AS ${META_OLD_PROPS_CYPHER_VARIABLE}, ${withVars.join(", ")}`;
+
+    const callBlock = ["WITH *", ...statements, `RETURN ${META_CYPHER_VARIABLE} as ${updateMetaVariable}`];
+    const postCallWith = `WITH *, ${updateMetaVariable} as ${META_CYPHER_VARIABLE}`;
+
+    const eventMeta = createEventMeta({ event: "update", nodeVariable, typename });
+    const eventMetaWith = `WITH ${filterMetaVariable(withVars).join(", ")}, ${eventMeta}`;
+
+    return [preCallWith, "CALL {", ...indentBlock(callBlock), "}", postCallWith, eventMetaWith];
+}

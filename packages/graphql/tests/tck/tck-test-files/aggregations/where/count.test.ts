@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
@@ -60,16 +60,16 @@ describe("Cypher Aggregations where with count", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN count(this_likesAggregate_node) = $this_likesAggregate_count
-            \\", { this: this, this_likesAggregate_count: $this_likesAggregate_count }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN count(aggr_node) = $aggr_count
+            \\", { this: this, aggr_count: $aggr_count }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_count\\": {
+                \\"aggr_count\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 }
@@ -92,16 +92,16 @@ describe("Cypher Aggregations where with count", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN count(this_likesAggregate_node) < $this_likesAggregate_count_LT
-            \\", { this: this, this_likesAggregate_count_LT: $this_likesAggregate_count_LT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN count(aggr_node) < $aggr_count_LT
+            \\", { this: this, aggr_count_LT: $aggr_count_LT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_count_LT\\": {
+                \\"aggr_count_LT\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 }
@@ -124,16 +124,16 @@ describe("Cypher Aggregations where with count", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN count(this_likesAggregate_node) <= $this_likesAggregate_count_LTE
-            \\", { this: this, this_likesAggregate_count_LTE: $this_likesAggregate_count_LTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN count(aggr_node) <= $aggr_count_LTE
+            \\", { this: this, aggr_count_LTE: $aggr_count_LTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_count_LTE\\": {
+                \\"aggr_count_LTE\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 }
@@ -156,16 +156,16 @@ describe("Cypher Aggregations where with count", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN count(this_likesAggregate_node) > $this_likesAggregate_count_GT
-            \\", { this: this, this_likesAggregate_count_GT: $this_likesAggregate_count_GT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN count(aggr_node) > $aggr_count_GT
+            \\", { this: this, aggr_count_GT: $aggr_count_GT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_count_GT\\": {
+                \\"aggr_count_GT\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 }
@@ -188,16 +188,16 @@ describe("Cypher Aggregations where with count", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN count(this_likesAggregate_node) >= $this_likesAggregate_count_GTE
-            \\", { this: this, this_likesAggregate_count_GTE: $this_likesAggregate_count_GTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN count(aggr_node) >= $aggr_count_GTE
+            \\", { this: this, aggr_count_GTE: $aggr_count_GTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_count_GTE\\": {
+                \\"aggr_count_GTE\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 }

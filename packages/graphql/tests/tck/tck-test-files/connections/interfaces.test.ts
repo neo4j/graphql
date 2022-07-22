@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -88,7 +88,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             CALL {
             WITH this
             CALL {
@@ -103,7 +103,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
         `);
@@ -140,7 +142,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             CALL {
             WITH this
             CALL {
@@ -157,7 +159,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
         `);
@@ -208,7 +212,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             CALL {
             WITH this
             CALL {
@@ -225,7 +229,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
         `);
@@ -287,7 +293,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "MATCH (this:\`Actor\`)
             CALL {
             WITH this
             CALL {
@@ -304,7 +310,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
             RETURN edge
             }
             WITH collect(edge) as edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
             RETURN this { .name, actedInConnection } as this"
         `);
@@ -358,7 +366,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 });
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Actor)
+                    "MATCH (this:\`Actor\`)
                     CALL {
                     WITH this
                     CALL {
@@ -374,7 +382,11 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     }
                     WITH edge ORDER BY edge.screenTime ASC
                     WITH collect(edge) as edges
-                    RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+                    UNWIND edges as edge
+                    WITH edges, edge
+                    ORDER BY edge.screenTime ASC
+                    WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
                     }
                     RETURN this { .name, actedInConnection } as this"
                 `);
@@ -411,7 +423,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 });
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Actor)
+                    "MATCH (this:\`Actor\`)
                     CALL {
                     WITH this
                     CALL {
@@ -427,7 +439,11 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     }
                     WITH edge ORDER BY edge.node.title ASC
                     WITH collect(edge) as edges
-                    RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+                    UNWIND edges as edge
+                    WITH edges, edge
+                    ORDER BY edge.node.title ASC
+                    WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
                     }
                     RETURN this { .name, actedInConnection } as this"
                 `);
@@ -465,7 +481,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 });
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Actor)
+                    "MATCH (this:\`Actor\`)
                     CALL {
                     WITH this
                     CALL {
@@ -481,7 +497,11 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     }
                     WITH edge ORDER BY edge.screenTime ASC
                     WITH collect(edge) as edges
-                    RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+                    UNWIND edges as edge
+                    WITH edges, edge
+                    ORDER BY edge.screenTime ASC
+                    WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
                     }
                     RETURN this { .name, actedInConnection } as this"
                 `);
@@ -517,7 +537,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 });
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Actor)
+                    "MATCH (this:\`Actor\`)
                     CALL {
                     WITH this
                     CALL {
@@ -533,7 +553,11 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     }
                     WITH edge ORDER BY edge.node.title ASC
                     WITH collect(edge) as edges
-                    RETURN { edges: edges, totalCount: size(edges) } AS actedInConnection
+                    UNWIND edges as edge
+                    WITH edges, edge
+                    ORDER BY edge.node.title ASC
+                    WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
                     }
                     RETURN this { .name, actedInConnection } as this"
                 `);

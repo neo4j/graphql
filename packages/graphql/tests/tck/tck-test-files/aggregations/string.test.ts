@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
@@ -57,15 +57,14 @@ describe("Cypher Aggregations String", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { title: { shortest:
-                                        reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(\\"
-                                            RETURN
-                                            CASE size(current) < size(shortest)
-                                            WHEN true THEN current
-                                            ELSE shortest
-                                            END AS result
-                                        \\", { current: current, shortest: shortest }, false))
+                                        reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
+                                            CASE
+                                            WHEN size(current) < size(aggVar) THEN current
+                                            ELSE aggVar
+                                            END
+                                        )
                                      } }"
         `);
 
@@ -89,15 +88,14 @@ describe("Cypher Aggregations String", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { title: { longest:
-                                        reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(\\"
-                                            RETURN
-                                            CASE size(current) > size(shortest)
-                                            WHEN true THEN current
-                                            ELSE shortest
-                                            END AS result
-                                        \\", { current: current, shortest: shortest }, false))
+                                        reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
+                                            CASE
+                                            WHEN size(current) > size(aggVar) THEN current
+                                            ELSE aggVar
+                                            END
+                                        )
                                      } }"
         `);
 
@@ -122,23 +120,21 @@ describe("Cypher Aggregations String", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { title: { shortest:
-                                        reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(\\"
-                                            RETURN
-                                            CASE size(current) < size(shortest)
-                                            WHEN true THEN current
-                                            ELSE shortest
-                                            END AS result
-                                        \\", { current: current, shortest: shortest }, false))
+                                        reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
+                                            CASE
+                                            WHEN size(current) < size(aggVar) THEN current
+                                            ELSE aggVar
+                                            END
+                                        )
                                     , longest:
-                                        reduce(shortest = collect(this.title)[0], current IN collect(this.title) | apoc.cypher.runFirstColumn(\\"
-                                            RETURN
-                                            CASE size(current) > size(shortest)
-                                            WHEN true THEN current
-                                            ELSE shortest
-                                            END AS result
-                                        \\", { current: current, shortest: shortest }, false))
+                                        reduce(aggVar = collect(this.title)[0], current IN collect(this.title) |
+                                            CASE
+                                            WHEN size(current) > size(aggVar) THEN current
+                                            ELSE aggVar
+                                            END
+                                        )
                                      } }"
         `);
 

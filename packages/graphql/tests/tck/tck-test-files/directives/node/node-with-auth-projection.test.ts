@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
@@ -80,13 +80,15 @@ describe("Cypher Auth Projection On Connections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Person\`)
-            CALL apoc.util.validate(NOT(this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
             WITH this
             MATCH (this)-[this_has_post_relationship:HAS_POST]->(this_post:\`Comment\`)
-            CALL apoc.util.validate(NOT(EXISTS((this_post)<-[:HAS_POST]-(:\`Person\`)) AND ANY(creator IN [(this_post)<-[:HAS_POST]-(creator:\`Person\`) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (exists((this_post)<-[:HAS_POST]-(:\`Person\`)) AND any(creator IN [(this_post)<-[:HAS_POST]-(creator:\`Person\`) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { content: this_post.content } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS postsConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS postsConnection
             }
             RETURN this { .name, postsConnection } as this"
         `);

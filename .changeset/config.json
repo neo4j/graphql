@@ -1,0 +1,11 @@
+{
+    "$schema": "https://unpkg.com/@changesets/config@2.0.0/schema.json",
+    "changelog": ["@changesets/changelog-github", { "repo": "neo4j/graphql" }],
+    "commit": false,
+    "fixed": [["@neo4j/graphql", "@neo4j/graphql-ogm"]],
+    "linked": [],
+    "access": "public",
+    "baseBranch": "dev",
+    "updateInternalDependencies": "patch",
+    "ignore": ["@neo4j/graphql-plugin-subscriptions-amqp", "graphql-manual"]
+}

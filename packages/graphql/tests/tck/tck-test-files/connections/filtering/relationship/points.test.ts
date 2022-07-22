@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../src";
 import { createJwtRequest } from "../../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../../utils/tck-test-utils";
@@ -89,17 +89,19 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WHERE distance(this_acted_in_relationship.location, point($this_actorsConnection.args.where.edge.location_DISTANCE.point)) = $this_actorsConnection.args.where.edge.location_DISTANCE.distance
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, location: apoc.cypher.runFirstColumn('RETURN
-            CASE this_acted_in_relationship.location IS NOT NULL
-            	WHEN true THEN { point: this_acted_in_relationship.location }
+            CASE
+            	WHEN this_acted_in_relationship.location IS NOT NULL THEN { point: this_acted_in_relationship.location }
             	ELSE NULL
             END AS result',{ this_acted_in_relationship: this_acted_in_relationship },false), node: { name: this_actor.name } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);

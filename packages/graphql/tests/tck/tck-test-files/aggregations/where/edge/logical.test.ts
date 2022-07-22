@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../src";
 import { createJwtRequest } from "../../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../../utils/tck-test-utils";
@@ -66,17 +66,17 @@ describe("Cypher Aggregations where edge with Logical AND + OR", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN (this_likesAggregate_edge.someFloat = $this_likesAggregate_edge_AND_0_someFloat_EQUAL AND this_likesAggregate_edge.someFloat = $this_likesAggregate_edge_AND_1_someFloat_EQUAL)
-            \\", { this: this, this_likesAggregate_edge_AND_0_someFloat_EQUAL: $this_likesAggregate_edge_AND_0_someFloat_EQUAL, this_likesAggregate_edge_AND_1_someFloat_EQUAL: $this_likesAggregate_edge_AND_1_someFloat_EQUAL }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN (aggr_edge.someFloat = $aggr_edge_AND_0_someFloat_EQUAL AND aggr_edge.someFloat = $aggr_edge_AND_1_someFloat_EQUAL)
+            \\", { this: this, aggr_edge_AND_0_someFloat_EQUAL: $aggr_edge_AND_0_someFloat_EQUAL, aggr_edge_AND_1_someFloat_EQUAL: $aggr_edge_AND_1_someFloat_EQUAL }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_AND_0_someFloat_EQUAL\\": 10,
-                \\"this_likesAggregate_edge_AND_1_someFloat_EQUAL\\": 11
+                \\"aggr_edge_AND_0_someFloat_EQUAL\\": 10,
+                \\"aggr_edge_AND_1_someFloat_EQUAL\\": 11
             }"
         `);
     });
@@ -96,17 +96,17 @@ describe("Cypher Aggregations where edge with Logical AND + OR", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN (this_likesAggregate_edge.someFloat = $this_likesAggregate_edge_OR_0_someFloat_EQUAL OR this_likesAggregate_edge.someFloat = $this_likesAggregate_edge_OR_1_someFloat_EQUAL)
-            \\", { this: this, this_likesAggregate_edge_OR_0_someFloat_EQUAL: $this_likesAggregate_edge_OR_0_someFloat_EQUAL, this_likesAggregate_edge_OR_1_someFloat_EQUAL: $this_likesAggregate_edge_OR_1_someFloat_EQUAL }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN (aggr_edge.someFloat = $aggr_edge_OR_0_someFloat_EQUAL OR aggr_edge.someFloat = $aggr_edge_OR_1_someFloat_EQUAL)
+            \\", { this: this, aggr_edge_OR_0_someFloat_EQUAL: $aggr_edge_OR_0_someFloat_EQUAL, aggr_edge_OR_1_someFloat_EQUAL: $aggr_edge_OR_1_someFloat_EQUAL }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_edge_OR_0_someFloat_EQUAL\\": 10,
-                \\"this_likesAggregate_edge_OR_1_someFloat_EQUAL\\": 11
+                \\"aggr_edge_OR_0_someFloat_EQUAL\\": 10,
+                \\"aggr_edge_OR_1_someFloat_EQUAL\\": 11
             }"
         `);
     });

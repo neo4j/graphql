@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -68,15 +68,15 @@ describe("#190", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE EXISTS((this)-[:HAS_DEMOGRAPHIC]->(:UserDemographics)) AND ANY(this_demographics IN [(this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics) | this_demographics] WHERE this_demographics.type = $this_demographics_type AND this_demographics.value = $this_demographics_value)
+            "MATCH (this:\`User\`)
+            WHERE size([(this)-[:HAS_DEMOGRAPHIC]->(this0:\`UserDemographics\`) WHERE (this0.type = $param0 AND this0.value = $param1) | 1]) > 0
             RETURN this { .uid, demographics: [ (this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics)   | this_demographics { .type, .value } ] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_demographics_type\\": \\"Gender\\",
-                \\"this_demographics_value\\": \\"Female\\"
+                \\"param0\\": \\"Gender\\",
+                \\"param1\\": \\"Female\\"
             }"
         `);
     });
@@ -104,17 +104,17 @@ describe("#190", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
-            WHERE EXISTS((this)-[:HAS_DEMOGRAPHIC]->(:UserDemographics)) AND ANY(this_demographics IN [(this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics) | this_demographics] WHERE (this_demographics.type = $this_demographics_OR_type AND this_demographics.value = $this_demographics_OR_value OR this_demographics.type = $this_demographics_OR1_type OR this_demographics.type = $this_demographics_OR2_type))
+            "MATCH (this:\`User\`)
+            WHERE size([(this)-[:HAS_DEMOGRAPHIC]->(this0:\`UserDemographics\`) WHERE ((this0.type = $param0 AND this0.value = $param1) OR this0.type = $param2 OR this0.type = $param3) | 1]) > 0
             RETURN this { .uid, demographics: [ (this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics)   | this_demographics { .type, .value } ] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_demographics_OR_type\\": \\"Gender\\",
-                \\"this_demographics_OR_value\\": \\"Female\\",
-                \\"this_demographics_OR1_type\\": \\"State\\",
-                \\"this_demographics_OR2_type\\": \\"Age\\"
+                \\"param0\\": \\"Gender\\",
+                \\"param1\\": \\"Female\\",
+                \\"param2\\": \\"State\\",
+                \\"param3\\": \\"Age\\"
             }"
         `);
     });

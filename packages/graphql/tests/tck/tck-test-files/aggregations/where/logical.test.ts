@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
@@ -60,20 +60,20 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN (count(this_likesAggregate_node) > $this_likesAggregate_AND_0_count_GT AND count(this_likesAggregate_node) < $this_likesAggregate_AND_1_count_LT)
-            \\", { this: this, this_likesAggregate_AND_0_count_GT: $this_likesAggregate_AND_0_count_GT, this_likesAggregate_AND_1_count_LT: $this_likesAggregate_AND_1_count_LT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN (count(aggr_node) > $aggr_AND_0_count_GT AND count(aggr_node) < $aggr_AND_1_count_LT)
+            \\", { this: this, aggr_AND_0_count_GT: $aggr_AND_0_count_GT, aggr_AND_1_count_LT: $aggr_AND_1_count_LT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_AND_0_count_GT\\": {
+                \\"aggr_AND_0_count_GT\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"this_likesAggregate_AND_1_count_LT\\": {
+                \\"aggr_AND_1_count_LT\\": {
                     \\"low\\": 20,
                     \\"high\\": 0
                 }
@@ -96,20 +96,20 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN (count(this_likesAggregate_node) > $this_likesAggregate_OR_0_count_GT OR count(this_likesAggregate_node) < $this_likesAggregate_OR_1_count_LT)
-            \\", { this: this, this_likesAggregate_OR_0_count_GT: $this_likesAggregate_OR_0_count_GT, this_likesAggregate_OR_1_count_LT: $this_likesAggregate_OR_1_count_LT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN (count(aggr_node) > $aggr_OR_0_count_GT OR count(aggr_node) < $aggr_OR_1_count_LT)
+            \\", { this: this, aggr_OR_0_count_GT: $aggr_OR_0_count_GT, aggr_OR_1_count_LT: $aggr_OR_1_count_LT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_OR_0_count_GT\\": {
+                \\"aggr_OR_0_count_GT\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"this_likesAggregate_OR_1_count_LT\\": {
+                \\"aggr_OR_1_count_LT\\": {
                     \\"low\\": 20,
                     \\"high\\": 0
                 }
@@ -139,28 +139,28 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN (count(this_likesAggregate_node) > $this_likesAggregate_AND_0_count_GT AND count(this_likesAggregate_node) < $this_likesAggregate_AND_1_count_LT) AND (count(this_likesAggregate_node) > $this_likesAggregate_OR_0_count_GT OR count(this_likesAggregate_node) < $this_likesAggregate_OR_1_count_LT)
-            \\", { this: this, this_likesAggregate_AND_0_count_GT: $this_likesAggregate_AND_0_count_GT, this_likesAggregate_AND_1_count_LT: $this_likesAggregate_AND_1_count_LT, this_likesAggregate_OR_0_count_GT: $this_likesAggregate_OR_0_count_GT, this_likesAggregate_OR_1_count_LT: $this_likesAggregate_OR_1_count_LT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN (count(aggr_node) > $aggr_AND_0_count_GT AND count(aggr_node) < $aggr_AND_1_count_LT) AND (count(aggr_node) > $aggr_OR_0_count_GT OR count(aggr_node) < $aggr_OR_1_count_LT)
+            \\", { this: this, aggr_AND_0_count_GT: $aggr_AND_0_count_GT, aggr_AND_1_count_LT: $aggr_AND_1_count_LT, aggr_OR_0_count_GT: $aggr_OR_0_count_GT, aggr_OR_1_count_LT: $aggr_OR_1_count_LT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_AND_0_count_GT\\": {
+                \\"aggr_AND_0_count_GT\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"this_likesAggregate_AND_1_count_LT\\": {
+                \\"aggr_AND_1_count_LT\\": {
                     \\"low\\": 20,
                     \\"high\\": 0
                 },
-                \\"this_likesAggregate_OR_0_count_GT\\": {
+                \\"aggr_OR_0_count_GT\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"this_likesAggregate_OR_1_count_LT\\": {
+                \\"aggr_OR_1_count_LT\\": {
                     \\"low\\": 20,
                     \\"high\\": 0
                 }

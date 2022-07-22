@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import { EventEmitter } from "events";
-import { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
-import { ResolveTree } from "graphql-parse-resolve-info";
-import { Driver, Integer } from "neo4j-driver";
-import { Node, Relationship } from "./classes";
-import { RelationshipQueryDirectionOption } from "./constants";
-import { SubscriptionsEvent } from "./subscriptions/subscriptions-event";
+import type { EventEmitter } from "events";
+import type { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
+import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { Driver, Integer, Session, Transaction } from "neo4j-driver";
+import type { Node, Relationship } from "./classes";
+import type { RelationshipQueryDirectionOption } from "./constants";
+import type { Executor } from "./classes/Executor";
 
 export { Node } from "./classes";
 
@@ -39,7 +39,7 @@ export interface AuthContext {
 }
 
 export interface Context {
-    driver: Driver;
+    driver?: Driver;
     driverConfig?: DriverConfig;
     resolveTree: ResolveTree;
     nodes: Node[];
@@ -47,10 +47,11 @@ export interface Context {
     schema: GraphQLSchema;
     auth?: AuthContext;
     callbacks?: Neo4jGraphQLCallbacks;
-    queryOptions?: CypherQueryOptions;
     plugins?: Neo4jGraphQLPlugins;
     jwt?: JwtPayload;
     subscriptionsEnabled: boolean;
+    executionContext: Driver | Session | Transaction;
+    executor: Executor;
     [k: string]: any;
 }
 
@@ -69,10 +70,10 @@ export interface AuthRule extends BaseAuthRule {
     operations?: AuthOperations[];
 }
 
-export type Auth = {
+export interface Auth {
     rules: AuthRule[];
     type: "JWT";
-};
+}
 
 export type FullTextIndex = {
     name: string;
@@ -173,6 +174,7 @@ export interface PrimitiveField extends BaseField {
     defaultValue?: any;
     coalesceValue?: any;
     callback?: Callback;
+    isGlobalIdField?: boolean;
 }
 
 export type CustomScalarField = BaseField;
@@ -264,7 +266,7 @@ export interface InterfaceWhereArg {
     [k: string]: any | GraphQLWhereArg | GraphQLWhereArg[];
 }
 
-export type AuthOperations = "CREATE" | "READ" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT";
+export type AuthOperations = "CREATE" | "READ" | "UPDATE" | "DELETE" | "CONNECT" | "DISCONNECT" | "SUBSCRIBE";
 
 export type AuthOrders = "pre" | "post";
 
@@ -353,10 +355,50 @@ export interface Neo4jGraphQLAuthPlugin {
     decode<T>(token: string): Promise<T | undefined>;
 }
 
+/** Raw event metadata returned from queries */
+export type EventMeta = {
+    event: "create" | "update" | "delete";
+    properties: {
+        old: Record<string, any>;
+        new: Record<string, any>;
+    };
+    typename: string;
+    id: Integer | string | number;
+    timestamp: Integer | string | number;
+};
+
+/** Serialized subscription event */
+export type SubscriptionsEvent = (
+    | {
+          event: "create";
+          properties: {
+              old: undefined;
+              new: Record<string, any>;
+          };
+      }
+    | {
+          event: "update";
+          properties: {
+              old: Record<string, any>;
+              new: Record<string, any>;
+          };
+      }
+    | {
+          event: "delete";
+          properties: {
+              old: Record<string, any>;
+              new: undefined;
+          };
+      }
+) & { id: number; timestamp: number; typename: string };
+
 export interface Neo4jGraphQLSubscriptionsPlugin {
     events: EventEmitter;
 
-    publish(eventMeta: SubscriptionsEvent): Promise<void>;
+    publish(eventMeta: SubscriptionsEvent): Promise<void> | void;
+
+    /** To be called, if needed, in getSchema */
+    init?(): Promise<void>;
 }
 
 export interface Neo4jGraphQLPlugins {
@@ -378,7 +420,24 @@ export interface JwtPayload {
 export type CallbackReturnValue = string | number | boolean | undefined | null;
 
 export type Neo4jGraphQLCallback = (
-    parent: Record<string, unknown>
+    parent: Record<string, unknown>,
+    args: Record<string, never>,
+    context: Record<string, unknown>
 ) => CallbackReturnValue | Promise<CallbackReturnValue>;
 
 export type Neo4jGraphQLCallbacks = Record<string, Neo4jGraphQLCallback>;
+
+export interface Neo4jStringFiltersSettings {
+    GT?: boolean;
+    GTE?: boolean;
+    LT?: boolean;
+    LTE?: boolean;
+}
+
+export interface Neo4jFiltersSettings {
+    String?: Neo4jStringFiltersSettings;
+}
+
+export interface Neo4jFeaturesSettings {
+    filters?: Neo4jFiltersSettings;
+}

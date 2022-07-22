@@ -17,14 +17,15 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 describe("Connections -> Unions", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let bookmarks: string[];
 
     const typeDefs = gql`
@@ -62,8 +63,9 @@ describe("Connections -> Unions", () => {
     const journalWordCount = 3413;
 
     beforeAll(async () => {
-        driver = await neo4j();
-        const session = driver.session();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+        const session = await neo4j.getSession();
 
         try {
             await session.run(
@@ -90,7 +92,7 @@ describe("Connections -> Unions", () => {
     });
 
     afterAll(async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         try {
             await session.run(
@@ -116,7 +118,7 @@ describe("Connections -> Unions", () => {
     });
 
     test("Projecting node and relationship properties with no arguments", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -147,7 +149,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                 },
@@ -188,7 +190,7 @@ describe("Connections -> Unions", () => {
     });
 
     test("Projecting node and relationship properties with sort argument", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -219,7 +221,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                 },
@@ -260,7 +262,7 @@ describe("Connections -> Unions", () => {
     });
 
     test("Projecting node and relationship properties with pagination", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -296,7 +298,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                 },
@@ -334,7 +336,7 @@ describe("Connections -> Unions", () => {
             const nextResult = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     after: (result.data?.authors as any)[0].publicationsConnection.pageInfo.endCursor,
@@ -369,7 +371,7 @@ describe("Connections -> Unions", () => {
     });
 
     test("Projecting node and relationship properties for one union member with no arguments", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -397,7 +399,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                 },
@@ -436,7 +438,7 @@ describe("Connections -> Unions", () => {
     });
 
     test("With where argument on node with node in database", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -464,7 +466,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookTitle: book1Title,
@@ -494,7 +496,7 @@ describe("Connections -> Unions", () => {
     });
 
     test("With where argument on node with node not in database", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -522,7 +524,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookTitle: book1Title,
@@ -552,7 +554,7 @@ describe("Connections -> Unions", () => {
     });
 
     test("With where argument on all nodes with all in database", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -590,7 +592,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookTitle: book1Title,
@@ -630,7 +632,7 @@ describe("Connections -> Unions", () => {
     });
 
     test("With where argument on all nodes with only one in database", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -668,7 +670,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookTitle: book1Title,
@@ -701,7 +703,7 @@ describe("Connections -> Unions", () => {
     });
 
     test("With where argument on relationship with relationship in database", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -729,7 +731,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookWordCount: book1WordCount,
@@ -759,7 +761,7 @@ describe("Connections -> Unions", () => {
     });
 
     test("With where argument on relationship with relationship not in database", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -787,7 +789,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookWordCount: book1WordCount,
@@ -817,7 +819,7 @@ describe("Connections -> Unions", () => {
     });
 
     test("With where argument on all edges with all in database", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -855,7 +857,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookWordCount: book1WordCount,
@@ -895,7 +897,7 @@ describe("Connections -> Unions", () => {
     });
 
     test("With where argument on all edges with only one in database", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -933,7 +935,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookWordCount: book1WordCount,
@@ -966,7 +968,7 @@ describe("Connections -> Unions", () => {
     });
 
     test("With where argument on relationship and node", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
 
@@ -1001,7 +1003,7 @@ describe("Connections -> Unions", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver, driverConfig: { bookmarks } },
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: {
                     authorName,
                     bookWordCount: book1WordCount,

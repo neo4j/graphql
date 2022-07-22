@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -57,7 +57,7 @@ describe("Cypher Aggregations Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { actorCount: { min: min(this.actorCount) } }"
         `);
 
@@ -81,7 +81,7 @@ describe("Cypher Aggregations Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { actorCount: { max: max(this.actorCount) } }"
         `);
 
@@ -105,7 +105,7 @@ describe("Cypher Aggregations Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { actorCount: { average: avg(this.actorCount) } }"
         `);
 
@@ -129,7 +129,7 @@ describe("Cypher Aggregations Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { actorCount: { sum: sum(this.actorCount) } }"
         `);
 
@@ -156,7 +156,7 @@ describe("Cypher Aggregations Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             RETURN { actorCount: { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } }"
         `);
 

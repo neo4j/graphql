@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
@@ -128,7 +128,9 @@ describe("Label in Node directive", () => {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:\`Person\`)
             WITH collect({ node: { name: this_actor.name } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
@@ -244,14 +246,14 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE this.id = $this_id
+            WHERE this.id = $param0
             SET this.id = $this_update_id
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"1\\",
+                \\"param0\\": \\"1\\",
                 \\"this_update_id\\": \\"2\\",
                 \\"resolvedCallbacks\\": {}
             }"
@@ -281,13 +283,13 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE this.id = $this_id
+            WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
             WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
             CALL apoc.do.when(this_actors0 IS NOT NULL, \\"
             SET this_actors0.name = $this_update_actors0_name
-            RETURN count(*)
+            RETURN count(*) AS _
             \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name})
             YIELD value AS _
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -295,7 +297,7 @@ describe("Label in Node directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"1\\",
+                \\"param0\\": \\"1\\",
                 \\"this_update_actors0_name\\": \\"new name\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
@@ -347,26 +349,26 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE this.id = $this_id
+            WHERE this.id = $param0
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:\`Person\`)
-            	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_name
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_actors0_node WHEN NULL THEN [] ELSE [1] END |
+            	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_actors0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
             		)
             	)
-            	RETURN count(*)
+            	RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"1\\",
-                \\"this_connect_actors0_node_name\\": \\"Daniel\\",
+                \\"param0\\": \\"1\\",
+                \\"this_connect_actors0_node_param0\\": \\"Daniel\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -390,23 +392,23 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE this.id = $this_id
+            WHERE this.id = $param0
             WITH this
             CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:\`Person\`)
             WHERE this_disconnect_actors0.name = $updateMovies.args.disconnect.actors[0].where.node.name
-            FOREACH(_ IN CASE this_disconnect_actors0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_actors0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actors0_rel
             )
-            RETURN count(*)
+            RETURN count(*) AS _
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"1\\",
+                \\"param0\\": \\"1\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -443,13 +445,13 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE this.id = $this_id
+            WHERE this.id = $param0
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"123\\"
+                \\"param0\\": \\"123\\"
             }"
         `);
     });
@@ -470,7 +472,7 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE this.id = $this_id
+            WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
             WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
@@ -481,7 +483,7 @@ describe("Label in Node directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"123\\",
+                \\"param0\\": \\"123\\",
                 \\"this_deleteMovies\\": {
                     \\"args\\": {
                         \\"delete\\": {
@@ -517,13 +519,13 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE EXISTS((this)<-[:ACTED_IN]-(:\`Person\`)) AND ANY(this_actors IN [(this)<-[:ACTED_IN]-(this_actors:\`Person\`) | this_actors] WHERE this_actors.name = $this_actors_name)
+            WHERE size([(this0:\`Person\`)-[:ACTED_IN]->(this) WHERE this0.name = $param0 | 1]) > 0
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actors_name\\": \\"tom\\"
+                \\"param0\\": \\"tom\\"
             }"
         `);
     });

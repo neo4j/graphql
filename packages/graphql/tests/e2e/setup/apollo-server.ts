@@ -18,13 +18,15 @@
  */
 
 /* eslint-disable import/no-extraneous-dependencies */
-import { createServer, Server } from "http";
-import { AddressInfo, WebSocketServer } from "ws";
+import type { Server } from "http";
+import { createServer } from "http";
+import type { AddressInfo} from "ws";
+import { WebSocketServer } from "ws";
 import { ApolloServer } from "apollo-server-express";
 import express from "express";
 import { ApolloServerPluginDrainHttpServer } from "apollo-server-core";
 import { useServer } from "graphql-ws/lib/use/ws";
-import { Neo4jGraphQL } from "../../../src";
+import type { Neo4jGraphQL } from "../../../src";
 
 export interface TestGraphQLServer {
     path: string;
@@ -65,9 +67,18 @@ export class ApolloTestServer implements TestGraphQLServer {
 
         const schema = await this.schema.getSchema();
 
-        const serverCleanup = useServer({ schema }, wsServer);
+        const serverCleanup = useServer(
+            {
+                schema,
+                context: (ctx) => {
+                    return ctx;
+                },
+            },
+            wsServer
+        );
         const server = new ApolloServer({
             schema,
+            context: ({ req }) => ({ req }),
             plugins: [
                 ApolloServerPluginDrainHttpServer({ httpServer }),
                 {

@@ -18,16 +18,17 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { Driver, Session } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
-import { IncomingMessage } from "http";
-import neo4j from "../../../neo4j";
+import type { IncomingMessage } from "http";
+import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
 import { generateUniqueType } from "../../../../utils/graphql-types";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 
 describe("Field Level Aggregations Auth", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
     const typeMovie = generateUniqueType("Movie");
     const typeActor = generateUniqueType("Actor");
@@ -49,8 +50,9 @@ describe("Field Level Aggregations Auth", () => {
     const secret = "secret";
 
     beforeAll(async () => {
-        driver = await neo4j();
-        session = driver.session();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
+        session = await neo4j.getSession();
 
         await session.run(`
         CREATE (m:${typeMovie.name}
@@ -106,7 +108,7 @@ describe("Field Level Aggregations Auth", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
                 expect(gqlResult.errors).toBeUndefined();
             });
@@ -123,7 +125,7 @@ describe("Field Level Aggregations Auth", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
                 expect(gqlResult.errors).toBeUndefined();
             });
@@ -140,7 +142,7 @@ describe("Field Level Aggregations Auth", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             });
@@ -157,7 +159,7 @@ describe("Field Level Aggregations Auth", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             });
@@ -194,7 +196,7 @@ describe("Field Level Aggregations Auth", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
                 expect(gqlResult.errors).toBeUndefined();
             });
@@ -211,7 +213,7 @@ describe("Field Level Aggregations Auth", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
                 expect((gqlResult.errors as any[])[0].message).toBe("Unauthenticated");
             });
@@ -229,7 +231,9 @@ describe("Field Level Aggregations Auth", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req: invalidReq, driverConfig: { bookmarks: [session.lastBookmark()] } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), {
+                        req: invalidReq,
+                    }),
                 });
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
             });

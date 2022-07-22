@@ -17,22 +17,25 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
-import supertest, { Response } from "supertest";
+import type { Driver } from "neo4j-driver";
+import type { Response } from "supertest";
+import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
-import { ApolloTestServer, TestGraphQLServer } from "../setup/apollo-server";
+import type { TestGraphQLServer } from "../setup/apollo-server";
+import { ApolloTestServer } from "../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
-import { WebSocketClient, WebSocketTestClient } from "../setup/ws-client";
-import neo4j from "../../integration/neo4j";
+import { WebSocketTestClient } from "../setup/ws-client";
+import Neo4j from "../setup/neo4j";
 
 describe("Create Subscription", () => {
+    let neo4j: Neo4j;
     let driver: Driver;
 
     const typeMovie = generateUniqueType("Movie");
 
     let server: TestGraphQLServer;
-    let wsClient: WebSocketClient;
+    let wsClient: WebSocketTestClient;
 
     beforeAll(async () => {
         const typeDefs = `
@@ -41,11 +44,17 @@ describe("Create Subscription", () => {
          }
          `;
 
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
+            config: {
+                driverConfig: {
+                    database: neo4j.getIntegrationDatabaseName(),
+                },
+            },
             plugins: {
                 subscriptions: new TestSubscriptionsPlugin(),
             },
@@ -57,6 +66,10 @@ describe("Create Subscription", () => {
 
     beforeEach(() => {
         wsClient = new WebSocketTestClient(server.wsPath);
+    });
+
+    afterEach(async () => {
+        await wsClient.close();
     });
 
     afterAll(async () => {
@@ -72,6 +85,7 @@ describe("Create Subscription", () => {
                                         title
                                     }
                                     event
+                                    timestamp
                                 }
                             }
                             `);
@@ -79,17 +93,20 @@ describe("Create Subscription", () => {
         await createMovie("movie1");
         await createMovie("movie2");
 
+        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {
                     [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
                     event: "CREATE",
+                    timestamp: expect.any(Number),
                 },
             },
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.fieldNames.subscriptions.created]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
                     event: "CREATE",
+                    timestamp: expect.any(Number),
                 },
             },
         ]);
@@ -99,7 +116,7 @@ describe("Create Subscription", () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { title: "movie1" }) {
-                    ${typeMovie.fieldNames.subscriptions.created} {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
                 }
@@ -109,10 +126,11 @@ describe("Create Subscription", () => {
         await createMovie("movie1");
         await createMovie("movie2");
 
+        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.fieldNames.subscriptions.created]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
                 },
             },
         ]);

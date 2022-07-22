@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
@@ -52,15 +52,15 @@ describe("Cypher -> fulltext -> Aggregate", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
-                $this_fulltext_MovieTitle_phrase
+                $param0
             ) YIELD node as this
-            WHERE \\"Movie\\" IN labels(this)
+                        WHERE \\"Movie\\" IN labels(this)
             RETURN { count: count(this) }"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_fulltext_MovieTitle_phrase\\": \\"something AND something\\"
+                \\"param0\\": \\"something AND something\\"
             }"
         `);
     });

@@ -17,15 +17,16 @@
  * limitations under the License.
  */
 
-import { Node } from "../classes";
+import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import { Context, ConnectionField, RelationField } from "../types";
+import type { Context, ConnectionField, RelationField } from "../types";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
+import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 
 export default async function translateCreate({
     context,
@@ -33,7 +34,7 @@ export default async function translateCreate({
 }: {
     context: Context;
     node: Node;
-}): Promise<[string, any]> {
+}): Promise<CypherBuilder.CypherResult> {
     const { resolveTree } = context;
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
@@ -110,7 +111,7 @@ export default async function translateCreate({
             varName: "REPLACE_ME",
         });
         if (projection[2]?.authValidateStrs?.length) {
-            projAuth = `CALL apoc.util.validate(NOT(${projection[2].authValidateStrs.join(
+            projAuth = `CALL apoc.util.validate(NOT (${projection[2].authValidateStrs.join(
                 " AND "
             )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
         }
@@ -235,16 +236,20 @@ export default async function translateCreate({
 
     ({ cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({ cypher }));
 
-    return [
-        cypher,
-        {
-            ...params,
-            ...replacedProjectionParams,
-            ...replacedConnectionParams,
-            ...replacedInterfaceParams,
-            resolvedCallbacks,
-        },
-    ];
+    const createQuery = new CypherBuilder.RawCypher(() => {
+        return [
+            cypher,
+            {
+                ...params,
+                ...replacedProjectionParams,
+                ...replacedConnectionParams,
+                ...replacedInterfaceParams,
+                resolvedCallbacks,
+            },
+        ];
+    });
+
+    return createQuery.build();
 }
 
 function generateCreateReturnStatement(projectionStr: string | undefined, subscriptionsEnabled: boolean): string {

@@ -68,7 +68,9 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Interaction)
+            "MATCH (this:\`Interaction\`)
+            WITH this
+            CALL {
             WITH this
             CALL {
             WITH this
@@ -79,7 +81,10 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             MATCH (this)<-[:ACTED_IN]-(this_Place:Place)
             RETURN { __resolveType: \\"Place\\", id: this_Place.id } AS subjects
             }
-            WITH this, collect(subjects) AS subjects
+            RETURN collect(subjects) AS subjects
+            }
+            WITH subjects, this
+            CALL {
             WITH subjects, this
             CALL {
             WITH subjects, this
@@ -90,7 +95,8 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             MATCH (this)-[:ACTED_IN]->(this_Place:Place)
             RETURN { __resolveType: \\"Place\\", id: this_Place.id } AS objects
             }
-            WITH subjects, this, collect(objects) AS objects
+            RETURN collect(objects) AS objects
+            }
             RETURN this { .id, subjects: subjects, objects: objects } as this"
         `);
 

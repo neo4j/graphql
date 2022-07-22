@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -63,14 +63,14 @@ describe("#360", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Event)
-            WHERE (this.start >= $this_AND_start_GTE AND this.start <= $this_AND1_start_LTE)
+            "MATCH (this:\`Event\`)
+            WHERE (this.start >= $param0 AND this.start <= $param1)
             RETURN this { start: apoc.date.convertFormat(toString(this.start), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), .activity } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_AND_start_GTE\\": {
+                \\"param0\\": {
                     \\"year\\": 2021,
                     \\"month\\": 7,
                     \\"day\\": 17,
@@ -80,7 +80,7 @@ describe("#360", () => {
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
                 },
-                \\"this_AND1_start_LTE\\": {
+                \\"param1\\": {
                     \\"year\\": 2021,
                     \\"month\\": 7,
                     \\"day\\": 18,
@@ -111,14 +111,14 @@ describe("#360", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Event)
-            WHERE (this.start >= $this_OR_start_GTE OR this.start <= $this_OR1_start_LTE)
+            "MATCH (this:\`Event\`)
+            WHERE (this.start >= $param0 OR this.start <= $param1)
             RETURN this { start: apoc.date.convertFormat(toString(this.start), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), .activity } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_OR_start_GTE\\": {
+                \\"param0\\": {
                     \\"year\\": 2021,
                     \\"month\\": 7,
                     \\"day\\": 17,
@@ -128,7 +128,7 @@ describe("#360", () => {
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
                 },
-                \\"this_OR1_start_LTE\\": {
+                \\"param1\\": {
                     \\"year\\": 2021,
                     \\"month\\": 7,
                     \\"day\\": 18,

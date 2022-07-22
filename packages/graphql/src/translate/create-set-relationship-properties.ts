@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
-import { CallbackBucket } from "../classes/CallbackBucket";
-import { Relationship } from "../classes";
+import type { CallbackBucket } from "../classes/CallbackBucket";
+import type { Relationship } from "../classes";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
+import { matchMathField, mathDescriptorBuilder, buildMathStatements } from "./utils/math";
 
 /*
     TODO - lets reuse this function for setting either node or rel properties.
@@ -30,6 +31,7 @@ import { addCallbackAndSetParam } from "./utils/callback-utils";
 function createSetRelationshipProperties({
     properties,
     varName,
+    withVars,
     relationship,
     operation,
     callbackBucket,
@@ -37,6 +39,7 @@ function createSetRelationshipProperties({
 }: {
     properties: Record<string, unknown>;
     varName: string;
+    withVars: string[];
     relationship: Relationship;
     operation: "CREATE" | "UPDATE";
     callbackBucket: CallbackBucket;
@@ -65,10 +68,10 @@ function createSetRelationshipProperties({
     });
 
     relationship.primitiveFields.forEach((field) =>
-        addCallbackAndSetParam(field, varName, properties, callbackBucket, strs)
+        addCallbackAndSetParam(field, varName, properties, callbackBucket, strs, operation)
     );
 
-    Object.entries(properties).forEach(([key]) => {
+    Object.entries(properties).forEach(([key, value], _idx, propertiesEntries) => {
         const paramName = `${parameterPrefix}.${key}`;
 
         const pointField = relationship.pointFields.find((x) => x.fieldName === key);
@@ -82,11 +85,72 @@ function createSetRelationshipProperties({
             return;
         }
 
+        const arrayPushField = relationship.primitiveFields.find((x) => `${x.fieldName}_PUSH` === key);
+        if (arrayPushField && arrayPushField.dbPropertyName) {
+            assertNonAmbiguousUpdate(propertiesEntries, arrayPushField.dbPropertyName);
+
+            strs.push(
+                `SET ${varName}.${arrayPushField.dbPropertyName} = ${varName}.${arrayPushField.dbPropertyName} + $${paramName}`
+            );
+
+            return;
+        }
+
+        const pointArrayPushField = relationship.pointFields.find((x) => `${x.fieldName}_PUSH` === key);
+        if (pointArrayPushField && pointArrayPushField.dbPropertyName) {
+            assertNonAmbiguousUpdate(propertiesEntries, pointArrayPushField.dbPropertyName);
+
+            strs.push(
+                `SET ${varName}.${pointArrayPushField.dbPropertyName} = ${varName}.${pointArrayPushField.dbPropertyName} + [p in $${paramName} | point(p)]`
+            );
+
+            return;
+        }
+
+        const arrayPopField = relationship.primitiveFields.find((x) => `${x.fieldName}_POP` === key);
+        if (arrayPopField && arrayPopField.dbPropertyName) {
+            assertNonAmbiguousUpdate(propertiesEntries, arrayPopField.dbPropertyName);
+
+            strs.push(
+                `SET ${varName}.${arrayPopField.dbPropertyName} = ${varName}.${arrayPopField.dbPropertyName}[0..-$${paramName}]`
+            );
+
+            return;
+        }
+
+        const pointArrayPopField = relationship.pointFields.find((x) => `${x.fieldName}_POP` === key);
+        if (pointArrayPopField && pointArrayPopField.dbPropertyName) {
+            assertNonAmbiguousUpdate(propertiesEntries, pointArrayPopField.dbPropertyName);
+
+            strs.push(
+                `SET ${varName}.${pointArrayPopField.dbPropertyName} = ${varName}.${pointArrayPopField.dbPropertyName}[0..-$${paramName}]`
+            );
+
+            return;
+        }
+
+        const mathMatch = matchMathField(key);
+        const { hasMatched } = mathMatch;
+        if (hasMatched) {
+            const mathDescriptor = mathDescriptorBuilder(value as number, relationship, mathMatch);
+            assertNonAmbiguousUpdate(propertiesEntries, mathDescriptor.dbName);
+
+            const mathStatements = buildMathStatements(mathDescriptor, varName, withVars, paramName);
+            strs.push(...mathStatements);
+            return;
+        }
+
         const dbFieldName = mapToDbProperty(relationship, key);
         strs.push(`SET ${varName}.${dbFieldName} = $${paramName}`);
     });
 
     return strs.join("\n");
+
+    function assertNonAmbiguousUpdate(propertiesEntries: [string, unknown][], propertyName: string) {
+        if (propertiesEntries.find(([entryKey]) => entryKey === propertyName)) {
+            throw new Error(`Cannot mutate the same field multiple times in one Mutation: ${propertyName}`);
+        }
+    }
 }
 
 export default createSetRelationshipProperties;

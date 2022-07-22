@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../src";
 import { createJwtRequest } from "../../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../../utils/tck-test-utils";
@@ -75,13 +75,15 @@ describe("Cypher -> Connections -> Filtering -> Node -> Relationship", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE EXISTS((this_actor)-[:ACTED_IN]->(:Movie)) AND ANY(this_actor_movies IN [(this_actor)-[:ACTED_IN]->(this_actor_movies:Movie) | this_actor_movies] WHERE this_actor_movies.title = $this_actorsConnection.args.where.node.movies.title)
+            WHERE EXISTS { (this_actor)-[:ACTED_IN]->(this_actor_movies:Movie) WHERE this_actor_movies.title = $this_actorsConnection.args.where.node.movies.title }
             WITH collect({ node: { name: this_actor.name } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);

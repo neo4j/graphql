@@ -17,10 +17,9 @@
  * limitations under the License.
  */
 
-import { ResolveTree } from "graphql-parse-resolve-info";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 import createProjectionAndParams from "./create-projection-and-params";
-import { Neo4jGraphQL } from "../classes";
-import { Context } from "../types";
+import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 
 describe("createProjectionAndParams", () => {
@@ -71,17 +70,68 @@ describe("createProjectionAndParams", () => {
             ],
         }).instance();
 
-        // @ts-ignore
-        const neoSchema: Neo4jGraphQL = {
-            nodes: [node],
-        };
-
-        // @ts-ignore
-        const context: Context = { neoSchema, resolveTree };
+        const context = new ContextBuilder({
+            neoSchema: { nodes: [node] },
+            resolveTree,
+        }).instance();
 
         const result = createProjectionAndParams({ resolveTree, node, context, varName: "this" });
 
         expect(result[0]).toBe(`{ .title }`);
         expect(result[1]).toMatchObject({});
+    });
+    test("should return the correct projection when querying for a global with id in the selection set", () => {
+        const resolveTree: ResolveTree = {
+            alias: "movies",
+            name: "movies",
+            fieldsByTypeName: {
+                Movie: {
+                    id: {
+                        name: "id",
+                        alias: "id",
+                        args: {},
+                        fieldsByTypeName: {},
+                    },
+                },
+            },
+            args: {},
+        };
+
+        const node = new NodeBuilder({
+            name: "Movie",
+
+            primitiveFields: [
+                {
+                    fieldName: "title",
+                    typeMeta: {
+                        name: "String",
+                        array: false,
+                        required: true,
+                        pretty: "String",
+                        input: {
+                            where: {
+                                type: "String",
+                                pretty: "String",
+                            },
+                            create: { type: "String", pretty: "String" },
+                            update: { type: "String", pretty: "String" },
+                        },
+                    },
+                    otherDirectives: [],
+                    arguments: [],
+                    isGlobalIdField: true,
+                },
+            ],
+            isGlobalNode: true,
+            globalIdField: "title",
+        }).instance();
+
+        const context = new ContextBuilder({
+            neoSchema: { nodes: [node] },
+            resolveTree,
+        }).instance();
+
+        const result = createProjectionAndParams({ resolveTree, node, context, varName: "this" });
+        expect(result[0]).toBe(`{ .title }`);
     });
 });

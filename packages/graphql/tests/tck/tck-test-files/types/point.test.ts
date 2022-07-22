@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
@@ -60,18 +60,18 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
-            WHERE this.point = point($this_point)
+            "MATCH (this:\`PointContainer\`)
+            WHERE this.point = point($param0)
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point, crs: this.point.crs }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_point\\": {
+                \\"param0\\": {
                     \\"longitude\\": 1,
                     \\"latitude\\": 2
                 }
@@ -97,18 +97,18 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
-            WHERE (NOT this.point = point($this_point_NOT))
+            "MATCH (this:\`PointContainer\`)
+            WHERE NOT this.point = point($param0)
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_point_NOT\\": {
+                \\"param0\\": {
                     \\"longitude\\": 1,
                     \\"latitude\\": 2
                 }
@@ -135,18 +135,18 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
-            WHERE this.point IN [p in $this_point_IN | point(p)]
+            "MATCH (this:\`PointContainer\`)
+            WHERE this.point IN [var0 IN $param0 | point(var0)]
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point, crs: this.point.crs }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_point_IN\\": [
+                \\"param0\\": [
                     {
                         \\"longitude\\": 1,
                         \\"latitude\\": 2
@@ -175,18 +175,18 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
-            WHERE (NOT this.point IN [p in $this_point_NOT_IN | point(p)])
+            "MATCH (this:\`PointContainer\`)
+            WHERE NOT this.point IN [var0 IN $param0 | point(var0)]
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point, crs: this.point.crs }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_point_NOT_IN\\": [
+                \\"param0\\": [
                     {
                         \\"longitude\\": 1,
                         \\"latitude\\": 2
@@ -214,18 +214,18 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
-            WHERE distance(this.point, point($this_point_LT.point)) < $this_point_LT.distance
+            "MATCH (this:\`PointContainer\`)
+            WHERE distance(this.point, point($param0.point)) < $param0.distance
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_point_LT\\": {
+                \\"param0\\": {
                     \\"point\\": {
                         \\"longitude\\": 1.1,
                         \\"latitude\\": 2.2
@@ -254,18 +254,18 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
-            WHERE distance(this.point, point($this_point_LTE.point)) <= $this_point_LTE.distance
+            "MATCH (this:\`PointContainer\`)
+            WHERE distance(this.point, point($param0.point)) <= $param0.distance
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_point_LTE\\": {
+                \\"param0\\": {
                     \\"point\\": {
                         \\"longitude\\": 1.1,
                         \\"latitude\\": 2.2
@@ -294,18 +294,18 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
-            WHERE distance(this.point, point($this_point_GT.point)) > $this_point_GT.distance
+            "MATCH (this:\`PointContainer\`)
+            WHERE distance(this.point, point($param0.point)) > $param0.distance
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_point_GT\\": {
+                \\"param0\\": {
                     \\"point\\": {
                         \\"longitude\\": 1.1,
                         \\"latitude\\": 2.2
@@ -334,18 +334,18 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
-            WHERE distance(this.point, point($this_point_GTE.point)) >= $this_point_GTE.distance
+            "MATCH (this:\`PointContainer\`)
+            WHERE distance(this.point, point($param0.point)) >= $param0.distance
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_point_GTE\\": {
+                \\"param0\\": {
                     \\"point\\": {
                         \\"longitude\\": 1.1,
                         \\"latitude\\": 2.2
@@ -376,18 +376,18 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
-            WHERE distance(this.point, point($this_point_DISTANCE.point)) = $this_point_DISTANCE.distance
+            "MATCH (this:\`PointContainer\`)
+            WHERE distance(this.point, point($param0.point)) = $param0.distance
             RETURN this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point }
             	ELSE NULL
             END AS result',{ this: this },false) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_point_DISTANCE\\": {
+                \\"param0\\": {
                     \\"point\\": {
                         \\"longitude\\": 1.1,
                         \\"latitude\\": 2.2
@@ -426,8 +426,8 @@ describe("Cypher Points", () => {
             }
             RETURN [
             this0 { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this0.point IS NOT NULL
-            	WHEN true THEN { point: this0.point, crs: this0.point.crs }
+            CASE
+            	WHEN this0.point IS NOT NULL THEN { point: this0.point, crs: this0.point.crs }
             	ELSE NULL
             END AS result',{ this0: this0 },false) }] AS data"
         `);
@@ -464,19 +464,19 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
-            WHERE this.id = $this_id
+            "MATCH (this:\`PointContainer\`)
+            WHERE this.id = $param0
             SET this.point = point($this_update_point)
             RETURN collect(DISTINCT this { point: apoc.cypher.runFirstColumn('RETURN
-            CASE this.point IS NOT NULL
-            	WHEN true THEN { point: this.point, crs: this.point.crs }
+            CASE
+            	WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
             	ELSE NULL
             END AS result',{ this: this },false) }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_id\\": \\"id\\",
+                \\"param0\\": \\"id\\",
                 \\"this_update_point\\": {
                     \\"longitude\\": 1,
                     \\"latitude\\": 2

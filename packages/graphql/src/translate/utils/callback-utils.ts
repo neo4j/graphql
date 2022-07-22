@@ -17,17 +17,18 @@
  * limitations under the License.
  */
 
-import { CallbackBucket } from "../../classes/CallbackBucket";
-import { PrimitiveField } from "../../types";
+import type { CallbackBucket } from "../../classes/CallbackBucket";
+import type { PrimitiveField } from "../../types";
 
 export const addCallbackAndSetParam = (
     field: PrimitiveField,
     varName: string,
     parent: any,
     callbackBucket: CallbackBucket,
-    strs: string[]
+    strs: string[],
+    operation: "CREATE" | "UPDATE"
 ) => {
-    if (!field.callback) {
+    if (!field.callback || !field.callback.operations.includes(operation)) {
         return;
     }
 

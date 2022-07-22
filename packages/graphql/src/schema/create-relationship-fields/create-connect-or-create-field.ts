@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { SchemaComposer, InputTypeComposer } from "graphql-compose";
-import { Node } from "../../classes";
-import { RelationField } from "../../types";
+import type { SchemaComposer, InputTypeComposer } from "graphql-compose";
+import type { Node } from "../../classes";
+import type { RelationField } from "../../types";
 import { upperFirst } from "../../utils/upper-first";
-import { ensureNonEmptyInput } from "../ensureNonEmptyInput";
+import { ensureNonEmptyInput } from "../ensure-non-empty-input";
 import { objectFieldsToCreateInputFields } from "../to-compose";
 
 export function createConnectOrCreateField({

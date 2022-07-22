@@ -3,7 +3,20 @@
     "baseBranches": ["dev"],
     "rebaseWhen": "auto",
     "automerge": true,
+    "ignorePaths": [
+        "**/node_modules/**",
+        "**/bower_components/**",
+        "**/vendor/**",
+        "**/__tests__/**",
+        "**/test/**",
+        "**/tests/**",
+        "**/__fixtures__/**"
+    ],
     "packageRules": [
+        {
+            "groupName": "neo4j-ndl",
+            "matchPackagePatterns": ["^@neo4j-ndl/"]
+        },
         {
             "matchDepTypes": ["dependencies"],
             "matchFiles": ["packages/graphql/package.json"],

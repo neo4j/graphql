@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: "Download built documentation"
-        uses: actions/github-script@v6.0.0
+        uses: actions/github-script@v6.1.0
         with:
           script: |
             var artifacts = await github.rest.actions.listWorkflowRunArtifacts({
@@ -37,6 +37,7 @@ jobs:
       - id: get-pr-number
         run: |
           number=$(<prnumber)
+          case "$number" in ''|*[!0-9]*) echo "Provided PR number is not an integer"; exit 1 ;; esac
           echo "::set-output name=pr-number::$number"
       - uses: actions/setup-node@v3
         with:
@@ -46,7 +47,7 @@ jobs:
           npm install -g surge
           surge ./site neo4j-graphql-docs-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
       - name: Comment on PR
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@39c5b5dc7717447d0cba270cd115037d32d28443 # renovate: tag=v2.2.0
         with:
           number: ${{ steps.get-pr-number.outputs.pr-number }}
           message: |

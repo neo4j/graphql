@@ -17,17 +17,20 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("BigInt", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -36,7 +39,7 @@ describe("BigInt", () => {
 
     describe("create", () => {
         test("should create an object with a BigInt specified inline in the mutation", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type File {
@@ -68,7 +71,7 @@ describe("BigInt", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: create,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -93,7 +96,7 @@ describe("BigInt", () => {
 
     describe("read", () => {
         test("should successfully query an node with a BigInt property", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const typeDefs = `
                 type File {
@@ -129,7 +132,7 @@ describe("BigInt", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();
@@ -142,11 +145,67 @@ describe("BigInt", () => {
                 await session.close();
             }
         });
+
+        test("should successfully query an node with a BigInt property using in where", async () => {
+            const session = driver.session();
+            const fileType = generateUniqueType("File");
+
+            const typeDefs = `
+                type ${fileType} {
+                  name: String!
+                  size: BigInt!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+            });
+
+            const name = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                query {
+                    ${fileType.plural}(where: { size: 8323372036854775807 }) {
+                        name
+                        size
+                    }
+                }
+            `;
+
+            try {
+                await session.run(`
+                   CREATE (f:${fileType})
+                   SET f.name = "${name}"
+                   SET f.size = 8323372036854775807
+               `);
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                });
+
+                expect(gqlResult.errors).toBeFalsy();
+
+                expect(gqlResult?.data as any).toEqual({
+                    [fileType.plural]: [
+                        {
+                            name,
+                            size: "8323372036854775807",
+                        },
+                    ],
+                });
+            } finally {
+                await session.close();
+            }
+        });
     });
 
     describe("@cypher directive", () => {
         test("should work returning a BigInt property", async () => {
-            const session = driver.session();
+            const session = await neo4j.getSession();
 
             const name = generate({
                 charset: "alphabetic",
@@ -183,7 +242,7 @@ describe("BigInt", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeFalsy();

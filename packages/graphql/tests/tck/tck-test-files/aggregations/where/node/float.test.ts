@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../../src";
 import { createJwtRequest } from "../../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../../utils/tck-test-utils";
@@ -61,16 +61,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN this_likesAggregate_node.someFloat = $this_likesAggregate_node_someFloat_EQUAL
-            \\", { this: this, this_likesAggregate_node_someFloat_EQUAL: $this_likesAggregate_node_someFloat_EQUAL }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN aggr_node.someFloat = $aggr_node_someFloat_EQUAL
+            \\", { this: this, aggr_node_someFloat_EQUAL: $aggr_node_someFloat_EQUAL }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_EQUAL\\": 10
+                \\"aggr_node_someFloat_EQUAL\\": 10
             }"
         `);
     });
@@ -90,16 +90,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN this_likesAggregate_node._someFloatAlias = $this_likesAggregate_node_someFloatAlias_EQUAL
-            \\", { this: this, this_likesAggregate_node_someFloatAlias_EQUAL: $this_likesAggregate_node_someFloatAlias_EQUAL }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN aggr_node._someFloatAlias = $aggr_node_someFloatAlias_EQUAL
+            \\", { this: this, aggr_node_someFloatAlias_EQUAL: $aggr_node_someFloatAlias_EQUAL }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloatAlias_EQUAL\\": 10
+                \\"aggr_node_someFloatAlias_EQUAL\\": 10
             }"
         `);
     });
@@ -119,16 +119,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN this_likesAggregate_node.someFloat > $this_likesAggregate_node_someFloat_GT
-            \\", { this: this, this_likesAggregate_node_someFloat_GT: $this_likesAggregate_node_someFloat_GT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN aggr_node.someFloat > $aggr_node_someFloat_GT
+            \\", { this: this, aggr_node_someFloat_GT: $aggr_node_someFloat_GT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_GT\\": 10
+                \\"aggr_node_someFloat_GT\\": 10
             }"
         `);
     });
@@ -148,16 +148,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN this_likesAggregate_node.someFloat >= $this_likesAggregate_node_someFloat_GTE
-            \\", { this: this, this_likesAggregate_node_someFloat_GTE: $this_likesAggregate_node_someFloat_GTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN aggr_node.someFloat >= $aggr_node_someFloat_GTE
+            \\", { this: this, aggr_node_someFloat_GTE: $aggr_node_someFloat_GTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_GTE\\": 10
+                \\"aggr_node_someFloat_GTE\\": 10
             }"
         `);
     });
@@ -177,16 +177,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN this_likesAggregate_node.someFloat < $this_likesAggregate_node_someFloat_LT
-            \\", { this: this, this_likesAggregate_node_someFloat_LT: $this_likesAggregate_node_someFloat_LT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN aggr_node.someFloat < $aggr_node_someFloat_LT
+            \\", { this: this, aggr_node_someFloat_LT: $aggr_node_someFloat_LT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_LT\\": 10
+                \\"aggr_node_someFloat_LT\\": 10
             }"
         `);
     });
@@ -206,16 +206,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN this_likesAggregate_node.someFloat <= $this_likesAggregate_node_someFloat_LTE
-            \\", { this: this, this_likesAggregate_node_someFloat_LTE: $this_likesAggregate_node_someFloat_LTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN aggr_node.someFloat <= $aggr_node_someFloat_LTE
+            \\", { this: this, aggr_node_someFloat_LTE: $aggr_node_someFloat_LTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_LTE\\": 10
+                \\"aggr_node_someFloat_LTE\\": 10
             }"
         `);
     });
@@ -235,16 +235,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN avg(this_likesAggregate_node.someFloat) = $this_likesAggregate_node_someFloat_AVERAGE_EQUAL
-            \\", { this: this, this_likesAggregate_node_someFloat_AVERAGE_EQUAL: $this_likesAggregate_node_someFloat_AVERAGE_EQUAL }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN avg(aggr_node.someFloat) = $aggr_node_someFloat_AVERAGE_EQUAL
+            \\", { this: this, aggr_node_someFloat_AVERAGE_EQUAL: $aggr_node_someFloat_AVERAGE_EQUAL }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_AVERAGE_EQUAL\\": 10
+                \\"aggr_node_someFloat_AVERAGE_EQUAL\\": 10
             }"
         `);
     });
@@ -264,16 +264,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN avg(this_likesAggregate_node.someFloat) > $this_likesAggregate_node_someFloat_AVERAGE_GT
-            \\", { this: this, this_likesAggregate_node_someFloat_AVERAGE_GT: $this_likesAggregate_node_someFloat_AVERAGE_GT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN avg(aggr_node.someFloat) > $aggr_node_someFloat_AVERAGE_GT
+            \\", { this: this, aggr_node_someFloat_AVERAGE_GT: $aggr_node_someFloat_AVERAGE_GT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_AVERAGE_GT\\": 10
+                \\"aggr_node_someFloat_AVERAGE_GT\\": 10
             }"
         `);
     });
@@ -293,16 +293,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN avg(this_likesAggregate_node.someFloat) >= $this_likesAggregate_node_someFloat_AVERAGE_GTE
-            \\", { this: this, this_likesAggregate_node_someFloat_AVERAGE_GTE: $this_likesAggregate_node_someFloat_AVERAGE_GTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN avg(aggr_node.someFloat) >= $aggr_node_someFloat_AVERAGE_GTE
+            \\", { this: this, aggr_node_someFloat_AVERAGE_GTE: $aggr_node_someFloat_AVERAGE_GTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_AVERAGE_GTE\\": 10
+                \\"aggr_node_someFloat_AVERAGE_GTE\\": 10
             }"
         `);
     });
@@ -322,16 +322,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN avg(this_likesAggregate_node.someFloat) < $this_likesAggregate_node_someFloat_AVERAGE_LT
-            \\", { this: this, this_likesAggregate_node_someFloat_AVERAGE_LT: $this_likesAggregate_node_someFloat_AVERAGE_LT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN avg(aggr_node.someFloat) < $aggr_node_someFloat_AVERAGE_LT
+            \\", { this: this, aggr_node_someFloat_AVERAGE_LT: $aggr_node_someFloat_AVERAGE_LT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_AVERAGE_LT\\": 10
+                \\"aggr_node_someFloat_AVERAGE_LT\\": 10
             }"
         `);
     });
@@ -351,16 +351,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN avg(this_likesAggregate_node.someFloat) <= $this_likesAggregate_node_someFloat_AVERAGE_LTE
-            \\", { this: this, this_likesAggregate_node_someFloat_AVERAGE_LTE: $this_likesAggregate_node_someFloat_AVERAGE_LTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN avg(aggr_node.someFloat) <= $aggr_node_someFloat_AVERAGE_LTE
+            \\", { this: this, aggr_node_someFloat_AVERAGE_LTE: $aggr_node_someFloat_AVERAGE_LTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_AVERAGE_LTE\\": 10
+                \\"aggr_node_someFloat_AVERAGE_LTE\\": 10
             }"
         `);
     });
@@ -380,17 +380,17 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_node.someFloat) AS this_likesAggregate_node_someFloat_SUM_EQUAL_SUM
-            RETURN this_likesAggregate_node_someFloat_SUM_EQUAL_SUM = toFloat($this_likesAggregate_node_someFloat_SUM_EQUAL)
-            \\", { this: this, this_likesAggregate_node_someFloat_SUM_EQUAL: $this_likesAggregate_node_someFloat_SUM_EQUAL }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WITH aggr_node, aggr_edge, sum(aggr_node.someFloat) AS aggr_node_someFloat_SUM_EQUAL_SUM
+            RETURN aggr_node_someFloat_SUM_EQUAL_SUM = toFloat($aggr_node_someFloat_SUM_EQUAL)
+            \\", { this: this, aggr_node_someFloat_SUM_EQUAL: $aggr_node_someFloat_SUM_EQUAL }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_SUM_EQUAL\\": 10
+                \\"aggr_node_someFloat_SUM_EQUAL\\": 10
             }"
         `);
     });
@@ -410,17 +410,17 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_node.someFloat) AS this_likesAggregate_node_someFloat_SUM_GT_SUM
-            RETURN this_likesAggregate_node_someFloat_SUM_GT_SUM > toFloat($this_likesAggregate_node_someFloat_SUM_GT)
-            \\", { this: this, this_likesAggregate_node_someFloat_SUM_GT: $this_likesAggregate_node_someFloat_SUM_GT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WITH aggr_node, aggr_edge, sum(aggr_node.someFloat) AS aggr_node_someFloat_SUM_GT_SUM
+            RETURN aggr_node_someFloat_SUM_GT_SUM > toFloat($aggr_node_someFloat_SUM_GT)
+            \\", { this: this, aggr_node_someFloat_SUM_GT: $aggr_node_someFloat_SUM_GT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_SUM_GT\\": 10
+                \\"aggr_node_someFloat_SUM_GT\\": 10
             }"
         `);
     });
@@ -440,17 +440,17 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_node.someFloat) AS this_likesAggregate_node_someFloat_SUM_GTE_SUM
-            RETURN this_likesAggregate_node_someFloat_SUM_GTE_SUM >= toFloat($this_likesAggregate_node_someFloat_SUM_GTE)
-            \\", { this: this, this_likesAggregate_node_someFloat_SUM_GTE: $this_likesAggregate_node_someFloat_SUM_GTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WITH aggr_node, aggr_edge, sum(aggr_node.someFloat) AS aggr_node_someFloat_SUM_GTE_SUM
+            RETURN aggr_node_someFloat_SUM_GTE_SUM >= toFloat($aggr_node_someFloat_SUM_GTE)
+            \\", { this: this, aggr_node_someFloat_SUM_GTE: $aggr_node_someFloat_SUM_GTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_SUM_GTE\\": 10
+                \\"aggr_node_someFloat_SUM_GTE\\": 10
             }"
         `);
     });
@@ -470,17 +470,17 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_node.someFloat) AS this_likesAggregate_node_someFloat_SUM_LT_SUM
-            RETURN this_likesAggregate_node_someFloat_SUM_LT_SUM < toFloat($this_likesAggregate_node_someFloat_SUM_LT)
-            \\", { this: this, this_likesAggregate_node_someFloat_SUM_LT: $this_likesAggregate_node_someFloat_SUM_LT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WITH aggr_node, aggr_edge, sum(aggr_node.someFloat) AS aggr_node_someFloat_SUM_LT_SUM
+            RETURN aggr_node_someFloat_SUM_LT_SUM < toFloat($aggr_node_someFloat_SUM_LT)
+            \\", { this: this, aggr_node_someFloat_SUM_LT: $aggr_node_someFloat_SUM_LT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_SUM_LT\\": 10
+                \\"aggr_node_someFloat_SUM_LT\\": 10
             }"
         `);
     });
@@ -500,17 +500,17 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            WITH this_likesAggregate_node, this_likesAggregate_edge, sum(this_likesAggregate_node.someFloat) AS this_likesAggregate_node_someFloat_SUM_LTE_SUM
-            RETURN this_likesAggregate_node_someFloat_SUM_LTE_SUM <= toFloat($this_likesAggregate_node_someFloat_SUM_LTE)
-            \\", { this: this, this_likesAggregate_node_someFloat_SUM_LTE: $this_likesAggregate_node_someFloat_SUM_LTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WITH aggr_node, aggr_edge, sum(aggr_node.someFloat) AS aggr_node_someFloat_SUM_LTE_SUM
+            RETURN aggr_node_someFloat_SUM_LTE_SUM <= toFloat($aggr_node_someFloat_SUM_LTE)
+            \\", { this: this, aggr_node_someFloat_SUM_LTE: $aggr_node_someFloat_SUM_LTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_SUM_LTE\\": 10
+                \\"aggr_node_someFloat_SUM_LTE\\": 10
             }"
         `);
     });
@@ -530,16 +530,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  min(this_likesAggregate_node.someFloat) = $this_likesAggregate_node_someFloat_MIN_EQUAL
-            \\", { this: this, this_likesAggregate_node_someFloat_MIN_EQUAL: $this_likesAggregate_node_someFloat_MIN_EQUAL }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  min(aggr_node.someFloat) = $aggr_node_someFloat_MIN_EQUAL
+            \\", { this: this, aggr_node_someFloat_MIN_EQUAL: $aggr_node_someFloat_MIN_EQUAL }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_MIN_EQUAL\\": 10
+                \\"aggr_node_someFloat_MIN_EQUAL\\": 10
             }"
         `);
     });
@@ -559,16 +559,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  min(this_likesAggregate_node.someFloat) > $this_likesAggregate_node_someFloat_MIN_GT
-            \\", { this: this, this_likesAggregate_node_someFloat_MIN_GT: $this_likesAggregate_node_someFloat_MIN_GT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  min(aggr_node.someFloat) > $aggr_node_someFloat_MIN_GT
+            \\", { this: this, aggr_node_someFloat_MIN_GT: $aggr_node_someFloat_MIN_GT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_MIN_GT\\": 10
+                \\"aggr_node_someFloat_MIN_GT\\": 10
             }"
         `);
     });
@@ -588,16 +588,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  min(this_likesAggregate_node.someFloat) >= $this_likesAggregate_node_someFloat_MIN_GTE
-            \\", { this: this, this_likesAggregate_node_someFloat_MIN_GTE: $this_likesAggregate_node_someFloat_MIN_GTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  min(aggr_node.someFloat) >= $aggr_node_someFloat_MIN_GTE
+            \\", { this: this, aggr_node_someFloat_MIN_GTE: $aggr_node_someFloat_MIN_GTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_MIN_GTE\\": 10
+                \\"aggr_node_someFloat_MIN_GTE\\": 10
             }"
         `);
     });
@@ -617,16 +617,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  min(this_likesAggregate_node.someFloat) < $this_likesAggregate_node_someFloat_MIN_LT
-            \\", { this: this, this_likesAggregate_node_someFloat_MIN_LT: $this_likesAggregate_node_someFloat_MIN_LT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  min(aggr_node.someFloat) < $aggr_node_someFloat_MIN_LT
+            \\", { this: this, aggr_node_someFloat_MIN_LT: $aggr_node_someFloat_MIN_LT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_MIN_LT\\": 10
+                \\"aggr_node_someFloat_MIN_LT\\": 10
             }"
         `);
     });
@@ -646,16 +646,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  min(this_likesAggregate_node.someFloat) <= $this_likesAggregate_node_someFloat_MIN_LTE
-            \\", { this: this, this_likesAggregate_node_someFloat_MIN_LTE: $this_likesAggregate_node_someFloat_MIN_LTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  min(aggr_node.someFloat) <= $aggr_node_someFloat_MIN_LTE
+            \\", { this: this, aggr_node_someFloat_MIN_LTE: $aggr_node_someFloat_MIN_LTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_MIN_LTE\\": 10
+                \\"aggr_node_someFloat_MIN_LTE\\": 10
             }"
         `);
     });
@@ -675,16 +675,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  max(this_likesAggregate_node.someFloat) = $this_likesAggregate_node_someFloat_MAX_EQUAL
-            \\", { this: this, this_likesAggregate_node_someFloat_MAX_EQUAL: $this_likesAggregate_node_someFloat_MAX_EQUAL }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  max(aggr_node.someFloat) = $aggr_node_someFloat_MAX_EQUAL
+            \\", { this: this, aggr_node_someFloat_MAX_EQUAL: $aggr_node_someFloat_MAX_EQUAL }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_MAX_EQUAL\\": 10
+                \\"aggr_node_someFloat_MAX_EQUAL\\": 10
             }"
         `);
     });
@@ -704,16 +704,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  max(this_likesAggregate_node.someFloat) > $this_likesAggregate_node_someFloat_MAX_GT
-            \\", { this: this, this_likesAggregate_node_someFloat_MAX_GT: $this_likesAggregate_node_someFloat_MAX_GT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  max(aggr_node.someFloat) > $aggr_node_someFloat_MAX_GT
+            \\", { this: this, aggr_node_someFloat_MAX_GT: $aggr_node_someFloat_MAX_GT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_MAX_GT\\": 10
+                \\"aggr_node_someFloat_MAX_GT\\": 10
             }"
         `);
     });
@@ -733,16 +733,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  max(this_likesAggregate_node.someFloat) >= $this_likesAggregate_node_someFloat_MAX_GTE
-            \\", { this: this, this_likesAggregate_node_someFloat_MAX_GTE: $this_likesAggregate_node_someFloat_MAX_GTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  max(aggr_node.someFloat) >= $aggr_node_someFloat_MAX_GTE
+            \\", { this: this, aggr_node_someFloat_MAX_GTE: $aggr_node_someFloat_MAX_GTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_MAX_GTE\\": 10
+                \\"aggr_node_someFloat_MAX_GTE\\": 10
             }"
         `);
     });
@@ -762,16 +762,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  max(this_likesAggregate_node.someFloat) < $this_likesAggregate_node_someFloat_MAX_LT
-            \\", { this: this, this_likesAggregate_node_someFloat_MAX_LT: $this_likesAggregate_node_someFloat_MAX_LT }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  max(aggr_node.someFloat) < $aggr_node_someFloat_MAX_LT
+            \\", { this: this, aggr_node_someFloat_MAX_LT: $aggr_node_someFloat_MAX_LT }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_MAX_LT\\": 10
+                \\"aggr_node_someFloat_MAX_LT\\": 10
             }"
         `);
     });
@@ -791,16 +791,16 @@ describe("Cypher Aggregations where node with Float", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[this_likesAggregate_edge:LIKES]-(this_likesAggregate_node:User)
-            RETURN  max(this_likesAggregate_node.someFloat) <= $this_likesAggregate_node_someFloat_MAX_LTE
-            \\", { this: this, this_likesAggregate_node_someFloat_MAX_LTE: $this_likesAggregate_node_someFloat_MAX_LTE }, false )
+            "MATCH (this:\`Post\`)
+            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            RETURN  max(aggr_node.someFloat) <= $aggr_node_someFloat_MAX_LTE
+            \\", { this: this, aggr_node_someFloat_MAX_LTE: $aggr_node_someFloat_MAX_LTE }, false )
             RETURN this { .content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_likesAggregate_node_someFloat_MAX_LTE\\": 10
+                \\"aggr_node_someFloat_MAX_LTE\\": 10
             }"
         `);
     });

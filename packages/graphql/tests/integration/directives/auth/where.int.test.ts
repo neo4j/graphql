@@ -18,22 +18,24 @@
  */
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import neo4j from "../../neo4j";
+import Neo4j from "../../neo4j";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 
 describe("auth/where", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     const secret = "secret";
     const jwtPlugin = new Neo4jGraphQLAuthJWTPlugin({
         secret: "secret",
     });
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -42,7 +44,7 @@ describe("auth/where", () => {
 
     describe("read", () => {
         test("should add $jwt.id to where and return user", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -69,6 +71,7 @@ describe("auth/where", () => {
             try {
                 await session.run(`
                     CREATE (:User {id: "${userId}"})
+                    CREATE (:User {id: "anotherUser"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: userId });
@@ -76,7 +79,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -89,7 +92,7 @@ describe("auth/where", () => {
         });
 
         test("should add $jwt.id to where on a relationship", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -140,7 +143,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -157,7 +160,7 @@ describe("auth/where", () => {
         });
 
         test("should add $jwt.id to where on a relationship(using connection)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -218,7 +221,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -236,7 +239,7 @@ describe("auth/where", () => {
 
         describe("union", () => {
             test("should add $jwt.id to where and return users search", async () => {
-                const session = driver.session({ defaultAccessMode: "WRITE" });
+                const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
                 const typeDefs = `
                     union Content = Post
@@ -294,7 +297,7 @@ describe("auth/where", () => {
                     const gqlResult = await graphql({
                         schema: await neoSchema.getSchema(),
                         source: query,
-                        contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                        contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                     });
                     expect(gqlResult.errors).toBeUndefined();
                     const posts = (gqlResult.data as any).users[0].content as any[];
@@ -310,7 +313,7 @@ describe("auth/where", () => {
         });
 
         test("should add $jwt.id to where and return users search(using connections)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 union Content = Post
@@ -373,7 +376,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
                 expect(gqlResult.errors).toBeUndefined();
                 const posts = (gqlResult.data as any).users[0].contentConnection as {
@@ -392,7 +395,7 @@ describe("auth/where", () => {
 
     describe("update", () => {
         test("should add $jwt.id to where", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -431,7 +434,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -446,7 +449,7 @@ describe("auth/where", () => {
 
     describe("delete", () => {
         test("should add $jwt.id to where", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -480,7 +483,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -500,7 +503,7 @@ describe("auth/where", () => {
 
     describe("connect", () => {
         test("should add jwt.id to where - update update", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -549,7 +552,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -561,7 +564,7 @@ describe("auth/where", () => {
         });
 
         test("should add jwt.id to where - update connect", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -610,7 +613,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -624,7 +627,7 @@ describe("auth/where", () => {
 
     describe("disconnect", () => {
         test("should add $jwt.id to where (update update)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -677,7 +680,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -689,7 +692,7 @@ describe("auth/where", () => {
         });
 
         test("should add $jwt.id to where (update disconnect)", async () => {
-            const session = driver.session({ defaultAccessMode: "WRITE" });
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `
                 type User {
@@ -742,7 +745,7 @@ describe("auth/where", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: { driver, req, driverConfig: { bookmarks: session.lastBookmark() } },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();

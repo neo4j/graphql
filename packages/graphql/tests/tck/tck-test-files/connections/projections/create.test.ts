@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
@@ -91,7 +91,9 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             WITH this0
             MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
             WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN [
             this0 { .title, actorsConnection }] AS data"
@@ -144,13 +146,17 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             WITH this0
             MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
             WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             CALL {
             WITH this1
             MATCH (this1)<-[this1_acted_in_relationship:ACTED_IN]-(this1_actor:Actor)
             WITH collect({ screenTime: this1_acted_in_relationship.screenTime, node: { name: this1_actor.name } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN [
             this0 { .title, actorsConnection },
@@ -206,14 +212,18 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
             WHERE this0_actor.name = $this0_actorsConnection.args.where.node.name
             WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             CALL {
             WITH this1
             MATCH (this1)<-[this1_acted_in_relationship:ACTED_IN]-(this1_actor:Actor)
             WHERE this1_actor.name = $this1_actorsConnection.args.where.node.name
             WITH collect({ screenTime: this1_acted_in_relationship.screenTime, node: { name: this1_actor.name } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS actorsConnection
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN [
             this0 { .title, actorsConnection },

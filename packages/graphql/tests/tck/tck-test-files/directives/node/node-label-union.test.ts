@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../../src";
 import { createJwtRequest } from "../../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../../utils/tck-test-utils";
@@ -80,15 +80,15 @@ describe("Node directive with unions", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE this.title = $this_title
-            RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search) WHERE (\\"Category\\" IN labels(this_search) AND \\"ExtraLabel1\\" IN labels(this_search) AND \\"ExtraLabel2\\" IN labels(this_search)) OR (\\"Film\\" IN labels(this_search)) | head( [ this_search IN [this_search] WHERE (\\"Category\\" IN labels(this_search) AND \\"ExtraLabel1\\" IN labels(this_search) AND \\"ExtraLabel2\\" IN labels(this_search)) AND this_search.name = $this_search_Genre_name | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"Film\\" IN labels(this_search)) AND this_search.title = $this_search_Movie_title | this_search { __resolveType: \\"Movie\\",  .title } ] ) ] WHERE this_search IS NOT NULL] [1..11]  } as this"
+            WHERE this.title = $param0
+            RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search) WHERE (\\"Category\\" IN labels(this_search) AND \\"ExtraLabel1\\" IN labels(this_search) AND \\"ExtraLabel2\\" IN labels(this_search)) OR (\\"Film\\" IN labels(this_search)) | head( [ this_search IN [this_search] WHERE (\\"Category\\" IN labels(this_search) AND \\"ExtraLabel1\\" IN labels(this_search) AND \\"ExtraLabel2\\" IN labels(this_search)) AND this_search.name = $this_search_Genrethis_search_param0 | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"Film\\" IN labels(this_search)) AND this_search.title = $this_search_Moviethis_search_param0 | this_search { __resolveType: \\"Movie\\",  .title } ] ) ] WHERE this_search IS NOT NULL] [1..11]  } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"some title\\",
-                \\"this_search_Genre_name\\": \\"Horror\\",
-                \\"this_search_Movie_title\\": \\"The Matrix\\"
+                \\"param0\\": \\"some title\\",
+                \\"this_search_Genrethis_search_param0\\": \\"Horror\\",
+                \\"this_search_Moviethis_search_param0\\": \\"The Matrix\\"
             }"
         `);
     });

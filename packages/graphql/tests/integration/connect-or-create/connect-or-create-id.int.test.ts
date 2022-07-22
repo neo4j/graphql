@@ -17,17 +17,19 @@
  * limitations under the License.
  */
 
-import { Driver, Session } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import { gql } from "apollo-server";
-import { graphql, DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
+import { graphql } from "graphql";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { getQuerySource } from "../../utils/get-query-source";
 
 describe("connect-or-create with @id", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
     let session: Session;
     let typeDefs: DocumentNode;
 
@@ -37,7 +39,8 @@ describe("connect-or-create with @id", () => {
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
 
         typeDefs = gql`
         type ${typeMovie.name} {
@@ -56,8 +59,8 @@ describe("connect-or-create with @id", () => {
         neoSchema = new Neo4jGraphQL({ typeDefs });
     });
 
-    beforeEach(() => {
-        session = driver.session();
+    beforeEach(async () => {
+        session = await neo4j.getSession();
     });
 
     afterEach(async () => {
@@ -102,7 +105,7 @@ describe("connect-or-create with @id", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -152,7 +155,7 @@ describe("connect-or-create with @id", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toHaveLength(1);
@@ -191,7 +194,7 @@ describe("connect-or-create with @id", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toHaveLength(1);
@@ -234,7 +237,7 @@ describe("connect-or-create with @id", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -283,7 +286,7 @@ describe("connect-or-create with @id", () => {
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
             source: getQuerySource(query),
-            contextValue: { driver, driverConfig: { bookmarks: [session.lastBookmark()] } },
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(gqlResult.errors).toBeUndefined();
@@ -292,7 +295,6 @@ describe("connect-or-create with @id", () => {
 
         const resultActor = (gqlResult as any).data[typeActor.operations.create][typeActor.plural][0];
         expect(resultActor.movies).toHaveLength(1);
-        console.log(resultActor.movies[0]);
         expect(resultActor.movies[0].subtitle).toBeNull();
     });
 });

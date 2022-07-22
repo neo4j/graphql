@@ -17,10 +17,9 @@
  * limitations under the License.
  */
 
-import { ExecuteResult } from "../../utils/execute";
+import type { ExecuteResult } from "../../utils/execute";
 import { serializeNeo4jValue } from "../../utils/neo4j-serializers";
-import { Neo4jGraphQLSubscriptionsPlugin } from "../../types";
-import { EventMeta, SubscriptionsEvent } from "../../subscriptions/subscriptions-event";
+import type { EventMeta, Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "../../types";
 
 export function publishEventsToPlugin(
     executeResult: ExecuteResult,

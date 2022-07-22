@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLError } from "../classes/Error";
 import { RelationshipQueryDirectionOption } from "../constants";
-import { RelationField } from "../types";
+import type { RelationField } from "../types";
 
 export type DirectionString = "-" | "->" | "<-";
 

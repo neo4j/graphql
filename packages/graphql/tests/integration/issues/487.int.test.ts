@@ -17,19 +17,21 @@
  * limitations under the License.
  */
 
-import { Driver } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
-import neo4j from "../neo4j";
+import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/487", () => {
     let driver: Driver;
+    let neo4j: Neo4j;
 
     beforeAll(async () => {
-        driver = await neo4j();
+        neo4j = new Neo4j();
+        driver = await neo4j.getDriver();
     });
 
     afterAll(async () => {
@@ -37,7 +39,7 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
     });
 
     test("should recreate test and return correct data", async () => {
-        const session = driver.session();
+        const session = await neo4j.getSession();
 
         const typeAuthor = generateUniqueType("Author");
         const typeDirector = generateUniqueType("Director");
@@ -128,7 +130,7 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
             const result = await graphql({
                 schema: await neoSchema.getSchema(),
                 source: query,
-                contextValue: { driver },
+                contextValue: neo4j.getContextValues(),
             });
 
             if (result.errors) {

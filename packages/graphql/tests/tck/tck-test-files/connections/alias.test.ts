@@ -18,7 +18,7 @@
  */
 
 import { gql } from "apollo-server";
-import { DocumentNode } from "graphql";
+import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
@@ -67,12 +67,13 @@ describe("Connections Alias", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "MATCH (this:\`Movie\`)
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WITH collect({  }) AS edges
-            RETURN { totalCount: size(edges) } AS actors
+            WITH size(edges) AS totalCount
+            RETURN { totalCount: totalCount } AS actors
             }
             RETURN this { actors } as this"
         `);
@@ -111,28 +112,32 @@ describe("Connections Alias", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $this_title
+            "MATCH (this:\`Movie\`)
+            WHERE this.title = $param0
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WHERE this_actor.name = $this_hanks.args.where.node.name
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS hanks
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS hanks
             }
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WHERE this_actor.name = $this_jenny.args.where.node.name
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-            RETURN { edges: edges, totalCount: size(edges) } AS jenny
+            UNWIND edges as edge
+            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS jenny
             }
             RETURN this { .title, hanks, jenny } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_title\\": \\"Forrest Gump\\",
+                \\"param0\\": \\"Forrest Gump\\",
                 \\"this_hanks\\": {
                     \\"args\\": {
                         \\"where\\": {
