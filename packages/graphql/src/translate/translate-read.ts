@@ -47,7 +47,6 @@ export function translateRead({
     let projAuth = "";
 
     let cypherParams: { [k: string]: any } = {};
-    const cypherSortStrs: string[] = [];
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
 
@@ -108,10 +107,6 @@ export function translateRead({
             interfaceStrs.push(interfaceProjection.cypher);
             cypherParams = { ...cypherParams, ...interfaceProjection.params };
         });
-    }
-
-    if (projection[2]?.cypherSortFields?.length) {
-        projection[2]?.cypherSortFields.forEach((c) => cypherSortStrs.push(`${c.apocStr} AS ${c.alias}`));
     }
 
     const allowAndParams = createAuthAndParams({
