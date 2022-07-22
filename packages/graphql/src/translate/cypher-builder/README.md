@@ -243,7 +243,8 @@ A new environment will be created each time an AST node calls the `build` method
 
 ## Patterns
 
-Behind the scenes, Match, Create and Merge statements use the `Pattern` class to compile the node or relationship reference. Patterns describe exactly how a certain node or relationship must be rendered (e.g. `(this0:Movie)` vs `(this0)`). Usually Patterns do not need to be used directly, but if needed these can be manually instanced and passed to the clauses instead of nodes and relationships.
+Behind the scenes, Match, Create and Merge statements use the `Pattern` class to compile the node or relationship reference. Patterns describe exactly how a certain node or relationship must be rendered (e.g. `(this0:Movie)` vs `(this0)`).
+Usually Patterns do not need to be used directly, but if needed these can be manually instanced and passed to the clauses instead of nodes and relationships.
 
 ### Pseudo Grammar
 

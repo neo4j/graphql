@@ -21,6 +21,8 @@ import { Clause } from "./Clause";
 import type { CypherEnvironment } from "../Environment";
 import type { Expr } from "../types";
 import type { Literal, Variable } from "../CypherBuilder";
+import { WithOrder } from "./mixins/WithOrder";
+import { applyMixins } from "./utils/apply-mixin";
 
 export type ReturnColumn = Expr | [Expr, string | Variable | Literal];
 
@@ -28,22 +30,20 @@ export class Return extends Clause {
     private columns: ReturnColumn[] = [];
     private isStar = false;
 
-    constructor(...columns: ReturnColumn[]);
-    constructor(starOrColumn: "*" | ReturnColumn, ...columns: ReturnColumn[]);
-    constructor(starOrColumn: "*" | ReturnColumn | undefined, ...columns: ReturnColumn[]) {
+    constructor(...columns: ("*" | ReturnColumn)[]) {
         super();
-        if (starOrColumn === "*") {
-            this.isStar = true;
-            this.columns = columns;
-        } else if (starOrColumn) {
-            this.columns = [starOrColumn, ...columns];
-        } else {
-            this.columns = columns;
-        }
+        this.addReturnColumn(...columns);
     }
 
-    public addReturnColumn(...columns: ReturnColumn[]): void {
-        this.columns.push(...columns);
+    public addReturnColumn(...columns: (ReturnColumn | "*")[]): void {
+        const filteredColumns = columns.filter((v) => {
+            if (v === "*") {
+                this.isStar = true;
+                return false;
+            }
+            return true;
+        }) as ReturnColumn[];
+        this.columns.push(...filteredColumns);
     }
 
     public getCypher(env: CypherEnvironment): string {
@@ -76,3 +76,6 @@ export class Return extends Clause {
         return column.getCypher(env);
     }
 }
+
+export interface Return extends WithOrder {}
+applyMixins(Return, [WithOrder]);

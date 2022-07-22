@@ -25,9 +25,13 @@ import type { Expr } from "../types";
 export class MapExpr extends CypherASTNode {
     private value: Record<string, Expr>;
 
-    constructor(value: Record<string, Expr>) {
+    constructor(value: Record<string, Expr> = {}) {
         super();
         this.value = value;
+    }
+
+    public set(values: Record<string, Expr>): void {
+        this.value = { ...this.value, ...values };
     }
 
     public getCypher(env: CypherEnvironment): string {

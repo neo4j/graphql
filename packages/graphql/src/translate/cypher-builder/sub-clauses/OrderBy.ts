@@ -17,20 +17,26 @@
  * limitations under the License.
  */
 
-import { Return } from "../Return";
-import type { ReturnColumn } from "../Return";
-import { ClauseMixin } from "./ClauseMixin";
+import type { CypherEnvironment } from "../Environment";
 
-export abstract class WithReturn extends ClauseMixin {
-    protected returnStatement: Return | undefined;
+import { CypherASTNode } from "../CypherASTNode";
+import type { Expr } from "../types";
 
-    public return(...columns: ("*" | ReturnColumn)[]): Return {
-        if (this.returnStatement) {
-            this.returnStatement.addReturnColumn(...columns);
-        } else {
-            this.returnStatement = new Return(...columns);
-            this.addChildren(this.returnStatement);
-        }
-        return this.returnStatement;
+export type Order = "ASC" | "DESC";
+
+export class OrderBy extends CypherASTNode {
+    private exprs: Expr[];
+    private order: Order;
+
+    constructor(exprs: Expr[], order: Order = "ASC") {
+        super();
+        this.exprs = exprs;
+        this.order = order;
+    }
+
+    public getCypher(env: CypherEnvironment): string {
+        const exprStr = this.exprs.map((expr) => expr.getCypher(env)).join(", ");
+
+        return `ORDER BY ${exprStr} ${this.order}`;
     }
 }
