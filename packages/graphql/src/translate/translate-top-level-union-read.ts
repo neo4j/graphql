@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { Union } from "../classes/Union";
-import Node from "../classes/Node";
-import { Context } from "../types";
-import translateRead from "./translate-read";
+import type { Union } from "../classes/Union";
+import type Node from "../classes/Node";
+import type { Context } from "../types";
+import { translateRead } from "./translate-read";
 
 function translateToplevelUnionRead({ union, context }: { union: Union; context: Context }): [string, any] {
     const cypher: string[] = [];
@@ -44,11 +44,11 @@ function translateToplevelUnionRead({ union, context }: { union: Union; context:
             whereInput,
         });
 
-        cypherParams = { ...cypherParams, ...translatedMember[1] };
+        cypherParams = { ...cypherParams, ...translatedMember.params };
         // Two CALL so we can collect and ensure that a NULL MATCH does not break query
         cypher.push(`CALL {`);
         cypher.push(`CALL {`);
-        cypher.push(translatedMember[0]);
+        cypher.push(translatedMember.cypher);
         cypher.push(`}`);
         cypher.push(`RETURN collect(${varName}) AS ${entry[0]}`);
         cypher.push(`}`);

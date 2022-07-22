@@ -60,14 +60,14 @@ describe("tck/rfc/top-level-unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
             CALL {
-            MATCH (this_Movie1:Movie)
+            MATCH (this_Movie1:\`Movie\`)
             RETURN this_Movie1 { __resolveType: \\"Movie\\", .id } as this_Movie1
             }
             RETURN collect(this_Movie1) AS Movie
             }
             CALL {
             CALL {
-            MATCH (this_Series2:Series)
+            MATCH (this_Series2:\`Series\`)
             RETURN this_Series2 { __resolveType: \\"Series\\", .id } as this_Series2
             }
             RETURN collect(this_Series2) AS Series
@@ -131,14 +131,14 @@ describe("tck/rfc/top-level-unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
             CALL {
-            MATCH (this_Movie1:Movie)
+            MATCH (this_Movie1:\`Movie\`)
             RETURN this_Movie1 { __resolveType: \\"Movie\\", .id, actors: [ (this_Movie1)<-[:ACTED_IN]-(this_Movie1_actors:Actor)   | this_Movie1_actors { .id } ] } as this_Movie1
             }
             RETURN collect(this_Movie1) AS Movie
             }
             CALL {
             CALL {
-            MATCH (this_Series2:Series)
+            MATCH (this_Series2:\`Series\`)
             RETURN this_Series2 { __resolveType: \\"Series\\", .id, episodes: [ (this_Series2)<-[:HAS_EPISODE]-(this_Series2_episodes:Episode)   | this_Series2_episodes { .id } ] } as this_Series2
             }
             RETURN collect(this_Series2) AS Series
@@ -189,7 +189,7 @@ describe("tck/rfc/top-level-unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
             CALL {
-            MATCH (this_Movie1:Movie)
+            MATCH (this_Movie1:\`Movie\`)
             WHERE this_Movie1.id = $this_Movie1_id
             RETURN this_Movie1 { __resolveType: \\"Movie\\", .id } as this_Movie1
             }
@@ -197,7 +197,7 @@ describe("tck/rfc/top-level-unions", () => {
             }
             CALL {
             CALL {
-            MATCH (this_Series2:Series)
+            MATCH (this_Series2:\`Series\`)
             WHERE this_Series2.id = $this_Series2_id
             RETURN this_Series2 { __resolveType: \\"Series\\", .id } as this_Series2
             }

@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { UnionTypeDefinitionNode } from "graphql";
-import { Node } from "../classes";
+import type { UnionTypeDefinitionNode } from "graphql";
+import type { Node } from "../classes";
 import { Union } from "../classes/Union";
 
 type Unions = {

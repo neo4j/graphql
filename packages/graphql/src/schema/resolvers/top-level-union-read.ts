@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import { GraphQLResolveInfo } from "graphql";
+import type { GraphQLResolveInfo } from "graphql";
 import translateToplevelUnionRead from "../../translate/translate-top-level-union-read";
-import { Context } from "../../types";
+import type { Context } from "../../types";
 import { execute } from "../../utils";
 import getNeo4jResolveTree from "../../utils/get-neo4j-resolve-tree";
-import { Union } from "../../classes/Union";
+import type { Union } from "../../classes/Union";
 
 export default function topLevelUnionReadResolver({ union }: { union: Union }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {

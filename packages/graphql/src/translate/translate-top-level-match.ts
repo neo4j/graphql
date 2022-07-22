@@ -28,14 +28,15 @@ export function translateTopLevelMatch({
     context,
     varName,
     operation,
+    whereInput,
 }: {
     context: Context;
     node: Node;
     varName: string;
     operation: AuthOperations;
+    whereInput?: Record<string, unknown>;
 }): CypherBuilder.CypherResult {
     const { resolveTree } = context;
-    const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
 
     const matchNode = new CypherBuilder.NamedNode(varName, { labels: node.getLabels(context) });
@@ -62,9 +63,10 @@ export function translateTopLevelMatch({
         matchQuery = new CypherBuilder.Match(matchNode);
     }
 
-    if (whereInput) {
+    const whereEntries = (whereInput || resolveTree.args.where) as GraphQLWhereArg;
+    if (whereEntries) {
         const whereOp = createCypherWhereParams({
-            whereInput,
+            whereInput: whereEntries,
             element: node,
             context,
             targetElement: matchNode,

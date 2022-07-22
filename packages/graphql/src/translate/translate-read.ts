@@ -35,12 +35,14 @@ export function translateRead({
     context,
     overrideVarName,
     resolveType,
+    whereInput,
     isRootConnectionField,
 }: {
     context: Context;
     node: Node;
     overrideVarName?: string;
     resolveType?: boolean;
+    whereInput?: Record<string, unknown>;
     isRootConnectionField?: boolean;
 }): CypherBuilder.CypherResult {
     const { resolveTree } = context;
@@ -59,6 +61,7 @@ export function translateRead({
         context,
         varName,
         operation: "READ",
+        whereInput,
     });
     matchAndWhereStr = topLevelMatch.cypher;
     cypherParams = { ...cypherParams, ...topLevelMatch.params };

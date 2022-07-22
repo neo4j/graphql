@@ -20,7 +20,7 @@
 import camelcase from "camelcase";
 import pluralize from "pluralize";
 import { AbstractGraphElement, AbstractGraphElementConstructor } from "./AbstractGraphElement";
-import Node from "./Node";
+import type Node from "./Node";
 
 export interface UnionConstructor extends AbstractGraphElementConstructor {
     members: Node[];
