@@ -131,9 +131,9 @@ function translateAggregate({ node, context }: { node: Node; context: Context })
                     const lessOrGreaterThan = entry[1].name === "shortest" ? "<" : ">";
 
                     const reduce = `
-                            reduce(aggVar = collect(this.${fieldName})[0], current IN collect(this.${fieldName}) | 
-                                CASE size(current) ${lessOrGreaterThan} size(aggVar)
-                                WHEN true THEN current
+                            reduce(aggVar = collect(this.${fieldName})[0], current IN collect(this.${fieldName}) |
+                                CASE
+                                WHEN size(current) ${lessOrGreaterThan} size(aggVar) THEN current
                                 ELSE aggVar
                                 END
                             )

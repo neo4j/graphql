@@ -201,8 +201,8 @@ describe("Cypher Union", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_search_Genre_connect0_node:Genre)
             	WHERE this0_search_Genre_connect0_node.name = $this0_search_Genre_connect0_node_param0
-            	FOREACH(_ IN CASE this0 WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this0_search_Genre_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_search_Genre_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
             		)
             	)
@@ -328,7 +328,7 @@ describe("Cypher Union", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_search_Genre0_disconnect0_rel:SEARCH]->(this_search_Genre0_disconnect0:Genre)
             WHERE this_search_Genre0_disconnect0.name = $updateMovies.args.update.search.Genre[0].disconnect[0].where.node.name
-            FOREACH(_ IN CASE this_search_Genre0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_search_Genre0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_search_Genre0_disconnect0_rel
             )
             RETURN count(*) AS _
@@ -392,7 +392,7 @@ describe("Cypher Union", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_search_Genre0_rel:SEARCH]->(this_disconnect_search_Genre0:Genre)
             WHERE this_disconnect_search_Genre0.name = $updateMovies.args.disconnect.search.Genre[0].where.node.name
-            FOREACH(_ IN CASE this_disconnect_search_Genre0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_disconnect_search_Genre0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_search_Genre0_rel
             )
             RETURN count(*) AS _
@@ -452,8 +452,8 @@ describe("Cypher Union", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_search_Genre0_node:Genre)
             	WHERE this_connect_search_Genre0_node.name = $this_connect_search_Genre0_node_param0
-            	FOREACH(_ IN CASE this WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_connect_search_Genre0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_connect_search_Genre0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
             		)
             	)

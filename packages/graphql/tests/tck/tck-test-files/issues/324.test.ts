@@ -107,8 +107,8 @@ describe("#324", () => {
             	WITH this, this_car0, this_car0_manufacturer0
             	OPTIONAL MATCH (this_car0_manufacturer0_logo0_connect0_node:Logo)
             	WHERE this_car0_manufacturer0_logo0_connect0_node.identifier = $this_car0_manufacturer0_logo0_connect0_node_param0
-            	FOREACH(_ IN CASE this_car0_manufacturer0 WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_car0_manufacturer0_logo0_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this_car0_manufacturer0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_car0_manufacturer0_logo0_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this_car0_manufacturer0)-[:LOGO]->(this_car0_manufacturer0_logo0_connect0_node)
             		)
             	)

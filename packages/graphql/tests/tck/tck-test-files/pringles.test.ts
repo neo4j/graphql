@@ -167,8 +167,8 @@ describe("Cypher Create Pringles", () => {
             	WITH this0, this0_photos1_node
             	OPTIONAL MATCH (this0_photos1_node_color_connect0_node:Color)
             	WHERE this0_photos1_node_color_connect0_node.id = $this0_photos1_node_color_connect0_node_param0
-            	FOREACH(_ IN CASE this0_photos1_node WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this0_photos1_node_color_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this0_photos1_node IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_photos1_node_color_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
             		)
             	)
@@ -193,8 +193,8 @@ describe("Cypher Create Pringles", () => {
             	WITH this0, this0_photos2_node
             	OPTIONAL MATCH (this0_photos2_node_color_connect0_node:Color)
             	WHERE this0_photos2_node_color_connect0_node.id = $this0_photos2_node_color_connect0_node_param0
-            	FOREACH(_ IN CASE this0_photos2_node WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this0_photos2_node_color_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this0_photos2_node IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_photos2_node_color_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
             		)
             	)
@@ -290,7 +290,7 @@ describe("Cypher Create Pringles", () => {
             WITH this, this_photos0
             OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
             WHERE this_photos0_color0_disconnect0.name = $updateProducts.args.update.photos[0].update.node.color.disconnect.where.node.name
-            FOREACH(_ IN CASE this_photos0_color0_disconnect0 WHEN NULL THEN [] ELSE [1] END |
+            FOREACH(_ IN CASE WHEN this_photos0_color0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_photos0_color0_disconnect0_rel
             )
             RETURN count(*) AS _
@@ -300,8 +300,8 @@ describe("Cypher Create Pringles", () => {
             	WITH this, this_photos0
             	OPTIONAL MATCH (this_photos0_color0_connect0_node:Color)
             	WHERE this_photos0_color0_connect0_node.name = $this_photos0_color0_connect0_node_param0
-            	FOREACH(_ IN CASE this_photos0 WHEN NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE this_photos0_color0_connect0_node WHEN NULL THEN [] ELSE [1] END |
+            	FOREACH(_ IN CASE WHEN this_photos0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this_photos0_color0_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
             		)
             	)
