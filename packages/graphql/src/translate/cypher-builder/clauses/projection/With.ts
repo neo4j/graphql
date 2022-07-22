@@ -21,13 +21,17 @@ import { ProjectionClause } from "./ProjectionClause";
 import type { CypherEnvironment } from "../../Environment";
 import { WithOrder } from "../mixins/WithOrder";
 import { applyMixins } from "../utils/apply-mixin";
+import { compileCypherIfExists } from "../../utils";
 
 export class With extends ProjectionClause {
     public getCypher(env: CypherEnvironment): string {
         const projectionStr = this.getProjectionCypher(env);
-        return `WITH ${projectionStr}`;
+        const orderByStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });
+
+        return `WITH ${projectionStr}${orderByStr}`;
     }
 }
 
 export interface With extends WithOrder {}
+
 applyMixins(With, [WithOrder]);

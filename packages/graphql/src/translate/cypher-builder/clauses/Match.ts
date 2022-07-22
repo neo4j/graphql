@@ -25,6 +25,7 @@ import { WithReturn } from "./mixins/WithReturn";
 import { applyMixins } from "./utils/apply-mixin";
 import { WithWhere } from "./mixins/WithWhere";
 import { WithSet } from "./mixins/WIthSet";
+import { WithWith } from "./mixins/WithWith";
 
 export class Match<T extends MatchableElement = any> extends Clause {
     private pattern: Pattern<T>;
@@ -45,10 +46,11 @@ export class Match<T extends MatchableElement = any> extends Clause {
         const whereCypher = compileCypherIfExists(this.whereSubClause, env, { prefix: "\n" });
         const returnCypher = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
         const setCypher = compileCypherIfExists(this.setSubClause, env, { prefix: "\n" });
+        const withCypher = compileCypherIfExists(this.withStatement, env, { prefix: "\n" });
 
-        return `MATCH ${nodeCypher}${whereCypher}${setCypher}${returnCypher}`;
+        return `MATCH ${nodeCypher}${whereCypher}${setCypher}${withCypher}${returnCypher}`;
     }
 }
 
-export interface Match extends WithReturn, WithWhere, WithSet {}
-applyMixins(Match, [WithReturn, WithWhere, WithSet]);
+export interface Match extends WithReturn, WithWhere, WithSet, WithWith {}
+applyMixins(Match, [WithReturn, WithWhere, WithSet, WithWith]);

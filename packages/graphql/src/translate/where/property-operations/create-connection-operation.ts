@@ -58,6 +58,8 @@ export function createConnectionOperation({
         const relationField = connectionField.relationship;
 
         const childNode = new CypherBuilder.Node({ labels: refNode.getLabels(context) });
+
+        // TODO: use reverse
         const relationship = new CypherBuilder.Relationship({
             source: relationField.direction === "IN" ? childNode : parentNode,
             target: relationField.direction === "IN" ? parentNode : childNode,

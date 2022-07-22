@@ -239,7 +239,8 @@ function translateRootField({
     if (extraProjectionVars.length > 0) {
         projectionVars = `${projectionVars}, ${extraProjectionVars.join(", ")}`;
     }
-    const returnStrs = [`RETURN ${varName} { ${projectionVars} } as ${varName}`];
+    const returnStrs = [`RETURN ${varName} ${projectionVars} as ${varName}`];
+    // const returnStrs = [`RETURN ${varName} { ${projectionVars} } as ${varName}`];
 
     const projectCypherFieldsAfterLimit = node.cypherFields.length && hasLimit && !cypherSort;
 
@@ -350,7 +351,8 @@ function translateRootConnectionField({
     }
 
     const returnStrs: string[] = [
-        `WITH COLLECT({ node: ${varName} { ${projectionVars} } }) as edges, totalCount`,
+        // `WITH COLLECT({ node: ${varName} { ${projectionVars} } }) as edges, totalCount`,
+        `WITH COLLECT({ node: ${varName} ${projectionVars} }) as edges, totalCount`,
         `RETURN { edges: edges, totalCount: totalCount } as ${varName}`,
     ];
 

@@ -33,7 +33,7 @@ import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
-import { getRelationshipDirection } from "../utils/get-relationship-direction";
+import { getRelationshipDirectionStr } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 import type * as CypherBuilder from "./cypher-builder/CypherBuilder";
@@ -385,7 +385,7 @@ function createProjectionAndParams({
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 
-            const { inStr, outStr } = getRelationshipDirection(relationField, field.args);
+            const { inStr, outStr } = getRelationshipDirectionStr(relationField, field.args);
 
             if (relationField.interface) {
                 if (!res.meta.interfaceFields) {
@@ -573,10 +573,10 @@ function createProjectionAndParams({
         });
 
         if (aggregationFieldProjection) {
-            // res.projection.push(`${alias}: ${aggregationFieldProjection.query}`);
-            // res.params = { ...res.params, ...aggregationFieldProjection.params };
-            res.meta.subQueries.push(aggregationFieldProjection.clause);
-            res.meta.subQueryVariables[alias] = aggregationFieldProjection.variable;
+            res.projection.push(`${alias}: ${aggregationFieldProjection.query}`);
+            res.params = { ...res.params, ...aggregationFieldProjection.params };
+            // res.meta.subQueries.push(aggregationFieldProjection.clause);
+            // res.meta.subQueryVariables[alias] = aggregationFieldProjection.variable;
             return res;
         }
 
@@ -698,8 +698,8 @@ function createProjectionAndParams({
         },
     });
 
-    // return [`{ ${projection.join(", ")} }`, params, meta];
-    return [projection.join(", "), params, meta];
+    return [`{ ${projection.join(", ")} }`, params, meta];
+    // return [projection.join(", "), params, meta];
 }
 
 function sortReducer(s: string[], sort: GraphQLSortArg) {

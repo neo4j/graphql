@@ -48,7 +48,7 @@ describe("Field Level Aggregations", () => {
         });
     });
 
-    test.only("Count Aggregation", async () => {
+    test("Count Aggregation", async () => {
         const query = gql`
             query {
                 movies {
@@ -67,12 +67,7 @@ describe("Field Level Aggregations", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            CALL {
-                WITH this
-                MATCH (this)-[this1]->(this2:\`Actor\`)
-                RETURN { count: count(this2) } AS var0
-            }
-            RETURN this { .title, actorsAggregate: var0 } as this"
+            RETURN this { .title, actorsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:Actor)      RETURN COUNT(n)\\", { this: this })) } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
