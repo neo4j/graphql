@@ -17,12 +17,24 @@
  * limitations under the License.
  */
 
-import { ProjectionClause } from "./ProjectionClause";
-import type { CypherEnvironment } from "../../Environment";
+import type { CypherEnvironment } from "../Environment";
+import { Projection, ProjectionColumn } from "../sub-clauses/Projection";
+import { Clause } from "./Clause";
 
-export class Unwind extends ProjectionClause {
+export class Unwind extends Clause {
+    private projection: Projection;
+
+    constructor(...columns: Array<"*" | ProjectionColumn>) {
+        super();
+        this.projection = new Projection(columns);
+    }
+
+    public addColumns(...columns: Array<"*" | ProjectionColumn>): void {
+        this.projection.addColumns(columns);
+    }
+
     public getCypher(env: CypherEnvironment): string {
-        const projectionStr = this.getProjectionCypher(env);
+        const projectionStr = this.projection.getCypher(env);
         return `UNWIND ${projectionStr}`;
     }
 }

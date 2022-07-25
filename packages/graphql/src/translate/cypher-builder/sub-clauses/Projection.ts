@@ -17,23 +17,23 @@
  * limitations under the License.
  */
 
-import { Clause } from "../Clause";
-import type { CypherEnvironment } from "../../Environment";
-import type { Expr } from "../../types";
-import type { Literal, Variable } from "../../CypherBuilder";
+import type { CypherEnvironment } from "../Environment";
+import type { Expr } from "../types";
+import type { Literal, Variable } from "../CypherBuilder";
+import { CypherASTNode } from "../CypherASTNode";
 
 export type ProjectionColumn = Expr | [Expr, string | Variable | Literal];
 
-export abstract class ProjectionClause extends Clause {
+export class Projection extends CypherASTNode {
     private columns: ProjectionColumn[] = [];
     private isStar = false;
 
-    constructor(...columns: Array<"*" | ProjectionColumn>) {
+    constructor(columns: Array<"*" | ProjectionColumn>) {
         super();
-        this.addColumns(...columns);
+        this.addColumns(columns);
     }
 
-    public addColumns(...columns: Array<"*" | ProjectionColumn>): void {
+    public addColumns(columns: Array<"*" | ProjectionColumn>): void {
         const filteredColumns = columns.filter((v) => {
             if (v === "*") {
                 this.isStar = true;
@@ -44,7 +44,7 @@ export abstract class ProjectionClause extends Clause {
         this.columns.push(...filteredColumns);
     }
 
-    public getProjectionCypher(env: CypherEnvironment): string {
+    public getCypher(env: CypherEnvironment): string {
         let columnsStrs = this.columns.map((column) => {
             return this.serializeColumn(column, env);
         });
