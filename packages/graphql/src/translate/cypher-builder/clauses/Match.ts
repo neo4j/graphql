@@ -24,7 +24,7 @@ import { compileCypherIfExists } from "../utils";
 import { WithReturn } from "./mixins/WithReturn";
 import { applyMixins } from "./utils/apply-mixin";
 import { WithWhere } from "./mixins/WithWhere";
-import { WithSet } from "./mixins/WIthSet";
+import { WithSet } from "./mixins/WithSet";
 import { WithWith } from "./mixins/WithWith";
 
 export class Match<T extends MatchableElement = any> extends Clause {
