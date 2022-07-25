@@ -67,7 +67,12 @@ describe("Field Level Aggregations", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { .title, actorsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:Actor)      RETURN COUNT(n)\\", { this: this })) } } as this"
+            CALL {
+                WITH this
+                MATCH (this2:\`Actor\`)-[this1:ACTED_IN]->(this)
+                RETURN count(this2) AS var0
+            }
+            RETURN this { .title, actorsAggregate: { count: var0 } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -97,7 +102,12 @@ describe("Field Level Aggregations", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { actorsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:Actor)      RETURN COUNT(n)\\", { this: this })), node: { name: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:Actor)
+            CALL {
+                WITH this
+                MATCH (this2:\`Actor\`)-[this1:ACTED_IN]->(this)
+                RETURN count(this2) AS var0
+            }
+            RETURN this { actorsAggregate: { count: var0, node: { name: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:Actor)
                     WITH n as n
                     ORDER BY size(n.name) DESC
                     WITH collect(n.name) as list

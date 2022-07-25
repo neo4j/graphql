@@ -74,7 +74,12 @@ describe("Field Level Aggregations", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .title, actorsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:Actor)      RETURN COUNT(n)\\", { this: this })) } } as this"
+            CALL {
+                WITH this
+                MATCH (this2:\`Actor\`)-[this1:ACTED_IN]->(this)
+                RETURN count(this2) AS var0
+            }
+            RETURN this { .title, actorsAggregate: { count: var0 } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -110,7 +115,13 @@ describe("Field Level Aggregations", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            RETURN this { .name, moviesAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:ACTED_IN]->(n:Movie)     CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\\\\\"@neo4j/graphql/UNAUTHENTICATED\\\\\\", [0])), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0]) RETURN COUNT(n)\\", { auth: $auth, this: this })) } } as this"
+            CALL {
+                WITH this
+                MATCH (this)-[this1:ACTED_IN]->(this2:\`Movie\`)
+                CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                RETURN count(this2) AS var0
+            }
+            RETURN this { .name, moviesAggregate: { count: var0 } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

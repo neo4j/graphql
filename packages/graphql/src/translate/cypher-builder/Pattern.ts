@@ -79,6 +79,7 @@ export class Pattern<T extends MatchableElement = any> extends CypherASTNode {
             source: sourceOptions,
             target: targetOptions,
             relationship: relationshipOption,
+            directed: options?.directed,
         };
     }
 

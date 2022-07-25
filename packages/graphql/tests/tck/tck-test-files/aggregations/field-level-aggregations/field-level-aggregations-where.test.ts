@@ -68,12 +68,18 @@ describe("Field Level Aggregations Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { .title, actorsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:Person) WHERE n.age > $this_actorsAggregate_nn_param0    RETURN COUNT(n)\\", { this_actorsAggregate_nn_param0: $this_actorsAggregate_nn_param0, this: this })) } } as this"
+            CALL {
+                WITH this
+                MATCH (this2:\`Person\`)-[this1:ACTED_IN]->(this)
+                WHERE this2.age > $param0
+                RETURN count(this2) AS var0
+            }
+            RETURN this { .title, actorsAggregate: { count: var0 } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actorsAggregate_nn_param0\\": {
+                \\"param0\\": {
                     \\"low\\": 40,
                     \\"high\\": 0
                 }
@@ -81,7 +87,7 @@ describe("Field Level Aggregations Where", () => {
         `);
     });
 
-    test("Count aggregation with colliding filter", async () => {
+    test.only("Count aggregation with colliding filter", async () => {
         const query = gql`
             query {
                 movies {
@@ -103,13 +109,25 @@ describe("Field Level Aggregations Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { .title, actorsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:ACTED_IN]-(n:Person) WHERE n.name CONTAINS $this_actorsAggregate_nn_param0    RETURN COUNT(n)\\", { this_actorsAggregate_nn_param0: $this_actorsAggregate_nn_param0, this: this })) }, directorsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)<-[r:DIRECTED]-(n:Person) WHERE n.name CONTAINS $this_directorsAggregate_nn_param0    RETURN COUNT(n)\\", { this_directorsAggregate_nn_param0: $this_directorsAggregate_nn_param0, this: this })) } } as this"
+            CALL {
+                WITH this
+                MATCH (this3:\`Person\`)-[this2:ACTED_IN]->(this)
+                WHERE this3.name CONTAINS $param0
+                RETURN count(this3) AS var0
+            }
+            CALL {
+                WITH this
+                MATCH (this6:\`Person\`)-[this5:DIRECTED]->(this)
+                WHERE this6.name CONTAINS $param1
+                RETURN count(this6) AS var1
+            }
+            RETURN this { .title, actorsAggregate: { count: var0 }, directorsAggregate: { count: var1 } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actorsAggregate_nn_param0\\": \\"abc\\",
-                \\"this_directorsAggregate_nn_param0\\": \\"abcdefg\\"
+                \\"param0\\": \\"abc\\",
+                \\"param1\\": \\"abcdefg\\"
             }"
         `);
     });

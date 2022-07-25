@@ -24,7 +24,7 @@ import { ClauseMixin } from "./ClauseMixin";
 export abstract class WithReturn extends ClauseMixin {
     protected returnStatement: Return | undefined;
 
-    public return(...columns: ("*" | ProjectionColumn)[]): Return {
+    public return(...columns: Array<"*" | ProjectionColumn>): Return {
         if (this.returnStatement) {
             this.returnStatement.addColumns(...columns);
         } else {

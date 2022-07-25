@@ -69,13 +69,25 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Team\`)
-            RETURN this { accepted: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:OWNS_RISK]->(n:Risk) WHERE $this_accepted_nn_param0 IN n.mitigationState    RETURN COUNT(n)\\", { this_accepted_nn_param0: $this_accepted_nn_param0, this: this })) }, identified: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:OWNS_RISK]->(n:Risk) WHERE $this_identified_nn_param0 IN n.mitigationState    RETURN COUNT(n)\\", { this_identified_nn_param0: $this_identified_nn_param0, this: this })) } } as this"
+            CALL {
+                WITH this
+                MATCH (this)-[this2:OWNS_RISK]->(this3:\`Risk\`)
+                WHERE $param0 IN this3.mitigationState
+                RETURN count(this3) AS var0
+            }
+            CALL {
+                WITH this
+                MATCH (this)-[this5:OWNS_RISK]->(this6:\`Risk\`)
+                WHERE $param1 IN this6.mitigationState
+                RETURN count(this6) AS var1
+            }
+            RETURN this { accepted: { count: var0 }, identified: { count: var1 } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_accepted_nn_param0\\": \\"Accepted\\",
-                \\"this_identified_nn_param0\\": \\"Identified\\"
+                \\"param0\\": \\"Accepted\\",
+                \\"param1\\": \\"Identified\\"
             }"
         `);
     });

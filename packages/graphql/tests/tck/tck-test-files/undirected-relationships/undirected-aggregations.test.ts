@@ -62,7 +62,12 @@ describe("Undirected Aggregations", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            RETURN this { friendsAggregate: { count: head(apoc.cypher.runFirstColumn(\\"MATCH (this)-[r:FRIENDS_WITH]-(n:User)      RETURN COUNT(n)\\", { this: this })) } } as this"
+            CALL {
+                WITH this
+                MATCH (this)-[this1:FRIENDS_WITH]-(this2:\`User\`)
+                RETURN count(this2) AS var0
+            }
+            RETURN this { friendsAggregate: { count: var0 } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

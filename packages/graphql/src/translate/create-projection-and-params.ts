@@ -590,7 +590,8 @@ export default function createProjectionAndParams({
         if (aggregationFieldProjection) {
             // res.projection.push(`${alias}: ${aggregationFieldProjection.query}`);
             // res.params = { ...res.params, ...aggregationFieldProjection.params };
-            res.meta.subQueries.push(aggregationFieldProjection.clause);
+
+            res.meta.subQueries.push(...aggregationFieldProjection.clauses);
             res.meta.subQueryVariables[alias] = aggregationFieldProjection.projection;
             return res;
         }
