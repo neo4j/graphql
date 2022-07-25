@@ -19,6 +19,7 @@
 
 import type { CypherEnvironment } from "../Environment";
 import { Projection, ProjectionColumn } from "../sub-clauses/Projection";
+import { compileCypherIfExists } from "../utils";
 import { Clause } from "./Clause";
 import { WithOrder } from "./mixins/WithOrder";
 import { applyMixins } from "./utils/apply-mixin";
@@ -37,7 +38,8 @@ export class With extends Clause {
 
     public getCypher(env: CypherEnvironment): string {
         const projectionStr = this.projection.getCypher(env);
-        return `WITH ${projectionStr}`;
+        const orderByStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });
+        return `WITH ${projectionStr}${orderByStr}`;
     }
 }
 

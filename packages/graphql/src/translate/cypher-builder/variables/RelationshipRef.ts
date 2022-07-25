@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { escapeLabel } from "../utils";
 import { Variable } from "./Variable";
 import type { NodeRef } from "./NodeRef";
 import { MatchPatternOptions, Pattern } from "../Pattern";
