@@ -123,7 +123,7 @@ export default async function translateCreate({
         projectionStr = createStrs
             .map(
                 (_, i) =>
-                    `\nthis${i} ${projection[0]
+                    `\nthis${i} ${`{ ${projection[0]} }`
                         // First look to see if projection param is being reassigned
                         // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
                         .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
@@ -131,6 +131,8 @@ export default async function translateCreate({
                         .replace(/REPLACE_ME/g, `this${i}`)}`
             )
             .join(", ");
+
+        // projectionStr = `{ ${projectionStr} }`;
 
         authCalls = createStrs
             .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))

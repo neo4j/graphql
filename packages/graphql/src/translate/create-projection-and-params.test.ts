@@ -77,7 +77,7 @@ describe("createProjectionAndParams", () => {
 
         const result = createProjectionAndParams({ resolveTree, node, context, varName: "this" });
 
-        expect(result[0]).toBe(`{ .title }`);
+        expect(result[0]).toBe(`.title`);
         expect(result[1]).toMatchObject({});
     });
     test("should return the correct projection when querying for a global with id in the selection set", () => {
@@ -132,6 +132,6 @@ describe("createProjectionAndParams", () => {
         }).instance();
 
         const result = createProjectionAndParams({ resolveTree, node, context, varName: "this" });
-        expect(result[0]).toBe(`{ .title }`);
+        expect(result[0]).toBe(`.title`);
     });
 });

@@ -202,7 +202,7 @@ function createInterfaceProjectionAndParams({
             });
         }
 
-        subquery.push(`RETURN ${recurse[0]} AS ${field.fieldName}`);
+        subquery.push(`RETURN { ${recurse[0]} } AS ${field.fieldName}`);
         globalParams = {
             ...globalParams,
             ...recurse[1],

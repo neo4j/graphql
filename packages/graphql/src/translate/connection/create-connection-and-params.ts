@@ -164,7 +164,7 @@ function createConnectionAndParams({
                         resolveType: true,
                     });
                     const [nodeProjection, nodeProjectionParams] = nodeProjectionAndParams;
-                    subqueryElementsToCollect.push(`node: ${nodeProjection}`);
+                    subqueryElementsToCollect.push(`node: { ${nodeProjection} }`);
                     globalParams = {
                         ...globalParams,
                         ...nodeProjectionParams,
@@ -380,7 +380,7 @@ function createConnectionAndParams({
                 literalElements: true,
             });
             const [nodeProjection, nodeProjectionParams, projectionMeta] = nodeProjectionAndParams;
-            elementsToCollect.push(`node: ${nodeProjection}`);
+            elementsToCollect.push(`node: { ${nodeProjection} }`);
             globalParams = { ...globalParams, ...nodeProjectionParams };
 
             if (projectionMeta?.authValidateStrs?.length) {

@@ -378,6 +378,8 @@ export default async function translateUpdate({
             varName,
         });
         [projStr] = projection;
+        if (projStr) projStr = `{ ${projStr} }`;
+
         cypherParams = { ...cypherParams, ...projection[1] };
         if (projection[2]?.authValidateStrs?.length) {
             projAuth = `CALL apoc.util.validate(NOT (${projection[2].authValidateStrs.join(

@@ -38,7 +38,7 @@ export default function createWhereAndParams({
     varName: string;
     chainStr?: string;
     recursing?: boolean;
-}): [string, any] {
+}): [string, Record<string, any>] {
     const nodeRef = new CypherBuilder.NamedNode(varName);
 
     const whereParams = createCypherWhereParams({

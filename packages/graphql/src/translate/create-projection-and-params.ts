@@ -36,7 +36,7 @@ import { addGlobalIdField } from "../utils/global-node-projection";
 import { getRelationshipDirectionStr } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
-import type * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 
 interface Res {
     projection: string[];
@@ -50,7 +50,7 @@ export interface ProjectionMeta {
     interfaceFields?: ResolveTree[];
     rootConnectionCypherSortFields?: { alias: string; apocStr: string }[];
     subQueries: Array<CypherBuilder.Clause>;
-    subQueryVariables: Record<string, CypherBuilder.Variable>;
+    subQueryVariables: Record<string, CypherBuilder.Expr>;
 }
 
 function createNodeWhereAndParams({
@@ -125,7 +125,7 @@ function createNodeWhereAndParams({
     return [whereStrs.join(" AND "), params];
 }
 
-function createProjectionAndParams({
+export default function createProjectionAndParams({
     resolveTree,
     node,
     context,
@@ -206,11 +206,19 @@ function createProjectionAndParams({
                     isRootConnectionField,
                     inRelationshipProjection: true,
                 });
-                const [str, p, meta] = recurse;
-                projectionStr = str;
-                res.params = { ...res.params, ...p };
-                if (meta?.authValidateStrs?.length) {
-                    projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
+
+                const projectionVars = createSubProjectionString({
+                    projection: recurse,
+                    chainStr: `${chainStr}_${varName}_${alias}`,
+                });
+
+                projectionStr = projectionVars.cypher;
+                res.params = { ...res.params, ...projectionVars.params };
+
+                res.meta.subQueries.push(...(recurse[2]?.subQueries || []));
+
+                if (recurse[2]?.authValidateStrs?.length) {
+                    projectionAuthStrs.push(recurse[2].authValidateStrs.join(" AND "));
                 }
             }
 
@@ -250,7 +258,7 @@ function createProjectionAndParams({
                             innerHeadStr.push(
                                 [
                                     `| ${varName}_${alias} { __resolveType: "${refNode.name}", `,
-                                    ...str.replace("{", "").split(""),
+                                    ...`{ ${str} }`.replace("{", "").split(""), // TODO improve
                                 ].join("")
                             );
                             res.params = { ...res.params, ...p };
@@ -466,7 +474,6 @@ function createProjectionAndParams({
                             varName: param,
                             isRootConnectionField,
                         });
-
                         const nodeWhereAndParams = createNodeWhereAndParams({
                             whereInput: field.args.where ? field.args.where[refNode.name] : field.args.where,
                             context,
@@ -479,11 +486,11 @@ function createProjectionAndParams({
                             innerHeadStr.push(`AND ${nodeWhereAndParams[0]}`);
                             res.params = { ...res.params, ...nodeWhereAndParams[1] };
                         }
-
+                        const recurseStr = `{ ${recurse[0]} }`;
                         innerHeadStr.push(
                             [
                                 `| ${param} { __resolveType: "${refNode.name}", `,
-                                ...recurse[0].replace("{", "").split(""),
+                                ...recurseStr.replace("{", "").split(""),
                             ].join("")
                         );
                         res.params = { ...res.params, ...recurse[1] };
@@ -524,8 +531,16 @@ function createProjectionAndParams({
                 inRelationshipProjection: true,
                 isRootConnectionField,
             });
-            [projectionStr] = recurse;
-            res.params = { ...res.params, ...recurse[1] };
+
+            const projectionVars = createSubProjectionString({
+                projection: recurse,
+                chainStr: `${chainStr}_${varName}_${alias}`,
+            });
+
+            projectionStr = projectionVars.cypher;
+            res.params = { ...res.params, ...projectionVars.params };
+
+            res.meta.subQueries.push(...(recurse[2]?.subQueries || []));
 
             let whereStr = "";
             const nodeWhereAndParams = createNodeWhereAndParams({
@@ -573,10 +588,10 @@ function createProjectionAndParams({
         });
 
         if (aggregationFieldProjection) {
-            res.projection.push(`${alias}: ${aggregationFieldProjection.query}`);
-            res.params = { ...res.params, ...aggregationFieldProjection.params };
-            // res.meta.subQueries.push(aggregationFieldProjection.clause);
-            // res.meta.subQueryVariables[alias] = aggregationFieldProjection.variable;
+            // res.projection.push(`${alias}: ${aggregationFieldProjection.query}`);
+            // res.params = { ...res.params, ...aggregationFieldProjection.params };
+            res.meta.subQueries.push(aggregationFieldProjection.clause);
+            res.meta.subQueryVariables[alias] = aggregationFieldProjection.projection;
             return res;
         }
 
@@ -698,8 +713,8 @@ function createProjectionAndParams({
         },
     });
 
-    return [`{ ${projection.join(", ")} }`, params, meta];
-    // return [projection.join(", "), params, meta];
+    // return [`{ ${projection.join(", ")} }`, params, meta];
+    return [projection.join(", "), params, meta];
 }
 
 function sortReducer(s: string[], sort: GraphQLSortArg) {
@@ -714,8 +729,6 @@ function sortReducer(s: string[], sort: GraphQLSortArg) {
         }),
     ];
 }
-
-export default createProjectionAndParams;
 
 // Generates any missing fields required for sorting
 const generateMissingOrAliasedSortFields = ({
@@ -748,3 +761,29 @@ const generateMissingOrAliasedRequiredFields = ({
 
     return generateMissingOrAliasedFields({ fieldNames: requiredFields, selection });
 };
+
+// NOTE: this is only for compatibility reasons with nested projections
+function createSubProjectionString({
+    projection,
+    chainStr,
+}: {
+    projection: [string, any, ProjectionMeta | undefined];
+    chainStr: string;
+}): CypherBuilder.CypherResult {
+    const nestedCypherProjection = new CypherBuilder.RawCypher((env) => {
+        let nestedProjectionStr = projection[0];
+        const extraProjectionVars = Object.entries(projection[2]?.subQueryVariables || {}).map(([key, value]) => {
+            return `${key}: ${value.getCypher(env)}`;
+        });
+        if (extraProjectionVars.length > 0 && nestedProjectionStr) {
+            nestedProjectionStr = `${nestedProjectionStr}, ${extraProjectionVars.join(", ")}`;
+        } else if (extraProjectionVars.length > 0) {
+            nestedProjectionStr = extraProjectionVars.join(", ");
+        }
+
+        return [`{ ${nestedProjectionStr} }`, projection[1]];
+    });
+
+    const projectionVars = nestedCypherProjection.build(chainStr);
+    return projectionVars;
+}

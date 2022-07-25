@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLResolveInfo} from "graphql";
+import type { GraphQLResolveInfo } from "graphql";
 import { GraphQLUnionType } from "graphql";
 import { execute } from "../../../utils";
 import type { ConnectionField, Context, CypherField } from "../../../types";
@@ -72,7 +72,7 @@ export function cypherResolver({
                 varName: `this`,
             });
             const [str, p, meta] = recurse;
-            projectionStr = str;
+            projectionStr = `{ ${str} }`;
             params = { ...params, ...p };
 
             if (meta?.authValidateStrs?.length) {
@@ -122,7 +122,10 @@ export function cypherResolver({
                         });
 
                         innerHeadStr.push(
-                            [`| this { __resolveType: "${node.name}", `, ...str.replace("{", "").split("")].join("")
+                            [
+                                `| this { __resolveType: "${node.name}", `,
+                                ...`{ ${str} }`.replace("{", "").split(""),
+                            ].join("")
                         );
                         params = { ...params, ...p };
 

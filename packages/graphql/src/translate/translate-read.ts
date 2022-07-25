@@ -65,6 +65,7 @@ export function translateRead({
         varName,
         isRootConnectionField,
     });
+    // TODO: nested field aggregations
     cypherParams = { ...cypherParams, ...projection[1] };
     if (projection[2]?.authValidateStrs?.length) {
         projAuth = `CALL apoc.util.validate(NOT (${projection[2].authValidateStrs.join(
@@ -236,10 +237,12 @@ function translateRootField({
     }
 
     let projectionVars = projection[0];
-    if (extraProjectionVars.length > 0) {
+    if (extraProjectionVars.length > 0 && projectionVars) {
         projectionVars = `${projectionVars}, ${extraProjectionVars.join(", ")}`;
+    } else if (extraProjectionVars.length > 0) {
+        projectionVars = extraProjectionVars.join(", "); // TODO: improve this logic
     }
-    const returnStrs = [`RETURN ${varName} ${projectionVars} as ${varName}`];
+    const returnStrs = [`RETURN ${varName} { ${projectionVars} } as ${varName}`];
     // const returnStrs = [`RETURN ${varName} { ${projectionVars} } as ${varName}`];
 
     const projectCypherFieldsAfterLimit = node.cypherFields.length && hasLimit && !cypherSort;
@@ -351,8 +354,8 @@ function translateRootConnectionField({
     }
 
     const returnStrs: string[] = [
-        // `WITH COLLECT({ node: ${varName} { ${projectionVars} } }) as edges, totalCount`,
-        `WITH COLLECT({ node: ${varName} ${projectionVars} }) as edges, totalCount`,
+        `WITH COLLECT({ node: ${varName} { ${projectionVars} } }) as edges, totalCount`,
+        // `WITH COLLECT({ node: ${varName} ${projectionVars} }) as edges, totalCount`,
         `RETURN { edges: edges, totalCount: totalCount } as ${varName}`,
     ];
 
