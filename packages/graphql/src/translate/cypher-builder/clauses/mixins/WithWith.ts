@@ -18,8 +18,8 @@
  */
 
 import { ClauseMixin } from "./ClauseMixin";
-import { With } from "../projection/With";
-import type { ProjectionColumn } from "../projection/ProjectionClause";
+import { With } from "../With";
+import type { ProjectionColumn } from "../../sub-clauses/Projection";
 
 // Sorry for this name, at least it is funny
 export abstract class WithWith extends ClauseMixin {

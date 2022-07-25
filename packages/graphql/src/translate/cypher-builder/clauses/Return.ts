@@ -17,14 +17,26 @@
  * limitations under the License.
  */
 
-import { WithOrder } from "../mixins/WithOrder";
-import { applyMixins } from "../utils/apply-mixin";
-import { ProjectionClause } from "./ProjectionClause";
-import type { CypherEnvironment } from "../../Environment";
+import { WithOrder } from "./mixins/WithOrder";
+import { applyMixins } from "./utils/apply-mixin";
+import { Projection, ProjectionColumn } from "../sub-clauses/Projection";
+import type { CypherEnvironment } from "../Environment";
+import { Clause } from "./Clause";
 
-export class Return extends ProjectionClause {
+export class Return extends Clause {
+    private projection: Projection;
+
+    constructor(...columns: Array<"*" | ProjectionColumn>) {
+        super();
+        this.projection = new Projection(columns);
+    }
+
+    public addColumns(...columns: Array<"*" | ProjectionColumn>): void {
+        this.projection.addColumns(columns);
+    }
+
     public getCypher(env: CypherEnvironment): string {
-        const projectionStr = this.getProjectionCypher(env);
+        const projectionStr = this.projection.getCypher(env);
         return `RETURN ${projectionStr}`;
     }
 }

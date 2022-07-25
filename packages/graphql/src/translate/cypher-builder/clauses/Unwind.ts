@@ -17,21 +17,24 @@
  * limitations under the License.
  */
 
-import { ProjectionClause } from "./ProjectionClause";
-import type { CypherEnvironment } from "../../Environment";
-import { WithOrder } from "../mixins/WithOrder";
-import { applyMixins } from "../utils/apply-mixin";
-import { compileCypherIfExists } from "../../utils";
+import type { CypherEnvironment } from "../Environment";
+import { Projection, ProjectionColumn } from "../sub-clauses/Projection";
+import { Clause } from "./Clause";
 
-export class With extends ProjectionClause {
+export class Unwind extends Clause {
+    private projection: Projection;
+
+    constructor(...columns: Array<"*" | ProjectionColumn>) {
+        super();
+        this.projection = new Projection(columns);
+    }
+
+    public addColumns(...columns: Array<"*" | ProjectionColumn>): void {
+        this.projection.addColumns(columns);
+    }
+
     public getCypher(env: CypherEnvironment): string {
-        const projectionStr = this.getProjectionCypher(env);
-        const orderByStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });
-
-        return `WITH ${projectionStr}${orderByStr}`;
+        const projectionStr = this.projection.getCypher(env);
+        return `UNWIND ${projectionStr}`;
     }
 }
-
-export interface With extends WithOrder {}
-
-applyMixins(With, [WithOrder]);

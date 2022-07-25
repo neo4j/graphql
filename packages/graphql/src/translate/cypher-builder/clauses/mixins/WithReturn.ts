@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { ProjectionColumn } from "../projection/ProjectionClause";
-import { Return } from "../projection/Return";
+import type { ProjectionColumn } from "../../sub-clauses/Projection";
+import { Return } from "../Return";
 import { ClauseMixin } from "./ClauseMixin";
 
 export abstract class WithReturn extends ClauseMixin {
