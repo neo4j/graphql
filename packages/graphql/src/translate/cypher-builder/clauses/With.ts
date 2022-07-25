@@ -39,7 +39,6 @@ export class With extends Clause {
     public getCypher(env: CypherEnvironment): string {
         const projectionStr = this.projection.getCypher(env);
         const orderByStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });
-
         return `WITH ${projectionStr}${orderByStr}`;
     }
 }
