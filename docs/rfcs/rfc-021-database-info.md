@@ -31,7 +31,7 @@ To make this available to the resolvers, it is possible to add a new class `Neo4
 
 An essential implementation of the `Neo4jDatabaseInfo`: 
 ```javascript
-class Neo4jVersion {
+interface Neo4jVersion {
   major: number;
   minor: number;
 }
@@ -104,8 +104,8 @@ It will be better to avoid unnecessary roundtrips for every request that will cr
 #### Database updates
 The implementation needs to handle the case where the database version is updated while the Neo4j Graphql library is running.
 
-#### Request-specific driver configuration
-The implementation needs to handle the case where the driver configuration is passed in a GraphQL request.
+#### Context defined driver
+The implementation needs to handle the case where the driver configuration is passed in a GraphQL Context.
 
 ## Risks
 
