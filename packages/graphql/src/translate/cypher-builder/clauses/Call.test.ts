@@ -80,7 +80,7 @@ describe("CypherBuilder Call", () => {
 
         const matchClause = new CypherBuilder.Match(node)
             .where(CypherBuilder.eq(new CypherBuilder.Param("aa"), new CypherBuilder.Param("bb")))
-            .return(node, ["title"], "movie");
+            .return([node.property("title"), "movie"]);
 
         const clause = new CypherBuilder.Call(matchClause).with(node);
         const queryResult = clause.build();
@@ -89,7 +89,7 @@ describe("CypherBuilder Call", () => {
                 WITH this0
                 MATCH (this0:\`Movie\`)
                 WHERE $param0 = $param1
-                RETURN this0 {.title} AS movie
+                RETURN this0.title AS movie
             }"
         `);
 

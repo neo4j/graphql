@@ -18,39 +18,61 @@
  */
 
 import { Clause } from "./Clause";
-import type { NodeRef } from "../variables/NodeRef";
 import type { CypherEnvironment } from "../Environment";
-import { isString } from "../../../utils/utils";
 import type { Expr } from "../types";
+import type { Literal, Variable } from "../CypherBuilder";
 
-export type Projection = string | [NodeRef, Array<string>?, string?] | Expr;
+export type ReturnColumn = Expr | [Expr, string | Variable | Literal];
 
 export class Return extends Clause {
-    private returnArgs: Projection;
+    private columns: ReturnColumn[] = [];
+    private isStar = false;
 
-    constructor(args: Projection) {
+    constructor(...columns: ReturnColumn[]);
+    constructor(starOrColumn: "*" | ReturnColumn, ...columns: ReturnColumn[]);
+    constructor(starOrColumn: "*" | ReturnColumn | undefined, ...columns: ReturnColumn[]) {
         super();
-        this.returnArgs = args;
+        if (starOrColumn === "*") {
+            this.isStar = true;
+            this.columns = columns;
+        } else if (starOrColumn) {
+            this.columns = [starOrColumn, ...columns];
+        } else {
+            this.columns = columns;
+        }
+    }
+
+    public addReturnColumn(...columns: ReturnColumn[]): void {
+        this.columns.push(...columns);
     }
 
     public getCypher(env: CypherEnvironment): string {
-        if (isString(this.returnArgs)) {
-            return `RETURN ${this.returnArgs}`;
+        let columnsStrs = this.columns.map((column) => {
+            return this.serializeColumn(column, env);
+        });
+
+        // Only a single star at the beginning is allowed
+        if (this.isStar) {
+            columnsStrs = ["*", ...columnsStrs];
         }
-        if (Array.isArray(this.returnArgs)) {
-            let projection = "";
-            let alias = "";
-            if ((this.returnArgs[1] || []).length > 0) {
-                projection = ` {${(this.returnArgs[1] as Array<string>).map((s) => `.${s}`).join(", ")}}`;
+
+        return `RETURN ${columnsStrs.join(", ")}`;
+    }
+
+    private serializeColumn(column: ReturnColumn, env: CypherEnvironment): string {
+        const hasAlias = Array.isArray(column);
+        if (hasAlias) {
+            const exprStr = column[0].getCypher(env);
+            const alias = column[1];
+            let aliasStr: string;
+            if (typeof alias === "string") {
+                aliasStr = alias;
+            } else {
+                aliasStr = alias.getCypher(env);
             }
 
-            if ((this.returnArgs[2] || []).length > 0) {
-                alias = ` AS ${this.returnArgs[2]}`;
-            }
-            const nodeAlias = env.getVariableId(this.returnArgs[0]);
-
-            return `RETURN ${nodeAlias}${projection}${alias}`;
+            return `${exprStr} AS ${aliasStr}`;
         }
-        return `RETURN ${this.returnArgs.getCypher(env)}`;
+        return column.getCypher(env);
     }
 }

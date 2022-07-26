@@ -21,7 +21,7 @@ import type { CypherEnvironment } from "../Environment";
 import { convertToCypherParams } from "../utils";
 import { Clause } from "./Clause";
 
-type RawCypherCallback = (env: CypherEnvironment) => [string, Record<string, any>] | undefined;
+type RawCypherCallback = (env: CypherEnvironment) => [string, Record<string, any>] | string | undefined;
 
 /** For compatibility reasons, allows for a raw string to be used as a clause */
 export class RawCypher extends Clause {
@@ -35,7 +35,12 @@ export class RawCypher extends Clause {
     public getCypher(env: CypherEnvironment): string {
         const cbResult = this.callback(env);
         if (!cbResult) return "";
-        const [query, params] = cbResult;
+        let query: string;
+        let params = {};
+        if (typeof cbResult === "string") query = cbResult;
+        else {
+            [query, params] = cbResult;
+        }
 
         const cypherParams = convertToCypherParams(params);
 

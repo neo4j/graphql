@@ -64,7 +64,17 @@ export {
 export { plus, minus } from "./operations/math";
 
 // Functions
-export { coalesce, point, distance, cypherDatetime as datetime, labels, size } from "./functions/CypherFunction";
+export {
+    coalesce,
+    point,
+    distance,
+    cypherDatetime as datetime,
+    labels,
+    size,
+    count,
+    min,
+    max,
+} from "./functions/CypherFunction";
 
 // Types
 export type { CypherResult } from "./types";
