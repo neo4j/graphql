@@ -21,7 +21,6 @@ import * as CypherBuilder from "../CypherBuilder";
 
 describe("CypherBuilder Create Examples", () => {
     test("Create a movie", () => {
-        const titleParam = new CypherBuilder.Param("The Matrix");
         const releasedParam = new CypherBuilder.Param(1999);
 
         const movieNode = new CypherBuilder.Node({
@@ -29,8 +28,7 @@ describe("CypherBuilder Create Examples", () => {
         });
 
         const query = new CypherBuilder.Create(movieNode).set(
-            [movieNode.property("released"), releasedParam], // Explicitly defines the node property
-            ["title", titleParam] // Shorthand to refer to the node directly
+            [movieNode.property("released"), releasedParam] // Explicitly defines the node property
         );
 
         const queryResult = query.build();
@@ -38,14 +36,12 @@ describe("CypherBuilder Create Examples", () => {
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "CREATE (this0:\`Movie\`)
             SET
-                this0.released = $param0,
-                this0.title = $param1"
+                this0.released = $param0"
         `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`
             Object {
               "param0": 1999,
-              "param1": "The Matrix",
             }
         `);
     });
