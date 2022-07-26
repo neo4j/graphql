@@ -114,4 +114,4 @@ None.
 
 ## Out of Scope
 - Multiple drivers configuration
-- Mulitple Neo4j instances with not the same version
+- Mulitple Neo4j instances using not the same version
