@@ -117,9 +117,9 @@ describe("Field Level Aggregations Where", () => {
             }
             CALL {
                 WITH this
-                MATCH (this6:\`Person\`)-[this5:DIRECTED]->(this)
-                WHERE this6.name CONTAINS $param1
-                RETURN count(this6) AS var1
+                MATCH (this5:\`Person\`)-[this4:DIRECTED]->(this)
+                WHERE this5.name CONTAINS $param1
+                RETURN count(this5) AS var1
             }
             RETURN this { .title, actorsAggregate: { count: var0 }, directorsAggregate: { count: var1 } } as this"
         `);

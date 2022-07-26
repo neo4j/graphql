@@ -127,22 +127,32 @@ export function createFieldAggregation({
                 nodeFields: aggregationFields.node,
             });
 
-            return authDataResult.query;
+            return [authDataResult.query, authDataResult.params];
         });
 
-        const authCallWhere = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
-            const subqueryNodeName = targetNode.getCypher(env);
-            const authDataResult = createFieldAggregationAuth({
-                node: referenceNode,
-                context,
-                subqueryNodeAlias: subqueryNodeName,
-                nodeFields: aggregationFields.node,
+        const authDataResultCheck = createFieldAggregationAuth({
+            node: referenceNode,
+            context,
+            subqueryNodeAlias: "dummy",
+            nodeFields: aggregationFields.node,
+        });
+
+        let authCallWhere: CypherBuilder.WhereParams | undefined;
+        if (authDataResultCheck.whereQuery) {
+            authCallWhere = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+                const subqueryNodeName = targetNode.getCypher(env);
+                const authDataResult = createFieldAggregationAuth({
+                    node: referenceNode,
+                    context,
+                    subqueryNodeAlias: subqueryNodeName,
+                    nodeFields: aggregationFields.node,
+                });
+
+                // NOTE: || true needed just because of compisition with where and rawCypher
+                // TODO: refactor auth into cypherBuilder
+                return authDataResult.whereQuery;
             });
-
-            // NOTE: || true needed just because of compisition with where and rawCypher
-            // TODO: refactor auth into cypherBuilder
-            return [authDataResult.whereQuery || "true", authDataResult.params];
-        });
+        }
 
         const countQuery = createCountSubQuery({
             sourceNode,
@@ -304,7 +314,7 @@ function createCountSubQuery({
     relationAggregationField: RelationField;
     field: ResolveTree;
     authCallQuery: CypherBuilder.Clause;
-    authCallWhere: CypherBuilder.WhereParams;
+    authCallWhere: CypherBuilder.WhereParams | undefined;
     targetNode: CypherBuilder.Node;
 }): CypherBuilder.Clause {
     // const relationAggregationField = node.relationFields.find((x) => {
