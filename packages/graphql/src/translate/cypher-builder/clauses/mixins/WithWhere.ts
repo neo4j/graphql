@@ -30,27 +30,27 @@ export abstract class WithWhere extends ClauseMixin {
     public where(input: WhereParams): this;
     public where(target: Variable, params: Record<string, Variable>): this;
     public where(input: WhereParams | Variable, params?: Record<string, Variable>): this {
-        const whereInput = this.createWhereInput(input, params);
-        if (!whereInput) return this;
-
-        if (!this.whereSubClause) {
-            const whereClause = new Where(this, whereInput);
-            this.whereSubClause = whereClause;
-        } else {
-            this.and(whereInput);
-        }
+        this.updateOrCreateWhereClause(input, params);
         return this;
     }
 
     public and(input: WhereParams): this;
     public and(target: Variable, params: Record<string, Variable>): this;
     public and(input: WhereParams | Variable, params?: Record<string, Variable>): this {
-        if (!this.whereSubClause) throw new Error("Cannot and without a where");
+        this.updateOrCreateWhereClause(input, params);
+        return this;
+    }
+
+    private updateOrCreateWhereClause(input: WhereParams | Variable, params?: Record<string, Variable>): void {
         const whereInput = this.createWhereInput(input, params);
-        if (whereInput) {
+        if (!whereInput) return;
+
+        if (!this.whereSubClause) {
+            const whereClause = new Where(this, whereInput);
+            this.whereSubClause = whereClause;
+        } else {
             this.whereSubClause.and(whereInput);
         }
-        return this;
     }
 
     private createWhereInput(

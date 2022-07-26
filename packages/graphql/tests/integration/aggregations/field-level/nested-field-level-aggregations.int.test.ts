@@ -71,6 +71,24 @@ describe("Nested Field Level Aggregations", () => {
         await driver.close();
     });
 
+    // MATCH (this:`TSJQdJbyActor`)
+    // WHERE this.name = $param0
+    // RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:nWmYRztoMovie)   | this_movies { .title, actorAggregate: { count: head(apoc.cypher.runFirstColumn("MATCH (this_movies)<-[r:ACTED_IN]-(n:TSJQdJbyActor)      RETURN COUNT(n)", { this_movies: this_movies })) } } ] } as this
+    // Params:
+    // {
+    //   "param0": "Arnold"
+    // }
+
+    // MATCH (this:`dRZKSDfjActor`)
+    // WHERE this.name = $param0
+    // CALL {
+    //     WITH this_movies
+    //     MATCH (this1:`dRZKSDfjActor`)-[this0:ACTED_IN]->(this_movies)
+
+    //     RETURN count(this1) AS var3
+    // }
+    // RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:ANTgkUmcMovie)   | this_movies { .title, actorAggregate: { count: undefined_this_moviesvar0 } } ] } as this
+
     test("count actors in movies in actors", async () => {
         const query = `
         query Query {
