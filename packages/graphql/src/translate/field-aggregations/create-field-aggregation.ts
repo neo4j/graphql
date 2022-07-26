@@ -51,167 +51,6 @@ type AggregationFields = {
     edge?: Record<string, ResolveTree>;
 };
 
-// export function createFieldAggregation({
-//     context,
-//     nodeLabel,
-//     node,
-//     field,
-// }: {
-//     context: Context;
-//     nodeLabel: string;
-//     node: Node;
-//     field: ResolveTree;
-// }): { clause: CypherBuilder.Clause; variable: CypherBuilder.Variable } | undefined {
-//     const relationAggregationField = node.relationFields.find((x) => {
-//         return `${x.fieldName}Aggregate` === field.name;
-//     });
-
-//     const connectionField = node.connectionFields.find((x) => {
-//         return `${relationAggregationField?.fieldName}Connection` === x.fieldName;
-//     });
-
-//     if (!relationAggregationField || !connectionField) return undefined;
-//     const referenceNode = getReferenceNode(context, relationAggregationField);
-//     const referenceRelation = getReferenceRelation(context, connectionField);
-
-//     if (!referenceNode || !referenceRelation) return undefined;
-
-//     const fieldPathBase = `${node.name}${referenceNode.name}${upperFirst(relationAggregationField.fieldName)}`;
-//     const aggregationFields = getAggregationFields(fieldPathBase, field);
-//     // const authData = createFieldAggregationAuth({
-//     //     node: referenceNode,
-//     //     context,
-//     //     subqueryNodeAlias,
-//     //     nodeFields: aggregationFields.node,
-//     // });
-
-//     // const [whereQuery, whereParams] = createWhereAndParams({
-//     //     whereInput: (field.args.where as GraphQLWhereArg) || {},
-//     //     varName: subqueryNodeAlias,
-//     //     node: referenceNode,
-//     //     context,
-//     //     recursing: true,
-//     //     chainStr: `${nodeLabel}_${field.alias}_${subqueryNodeAlias}`,
-//     // });
-//     const sourceNode = new CypherBuilder.NamedNode(nodeLabel);
-//     const targetNode = new CypherBuilder.Node({ labels: referenceNode.getLabels(context) });
-
-//     // TODO: getRelationshipDirectionStr
-//     const relationship = new CypherBuilder.Relationship({
-//         source: sourceNode,
-//         target: targetNode,
-//         type: relationAggregationField.type,
-//     });
-
-//     const direction = getRelationshipDirection(relationAggregationField, {
-//         directed: field.args.directed as boolean | undefined,
-//     });
-//     if (direction === "IN") relationship.reverse();
-
-//     const relationshipPattern = relationship.pattern({
-//         directed: !(direction === "undirected"),
-//     });
-
-//     const whereParams = createCypherWhereParams({
-//         element: node,
-//         context,
-//         whereInput: (field.args.where as GraphQLWhereArg) || {},
-//         targetElement: targetNode,
-//     });
-
-//     const matchClause = new CypherBuilder.Match(relationshipPattern);
-//     if (whereParams) {
-//         matchClause.where(whereParams);
-//     }
-
-//     const resultMap = new CypherBuilder.Map();
-//     const resultVar = new CypherBuilder.Variable();
-//     if (aggregationFields.count) {
-//         resultMap.set({ count: CypherBuilder.count(targetNode) });
-//     }
-
-//     if (aggregationFields.node) {
-//         const matchWherePattern = createMatchWherePattern(targetPattern, authData, whereQuery);
-//         const apocRunParams = {
-//             ...serializeParamsForApocRun(whereParams as Record<string, any>),
-//             ...serializeAuthParamsForApocRun(authData),
-//         };
-//         createAggregationQuery({
-//             nodeLabel,
-//             matchWherePattern,
-//             fields: aggregationFields.node,
-//             fieldAlias: subqueryNodeAlias,
-//             graphElement: referenceNode,
-//             params: apocRunParams,
-//         });
-//     }
-//     if (aggregationFields.count) {
-//         resultMap.set({ count: CypherBuilder.count(targetNode) });
-//     }
-
-//     matchClause.return([resultMap, resultVar]);
-//     const call = new CypherBuilder.Call(matchClause).with(sourceNode);
-
-//     return {
-//         clause: call,
-//         variable: resultVar,
-//     };
-// }
-
-// function createAggregationSubquery({
-//     fields,
-//     match,
-//     targetNode,
-//     relationship,
-//     direction,
-// }: {
-//     match: CypherBuilder.Match;
-//     targetNode: CypherBuilder.Node;
-//     fields: Record<string, ResolveTree>;
-//     relationship: CypherBuilder.Relationship;
-//     direction: "IN" | "OUT" | "undirected";
-// }): CypherBuilder.Clause {
-//     // const fieldPath = `${targetAlias}.${fieldName}`;
-//     // return `${matchWherePattern}
-//     //     WITH ${targetAlias} as ${targetAlias}
-//     //     ORDER BY size(${fieldPath}) DESC
-//     //     WITH collect(${fieldPath}) as list
-//     //     RETURN {longest: head(list), shortest: last(list)}`;
-
-//     const fieldsSubQueries = Object.values(fields).map((field): string => {
-//         const fieldType = getFieldType(field);
-
-//         switch (fieldType) {
-//                 console.log(field);
-//                 break;
-//         }
-
-//         return "";
-//     });
-//     return {};
-// }            case AggregationType.String:
-//             case AggregationType.Id: {
-//                 // console.log(field); // return AggregationSubQueries.stringAggregationQuery(matchWherePattern, fieldName, targetAlias);
-//                 const pattern = relationship.pattern({
-//                     directed: !(direction === "undirected"),
-//                 });
-//                 const match = new CypherBuilder.Match(pattern);
-//                 match.with();
-//                 match.return(new CypherBuilder.Variable());
-//                 break;
-//             }
-//             case AggregationType.Int:
-//             case AggregationType.BigInt:
-//             case AggregationType.Float:
-//                 console.log(field); // return AggregationSubQueries.numberAggregationQuery(matchWherePattern, fieldName, targetAlias);
-//                 break;
-//             case AggregationType.DateTime:
-//                 // return AggregationSubQueries.dateTimeAggregationQuery(matchWherePattern, fieldName, targetAlias);
-//                 console.log(field); // return AggregationSubQueries.numberAggregationQuery(matchWherePattern, fieldName, targetAlias);
-//                 break;
-//             default: // return AggregationSubQueries.defaultAggregationQuery(matchWherePattern, fieldName, targetAlias);
-//
-
 export function createFieldAggregation({
     context,
     nodeLabel,
@@ -484,9 +323,8 @@ function createCountSubQuery({
     const relationshipPattern = relationship.pattern({
         directed: !(direction === "undirected"),
     });
-
     const whereParams = createCypherWhereParams({
-        element: node,
+        element: referenceNode,
         context,
         whereInput: (field.args.where as GraphQLWhereArg) || {},
         targetElement: targetNode,
@@ -498,34 +336,10 @@ function createCountSubQuery({
     }
 
     const returnClause = new CypherBuilder.Return([CypherBuilder.count(targetNode), resultVariable]);
-    // matchClause.return([CypherBuilder.count(targetNode), resultVariable]);
 
     const innerQuery = CypherBuilder.concat(matchClause, authCallQuery, returnClause);
 
-    const call = new CypherBuilder.Call(innerQuery).with(sourceNode);
-
-    return call;
-
-    // const resultMap = new CypherBuilder.Map();
-    // const resultVar = new CypherBuilder.Variable();
-    // if (aggregationFields.count) {
-    //     resultMap.set({ count: CypherBuilder.count(targetNode) });
-    // }
-
-    // if (aggregationFields.node) {
-    //     const matchWherePattern = createMatchWherePatt
-
-    // matchClause.return([resultMap, resultVar]);
-    // const call = new CypherBuilder.Call(matchClause).with(sourceNode);
-    //         params: apocRunParams,
-    //     });
-    // }
-    // if (aggregationFields.count) {
-    //     resultMap.set({ count: CypherBuilder.count(targetNode) });
-    // }
-
-    // matchClause.return([resultMap, resultVar]);
-    // const call = new CypherBuilder.Call(matchClause).with(sourceNode);
+    return new CypherBuilder.Call(innerQuery).with(sourceNode);
 }
 
 function createCountQueryOld({
