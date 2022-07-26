@@ -27,7 +27,7 @@ to obtain the following:
 |  "Neo4j Kernel"  |  "4.4.5"         |  "enterprise"    |
 
 with this information available it's possible to write an optimal query.
-To make this available to the resolvers, it is possible to add a new class `Neo4jDatabaseInfo` to the GraphQL `Context`. It is then possible to compare the version with the [`ServerInfo`](https://neo4j.com/docs/api/javascript-driver/current/class/lib6/result-summary.js~ServerInfo.html) in the driver response.
+To make this available to the resolvers, it is possible to add a new class `Neo4jDatabaseInfo` to the GraphQL `Context`. It is then possible to compare the version with the [`ServerInfo`](https://neo4j.com/docs/api/javascript-driver/current/class/lib6/result-summary.js~ServerInfo.html) version in the driver response.
 
 An essential implementation of the `Neo4jDatabaseInfo`: 
 ```javascript
