@@ -113,3 +113,5 @@ The implementation needs to handle the case where the driver configuration is pa
 None.
 
 ## Out of Scope
+- Multiple drivers configuration
+- Mulitple Neo4j instances with not the same version
