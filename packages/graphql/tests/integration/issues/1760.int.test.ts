@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
         await driver.close();
     });
 
-    test("provides query does not result in an error", async () => {
+    test("provided query does not result in an error", async () => {
         const query = gql`
             query getApplicationVariants($where: ApplicationVariantWhere, $options: ApplicationVariantOptions) {
                 applicationVariants(where: $where, options: $options) {
