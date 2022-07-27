@@ -16,6 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import type { Integer } from "neo4j-driver";
 import { int } from "neo4j-driver";
 import { cursorToOffset } from "graphql-relay";
@@ -67,6 +68,7 @@ export function translateRead({
     });
     // TODO: nested field aggregations
     cypherParams = { ...cypherParams, ...projection[1] };
+
     if (projection[2]?.authValidateStrs?.length) {
         projAuth = `CALL apoc.util.validate(NOT (${projection[2].authValidateStrs.join(
             " AND "
@@ -206,34 +208,25 @@ function translateRootField({
     const hasLimit = Boolean(limit) || limit === 0;
     const params = {} as Record<string, any>;
     const hasOffset = Boolean(optionsInput.offset) || optionsInput.offset === 0;
-    let cypherSort = false;
-    let offsetStr = "";
-    if (hasOffset) {
-        offsetStr = `SKIP $${varName}_offset`;
-        params[`${varName}_offset`] = optionsInput.offset;
-    }
 
-    let limitStr = "";
-    if (limit) {
-        limitStr = `LIMIT $${varName}_limit`;
-        params[`${varName}_limit`] = limit;
-    }
+    const sortCypherFields = projection[2]?.cypherSortFields ?? [];
+    const sortCypherProj = sortCypherFields.map(({ alias, apocStr }) => `${apocStr} AS ${alias}`);
+    const sortOffsetLimit: string[] = [[`WITH ${varName}`, ...sortCypherProj].join(", ")];
 
-    let sortStr = "";
     if (optionsInput.sort && optionsInput.sort.length) {
         const sortArr = optionsInput.sort.reduce((res: string[], sort: GraphQLSortArg) => {
             return [
                 ...res,
                 ...Object.entries(sort).map(([field, direction]) => {
-                    if (!cypherSort && node.cypherFields.some((f) => f.fieldName === field)) {
-                        cypherSort = true;
+                    if (node.cypherFields.some((f) => f.fieldName === field)) {
+                        return `${field} ${direction}`;
                     }
                     return `${varName}.${field} ${direction}`;
                 }),
             ];
         }, []);
 
-        sortStr = `ORDER BY ${sortArr.join(", ")}`;
+        sortOffsetLimit.push(`ORDER BY ${sortArr.join(", ")}`);
     }
 
     let projectionVars = projection[0];
@@ -245,40 +238,62 @@ function translateRootField({
     const returnStrs = [`RETURN ${varName} { ${projectionVars} } as ${varName}`];
     // const returnStrs = [`RETURN ${varName} { ${projectionVars} } as ${varName}`];
 
-    const projectCypherFieldsAfterLimit = node.cypherFields.length && hasLimit && !cypherSort;
-
-    let cypher: string[];
-    const withStrs = subStr.projAuth ? [`WITH ${varName}`, subStr.projAuth] : [];
-    if (projectCypherFieldsAfterLimit) {
-        cypher = [
-            "CALL {",
-            subStr.matchAndWhereStr,
-            subStr.authStr,
-            ...withStrs,
-            `RETURN ${varName}`,
-            ...(sortStr ? [sortStr] : []),
-            ...(offsetStr ? [offsetStr] : []),
-            ...(limitStr ? [limitStr] : []),
-            "}",
-            ...subStr.connectionStrs,
-            ...subStr.interfaceStrs,
-            subStr.projectionSubquery,
-            ...returnStrs,
-        ];
-    } else {
-        cypher = [
-            subStr.matchAndWhereStr,
-            subStr.authStr,
-            ...withStrs,
-            ...subStr.connectionStrs,
-            ...subStr.interfaceStrs,
-            subStr.projectionSubquery,
-            ...returnStrs,
-            ...(sortStr ? [sortStr] : []),
-            ...(offsetStr ? [offsetStr] : []),
-            ...(limitStr ? [limitStr] : []),
-        ];
+    if (hasOffset) {
+        params[`${varName}_offset`] = optionsInput.offset;
+        sortOffsetLimit.push(`SKIP $${varName}_offset`);
     }
+
+    if (hasLimit) {
+        params[`${varName}_limit`] = limit;
+        sortOffsetLimit.push(`LIMIT $${varName}_limit`);
+    }
+
+    const withStrs = subStr.projAuth ? [`WITH ${varName}`, subStr.projAuth] : [];
+
+    // const returnStrs = [`RETURN ${varName} ${projection[0]} as ${varName}`];
+
+    // if (projectCypherFieldsAfterLimit) {
+    //     cypher = [
+    //         "CALL {",
+    //         subStr.matchAndWhereStr,
+    //         subStr.authStr,
+    //         ...withStrs,
+    //         `RETURN ${varName}`,
+    //         ...(sortStr ? [sortStr] : []),
+    //         ...(offsetStr ? [offsetStr] : []),
+    //         ...(limitStr ? [limitStr] : []),
+    //         "}",
+    //         ...subStr.connectionStrs,
+    //         ...subStr.interfaceStrs,
+    //         subStr.projectionSubquery,
+    //         ...returnStrs,
+    //     ];
+    // } else {
+    //     cypher = [
+    //         subStr.matchAndWhereStr,
+    //         subStr.authStr,
+    //         ...withStrs,
+    //         ...subStr.connectionStrs,
+    //         ...subStr.interfaceStrs,
+    //         subStr.projectionSubquery,
+    //         ...returnStrs,
+    //         ...(sortStr ? [sortStr] : []),
+    //         ...(offsetStr ? [offsetStr] : []),
+    //         ...(limitStr ? [limitStr] : []),
+    //     ];
+    // }
+
+    // TODO: add extra vars
+    const cypher: string[] = [
+        subStr.matchAndWhereStr,
+        ...(sortOffsetLimit.length > 1 ? sortOffsetLimit : []),
+        subStr.authStr,
+        ...withStrs,
+        ...subStr.connectionStrs,
+        ...subStr.interfaceStrs,
+        ...returnStrs,
+    ];
+
     return [cypher.filter(Boolean).join("\n"), params];
 }
 
@@ -314,23 +329,8 @@ function translateRootConnectionField({
     const hasFirst = Boolean(firstInput);
     const hasSort = Boolean(sortInput && sortInput.length);
 
-    const sortCypherFields = projection[2]?.rootConnectionCypherSortFields ?? [];
+    const sortCypherFields = projection[2]?.cypherSortFields ?? [];
     const sortCypherProj = sortCypherFields.map(({ alias, apocStr }) => `${alias}: ${apocStr}`);
-
-    let offsetStr = "";
-    if (hasAfter && typeof afterInput === "string") {
-        const offset = cursorToOffset(afterInput) + 1;
-        if (offset && offset !== 0) {
-            offsetStr = `SKIP $${varName}_offset`;
-            cypherParams[`${varName}_offset`] = int(offset);
-        }
-    }
-
-    let limitStr = "";
-    if (hasFirst) {
-        limitStr = `LIMIT $${varName}_limit`;
-        cypherParams[`${varName}_limit`] = firstInput;
-    }
 
     let sortStr = "";
     if (hasSort) {
@@ -351,6 +351,20 @@ function translateRootConnectionField({
     let projectionVars = projection[0];
     if (extraProjectionVars.length > 0) {
         projectionVars = `${projectionVars}, ${extraProjectionVars.join(", ")}`;
+    }
+    let offsetStr = "";
+    if (hasAfter && typeof afterInput === "string") {
+        const offset = cursorToOffset(afterInput) + 1;
+        if (offset && offset !== 0) {
+            offsetStr = `SKIP $${varName}_offset`;
+            cypherParams[`${varName}_offset`] = int(offset);
+        }
+    }
+
+    let limitStr = "";
+    if (hasFirst) {
+        limitStr = `LIMIT $${varName}_limit`;
+        cypherParams[`${varName}_limit`] = firstInput;
     }
 
     const returnStrs: string[] = [

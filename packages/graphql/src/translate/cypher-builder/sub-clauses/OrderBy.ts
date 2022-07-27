@@ -24,19 +24,23 @@ import type { Expr } from "../types";
 
 export type Order = "ASC" | "DESC";
 
-export class OrderBy extends CypherASTNode {
-    private exprs: Expr[];
-    private order: Order;
+type OrderProjectionElement = [Expr, Order];
 
-    constructor(exprs: Expr[], order: Order = "ASC") {
+export class OrderBy extends CypherASTNode {
+    private exprs: OrderProjectionElement[];
+
+    constructor(exprs: OrderProjectionElement[]) {
         super();
         this.exprs = exprs;
-        this.order = order;
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const exprStr = this.exprs.map((expr) => expr.getCypher(env)).join(", ");
+        const exprStr = this.exprs
+            .map(([expr, order]) => {
+                return `${expr.getCypher(env)} ${order}`;
+            })
+            .join(", ");
 
-        return `ORDER BY ${exprStr} ${this.order}`;
+        return `ORDER BY ${exprStr}`;
     }
 }

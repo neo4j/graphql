@@ -19,15 +19,22 @@
 
 import { Order, OrderBy } from "../../sub-clauses/OrderBy";
 import { ClauseMixin } from "./ClauseMixin";
-import { asArray } from "../../../../utils/utils";
 import type { Expr } from "../../types";
+
+const DEFAULT_ORDER = "ASC";
 
 export abstract class WithOrder extends ClauseMixin {
     protected orderByStatement: OrderBy | undefined;
 
-    public orderBy(expr: Expr | Expr[], order: Order = "ASC"): this {
-        const exprs = asArray(expr);
-        this.orderByStatement = new OrderBy(exprs, order);
+    public orderBy(...exprs: Array<[Expr, Order] | Expr | [Expr]>): this {
+        const normalizedExprs = exprs.map((rawExpr): [Expr, Order] => {
+            if (Array.isArray(rawExpr)) {
+                return [rawExpr[0], rawExpr[1] || DEFAULT_ORDER];
+            }
+            return [rawExpr, DEFAULT_ORDER];
+        });
+
+        this.orderByStatement = new OrderBy(normalizedExprs);
 
         return this;
     }
