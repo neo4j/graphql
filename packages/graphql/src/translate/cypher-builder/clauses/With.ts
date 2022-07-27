@@ -44,4 +44,5 @@ export class With extends Clause {
 }
 
 export interface With extends WithOrder {}
+
 applyMixins(With, [WithOrder]);

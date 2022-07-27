@@ -92,3 +92,4 @@ export type { WhereParams } from "./sub-clauses/Where";
 export type { Expr } from "./types";
 export type { CypherFunction as Function } from "./functions/CypherFunction";
 export type { ComprehensionExpr } from "./list/ComprehensionExpr";
+export type { ProjectionColumn } from "./sub-clauses/Projection";
