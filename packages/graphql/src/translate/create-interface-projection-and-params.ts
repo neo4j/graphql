@@ -25,7 +25,7 @@ import filterInterfaceNodes from "../utils/filter-interface-nodes";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createAuthAndParams from "./create-auth-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
-import { getRelationshipDirection } from "../utils/get-relationship-direction";
+import { getRelationshipDirectionStr } from "../utils/get-relationship-direction";
 import createElementWhereAndParams from "./where/create-element-where-and-params";
 
 function createInterfaceProjectionAndParams({
@@ -48,7 +48,7 @@ function createInterfaceProjectionAndParams({
     const fullWithVars = removeDuplicates([...asArray(withVars), nodeVariable]);
     const relTypeStr = `[:${field.type}]`;
 
-    const { inStr, outStr } = getRelationshipDirection(field, resolveTree.args);
+    const { inStr, outStr } = getRelationshipDirectionStr(field, resolveTree.args);
 
     const whereInput = resolveTree.args.where as InterfaceWhereArg;
 

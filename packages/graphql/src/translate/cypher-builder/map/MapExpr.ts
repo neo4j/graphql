@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { RawCypher } from "../clauses/RawCypher";
 import { CypherASTNode } from "../CypherASTNode";
 import type { CypherEnvironment } from "../Environment";
 import type { Expr } from "../types";
@@ -24,14 +25,21 @@ import type { Expr } from "../types";
 /** Represents a Map */
 export class MapExpr extends CypherASTNode {
     private value: Record<string, Expr>;
+    private rawValues: Array<RawCypher> = []; // Just for compatibility reasons
 
     constructor(value: Record<string, Expr> = {}) {
         super();
         this.value = value;
     }
 
-    public set(values: Record<string, Expr>): void {
-        this.value = { ...this.value, ...values };
+    public set(rawValues: RawCypher): void;
+    public set(values: Record<string, Expr>): void;
+    public set(values: RawCypher | Record<string, Expr>): void {
+        if (values instanceof RawCypher) {
+            this.rawValues.push(values);
+        } else {
+            this.value = { ...this.value, ...values };
+        }
     }
 
     public getCypher(env: CypherEnvironment): string {
@@ -43,6 +51,8 @@ export class MapExpr extends CypherASTNode {
             return `${key}: ${value.getCypher(env)}`;
         });
 
-        return `{ ${valuesList.join(", ")} }`;
+        const rawValuesList = this.rawValues.map((rawCypher) => rawCypher.getCypher(env));
+
+        return `{ ${[...valuesList, ...rawValuesList].join(", ")} }`;
     }
 }

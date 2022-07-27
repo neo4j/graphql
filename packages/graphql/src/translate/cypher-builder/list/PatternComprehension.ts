@@ -17,16 +17,17 @@
  * limitations under the License.
  */
 
+import { WithWhere } from "../clauses/mixins/WithWhere";
+import { applyMixins } from "../clauses/utils/apply-mixin";
 import type { CypherEnvironment } from "../Environment";
 import { MatchableElement, Pattern } from "../Pattern";
-import { Where, WhereParams } from "../sub-clauses/Where";
 import type { Expr } from "../types";
 import { compileCypherIfExists } from "../utils";
 import { ComprehensionExpr } from "./ComprehensionExpr";
 
 export class PatternComprehension extends ComprehensionExpr {
     private pattern: Pattern;
-    private whereClause: Where | undefined;
+    // private whereClause: Where | undefined;
     private mapExpr: Expr | undefined;
 
     constructor(pattern: Pattern | MatchableElement, mapExpr?: Expr) {
@@ -39,20 +40,24 @@ export class PatternComprehension extends ComprehensionExpr {
         this.mapExpr = mapExpr;
     }
 
-    where(filter: WhereParams): this {
-        if (this.whereClause) {
-            this.whereClause.and(filter);
-        } else {
-            this.whereClause = new Where(this, filter);
-        }
-        return this;
-    }
+    // where(filter: WhereParams): this {
+    //     if (this.whereClause) {
+    //         this.whereClause.and(filter);
+    //     } else {
+    //         this.whereClause = new Where(this, filter);
+    //     }
+    //     return this;
+    // }
 
     getCypher(env: CypherEnvironment): string {
-        const whereStr = compileCypherIfExists(this.whereClause, env, { prefix: " " });
+        const whereStr = compileCypherIfExists(this.whereSubClause, env, { prefix: " " });
         const mapStr = compileCypherIfExists(this.mapExpr, env, { prefix: " | " });
         const patternStr = this.pattern.getCypher(env);
 
         return `[${patternStr}${whereStr}${mapStr}]`;
     }
 }
+
+// TODO: move to ComprehensionExpr
+export interface PatternComprehension extends WithWhere {}
+applyMixins(PatternComprehension, [WithWhere]);

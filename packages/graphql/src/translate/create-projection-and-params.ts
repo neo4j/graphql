@@ -33,9 +33,10 @@ import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
-import { getRelationshipDirection } from "../utils/get-relationship-direction";
+import { getRelationshipDirectionStr } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
+import type * as CypherBuilder from "./cypher-builder/CypherBuilder";
 
 interface Res {
     projection: string[];
@@ -48,6 +49,7 @@ export interface ProjectionMeta {
     connectionFields?: ResolveTree[];
     interfaceFields?: ResolveTree[];
     cypherSortFields?: { alias: string; apocStr: string }[];
+    // extraProjection: Record<string, CypherBuilder.Expr>; // Separate from projection for compatibility reasons
 }
 
 function createNodeWhereAndParams({
@@ -386,7 +388,7 @@ function createProjectionAndParams({
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 
-            const { inStr, outStr } = getRelationshipDirection(relationField, field.args);
+            const { inStr, outStr } = getRelationshipDirectionStr(relationField, field.args);
 
             if (relationField.interface) {
                 if (!res.meta.interfaceFields) {
@@ -576,6 +578,7 @@ function createProjectionAndParams({
         if (aggregationFieldProjection) {
             res.projection.push(`${alias}: ${aggregationFieldProjection.query}`);
             res.params = { ...res.params, ...aggregationFieldProjection.params };
+            // res.meta.extraProjection[alias] = aggregationFieldProjection.projection;
             return res;
         }
 
@@ -691,7 +694,9 @@ function createProjectionAndParams({
     const { projection, params, meta } = Object.values(mergedFields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
         params: {},
-        meta: {},
+        meta: {
+            // extraProjection: {},
+        },
     });
 
     return [`{ ${projection.join(", ")} }`, params, meta];
