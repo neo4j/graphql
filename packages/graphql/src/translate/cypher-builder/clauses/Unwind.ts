@@ -17,20 +17,24 @@
  * limitations under the License.
  */
 
-import type { ProjectionColumn } from "../../sub-clauses/Projection";
-import { Return } from "../Return";
-import { ClauseMixin } from "./ClauseMixin";
+import type { CypherEnvironment } from "../Environment";
+import { Projection, ProjectionColumn } from "../sub-clauses/Projection";
+import { Clause } from "./Clause";
 
-export abstract class WithReturn extends ClauseMixin {
-    protected returnStatement: Return | undefined;
+export class Unwind extends Clause {
+    private projection: Projection;
 
-    public return(...columns: Array<"*" | ProjectionColumn>): Return {
-        if (this.returnStatement) {
-            this.returnStatement.addColumns(...columns);
-        } else {
-            this.returnStatement = new Return(...columns);
-            this.addChildren(this.returnStatement);
-        }
-        return this.returnStatement;
+    constructor(...columns: Array<"*" | ProjectionColumn>) {
+        super();
+        this.projection = new Projection(columns);
+    }
+
+    public addColumns(...columns: Array<"*" | ProjectionColumn>): void {
+        this.projection.addColumns(columns);
+    }
+
+    public getCypher(env: CypherEnvironment): string {
+        const projectionStr = this.projection.getCypher(env);
+        return `UNWIND ${projectionStr}`;
     }
 }

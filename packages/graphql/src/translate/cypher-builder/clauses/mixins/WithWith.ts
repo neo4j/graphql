@@ -17,20 +17,21 @@
  * limitations under the License.
  */
 
-import type { ProjectionColumn } from "../../sub-clauses/Projection";
-import { Return } from "../Return";
 import { ClauseMixin } from "./ClauseMixin";
+import { With } from "../With";
+import type { ProjectionColumn } from "../../sub-clauses/Projection";
 
-export abstract class WithReturn extends ClauseMixin {
-    protected returnStatement: Return | undefined;
+// Sorry for this name, at least it is funny
+export abstract class WithWith extends ClauseMixin {
+    protected withStatement: With | undefined;
 
-    public return(...columns: Array<"*" | ProjectionColumn>): Return {
-        if (this.returnStatement) {
-            this.returnStatement.addColumns(...columns);
+    public with(...columns: ("*" | ProjectionColumn)[]): With {
+        if (this.withStatement) {
+            this.withStatement.addColumns(...columns);
         } else {
-            this.returnStatement = new Return(...columns);
-            this.addChildren(this.returnStatement);
+            this.withStatement = new With(...columns);
+            this.addChildren(this.withStatement);
         }
-        return this.returnStatement;
+        return this.withStatement;
     }
 }
