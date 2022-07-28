@@ -20,13 +20,14 @@
 import { Driver, Neo4jError, QueryResult, Result, Session, SessionMode, Transaction } from "neo4j-driver";
 import Debug from "debug";
 
-import type { AuthContext, CypherQueryOptions } from "../types";
+import type { AuthContext, CypherQueryOptions, Neo4jDatabaseInfo } from "../types";
 import environment from "../environment";
 import {
     Neo4jGraphQLAuthenticationError,
     Neo4jGraphQLConstraintValidationError,
     Neo4jGraphQLForbiddenError,
     Neo4jGraphQLRelationshipValidationError,
+    VersionMismatchError,
 } from "./Error";
 import {
     AUTH_FORBIDDEN_ERROR,
@@ -77,6 +78,7 @@ export type ExecutorConstructorParam = {
     queryOptions?: CypherQueryOptions;
     database?: string;
     bookmarks?: string | string[];
+    neo4jDatabaseInfo?: Neo4jDatabaseInfo;
 };
 
 export class Executor {
@@ -89,15 +91,16 @@ export class Executor {
 
     private database: string | undefined;
     private bookmarks: string | string[] | undefined;
+    private neo4jDatabaseInfo: Neo4jDatabaseInfo | undefined;
 
-    constructor({ executionContext, auth, queryOptions, database, bookmarks }: ExecutorConstructorParam) {
+    constructor({ executionContext, auth, queryOptions, database, bookmarks, neo4jDatabaseInfo }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.lastBookmark = null;
-
         this.queryOptions = queryOptions;
         this.auth = auth;
         this.database = database;
         this.bookmarks = bookmarks;
+        this.neo4jDatabaseInfo = neo4jDatabaseInfo;
     }
 
     public async execute(query: string, parameters: any, defaultAccessMode: SessionMode): Promise<QueryResult> {
@@ -120,6 +123,9 @@ export class Executor {
     }
 
     private formatError(error: unknown) {
+        if (error instanceof VersionMismatchError) {
+            return error;
+        }
         if (error instanceof Neo4jError) {
             if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_FORBIDDEN_ERROR}`)) {
                 return new Neo4jGraphQLForbiddenError("Forbidden");
@@ -192,10 +198,19 @@ export class Executor {
 
     private async sessionRun(query: string, parameters, defaultAccessMode, session): Promise<QueryResult> {
         const transactionType = `${defaultAccessMode.toLowerCase()}Transaction`;
-        const result = await session[transactionType](
-            (transaction: Transaction) => this.transactionRun(query, parameters, transaction),
-            this.getTransactionConfig()
-        );
+        const result = await session[transactionType](async (transaction: Transaction) => {
+            const response = await this.transactionRun(query, parameters, transaction);
+            if (this.neo4jDatabaseInfo) {
+                const protocolVersion = response.summary.server.protocolVersion;
+                if (protocolVersion) {
+                    const [major, minor] = protocolVersion.toString().split(".").map(digit => parseInt(digit, 10));
+                    if (major === this.neo4jDatabaseInfo.version.major || minor !== this.neo4jDatabaseInfo.version.minor) {
+                        throw new VersionMismatchError(major, minor);
+                    }
+                }
+            }
+            return response;
+        }, this.getTransactionConfig());
         const lastBookmark = session.lastBookmark();
         if (Array.isArray(lastBookmark) && lastBookmark[0]) {
             this.lastBookmark = lastBookmark[0];
@@ -213,5 +228,7 @@ export class Executor {
         );
 
         return transaction.run(queryToRun, parametersToRun);
+
+        // return result;
     }
 }

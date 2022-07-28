@@ -18,7 +18,7 @@
  */
 
 import Debug from "debug";
-import type { GraphQLResolveInfo, GraphQLSchema} from "graphql";
+import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
 import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
 import type { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
@@ -27,7 +27,15 @@ import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
-import type { Context, Neo4jGraphQLPlugins, JwtPayload, Neo4jGraphQLAuthPlugin } from "../../types";
+import type {
+    Context,
+    Neo4jGraphQLPlugins,
+    JwtPayload,
+    Neo4jGraphQLAuthPlugin,
+    Neo4jVersion,
+    Neo4jEdition,
+} from "../../types";
+import { Neo4jDatabaseInfo } from "../../types";
 import { getToken, parseBearerToken } from "../../utils/get-token";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
 
@@ -41,6 +49,8 @@ type WrapResolverArguments = {
     schema: GraphQLSchema;
     plugins?: Neo4jGraphQLPlugins;
 };
+
+let neo4jDatabaseInfo: Neo4jDatabaseInfo;
 
 export const wrapResolver =
     ({ driver, config, nodes, relationships, schema, plugins }: WrapResolverArguments) =>
@@ -105,8 +115,26 @@ export const wrapResolver =
             executorConstructorParam.bookmarks = context.driverConfig?.bookmarks;
         }
 
-        context.executor = new Executor(executorConstructorParam);
+        if (!neo4jDatabaseInfo?.version) {
+            const dbmsComponentsQuery =
+                "CALL dbms.components() YIELD versions, edition UNWIND versions AS version RETURN version, edition";
+            const dbmsComponentsQueryResult = await new Executor(executorConstructorParam).execute(
+                dbmsComponentsQuery,
+                {},
+                "READ"
+            );
 
+            if (!dbmsComponentsQueryResult?.records[0]) {
+                throw new Error("Neo4j version not detectable");
+            }
+            const [version, edition] = dbmsComponentsQueryResult.records[0];
+            const [major, minor] = (version as string).split(".");
+            const neo4jVersion = { major: +major, minor: +minor } as Neo4jVersion;
+            neo4jDatabaseInfo = new Neo4jDatabaseInfo(neo4jVersion, edition as Neo4jEdition);
+        }
+        executorConstructorParam.neo4jDatabaseInfo = neo4jDatabaseInfo;
+        context.executor = new Executor(executorConstructorParam);
+        context.neo4jDatabaseInfo = neo4jDatabaseInfo;
         return next(root, args, context, info);
     };
 

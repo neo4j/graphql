@@ -38,10 +38,28 @@ export interface AuthContext {
     jwt?: JwtPayload;
 }
 
+export interface Neo4jVersion {
+    major: number;
+    minor: number;
+}
+
+export type Neo4jEdition = "enterprise" | "community";
+
+export class Neo4jDatabaseInfo {
+    public version: Neo4jVersion;
+    public edition: Neo4jEdition | undefined;
+
+    constructor(version: Neo4jVersion, edition: Neo4jEdition) {
+        this.version = version;
+        this.edition = edition;
+    }
+}
+
 export interface Context {
     driver?: Driver;
     driverConfig?: DriverConfig;
     resolveTree: ResolveTree;
+    neo4jDatabaseInfo: Neo4jDatabaseInfo;
     nodes: Node[];
     relationships: Relationship[];
     schema: GraphQLSchema;

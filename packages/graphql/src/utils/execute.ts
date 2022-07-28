@@ -17,24 +17,14 @@
  * limitations under the License.
  */
 
-import type { SessionMode, QueryResult, Session, Transaction } from "neo4j-driver";
-import { Neo4jError } from "neo4j-driver";
+import type { SessionMode, QueryResult } from "neo4j-driver";
 import Debug from "debug";
+import { VersionMismatchError } from "../classes";
 import {
-    Neo4jGraphQLForbiddenError,
-    Neo4jGraphQLAuthenticationError,
-    Neo4jGraphQLConstraintValidationError,
-    Neo4jGraphQLRelationshipValidationError,
-} from "../classes";
-import {
-    AUTH_FORBIDDEN_ERROR,
-    AUTH_UNAUTHENTICATED_ERROR,
     DEBUG_EXECUTE,
-    RELATIONSHIP_REQUIREMENT_PREFIX,
 } from "../constants";
-import createAuthParam from "../translate/create-auth-param";
-import type { Context, DriverConfig } from "../types";
-import environment from "../environment";
+import type { Context } from "../types";
+
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -56,7 +46,18 @@ async function execute({
     defaultAccessMode: SessionMode;
     context: Context;
 }): Promise<ExecuteResult> {
-    const result = await context.executor.execute(cypher, params, defaultAccessMode);
+    let result;
+    try {
+        result = await context.executor.execute(cypher, params, defaultAccessMode);
+    } catch(error) {
+        if (error instanceof VersionMismatchError) {
+            context.neo4jDatabaseInfo.version.major = error.major;
+            context.neo4jDatabaseInfo.version.minor = error.minor;
+            result = await context.executor.execute(cypher, params, defaultAccessMode);
+        } 
+        throw error;
+    }
+
 
     if (!result) {
         throw new Error("Unable to execute query against Neo4j database");

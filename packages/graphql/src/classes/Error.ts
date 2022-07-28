@@ -79,3 +79,16 @@ export class Neo4jGraphQLRelationshipValidationError extends Neo4jGraphQLError {
         Object.defineProperty(this, "name", { value: "Neo4jGraphQLRelationshipValidationError" });
     }
 }
+
+export class VersionMismatchError extends Error {
+    readonly name;
+    readonly major;
+    readonly minor;
+    constructor(major: number, minor: number) {
+        super("Neo4j version changed");
+
+        Object.defineProperty(this, "name", { value: "VersionMismatchError" });
+        this.major = major;
+        this.minor = minor;
+    }
+}
