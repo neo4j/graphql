@@ -287,7 +287,7 @@ jobs:
     steps:
       - name: Send Slack notification of upcoming release
         id: slack-notification
-        uses: slackapi/slack-github-action@v1.19.0
+        uses: slackapi/slack-github-action@v1.21.0
         with:
           payload: '{"version":"${{ needs.bump-version.outputs.version }}"}'
         env:
@@ -444,7 +444,7 @@ jobs:
     steps:
       - name: Send Slack announcement of release
         id: slack-announcement
-        uses: slackapi/slack-github-action@v1.19.0
+        uses: slackapi/slack-github-action@v1.21.0
         with:
           payload: '{"version":"${{ needs.bump-version.outputs.version }}"}'
         env:
