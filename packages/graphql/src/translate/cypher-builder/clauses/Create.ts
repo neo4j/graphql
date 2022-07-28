@@ -26,7 +26,7 @@ import { Clause } from "./Clause";
 import { compileCypherIfExists } from "../utils";
 import { WithReturn } from "./mixins/WithReturn";
 import { applyMixins } from "./utils/apply-mixin";
-import { WithSet } from "./mixins/WIthSet";
+import { WithSet } from "./mixins/WithSet";
 
 type Params = Record<string, Param<any>>;
 

@@ -17,62 +17,32 @@
  * limitations under the License.
  */
 
-import { Clause } from "./Clause";
+import { WithOrder } from "./mixins/WithOrder";
+import { applyMixins } from "./utils/apply-mixin";
+import { Projection, ProjectionColumn } from "../sub-clauses/Projection";
 import type { CypherEnvironment } from "../Environment";
-import type { Expr } from "../types";
-import type { Literal, Variable } from "../CypherBuilder";
-
-export type ReturnColumn = Expr | [Expr, string | Variable | Literal];
+import { Clause } from "./Clause";
+import { compileCypherIfExists } from "../utils";
 
 export class Return extends Clause {
-    private columns: ReturnColumn[] = [];
-    private isStar = false;
+    private projection: Projection;
 
-    constructor(...columns: ReturnColumn[]);
-    constructor(starOrColumn: "*" | ReturnColumn, ...columns: ReturnColumn[]);
-    constructor(starOrColumn: "*" | ReturnColumn | undefined, ...columns: ReturnColumn[]) {
+    constructor(...columns: Array<"*" | ProjectionColumn>) {
         super();
-        if (starOrColumn === "*") {
-            this.isStar = true;
-            this.columns = columns;
-        } else if (starOrColumn) {
-            this.columns = [starOrColumn, ...columns];
-        } else {
-            this.columns = columns;
-        }
+        this.projection = new Projection(columns);
     }
 
-    public addReturnColumn(...columns: ReturnColumn[]): void {
-        this.columns.push(...columns);
+    public addColumns(...columns: Array<"*" | ProjectionColumn>): void {
+        this.projection.addColumns(columns);
     }
 
     public getCypher(env: CypherEnvironment): string {
-        let columnsStrs = this.columns.map((column) => {
-            return this.serializeColumn(column, env);
-        });
+        const projectionStr = this.projection.getCypher(env);
+        const orderStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });
 
-        // Only a single star at the beginning is allowed
-        if (this.isStar) {
-            columnsStrs = ["*", ...columnsStrs];
-        }
-
-        return `RETURN ${columnsStrs.join(", ")}`;
-    }
-
-    private serializeColumn(column: ReturnColumn, env: CypherEnvironment): string {
-        const hasAlias = Array.isArray(column);
-        if (hasAlias) {
-            const exprStr = column[0].getCypher(env);
-            const alias = column[1];
-            let aliasStr: string;
-            if (typeof alias === "string") {
-                aliasStr = alias;
-            } else {
-                aliasStr = alias.getCypher(env);
-            }
-
-            return `${exprStr} AS ${aliasStr}`;
-        }
-        return column.getCypher(env);
+        return `RETURN ${projectionStr}${orderStr}`;
     }
 }
+
+export interface Return extends WithOrder {}
+applyMixins(Return, [WithOrder]);
