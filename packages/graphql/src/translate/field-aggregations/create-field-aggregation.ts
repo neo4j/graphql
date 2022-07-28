@@ -183,41 +183,6 @@ export function createFieldAggregation({
     const result = rawProjection.build(`${nodeLabel}_${field.alias}_`);
 
     return { query: result.cypher, params: { ...result.params } };
-    // return { projection: projectionMap };
-
-    // return {
-    //     query: stringifyObject({
-    //         count: aggregationFields.count
-    //             ? createCountQuery({
-    //                   nodeLabel,
-    //                   matchWherePattern,
-    //                   targetAlias: subqueryNodeAlias,
-    //                   params: apocRunParams,
-    //               })
-    //             : undefined,
-    //         node: aggregationFields.node
-    //             ? createAggregationQuery({
-    //                   nodeLabel,
-    //                   matchWherePattern,
-    //                   fields: aggregationFields.node,
-    //                   fieldAlias: subqueryNodeAlias,
-    //                   graphElement: referenceNode,
-    //                   params: apocRunParams,
-    //               })
-    //             : undefined,
-    //         edge: aggregationFields.edge
-    //             ? createAggregationQuery({
-    //                   nodeLabel,
-    //                   matchWherePattern,
-    //                   fields: aggregationFields.edge,
-    //                   fieldAlias: subqueryRelationAlias,
-    //                   graphElement: referenceRelation,
-    //                   params: apocRunParams,
-    //               })
-    //             : undefined,
-    //     }),
-    //     params: { ...authData.params, ...whereParams },
-    // };
 }
 
 function getAggregationFields(fieldPathBase: string, field: ResolveTree): AggregationFields {
