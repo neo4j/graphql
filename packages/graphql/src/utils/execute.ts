@@ -19,12 +19,8 @@
 
 import type { SessionMode, QueryResult } from "neo4j-driver";
 import Debug from "debug";
-import { VersionMismatchError } from "../classes";
-import {
-    DEBUG_EXECUTE,
-} from "../constants";
+import { DEBUG_EXECUTE } from "../constants";
 import type { Context } from "../types";
-
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -46,18 +42,7 @@ async function execute({
     defaultAccessMode: SessionMode;
     context: Context;
 }): Promise<ExecuteResult> {
-    let result;
-    try {
-        result = await context.executor.execute(cypher, params, defaultAccessMode);
-    } catch(error) {
-        if (error instanceof VersionMismatchError) {
-            context.neo4jDatabaseInfo.version.major = error.major;
-            context.neo4jDatabaseInfo.version.minor = error.minor;
-            result = await context.executor.execute(cypher, params, defaultAccessMode);
-        } 
-        throw error;
-    }
-
+    const result = await context.executor.execute(cypher, params, defaultAccessMode);
 
     if (!result) {
         throw new Error("Unable to execute query against Neo4j database");

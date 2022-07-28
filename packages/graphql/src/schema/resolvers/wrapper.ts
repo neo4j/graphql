@@ -16,13 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import semver from "semver";
 import Debug from "debug";
 import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
 import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
-import type { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
-import { Neo4jGraphQLAuthenticationError } from "../../classes";
+import {
+    Neo4jGraphQLConfig,
+    Node,
+    Relationship,
+    VersionMismatchError,
+    Neo4jGraphQLAuthenticationError,
+} from "../../classes";
 import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
 import { DEBUG_GRAPHQL } from "../../constants";
@@ -123,20 +128,40 @@ export const wrapResolver =
                 {},
                 "READ"
             );
-
-            if (!dbmsComponentsQueryResult?.records[0]) {
+            const rawRow = dbmsComponentsQueryResult?.records[0];
+            const [rawVersion, edition] = rawRow;
+            const version = semver.coerce(rawVersion as string);
+            if (rawRow === undefined || !semver.valid(version)) {
                 throw new Error("Neo4j version not detectable");
             }
-            const [version, edition] = dbmsComponentsQueryResult.records[0];
-            const [major, minor] = (version as string).split(".");
-            const neo4jVersion = { major: +major, minor: +minor } as Neo4jVersion;
+            const { major, minor } = version as semver.SemVer;
+            const neo4jVersion = { major, minor } as Neo4jVersion;
             neo4jDatabaseInfo = new Neo4jDatabaseInfo(neo4jVersion, edition as Neo4jEdition);
         }
         executorConstructorParam.neo4jDatabaseInfo = neo4jDatabaseInfo;
         context.executor = new Executor(executorConstructorParam);
         context.neo4jDatabaseInfo = neo4jDatabaseInfo;
-        return next(root, args, context, info);
+
+        return versionMismatchDecorator(next)(root, args, context, info);
     };
+
+function versionMismatchDecorator(resolver: any) {
+    return async (_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) => {
+        let resolverResponse;
+        try {
+            resolverResponse = await resolver(_root, args, _context, info);
+        } catch (error) {
+            if (error instanceof VersionMismatchError) {
+                ((_context as Context).neo4jDatabaseInfo as Neo4jDatabaseInfo).version = {
+                    major: error.major,
+                    minor: error.minor,
+                };
+                resolverResponse = await resolver(_root, args, _context, info);
+            }
+        }
+        return resolverResponse;
+    };
+}
 
 export const wrapSubscription =
     (resolverArgs: WrapResolverArguments) =>

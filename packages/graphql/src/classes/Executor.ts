@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Driver, Neo4jError, QueryResult, Result, Session, SessionMode, Transaction } from "neo4j-driver";
+import { Driver, Neo4jError, QueryResult, Result, ServerInfo, Session, SessionMode, Transaction } from "neo4j-driver";
 import Debug from "debug";
 
 import type { AuthContext, CypherQueryOptions, Neo4jDatabaseInfo } from "../types";
@@ -116,7 +116,9 @@ export class Executor {
                 return await this.sessionRun(query, parameters, defaultAccessMode, this.executionContext);
             }
 
-            return await this.transactionRun(query, parameters, this.executionContext);
+            const result = await this.transactionRun(query, parameters, this.executionContext);
+            this.throwIfVersionMismatch(result.summary.server);
+            return result;
         } catch (error) {
             throw this.formatError(error);
         }
@@ -195,21 +197,27 @@ export class Executor {
             },
         };
     }
+    
+    private throwIfVersionMismatch(serverInfo: ServerInfo) {
+        if (this.neo4jDatabaseInfo) {
+            const protocolVersion = serverInfo.protocolVersion;
+            if (protocolVersion) {
+                const versions = protocolVersion.toString().split(".").map(digit => parseInt(digit, 10));
+                const major = versions[0];
+                const minor = versions[1] ?? 0;
+                if (major !== this.neo4jDatabaseInfo.version.major || minor !== this.neo4jDatabaseInfo.version.minor) {
+                    throw new VersionMismatchError(major, minor);
+                }
+            }
+        }
+    }
 
     private async sessionRun(query: string, parameters, defaultAccessMode, session): Promise<QueryResult> {
         const transactionType = `${defaultAccessMode.toLowerCase()}Transaction`;
         const result = await session[transactionType](async (transaction: Transaction) => {
-            const response = await this.transactionRun(query, parameters, transaction);
-            if (this.neo4jDatabaseInfo) {
-                const protocolVersion = response.summary.server.protocolVersion;
-                if (protocolVersion) {
-                    const [major, minor] = protocolVersion.toString().split(".").map(digit => parseInt(digit, 10));
-                    if (major === this.neo4jDatabaseInfo.version.major || minor !== this.neo4jDatabaseInfo.version.minor) {
-                        throw new VersionMismatchError(major, minor);
-                    }
-                }
-            }
-            return response;
+            const txResult = await this.transactionRun(query, parameters, transaction);
+            this.throwIfVersionMismatch(txResult.summary.server);
+            return txResult;
         }, this.getTransactionConfig());
         const lastBookmark = session.lastBookmark();
         if (Array.isArray(lastBookmark) && lastBookmark[0]) {
@@ -228,7 +236,5 @@ export class Executor {
         );
 
         return transaction.run(queryToRun, parametersToRun);
-
-        // return result;
     }
 }

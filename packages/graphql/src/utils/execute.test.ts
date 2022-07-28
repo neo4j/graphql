@@ -18,7 +18,7 @@
  */
 
 import type { Driver } from "neo4j-driver";
-import type { Neo4jGraphQL } from "../classes";
+import { Neo4jGraphQL, VersionMismatchError } from "../classes";
 import {
     AuthContext,
     CypherConnectComponentsPlanner,
@@ -273,5 +273,89 @@ describe("execute", () => {
 
             expect(executeResult.records).toEqual([{ title }]);
         });
+    });
+
+    test.only("should raise a VersionMismatchError if the server version is different from the one configured", async () => {
+        const defaultAccessMode = "WRITE";
+
+        const cypher = `
+            CREATE (u:User {title: $title})
+            RETURN u { .title } as u
+        `;
+
+        const title = "some title";
+        const params = { title };
+        const records = [{ toObject: () => ({ title }) }];
+        const database = "neo4j";
+        const bookmarks = ["test"];
+
+        // @ts-ignore
+        const driver: Driver = {
+            // @ts-ignore
+            session: (options) => {
+
+                const tx = {
+                    run: (paramCypher, paramParams) => {
+                        return {
+                            records,
+                            summary: {
+                                counters: { updates: () => ({ test: 1 }) },
+                                server: {
+                                    address: "localhost:7687",
+                                    version: "Neo4j/4.4.5",
+                                    agent: "Neo4j/4.4.5",
+                                    protocolVersion: 4.6,
+                                },
+                            },
+                        };
+                    },
+                    commit() {},
+                };
+
+                return {
+                    beginTransaction: () => tx,
+                    readTransaction: (fn) => {
+                        // @ts-ignore
+                        return fn(tx);
+                    },
+                    writeTransaction: (fn) => {
+                        // @ts-ignore
+                        return fn(tx);
+                    },
+                    lastBookmark: () => "bookmark",
+                    close: () => true,
+                };
+            },
+            // @ts-ignore
+            _config: {},
+        };
+
+        // @ts-ignore
+        const neoSchema: Neo4jGraphQL = {
+            // @ts-ignore
+            options: {},
+        };
+
+        try  {
+            await execute({
+                cypher,
+                params,
+                defaultAccessMode,
+                context: new ContextBuilder({
+                    neoSchema,
+                    executor: new Executor({
+                        executionContext: driver,
+                        auth: {} as AuthContext,
+                        database,
+                        bookmarks,
+                        neo4jDatabaseInfo: { version: { major: 4, minor: 3 }, edition: "community" },
+                    }),
+                }).instance(),
+            });
+        } catch (error) {
+            // eslint-disable-next-line jest/no-conditional-expect
+            expect(error).toBeInstanceOf(VersionMismatchError);
+        }
+        expect.assertions(1)
     });
 });
