@@ -36,7 +36,6 @@ import { addGlobalIdField } from "../utils/global-node-projection";
 import { getRelationshipDirectionStr } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
-import type * as CypherBuilder from "./cypher-builder/CypherBuilder";
 
 interface Res {
     projection: string[];
@@ -49,7 +48,6 @@ export interface ProjectionMeta {
     connectionFields?: ResolveTree[];
     interfaceFields?: ResolveTree[];
     cypherSortFields?: { alias: string; apocStr: string }[];
-    // extraProjection: Record<string, CypherBuilder.Expr>; // Separate from projection for compatibility reasons
 }
 
 function createNodeWhereAndParams({
@@ -578,7 +576,6 @@ function createProjectionAndParams({
         if (aggregationFieldProjection) {
             res.projection.push(`${alias}: ${aggregationFieldProjection.query}`);
             res.params = { ...res.params, ...aggregationFieldProjection.params };
-            // res.meta.extraProjection[alias] = aggregationFieldProjection.projection;
             return res;
         }
 
@@ -694,9 +691,7 @@ function createProjectionAndParams({
     const { projection, params, meta } = Object.values(mergedFields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
         params: {},
-        meta: {
-            // extraProjection: {},
-        },
+        meta: {},
     });
 
     return [`{ ${projection.join(", ")} }`, params, meta];

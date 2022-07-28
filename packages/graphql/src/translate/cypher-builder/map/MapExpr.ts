@@ -43,6 +43,6 @@ export class MapExpr extends CypherASTNode {
             return `${key}: ${value.getCypher(env)}`;
         });
 
-        return `{ ${[...valuesList].join(", ")} }`;
+        return `{ ${valuesList.join(", ")} }`;
     }
 }

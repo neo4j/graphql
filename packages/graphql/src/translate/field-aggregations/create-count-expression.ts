@@ -18,7 +18,7 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { Node, Relationship } from "../../classes";
+import type { Node } from "../../classes";
 import type { Context, RelationField, GraphQLWhereArg } from "../../types";
 
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
@@ -28,21 +28,17 @@ import { createCypherWhereParams } from "../where/create-cypher-where-params";
 export function createCountExpression({
     sourceNode,
     relationAggregationField,
-    // resultVariable,
     referenceNode,
     context,
     field,
-    // authCallQuery,
     authCallWhere,
     targetNode,
 }: {
     sourceNode: CypherBuilder.Node;
-    // resultVariable: CypherBuilder.Variable;
     referenceNode: Node;
     context: Context;
     relationAggregationField: RelationField;
     field: ResolveTree;
-    // authCallQuery: CypherBuilder.Clause;
     authCallWhere: CypherBuilder.WhereParams | undefined;
     targetNode: CypherBuilder.Node;
 }): CypherBuilder.Expr {

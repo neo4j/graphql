@@ -27,7 +27,6 @@ import { ComprehensionExpr } from "./ComprehensionExpr";
 
 export class PatternComprehension extends ComprehensionExpr {
     private pattern: Pattern;
-    // private whereClause: Where | undefined;
     private mapExpr: Expr | undefined;
 
     constructor(pattern: Pattern | MatchableElement, mapExpr?: Expr) {
@@ -49,6 +48,5 @@ export class PatternComprehension extends ComprehensionExpr {
     }
 }
 
-// TODO: move to ComprehensionExpr
 export interface PatternComprehension extends WithWhere {}
 applyMixins(PatternComprehension, [WithWhere]);

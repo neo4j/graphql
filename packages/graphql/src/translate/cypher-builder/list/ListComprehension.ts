@@ -27,7 +27,6 @@ import type { Variable } from "../variables/Variable";
 import { ComprehensionExpr } from "./ComprehensionExpr";
 
 export class ListComprehension extends ComprehensionExpr {
-    private whereClause: Where | undefined;
     private variable: Variable;
     private listExpr: Expr;
     private mapExpr: Expr | undefined;
@@ -39,21 +38,12 @@ export class ListComprehension extends ComprehensionExpr {
         this.mapExpr = mapExpr;
 
         if (whereFilter) {
-            this.whereClause = new Where(this, whereFilter);
+            this.whereSubClause = new Where(this, whereFilter);
         }
     }
 
-    // where(filter: WhereParams): this {
-    //     if (this.whereClause) {
-    //         this.whereClause.and(filter);
-    //     } else {
-    //         this.whereClause = new Where(this, filter);
-    //     }
-    //     return this;
-    // }
-
     getCypher(env: CypherEnvironment): string {
-        const whereStr = compileCypherIfExists(this.whereClause, env, { prefix: " " });
+        const whereStr = compileCypherIfExists(this.whereSubClause, env, { prefix: " " });
         const mapStr = compileCypherIfExists(this.mapExpr, env, { prefix: " | " });
         const listExprStr = this.listExpr.getCypher(env);
         const varCypher = this.variable.getCypher(env);
