@@ -57,6 +57,6 @@ export function getFieldByName(name: string, fields: Record<string, ResolveTree>
 
 export function serializeAuthParamsForApocRun(auth: AggregationAuth): Record<string, string> {
     const authParams = serializeParamsForApocRun(auth.params);
-    if (auth.query || auth.whereQuery) authParams.auth = "$auth";
+    if (auth.whereQuery) authParams.auth = "$auth";
     return authParams;
 }

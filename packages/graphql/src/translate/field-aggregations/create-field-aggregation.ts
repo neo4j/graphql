@@ -109,22 +109,18 @@ export function createFieldAggregation({
     const sourceNode = new CypherBuilder.NamedNode(nodeLabel);
     const targetNode = new CypherBuilder.Node({ labels: referenceNode.getLabels(context) });
 
-    let authCallWhere: CypherBuilder.RawCypher | undefined;
-    // TODO: avoid double whereQuery!
-    if (authData.whereQuery) {
-        authCallWhere = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
-            const subqueryNodeName = targetNode.getCypher(env);
-            const authDataResult = createFieldAggregationAuth({
-                node: referenceNode,
-                context,
-                subqueryNodeAlias: subqueryNodeName,
-                nodeFields: aggregationFields.node,
-            });
-
-            // TODO: refactor auth into cypherBuilder
-            return [authDataResult.whereQuery || "true", authDataResult.params];
+    const authCallWhere = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+        const subqueryNodeName = targetNode.getCypher(env);
+        const authDataResult = createFieldAggregationAuth({
+            node: referenceNode,
+            context,
+            subqueryNodeAlias: subqueryNodeName,
+            nodeFields: aggregationFields.node,
         });
-    }
+
+        // TODO: refactor auth into cypherBuilder
+        return [authDataResult.whereQuery, authDataResult.params];
+    });
     const cypherParams = { ...authData.params, ...whereParams };
     const projectionMap = new CypherBuilder.Map();
 

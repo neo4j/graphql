@@ -24,7 +24,6 @@ import type { Context } from "../../types";
 import type { Node } from "../../classes";
 
 export type AggregationAuth = {
-    query: string;
     params: Record<string, string>;
     whereQuery: string;
 };
@@ -52,7 +51,7 @@ export function createFieldAggregationAuth({
     const cypherStrs = [...nodeAuth.queries, ...allowAuth.queries, ...whereAuth.queries];
     const cypherParams = { ...nodeAuth.params, ...allowAuth.params, ...whereAuth.params };
 
-    return { query: "", params: cypherParams, whereQuery: cypherStrs.join(" AND\n") };
+    return { params: cypherParams, whereQuery: cypherStrs.join(" AND\n") };
 }
 
 function getAllowAuth({

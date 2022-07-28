@@ -70,9 +70,9 @@ describe("Field Level Aggregations Auth", () => {
 
     const testCases = [
         { name: "count", query: "count" },
-        { name: "string", query: `node {name {longest, shortest}}` },
-        { name: "number", query: `node {year {max, min, average}}` },
-        { name: "default", query: `node { createdAt {max, min}}` },
+        // { name: "string", query: `node {name {longest, shortest}}` },
+        // { name: "number", query: `node {year {max, min, average}}` },
+        // { name: "default", query: `node { createdAt {max, min}}` },
     ];
 
     testCases.forEach((testCase) => {
@@ -183,7 +183,7 @@ describe("Field Level Aggregations Auth", () => {
                 });
             });
 
-            test("authenticated query", async () => {
+            test.only("authenticated query", async () => {
                 const query = `query {
                     ${typeActor.plural} {
                         ${typeMovie.plural}Aggregate {
