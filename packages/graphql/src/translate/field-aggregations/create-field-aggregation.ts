@@ -37,9 +37,8 @@ import { stringifyObject } from "../utils/stringify-object";
 import { serializeParamsForApocRun, wrapInApocRunFirstColumn } from "../utils/apoc-run";
 import { FieldAggregationSchemaTypes } from "../../schema/aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
-import { getRelationshipDirection, getRelationshipDirectionStr } from "../../utils/get-relationship-direction";
+import { getRelationshipDirectionStr } from "../../utils/get-relationship-direction";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
-import { createCypherWhereParams } from "../where/create-cypher-where-params";
 import { createCountExpression } from "./create-count-expression";
 
 const subqueryNodeAlias = "n";
@@ -107,7 +106,6 @@ export function createFieldAggregation({
         ...serializeAuthParamsForApocRun(authData),
     };
 
-    // const countVariable = new CypherBuilder.Variable();
     const sourceNode = new CypherBuilder.NamedNode(nodeLabel);
     const targetNode = new CypherBuilder.Node({ labels: referenceNode.getLabels(context) });
 
@@ -123,7 +121,6 @@ export function createFieldAggregation({
                 nodeFields: aggregationFields.node,
             });
 
-            // NOTE: || true needed just because of composition with where and rawCypher
             // TODO: refactor auth into cypherBuilder
             return [authDataResult.whereQuery || "true", authDataResult.params];
         });
@@ -135,11 +132,9 @@ export function createFieldAggregation({
         const countProjection = createCountExpression({
             sourceNode,
             relationAggregationField,
-            // resultVariable: countVariable,
             referenceNode,
             context,
             field,
-            // authCallQuery,
             authCallWhere,
             targetNode,
         });
@@ -262,25 +257,6 @@ function createTargetPattern({
 
     return `(${nodeLabel})${inStr}[${subqueryRelationAlias}:${relationField.type}]${outStr}${nodeOutStr}`;
 }
-
-// function createCountQuery({
-//     nodeLabel,
-//     matchWherePattern,
-//     targetAlias,
-//     params,
-// }: {
-//     nodeLabel: string;
-//     matchWherePattern: string;
-//     targetAlias: string;
-//     params: Record<string, string>;
-// }): string {
-//     const apocCount = wrapInApocRunFirstColumn(AggregationSubQueries.countQuery(matchWherePattern, targetAlias), {
-//         ...params,
-//         [nodeLabel]: nodeLabel,
-//     });
-
-//     return `head(${apocCount})`;
-// }
 
 function createAggregationQuery({
     nodeLabel,

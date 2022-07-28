@@ -46,24 +46,6 @@ export function createCountExpression({
     authCallWhere: CypherBuilder.WhereParams | undefined;
     targetNode: CypherBuilder.Node;
 }): CypherBuilder.Expr {
-    // const relationAggregationField = node.relationFields.find((x) => {
-    //     return `${x.fieldName}Aggregate` === field.name;
-    // });
-
-    // const connectionField = node.connectionFields.find((x) => {
-    //     return `${relationAggregationField?.fieldName}Connection` === x.fieldName;
-    // });
-
-    // if (!relationAggregationField || !connectionField) return undefined;
-    // const referenceNode = getReferenceNode(context, relationAggregationField);
-    // const referenceRelation = getReferenceRelation(context, connectionField);
-
-    // if (!referenceNode || !referenceRelation) return undefined;
-
-    // const fieldPathBase = `${node.name}${referenceNode.name}${upperFirst(relationAggregationField.fieldName)}`;
-    // const aggregationFields = getAggregationFields(fieldPathBase, field);
-
-    // TODO: getRelationshipDirectionStrStr
     const relationship = new CypherBuilder.Relationship({
         source: sourceNode,
         target: targetNode,
@@ -85,23 +67,14 @@ export function createCountExpression({
         targetElement: targetNode,
     });
 
-    const patternComprehension = new CypherBuilder.PatternComprehension(
-        relationshipPattern,
-        // CypherBuilder.count(targetNode)
-        targetNode
-    );
+    const patternComprehension = new CypherBuilder.PatternComprehension(relationshipPattern, targetNode);
 
-    // const matchClause = new CypherBuilder.Match(relationshipPattern);
     if (whereParams) {
         patternComprehension.where(whereParams);
     }
     if (authCallWhere) {
-        patternComprehension.and(authCallWhere); // TODO: this should use validatePredicate instead of validate
+        patternComprehension.and(authCallWhere);
     }
 
-    // const returnClause = new CypherBuilder.Return([CypherBuilder.count(targetNode), resultVariable]);
-    // const innerQuery = CypherBuilder.concat(matchClause, authCallQuery, returnClause);
-
     return CypherBuilder.size(patternComprehension);
-    // return new CypherBuilder.Call(innerQuery).with(sourceNode);
 }

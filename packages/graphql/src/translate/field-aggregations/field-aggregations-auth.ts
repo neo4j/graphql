@@ -78,7 +78,6 @@ function getAllowAuth({
     if (allowAuth[0]) {
         return {
             queries: [`apoc.util.validatePredicate(NOT (${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`],
-            // queries: [`CALL apoc.util.validate(NOT (${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`],
             params: allowAuth[1],
         };
     }

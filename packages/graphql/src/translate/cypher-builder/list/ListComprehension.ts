@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import { WithWhere } from "../clauses/mixins/WithWhere";
+import { applyMixins } from "../clauses/utils/apply-mixin";
 import type { CypherEnvironment } from "../Environment";
 import { Where, WhereParams } from "../sub-clauses/Where";
 import type { Expr } from "../types";
@@ -41,14 +43,14 @@ export class ListComprehension extends ComprehensionExpr {
         }
     }
 
-    where(filter: WhereParams): this {
-        if (this.whereClause) {
-            this.whereClause.and(filter);
-        } else {
-            this.whereClause = new Where(this, filter);
-        }
-        return this;
-    }
+    // where(filter: WhereParams): this {
+    //     if (this.whereClause) {
+    //         this.whereClause.and(filter);
+    //     } else {
+    //         this.whereClause = new Where(this, filter);
+    //     }
+    //     return this;
+    // }
 
     getCypher(env: CypherEnvironment): string {
         const whereStr = compileCypherIfExists(this.whereClause, env, { prefix: " " });
@@ -59,3 +61,6 @@ export class ListComprehension extends ComprehensionExpr {
         return `[${varCypher} IN ${listExprStr}${whereStr}${mapStr}]`;
     }
 }
+
+export interface ListComprehension extends WithWhere {}
+applyMixins(ListComprehension, [WithWhere]);

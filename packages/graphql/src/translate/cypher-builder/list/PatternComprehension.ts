@@ -40,15 +40,6 @@ export class PatternComprehension extends ComprehensionExpr {
         this.mapExpr = mapExpr;
     }
 
-    // where(filter: WhereParams): this {
-    //     if (this.whereClause) {
-    //         this.whereClause.and(filter);
-    //     } else {
-    //         this.whereClause = new Where(this, filter);
-    //     }
-    //     return this;
-    // }
-
     getCypher(env: CypherEnvironment): string {
         const whereStr = compileCypherIfExists(this.whereSubClause, env, { prefix: " " });
         const mapStr = compileCypherIfExists(this.mapExpr, env, { prefix: " | " });

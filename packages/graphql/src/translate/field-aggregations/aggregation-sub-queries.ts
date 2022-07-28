@@ -57,7 +57,3 @@ export function dateTimeAggregationQuery(matchWherePattern: string, fieldName: s
             max: wrapApocConvertDate(`max(${fieldPath})`),
         })}`;
 }
-
-export function countQuery(matchWherePattern: string, targetAlias: string): string {
-    return `${matchWherePattern} RETURN COUNT(${targetAlias})`;
-}
