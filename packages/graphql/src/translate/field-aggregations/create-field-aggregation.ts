@@ -111,20 +111,23 @@ export function createFieldAggregation({
     const sourceNode = new CypherBuilder.NamedNode(nodeLabel);
     const targetNode = new CypherBuilder.Node({ labels: referenceNode.getLabels(context) });
 
-    const authCallWhere = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
-        const subqueryNodeName = targetNode.getCypher(env);
-        const authDataResult = createFieldAggregationAuth({
-            node: referenceNode,
-            context,
-            subqueryNodeAlias: subqueryNodeName,
-            nodeFields: aggregationFields.node,
+    let authCallWhere: CypherBuilder.RawCypher | undefined;
+    // TODO: avoid double whereQuery!
+    if (authData.whereQuery) {
+        authCallWhere = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+            const subqueryNodeName = targetNode.getCypher(env);
+            const authDataResult = createFieldAggregationAuth({
+                node: referenceNode,
+                context,
+                subqueryNodeAlias: subqueryNodeName,
+                nodeFields: aggregationFields.node,
+            });
+
+            // NOTE: || true needed just because of composition with where and rawCypher
+            // TODO: refactor auth into cypherBuilder
+            return [authDataResult.whereQuery || "true", authDataResult.params];
         });
-
-        // NOTE: || true needed just because of composition with where and rawCypher
-        // TODO: refactor auth into cypherBuilder
-        return [authDataResult.whereQuery || "true", authDataResult.params];
-    });
-
+    }
     const cypherParams = { ...authData.params, ...whereParams };
     const projectionMap = new CypherBuilder.Map();
 

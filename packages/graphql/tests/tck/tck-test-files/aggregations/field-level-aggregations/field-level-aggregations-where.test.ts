@@ -49,7 +49,7 @@ describe("Field Level Aggregations Where", () => {
         });
     });
 
-    test("Count aggregation with number filter", async () => {
+    test.only("Count aggregation with number filter", async () => {
         const query = gql`
             query {
                 movies {
@@ -68,7 +68,7 @@ describe("Field Level Aggregations Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { .title, actorsAggregate: { count: size([(this_actorsAggregate_this0:\`Person\`)-[this_actorsAggregate_this1:ACTED_IN]->(this) WHERE (this_actorsAggregate_this0.age > $this_actorsAggregate_param0 AND true) | this_actorsAggregate_this0]) } } as this"
+            RETURN this { .title, actorsAggregate: { count: size([(this_actorsAggregate_this0:\`Person\`)-[this_actorsAggregate_this1:ACTED_IN]->(this) WHERE this_actorsAggregate_this0.age > $this_actorsAggregate_param0 | this_actorsAggregate_this0]) } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

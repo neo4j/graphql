@@ -74,7 +74,7 @@ describe("Field Level Aggregations", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .title, actorsAggregate: { count: size([(this_actorsAggregate_this0:\`Actor\`)-[this_actorsAggregate_this1:ACTED_IN]->(this) WHERE true | this_actorsAggregate_this0]) } } as this"
+            RETURN this { .title, actorsAggregate: { count: size([(this_actorsAggregate_this0:\`Actor\`)-[this_actorsAggregate_this1:ACTED_IN]->(this) | this_actorsAggregate_this0]) } } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
