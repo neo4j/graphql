@@ -284,4 +284,31 @@ describe("CypherBuilder Match", () => {
             }
         `);
     });
+
+    test("Match node with order", () => {
+        const nameParam = new CypherBuilder.Param("arthur");
+
+        const movieNode = new CypherBuilder.Node({
+            labels: ["Movie"],
+        });
+
+        const matchQuery = new CypherBuilder.Match(movieNode)
+            .where(movieNode, { name: nameParam })
+            .return(movieNode)
+            .orderBy([movieNode.property("age"), "DESC"]);
+
+        const queryResult = matchQuery.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "MATCH (this0:\`Movie\`)
+            WHERE this0.name = $param0
+            RETURN this0
+            ORDER BY this0.age DESC"
+        `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": "arthur",
+            }
+        `);
+    });
 });
