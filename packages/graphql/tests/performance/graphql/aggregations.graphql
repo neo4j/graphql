@@ -25,3 +25,30 @@ query AggregationWithWhere {
         name
     }
 }
+
+query NestedCountFromMovieToActors {
+    movies {
+        actorsAggregate {
+            count
+        }
+    }
+}
+query NestedCountFromActorsToMovie {
+    people {
+        moviesAggregate {
+            count
+        }
+    }
+}
+
+query DeeplyNestedCount {
+    people {
+        movies {
+            actors {
+                moviesAggregate {
+                    count
+                }
+            }
+        }
+    }
+}
