@@ -24,7 +24,6 @@ import type { Context } from "../../types";
 import type { Node } from "../../classes";
 
 export type AggregationAuth = {
-    query: string;
     params: Record<string, string>;
     whereQuery: string;
 };
@@ -49,10 +48,10 @@ export function createFieldAggregationAuth({
     const whereAuth = getWhereAuth({ node, context, varName: subqueryNodeAlias });
     const nodeAuth = getFieldAuth({ fields: nodeFields, node, context, varName: subqueryNodeAlias });
 
-    const cypherStrs = [...nodeAuth.queries, ...allowAuth.queries];
+    const cypherStrs = [...nodeAuth.queries, ...allowAuth.queries, ...whereAuth.queries];
     const cypherParams = { ...nodeAuth.params, ...allowAuth.params, ...whereAuth.params };
 
-    return { query: cypherStrs.join("\n"), params: cypherParams, whereQuery: whereAuth.queries.join("\n") };
+    return { params: cypherParams, whereQuery: cypherStrs.join(" AND\n") };
 }
 
 function getAllowAuth({
@@ -77,7 +76,7 @@ function getAllowAuth({
 
     if (allowAuth[0]) {
         return {
-            queries: [`CALL apoc.util.validate(NOT (${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`],
+            queries: [`apoc.util.validatePredicate(NOT (${allowAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`],
             params: allowAuth[1],
         };
     }
@@ -150,7 +149,7 @@ function getFieldAuth({
 
     if (authStrs.length > 0) {
         return {
-            queries: [`CALL apoc.util.validate(NOT (${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`],
+            queries: [`apoc.util.validatePredicate(NOT (${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`],
             params: authParams,
         };
     }

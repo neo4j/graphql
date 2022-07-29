@@ -33,7 +33,7 @@ import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
-import { getRelationshipDirection } from "../utils/get-relationship-direction";
+import { getRelationshipDirectionStr } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 
@@ -386,7 +386,7 @@ function createProjectionAndParams({
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 
-            const { inStr, outStr } = getRelationshipDirection(relationField, field.args);
+            const { inStr, outStr } = getRelationshipDirectionStr(relationField, field.args);
 
             if (relationField.interface) {
                 if (!res.meta.interfaceFields) {
