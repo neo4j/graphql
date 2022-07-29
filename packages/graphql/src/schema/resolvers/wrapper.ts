@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import semver from "semver";
 import Debug from "debug";
 import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
 import { print } from "graphql";
@@ -27,6 +26,7 @@ import {
     Relationship,
     VersionMismatchError,
     Neo4jGraphQLAuthenticationError,
+    Neo4jDatabaseInfo
 } from "../../classes";
 import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
@@ -37,12 +37,10 @@ import type {
     Neo4jGraphQLPlugins,
     JwtPayload,
     Neo4jGraphQLAuthPlugin,
-    Neo4jVersion,
-    Neo4jEdition,
 } from "../../types";
-import { Neo4jDatabaseInfo } from "../../types";
 import { getToken, parseBearerToken } from "../../utils/get-token";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
+import type { Neo4jEdition } from "../../classes/Neo4jGraphQL";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -130,22 +128,16 @@ export const wrapResolver =
             );
             const rawRow = dbmsComponentsQueryResult?.records[0];
             const [rawVersion, edition] = rawRow;
-            const version = semver.coerce(rawVersion as string);
-            if (rawRow === undefined || !semver.valid(version)) {
-                throw new Error("Neo4j version not detectable");
-            }
-            const { major, minor } = version as semver.SemVer;
-            const neo4jVersion = { major, minor } as Neo4jVersion;
-            neo4jDatabaseInfo = new Neo4jDatabaseInfo(neo4jVersion, edition as Neo4jEdition);
+            neo4jDatabaseInfo = new Neo4jDatabaseInfo(rawVersion as string, edition as Neo4jEdition);
         }
         executorConstructorParam.neo4jDatabaseInfo = neo4jDatabaseInfo;
         context.executor = new Executor(executorConstructorParam);
         context.neo4jDatabaseInfo = neo4jDatabaseInfo;
 
-        return versionMismatchDecorator(next)(root, args, context, info);
+        return versionMismatchHandler(next)(root, args, context, info);
     };
 
-function versionMismatchDecorator(resolver: any) {
+export function versionMismatchHandler(resolver: any) {
     return async (_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) => {
         let resolverResponse;
         try {
@@ -157,7 +149,10 @@ function versionMismatchDecorator(resolver: any) {
                     minor: error.minor,
                 };
                 resolverResponse = await resolver(_root, args, _context, info);
+            } else {
+                throw error;
             }
+        
         }
         return resolverResponse;
     };

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import semver from "semver";
 import type { Driver } from "neo4j-driver";
 import type { GraphQLSchema } from "graphql";
 import type { IExecutableSchemaDefinition} from "@graphql-tools/schema";
@@ -40,6 +40,7 @@ import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
 import { asArray } from "../utils/utils";
 import { DEBUG_ALL } from "../constants";
 
+
 export interface Neo4jGraphQLJWT {
     jwksEndpoint?: string;
     secret?: string | Buffer | { key: string | Buffer; passphrase: string };
@@ -54,6 +55,35 @@ export interface Neo4jGraphQLConfig {
     skipValidateTypeDefs?: boolean;
     queryOptions?: CypherQueryOptions;
     callbacks?: Neo4jGraphQLCallbacks;
+}
+
+export interface Neo4jVersion {
+    major: number;
+    minor: number;
+}
+
+export type Neo4jEdition = "enterprise" | "community";
+
+export class Neo4jDatabaseInfo {
+    public version: Neo4jVersion;
+    public edition: Neo4jEdition | undefined;
+
+    constructor(version: Neo4jVersion | string, edition: Neo4jEdition) {
+        if (!version){
+            throw new Error("Neo4j version not detectable");
+        } else if (typeof version === "string") {
+            const semVerVersion = semver.coerce(version as string);
+            if (!semver.valid(semVerVersion)) {
+                throw new Error("Neo4j version not detectable");
+            }
+            const { major, minor } = semVerVersion as semver.SemVer;
+            const neo4jVersion = { major, minor } as Neo4jVersion;
+            this.version = neo4jVersion;
+        } else {
+            this.version = version as Neo4jVersion;
+        }
+        this.edition = edition;
+    }
 }
 
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {

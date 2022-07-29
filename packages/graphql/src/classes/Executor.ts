@@ -19,8 +19,6 @@
 
 import { Driver, Neo4jError, QueryResult, Result, ServerInfo, Session, SessionMode, Transaction } from "neo4j-driver";
 import Debug from "debug";
-
-import type { AuthContext, CypherQueryOptions, Neo4jDatabaseInfo } from "../types";
 import environment from "../environment";
 import {
     Neo4jGraphQLAuthenticationError,
@@ -35,6 +33,8 @@ import {
     DEBUG_EXECUTE,
     RELATIONSHIP_REQUIREMENT_PREFIX,
 } from "../constants";
+import type { Neo4jDatabaseInfo } from "./Neo4jGraphQL";
+import type { AuthContext, CypherQueryOptions } from "../types";
 
 const debug = Debug(DEBUG_EXECUTE);
 
