@@ -30,7 +30,7 @@ import {
 } from "../../classes";
 import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
-import { DEBUG_GRAPHQL } from "../../constants";
+import { DBMS_COMPONENTS_QUERY, DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
 import type {
     Context,
@@ -119,10 +119,8 @@ export const wrapResolver =
         }
 
         if (!neo4jDatabaseInfo?.version) {
-            const dbmsComponentsQuery =
-                "CALL dbms.components() YIELD versions, edition UNWIND versions AS version RETURN version, edition";
             const dbmsComponentsQueryResult = await new Executor(executorConstructorParam).execute(
-                dbmsComponentsQuery,
+                DBMS_COMPONENTS_QUERY,
                 {},
                 "READ"
             );

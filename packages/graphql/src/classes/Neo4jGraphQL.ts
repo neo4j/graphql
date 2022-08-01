@@ -64,26 +64,38 @@ export interface Neo4jVersion {
 
 export type Neo4jEdition = "enterprise" | "community";
 
+export const VERSION_NOT_DETACTABLE = "Neo4j version not detectable";
+
 export class Neo4jDatabaseInfo {
     public version: Neo4jVersion;
     public edition: Neo4jEdition | undefined;
 
     constructor(version: Neo4jVersion | string, edition: Neo4jEdition) {
         if (!version){
-            throw new Error("Neo4j version not detectable");
+            throw new Error(VERSION_NOT_DETACTABLE);
         } else if (typeof version === "string") {
-            const semVerVersion = semver.coerce(version as string);
-            if (!semver.valid(semVerVersion)) {
-                throw new Error("Neo4j version not detectable");
-            }
-            const { major, minor } = semVerVersion as semver.SemVer;
-            const neo4jVersion = { major, minor } as Neo4jVersion;
+            const neo4jVersion = this.neo4jVersionBuilder(version);
             this.version = neo4jVersion;
         } else {
             this.version = version as Neo4jVersion;
         }
         this.edition = edition;
     }
+    
+    eq(version: string) {
+        return version && semver.eq(semver.coerce(version as string) as semver.SemVer, semver.coerce(`${this.version.major}.${this.version.minor}`) as semver.SemVer);
+    }
+
+    neo4jVersionBuilder(version: string): Neo4jVersion {
+        const semVerVersion = semver.coerce(version as string);
+        if (!semver.valid(semVerVersion)) {
+            throw new Error(VERSION_NOT_DETACTABLE);
+        }
+        const { major, minor } = semVerVersion as semver.SemVer;
+        const neo4jVersion = { major, minor } as Neo4jVersion;
+        return neo4jVersion;
+    }
+
 }
 
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {

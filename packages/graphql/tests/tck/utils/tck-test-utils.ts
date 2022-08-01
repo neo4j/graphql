@@ -106,7 +106,7 @@ export async function translateQuery(
         const expectedErrors = [
             "Cannot read property 'get' of undefined",
             "Cannot return null for non-nullable",
-            "Cannot read properties of undefined (reading 'get')",
+            "Cannot read properties of undefined (reading 'get')"
         ];
 
         if (!expectedErrors.some((error) => errorString.includes(error))) {

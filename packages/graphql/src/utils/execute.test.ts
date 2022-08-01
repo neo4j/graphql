@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
+import type { Neo4jVersion } from "src/classes/Neo4jGraphQL";
 import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQL, VersionMismatchError } from "../classes";
+import { Neo4jDatabaseInfo, Neo4jGraphQL, VersionMismatchError } from "../classes";
 import {
     AuthContext,
     CypherConnectComponentsPlanner,
@@ -304,7 +305,7 @@ describe("execute", () => {
                                     address: "localhost:7687",
                                     version: "Neo4j/4.4.5",
                                     agent: "Neo4j/4.4.5",
-                                    protocolVersion: 4.6,
+                                    protocolVersion: 4.4,
                                 },
                             },
                         };
@@ -348,7 +349,7 @@ describe("execute", () => {
                         auth: {} as AuthContext,
                         database,
                         bookmarks,
-                        neo4jDatabaseInfo: { version: { major: 4, minor: 3 }, edition: "community" },
+                        neo4jDatabaseInfo: new Neo4jDatabaseInfo({ major: 4, minor: 3 } as Neo4jVersion, "community"),
                     }),
                 }).instance(),
             });
@@ -432,7 +433,7 @@ describe("execute", () => {
                         auth: {} as AuthContext,
                         database,
                         bookmarks,
-                        neo4jDatabaseInfo: { version: { major: 4, minor: 3 }, edition: "community" },
+                        neo4jDatabaseInfo: new Neo4jDatabaseInfo({ major: 4, minor: 3 } as Neo4jVersion, "community"),
                     }),
                 }).instance(),
             });

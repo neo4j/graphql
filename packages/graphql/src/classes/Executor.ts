@@ -93,7 +93,14 @@ export class Executor {
     private bookmarks: string | string[] | undefined;
     private neo4jDatabaseInfo: Neo4jDatabaseInfo | undefined;
 
-    constructor({ executionContext, auth, queryOptions, database, bookmarks, neo4jDatabaseInfo }: ExecutorConstructorParam) {
+    constructor({
+        executionContext,
+        auth,
+        queryOptions,
+        database,
+        bookmarks,
+        neo4jDatabaseInfo,
+    }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.lastBookmark = null;
         this.queryOptions = queryOptions;
@@ -117,7 +124,9 @@ export class Executor {
             }
 
             const result = await this.transactionRun(query, parameters, this.executionContext);
-            this.throwIfVersionMismatch(result.summary.server);
+            if (result?.summary?.server) {
+                this.throwIfVersionMismatch(result.summary.server)
+            };
             return result;
         } catch (error) {
             throw this.formatError(error);
@@ -197,17 +206,14 @@ export class Executor {
             },
         };
     }
-    
+
     private throwIfVersionMismatch(serverInfo: ServerInfo) {
-        if (this.neo4jDatabaseInfo) {
-            const protocolVersion = serverInfo.protocolVersion;
-            if (protocolVersion) {
-                const versions = protocolVersion.toString().split(".").map(digit => parseInt(digit, 10));
-                const major = versions[0];
-                const minor = versions[1] ?? 0;
-                if (major !== this.neo4jDatabaseInfo.version.major || minor !== this.neo4jDatabaseInfo.version.minor) {
-                    throw new VersionMismatchError(major, minor);
-                }
+        const protocolVersion = serverInfo.protocolVersion;
+        if (this.neo4jDatabaseInfo && protocolVersion) {
+            const protocolVersionStr = protocolVersion.toString();
+            if (!this.neo4jDatabaseInfo.eq(protocolVersionStr)) {
+                const { major, minor } = this.neo4jDatabaseInfo.neo4jVersionBuilder(protocolVersionStr);
+                throw new VersionMismatchError(major, minor);
             }
         }
     }
@@ -216,7 +222,10 @@ export class Executor {
         const transactionType = `${defaultAccessMode.toLowerCase()}Transaction`;
         const result = await session[transactionType](async (transaction: Transaction) => {
             const txResult = await this.transactionRun(query, parameters, transaction);
-            this.throwIfVersionMismatch(txResult.summary.server);
+            if (txResult?.summary?.server) {
+                this.throwIfVersionMismatch(txResult.summary.server);
+            }
+            
             return txResult;
         }, this.getTransactionConfig());
         const lastBookmark = session.lastBookmark();

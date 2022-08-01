@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import type { Driver, Session, Transaction } from "neo4j-driver";
+import { Driver, Session, Transaction, Record } from "neo4j-driver";
 import { Builder } from "./builder";
+import { DBMS_COMPONENTS_QUERY } from "../../../src/constants";
 
 type RunFunction = ((...params) => any) & { calls: Array<Array<any>> };
 
@@ -76,9 +77,44 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
     }
 
     // Custom mock to support driver outside of jest
+/*     private createRunMock(): RunFunction {
+        const calls: Array<any> = [];
+        function mockFunc(...params) {
+            calls.push(params);
+            return {
+                records: [],
+                summary: {
+                    counters: {
+                        updates() {
+                            return "";
+                        },
+                    },
+                },
+            };
+        }
+
+        mockFunc.calls = calls;
+        return mockFunc;
+    } */
     private createRunMock(): RunFunction {
         const calls: Array<any> = [];
         function mockFunc(...params) {
+            // this is needed as the first query could be the DB version check query
+            if (params && params[0] && params[0] === DBMS_COMPONENTS_QUERY) {
+                return {
+                    records: [new Record(["version", "edition"], ["4.0.0", "enterprise"])],
+                    summary: {
+                        counters: {
+                            updates() {
+                                return "";
+                            },
+                        },
+                        server: {
+                            protocolVersion: 4
+                        },
+                    },
+                };
+            }
             calls.push(params);
             return {
                 records: [],
