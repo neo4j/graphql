@@ -41,6 +41,7 @@ import type {
 import { getToken, parseBearerToken } from "../../utils/get-token";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
 import type { Neo4jEdition } from "../../classes/Neo4jGraphQL";
+import { copyFile } from "fs";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -119,14 +120,18 @@ export const wrapResolver =
         }
 
         if (!neo4jDatabaseInfo?.version) {
-            const dbmsComponentsQueryResult = await new Executor(executorConstructorParam).execute(
-                DBMS_COMPONENTS_QUERY,
-                {},
-                "READ"
-            );
-            const rawRow = dbmsComponentsQueryResult?.records[0];
-            const [rawVersion, edition] = rawRow;
-            neo4jDatabaseInfo = new Neo4jDatabaseInfo(rawVersion as string, edition as Neo4jEdition);
+            if (config.dbVersion) { 
+                neo4jDatabaseInfo = config.dbVersion;
+            } else {
+                const dbmsComponentsQueryResult = await new Executor(executorConstructorParam).execute(
+                    DBMS_COMPONENTS_QUERY,
+                    {},
+                    "READ"
+                );
+                const rawRow = dbmsComponentsQueryResult?.records[0];
+                const [rawVersion, edition] = rawRow;
+                neo4jDatabaseInfo = new Neo4jDatabaseInfo(rawVersion as string, edition as Neo4jEdition, true);
+            }
         }
         executorConstructorParam.neo4jDatabaseInfo = neo4jDatabaseInfo;
         context.executor = new Executor(executorConstructorParam);

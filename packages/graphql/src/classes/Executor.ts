@@ -209,7 +209,7 @@ export class Executor {
 
     private throwIfVersionMismatch(serverInfo: ServerInfo) {
         const protocolVersion = serverInfo.protocolVersion;
-        if (this.neo4jDatabaseInfo && protocolVersion) {
+        if (this.neo4jDatabaseInfo && this.neo4jDatabaseInfo.autoDetection && protocolVersion) {
             const protocolVersionStr = protocolVersion.toString();
             if (!this.neo4jDatabaseInfo.eq(protocolVersionStr)) {
                 const { major, minor } = this.neo4jDatabaseInfo.neo4jVersionBuilder(protocolVersionStr);

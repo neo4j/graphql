@@ -55,6 +55,7 @@ export interface Neo4jGraphQLConfig {
     skipValidateTypeDefs?: boolean;
     queryOptions?: CypherQueryOptions;
     callbacks?: Neo4jGraphQLCallbacks;
+    dbVersion?: Neo4jDatabaseInfo;
 }
 
 export type Neo4jVersion = {
@@ -69,8 +70,9 @@ export const VERSION_NOT_DETACTABLE = "Neo4j version not detectable";
 export class Neo4jDatabaseInfo {
     public version: Neo4jVersion;
     public edition: Neo4jEdition | undefined;
+    readonly autoDetection: boolean;
 
-    constructor(version: Neo4jVersion | string, edition: Neo4jEdition) {
+    constructor(version: Neo4jVersion | string, edition: Neo4jEdition, autoDetection = false) {
         if (!version){
             throw new Error(VERSION_NOT_DETACTABLE);
         } else if (typeof version === "string") {
@@ -80,6 +82,7 @@ export class Neo4jDatabaseInfo {
             this.version = version as Neo4jVersion;
         }
         this.edition = edition;
+        this.autoDetection = autoDetection;
     }
     
     eq(version: string) {
