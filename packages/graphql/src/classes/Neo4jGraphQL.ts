@@ -57,7 +57,7 @@ export interface Neo4jGraphQLConfig {
     callbacks?: Neo4jGraphQLCallbacks;
 }
 
-export interface Neo4jVersion {
+export type Neo4jVersion = {
     major: number;
     minor: number;
 }
