@@ -31,6 +31,7 @@ export class Variable implements CypherCompilable {
         this.id = id;
     }
 
+    // TODO: move this out of variable
     public getCypher(env: CypherEnvironment): string {
         const id = env.getVariableId(this);
         return `${id}`;

@@ -33,7 +33,7 @@ export class Param<T = any> extends Variable {
             return "NULL";
         }
 
-        return `${env.getVariableId(this)}`;
+        return `$${env.getVariableId(this)}`;
     }
 
     public get isNull(): boolean {

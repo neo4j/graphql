@@ -18,13 +18,13 @@
  */
 
 import { dedent } from "graphql-compose";
-import type { Variable } from "../../CypherBuilder";
-import type { CypherEnvironment } from "../../Environment";
-import { Where, WhereParams } from "../../sub-clauses/Where";
-import type { NodeRef } from "../../variables/NodeRef";
-import { Clause } from "../Clause";
-import { WithReturn } from "../mixins/WithReturn";
-import { applyMixins } from "../utils/apply-mixin";
+import type { Variable } from "../CypherBuilder";
+import type { CypherEnvironment } from "../Environment";
+import { Where, WhereParams } from "../sub-clauses/Where";
+import type { NodeRef } from "../variables/NodeRef";
+import { Clause } from "../clauses/Clause";
+import { WithReturn } from "../clauses/mixins/WithReturn";
+import { applyMixins } from "../clauses/utils/apply-mixin";
 
 export class FullTextQueryNodes extends Clause {
     private targetNode: NodeRef;

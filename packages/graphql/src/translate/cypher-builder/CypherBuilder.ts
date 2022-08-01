@@ -30,7 +30,10 @@ export { Unwind } from "./clauses/Unwind";
 // Clauses-like things
 export { Exists } from "./Exists";
 export { concat } from "./clauses/utils/concat";
-export * as db from "./clauses/procedures/db";
+
+// Procedures
+export * as db from "./procedures/db";
+export * as apoc from "./procedures/apoc/apoc";
 
 // Variables and references
 export { NodeRef as Node, NamedNode } from "./variables/NodeRef";
@@ -45,7 +48,7 @@ export { ListComprehension } from "./list/ListComprehension";
 export { PatternComprehension } from "./list/PatternComprehension";
 
 // Map
-export { MapExpr as Map } from "./map/MapExpr";
+export { MapExpr as Map } from "./variables/map/MapExpr";
 
 export { Pattern } from "./Pattern"; // TODO: Maybe this should not be exported
 
@@ -74,11 +77,14 @@ export {
     distance,
     cypherDatetime as datetime,
     labels,
-    size,
     count,
     min,
     max,
+    avg,
+    sum,
 } from "./functions/CypherFunction";
+
+export * from "./functions/ListFunctions";
 
 // Types
 export type { CypherResult } from "./types";

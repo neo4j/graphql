@@ -29,7 +29,7 @@ import { ComprehensionExpr } from "./ComprehensionExpr";
 export class ListComprehension extends ComprehensionExpr {
     private variable: Variable;
     private listExpr: Expr;
-    private mapExpr: Expr | undefined;
+    private mapExpr: Expr | undefined; //  Expression for list mapping
 
     constructor(variable: Variable, listExpr: Expr, whereFilter?: WhereParams | undefined, mapExpr?: Expr) {
         super();

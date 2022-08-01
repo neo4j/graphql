@@ -17,16 +17,14 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../CypherASTNode";
-import type { CypherEnvironment } from "../Environment";
-import type { Expr } from "../types";
+import type { CypherEnvironment } from "../../Environment";
+import type { CypherCompilable, Expr } from "../../types";
 
 /** Represents a Map */
-export class MapExpr extends CypherASTNode {
+export class MapExpr implements CypherCompilable {
     private value: Record<string, Expr>;
 
     constructor(value: Record<string, Expr> = {}) {
-        super();
         this.value = value;
     }
 

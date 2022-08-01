@@ -22,7 +22,7 @@ import { Param } from "./variables/Param";
 
 /** Hold the internal references of Cypher parameters and variables */
 export class CypherEnvironment {
-    private globalPrefix: string;
+    public readonly globalPrefix: string;
 
     private references: Map<Variable, string> = new Map();
     private params: Param[] = [];
@@ -42,7 +42,7 @@ export class CypherEnvironment {
 
     public getParams(): Record<string, any> {
         return this.params.reduce((acc, param: Param) => {
-            const key = this.getVariableId(param).substring(1); // Removes leading $ in params
+            const key = this.getVariableId(param);
             acc[key] = param.value;
             return acc;
         }, {} as Record<string, any>);
@@ -56,8 +56,12 @@ export class CypherEnvironment {
         return this.params.length;
     }
 
+    public getReferences(): Map<Variable, string> {
+        return this.references;
+    }
+
     private addParam(id: string, param: Param): string {
-        const paramId = `$${id}`;
+        const paramId = id; //`$${id}`;
         this.references.set(param, paramId);
         this.params.push(param);
         return paramId;
