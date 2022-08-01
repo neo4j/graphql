@@ -261,6 +261,8 @@ function createAuthPredicate({
 
     const result = Object.entries(rule[kind] as any).reduce(
         (res: Res, [key, value]) => {
+            // AND / OR
+
             if (isPredicateJoin(key)) {
                 const inner: string[] = [];
 
@@ -285,6 +287,7 @@ function createAuthPredicate({
             }
 
             const authableField = node.authableFields.find((field) => field.fieldName === key);
+            // FIELDS
             if (authableField) {
                 const jwtPath = isString(value) ? ContextParser.parseTag(value, "jwt") : undefined;
                 let ctxPath = isString(value) ? ContextParser.parseTag(value, "context") : undefined;
@@ -313,6 +316,7 @@ function createAuthPredicate({
             }
 
             const relationField = node.relationFields.find((x) => key === x.fieldName);
+            // ON RELATION FIELDS
             if (relationField) {
                 const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
                 const inStr = relationField.direction === "IN" ? "<-" : "-";

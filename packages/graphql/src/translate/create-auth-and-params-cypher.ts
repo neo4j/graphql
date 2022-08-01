@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import mapToDbProperty from "../utils/map-to-db-property";
+import type { Node } from "../classes";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 
@@ -35,7 +37,7 @@ export class AuthBuilder {
     public createAuthenticatedPredicate(
         authenticated: boolean,
         authenticatedParam: CypherBuilder.Variable | CypherBuilder.PropertyRef
-    ): any {
+    ): CypherBuilder.Predicate {
         const authenticatedPredicate = CypherBuilder.not(
             CypherBuilder.eq(authenticatedParam, new CypherBuilder.Literal(authenticated))
         );
@@ -49,5 +51,32 @@ export class AuthBuilder {
     ): CypherBuilder.PredicateFunction {
         const listItemVar = new CypherBuilder.Variable();
         return CypherBuilder.any(listItemVar, list, CypherBuilder.eq(listItemVar, value));
+    }
+
+    public createAuthField({
+        node,
+        key,
+        nodeRef,
+        param,
+    }: {
+        node: Node;
+        key: string;
+        value: string | undefined;
+        nodeRef: CypherBuilder.Node;
+        param: CypherBuilder.Param | null | undefined;
+    }): CypherBuilder.Predicate {
+        const dbFieldName = mapToDbProperty(node, key);
+        const fieldPropertyRef = nodeRef.property(dbFieldName);
+        if (param === undefined) {
+            return new CypherBuilder.Literal(false);
+        }
+
+        if (param === null) {
+            return CypherBuilder.isNull(fieldPropertyRef);
+        }
+
+        const isNotNull = CypherBuilder.isNotNull(fieldPropertyRef);
+        const equalsToParam = CypherBuilder.eq(fieldPropertyRef, param);
+        return CypherBuilder.and(isNotNull, equalsToParam);
     }
 }

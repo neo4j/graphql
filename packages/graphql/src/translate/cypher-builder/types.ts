@@ -30,11 +30,20 @@ import type { BooleanOp } from "./operations/boolean";
 import type { ComparisonOp } from "./operations/comparison";
 import type { RawCypher } from "./clauses/RawCypher";
 import type { PredicateFunction } from "./functions/PredicateFunctions";
+import type { ValidatePredicate } from "./procedures/apoc/apoc";
 
+/** Represents an expression, used as part of predicates, functions, projections or other expressions */
 export type Expr = Operation | Variable | PropertyRef | CypherFunction | Literal | Exists | ComprehensionExpr | MapExpr;
 
 /** Represents a predicate statement (i.e returns a boolean). Note that RawCypher is only added for compatibility */
-export type Predicate = BooleanOp | ComparisonOp | RawCypher | Exists | PredicateFunction;
+export type Predicate =
+    | BooleanOp
+    | ComparisonOp
+    | RawCypher
+    | Exists
+    | PredicateFunction
+    | ValidatePredicate
+    | Literal<boolean>;
 
 export type CypherResult = {
     cypher: string;

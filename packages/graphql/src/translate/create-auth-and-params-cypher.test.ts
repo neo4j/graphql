@@ -20,6 +20,7 @@
 import { AuthBuilder } from "./create-auth-and-params-cypher";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { CypherEnvironment } from "./cypher-builder/Environment";
+import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 
 describe("createAuthAndParams Cypher", () => {
     it("Create roles", () => {
@@ -46,5 +47,58 @@ describe("createAuthAndParams Cypher", () => {
         expect(predicateCypher).toMatchInlineSnapshot(
             `"apoc.util.validatePredicate(NOT $param0.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\")"`
         );
+    });
+
+    it("Create field predicate", () => {
+        const authBuilder = new AuthBuilder();
+
+        const authParam = new CypherBuilder.Param({ isAuthenticated: true });
+
+        const node = new NodeBuilder().instance();
+        const predicate = authBuilder.createAuthField({
+            param: authParam,
+            node,
+            key: "userId",
+            value: "1234",
+            nodeRef: new CypherBuilder.Node({}),
+        });
+
+        const predicateCypher = predicate.getCypher(new CypherEnvironment());
+
+        expect(predicateCypher).toMatchInlineSnapshot(`"(this0.userId IS NOT NULL AND this0.userId = $param0)"`);
+    });
+
+    it("Create field predicate with null", () => {
+        const authBuilder = new AuthBuilder();
+
+        const node = new NodeBuilder().instance();
+        const predicate = authBuilder.createAuthField({
+            param: null,
+            node,
+            key: "userId",
+            value: "1234",
+            nodeRef: new CypherBuilder.Node({}),
+        });
+
+        const predicateCypher = predicate.getCypher(new CypherEnvironment());
+
+        expect(predicateCypher).toMatchInlineSnapshot(`"this0.userId IS NULL"`);
+    });
+
+    it("Create field predicate without param", () => {
+        const authBuilder = new AuthBuilder();
+
+        const node = new NodeBuilder().instance();
+        const predicate = authBuilder.createAuthField({
+            param: undefined,
+            node,
+            key: "userId",
+            value: "1234",
+            nodeRef: new CypherBuilder.Node({}),
+        });
+
+        const predicateCypher = predicate.getCypher(new CypherEnvironment());
+
+        expect(predicateCypher).toMatchInlineSnapshot(`"false"`);
     });
 });
