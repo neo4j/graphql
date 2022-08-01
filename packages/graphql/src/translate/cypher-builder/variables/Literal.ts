@@ -19,7 +19,7 @@
 
 import type { CypherEnvironment } from "../Environment";
 
-type LiteralValues = string | number | null;
+type LiteralValues = string | number | boolean | null;
 
 /** Represents a literal value, it is not a variable */
 export class Literal<T = LiteralValues | LiteralValues[]> {

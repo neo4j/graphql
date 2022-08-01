@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
+import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 
 export class AuthBuilder {
-    public createRolesCypher(roles: string[], rolesParam: CypherBuilder.Param): CypherBuilder.PredicateFunction {
+    public createRolesPredicate(roles: string[], rolesParam: CypherBuilder.Param): CypherBuilder.PredicateFunction {
         const roleVar = new CypherBuilder.Variable();
         const rolesList = new CypherBuilder.Literal(roles);
 
@@ -29,6 +30,17 @@ export class AuthBuilder {
         const rolesInListComprehension = CypherBuilder.any(roleVar, rolesList, roleInParamPredicate);
 
         return rolesInListComprehension;
+    }
+
+    public createAuthenticatedPredicate(
+        authenticated: boolean,
+        authenticatedParam: CypherBuilder.Variable | CypherBuilder.PropertyRef
+    ): any {
+        const authenticatedPredicate = CypherBuilder.not(
+            CypherBuilder.eq(authenticatedParam, new CypherBuilder.Literal(authenticated))
+        );
+
+        return new CypherBuilder.apoc.ValidatePredicate(authenticatedPredicate, AUTH_UNAUTHENTICATED_ERROR);
     }
 
     private isValueInListCypher(

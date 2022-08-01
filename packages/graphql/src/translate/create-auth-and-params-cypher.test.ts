@@ -26,12 +26,25 @@ describe("createAuthAndParams Cypher", () => {
         const authBuilder = new AuthBuilder();
 
         const param = new CypherBuilder.Param(["admin", "owner"]);
-        const predicate = authBuilder.createRolesCypher(["admin", "user"], param);
+        const predicate = authBuilder.createRolesPredicate(["admin", "user"], param);
 
         const predicateCypher = predicate.getCypher(new CypherEnvironment());
 
         expect(predicateCypher).toMatchInlineSnapshot(
             `"any(var1 IN [admin, user] WHERE any(var0 IN $param0 WHERE var0 = var1))"`
+        );
+    });
+
+    it("Create authenticated predicate", () => {
+        const authBuilder = new AuthBuilder();
+
+        const authParam = new CypherBuilder.Param({ isAuthenticated: true });
+        const predicate = authBuilder.createAuthenticatedPredicate(true, authParam.property("isAuthenticated"));
+
+        const predicateCypher = predicate.getCypher(new CypherEnvironment());
+
+        expect(predicateCypher).toMatchInlineSnapshot(
+            `"apoc.util.validatePredicate(NOT $param0.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\")"`
         );
     });
 });

@@ -18,3 +18,4 @@
  */
 
 export { RunFirstColumn } from "./RunFirstColumn";
+export { ValidatePredicate } from "./ValidatePredicate";
