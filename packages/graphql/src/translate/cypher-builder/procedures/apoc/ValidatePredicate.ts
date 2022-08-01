@@ -19,13 +19,13 @@
 
 import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
-import type { WhereParams } from "../../CypherBuilder";
+import type { Predicate } from "../../types";
 
 export class ValidatePredicate extends CypherASTNode {
-    private predicate: WhereParams;
+    private predicate: Predicate;
     private message: string | undefined;
 
-    constructor(predicate: WhereParams, message?: string) {
+    constructor(predicate: Predicate, message?: string) {
         super();
         this.predicate = predicate;
         this.message = message;

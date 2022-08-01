@@ -18,8 +18,8 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import { Where, WhereParams } from "../sub-clauses/Where";
-import type { Expr } from "../types";
+import { Where } from "../sub-clauses/Where";
+import type { Expr, Predicate } from "../types";
 import { compileCypherIfExists } from "../utils";
 import type { Variable } from "../variables/Variable";
 import { CypherFunction } from "./CypherFunction";
@@ -31,7 +31,7 @@ class AnyFunction extends PredicateFunction {
     private listExpr: Expr;
     private whereSubClause: Where | undefined;
 
-    constructor(variable: Variable, listExpr: Expr, whereFilter?: WhereParams) {
+    constructor(variable: Variable, listExpr: Expr, whereFilter?: Predicate) {
         super("any");
         this.variable = variable;
         this.listExpr = listExpr;
@@ -50,6 +50,6 @@ class AnyFunction extends PredicateFunction {
     }
 }
 
-export function any(variable: Variable, listExpr: Expr, whereFilter?: WhereParams): PredicateFunction {
+export function any(variable: Variable, listExpr: Expr, whereFilter?: Predicate): PredicateFunction {
     return new AnyFunction(variable, listExpr, whereFilter);
 }
