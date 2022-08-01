@@ -18,14 +18,14 @@
  */
 
 import { filterTruthy } from "../../../utils/utils";
-import type { Exists, RawCypher } from "../CypherBuilder";
+import type { Exists, PredicateFunction, RawCypher } from "../CypherBuilder";
 import type { CypherEnvironment } from "../Environment";
 import type { ComparisonOp } from "./comparison";
 import { Operation } from "./Operation";
 
 type BooleanOperator = "AND" | "NOT" | "OR";
 
-type BooleanOpChild = BooleanOp | ComparisonOp | RawCypher | Exists;
+type BooleanOpChild = BooleanOp | ComparisonOp | RawCypher | Exists | PredicateFunction;
 
 export abstract class BooleanOp extends Operation {
     protected operator: BooleanOperator;

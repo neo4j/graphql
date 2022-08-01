@@ -83,8 +83,8 @@ export {
     avg,
     sum,
 } from "./functions/CypherFunction";
-
 export * from "./functions/ListFunctions";
+export { any } from "./functions/PredicateFunctions";
 
 // Types
 export type { CypherResult } from "./types";
@@ -98,3 +98,4 @@ export type { Expr, Predicate } from "./types";
 export type { CypherFunction as Function } from "./functions/CypherFunction";
 export type { ComprehensionExpr } from "./list/ComprehensionExpr";
 export type { ProjectionColumn } from "./sub-clauses/Projection";
+export type { PredicateFunction } from "./functions/PredicateFunctions";
