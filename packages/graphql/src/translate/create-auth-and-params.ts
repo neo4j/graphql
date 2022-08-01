@@ -26,6 +26,7 @@ import joinPredicates, { isPredicateJoin, PREDICATE_JOINS } from "../utils/join-
 import ContextParser from "../utils/context-parser";
 import { isString } from "../utils/utils";
 import { NodeAuth } from "../classes/NodeAuth";
+import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 
 interface Res {
     strs: string[];
@@ -42,6 +43,191 @@ interface Bind {
     varName: string;
     parentNode: Node;
     chainStr?: string;
+}
+
+export default function createAuthAndParams({
+    entity,
+    operations,
+    skipRoles,
+    skipIsAuthenticated,
+    allow,
+    context,
+    escapeQuotes,
+    bind,
+    where,
+}: {
+    entity: Node | BaseField;
+    operations?: AuthOperations | AuthOperations[];
+    skipRoles?: boolean;
+    skipIsAuthenticated?: boolean;
+    allow?: Allow;
+    context: Context;
+    escapeQuotes?: boolean;
+    bind?: Bind;
+    where?: { varName: string; chainStr?: string; node: Node };
+}): [string, any] {
+    if (!entity.auth) {
+        return ["", {}];
+    }
+
+    /** FIXME: this is required to keep compatibility with BaseField type */
+    const nodeAuth = new NodeAuth(entity.auth);
+    const authRules = nodeAuth.getRules(operations);
+
+    const hasWhere = (rule: BaseAuthRule): boolean =>
+        !!(rule.where || rule.AND?.some(hasWhere) || rule.OR?.some(hasWhere));
+
+    if (where && !authRules.some(hasWhere)) {
+        return ["", [{}]];
+    }
+
+    const subPredicates = authRules.reduce(
+        (res: Res, authRule: AuthRule, index): Res => {
+            const [str, par] = createSubPredicate({
+                authRule,
+                index,
+                skipRoles,
+                skipIsAuthenticated,
+                allow,
+                context,
+                escapeQuotes,
+                bind,
+                where,
+            });
+
+            return {
+                strs: [...res.strs, str],
+                params: { ...res.params, ...par },
+            };
+        },
+        { strs: [], params: {} }
+    );
+
+    return [joinPredicates(subPredicates.strs, "OR"), subPredicates.params];
+}
+
+function createSubPredicate({
+    authRule,
+    index,
+    chainStr,
+    skipRoles,
+    skipIsAuthenticated,
+    allow,
+    context,
+    escapeQuotes,
+    bind,
+    where,
+}: {
+    authRule: AuthRule | BaseAuthRule;
+    index: number;
+    chainStr?: string;
+
+    skipRoles?: boolean;
+    skipIsAuthenticated?: boolean;
+    allow?: Allow;
+    context: Context;
+    escapeQuotes?: boolean;
+    bind?: Bind;
+    where?: { varName: string; chainStr?: string; node: Node };
+}): [string, any] {
+    const thisPredicates: string[] = [];
+    let thisParams: any = {};
+
+    if (!skipRoles && authRule.roles) {
+        thisPredicates.push(createRolesStr({ roles: authRule.roles, escapeQuotes }));
+    }
+
+    const quotes = escapeQuotes ? '\\"' : '"';
+    if (!skipIsAuthenticated && (authRule.isAuthenticated === true || authRule.isAuthenticated === false)) {
+        thisPredicates.push(
+            `apoc.util.validatePredicate(NOT ($auth.isAuthenticated = ${Boolean(
+                authRule.isAuthenticated
+            )}), ${quotes}${AUTH_UNAUTHENTICATED_ERROR}${quotes}, [0])`
+        );
+    }
+
+    if (allow && authRule.allow) {
+        const allowAndParams = createAuthPredicate({
+            context,
+            node: allow.parentNode,
+            varName: allow.varName,
+            rule: authRule,
+            chainStr: `${allow.chainStr || allow.varName}${chainStr || ""}_auth_allow${index}`,
+            kind: "allow",
+        });
+        if (allowAndParams[0]) {
+            thisPredicates.push(allowAndParams[0]);
+            thisParams = { ...thisParams, ...allowAndParams[1] };
+        }
+    }
+
+    PREDICATE_JOINS.forEach((key) => {
+        const value = authRule[key] as AuthRule["AND"] | AuthRule["OR"];
+
+        if (!value) {
+            return;
+        }
+
+        const predicates: string[] = [];
+        let predicateParams = {};
+
+        value.forEach((v, i) => {
+            const [str, par] = createSubPredicate({
+                authRule: v,
+                index: i,
+                chainStr: chainStr ? `${chainStr}${key}${i}` : `${key}${i}`,
+                skipRoles,
+                skipIsAuthenticated,
+                allow,
+                context,
+                escapeQuotes,
+                bind,
+                where,
+            });
+
+            if (!str) {
+                return;
+            }
+
+            predicates.push(str);
+            predicateParams = { ...predicateParams, ...par };
+        });
+
+        thisPredicates.push(joinPredicates(predicates, key));
+        thisParams = { ...thisParams, ...predicateParams };
+    });
+
+    if (where && authRule.where) {
+        const whereAndParams = createAuthPredicate({
+            context,
+            node: where.node,
+            varName: where.varName,
+            rule: authRule,
+            chainStr: `${where.chainStr || where.varName}${chainStr || ""}_auth_where${index}`,
+            kind: "where",
+        });
+        if (whereAndParams[0]) {
+            thisPredicates.push(whereAndParams[0]);
+            thisParams = { ...thisParams, ...whereAndParams[1] };
+        }
+    }
+
+    if (bind && authRule.bind) {
+        const allowAndParams = createAuthPredicate({
+            context,
+            node: bind.parentNode,
+            varName: bind.varName,
+            rule: authRule,
+            chainStr: `${bind.chainStr || bind.varName}${chainStr || ""}_auth_bind${index}`,
+            kind: "bind",
+        });
+        if (allowAndParams[0]) {
+            thisPredicates.push(allowAndParams[0]);
+            thisParams = { ...thisParams, ...allowAndParams[1] };
+        }
+    }
+
+    return [joinPredicates(thisPredicates, "AND"), thisParams];
 }
 
 function createRolesStr({ roles, escapeQuotes }: { roles: string[]; escapeQuotes?: boolean }) {
@@ -167,158 +353,3 @@ function createAuthPredicate({
 
     return [joinPredicates(result.strs, "AND"), result.params];
 }
-
-function createAuthAndParams({
-    entity,
-    operations,
-    skipRoles,
-    skipIsAuthenticated,
-    allow,
-    context,
-    escapeQuotes,
-    bind,
-    where,
-}: {
-    entity: Node | BaseField;
-    operations?: AuthOperations | AuthOperations[];
-    skipRoles?: boolean;
-    skipIsAuthenticated?: boolean;
-    allow?: Allow;
-    context: Context;
-    escapeQuotes?: boolean;
-    bind?: Bind;
-    where?: { varName: string; chainStr?: string; node: Node };
-}): [string, any] {
-    if (!entity.auth) {
-        return ["", {}];
-    }
-
-    /** FIXME: this is required to keep compatibility with BaseField type */
-    const nodeAuth = new NodeAuth(entity.auth);
-    const authRules = nodeAuth.getRules(operations);
-
-    const hasWhere = (rule: BaseAuthRule): boolean =>
-        !!(rule.where || rule.AND?.some(hasWhere) || rule.OR?.some(hasWhere));
-
-    if (where && !authRules.some(hasWhere)) {
-        return ["", [{}]];
-    }
-
-    function createSubPredicate({
-        authRule,
-        index,
-        chainStr,
-    }: {
-        authRule: AuthRule | BaseAuthRule;
-        index: number;
-        chainStr?: string;
-    }): [string, any] {
-        const thisPredicates: string[] = [];
-        let thisParams: any = {};
-
-        if (!skipRoles && authRule.roles) {
-            thisPredicates.push(createRolesStr({ roles: authRule.roles, escapeQuotes }));
-        }
-
-        const quotes = escapeQuotes ? '\\"' : '"';
-        if (!skipIsAuthenticated && (authRule.isAuthenticated === true || authRule.isAuthenticated === false)) {
-            thisPredicates.push(
-                `apoc.util.validatePredicate(NOT ($auth.isAuthenticated = ${Boolean(
-                    authRule.isAuthenticated
-                )}), ${quotes}${AUTH_UNAUTHENTICATED_ERROR}${quotes}, [0])`
-            );
-        }
-
-        if (allow && authRule.allow) {
-            const allowAndParams = createAuthPredicate({
-                context,
-                node: allow.parentNode,
-                varName: allow.varName,
-                rule: authRule,
-                chainStr: `${allow.chainStr || allow.varName}${chainStr || ""}_auth_allow${index}`,
-                kind: "allow",
-            });
-            if (allowAndParams[0]) {
-                thisPredicates.push(allowAndParams[0]);
-                thisParams = { ...thisParams, ...allowAndParams[1] };
-            }
-        }
-
-        PREDICATE_JOINS.forEach((key) => {
-            const value = authRule[key] as AuthRule["AND"] | AuthRule["OR"];
-
-            if (!value) {
-                return;
-            }
-
-            const predicates: string[] = [];
-            let predicateParams = {};
-
-            value.forEach((v, i) => {
-                const [str, par] = createSubPredicate({
-                    authRule: v,
-                    index: i,
-                    chainStr: chainStr ? `${chainStr}${key}${i}` : `${key}${i}`,
-                });
-
-                if (!str) {
-                    return;
-                }
-
-                predicates.push(str);
-                predicateParams = { ...predicateParams, ...par };
-            });
-
-            thisPredicates.push(joinPredicates(predicates, key));
-            thisParams = { ...thisParams, ...predicateParams };
-        });
-
-        if (where && authRule.where) {
-            const whereAndParams = createAuthPredicate({
-                context,
-                node: where.node,
-                varName: where.varName,
-                rule: authRule,
-                chainStr: `${where.chainStr || where.varName}${chainStr || ""}_auth_where${index}`,
-                kind: "where",
-            });
-            if (whereAndParams[0]) {
-                thisPredicates.push(whereAndParams[0]);
-                thisParams = { ...thisParams, ...whereAndParams[1] };
-            }
-        }
-
-        if (bind && authRule.bind) {
-            const allowAndParams = createAuthPredicate({
-                context,
-                node: bind.parentNode,
-                varName: bind.varName,
-                rule: authRule,
-                chainStr: `${bind.chainStr || bind.varName}${chainStr || ""}_auth_bind${index}`,
-                kind: "bind",
-            });
-            if (allowAndParams[0]) {
-                thisPredicates.push(allowAndParams[0]);
-                thisParams = { ...thisParams, ...allowAndParams[1] };
-            }
-        }
-
-        return [joinPredicates(thisPredicates, "AND"), thisParams];
-    }
-
-    const subPredicates = authRules.reduce(
-        (res: Res, authRule: AuthRule, index): Res => {
-            const [str, par] = createSubPredicate({ authRule, index });
-
-            return {
-                strs: [...res.strs, str],
-                params: { ...res.params, ...par },
-            };
-        },
-        { strs: [], params: {} }
-    );
-
-    return [joinPredicates(subPredicates.strs, "OR"), subPredicates.params];
-}
-
-export default createAuthAndParams;
