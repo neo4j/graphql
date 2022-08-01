@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
@@ -28,10 +28,19 @@ import { generateUniqueType } from "../../utils/graphql-types";
 describe("https://github.com/neo4j/graphql/issues/560", () => {
     let driver: Driver;
     let neo4j: Neo4j;
+    let session: Session;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
+    });
+
+    beforeEach(async () => {
+        session = await neo4j.getSession();
+    });
+
+    afterEach(async () => {
+        await session.close();
     });
 
     afterAll(async () => {
@@ -39,8 +48,6 @@ describe("https://github.com/neo4j/graphql/issues/560", () => {
     });
 
     test("should not throw when Point is null", async () => {
-        const session = await neo4j.getSession();
-
         const testLog = generateUniqueType("Log");
 
         const typeDefs = gql`
@@ -71,39 +78,33 @@ describe("https://github.com/neo4j/graphql/issues/560", () => {
             }
         `;
 
-        try {
-            await session.run(`
+        await session.run(`
                 CREATE (j:${testLog.name} { id: "${logId}" })
             `);
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
 
-            if (result.errors) {
-                console.log(JSON.stringify(result.errors, null, 2));
-            }
-
-            expect(result.errors).toBeFalsy();
-
-            expect(result.data as any).toEqual({
-                [testLog.plural]: [
-                    {
-                        id: logId,
-                        location: null,
-                    },
-                ],
-            });
-        } finally {
-            await session.close();
+        if (result.errors) {
+            console.log(JSON.stringify(result.errors, null, 2));
         }
+
+        expect(result.errors).toBeFalsy();
+
+        expect(result.data as any).toEqual({
+            [testLog.plural]: [
+                {
+                    id: logId,
+                    location: null,
+                },
+            ],
+        });
     });
 
     test("should not throw when CartesianPoint is null", async () => {
-        const session = await neo4j.getSession();
-
         const testLog = generateUniqueType("Log");
 
         const typeDefs = gql`
@@ -134,33 +135,29 @@ describe("https://github.com/neo4j/graphql/issues/560", () => {
             }
         `;
 
-        try {
-            await session.run(`
+        await session.run(`
                 CREATE (j:${testLog.name} { id: "${logId}" })
             `);
 
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: query,
-                contextValue: neo4j.getContextValues(),
-            });
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
 
-            if (result.errors) {
-                console.log(JSON.stringify(result.errors, null, 2));
-            }
-
-            expect(result.errors).toBeFalsy();
-
-            expect(result.data as any).toEqual({
-                [testLog.plural]: [
-                    {
-                        id: logId,
-                        location: null,
-                    },
-                ],
-            });
-        } finally {
-            await session.close();
+        if (result.errors) {
+            console.log(JSON.stringify(result.errors, null, 2));
         }
+
+        expect(result.errors).toBeFalsy();
+
+        expect(result.data as any).toEqual({
+            [testLog.plural]: [
+                {
+                    id: logId,
+                    location: null,
+                },
+            ],
+        });
     });
 });
