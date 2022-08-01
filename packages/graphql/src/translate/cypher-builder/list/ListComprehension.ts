@@ -20,8 +20,8 @@
 import { WithWhere } from "../clauses/mixins/WithWhere";
 import { applyMixins } from "../clauses/utils/apply-mixin";
 import type { CypherEnvironment } from "../Environment";
-import { Where, WhereParams } from "../sub-clauses/Where";
-import type { Expr } from "../types";
+import { Where } from "../sub-clauses/Where";
+import type { Expr, Predicate } from "../types";
 import { compileCypherIfExists } from "../utils";
 import type { Variable } from "../variables/Variable";
 import { ComprehensionExpr } from "./ComprehensionExpr";
@@ -31,7 +31,7 @@ export class ListComprehension extends ComprehensionExpr {
     private listExpr: Expr;
     private mapExpr: Expr | undefined; //  Expression for list mapping
 
-    constructor(variable: Variable, listExpr: Expr, whereFilter?: WhereParams | undefined, mapExpr?: Expr) {
+    constructor(variable: Variable, listExpr: Expr, whereFilter?: Predicate | undefined, mapExpr?: Expr) {
         super();
         this.variable = variable;
         this.listExpr = listExpr;

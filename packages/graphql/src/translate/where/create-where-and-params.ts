@@ -19,10 +19,10 @@
 
 import type { GraphQLWhereArg, Context } from "../../types";
 import type { Node } from "../../classes";
-import { createCypherWhereParams } from "./create-cypher-where-params";
+import { createCypherWherePredicate } from "./create-cypher-where-predicate";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 
-// TODO: Remove this method and replace for directly using createCypherWhereParams
+// TODO: Remove this method and replace for directly using createCypherWherePredicate
 /** Wraps createCypherWhereParams with the old interface for compatibility with old way of composing cypher */
 export default function createWhereAndParams({
     whereInput,
@@ -41,7 +41,7 @@ export default function createWhereAndParams({
 }): [string, any] {
     const nodeRef = new CypherBuilder.NamedNode(varName);
 
-    const whereParams = createCypherWhereParams({
+    const wherePredicate = createCypherWherePredicate({
         element: node,
         context,
         whereInput,
@@ -49,7 +49,7 @@ export default function createWhereAndParams({
     });
 
     const whereCypher = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
-        const cypher = whereParams?.getCypher(env) || "";
+        const cypher = wherePredicate?.getCypher(env) || "";
 
         return [cypher, {}];
     });

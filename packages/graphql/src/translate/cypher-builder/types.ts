@@ -26,8 +26,14 @@ import type { Exists } from "./Exists";
 import type { CypherEnvironment } from "./Environment";
 import type { ComprehensionExpr } from "./list/ComprehensionExpr";
 import type { MapExpr } from "./variables/map/MapExpr";
+import type { BooleanOp } from "./operations/boolean";
+import type { ComparisonOp } from "./operations/comparison";
+import type { RawCypher } from "./clauses/RawCypher";
 
 export type Expr = Operation | Variable | PropertyRef | CypherFunction | Literal | Exists | ComprehensionExpr | MapExpr;
+
+/** Represents a predicate statement (i.e returns a boolean). Note that RawCypher is only added for compatibility */
+export type Predicate = BooleanOp | ComparisonOp | RawCypher | Exists;
 
 export type CypherResult = {
     cypher: string;

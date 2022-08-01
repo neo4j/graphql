@@ -18,9 +18,9 @@
  */
 
 import { dedent } from "graphql-compose";
-import type { Variable } from "../CypherBuilder";
+import type { Predicate, Variable } from "../CypherBuilder";
 import type { CypherEnvironment } from "../Environment";
-import { Where, WhereParams } from "../sub-clauses/Where";
+import { Where } from "../sub-clauses/Where";
 import type { NodeRef } from "../variables/NodeRef";
 import { Clause } from "../clauses/Clause";
 import { WithReturn } from "../clauses/mixins/WithReturn";
@@ -40,7 +40,7 @@ export class FullTextQueryNodes extends Clause {
         this.phrase = phrase;
     }
 
-    public where(input: WhereParams): this {
+    public where(input: Predicate): this {
         if (!this.whereClause) {
             const whereStatement = new Where(this, input);
             this.addChildren(whereStatement);
