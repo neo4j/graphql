@@ -61,7 +61,7 @@ export class CypherEnvironment {
     }
 
     private addParam(id: string, param: Param): string {
-        const paramId = id; //`$${id}`;
+        const paramId = id;
         this.references.set(param, paramId);
         this.params.push(param);
         return paramId;
