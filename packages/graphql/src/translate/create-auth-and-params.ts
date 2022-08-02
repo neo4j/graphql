@@ -20,20 +20,12 @@
 import type { Node } from "../classes";
 import { Neo4jGraphQLAuthenticationError } from "../classes";
 import type { AuthOperations, BaseField, AuthRule, BaseAuthRule, Context } from "../types";
-import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
-import mapToDbProperty from "../utils/map-to-db-property";
-import joinPredicates, { isPredicateJoin, PREDICATE_JOINS } from "../utils/join-predicates";
+import { isPredicateJoin, PREDICATE_JOINS } from "../utils/join-predicates";
 import ContextParser from "../utils/context-parser";
 import { isString } from "../utils/utils";
 import { NodeAuth } from "../classes/NodeAuth";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
-import { compileCypherIfExists } from "./cypher-builder/utils";
 import { AuthBuilder } from "./create-auth-and-params-cypher";
-
-interface Res {
-    strs: string[];
-    params: any;
-}
 
 interface Allow {
     varName: string;
@@ -96,11 +88,6 @@ export default function createAuthAndParams({
         });
 
         return predicate;
-
-        // return {
-        //     strs: [...res.strs, str],
-        //     params: { ...res.params, ...par },
-        // };
     });
 
     const orPredicates = CypherBuilder.or(...subPredicates);
@@ -139,27 +126,18 @@ function createSubPredicate({
 }): CypherBuilder.Predicate | undefined {
     const thisPredicates: CypherBuilder.Predicate[] = [];
     const authParam = new CypherBuilder.NamedParam("auth");
-    // const thisPredicates: string[] = [];
-    // let thisParams: any = {};
 
     if (!skipRoles && authRule.roles) {
         const rolesPredicate = AuthBuilder.createRolesPredicate(authRule.roles, authParam.property("roles"));
         thisPredicates.push(rolesPredicate);
-        // thisPredicates.push(createRolesStr({ roles: authRule.roles, escapeQuotes }));
     }
 
-    // const quotes = escapeQuotes ? '\\"' : '"';
     if (!skipIsAuthenticated && (authRule.isAuthenticated === true || authRule.isAuthenticated === false)) {
         const authenticatedPredicate = AuthBuilder.createAuthenticatedPredicate(
             authRule.isAuthenticated,
             authParam.property("isAuthenticated")
         );
         thisPredicates.push(authenticatedPredicate);
-        // thisPredicates.push(
-        //     `apoc.util.validatePredicate(NOT ($auth.isAuthenticated = ${Boolean(
-        //         authRule.isAuthenticated
-        //     )}), ${quotes}${AUTH_UNAUTHENTICATED_ERROR}${quotes}, [0])`
-        // );
     }
 
     if (allow && authRule.allow) {
@@ -171,13 +149,8 @@ function createSubPredicate({
             chainStr: `${allow.chainStr || allow.varName}${chainStr || ""}_auth_allow${index}`,
             kind: "allow",
         });
-        if (allowAndParams[0]) {
-            const authPredicate = new CypherBuilder.RawCypher(() => {
-                return allowAndParams;
-            });
-            thisPredicates.push(authPredicate);
-            // thisPredicates.push(allowAndParams[0]);
-            // thisParams = { ...thisParams, ...allowAndParams[1] };
+        if (allowAndParams) {
+            thisPredicates.push(allowAndParams);
         }
     }
 
@@ -210,7 +183,6 @@ function createSubPredicate({
             }
 
             predicates.push(predicate);
-            // predicateParams = { ...predicateParams, ...par };
         });
 
         let joinedPredicate: CypherBuilder.Predicate | undefined;
@@ -220,21 +192,12 @@ function createSubPredicate({
             joinedPredicate = CypherBuilder.or(...predicates);
         }
         if (joinedPredicate) {
-            // const joinedStatement = new CypherBuilder.RawCypher((env) => {
-            //     return compileCypherIfExists(joinedPredicate, env);
-            // });
-            // const result = joinedStatement.build();
             thisPredicates.push(joinedPredicate);
-            // thisPredicates.push(joinedStatement);
-            // thisParams = { ...thisParams, ...result.params };
         }
-
-        // thisPredicates.push(joinPredicates(predicates, key));
-        // thisParams = { ...thisParams, ...predicateParams };
     });
 
     if (where && authRule.where) {
-        const whereAndParams = createAuthPredicate({
+        const wherePredicate = createAuthPredicate({
             context,
             node: where.node,
             varName: where.varName,
@@ -242,18 +205,13 @@ function createSubPredicate({
             chainStr: `${where.chainStr || where.varName}${chainStr || ""}_auth_where${index}`,
             kind: "where",
         });
-        if (whereAndParams[0]) {
-            const authPredicate = new CypherBuilder.RawCypher(() => {
-                return whereAndParams;
-            });
-            thisPredicates.push(authPredicate);
-            // thisPredicates.push(whereAndParams[0]);
-            // thisParams = { ...thisParams, ...whereAndParams[1] };
+        if (wherePredicate) {
+            thisPredicates.push(wherePredicate);
         }
     }
 
     if (bind && authRule.bind) {
-        const allowAndParams = createAuthPredicate({
+        const allowPredicate = createAuthPredicate({
             context,
             node: bind.parentNode,
             varName: bind.varName,
@@ -261,29 +219,13 @@ function createSubPredicate({
             chainStr: `${bind.chainStr || bind.varName}${chainStr || ""}_auth_bind${index}`,
             kind: "bind",
         });
-        if (allowAndParams[0]) {
-            const authPredicate = new CypherBuilder.RawCypher(() => {
-                return allowAndParams;
-            });
-            thisPredicates.push(authPredicate);
-            // thisPredicates.push(allowAndParams[0]);
-            // thisParams = { ...thisParams, ...allowAndParams[1] };
+        if (allowPredicate) {
+            thisPredicates.push(allowPredicate);
         }
     }
 
     return CypherBuilder.and(...thisPredicates);
-    // return new CypherBuilder.RawCypher(() => {
-    // return [joinPredicates(thisPredicates, "AND"), thisParams];
-    // });
 }
-
-// function createRolesStr({ roles, escapeQuotes }: { roles: string[]; escapeQuotes?: boolean }) {
-//     const quote = escapeQuotes ? `\\"` : `"`;
-
-//     const joined = roles.map((r) => `${quote}${r}${quote}`).join(", ");
-
-//     return `any(r IN [${joined}] WHERE any(rr IN $auth.roles WHERE r = rr))`;
-// }
 
 function createAuthPredicate({
     rule,
@@ -299,108 +241,115 @@ function createAuthPredicate({
     rule: AuthRule;
     chainStr: string;
     kind: "allow" | "bind" | "where";
-}): [string, any] {
+}): CypherBuilder.Predicate | undefined {
     if (!rule[kind]) {
-        return ["", {}];
+        return undefined;
     }
 
     const { allowUnauthenticated } = rule;
+    const predicates: CypherBuilder.Predicate[] = [];
 
-    const result = Object.entries(rule[kind] as any).reduce(
-        (res: Res, [key, value]) => {
-            // AND / OR
+    Object.entries(rule[kind] as any).forEach(([key, value]) => {
+        // AND / OR
 
-            if (isPredicateJoin(key)) {
-                const inner: string[] = [];
+        if (isPredicateJoin(key)) {
+            const inner: CypherBuilder.Predicate[] = [];
 
-                (value as any[]).forEach((v, i) => {
-                    const authPredicate = createAuthPredicate({
-                        rule: {
-                            [kind]: v,
-                            allowUnauthenticated,
-                        } as AuthRule,
-                        varName,
-                        node,
-                        chainStr: `${chainStr}_${key}${i}`,
-                        context,
-                        kind,
-                    });
+            (value as any[]).forEach((v, i) => {
+                const authPredicate = createAuthPredicate({
+                    rule: {
+                        [kind]: v,
+                        allowUnauthenticated,
+                    } as AuthRule,
+                    varName,
+                    node,
+                    chainStr: `${chainStr}_${key}${i}`,
+                    context,
+                    kind,
+                });
+                if (authPredicate) {
+                    inner.push(authPredicate);
+                }
+            });
 
-                    inner.push(authPredicate[0]);
-                    res.params = { ...res.params, ...authPredicate[1] };
+            let operator: CypherBuilder.Predicate | undefined;
+            if (key === "AND") {
+                operator = CypherBuilder.and(...inner);
+            } else if (key === "OR") {
+                operator = CypherBuilder.or(...inner);
+            }
+            if (operator) predicates.push(operator);
+        }
+
+        const authableField = node.authableFields.find((field) => field.fieldName === key);
+        // FIELDS
+        if (authableField) {
+            const jwtPath = isString(value) ? ContextParser.parseTag(value, "jwt") : undefined;
+            let ctxPath = isString(value) ? ContextParser.parseTag(value, "context") : undefined;
+            let paramValue = value as string | undefined;
+
+            if (jwtPath) ctxPath = `jwt.${jwtPath}`;
+
+            if (ctxPath) {
+                paramValue = ContextParser.getProperty(ctxPath, context);
+            }
+
+            if (paramValue === undefined && allowUnauthenticated !== true) {
+                throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
+            }
+            const fieldPredicate = AuthBuilder.createAuthField({
+                param: new CypherBuilder.NamedParam(`${chainStr}_${key}`, paramValue), // TODO: change
+                key,
+                node,
+                nodeRef: new CypherBuilder.NamedNode(varName),
+            });
+
+            predicates.push(fieldPredicate);
+        }
+
+        const relationField = node.relationFields.find((x) => key === x.fieldName);
+        // ON RELATION FIELDS
+        if (relationField) {
+            const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const inStr = relationField.direction === "IN" ? "<-" : "-";
+            const outStr = relationField.direction === "OUT" ? "->" : "-";
+            const relTypeStr = `[:${relationField.type}]`;
+            const relationVarName = relationField.fieldName;
+            const labels = refNode.getLabelString(context);
+
+            Object.entries(value as any).forEach(([k, v]: [string, any]) => {
+                const resultCypher = new CypherBuilder.RawCypher(() => {
+                    return [
+                        `exists((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
+                        `AND ${
+                            kind === "allow" ? "any" : "all"
+                        }(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}${labels}) | ${relationVarName}] WHERE `,
+                    ].join(" ");
                 });
 
-                res.strs.push(joinPredicates(inner, key));
-            }
-
-            const authableField = node.authableFields.find((field) => field.fieldName === key);
-            // FIELDS
-            if (authableField) {
-                const jwtPath = isString(value) ? ContextParser.parseTag(value, "jwt") : undefined;
-                let ctxPath = isString(value) ? ContextParser.parseTag(value, "context") : undefined;
-                let paramValue = value as string | undefined;
-
-                if (jwtPath) ctxPath = `jwt.${jwtPath}`;
-
-                if (ctxPath) {
-                    paramValue = ContextParser.getProperty(ctxPath, context);
-                }
-
-                if (paramValue === undefined && allowUnauthenticated !== true) {
-                    throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
-                }
-
-                const dbFieldName = mapToDbProperty(node, key);
-                if (paramValue === undefined) {
-                    res.strs.push("false");
-                } else if (paramValue === null) {
-                    res.strs.push(`${varName}.${dbFieldName} IS NULL`);
-                } else {
-                    const param = `${chainStr}_${key}`;
-                    res.params[param] = paramValue;
-                    res.strs.push(`${varName}.${dbFieldName} IS NOT NULL AND ${varName}.${dbFieldName} = $${param}`);
-                }
-            }
-
-            const relationField = node.relationFields.find((x) => key === x.fieldName);
-            // ON RELATION FIELDS
-            if (relationField) {
-                const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-                const inStr = relationField.direction === "IN" ? "<-" : "-";
-                const outStr = relationField.direction === "OUT" ? "->" : "-";
-                const relTypeStr = `[:${relationField.type}]`;
-                const relationVarName = relationField.fieldName;
-                const labels = refNode.getLabelString(context);
-                let resultStr = [
-                    `exists((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
-                    `AND ${
-                        kind === "allow" ? "any" : "all"
-                    }(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}${labels}) | ${relationVarName}] WHERE `,
-                ].join(" ");
-
-                Object.entries(value as any).forEach(([k, v]: [string, any]) => {
-                    const authPredicate = createAuthPredicate({
-                        node: refNode,
-                        context,
-                        chainStr: `${chainStr}_${key}`,
-                        varName: relationVarName,
-                        rule: {
-                            [kind]: { [k]: v },
-                            allowUnauthenticated,
-                        } as AuthRule,
-                        kind,
-                    });
-                    resultStr += authPredicate[0];
-                    resultStr += ")"; // close ALL
-                    res.params = { ...res.params, ...authPredicate[1] };
-                    res.strs.push(resultStr);
+                const authPredicate = createAuthPredicate({
+                    node: refNode,
+                    context,
+                    chainStr: `${chainStr}_${key}`,
+                    varName: relationVarName,
+                    rule: {
+                        [kind]: { [k]: v },
+                        allowUnauthenticated,
+                    } as AuthRule,
+                    kind,
                 });
-            }
+                if (!authPredicate) throw new Error("Invalid predicate");
+                const extraCypher = new CypherBuilder.RawCypher(")");
+                predicates.push(
+                    CypherBuilder.concat(
+                        resultCypher,
+                        authPredicate as CypherBuilder.Clause,
+                        extraCypher
+                    ) as CypherBuilder.Predicate
+                );
+            });
+        }
+    });
 
-            return res;
-        },
-        { params: {}, strs: [] }
-    );
-
-    return [joinPredicates(result.strs, "AND"), result.params];
+    return CypherBuilder.and(...predicates);
 }

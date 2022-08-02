@@ -56,17 +56,16 @@ export class AuthBuilder {
     }: {
         node: Node;
         key: string;
-        value: string | undefined;
         nodeRef: CypherBuilder.Node;
-        param: CypherBuilder.Param | null | undefined;
+        param: CypherBuilder.Param;
     }): CypherBuilder.Predicate {
         const dbFieldName = mapToDbProperty(node, key);
         const fieldPropertyRef = nodeRef.property(dbFieldName);
-        if (param === undefined) {
+        if (param.value === undefined) {
             return new CypherBuilder.Literal(false);
         }
 
-        if (param === null) {
+        if (param.value === null) {
             return CypherBuilder.isNull(fieldPropertyRef);
         }
 

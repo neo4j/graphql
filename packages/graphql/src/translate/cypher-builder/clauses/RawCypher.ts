@@ -27,9 +27,11 @@ type RawCypherCallback = (env: CypherEnvironment) => [string, Record<string, any
 export class RawCypher extends Clause {
     private callback: RawCypherCallback;
 
-    constructor(callback: RawCypherCallback, parent?: Clause) {
+    constructor(callback: RawCypherCallback | string, parent?: Clause) {
         super(parent);
-        this.callback = callback;
+        if (typeof callback === "string") {
+            this.callback = this.stringToCallback(callback);
+        } else this.callback = callback;
     }
 
     public getCypher(env: CypherEnvironment): string {
@@ -48,5 +50,9 @@ export class RawCypher extends Clause {
             env.addNamedParamReference(key, param);
         });
         return query;
+    }
+
+    private stringToCallback(str: string): RawCypherCallback {
+        return () => str;
     }
 }
