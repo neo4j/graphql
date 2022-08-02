@@ -50,7 +50,7 @@ jobs:
           list-files: shell
           filters: |
             typescript:
-              - added|modified: 'packages/**/*.ts'
+              - added|modified: 'packages/*/src/**/*.ts'
 
   license-header-check:
     needs: typescript-changes
