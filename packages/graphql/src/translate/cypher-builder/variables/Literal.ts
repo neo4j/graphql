@@ -30,8 +30,9 @@ export class Literal<T = LiteralValues | LiteralValues[]> {
     }
 
     public getCypher(_env: CypherEnvironment): string {
+        // TODO: Literal should wrap strings in ""
         if (Array.isArray(this.value)) {
-            return `[${this.value.join(", ")}]`;
+            return `[${this.value.map((v) => `"${v}"`).join(", ")}]`;
         }
         return `${this.value}`;
     }

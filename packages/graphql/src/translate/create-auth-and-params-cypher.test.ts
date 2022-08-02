@@ -24,10 +24,8 @@ import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 
 describe("createAuthAndParams Cypher", () => {
     it("Create roles", () => {
-        const authBuilder = new AuthBuilder();
-
         const param = new CypherBuilder.Param(["admin", "owner"]);
-        const predicate = authBuilder.createRolesPredicate(["admin", "user"], param);
+        const predicate = AuthBuilder.createRolesPredicate(["admin", "user"], param);
 
         const predicateCypher = predicate.getCypher(new CypherEnvironment());
 
@@ -37,10 +35,8 @@ describe("createAuthAndParams Cypher", () => {
     });
 
     it("Create authenticated predicate", () => {
-        const authBuilder = new AuthBuilder();
-
         const authParam = new CypherBuilder.Param({ isAuthenticated: true });
-        const predicate = authBuilder.createAuthenticatedPredicate(true, authParam.property("isAuthenticated"));
+        const predicate = AuthBuilder.createAuthenticatedPredicate(true, authParam.property("isAuthenticated"));
 
         const predicateCypher = predicate.getCypher(new CypherEnvironment());
 
@@ -50,12 +46,10 @@ describe("createAuthAndParams Cypher", () => {
     });
 
     it("Create field predicate", () => {
-        const authBuilder = new AuthBuilder();
-
         const authParam = new CypherBuilder.Param({ isAuthenticated: true });
 
         const node = new NodeBuilder().instance();
-        const predicate = authBuilder.createAuthField({
+        const predicate = AuthBuilder.createAuthField({
             param: authParam,
             node,
             key: "userId",
@@ -69,10 +63,8 @@ describe("createAuthAndParams Cypher", () => {
     });
 
     it("Create field predicate with null", () => {
-        const authBuilder = new AuthBuilder();
-
         const node = new NodeBuilder().instance();
-        const predicate = authBuilder.createAuthField({
+        const predicate = AuthBuilder.createAuthField({
             param: null,
             node,
             key: "userId",
@@ -86,10 +78,8 @@ describe("createAuthAndParams Cypher", () => {
     });
 
     it("Create field predicate without param", () => {
-        const authBuilder = new AuthBuilder();
-
         const node = new NodeBuilder().instance();
-        const predicate = authBuilder.createAuthField({
+        const predicate = AuthBuilder.createAuthField({
             param: undefined,
             node,
             key: "userId",

@@ -38,7 +38,7 @@ export * as apoc from "./procedures/apoc/apoc";
 // Variables and references
 export { NodeRef as Node, NamedNode } from "./variables/NodeRef";
 export { RelationshipRef as Relationship } from "./variables/RelationshipRef";
-export { Param, RawParam } from "./variables/Param";
+export { Param, RawParam, NamedParam } from "./variables/Param";
 export { NamedVariable, Variable } from "./variables/Variable";
 export { CypherNull as Null } from "./variables/Null";
 export { Literal } from "./variables/Literal";

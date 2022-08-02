@@ -23,7 +23,10 @@ import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 
 export class AuthBuilder {
-    public createRolesPredicate(roles: string[], rolesParam: CypherBuilder.Param): CypherBuilder.PredicateFunction {
+    public static createRolesPredicate(
+        roles: string[],
+        rolesParam: CypherBuilder.Param | CypherBuilder.PropertyRef
+    ): CypherBuilder.PredicateFunction {
         const roleVar = new CypherBuilder.Variable();
         const rolesList = new CypherBuilder.Literal(roles);
 
@@ -34,7 +37,7 @@ export class AuthBuilder {
         return rolesInListComprehension;
     }
 
-    public createAuthenticatedPredicate(
+    public static createAuthenticatedPredicate(
         authenticated: boolean,
         authenticatedParam: CypherBuilder.Variable | CypherBuilder.PropertyRef
     ): CypherBuilder.Predicate {
@@ -45,15 +48,7 @@ export class AuthBuilder {
         return new CypherBuilder.apoc.ValidatePredicate(authenticatedPredicate, AUTH_UNAUTHENTICATED_ERROR);
     }
 
-    private isValueInListCypher(
-        value: CypherBuilder.Variable,
-        list: CypherBuilder.Expr
-    ): CypherBuilder.PredicateFunction {
-        const listItemVar = new CypherBuilder.Variable();
-        return CypherBuilder.any(listItemVar, list, CypherBuilder.eq(listItemVar, value));
-    }
-
-    public createAuthField({
+    public static createAuthField({
         node,
         key,
         nodeRef,
@@ -78,5 +73,13 @@ export class AuthBuilder {
         const isNotNull = CypherBuilder.isNotNull(fieldPropertyRef);
         const equalsToParam = CypherBuilder.eq(fieldPropertyRef, param);
         return CypherBuilder.and(isNotNull, equalsToParam);
+    }
+
+    private static isValueInListCypher(
+        value: CypherBuilder.Variable,
+        list: CypherBuilder.Expr
+    ): CypherBuilder.PredicateFunction {
+        const listItemVar = new CypherBuilder.Variable();
+        return CypherBuilder.any(listItemVar, list, CypherBuilder.eq(listItemVar, value));
     }
 }

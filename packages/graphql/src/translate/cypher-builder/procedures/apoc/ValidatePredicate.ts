@@ -34,9 +34,6 @@ export class ValidatePredicate extends CypherASTNode {
     public getCypher(env: CypherEnvironment): string {
         const predicateCypher = this.predicate.getCypher(env);
         const messageStr = this.message ? `, "${this.message}"` : "";
-        // TODO: should add [0] as third parameter?
-
-        // return `apoc.util.validatePredicate(${predicateCypher}), "${this.message}", [0])`;
-        return `apoc.util.validatePredicate(${predicateCypher})${messageStr})`;
+        return `apoc.util.validatePredicate(${predicateCypher}${messageStr}, [0])`;
     }
 }

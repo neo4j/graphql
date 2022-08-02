@@ -41,6 +41,14 @@ export class Param<T = any> extends Variable {
     }
 }
 
+export class NamedParam extends Param<any> {
+    constructor(name: string) {
+        super(undefined);
+        this.id = name;
+    }
+}
+
+// Careful, can lead to cypher injection
 export class RawParam<T> extends Param<T> {
     public getCypher(_env: CypherEnvironment): string {
         return `${this.value}`;

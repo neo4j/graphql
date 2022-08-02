@@ -27,6 +27,8 @@ import ContextParser from "../utils/context-parser";
 import { isString } from "../utils/utils";
 import { NodeAuth } from "../classes/NodeAuth";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import { compileCypherIfExists } from "./cypher-builder/utils";
+import { AuthBuilder } from "./create-auth-and-params-cypher";
 
 interface Res {
     strs: string[];
@@ -80,30 +82,35 @@ export default function createAuthAndParams({
     if (where && !authRules.some(hasWhere)) {
         return ["", [{}]];
     }
+    const subPredicates = authRules.map((authRule: AuthRule, index) => {
+        const predicate = createSubPredicate({
+            authRule,
+            index,
+            skipRoles,
+            skipIsAuthenticated,
+            allow,
+            context,
+            escapeQuotes,
+            bind,
+            where,
+        });
 
-    const subPredicates = authRules.reduce(
-        (res: Res, authRule: AuthRule, index): Res => {
-            const [str, par] = createSubPredicate({
-                authRule,
-                index,
-                skipRoles,
-                skipIsAuthenticated,
-                allow,
-                context,
-                escapeQuotes,
-                bind,
-                where,
-            });
+        return predicate;
 
-            return {
-                strs: [...res.strs, str],
-                params: { ...res.params, ...par },
-            };
-        },
-        { strs: [], params: {} }
-    );
+        // return {
+        //     strs: [...res.strs, str],
+        //     params: { ...res.params, ...par },
+        // };
+    });
 
-    return [joinPredicates(subPredicates.strs, "OR"), subPredicates.params];
+    const orPredicates = CypherBuilder.or(...subPredicates);
+    if (!orPredicates) return ["", {}];
+
+    const authPredicate = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+        return orPredicates.getCypher(env);
+    });
+    const authCypher = authPredicate.build();
+    return [authCypher.cypher, authCypher.params];
 }
 
 function createSubPredicate({
@@ -129,21 +136,30 @@ function createSubPredicate({
     escapeQuotes?: boolean;
     bind?: Bind;
     where?: { varName: string; chainStr?: string; node: Node };
-}): [string, any] {
-    const thisPredicates: string[] = [];
-    let thisParams: any = {};
+}): CypherBuilder.Predicate | undefined {
+    const thisPredicates: CypherBuilder.Predicate[] = [];
+    const authParam = new CypherBuilder.NamedParam("auth");
+    // const thisPredicates: string[] = [];
+    // let thisParams: any = {};
 
     if (!skipRoles && authRule.roles) {
-        thisPredicates.push(createRolesStr({ roles: authRule.roles, escapeQuotes }));
+        const rolesPredicate = AuthBuilder.createRolesPredicate(authRule.roles, authParam.property("roles"));
+        thisPredicates.push(rolesPredicate);
+        // thisPredicates.push(createRolesStr({ roles: authRule.roles, escapeQuotes }));
     }
 
-    const quotes = escapeQuotes ? '\\"' : '"';
+    // const quotes = escapeQuotes ? '\\"' : '"';
     if (!skipIsAuthenticated && (authRule.isAuthenticated === true || authRule.isAuthenticated === false)) {
-        thisPredicates.push(
-            `apoc.util.validatePredicate(NOT ($auth.isAuthenticated = ${Boolean(
-                authRule.isAuthenticated
-            )}), ${quotes}${AUTH_UNAUTHENTICATED_ERROR}${quotes}, [0])`
+        const authenticatedPredicate = AuthBuilder.createAuthenticatedPredicate(
+            authRule.isAuthenticated,
+            authParam.property("isAuthenticated")
         );
+        thisPredicates.push(authenticatedPredicate);
+        // thisPredicates.push(
+        //     `apoc.util.validatePredicate(NOT ($auth.isAuthenticated = ${Boolean(
+        //         authRule.isAuthenticated
+        //     )}), ${quotes}${AUTH_UNAUTHENTICATED_ERROR}${quotes}, [0])`
+        // );
     }
 
     if (allow && authRule.allow) {
@@ -156,8 +172,12 @@ function createSubPredicate({
             kind: "allow",
         });
         if (allowAndParams[0]) {
-            thisPredicates.push(allowAndParams[0]);
-            thisParams = { ...thisParams, ...allowAndParams[1] };
+            const authPredicate = new CypherBuilder.RawCypher(() => {
+                return allowAndParams;
+            });
+            thisPredicates.push(authPredicate);
+            // thisPredicates.push(allowAndParams[0]);
+            // thisParams = { ...thisParams, ...allowAndParams[1] };
         }
     }
 
@@ -168,11 +188,11 @@ function createSubPredicate({
             return;
         }
 
-        const predicates: string[] = [];
-        let predicateParams = {};
+        const predicates: CypherBuilder.Predicate[] = [];
+        // let predicateParams = {};
 
         value.forEach((v, i) => {
-            const [str, par] = createSubPredicate({
+            const predicate = createSubPredicate({
                 authRule: v,
                 index: i,
                 chainStr: chainStr ? `${chainStr}${key}${i}` : `${key}${i}`,
@@ -185,16 +205,32 @@ function createSubPredicate({
                 where,
             });
 
-            if (!str) {
+            if (!predicate) {
                 return;
             }
 
-            predicates.push(str);
-            predicateParams = { ...predicateParams, ...par };
+            predicates.push(predicate);
+            // predicateParams = { ...predicateParams, ...par };
         });
 
-        thisPredicates.push(joinPredicates(predicates, key));
-        thisParams = { ...thisParams, ...predicateParams };
+        let joinedPredicate: CypherBuilder.Predicate | undefined;
+        if (key === "AND") {
+            joinedPredicate = CypherBuilder.and(...predicates);
+        } else if (key === "OR") {
+            joinedPredicate = CypherBuilder.or(...predicates);
+        }
+        if (joinedPredicate) {
+            // const joinedStatement = new CypherBuilder.RawCypher((env) => {
+            //     return compileCypherIfExists(joinedPredicate, env);
+            // });
+            // const result = joinedStatement.build();
+            thisPredicates.push(joinedPredicate);
+            // thisPredicates.push(joinedStatement);
+            // thisParams = { ...thisParams, ...result.params };
+        }
+
+        // thisPredicates.push(joinPredicates(predicates, key));
+        // thisParams = { ...thisParams, ...predicateParams };
     });
 
     if (where && authRule.where) {
@@ -207,8 +243,12 @@ function createSubPredicate({
             kind: "where",
         });
         if (whereAndParams[0]) {
-            thisPredicates.push(whereAndParams[0]);
-            thisParams = { ...thisParams, ...whereAndParams[1] };
+            const authPredicate = new CypherBuilder.RawCypher(() => {
+                return whereAndParams;
+            });
+            thisPredicates.push(authPredicate);
+            // thisPredicates.push(whereAndParams[0]);
+            // thisParams = { ...thisParams, ...whereAndParams[1] };
         }
     }
 
@@ -222,21 +262,28 @@ function createSubPredicate({
             kind: "bind",
         });
         if (allowAndParams[0]) {
-            thisPredicates.push(allowAndParams[0]);
-            thisParams = { ...thisParams, ...allowAndParams[1] };
+            const authPredicate = new CypherBuilder.RawCypher(() => {
+                return allowAndParams;
+            });
+            thisPredicates.push(authPredicate);
+            // thisPredicates.push(allowAndParams[0]);
+            // thisParams = { ...thisParams, ...allowAndParams[1] };
         }
     }
 
-    return [joinPredicates(thisPredicates, "AND"), thisParams];
+    return CypherBuilder.and(...thisPredicates);
+    // return new CypherBuilder.RawCypher(() => {
+    // return [joinPredicates(thisPredicates, "AND"), thisParams];
+    // });
 }
 
-function createRolesStr({ roles, escapeQuotes }: { roles: string[]; escapeQuotes?: boolean }) {
-    const quote = escapeQuotes ? `\\"` : `"`;
+// function createRolesStr({ roles, escapeQuotes }: { roles: string[]; escapeQuotes?: boolean }) {
+//     const quote = escapeQuotes ? `\\"` : `"`;
 
-    const joined = roles.map((r) => `${quote}${r}${quote}`).join(", ");
+//     const joined = roles.map((r) => `${quote}${r}${quote}`).join(", ");
 
-    return `any(r IN [${joined}] WHERE any(rr IN $auth.roles WHERE r = rr))`;
-}
+//     return `any(r IN [${joined}] WHERE any(rr IN $auth.roles WHERE r = rr))`;
+// }
 
 function createAuthPredicate({
     rule,
