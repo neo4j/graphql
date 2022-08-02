@@ -41,7 +41,6 @@ import type {
 import { getToken, parseBearerToken } from "../../utils/get-token";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
 import type { Neo4jEdition } from "../../classes/Neo4jGraphQL";
-import { copyFile } from "fs";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
