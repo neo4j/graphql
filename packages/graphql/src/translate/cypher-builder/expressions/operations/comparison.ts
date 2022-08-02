@@ -60,49 +60,49 @@ function createOp(op: ComparisonOperator, leftExpr: Expr | undefined, rightExpr?
     return new ComparisonOp(op, leftExpr, rightExpr);
 }
 
-export function eq(leftExpr: Expr, rightExpr: Expr) {
+export function eq(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp("=", leftExpr, rightExpr);
 }
 
-export function gt(leftExpr: Expr, rightExpr: Expr) {
+export function gt(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp(">", leftExpr, rightExpr);
 }
 
-export function gte(leftExpr: Expr, rightExpr: Expr) {
+export function gte(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp(">=", leftExpr, rightExpr);
 }
 
-export function lt(leftExpr: Expr, rightExpr: Expr) {
+export function lt(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp("<", leftExpr, rightExpr);
 }
 
-export function lte(leftExpr: Expr, rightExpr: Expr) {
+export function lte(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp("<=", leftExpr, rightExpr);
 }
 
-export function isNull(childExpr: Expr) {
+export function isNull(childExpr: Expr): ComparisonOp {
     return createOp("IS NULL", childExpr);
 }
 
-export function isNotNull(childExpr: Expr) {
+export function isNotNull(childExpr: Expr): ComparisonOp {
     return createOp("IS NOT NULL", childExpr);
 }
 
 /* Below are operators that are not technically comparison, but can be treated as such */
 
-export function inOp(leftExpr: Expr, rightExpr: Expr) {
+export function inOp(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp("IN", leftExpr, rightExpr);
 }
 
-export function contains(leftExpr: Expr, rightExpr: Expr) {
+export function contains(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp("CONTAINS", leftExpr, rightExpr);
 }
-export function startsWith(leftExpr: Expr, rightExpr: Expr) {
+export function startsWith(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp("STARTS WITH", leftExpr, rightExpr);
 }
-export function endsWith(leftExpr: Expr, rightExpr: Expr) {
+export function endsWith(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp("ENDS WITH", leftExpr, rightExpr);
 }
-export function matches(leftExpr: Expr, rightExpr: Expr) {
+export function matches(leftExpr: Expr, rightExpr: Expr): ComparisonOp {
     return createOp("=~", leftExpr, rightExpr);
 }

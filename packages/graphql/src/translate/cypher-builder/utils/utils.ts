@@ -41,7 +41,7 @@ export function padBlock(block: string, spaces = 4): string {
 export function compileCypherIfExists(
     element: CypherCompilable | undefined,
     env: CypherEnvironment,
-    { prefix = "", suffix = "" } = {}
+    { prefix = "", suffix = "" }: { prefix?: string; suffix?: string } = {}
 ): string {
     if (!element) return "";
     const cypher = element.getCypher(env);

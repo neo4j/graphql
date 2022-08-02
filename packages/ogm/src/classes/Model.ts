@@ -80,7 +80,7 @@ class Model {
         selectionSet: string | DocumentNode;
         namePluralized: string;
         rootTypeFieldNames: RootTypeFieldNames;
-    }) {
+    }): void {
         this.selectionSet = selectionSet;
         this.schema = schema;
         this._namePluralized = namePluralized;

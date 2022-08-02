@@ -25,11 +25,9 @@ import type {
     GraphQLObjectType,
     GraphQLResolveInfo,
     GraphQLInputType,
-    GraphQLList} from "graphql";
-import {
-    GraphQLInputObjectType,
-    GraphQLScalarType,
+    GraphQLList,
 } from "graphql";
+import { GraphQLInputObjectType, GraphQLScalarType } from "graphql";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { parseResolveInfo } from "graphql-parse-resolve-info";
 import neo4j from "neo4j-driver";
@@ -87,7 +85,7 @@ export interface GetNeo4jResolveTreeOptions {
     args?: any;
 }
 
-function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4jResolveTreeOptions) {
+function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4jResolveTreeOptions): ResolveTree {
     const resolveTree = options?.resolveTree || (parseResolveInfo(resolveInfo) as ResolveTree);
     const resolverArgs = options?.args;
     const mergedArgs: Record<string, unknown> = { ...resolveTree.args, ...resolverArgs };
@@ -166,7 +164,7 @@ function getNeo4jResolveTree(resolveInfo: GraphQLResolveInfo, options?: GetNeo4j
 
     const { alias, name } = resolveTree;
 
-    return { alias, args, fieldsByTypeName, name } as ResolveTree;
+    return { alias, args, fieldsByTypeName, name };
 }
 
 export default getNeo4jResolveTree;

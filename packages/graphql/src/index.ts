@@ -39,6 +39,7 @@ export {
     Neo4jGraphQLSubscriptionsPlugin,
     EventMeta,
     SubscriptionsEvent,
+    RelationField,
 } from "./types";
 export {
     Neo4jGraphQL,

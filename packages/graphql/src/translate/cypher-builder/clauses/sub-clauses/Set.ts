@@ -34,7 +34,7 @@ export class SetClause extends SubClause {
         this.params = params;
     }
 
-    public addParams(...params: SetParam[]) {
+    public addParams(...params: SetParam[]): void {
         this.params.push(...params);
     }
 

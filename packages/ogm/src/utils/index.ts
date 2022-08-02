@@ -17,10 +17,11 @@
  * limitations under the License.
  */
 
+import type { Node, RelationField } from "@neo4j/graphql";
 import type { OGM } from "..";
 
 export { default as filterDocument } from "./filter-document";
 
-export function getReferenceNode(ogm: OGM, relationField: any) {
+export function getReferenceNode(ogm: OGM, relationField: RelationField): Node | undefined {
     return ogm.nodes.find((x) => x.name === relationField.typeMeta.name);
 }
