@@ -78,7 +78,7 @@ describe("CypherBuilder Merge", () => {
                 [node1.property("name"), new CypherBuilder.Param("Keanu")],
                 [relationship.property("screentime"), new CypherBuilder.Param(10)]
             )
-            .return(node1, ["title"], "movie");
+            .return([node1.property("title"), "movie"]);
 
         const queryResult = query.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
@@ -87,7 +87,7 @@ describe("CypherBuilder Merge", () => {
                 this1.age = $param0,
                 this1.name = $param1,
                 this0.screentime = $param2
-            RETURN this1 {.title} AS movie"
+            RETURN this1.title AS movie"
         `);
         expect(queryResult.params).toMatchInlineSnapshot(`
                 Object {

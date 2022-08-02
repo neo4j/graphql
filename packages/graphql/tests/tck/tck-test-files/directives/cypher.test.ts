@@ -189,11 +189,9 @@ describe("Cypher directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            MATCH (this:\`Actor\`)
-            RETURN this
+            "MATCH (this:\`Actor\`)
+            WITH this
             LIMIT $this_limit
-            }
             RETURN this { randomNumber:  apoc.cypher.runFirstColumn(\\"RETURN rand()\\", {this: this, auth: $auth}, false) } as this"
         `);
 
@@ -227,9 +225,10 @@ describe("Cypher directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            RETURN this { randomNumber:  apoc.cypher.runFirstColumn(\\"RETURN rand()\\", {this: this, auth: $auth}, false) } as this
-            ORDER BY this.randomNumber ASC
-            LIMIT $this_limit"
+            WITH this,  apoc.cypher.runFirstColumn(\\"RETURN rand()\\", {this: this, auth: $auth}, false) AS randomNumber
+            ORDER BY randomNumber ASC
+            LIMIT $this_limit
+            RETURN this { randomNumber: randomNumber } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

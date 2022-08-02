@@ -8,6 +8,6 @@
             "@neo4j/graphql-plugin-auth": ["../plugins/graphql-plugin-auth/src"]
         }
     },
-    "include": ["package.json", "src/**/*", "tests/**/*"],
+    "include": ["global.d.ts", "package.json", "src/**/*", "tests/**/*"],
     "references": [{ "path": "../plugins/graphql-plugin-auth/tsconfig.json" }]
 }
