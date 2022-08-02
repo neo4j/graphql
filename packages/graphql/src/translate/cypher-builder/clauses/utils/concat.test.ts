@@ -26,7 +26,7 @@ describe("CypherBuilder concat", () => {
         const clause = new CypherBuilder.Match(node).where(
             CypherBuilder.eq(new CypherBuilder.Param("aa"), new CypherBuilder.Param("bb"))
         );
-        const returnClause = new CypherBuilder.Return([node, ["title"], "movie"]);
+        const returnClause = new CypherBuilder.Return([node.property("title"), "movie"]);
 
         const query = CypherBuilder.concat(clause, returnClause);
 
@@ -34,7 +34,7 @@ describe("CypherBuilder concat", () => {
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "MATCH (this0:\`Movie\`)
             WHERE $param0 = $param1
-            RETURN this0 {.title} AS movie"
+            RETURN this0.title AS movie"
         `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`

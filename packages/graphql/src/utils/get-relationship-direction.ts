@@ -31,38 +31,58 @@ type DirectionResult = {
 export function getRelationshipDirection(
     relationField: RelationField,
     fieldArgs: { directed?: boolean }
-): DirectionResult {
-    const directedArgs = {
-        inStr: relationField.direction === "IN" ? "<-" : "-",
-        outStr: relationField.direction === "OUT" ? "->" : "-",
-    } as DirectionResult;
-
-    const undirectedArgs = {
-        inStr: "-",
-        outStr: "-",
-    } as DirectionResult;
+): "IN" | "OUT" | "undirected" {
+    const directedValue = relationField.direction;
+    const undirectedValue = "undirected";
 
     switch (relationField.queryDirection) {
         case RelationshipQueryDirectionOption.DEFAULT_DIRECTED:
             if (fieldArgs.directed === false) {
-                return undirectedArgs;
+                return undirectedValue;
             }
-            return directedArgs;
+            return directedValue;
         case RelationshipQueryDirectionOption.DEFAULT_UNDIRECTED:
             if (fieldArgs.directed === true) {
-                return directedArgs;
+                return directedValue;
             }
-            return undirectedArgs;
+            return undirectedValue;
         case RelationshipQueryDirectionOption.DIRECTED_ONLY:
             if (fieldArgs.directed === false) {
                 throw new Error("Invalid direction in 'DIRECTED_ONLY' relationship");
             }
-            return directedArgs;
+            return directedValue;
         case RelationshipQueryDirectionOption.UNDIRECTED_ONLY:
             if (fieldArgs.directed === true) {
                 throw new Error("Invalid direction in 'UNDIRECTED_ONLY' relationship");
             }
-            return undirectedArgs;
+            return undirectedValue;
+        default:
+            throw new Neo4jGraphQLError(`Invalid queryDirection argument ${relationField.queryDirection}`);
+    }
+}
+
+export function getRelationshipDirectionStr(
+    relationField: RelationField,
+    fieldArgs: { directed?: boolean }
+): DirectionResult {
+    const direction = getRelationshipDirection(relationField, fieldArgs);
+
+    switch (direction) {
+        case "IN":
+            return {
+                inStr: "<-",
+                outStr: "-",
+            };
+        case "OUT":
+            return {
+                inStr: "-",
+                outStr: "->",
+            };
+        case "undirected":
+            return {
+                inStr: "-",
+                outStr: "-",
+            };
         default:
             throw new Neo4jGraphQLError(`Invalid queryDirection argument ${relationField.queryDirection}`);
     }

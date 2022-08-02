@@ -67,7 +67,7 @@ describe("CypherBuilder Create", () => {
         const createQuery = new CypherBuilder.Create(movieNode, {
             id: idParam,
         })
-            .set(["test", testParam], ["nullStr", nullStringParam])
+            .set([movieNode.property("test"), testParam], [movieNode.property("nullStr"), nullStringParam])
             .return(movieNode);
 
         const queryResult = createQuery.build();

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
@@ -32,6 +32,7 @@ describe("sort", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let schema: GraphQLSchema;
+    let session: Session;
 
     const movieType = generateUniqueType("Movie");
     const seriesType = generateUniqueType("Series");
@@ -122,12 +123,12 @@ describe("sort", () => {
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
-        const session = await neo4j.getSession();
+        const session2 = await neo4j.getSession();
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
         schema = await neoSchema.getSchema();
 
-        await session.run(
+        await session2.run(
             `
                     CREATE (m1:${movieType}:${testLabel}) SET m1 = $movies[0]
                     CREATE (m2:${movieType}:${testLabel}) SET m2 = $movies[1]
@@ -143,12 +144,22 @@ describe("sort", () => {
                 `,
             { movies, series, actors }
         );
+
+        await session2.close();
+    });
+
+    beforeEach(async () => {
+        session = await neo4j.getSession();
+    });
+
+    afterEach(async () => {
+        await session.close();
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-        await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
-        await session.close();
+        const session2 = await neo4j.getSession();
+        await session2.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
+        await session2.close();
         await driver.close();
     });
 
@@ -158,8 +169,8 @@ describe("sort", () => {
                 graphql({
                     schema,
                     source,
-                    contextValue: neo4j.getContextValues(),
                     variableValues: { movieIds: movies.map(({ id }) => id), direction },
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
             describe("with field in selection set", () => {

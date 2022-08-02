@@ -93,5 +93,7 @@ scratchpad/
 
 tsconfig.tsbuildinfo
 tsconfig.*.tsbuildinfo
+tsconfig.*.tsbuildinfo.gz
 
 performance.json
+.history

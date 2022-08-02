@@ -45,9 +45,12 @@ class BinaryOp extends BooleanOp {
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const childrenStr = this.children.map((c) => c.getCypher(env)).join(` ${this.operator} `);
+        const childrenStrs = this.children.map((c) => c.getCypher(env)).filter(Boolean);
 
-        return `(${childrenStr})`;
+        if (childrenStrs.length <= 1) {
+            return childrenStrs.join("");
+        }
+        return `(${childrenStrs.join(` ${this.operator} `)})`;
     }
 }
 

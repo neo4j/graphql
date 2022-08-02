@@ -2,9 +2,9 @@
 
 ## Problem
 Providing compatibility with multiple Neo4j versions comes with some difficulty.
-Different Neo4j versions require different approaches to obtain the same result optimally. Without knowing where the query will be executed during the query generation, it's not possible to change the query accordingly.
+Different Neo4j versions require different Cypher queries to obtain the same result. Without knowing where the query will be executed during the query generation, it's not possible to change the query accordingly.
 
-As a use case, let's consider the following example:
+For instance, let's consider the following example:
 ```cypher
 RETURN distance(point({x:10, y:5}), point({x:10, y:10}))
 ```
@@ -16,7 +16,7 @@ RETURN point.distance(point({x:10, y:5}), point({x:10, y:10}))
 Which can be executed against a `Neo4j 5.x` instance.
 
 ## Proposed Solution
-From version `Neo4j 3.5` it is available the procedure `dbms.components` can be used as:
+From version `Neo4j 3.5` the procedure `dbms.components` can be used as:
 ```cypher
 call dbms.components() yield name, versions, edition unwind versions as version return name, version, edition;
 ```
@@ -30,7 +30,7 @@ with this information available it's possible to write an optimal query.
 To make this available to the resolvers, it is possible to add a new class `Neo4jDatabaseInfo` to the GraphQL `Context`. It is then possible to compare the version with the [`ServerInfo`](https://neo4j.com/docs/api/javascript-driver/current/class/lib6/result-summary.js~ServerInfo.html) version in the driver response.
 
 An essential implementation of the `Neo4jDatabaseInfo`: 
-```javascript
+```typescript
 interface Neo4jVersion {
   major: number;
   minor: number;

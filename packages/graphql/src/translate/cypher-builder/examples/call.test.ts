@@ -27,17 +27,17 @@ describe("CypherBuilder Call Examples", () => {
 
         const matchQuery = new CypherBuilder.Match(movieNode)
             .where(movieNode, { released: new CypherBuilder.Param(1999) })
-            .return(movieNode, ["title", "released"], "movie");
+            .return(movieNode.property("title"));
 
-        const callQuery = new CypherBuilder.Call(matchQuery).return(movieNode, ["title", "released"], "movie");
+        const callQuery = new CypherBuilder.Call(matchQuery).return(movieNode.property("title"));
         const queryResult = callQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "CALL {
                 MATCH (this0:\`Movie\`)
                 WHERE this0.released = $param0
-                RETURN this0 {.title, .released} AS movie
+                RETURN this0.title
             }
-            RETURN this0 {.title, .released} AS movie"
+            RETURN this0.title"
         `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`
@@ -59,11 +59,11 @@ describe("CypherBuilder Call Examples", () => {
 
         const innerMatch = new CypherBuilder.Match(movieNode)
             .where(movieNode, { title: titleVar })
-            .return(movieNode, ["title", "released"], "movie");
+            .return(movieNode.property("title"));
 
         const callQuery = new CypherBuilder.Call(innerMatch)
             .with(titleVar) // Note that this with is an import with, different to top level WITH
-            .return(movieNode, ["title", "released"], "movie");
+            .return(movieNode.property("title"));
 
         const queryResult = CypherBuilder.concat(initialWith, callQuery).build();
 
@@ -73,9 +73,9 @@ describe("CypherBuilder Call Examples", () => {
                 WITH var0
                 MATCH (this1:\`Movie\`)
                 WHERE this1.title = var0
-                RETURN this1 {.title, .released} AS movie
+                RETURN this1.title
             }
-            RETURN this1 {.title, .released} AS movie"
+            RETURN this1.title"
         `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`
