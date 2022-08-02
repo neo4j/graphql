@@ -8,6 +8,10 @@ on:
     paths:
       - "**/CHANGELOG.md"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}-aura
+  cancel-in-progress: true
+
 jobs:
   aura-free-tests:
     if: |
