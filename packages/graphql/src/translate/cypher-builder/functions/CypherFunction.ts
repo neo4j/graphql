@@ -22,7 +22,7 @@ import type { CypherEnvironment } from "../Environment";
 import type { Expr } from "../types";
 import type { NodeRef } from "../variables/NodeRef";
 
-type FunctionType = "coalesce" | "point" | "distance" | "datetime" | "labels" | "size";
+type FunctionType = "coalesce" | "point" | "distance" | "datetime" | "labels" | "size" | "count" | "min" | "max";
 
 export class CypherFunction extends CypherASTNode {
     protected name: FunctionType;
@@ -68,4 +68,14 @@ export function cypherDatetime(): CypherFunction {
 
 export function size(expr: Expr): CypherFunction {
     return new CypherFunction("size", [expr]);
+}
+
+export function count(expr: Expr): CypherFunction {
+    return new CypherFunction("count", [expr]);
+}
+export function min(expr: Expr): CypherFunction {
+    return new CypherFunction("min", [expr]);
+}
+export function max(expr: Expr): CypherFunction {
+    return new CypherFunction("max", [expr]);
 }

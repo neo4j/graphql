@@ -25,6 +25,7 @@ export { Call } from "./clauses/Call";
 export { Return } from "./clauses/Return";
 export { RawCypher } from "./clauses/RawCypher";
 export { With } from "./clauses/With";
+export { Unwind } from "./clauses/Unwind";
 
 // Clauses-like things
 export { Exists } from "./Exists";
@@ -42,6 +43,9 @@ export { Literal } from "./variables/Literal";
 // Lists
 export { ListComprehension } from "./list/ListComprehension";
 export { PatternComprehension } from "./list/PatternComprehension";
+
+// Map
+export { MapExpr as Map } from "./map/MapExpr";
 
 export { Pattern } from "./Pattern"; // TODO: Maybe this should not be exported
 
@@ -64,7 +68,17 @@ export {
 export { plus, minus } from "./operations/math";
 
 // Functions
-export { coalesce, point, distance, cypherDatetime as datetime, labels, size } from "./functions/CypherFunction";
+export {
+    coalesce,
+    point,
+    distance,
+    cypherDatetime as datetime,
+    labels,
+    size,
+    count,
+    min,
+    max,
+} from "./functions/CypherFunction";
 
 // Types
 export type { CypherResult } from "./types";
@@ -78,3 +92,4 @@ export type { WhereParams } from "./sub-clauses/Where";
 export type { Expr } from "./types";
 export type { CypherFunction as Function } from "./functions/CypherFunction";
 export type { ComprehensionExpr } from "./list/ComprehensionExpr";
+export type { ProjectionColumn } from "./sub-clauses/Projection";

@@ -63,8 +63,9 @@ describe("Cypher pagination tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { .title } as this
-            SKIP $this_offset"
+            WITH this
+            SKIP $this_offset
+            RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -93,8 +94,9 @@ describe("Cypher pagination tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { .title } as this
-            LIMIT $this_limit"
+            WITH this
+            LIMIT $this_limit
+            RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -123,9 +125,10 @@ describe("Cypher pagination tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { .title } as this
+            WITH this
             SKIP $this_offset
-            LIMIT $this_limit"
+            LIMIT $this_limit
+            RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -159,9 +162,10 @@ describe("Cypher pagination tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { .title } as this
+            WITH this
             SKIP $this_offset
-            LIMIT $this_limit"
+            LIMIT $this_limit
+            RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -196,9 +200,10 @@ describe("Cypher pagination tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
-            RETURN this { .title } as this
+            WITH this
             SKIP $this_offset
-            LIMIT $this_limit"
+            LIMIT $this_limit
+            RETURN this { .title } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

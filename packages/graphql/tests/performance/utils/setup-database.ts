@@ -577,6 +577,15 @@ CREATE (user6)-[:LIKES]->(AFewGoodMen)
 CREATE (user6)-[:LIKES]->(Brooke)
 CREATE (user6)-[:LIKES]->(JohnnyMnemonic)
 CREATE (user6)-[:LIKES]->(CloudAtlas)
+
+CREATE (m:Movie {name: "Sharknado", released: 2013})
+WITH *
+UNWIND range(0, 1000) AS x
+CREATE (p:Person {born: 1000+x, name: "Shark "+x})
+CREATE (m2:Movie {name: "Sharknado "+x, released: 2013})
+CREATE (p)-[:ACTED_IN]->(m)
+CREATE (p)-[:ACTED_IN]->(m2)
+
 `;
 
 export async function cleanDatabase(session: Session) {

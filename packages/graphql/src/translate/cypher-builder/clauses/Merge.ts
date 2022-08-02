@@ -23,12 +23,12 @@ import { NodeRef } from "../variables/NodeRef";
 import { MatchParams, Pattern } from "../Pattern";
 import { Clause } from "./Clause";
 import { OnCreate, OnCreateParam } from "../sub-clauses/OnCreate";
-import { Return } from "./Return";
+import { WithReturn } from "./mixins/WithReturn";
+import { applyMixins } from "./utils/apply-mixin";
 
-export class Merge<T extends NodeRef | RelationshipRef> extends Clause {
+export class Merge<T extends NodeRef | RelationshipRef = any> extends Clause {
     private pattern: Pattern<T>;
     private onCreateClause: OnCreate;
-    private returnStatement: Return | undefined;
 
     constructor(element: T, params: MatchParams<T> = {}, parent?: Clause) {
         super(parent);
@@ -49,13 +49,6 @@ export class Merge<T extends NodeRef | RelationshipRef> extends Clause {
         return this;
     }
 
-    public return(node: NodeRef, fields?: string[], alias?: string): Return {
-        const returnStatement = new Return([node, fields, alias]);
-        this.addChildren(returnStatement);
-        this.returnStatement = returnStatement;
-        return returnStatement;
-    }
-
     public getCypher(env: CypherEnvironment): string {
         const mergeStr = `MERGE ${this.pattern.getCypher(env)}`;
         const onCreateStatement = this.onCreateClause.getCypher(env);
@@ -69,3 +62,7 @@ export class Merge<T extends NodeRef | RelationshipRef> extends Clause {
         return `${mergeStr}${separator}${onCreateStatement}${returnCypher}`;
     }
 }
+
+export interface Merge extends WithReturn {}
+
+applyMixins(Merge, [WithReturn]);

@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { MatchPatternOptions, Pattern } from "../Pattern";
 import { escapeLabel } from "../utils";
 import { Variable } from "./Variable";
 
@@ -37,6 +38,11 @@ export class NodeRef extends Variable {
         const escapedLabels = this.labels.map(escapeLabel);
         if (escapedLabels.length === 0) return "";
         return `:${escapedLabels.join(":")}`;
+    }
+
+    /** Creates a new Pattern from this node */
+    public pattern(options: Pick<MatchPatternOptions, "source"> = {}): Pattern<NodeRef> {
+        return new Pattern(this, options);
     }
 }
 

@@ -25,7 +25,7 @@ export function createMatchWherePattern(matchPattern: string, auth: AggregationA
     const whereQuery = whereInput || auth.whereQuery ? "WHERE" : "";
     const andQuery = whereInput && auth.whereQuery ? "AND" : "";
 
-    return `MATCH ${matchPattern} ${whereQuery} ${whereInput} ${andQuery} ${auth.whereQuery} ${auth.query}`;
+    return `MATCH ${matchPattern} ${whereQuery} ${whereInput} ${andQuery} ${auth.whereQuery}`;
 }
 
 export function stringAggregationQuery(matchWherePattern: string, fieldName: string, targetAlias: string): string {
@@ -56,8 +56,4 @@ export function dateTimeAggregationQuery(matchWherePattern: string, fieldName: s
             min: wrapApocConvertDate(`min(${fieldPath})`),
             max: wrapApocConvertDate(`max(${fieldPath})`),
         })}`;
-}
-
-export function countQuery(matchWherePattern: string, targetAlias: string): string {
-    return `${matchWherePattern} RETURN COUNT(${targetAlias})`;
 }

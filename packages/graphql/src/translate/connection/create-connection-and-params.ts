@@ -34,7 +34,7 @@ import { createOffsetLimitStr } from "../../schema/pagination";
 import filterInterfaceNodes from "../../utils/filter-interface-nodes";
 import { asArray, isString, removeDuplicates } from "../../utils/utils";
 import { generateMissingOrAliasedFields } from "../utils/resolveTree";
-import { getRelationshipDirection } from "../../utils/get-relationship-direction";
+import { getRelationshipDirectionStr } from "../../utils/get-relationship-direction";
 
 function createConnectionAndParams({
     resolveTree,
@@ -73,7 +73,7 @@ function createConnectionAndParams({
 
     const relTypeStr = `[${relationshipVariable}:${field.relationship.type}]`;
 
-    const { inStr, outStr } = getRelationshipDirection(field.relationship, resolveTree.args);
+    const { inStr, outStr } = getRelationshipDirectionStr(field.relationship, resolveTree.args);
 
     let relationshipProperties: ResolveTree[] = [];
     let node: ResolveTree | undefined;

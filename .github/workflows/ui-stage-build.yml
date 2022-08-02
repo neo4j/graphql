@@ -7,6 +7,7 @@ on:
     branches:
       - dev
     paths:
+      - "packages/graphql/src/**"
       - "packages/graphql-toolbox/**"
 
 jobs:

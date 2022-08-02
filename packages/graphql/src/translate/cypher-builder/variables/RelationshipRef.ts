@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { escapeLabel } from "../utils";
 import { Variable } from "./Variable";
 import type { NodeRef } from "./NodeRef";
+import { MatchPatternOptions, Pattern } from "../Pattern";
 
 export type RelationshipInput = {
     source: NodeRef;
@@ -29,8 +29,8 @@ export type RelationshipInput = {
 };
 
 export class RelationshipRef extends Variable {
-    public readonly source: NodeRef;
-    public readonly target: NodeRef;
+    private _source: NodeRef;
+    private _target: NodeRef;
 
     public readonly type?: string;
     public readonly directed: boolean;
@@ -38,9 +38,29 @@ export class RelationshipRef extends Variable {
     constructor(input: RelationshipInput) {
         super("this");
         this.type = input.type || undefined;
-        this.source = input.source;
-        this.target = input.target;
+        this._source = input.source;
+        this._target = input.target;
         this.directed = input.directed === undefined ? true : input.directed;
+    }
+
+    public get source(): NodeRef {
+        return this._source;
+    }
+
+    public get target(): NodeRef {
+        return this._target;
+    }
+
+    /** Reverses the direction of the relationship */
+    public reverse(): void {
+        const oldTarget = this._target;
+        this._target = this._source;
+        this._source = oldTarget;
+    }
+
+    /** Creates a new Pattern from this relationship */
+    public pattern(options: MatchPatternOptions = {}): Pattern<RelationshipRef> {
+        return new Pattern(this, options);
     }
 
     public getTypeString(): string {
