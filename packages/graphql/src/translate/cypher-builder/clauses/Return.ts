@@ -17,40 +17,32 @@
  * limitations under the License.
  */
 
-import { Clause } from "./Clause";
-import type { NodeRef } from "../variables/NodeRef";
+import { WithOrder } from "./mixins/WithOrder";
+import { applyMixins } from "./utils/apply-mixin";
+import { Projection, ProjectionColumn } from "../sub-clauses/Projection";
 import type { CypherEnvironment } from "../Environment";
-import { isString } from "../../../utils/utils";
-import type { Expr } from "../types";
-
-export type Projection = string | [NodeRef, Array<string>?, string?] | Expr;
+import { Clause } from "./Clause";
+import { compileCypherIfExists } from "../utils";
 
 export class Return extends Clause {
-    private returnArgs: Projection;
+    private projection: Projection;
 
-    constructor(args: Projection) {
+    constructor(...columns: Array<"*" | ProjectionColumn>) {
         super();
-        this.returnArgs = args;
+        this.projection = new Projection(columns);
+    }
+
+    public addColumns(...columns: Array<"*" | ProjectionColumn>): void {
+        this.projection.addColumns(columns);
     }
 
     public getCypher(env: CypherEnvironment): string {
-        if (isString(this.returnArgs)) {
-            return `RETURN ${this.returnArgs}`;
-        }
-        if (Array.isArray(this.returnArgs)) {
-            let projection = "";
-            let alias = "";
-            if ((this.returnArgs[1] || []).length > 0) {
-                projection = ` {${(this.returnArgs[1] as Array<string>).map((s) => `.${s}`).join(", ")}}`;
-            }
+        const projectionStr = this.projection.getCypher(env);
+        const orderStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });
 
-            if ((this.returnArgs[2] || []).length > 0) {
-                alias = ` AS ${this.returnArgs[2]}`;
-            }
-            const nodeAlias = env.getVariableId(this.returnArgs[0]);
-
-            return `RETURN ${nodeAlias}${projection}${alias}`;
-        }
-        return `RETURN ${this.returnArgs.getCypher(env)}`;
+        return `RETURN ${projectionStr}${orderStr}`;
     }
 }
+
+export interface Return extends WithOrder {}
+applyMixins(Return, [WithOrder]);

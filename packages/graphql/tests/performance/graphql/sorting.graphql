@@ -1,0 +1,19 @@
+query SortMultipleTypes {
+    movies(options: { sort: { title: ASC }, limit: 10 }) {
+        title
+        actorsConnection {
+            edges {
+                node {
+                    name
+                }
+            }
+        }
+        directorsConnection {
+            edges {
+                node {
+                    name
+                }
+            }
+        }
+    }
+}

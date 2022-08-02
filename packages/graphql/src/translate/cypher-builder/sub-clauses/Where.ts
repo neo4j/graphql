@@ -44,6 +44,7 @@ export class Where extends SubClause {
 
     public getCypher(env: CypherEnvironment): string {
         const opStr = this.whereParams.getCypher(env);
+        if (!opStr) return "";
         return `WHERE ${opStr}`;
     }
 }

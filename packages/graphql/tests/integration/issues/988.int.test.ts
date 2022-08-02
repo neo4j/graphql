@@ -19,7 +19,7 @@
 
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
@@ -32,6 +32,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
     let schema: GraphQLSchema;
     let driver: Driver;
     let neo4j: Neo4j;
+    let session: Session;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -65,16 +66,13 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
     });
 
     beforeEach(async () => {
-        const session = await neo4j.getSession();
+        session = await neo4j.getSession();
         await session.run(
             `CREATE (:${manufacturerType.name} {name: "C", id: "a"})<-[:MANUFACTURER {current: true}]-(:${seriesType.name} {name: "123", current: true})-[:BRAND {current: true}]->(:${brandType.name} {name: "smart"})<-[:BRAND {current: true}]-(:${seriesType.name} {name: "456", current: true})-[:MANUFACTURER {current: false}]->(:${manufacturerType.name} {name: "AM"})`
         );
-        await session.close();
     });
 
     afterEach(async () => {
-        const session = await neo4j.getSession();
-
         await session.run(`MATCH (s:${seriesType.name}) DETACH DELETE s`);
         await session.run(`MATCH (b:${brandType.name}) DETACH DELETE b`);
         await session.run(`MATCH (m:${manufacturerType.name}) DETACH DELETE m`);
@@ -115,7 +113,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         const res = await graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: {
                 where: {
                     current: true,

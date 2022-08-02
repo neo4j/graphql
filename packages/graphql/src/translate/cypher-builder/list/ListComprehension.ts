@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import { WithWhere } from "../clauses/mixins/WithWhere";
+import { applyMixins } from "../clauses/utils/apply-mixin";
 import type { CypherEnvironment } from "../Environment";
 import { Where, WhereParams } from "../sub-clauses/Where";
 import type { Expr } from "../types";
@@ -25,7 +27,6 @@ import type { Variable } from "../variables/Variable";
 import { ComprehensionExpr } from "./ComprehensionExpr";
 
 export class ListComprehension extends ComprehensionExpr {
-    private whereClause: Where | undefined;
     private variable: Variable;
     private listExpr: Expr;
     private mapExpr: Expr | undefined;
@@ -37,21 +38,12 @@ export class ListComprehension extends ComprehensionExpr {
         this.mapExpr = mapExpr;
 
         if (whereFilter) {
-            this.whereClause = new Where(this, whereFilter);
+            this.whereSubClause = new Where(this, whereFilter);
         }
-    }
-
-    where(filter: WhereParams): this {
-        if (this.whereClause) {
-            this.whereClause.and(filter);
-        } else {
-            this.whereClause = new Where(this, filter);
-        }
-        return this;
     }
 
     getCypher(env: CypherEnvironment): string {
-        const whereStr = compileCypherIfExists(this.whereClause, env, { prefix: " " });
+        const whereStr = compileCypherIfExists(this.whereSubClause, env, { prefix: " " });
         const mapStr = compileCypherIfExists(this.mapExpr, env, { prefix: " | " });
         const listExprStr = this.listExpr.getCypher(env);
         const varCypher = this.variable.getCypher(env);
@@ -59,3 +51,6 @@ export class ListComprehension extends ComprehensionExpr {
         return `[${varCypher} IN ${listExprStr}${whereStr}${mapStr}]`;
     }
 }
+
+export interface ListComprehension extends WithWhere {}
+applyMixins(ListComprehension, [WithWhere]);
