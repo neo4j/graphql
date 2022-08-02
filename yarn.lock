@@ -2462,7 +2462,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^2.3.2
     "@graphql-codegen/typescript": ^2.4.2
     "@graphql-tools/merge": ^8.2.1
-    "@neo4j/graphql": ^3.6.0
+    "@neo4j/graphql": ^3.6.1
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/jest": 28.1.6
     "@types/node": 16.11.47
@@ -2505,7 +2505,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-plugin-subscriptions-amqp@workspace:packages/plugins/graphql-plugin-subscriptions-amqp"
   dependencies:
-    "@neo4j/graphql": ^3.6.0
+    "@neo4j/graphql": ^3.6.1
     "@types/amqplib": 0.8.2
     "@types/debug": 4.1.7
     "@types/jest": 28.1.6
@@ -2524,7 +2524,7 @@ __metadata:
     typescript: 4.7.4
     ws: 8.8.1
   peerDependencies:
-    "@neo4j/graphql": ^3.6.0
+    "@neo4j/graphql": ^3.6.1
   languageName: unknown
   linkType: soft
 
@@ -2594,7 +2594,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@^3.5.0, @neo4j/graphql@^3.6.0, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@^3.5.0, @neo4j/graphql@^3.6.1, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
