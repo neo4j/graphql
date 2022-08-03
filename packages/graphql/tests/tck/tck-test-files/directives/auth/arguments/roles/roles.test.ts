@@ -641,7 +641,7 @@ describe("Cypher Auth Roles", () => {
             CALL {
             WITH this, this_post0
             OPTIONAL MATCH (this_post0)-[this_post0_creator0_disconnect0_rel:HAS_POST]->(this_post0_creator0_disconnect0:User)
-            WHERE this_post0_creator0_disconnect0.id = $updateComments.args.update.post.update.node.creator.disconnect.where.node.id
+            WHERE this_post0_creator0_disconnect0.id = $updateComments_args_update_post_update_node_creator_disconnect_where_Userparam0
             WITH this, this_post0, this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel
             CALL apoc.util.validate(NOT (any(r IN [\\\\\\"super-admin\\\\\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND any(r IN [\\\\\\"admin\\\\\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
             FOREACH(_ IN CASE WHEN this_post0_creator0_disconnect0 IS NULL THEN [] ELSE [1] END |
@@ -658,7 +658,7 @@ describe("Cypher Auth Roles", () => {
             	RETURN c AS this_post0_creator_User_unique_ignored
             }
             RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateComments: $updateComments, this_post0:this_post0, auth:$auth,node:$node,id:$id})
+            \\", \\"\\", {this:this, updateComments: $updateComments, this_post0:this_post0, auth:$auth,updateComments_args_update_post_update_node_creator_disconnect_where_Userparam0:$updateComments_args_update_post_update_node_creator_disconnect_where_Userparam0})
             YIELD value AS _
             WITH this
             CALL {
@@ -673,10 +673,7 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"id\\": \\"user-id\\"
-                },
-                \\"id\\": \\"user-id\\",
+                \\"updateComments_args_update_post_update_node_creator_disconnect_where_Userparam0\\": \\"user-id\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [

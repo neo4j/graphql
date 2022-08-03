@@ -94,7 +94,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name CONTAINS $this_actorsConnection.args.where.node.name_CONTAINS
+            WHERE this_actor.name CONTAINS $this_actorsConnection_args_where_Actorparam0
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -105,10 +105,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"name_CONTAINS\\": \\"Tom\\"
-                },
-                \\"name_CONTAINS\\": \\"Tom\\",
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Tom\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -149,7 +146,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE (NOT this_actor.name CONTAINS $this_actorsConnection.args.where.node.name_NOT_CONTAINS)
+            WHERE NOT this_actor.name CONTAINS $this_actorsConnection_args_where_Actorparam0
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -160,10 +157,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"name_NOT_CONTAINS\\": \\"Tom\\"
-                },
-                \\"name_NOT_CONTAINS\\": \\"Tom\\",
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Tom\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -204,7 +198,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name STARTS WITH $this_actorsConnection.args.where.node.name_STARTS_WITH
+            WHERE this_actor.name STARTS WITH $this_actorsConnection_args_where_Actorparam0
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -215,10 +209,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"name_STARTS_WITH\\": \\"Tom\\"
-                },
-                \\"name_STARTS_WITH\\": \\"Tom\\",
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Tom\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -259,7 +250,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE (NOT this_actor.name STARTS WITH $this_actorsConnection.args.where.node.name_NOT_STARTS_WITH)
+            WHERE NOT this_actor.name STARTS WITH $this_actorsConnection_args_where_Actorparam0
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -270,10 +261,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"name_NOT_STARTS_WITH\\": \\"Tom\\"
-                },
-                \\"name_NOT_STARTS_WITH\\": \\"Tom\\",
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Tom\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -314,7 +302,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name ENDS WITH $this_actorsConnection.args.where.node.name_ENDS_WITH
+            WHERE this_actor.name ENDS WITH $this_actorsConnection_args_where_Actorparam0
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -325,10 +313,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"name_ENDS_WITH\\": \\"Hanks\\"
-                },
-                \\"name_ENDS_WITH\\": \\"Hanks\\",
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Hanks\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -369,7 +354,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE (NOT this_actor.name ENDS WITH $this_actorsConnection.args.where.node.name_NOT_ENDS_WITH)
+            WHERE NOT this_actor.name ENDS WITH $this_actorsConnection_args_where_Actorparam0
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -380,10 +365,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"name_NOT_ENDS_WITH\\": \\"Hanks\\"
-                },
-                \\"name_NOT_ENDS_WITH\\": \\"Hanks\\",
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Hanks\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -424,7 +406,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name =~ $this_actorsConnection.args.where.node.name_MATCHES
+            WHERE this_actor.name =~ $this_actorsConnection_args_where_Actorparam0
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -435,10 +417,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"name_MATCHES\\": \\"Tom.+\\"
-                },
-                \\"name_MATCHES\\": \\"Tom.+\\",
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Tom.+\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

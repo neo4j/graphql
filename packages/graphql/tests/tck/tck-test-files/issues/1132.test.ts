@@ -124,7 +124,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_targets0_rel:HAS_TARGET]->(this_disconnect_targets0:Target)
-            WHERE this_disconnect_targets0.id = $updateSources.args.disconnect.targets[0].where.node.id
+            WHERE this_disconnect_targets0.id = $updateSources_args_disconnect_targets0_where_Targetparam0
             WITH this, this_disconnect_targets0, this_disconnect_targets0_rel
             CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $thisSource0_allow_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             FOREACH(_ IN CASE WHEN this_disconnect_targets0 IS NULL THEN [] ELSE [1] END |
@@ -137,10 +137,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"id\\": \\"1\\"
-                },
-                \\"id\\": \\"1\\",
+                \\"updateSources_args_disconnect_targets0_where_Targetparam0\\": \\"1\\",
                 \\"thisSource0_allow_auth_allow0_id\\": \\"1\\",
                 \\"updateSources\\": {
                     \\"args\\": {

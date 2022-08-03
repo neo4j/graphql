@@ -86,7 +86,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> OR", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE ((this_actor.firstName = $this_actorsConnection.args.where.node.OR[0].firstName) OR (this_actor.lastName = $this_actorsConnection.args.where.node.OR[1].lastName))
+            WHERE (this_actor.firstName = $this_actorsConnection_args_where_Actorparam0 OR this_actor.lastName = $this_actorsConnection_args_where_Actorparam1)
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { firstName: this_actor.firstName, lastName: this_actor.lastName } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -97,24 +97,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> OR", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"OR\\": [
-                        {
-                            \\"firstName\\": \\"Tom\\"
-                        },
-                        {
-                            \\"lastName\\": \\"Hanks\\"
-                        }
-                    ]
-                },
-                \\"OR\\": [
-                    {
-                        \\"firstName\\": \\"Tom\\"
-                    },
-                    {
-                        \\"lastName\\": \\"Hanks\\"
-                    }
-                ],
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Tom\\",
+                \\"this_actorsConnection_args_where_Actorparam1\\": \\"Hanks\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

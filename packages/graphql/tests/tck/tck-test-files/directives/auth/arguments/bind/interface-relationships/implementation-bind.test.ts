@@ -264,7 +264,7 @@ describe("Cypher Auth Allow", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
-            WHERE this_content0.id = $updateUsers.args.update.content[0].where.node.id
+            WHERE this_content0.id = $updateUsers_args_update_content0_where_Commentparam0
             CALL apoc.do.when(this_content0 IS NOT NULL, \\"
             WITH this, this_content0
             OPTIONAL MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
@@ -290,7 +290,7 @@ describe("Cypher Auth Allow", () => {
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
-            WHERE this_content0.id = $updateUsers.args.update.content[0].where.node.id
+            WHERE this_content0.id = $updateUsers_args_update_content0_where_Postparam0
             CALL apoc.do.when(this_content0 IS NOT NULL, \\"
             WITH this, this_content0
             OPTIONAL MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
@@ -324,10 +324,7 @@ describe("Cypher Auth Allow", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"id-01\\",
-                \\"node\\": {
-                    \\"id\\": \\"post-id\\"
-                },
-                \\"id\\": \\"post-id\\",
+                \\"updateUsers_args_update_content0_where_Commentparam0\\": \\"post-id\\",
                 \\"this_update_content0_creator0_id\\": \\"not bound\\",
                 \\"this_content0_creator0_auth_bind0_id\\": \\"id-01\\",
                 \\"auth\\": {
@@ -342,6 +339,7 @@ describe("Cypher Auth Allow", () => {
                         \\"sub\\": \\"id-01\\"
                     }
                 },
+                \\"updateUsers_args_update_content0_where_Postparam0\\": \\"post-id\\",
                 \\"this_content0_auth_bind0_creator_id\\": \\"id-01\\",
                 \\"this_auth_bind0_id\\": \\"id-01\\",
                 \\"updateUsers\\": {
@@ -460,7 +458,7 @@ describe("Cypher Auth Allow", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
-            WHERE this_disconnect_content0.id = $updateUsers.args.disconnect.content[0].where.node.id
+            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Commentparam0
             FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
@@ -470,7 +468,7 @@ describe("Cypher Auth Allow", () => {
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
-            WHERE this_disconnect_content0.id = $updateUsers.args.disconnect.content[0].where.node.id
+            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Postparam0
             FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
@@ -484,11 +482,9 @@ describe("Cypher Auth Allow", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"user-id\\",
-                \\"node\\": {
-                    \\"id\\": \\"content-id\\"
-                },
-                \\"id\\": \\"content-id\\",
+                \\"updateUsers_args_disconnect_content0_where_Commentparam0\\": \\"content-id\\",
                 \\"this_disconnect_content0User0_bind_auth_bind0_id\\": \\"id-01\\",
+                \\"updateUsers_args_disconnect_content0_where_Postparam0\\": \\"content-id\\",
                 \\"this_disconnect_content0Post1_bind_auth_bind0_creator_id\\": \\"id-01\\",
                 \\"updateUsers\\": {
                     \\"args\\": {

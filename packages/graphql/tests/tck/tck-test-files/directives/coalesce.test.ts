@@ -220,7 +220,7 @@ describe("Cypher coalesce()", () => {
             CALL {
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
-            WHERE coalesce(this_movie.status, \\"ACTIVE\\") = $this_moviesConnection.args.where.node.status
+            WHERE coalesce(this_movie.status, \\"ACTIVE\\") = $this_moviesConnection_args_where_Movieparam0
             WITH collect({ node: { id: this_movie.id, status: this_movie.status } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -231,10 +231,7 @@ describe("Cypher coalesce()", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"status\\": \\"ACTIVE\\"
-                },
-                \\"status\\": \\"ACTIVE\\",
+                \\"this_moviesConnection_args_where_Movieparam0\\": \\"ACTIVE\\",
                 \\"this_moviesConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

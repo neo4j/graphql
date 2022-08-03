@@ -74,10 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_has_genre_relationship:HAS_GENRE]-(this_Movie:Movie)
-            WHERE apoc.cypher.runFirstColumn(\\"RETURN exists((this_Movie)-[:HAS_GENRE]->(:Genre))
-            AND any(this_Movie_Genre_map IN [(this_Movie)-[this_Movie_Genre_MovieGenresRelationship:HAS_GENRE]->(this_Movie_Genre:Genre) | { node: this_Movie_Genre, relationship: this_Movie_Genre_MovieGenresRelationship } ] WHERE
-            this_Movie_Genre_map.node.name = $this_moviesConnection.args.where.node._on.Movie.genresConnection_SOME.node.name
-            )\\", { this_Movie: this_Movie, this_moviesConnection: $this_moviesConnection }, false)
+            WHERE size([(this_Movie)-[this_moviesConnection_args_where_Moviethis0:HAS_GENRE]->(this_moviesConnection_args_where_Moviethis1:\`Genre\`) WHERE this_moviesConnection_args_where_Moviethis1.name = $this_moviesConnection_args_where_Movieparam0 | 1]) > 0
             WITH { node: { __resolveType: \\"Movie\\" } } AS edge
             RETURN edge
             }
@@ -89,22 +86,7 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"_on\\": {
-                        \\"Movie\\": {
-                            \\"genresConnection\\": {
-                                \\"node\\": {
-                                    \\"name\\": \\"Action\\"
-                                },
-                                \\"name\\": \\"Action\\"
-                            },
-                            \\"node\\": {
-                                \\"name\\": \\"Action\\"
-                            },
-                            \\"name\\": \\"Action\\"
-                        }
-                    }
-                },
+                \\"this_moviesConnection_args_where_Movieparam0\\": \\"Action\\",
                 \\"this_moviesConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

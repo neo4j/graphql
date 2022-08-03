@@ -236,7 +236,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             WITH this
             MATCH (this)-[this_has_post_relationship:HAS_POST]->(this_post:Post)
-            WHERE this_post.id = $this_postsConnection.args.where.node.id AND exists((this_post)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_where0_creator_id)
+            WHERE this_post.id = $this_postsConnection_args_where_Postparam0 AND exists((this_post)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_where0_creator_id)
             WITH collect({ node: { content: this_post.content } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -248,10 +248,7 @@ describe("Cypher Auth Where", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"node\\": {
-                    \\"id\\": \\"some-id\\"
-                },
-                \\"id\\": \\"some-id\\",
+                \\"this_postsConnection_args_where_Postparam0\\": \\"some-id\\",
                 \\"this_post_auth_where0_creator_id\\": \\"id-01\\",
                 \\"this_postsConnection\\": {
                     \\"args\\": {
@@ -412,7 +409,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             WITH this
             MATCH (this)-[this_has_post_relationship:HAS_POST]->(this_Post:Post)
-            WHERE this_Post.id = $this_contentConnection.args.where.Post.node.id AND exists((this_Post)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_Post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)
+            WHERE this_Post.id = $this_contentConnection_args_where_Post_Postparam0 AND exists((this_Post)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_Post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)
             WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
             RETURN edge
             }
@@ -426,10 +423,7 @@ describe("Cypher Auth Where", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"node\\": {
-                    \\"id\\": \\"some-id\\"
-                },
-                \\"id\\": \\"some-id\\",
+                \\"this_contentConnection_args_where_Post_Postparam0\\": \\"some-id\\",
                 \\"this_Post_auth_where0_creator_id\\": \\"id-01\\",
                 \\"this_contentConnection\\": {
                     \\"args\\": {
@@ -1044,7 +1038,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post)
-            WHERE this_posts0_disconnect0.id = $updateUsers.args.update.posts[0].disconnect[0].where.node.id AND exists((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id)
+            WHERE this_posts0_disconnect0.id = $updateUsers_args_update_posts0_disconnect0_where_Postparam0 AND exists((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id)
             FOREACH(_ IN CASE WHEN this_posts0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_posts0_disconnect0_rel
             )
@@ -1056,10 +1050,7 @@ describe("Cypher Auth Where", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"node\\": {
-                    \\"id\\": \\"new-id\\"
-                },
-                \\"id\\": \\"new-id\\",
+                \\"updateUsers_args_update_posts0_disconnect0_where_Postparam0\\": \\"new-id\\",
                 \\"this_posts0_disconnect0_auth_where0_creator_id\\": \\"id-01\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
@@ -1164,7 +1155,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
-            WHERE this_disconnect_posts0.id = $updateUsers.args.disconnect.posts[0].where.node.id AND exists((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_posts0_auth_where0_creator_id)
+            WHERE this_disconnect_posts0.id = $updateUsers_args_disconnect_posts0_where_Postparam0 AND exists((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_posts0_auth_where0_creator_id)
             FOREACH(_ IN CASE WHEN this_disconnect_posts0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_posts0_rel
             )
@@ -1176,10 +1167,7 @@ describe("Cypher Auth Where", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"node\\": {
-                    \\"id\\": \\"some-id\\"
-                },
-                \\"id\\": \\"some-id\\",
+                \\"updateUsers_args_disconnect_posts0_where_Postparam0\\": \\"some-id\\",
                 \\"this_disconnect_posts0_auth_where0_creator_id\\": \\"id-01\\",
                 \\"updateUsers\\": {
                     \\"args\\": {

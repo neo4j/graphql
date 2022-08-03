@@ -301,7 +301,7 @@ describe("Cypher Auth Where with Roles", () => {
             CALL {
             WITH this
             MATCH (this)-[this_has_post_relationship:HAS_POST]->(this_post:Post)
-            WHERE this_post.id = $this_postsConnection.args.where.node.id AND (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND exists((this_post)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_where0_creator_id))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))
+            WHERE this_post.id = $this_postsConnection_args_where_Postparam0 AND (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND exists((this_post)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_where0_creator_id))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))
             CALL apoc.util.validate(NOT (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { content: this_post.content } }) AS edges
             UNWIND edges as edge
@@ -314,10 +314,7 @@ describe("Cypher Auth Where with Roles", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"node\\": {
-                    \\"id\\": \\"some-id\\"
-                },
-                \\"id\\": \\"some-id\\",
+                \\"this_postsConnection_args_where_Postparam0\\": \\"some-id\\",
                 \\"this_post_auth_where0_creator_id\\": \\"id-01\\",
                 \\"this_postsConnection\\": {
                     \\"args\\": {
@@ -531,7 +528,7 @@ describe("Cypher Auth Where with Roles", () => {
             CALL {
             WITH this
             MATCH (this)-[this_has_post_relationship:HAS_POST]->(this_Post:Post)
-            WHERE this_Post.id = $this_contentConnection.args.where.Post.node.id AND (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND exists((this_Post)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_Post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))
+            WHERE this_Post.id = $this_contentConnection_args_where_Post_Postparam0 AND (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND exists((this_Post)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_Post)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))
             CALL apoc.util.validate(NOT (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
             RETURN edge
@@ -546,10 +543,7 @@ describe("Cypher Auth Where with Roles", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"node\\": {
-                    \\"id\\": \\"some-id\\"
-                },
-                \\"id\\": \\"some-id\\",
+                \\"this_contentConnection_args_where_Post_Postparam0\\": \\"some-id\\",
                 \\"this_Post_auth_where0_creator_id\\": \\"id-01\\",
                 \\"this_contentConnection\\": {
                     \\"args\\": {
@@ -1316,7 +1310,7 @@ describe("Cypher Auth Where with Roles", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post)
-            WHERE this_posts0_disconnect0.id = $updateUsers.args.update.posts[0].disconnect[0].where.node.id AND (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND exists((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))
+            WHERE this_posts0_disconnect0.id = $updateUsers_args_update_posts0_disconnect0_where_Postparam0 AND (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND exists((this_posts0_disconnect0)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_posts0_disconnect0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_posts0_disconnect0_auth_where0_creator_id))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))
             WITH this, this_posts0_disconnect0, this_posts0_disconnect0_rel
             CALL apoc.util.validate(NOT (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr)))) AND ((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             FOREACH(_ IN CASE WHEN this_posts0_disconnect0 IS NULL THEN [] ELSE [1] END |
@@ -1330,10 +1324,7 @@ describe("Cypher Auth Where with Roles", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"node\\": {
-                    \\"id\\": \\"new-id\\"
-                },
-                \\"id\\": \\"new-id\\",
+                \\"updateUsers_args_update_posts0_disconnect0_where_Postparam0\\": \\"new-id\\",
                 \\"this_posts0_disconnect0_auth_where0_creator_id\\": \\"id-01\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
@@ -1464,7 +1455,7 @@ describe("Cypher Auth Where with Roles", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
-            WHERE this_disconnect_posts0.id = $updateUsers.args.disconnect.posts[0].where.node.id AND (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND exists((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_posts0_auth_where0_creator_id))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))
+            WHERE this_disconnect_posts0.id = $updateUsers_args_disconnect_posts0_where_Postparam0 AND (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND exists((this_disconnect_posts0)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_posts0_auth_where0_creator_id))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))
             WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
             CALL apoc.util.validate(NOT (((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr)))) AND ((any(r IN [\\"user\\"] WHERE any(rr IN $auth.roles WHERE r = rr))) OR (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             FOREACH(_ IN CASE WHEN this_disconnect_posts0 IS NULL THEN [] ELSE [1] END |
@@ -1478,10 +1469,7 @@ describe("Cypher Auth Where with Roles", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"node\\": {
-                    \\"id\\": \\"some-id\\"
-                },
-                \\"id\\": \\"some-id\\",
+                \\"updateUsers_args_disconnect_posts0_where_Postparam0\\": \\"some-id\\",
                 \\"this_disconnect_posts0_auth_where0_creator_id\\": \\"id-01\\",
                 \\"updateUsers\\": {
                     \\"args\\": {

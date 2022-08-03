@@ -93,7 +93,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE distance(this_acted_in_relationship.location, point($this_actorsConnection.args.where.edge.location_DISTANCE.point)) = $this_actorsConnection.args.where.edge.location_DISTANCE.distance
+            WHERE distance(this_acted_in_relationship.location, point($this_actorsConnection_args_where_Actorparam0.point)) = $this_actorsConnection_args_where_Actorparam0.distance
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, location: apoc.cypher.runFirstColumn('RETURN
             CASE
             	WHEN this_acted_in_relationship.location IS NOT NULL THEN { point: this_acted_in_relationship.location }
@@ -108,14 +108,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"edge\\": {
-                    \\"location_DISTANCE\\": {
-                        \\"point\\": {
-                            \\"longitude\\": 1,
-                            \\"latitude\\": 2
-                        },
-                        \\"distance\\": 3
-                    }
+                \\"this_actorsConnection_args_where_Actorparam0\\": {
+                    \\"point\\": {
+                        \\"longitude\\": 1,
+                        \\"latitude\\": 2
+                    },
+                    \\"distance\\": 3
                 },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {

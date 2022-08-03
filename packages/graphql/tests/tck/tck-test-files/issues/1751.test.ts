@@ -95,12 +95,6 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Google\\",
-                \\"node\\": {
-                    \\"aggr_count\\": {
-                        \\"low\\": 1,
-                        \\"high\\": 0
-                    }
-                },
                 \\"aggr_count\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
