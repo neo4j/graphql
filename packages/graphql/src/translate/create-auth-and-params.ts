@@ -25,7 +25,8 @@ import ContextParser from "../utils/context-parser";
 import { isString } from "../utils/utils";
 import { NodeAuth } from "../classes/NodeAuth";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
-import { AuthBuilder } from "./create-auth-and-params-cypher";
+import mapToDbProperty from "../utils/map-to-db-property";
+import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 
 interface Allow {
     varName: string;
@@ -128,12 +129,12 @@ function createSubPredicate({
     const authParam = new CypherBuilder.NamedParam("auth");
 
     if (!skipRoles && authRule.roles) {
-        const rolesPredicate = AuthBuilder.createRolesPredicate(authRule.roles, authParam.property("roles"));
+        const rolesPredicate = createRolesPredicate(authRule.roles, authParam.property("roles"));
         thisPredicates.push(rolesPredicate);
     }
 
     if (!skipIsAuthenticated && (authRule.isAuthenticated === true || authRule.isAuthenticated === false)) {
-        const authenticatedPredicate = AuthBuilder.createAuthenticatedPredicate(
+        const authenticatedPredicate = createAuthenticatedPredicate(
             authRule.isAuthenticated,
             authParam.property("isAuthenticated")
         );
@@ -295,7 +296,7 @@ function createAuthPredicate({
             if (paramValue === undefined && allowUnauthenticated !== true) {
                 throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
             }
-            const fieldPredicate = AuthBuilder.createAuthField({
+            const fieldPredicate = createAuthField({
                 param: new CypherBuilder.NamedParam(`${chainStr}_${key}`, paramValue), // TODO: change
                 key,
                 node,
@@ -347,4 +348,60 @@ function createAuthPredicate({
     });
 
     return CypherBuilder.and(...predicates);
+}
+
+function createRolesPredicate(
+    roles: string[],
+    rolesParam: CypherBuilder.Param | CypherBuilder.PropertyRef
+): CypherBuilder.PredicateFunction {
+    const roleVar = new CypherBuilder.Variable();
+    const rolesList = new CypherBuilder.Literal(roles);
+
+    const roleInParamPredicate = isValueInListCypher(roleVar, rolesParam);
+
+    const rolesInListComprehension = CypherBuilder.any(roleVar, rolesList, roleInParamPredicate);
+
+    return rolesInListComprehension;
+}
+
+function createAuthenticatedPredicate(
+    authenticated: boolean,
+    authenticatedParam: CypherBuilder.Variable | CypherBuilder.PropertyRef
+): CypherBuilder.Predicate {
+    const authenticatedPredicate = CypherBuilder.not(
+        CypherBuilder.eq(authenticatedParam, new CypherBuilder.Literal(authenticated))
+    );
+
+    return new CypherBuilder.apoc.ValidatePredicate(authenticatedPredicate, AUTH_UNAUTHENTICATED_ERROR);
+}
+
+function createAuthField({
+    node,
+    key,
+    nodeRef,
+    param,
+}: {
+    node: Node;
+    key: string;
+    nodeRef: CypherBuilder.Node;
+    param: CypherBuilder.Param;
+}): CypherBuilder.Predicate {
+    const dbFieldName = mapToDbProperty(node, key);
+    const fieldPropertyRef = nodeRef.property(dbFieldName);
+    if (param.value === undefined) {
+        return new CypherBuilder.Literal(false);
+    }
+
+    if (param.value === null) {
+        return CypherBuilder.isNull(fieldPropertyRef);
+    }
+
+    const isNotNull = CypherBuilder.isNotNull(fieldPropertyRef);
+    const equalsToParam = CypherBuilder.eq(fieldPropertyRef, param);
+    return CypherBuilder.and(isNotNull, equalsToParam);
+}
+
+function isValueInListCypher(value: CypherBuilder.Variable, list: CypherBuilder.Expr): CypherBuilder.PredicateFunction {
+    const listItemVar = new CypherBuilder.Variable();
+    return CypherBuilder.any(listItemVar, list, CypherBuilder.eq(listItemVar, value));
 }
