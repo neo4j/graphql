@@ -100,7 +100,7 @@ export function createConnectionOperation({
     return CypherBuilder.and(...operations) as CypherBuilder.BooleanOp | undefined;
 }
 
-function createConnectionWherePropertyOperation({
+export function createConnectionWherePropertyOperation({
     context,
     whereInput,
     relationshipRef,
