@@ -250,8 +250,6 @@ function createAuthPredicate({
     const predicates: CypherBuilder.Predicate[] = [];
 
     Object.entries(rule[kind] as any).forEach(([key, value]) => {
-        // AND / OR
-
         if (isPredicateJoin(key)) {
             const inner: CypherBuilder.Predicate[] = [];
 
@@ -282,7 +280,7 @@ function createAuthPredicate({
         }
 
         const authableField = node.authableFields.find((field) => field.fieldName === key);
-        // FIELDS
+
         if (authableField) {
             const jwtPath = isString(value) ? ContextParser.parseTag(value, "jwt") : undefined;
             let ctxPath = isString(value) ? ContextParser.parseTag(value, "context") : undefined;
@@ -308,7 +306,7 @@ function createAuthPredicate({
         }
 
         const relationField = node.relationFields.find((x) => key === x.fieldName);
-        // ON RELATION FIELDS
+
         if (relationField) {
             const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
             const inStr = relationField.direction === "IN" ? "<-" : "-";
@@ -316,16 +314,14 @@ function createAuthPredicate({
             const relTypeStr = `[:${relationField.type}]`;
             const relationVarName = relationField.fieldName;
             const labels = refNode.getLabelString(context);
-
+            // TODO: move to cypher builder properly
             Object.entries(value as any).forEach(([k, v]: [string, any]) => {
-                const resultCypher = new CypherBuilder.RawCypher(() => {
-                    return [
-                        `exists((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
-                        `AND ${
-                            kind === "allow" ? "any" : "all"
-                        }(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}${labels}) | ${relationVarName}] WHERE `,
-                    ].join(" ");
-                });
+                const resultStr = [
+                    `exists((${varName})${inStr}${relTypeStr}${outStr}(${labels}))`,
+                    `AND ${
+                        kind === "allow" ? "any" : "all"
+                    }(${relationVarName} IN [(${varName})${inStr}${relTypeStr}${outStr}(${relationVarName}${labels}) | ${relationVarName}] WHERE `,
+                ].join(" ");
 
                 const authPredicate = createAuthPredicate({
                     node: refNode,
@@ -339,13 +335,12 @@ function createAuthPredicate({
                     kind,
                 });
                 if (!authPredicate) throw new Error("Invalid predicate");
-                const extraCypher = new CypherBuilder.RawCypher(")");
+
                 predicates.push(
-                    CypherBuilder.concat(
-                        resultCypher,
-                        authPredicate as CypherBuilder.Clause,
-                        extraCypher
-                    ) as CypherBuilder.Predicate
+                    new CypherBuilder.RawCypher((env) => {
+                        const authPredicateStr = authPredicate.getCypher(env);
+                        return `${resultStr} ${authPredicateStr} )`;
+                    })
                 );
             });
         }

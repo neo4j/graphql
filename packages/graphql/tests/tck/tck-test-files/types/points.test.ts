@@ -100,7 +100,7 @@ describe("Cypher Points", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
-            WHERE NOT this.points = [var0 IN $param0 | point(var0)]
+            WHERE NOT (this.points = [var0 IN $param0 | point(var0)])
             RETURN this { points: apoc.cypher.runFirstColumn('RETURN
             CASE
             	WHEN this.points IS NOT NULL THEN [p in this.points | { point:p }]
@@ -178,7 +178,7 @@ describe("Cypher Points", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
-            WHERE NOT point($param0) IN this.points
+            WHERE NOT (point($param0) IN this.points)
             RETURN this { points: apoc.cypher.runFirstColumn('RETURN
             CASE
             	WHEN this.points IS NOT NULL THEN [p in this.points | { point:p, crs: p.crs }]

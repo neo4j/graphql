@@ -63,7 +63,13 @@ class NotOp extends BooleanOp {
 
     public getCypher(env: CypherEnvironment): string {
         const childStr = this.child.getCypher(env);
-        return `${this.operator} ${childStr}`;
+
+        // This check is just to avoid double parenthesis (e.g. "NOT ((a AND b))" ), both options are valid cypher
+        if (this.child instanceof BinaryOp) {
+            return `${this.operator} ${childStr}`;
+        }
+
+        return `${this.operator} (${childStr})`;
     }
 }
 

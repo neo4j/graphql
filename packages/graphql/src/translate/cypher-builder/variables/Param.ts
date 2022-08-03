@@ -28,6 +28,11 @@ export class Param<T = any> extends Variable {
         this.value = value;
     }
 
+    /** Defines if the Param has a value that needs to be returned by the builder */
+    public get hasValue(): boolean {
+        return this.value !== undefined;
+    }
+
     public getCypher(env: CypherEnvironment): string {
         if (this.isNull) {
             return "NULL";
