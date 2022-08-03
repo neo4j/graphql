@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "./CypherASTNode";
 import { stringifyObject } from "../utils/stringify-object";
 import { padLeft } from "./utils";
 import type { NodeRef } from "./variables/NodeRef";
 import type { RelationshipRef } from "./variables/RelationshipRef";
 import type { CypherEnvironment } from "./Environment";
 import type { Param } from "./variables/Param";
+import type { CypherCompilable } from "./types";
 
 export type MatchableElement = NodeRef | RelationshipRef;
 
@@ -49,13 +49,12 @@ type MatchRelationshipParams = {
 
 export type MatchParams<T extends MatchableElement> = T extends NodeRef ? ParamsRecord : MatchRelationshipParams;
 
-export class Pattern<T extends MatchableElement = any> extends CypherASTNode {
+export class Pattern<T extends MatchableElement = any> implements CypherCompilable {
     public readonly matchElement: T;
     private parameters: MatchParams<T>;
     private options: MatchPatternOptions;
 
     constructor(input: T, options?: MatchPatternOptions) {
-        super();
         this.matchElement = input;
         this.parameters = {};
 

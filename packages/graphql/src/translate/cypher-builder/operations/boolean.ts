@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { filterTruthy } from "../../../utils/utils";
 import type { Exists, RawCypher } from "../CypherBuilder";
 import type { CypherEnvironment } from "../Environment";
 import type { ComparisonOp } from "./comparison";
@@ -69,13 +70,14 @@ class NotOp extends BooleanOp {
     }
 }
 
-export function and(left: BooleanOpChild, right: BooleanOpChild, ...extra: BooleanOpChild[]): BooleanOp;
-export function and(...ops: BooleanOpChild[]): BooleanOpChild | BooleanOp | undefined;
-export function and(...ops: BooleanOpChild[]): BooleanOp | BooleanOpChild | undefined {
-    const op1 = ops.shift();
-    const op2 = ops.shift();
+export function and(left: BooleanOpChild, ...extra: Array<BooleanOpChild | undefined>): BooleanOp;
+export function and(...ops: Array<BooleanOpChild | undefined>): BooleanOp | BooleanOpChild | undefined;
+export function and(...ops: Array<BooleanOpChild | undefined>): BooleanOp | BooleanOpChild | undefined {
+    const filteredOprs = filterTruthy(ops);
+    const op1 = filteredOprs.shift();
+    const op2 = filteredOprs.shift();
     if (op1 && op2) {
-        return new BinaryOp("AND", op1, op2, ...ops);
+        return new BinaryOp("AND", op1, op2, ...filteredOprs);
     }
     return op1;
 }
@@ -84,13 +86,14 @@ export function not(child: BooleanOpChild): BooleanOp {
     return new NotOp(child);
 }
 
-export function or(left: BooleanOpChild, right: BooleanOpChild, ...extra: BooleanOpChild[]): BooleanOp;
-export function or(...ops: BooleanOpChild[]): BooleanOpChild | BooleanOp | undefined;
-export function or(...ops: BooleanOpChild[]): BooleanOp | BooleanOpChild | undefined {
-    const op1 = ops.shift();
-    const op2 = ops.shift();
+export function or(left: BooleanOpChild, ...extra: Array<BooleanOpChild | undefined>): BooleanOp;
+export function or(...ops: Array<BooleanOpChild | undefined>): BooleanOp | BooleanOpChild | undefined;
+export function or(...ops: Array<BooleanOpChild | undefined>): BooleanOp | BooleanOpChild | undefined {
+    const filteredOprs = filterTruthy(ops);
+    const op1 = filteredOprs.shift();
+    const op2 = filteredOprs.shift();
     if (op1 && op2) {
-        return new BinaryOp("OR", op1, op2, ...ops);
+        return new BinaryOp("OR", op1, op2, ...filteredOprs);
     }
     return op1;
 }

@@ -22,6 +22,7 @@ import { Projection, ProjectionColumn } from "../sub-clauses/Projection";
 import { compileCypherIfExists } from "../utils";
 import { Clause } from "./Clause";
 import { WithOrder } from "./mixins/WithOrder";
+import { WithReturn } from "./mixins/WithReturn";
 import { applyMixins } from "./utils/apply-mixin";
 
 export class With extends Clause {
@@ -39,10 +40,12 @@ export class With extends Clause {
     public getCypher(env: CypherEnvironment): string {
         const projectionStr = this.projection.getCypher(env);
         const orderByStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });
-        return `WITH ${projectionStr}${orderByStr}`;
+        const returnStr = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
+
+        return `WITH ${projectionStr}${orderByStr}${returnStr}`;
     }
 }
 
-export interface With extends WithOrder {}
+export interface With extends WithOrder, WithReturn {}
 
-applyMixins(With, [WithOrder]);
+applyMixins(With, [WithOrder, WithReturn]);

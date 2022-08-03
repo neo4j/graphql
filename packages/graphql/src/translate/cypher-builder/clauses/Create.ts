@@ -36,7 +36,6 @@ export class Create extends Clause {
     constructor(node: NodeRef, params: Params = {}, parent?: Clause) {
         super(parent);
         this.pattern = new Pattern(node).withParams(params);
-        this.addChildren(this.pattern);
         this.setSubClause = new SetClause(this);
     }
 
