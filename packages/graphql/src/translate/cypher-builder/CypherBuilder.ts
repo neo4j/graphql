@@ -28,7 +28,7 @@ export { With } from "./clauses/With";
 export { Unwind } from "./clauses/Unwind";
 
 // Clauses-like things
-export { Exists } from "./Exists";
+export { Exists } from "./sub-clauses/Exists";
 export { concat } from "./clauses/utils/concat";
 
 // Procedures
