@@ -98,28 +98,28 @@ describe("createDisconnectAndParams", () => {
             parameterPrefix: "this", // TODO
         });
 
-        expect(trimmer(result[0])).toEqual(
-            trimmer(`
-            WITH this
+        expect(result[0]).toMatchInlineSnapshot(`
+            "WITH this
             CALL {
-                WITH this
-                OPTIONAL MATCH (this)-[this0_rel:SIMILAR]->(this0:Movie)
-                WHERE this0.title = $this[0].where.node.title
-                FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END | DELETE this0_rel )
-
-                WITH this, this0
-                CALL {
-                    WITH this, this0
-                    OPTIONAL MATCH (this0)-[this0_similarMovies0_rel:SIMILAR]->(this0_similarMovies0:Movie)
-                    WHERE this0_similarMovies0.title = $this[0].disconnect.similarMovies[0].where.node.title
-                    FOREACH(_ IN CASE WHEN this0_similarMovies0 IS NULL THEN [] ELSE [1] END | DELETE this0_similarMovies0_rel )
-                    RETURN count(*) AS _
-                }
-
-                RETURN count(*) AS _
+            WITH this
+            OPTIONAL MATCH (this)-[this0_rel:SIMILAR]->(this0:Movie)
+            WHERE this0.title = $this0_where_Movieparam0
+            FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END | 
+            DELETE this0_rel
+            )
+            WITH this, this0
+            CALL {
+            WITH this, this0
+            OPTIONAL MATCH (this0)-[this0_similarMovies0_rel:SIMILAR]->(this0_similarMovies0:Movie)
+            WHERE this0_similarMovies0.title = $this0_disconnect_similarMovies0_where_Movieparam0
+            FOREACH(_ IN CASE WHEN this0_similarMovies0 IS NULL THEN [] ELSE [1] END | 
+            DELETE this0_similarMovies0_rel
+            )
+            RETURN count(*) AS _
             }
-            `)
-        );
+            RETURN count(*) AS _
+            }"
+        `);
 
         expect(result[1]).toMatchObject({});
     });
