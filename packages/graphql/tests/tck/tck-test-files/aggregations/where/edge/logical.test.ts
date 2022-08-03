@@ -67,9 +67,9 @@ describe("Cypher Aggregations where edge with Logical AND + OR", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN (aggr_edge.someFloat = $aggr_edge_AND_0_someFloat_EQUAL AND aggr_edge.someFloat = $aggr_edge_AND_1_someFloat_EQUAL)
-            \\", { this: this, aggr_edge_AND_0_someFloat_EQUAL: $aggr_edge_AND_0_someFloat_EQUAL, aggr_edge_AND_1_someFloat_EQUAL: $aggr_edge_AND_1_someFloat_EQUAL }, false )
+            \\", { this: this, aggr_edge_AND_0_someFloat_EQUAL: $aggr_edge_AND_0_someFloat_EQUAL, aggr_edge_AND_1_someFloat_EQUAL: $aggr_edge_AND_1_someFloat_EQUAL })
             RETURN this { .content } as this"
         `);
 
@@ -97,9 +97,9 @@ describe("Cypher Aggregations where edge with Logical AND + OR", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN (aggr_edge.someFloat = $aggr_edge_OR_0_someFloat_EQUAL OR aggr_edge.someFloat = $aggr_edge_OR_1_someFloat_EQUAL)
-            \\", { this: this, aggr_edge_OR_0_someFloat_EQUAL: $aggr_edge_OR_0_someFloat_EQUAL, aggr_edge_OR_1_someFloat_EQUAL: $aggr_edge_OR_1_someFloat_EQUAL }, false )
+            \\", { this: this, aggr_edge_OR_0_someFloat_EQUAL: $aggr_edge_OR_0_someFloat_EQUAL, aggr_edge_OR_1_someFloat_EQUAL: $aggr_edge_OR_1_someFloat_EQUAL })
             RETURN this { .content } as this"
         `);
 
