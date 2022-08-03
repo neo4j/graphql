@@ -86,7 +86,7 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
             OPTIONAL MATCH (this)-[this_admins0_relationship:HAS_ADMINISTRATOR]->(this_admins0:Admin)
             WHERE apoc.cypher.runFirstColumn(\\" MATCH (this_admins0)<-[aggr_edge:HAS_ADMINISTRATOR]-(aggr_node:Organization)
             RETURN count(aggr_node) = $aggr_count
-            \\", { this_admins0: this_admins0, aggr_count: $this_deleteOrganizations.args.delete.admins[0].where.node.organizationsAggregate.count }, false )
+            \\", { this_admins0: this_admins0, aggr_count: $aggr_count }, false )
             WITH this, collect(DISTINCT this_admins0) as this_admins0_to_delete
             FOREACH(x IN this_admins0_to_delete | DETACH DELETE x)
             DETACH DELETE this"
@@ -95,25 +95,15 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Google\\",
-                \\"this_deleteOrganizations\\": {
-                    \\"args\\": {
-                        \\"delete\\": {
-                            \\"admins\\": [
-                                {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"organizationsAggregate\\": {
-                                                \\"count\\": {
-                                                    \\"low\\": 1,
-                                                    \\"high\\": 0
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
+                \\"node\\": {
+                    \\"aggr_count\\": {
+                        \\"low\\": 1,
+                        \\"high\\": 0
                     }
+                },
+                \\"aggr_count\\": {
+                    \\"low\\": 1,
+                    \\"high\\": 0
                 }
             }"
         `);

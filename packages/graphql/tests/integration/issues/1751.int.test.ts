@@ -104,13 +104,13 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
 
         await session.close();
 
-        // expect(remainingOrgs.records.map((r) => r.toObject())).toIncludeSameMembers([
-        //     { title: "Yahoo" },
-        //     { title: "Altavista" },
-        // ]);
-        // expect(remainingAdmins.records.map((r) => r.toObject())).toIncludeSameMembers([
-        //     { adminId: "my-admin2" },
-        //     { adminId: "my-admin3" },
-        // ]);
+        expect(remainingOrgs.records.map((r) => r.toObject())).toIncludeSameMembers([
+            { title: "Yahoo" },
+            { title: "Altavista" },
+        ]);
+        expect(remainingAdmins.records.map((r) => r.toObject())).toIncludeSameMembers([
+            { adminId: "my-admin2" },
+            { adminId: "my-admin3" },
+        ]);
     });
 });
