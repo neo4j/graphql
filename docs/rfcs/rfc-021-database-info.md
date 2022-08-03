@@ -1,4 +1,4 @@
-# Database info
+# Database info 
 
 ## Problem
 Providing compatibility with multiple Neo4j versions comes with some difficulty.
