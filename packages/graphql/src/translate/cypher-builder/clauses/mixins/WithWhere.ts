@@ -18,30 +18,31 @@
  */
 
 import { ClauseMixin } from "./ClauseMixin";
-import { Where, WhereParams } from "../../sub-clauses/Where";
+import { Where } from "../../sub-clauses/Where";
 import { Variable } from "../../variables/Variable";
 import { and, BooleanOp } from "../../operations/boolean";
 import { PropertyRef } from "../../PropertyRef";
 import { ComparisonOp, eq } from "../../operations/comparison";
+import type { Predicate } from "../../types";
 
 export abstract class WithWhere extends ClauseMixin {
     protected whereSubClause: Where | undefined;
 
-    public where(input: WhereParams): this;
+    public where(input: Predicate): this;
     public where(target: Variable, params: Record<string, Variable>): this;
-    public where(input: WhereParams | Variable, params?: Record<string, Variable>): this {
+    public where(input: Predicate | Variable, params?: Record<string, Variable>): this {
         this.updateOrCreateWhereClause(input, params);
         return this;
     }
 
-    public and(input: WhereParams): this;
+    public and(input: Predicate): this;
     public and(target: Variable, params: Record<string, Variable>): this;
-    public and(input: WhereParams | Variable, params?: Record<string, Variable>): this {
+    public and(input: Predicate | Variable, params?: Record<string, Variable>): this {
         this.updateOrCreateWhereClause(input, params);
         return this;
     }
 
-    private updateOrCreateWhereClause(input: WhereParams | Variable, params?: Record<string, Variable>): void {
+    private updateOrCreateWhereClause(input: Predicate | Variable, params?: Record<string, Variable>): void {
         const whereInput = this.createWhereInput(input, params);
         if (!whereInput) return;
 
@@ -54,9 +55,9 @@ export abstract class WithWhere extends ClauseMixin {
     }
 
     private createWhereInput(
-        input: WhereParams | Variable,
+        input: Predicate | Variable,
         params: Record<string, Variable> | undefined
-    ): WhereParams | undefined {
+    ): Predicate | undefined {
         if (input instanceof Variable) {
             const generatedOp = this.variableAndObjectToOperation(input, params || {});
             return generatedOp;

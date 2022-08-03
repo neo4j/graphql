@@ -17,25 +17,21 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "./Environment";
-import type { Variable } from "./variables/Variable";
+import type { Expr } from "../types";
+import { CypherFunction } from "./CypherFunction";
 
-/** Reference to a Variable property */
-export class PropertyRef {
-    private _variable: Variable;
-    private property: string;
+export function size(expr: Expr): CypherFunction {
+    return new CypherFunction("size", [expr]);
+}
 
-    constructor(variable: Variable, property: string) {
-        this._variable = variable;
-        this.property = property;
-    }
+export function collect(expr: Expr): CypherFunction {
+    return new CypherFunction("collect", [expr]);
+}
 
-    public get variable(): Variable {
-        return this._variable;
-    }
+export function head(expr: Expr): CypherFunction {
+    return new CypherFunction("head", [expr]);
+}
 
-    public getCypher(env: CypherEnvironment): string {
-        const variableStr = this.variable.getCypher(env);
-        return `${variableStr}.${this.property}`;
-    }
+export function last(expr: Expr): CypherFunction {
+    return new CypherFunction("last", [expr]);
 }
