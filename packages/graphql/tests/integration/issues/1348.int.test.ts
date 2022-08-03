@@ -51,26 +51,26 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                 productTitle: String!
                 releatsTo: [Product!]!
             }
-            
+
             type ${testSeries} implements Product {
                 productTitle: String!
                 releatsTo: [Product!]!  @relationship(type: "RELATES_TO", direction: OUT, queryDirection: DEFAULT_UNDIRECTED)
-            
+
                 seasons: [${testSeason}!]!
             }
-            
+
             type ${testSeason} implements Product {
                 productTitle: String!
                 releatsTo: [Product!]!  @relationship(type: "RELATES_TO", direction: OUT, queryDirection: DEFAULT_UNDIRECTED)
-            
+
                 seasonNumber: Int
                 episodes: [${testProgrammeItem}!]!
             }
-            
+
             type ${testProgrammeItem} implements Product {
                 productTitle: String!
                 releatsTo: [Product!]!  @relationship(type: "RELATES_TO", direction: OUT, queryDirection: DEFAULT_UNDIRECTED)
-            
+
                 episodeNumber: Int
             }
         `;
@@ -155,7 +155,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
         const queryResults = await graphqlQuery(query);
         expect(queryResults.errors).toBeUndefined();
         expect(queryResults.data as any).toEqual({
-            [testProgrammeItem.plural]: [
+            [testProgrammeItem.plural]: expect.toIncludeSameMembers([
                 {
                     productTitle: "TestEpisode2",
                     episodeNumber: 2,
@@ -181,7 +181,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                         },
                     ],
                 },
-            ],
+            ]),
         });
     });
 });
