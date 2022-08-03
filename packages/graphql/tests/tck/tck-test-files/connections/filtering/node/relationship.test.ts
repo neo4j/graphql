@@ -90,6 +90,10 @@ describe("Cypher -> Connections -> Filtering -> Node -> Relationship", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"title\\": \\"Forrest Gump\\"
+                },
+                \\"title\\": \\"Forrest Gump\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

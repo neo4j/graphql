@@ -104,6 +104,17 @@ describe("https://github.com/neo4j/graphql/issues/1263", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"_on\\": {
+                        \\"Series\\": {
+                            \\"episodes_GT\\": {
+                                \\"low\\": 50,
+                                \\"high\\": 0
+                            }
+                        }
+                    }
+                },
+                \\"title\\": \\"foo\\",
                 \\"this_actedInConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

@@ -106,6 +106,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"role_CONTAINS\\": \\"Forrest\\"
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -157,6 +160,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"role_NOT_CONTAINS\\": \\"Forrest\\"
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -208,6 +214,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"role_STARTS_WITH\\": \\"Forrest\\"
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -259,6 +268,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"role_NOT_STARTS_WITH\\": \\"Forrest\\"
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -310,6 +322,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"role_ENDS_WITH\\": \\"Gump\\"
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -361,6 +376,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"role_NOT_ENDS_WITH\\": \\"Gump\\"
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -412,6 +430,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"role_MATCHES\\": \\"Forrest.+\\"
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

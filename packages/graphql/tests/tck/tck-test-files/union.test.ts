@@ -266,6 +266,10 @@ describe("Cypher Union", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some movie\\",
+                \\"node\\": {
+                    \\"name\\": \\"some genre\\"
+                },
+                \\"name\\": \\"some genre\\",
                 \\"this_update_search_Genre0_name\\": \\"some new genre\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
@@ -339,6 +343,10 @@ describe("Cypher Union", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some movie\\",
+                \\"node\\": {
+                    \\"name\\": \\"some genre\\"
+                },
+                \\"name\\": \\"some genre\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -403,6 +411,10 @@ describe("Cypher Union", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some movie\\",
+                \\"node\\": {
+                    \\"name\\": \\"some genre\\"
+                },
+                \\"name\\": \\"some genre\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -504,6 +516,10 @@ describe("Cypher Union", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some movie\\",
+                \\"node\\": {
+                    \\"name\\": \\"some genre\\"
+                },
+                \\"name\\": \\"some genre\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"delete\\": {

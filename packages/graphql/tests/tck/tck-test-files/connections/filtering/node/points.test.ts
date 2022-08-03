@@ -110,6 +110,22 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"currentLocation_DISTANCE\\": {
+                        \\"point\\": {
+                            \\"longitude\\": 1,
+                            \\"latitude\\": 2
+                        },
+                        \\"distance\\": 3
+                    }
+                },
+                \\"currentLocation_DISTANCE\\": {
+                    \\"point\\": {
+                        \\"longitude\\": 1,
+                        \\"latitude\\": 2
+                    },
+                    \\"distance\\": 3
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

@@ -132,7 +132,11 @@ describe("Subscriptions metadata on delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"node\\": {
+                    \\"name\\": \\"1\\"
+                },
+                \\"name\\": \\"1\\"
             }"
         `);
     });
@@ -231,7 +235,12 @@ describe("Subscriptions metadata on delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"node\\": {
+                    \\"name\\": \\"Another actor to delete\\"
+                },
+                \\"name\\": \\"Another actor to delete\\",
+                \\"id\\": \\"321\\"
             }"
         `);
     });

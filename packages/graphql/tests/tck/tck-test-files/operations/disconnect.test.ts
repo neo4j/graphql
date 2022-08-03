@@ -191,6 +191,11 @@ describe("Cypher Disconnect", () => {
             "{
                 \\"this_update_id\\": \\"123\\",
                 \\"this_update_name\\": \\"Nested Connect\\",
+                \\"node\\": {
+                    \\"name\\": \\"Red\\"
+                },
+                \\"name\\": \\"Red\\",
+                \\"id\\": \\"33211\\",
                 \\"updateProducts\\": {
                     \\"args\\": {
                         \\"update\\": {

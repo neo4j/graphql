@@ -744,6 +744,10 @@ describe("integration/rfs/003", () => {
                         expect(formatParams(result.params)).toMatchInlineSnapshot(`
                             "{
                                 \\"param0\\": \\"movieId-4\\",
+                                \\"node\\": {
+                                    \\"id\\": \\"some-address\\"
+                                },
+                                \\"id\\": \\"some-address\\",
                                 \\"updateMovies\\": {
                                     \\"args\\": {
                                         \\"delete\\": {
@@ -854,6 +858,10 @@ describe("integration/rfs/003", () => {
                         expect(formatParams(result.params)).toMatchInlineSnapshot(`
                             "{
                                 \\"param0\\": \\"movieId-4\\",
+                                \\"node\\": {
+                                    \\"id\\": \\"some-address\\"
+                                },
+                                \\"id\\": \\"some-address\\",
                                 \\"updateMovies\\": {
                                     \\"args\\": {
                                         \\"delete\\": {
@@ -1191,6 +1199,10 @@ describe("integration/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"param0\\": \\"movieId-5\\",
+                            \\"node\\": {
+                                \\"id\\": \\"directorId-5\\"
+                            },
+                            \\"id\\": \\"directorId-5\\",
                             \\"updateMovies\\": {
                                 \\"args\\": {
                                     \\"disconnect\\": {
@@ -1293,6 +1305,10 @@ describe("integration/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"param0\\": \\"movieId-6\\",
+                            \\"node\\": {
+                                \\"id\\": \\"directorId-6\\"
+                            },
+                            \\"id\\": \\"directorId-6\\",
                             \\"this_connect_director0_node_param0\\": \\"directorId2-6\\",
                             \\"updateMovies\\": {
                                 \\"args\\": {
@@ -1394,6 +1410,10 @@ describe("integration/rfs/003", () => {
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
                             \\"param0\\": \\"movieId-6\\",
+                            \\"node\\": {
+                                \\"id\\": \\"directorId-6\\"
+                            },
+                            \\"id\\": \\"directorId-6\\",
                             \\"this_connect_director0_node_param0\\": \\"directorId2-6\\",
                             \\"updateMovies\\": {
                                 \\"args\\": {

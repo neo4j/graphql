@@ -97,6 +97,16 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"age_LT\\": {
+                        \\"low\\": 60,
+                        \\"high\\": 0
+                    }
+                },
+                \\"age_LT\\": {
+                    \\"low\\": 60,
+                    \\"high\\": 0
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -152,6 +162,16 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"age_LTE\\": {
+                        \\"low\\": 60,
+                        \\"high\\": 0
+                    }
+                },
+                \\"age_LTE\\": {
+                    \\"low\\": 60,
+                    \\"high\\": 0
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -207,6 +227,16 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"age_GT\\": {
+                        \\"low\\": 60,
+                        \\"high\\": 0
+                    }
+                },
+                \\"age_GT\\": {
+                    \\"low\\": 60,
+                    \\"high\\": 0
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -262,6 +292,16 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"age_GTE\\": {
+                        \\"low\\": 60,
+                        \\"high\\": 0
+                    }
+                },
+                \\"age_GTE\\": {
+                    \\"low\\": 60,
+                    \\"high\\": 0
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

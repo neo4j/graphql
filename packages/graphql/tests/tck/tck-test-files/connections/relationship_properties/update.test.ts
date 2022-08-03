@@ -88,6 +88,10 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
+                \\"node\\": {
+                    \\"name\\": \\"Tom Hanks\\"
+                },
+                \\"name\\": \\"Tom Hanks\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -164,6 +168,10 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
+                \\"node\\": {
+                    \\"name\\": \\"Tom Hanks\\"
+                },
+                \\"name\\": \\"Tom Hanks\\",
                 \\"this_update_actors0_name\\": \\"Tom Hanks\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": false,
