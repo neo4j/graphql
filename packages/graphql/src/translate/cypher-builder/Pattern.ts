@@ -94,6 +94,19 @@ export class Pattern<T extends MatchableElement = any> implements CypherCompilab
         return this.getNodeCypher(env, this.matchElement, this.parameters as MatchParams<NodeRef>);
     }
 
+    /** Reverses the pattern relationship, as well as the options */
+    public reverse(reverseRelationship = true) {
+        if (!this.isRelationshipPattern()) throw new Error("Cannot reverse a node pattern");
+        if (reverseRelationship) this.matchElement.reverse();
+        const oldSource = this.options.source;
+        this.options.source = this.options.target;
+        this.options.target = oldSource;
+    }
+
+    private isRelationshipPattern(): this is Pattern<RelationshipRef> {
+        return (this.matchElement as any).source;
+    }
+
     private getRelationshipCypher(env: CypherEnvironment, relationship: RelationshipRef): string {
         const referenceId = this.options?.relationship?.variable ? env.getVariableId(relationship) : "";
 

@@ -18,6 +18,7 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
+import type { Pattern } from "../Pattern";
 import { Where } from "../sub-clauses/Where";
 import type { Expr, Predicate } from "../types";
 import { compileCypherIfExists } from "../utils";
@@ -26,13 +27,13 @@ import { CypherFunction } from "./CypherFunction";
 
 export class PredicateFunction extends CypherFunction {}
 
-class AnyFunction extends PredicateFunction {
+class PredicateFunctionWithPattern extends PredicateFunction {
     private variable: Variable;
     private listExpr: Expr;
     private whereSubClause: Where | undefined;
 
-    constructor(variable: Variable, listExpr: Expr, whereFilter?: Predicate) {
-        super("any");
+    constructor(name: string, variable: Variable, listExpr: Expr, whereFilter?: Predicate) {
+        super(name);
         this.variable = variable;
         this.listExpr = listExpr;
 
@@ -51,5 +52,28 @@ class AnyFunction extends PredicateFunction {
 }
 
 export function any(variable: Variable, listExpr: Expr, whereFilter?: Predicate): PredicateFunction {
-    return new AnyFunction(variable, listExpr, whereFilter);
+    return new PredicateFunctionWithPattern("any", variable, listExpr, whereFilter);
+}
+
+export function all(variable: Variable, listExpr: Expr, whereFilter?: Predicate): PredicateFunction {
+    return new PredicateFunctionWithPattern("all", variable, listExpr, whereFilter);
+}
+
+class ExistsFunction extends PredicateFunction {
+    private pattern: Pattern;
+
+    constructor(pattern: Pattern) {
+        super("exists");
+        this.pattern = pattern;
+    }
+
+    getCypher(env: CypherEnvironment): string {
+        const patternStr = this.pattern.getCypher(env);
+
+        return `exists(${patternStr})`;
+    }
+}
+
+export function exists(pattern: Pattern): PredicateFunction {
+    return new ExistsFunction(pattern);
 }
