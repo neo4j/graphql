@@ -7,13 +7,13 @@ Currently to achieve this every type or union needs to be extended with an `@aut
 
 ## Proposed Solution
 
-Add a configuration option, a boolean, to `Neo4jGraphQLConfig` which allows for an opt-in for global authentication. The default value is `false`.
+Add a configuration/input option, a boolean, to the `JWTPluginInput` for the `Neo4jGraphQLAuthJWTPlugin` which allows for an opt-in for global authentication. The default value is `false`.
 
 ```javascript
 const neoSchema = new Neo4jGraphQL({
     config: {
         enableDebug: false,
-        globalAuthentication: true,
+        ...
     },
     typeDefs: typeDefs,
     driver,
@@ -21,6 +21,7 @@ const neoSchema = new Neo4jGraphQL({
         auth: new Neo4jGraphQLAuthJWTPlugin({
             secret: "1234",
             noVerify: false,
+            globalAuthentication: true,
         }),
     },
 });
@@ -29,7 +30,7 @@ const neoSchema = new Neo4jGraphQL({
 For each request (GraphQL query/mutation/subscription) check the existence of a valid `jwt` token.
 The implementation for the `isAuthenticated` rule in the `@auth` directive checks whether there is any role present in the `jwt` token to determine the authentication state ([ref](https://github.com/neo4j/graphql/blob/dev/packages/graphql/src/translate/create-auth-param.ts#L37)). The implementation for global auth should follow the same principle.
 
-Make sure `noVerify` in the `Neo4jGraphQLAuthJWTPlugin` plugin is not set to `false`. Only verified JWT tokens can be accepted for global authentication. Throw an error on startup of the server in case `noVerify: false` and `globalAuthentication: true`.
+Make sure `noVerify` in the `Neo4jGraphQLAuthJWTPlugin` plugin is not set to `true` when `globalAuthentication` is set to `true`. Only verified JWT tokens can be accepted for global authentication. Throw an error on startup of the server in case `noVerify: true` and `globalAuthentication: true`.
 
 When to perform the check?
 During runtime on every request. [`WrapResolver`](https://github.com/neo4j/graphql/blob/dev/packages/graphql/src/schema/resolvers/wrapper.ts#L41) could be a plausible place to put this logic.
