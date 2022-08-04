@@ -213,7 +213,6 @@ function createElementWhereAndParams({
                             ? `${parameterPrefix}.${fieldName}_${operator}`
                             : `${parameterPrefix}.${fieldName}`,
                         // listPredicates stores all list predicates (SINGLE, ANY, NONE,..) while (recursively) translating the where clauses
-                        listPredicates: [currentListPredicate, ...(listPredicates || [])],
                     });
 
                     resultArr.push(connectionWhere[0]);

@@ -31,7 +31,6 @@ export default function createConnectionWhereAndParams({
     relationship,
     relationshipVariable,
     parameterPrefix,
-    listPredicates,
 }: {
     whereInput: ConnectionWhereArg;
     context: Context;
@@ -40,15 +39,14 @@ export default function createConnectionWhereAndParams({
     relationship: Relationship;
     relationshipVariable: string;
     parameterPrefix: string;
-    listPredicates?: ListPredicate[];
 }): [string, any] {
     const nodeRef = new CypherBuilder.NamedNode(nodeVariable);
-    const relationshipRef = new CypherBuilder.NamedNode(relationshipVariable) as any as CypherBuilder.Relationship; // THIS IS WRONG; just for testing
+    const edgeRef = new CypherBuilder.NamedVariable(relationshipVariable);
 
     const andOp = createConnectionWherePropertyOperation({
         context,
         whereInput,
-        relationshipRef,
+        edgeRef,
         targetNode: nodeRef,
         node,
         edge: relationship,
