@@ -391,6 +391,11 @@ function createRelationshipPredicate({
 
     let predicateFunction: CypherBuilder.PredicateFunction;
     if (kind === "allow") {
+        // clause = `size([${matchPattern} WHERE ${where} | 1]) > 0`;
+
+        // const comprehension=new CypherBuilder.PatternComprehension(matchPattern)
+        // CypherBuilder.size(comprehension)
+
         predicateFunction = CypherBuilder.any(
             targetNodeRef,
             new CypherBuilder.PatternComprehension(innerPattern, targetNodeRef),

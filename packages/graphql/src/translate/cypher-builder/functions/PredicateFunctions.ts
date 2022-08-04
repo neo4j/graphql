@@ -47,7 +47,7 @@ class PredicateFunctionWithPattern extends PredicateFunction {
         const listExprStr = this.listExpr.getCypher(env);
         const varCypher = this.variable.getCypher(env);
 
-        return `any(${varCypher} IN ${listExprStr}${whereStr})`;
+        return `${this.name}(${varCypher} IN ${listExprStr}${whereStr})`;
     }
 }
 
