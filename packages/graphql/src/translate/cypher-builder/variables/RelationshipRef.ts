@@ -67,10 +67,3 @@ export class RelationshipRef extends Variable {
         return this.type ? `:${this.type}` : "";
     }
 }
-
-export class NamedRelationship extends RelationshipRef {
-    constructor(id: string, options: RelationshipInput) {
-        super(options);
-        this.id = id;
-    }
-}

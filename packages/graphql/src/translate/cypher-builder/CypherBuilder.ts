@@ -98,3 +98,4 @@ export type { Expr, Predicate } from "./types";
 export type { CypherFunction as Function } from "./functions/CypherFunction";
 export type { ComprehensionExpr } from "./list/ComprehensionExpr";
 export type { ProjectionColumn } from "./sub-clauses/Projection";
+export type { SetParam } from "./sub-clauses/Set";
