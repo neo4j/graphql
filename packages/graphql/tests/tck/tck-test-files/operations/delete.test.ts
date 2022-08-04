@@ -116,7 +116,11 @@ describe("Cypher Delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"node\\": {
+                    \\"name\\": \\"Actor to delete\\"
+                },
+                \\"name\\": \\"Actor to delete\\"
             }"
         `);
     });
@@ -183,7 +187,11 @@ describe("Cypher Delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"node\\": {
+                    \\"name\\": \\"Another actor to delete\\"
+                },
+                \\"name\\": \\"Another actor to delete\\"
             }"
         `);
     });
@@ -254,7 +262,12 @@ describe("Cypher Delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"node\\": {
+                    \\"id\\": \\"321\\"
+                },
+                \\"name\\": \\"Actor to delete\\",
+                \\"id\\": \\"321\\"
             }"
         `);
     });
@@ -346,7 +359,12 @@ describe("Cypher Delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"node\\": {
+                    \\"name\\": \\"Another actor to delete\\"
+                },
+                \\"name\\": \\"Another actor to delete\\",
+                \\"id\\": \\"321\\"
             }"
         `);
     });

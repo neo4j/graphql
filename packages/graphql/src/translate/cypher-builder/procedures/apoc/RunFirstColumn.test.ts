@@ -34,8 +34,8 @@ describe("RunFirstColumn", () => {
         const apocCall = new CypherBuilder.apoc.RunFirstColumn(subquery, [node]);
 
         expect(apocCall.getCypher(env)).toMatchInlineSnapshot(`
-            "apoc.cypher.runFirstColumn(\\"MATCH (this0:\`Movie\`)
-            RETURN this0\\", { this0: this0 }, true)"
+            "apoc.cypher.runFirstColumnMany(\\"MATCH (this0:\`Movie\`)
+            RETURN this0\\", { this0: this0 })"
         `);
     });
 
@@ -67,10 +67,10 @@ describe("RunFirstColumn", () => {
         expect(cypherResult.cypher).toMatchInlineSnapshot(`
             "MATCH (this0:\`Movie\`)
             WHERE this0.title = $param0
-            RETURN { result: apoc.cypher.runFirstColumn(\\"MATCH (this0)
+            RETURN { result: apoc.cypher.runFirstColumnMany(\\"MATCH (this0)
             SET
                 this0.released = $param1
-            RETURN this0\\", { this0: this0, param1: $param1 }, true) }"
+            RETURN this0\\", { this0: this0, param1: $param1 }) }"
         `);
         expect(cypherResult.params).toMatchInlineSnapshot(`
             Object {

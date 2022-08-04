@@ -207,6 +207,10 @@ describe("Nested Unions", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Movie\\",
+                \\"node\\": {
+                    \\"name\\": \\"Series\\"
+                },
+                \\"name\\": \\"Series\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"disconnect\\": {

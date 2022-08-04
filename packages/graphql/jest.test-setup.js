@@ -1,4 +1,4 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-const { toIncludeSameMembers } = require("jest-extended");
+const jestExtended = require("jest-extended");
 
-expect.extend({ toIncludeSameMembers });
+expect.extend(jestExtended);

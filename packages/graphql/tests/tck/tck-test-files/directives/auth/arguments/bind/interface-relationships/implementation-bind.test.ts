@@ -324,6 +324,10 @@ describe("Cypher Auth Allow", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"id-01\\",
+                \\"node\\": {
+                    \\"id\\": \\"post-id\\"
+                },
+                \\"id\\": \\"post-id\\",
                 \\"this_update_content0_creator0_id\\": \\"not bound\\",
                 \\"this_content0_creator0_auth_bind0_id\\": \\"id-01\\",
                 \\"auth\\": {
@@ -480,6 +484,10 @@ describe("Cypher Auth Allow", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"user-id\\",
+                \\"node\\": {
+                    \\"id\\": \\"content-id\\"
+                },
+                \\"id\\": \\"content-id\\",
                 \\"this_disconnect_content0User0_bind_auth_bind0_id\\": \\"id-01\\",
                 \\"this_disconnect_content0Post1_bind_auth_bind0_creator_id\\": \\"id-01\\",
                 \\"updateUsers\\": {

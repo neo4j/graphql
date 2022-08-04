@@ -125,7 +125,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`ApplicationVariant\`)
             WHERE this.current = $param0
-            WITH this,  apoc.cypher.runFirstColumn(\\"MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id\\", {this: this, auth: $auth}, false) AS relatedId
+            WITH this,  apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id\\", {this: this, auth: $auth}) AS relatedId
             ORDER BY relatedId ASC
             SKIP $this_offset
             LIMIT $this_limit

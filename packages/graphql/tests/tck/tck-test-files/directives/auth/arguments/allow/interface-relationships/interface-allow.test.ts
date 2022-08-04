@@ -464,6 +464,10 @@ describe("@auth allow with interface relationships", () => {
                         }
                     }
                 },
+                \\"node\\": {
+                    \\"id\\": \\"post-id\\"
+                },
+                \\"id\\": \\"post-id\\",
                 \\"this_content_Comment0_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"this_content_Post0_auth_allow0_creator_id\\": \\"user-id\\"
             }"
@@ -517,6 +521,10 @@ describe("@auth allow with interface relationships", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"user-id\\",
+                \\"node\\": {
+                    \\"id\\": \\"post-id\\"
+                },
+                \\"id\\": \\"post-id\\",
                 \\"thisUser0_allow_auth_allow0_id\\": \\"user-id\\",
                 \\"this_disconnect_content0Comment1_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"this_disconnect_content0Post1_allow_auth_allow0_creator_id\\": \\"user-id\\",
@@ -609,6 +617,10 @@ describe("@auth allow with interface relationships", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"user-id\\",
+                \\"node\\": {
+                    \\"id\\": \\"comment-id\\"
+                },
+                \\"id\\": \\"comment-id\\",
                 \\"thisUser0_allow_auth_allow0_id\\": \\"user-id\\",
                 \\"this_disconnect_content0Comment1_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"this_disconnect_content0Post1_allow_auth_allow0_creator_id\\": \\"user-id\\",

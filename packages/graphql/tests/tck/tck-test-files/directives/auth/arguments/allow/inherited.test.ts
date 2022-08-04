@@ -547,6 +547,10 @@ describe("@auth allow when inherited from interface", () => {
                         }
                     }
                 },
+                \\"node\\": {
+                    \\"id\\": \\"post-id\\"
+                },
+                \\"id\\": \\"post-id\\",
                 \\"this_posts0_auth_allow0_creator_id\\": \\"user-id\\"
             }"
         `);
@@ -589,6 +593,10 @@ describe("@auth allow when inherited from interface", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"user-id\\",
+                \\"node\\": {
+                    \\"id\\": \\"post-id\\"
+                },
+                \\"id\\": \\"post-id\\",
                 \\"thisUser0_allow_auth_allow0_id\\": \\"user-id\\",
                 \\"this_disconnect_posts0Post1_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"updateUsers\\": {
@@ -683,6 +691,10 @@ describe("@auth allow when inherited from interface", () => {
                 \\"param0\\": \\"comment-id\\",
                 \\"thisComment0_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"this_post0_disconnect0Post1_allow_auth_allow0_creator_id\\": \\"user-id\\",
+                \\"node\\": {
+                    \\"id\\": \\"user-id\\"
+                },
+                \\"id\\": \\"user-id\\",
                 \\"this_post0_disconnect0Post0_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"this_post0_disconnect0_creator0User1_allow_auth_allow0_id\\": \\"user-id\\",
                 \\"this_auth_allow0_creator_id\\": \\"user-id\\",

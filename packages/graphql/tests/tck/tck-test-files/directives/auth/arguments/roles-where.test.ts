@@ -314,6 +314,10 @@ describe("Cypher Auth Where with Roles", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
+                \\"node\\": {
+                    \\"id\\": \\"some-id\\"
+                },
+                \\"id\\": \\"some-id\\",
                 \\"this_post_auth_where0_creator_id\\": \\"id-01\\",
                 \\"this_postsConnection\\": {
                     \\"args\\": {
@@ -542,6 +546,10 @@ describe("Cypher Auth Where with Roles", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
+                \\"node\\": {
+                    \\"id\\": \\"some-id\\"
+                },
+                \\"id\\": \\"some-id\\",
                 \\"this_Post_auth_where0_creator_id\\": \\"id-01\\",
                 \\"this_contentConnection\\": {
                     \\"args\\": {
@@ -1322,6 +1330,10 @@ describe("Cypher Auth Where with Roles", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
+                \\"node\\": {
+                    \\"id\\": \\"new-id\\"
+                },
+                \\"id\\": \\"new-id\\",
                 \\"this_posts0_disconnect0_auth_where0_creator_id\\": \\"id-01\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
@@ -1466,6 +1478,10 @@ describe("Cypher Auth Where with Roles", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
+                \\"node\\": {
+                    \\"id\\": \\"some-id\\"
+                },
+                \\"id\\": \\"some-id\\",
                 \\"this_disconnect_posts0_auth_where0_creator_id\\": \\"id-01\\",
                 \\"updateUsers\\": {
                     \\"args\\": {

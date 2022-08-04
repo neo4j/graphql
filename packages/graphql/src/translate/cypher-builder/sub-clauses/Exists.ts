@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "./Environment";
-import type { Clause } from "./clauses/Clause";
-import { CypherASTNode } from "./CypherASTNode";
-import { padBlock } from "./utils";
+import type { CypherEnvironment } from "../Environment";
+import type { Clause } from "../clauses/Clause";
+import { CypherASTNode } from "../CypherASTNode";
+import { padBlock } from "../utils";
 
 export class Exists extends CypherASTNode {
     private subQuery: CypherASTNode;

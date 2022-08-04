@@ -138,6 +138,10 @@ describe("Connections Alias", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
+                \\"node\\": {
+                    \\"name\\": \\"Robin Wright\\"
+                },
+                \\"name\\": \\"Robin Wright\\",
                 \\"this_hanks\\": {
                     \\"args\\": {
                         \\"where\\": {

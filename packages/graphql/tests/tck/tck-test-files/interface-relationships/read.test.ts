@@ -408,6 +408,16 @@ describe("Interface Relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"screenTime_GT\\": {
+                        \\"low\\": 60,
+                        \\"high\\": 0
+                    }
+                },
+                \\"node\\": {
+                    \\"title_STARTS_WITH\\": \\"The \\"
+                },
+                \\"title_STARTS_WITH\\": \\"The \\",
                 \\"this_actedInConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -474,6 +484,19 @@ describe("Interface Relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"screenTime_GT\\": {
+                        \\"low\\": 60,
+                        \\"high\\": 0
+                    }
+                },
+                \\"node\\": {
+                    \\"_on\\": {
+                        \\"Movie\\": {
+                            \\"title_STARTS_WITH\\": \\"The \\"
+                        }
+                    }
+                },
                 \\"this_actedInConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -556,6 +579,16 @@ describe("Interface Relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"screenTime_GT\\": {
+                        \\"low\\": 60,
+                        \\"high\\": 0
+                    }
+                },
+                \\"node\\": {
+                    \\"title_STARTS_WITH\\": \\"The \\"
+                },
+                \\"title_STARTS_WITH\\": \\"The \\",
                 \\"this_actedInConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

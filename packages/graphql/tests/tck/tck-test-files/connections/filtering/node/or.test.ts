@@ -97,6 +97,24 @@ describe("Cypher -> Connections -> Filtering -> Node -> OR", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"OR\\": [
+                        {
+                            \\"firstName\\": \\"Tom\\"
+                        },
+                        {
+                            \\"lastName\\": \\"Hanks\\"
+                        }
+                    ]
+                },
+                \\"OR\\": [
+                    {
+                        \\"firstName\\": \\"Tom\\"
+                    },
+                    {
+                        \\"lastName\\": \\"Hanks\\"
+                    }
+                ],
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
