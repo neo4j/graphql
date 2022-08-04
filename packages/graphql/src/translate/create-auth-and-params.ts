@@ -416,7 +416,12 @@ function createRelationshipPredicate({
         // return CypherBuilder.eq(sizeFunction, new CypherBuilder.Literal(0));
     }
 
-    return predicateFunction;
+    // const matchSubClause = new CypherBuilder.Match(relationship).where(authPredicate);
+    // We can get rid of exists
+    const existsFunction = CypherBuilder.exists(existsPattern);
+
+    return CypherBuilder.and(existsFunction, predicateFunction);
+    // return predicateFunction;
 }
 
 function createRolesPredicate(
