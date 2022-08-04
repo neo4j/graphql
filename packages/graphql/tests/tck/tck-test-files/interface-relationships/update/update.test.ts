@@ -111,6 +111,10 @@ describe("Interface Relationships - Update update", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"title\\": \\"Old Title\\"
+                },
+                \\"title\\": \\"Old Title\\",
                 \\"this_update_actedIn0_title\\": \\"New Title\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": false,
@@ -205,6 +209,10 @@ describe("Interface Relationships - Update update", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"title\\": \\"Old Title\\"
+                },
+                \\"title\\": \\"Old Title\\",
                 \\"this_update_actedIn0_actors0_name\\": \\"New Actor Name\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": false,
@@ -302,6 +310,10 @@ describe("Interface Relationships - Update update", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"title\\": \\"Old Title\\"
+                },
+                \\"title\\": \\"Old Title\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": false,
                     \\"roles\\": []
@@ -413,6 +425,10 @@ describe("Interface Relationships - Update update", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"title\\": \\"Old Title\\"
+                },
+                \\"title\\": \\"Old Title\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": false,
                     \\"roles\\": []

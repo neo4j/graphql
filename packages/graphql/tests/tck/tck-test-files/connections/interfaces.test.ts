@@ -168,6 +168,10 @@ describe("Cypher -> Connections -> Interfaces", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"title_STARTS_WITH\\": \\"The \\"
+                },
+                \\"title_STARTS_WITH\\": \\"The \\",
                 \\"this_actedInConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -238,6 +242,16 @@ describe("Cypher -> Connections -> Interfaces", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"_on\\": {
+                        \\"Series\\": {
+                            \\"episodes_GT\\": {
+                                \\"low\\": 50,
+                                \\"high\\": 0
+                            }
+                        }
+                    }
+                },
                 \\"this_actedInConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -319,6 +333,12 @@ describe("Cypher -> Connections -> Interfaces", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"screenTime_GT\\": {
+                        \\"low\\": 60,
+                        \\"high\\": 0
+                    }
+                },
                 \\"this_actedInConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

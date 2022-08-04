@@ -27,6 +27,8 @@ import { whereRegEx, getListPredicate } from "./utils";
 import { wrapInApocRunFirstColumn } from "../utils/apoc-run";
 import mapToDbProperty from "../../utils/map-to-db-property";
 import { listPredicateToClause } from "./list-predicate-to-clause";
+import { createAggregateOperation } from "./property-operations/create-aggregate-operation";
+import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 
 interface Res {
     clauses: string[];
@@ -60,7 +62,7 @@ function createElementWhereAndParams({
             throw new Error(`Failed to match key in filter: ${key}`);
         }
 
-        const { fieldName, operator } = match.groups as WhereRegexGroups;
+        const { fieldName, operator, isAggregate } = match.groups as WhereRegexGroups;
 
         if (!fieldName) {
             throw new Error(`Failed to find field name in filter: ${key}`);
@@ -104,6 +106,22 @@ function createElementWhereAndParams({
 
         if (element instanceof Node) {
             const relationField = element.relationFields.find((x) => fieldName === x.fieldName);
+
+            if (isAggregate) {
+                if (!relationField) throw new Error("Aggregate filters must be on relationship fields");
+                const parentNode = new CypherBuilder.NamedNode(varName);
+                const operation = createAggregateOperation({
+                    relationField,
+                    context,
+                    value,
+                    parentNode,
+                });
+
+                const result = operation.build(varName);
+                res.clauses.push(result.cypher);
+                res.params = { ...res.params, ...result.params };
+                return res;
+            }
 
             if (relationField) {
                 const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
@@ -191,7 +209,9 @@ function createElementWhereAndParams({
                         nodeVariable: `${collectedMap}.node`,
                         relationship,
                         relationshipVariable: `${collectedMap}.relationship`,
-                        parameterPrefix: operator ? `${parameterPrefix}.${fieldName}_${operator}` : `${parameterPrefix}.${fieldName}`,
+                        parameterPrefix: operator
+                            ? `${parameterPrefix}.${fieldName}_${operator}`
+                            : `${parameterPrefix}.${fieldName}`,
                         // listPredicates stores all list predicates (SINGLE, ANY, NONE,..) while (recursively) translating the where clauses
                         listPredicates: [currentListPredicate, ...(listPredicates || [])],
                     });
@@ -219,7 +239,7 @@ function createElementWhereAndParams({
 
                     res.clauses.push(apocRunFirstColumn);
 
-                    res.params = { ...res.params, [fieldName]: connectionWhere[1] };
+                    res.params = { ...res.params, [fieldName]: connectionWhere[1], ...connectionWhere[1] }; // TODO: remove nestiness in fields
                 });
 
                 return res;
@@ -245,7 +265,6 @@ function createElementWhereAndParams({
 
     const { clauses, params } = Object.entries(whereInput).reduce(reducer, { clauses: [], params: {} });
     const where = clauses.join(" AND ").replace(/INNER_WHERE/gi, "WHERE");
-
     return [where, params];
 }
 

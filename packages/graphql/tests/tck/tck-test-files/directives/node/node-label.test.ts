@@ -298,6 +298,10 @@ describe("Label in Node directive", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
+                \\"node\\": {
+                    \\"name\\": \\"old name\\"
+                },
+                \\"name\\": \\"old name\\",
                 \\"this_update_actors0_name\\": \\"new name\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
@@ -409,6 +413,10 @@ describe("Label in Node directive", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
+                \\"node\\": {
+                    \\"name\\": \\"Daniel\\"
+                },
+                \\"name\\": \\"Daniel\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -498,7 +506,11 @@ describe("Label in Node directive", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"node\\": {
+                    \\"name\\": \\"Actor to delete\\"
+                },
+                \\"name\\": \\"Actor to delete\\"
             }"
         `);
     });

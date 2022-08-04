@@ -137,6 +137,10 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"id\\": \\"1\\"
+                },
+                \\"id\\": \\"1\\",
                 \\"thisSource0_allow_auth_allow0_id\\": \\"1\\",
                 \\"updateSources\\": {
                     \\"args\\": {

@@ -121,6 +121,10 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
+                \\"node\\": {
+                    \\"name\\": \\"old name\\"
+                },
+                \\"name\\": \\"old name\\",
                 \\"this_update_actors0_name\\": \\"new name\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": false,
@@ -204,7 +208,7 @@ describe("Cypher Update", () => {
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_actors0:this_actors0, updateMovies: $updateMovies, this_actors0_movies0:this_actors0_movies0, auth:$auth,this_update_actors0_movies0_title:$this_update_actors0_movies0_title})
             YIELD value AS _
             RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name,this_update_actors0_movies0_title:$this_update_actors0_movies0_title})
+            \\", \\"\\", {this:this, updateMovies: $updateMovies, this_actors0:this_actors0, auth:$auth,this_update_actors0_name:$this_update_actors0_name,node:$node,id:$id,this_update_actors0_movies0_title:$this_update_actors0_movies0_title})
             YIELD value AS _
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -212,7 +216,12 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
+                \\"node\\": {
+                    \\"id\\": \\"old movie title\\"
+                },
+                \\"name\\": \\"old actor name\\",
                 \\"this_update_actors0_name\\": \\"new actor name\\",
+                \\"id\\": \\"old movie title\\",
                 \\"this_update_actors0_movies0_title\\": \\"new movie title\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": false,
@@ -396,6 +405,10 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
+                \\"node\\": {
+                    \\"name\\": \\"Daniel\\"
+                },
+                \\"name\\": \\"Daniel\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -466,6 +479,10 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
+                \\"node\\": {
+                    \\"name\\": \\"Darrell\\"
+                },
+                \\"name\\": \\"Darrell\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -667,6 +684,16 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
+                \\"edge\\": {
+                    \\"screenTime\\": {
+                        \\"low\\": 60,
+                        \\"high\\": 0
+                    }
+                },
+                \\"node\\": {
+                    \\"name\\": \\"Actor to delete\\"
+                },
+                \\"name\\": \\"Actor to delete\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"delete\\": {
@@ -740,6 +767,10 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
+                \\"node\\": {
+                    \\"name\\": \\"Actor to delete\\"
+                },
+                \\"name\\": \\"Actor to delete\\",
                 \\"this_update_actors0_name\\": \\"Updated name\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": false,
@@ -814,6 +845,10 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
+                \\"node\\": {
+                    \\"name\\": \\"Actor to delete\\"
+                },
+                \\"name\\": \\"Actor to delete\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -883,6 +918,11 @@ describe("Cypher Update", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
+                \\"node\\": {
+                    \\"id\\": \\"2\\"
+                },
+                \\"name\\": \\"Actor to delete\\",
+                \\"id\\": \\"2\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"update\\": {

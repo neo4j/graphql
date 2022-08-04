@@ -106,6 +106,10 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Luke Skywalker\\",
+                \\"node\\": {
+                    \\"id_NOT\\": \\"test-id\\"
+                },
+                \\"id_NOT\\": \\"test-id\\",
                 \\"this_connect_activeOrganization0_node_param0\\": \\"test-id\\",
                 \\"updateUsers\\": {
                     \\"args\\": {

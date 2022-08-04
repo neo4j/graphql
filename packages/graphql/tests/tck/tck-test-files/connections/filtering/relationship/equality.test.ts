@@ -95,6 +95,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Equality", () =>
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"screenTime\\": {
+                        \\"low\\": 60,
+                        \\"high\\": 0
+                    }
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -149,6 +155,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Equality", () =>
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"screenTime_NOT\\": {
+                        \\"low\\": 60,
+                        \\"high\\": 0
+                    }
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

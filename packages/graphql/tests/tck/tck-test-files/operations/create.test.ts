@@ -353,13 +353,17 @@ describe("Cypher Create", () => {
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
             RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
-            } RETURN actorsConnection\\", { this0_movies: this0_movies, projection_movies_actorsConnection: $projection_movies_actorsConnection, auth: $auth }, false) } ] }] AS data"
+            } RETURN actorsConnection\\", { this0_movies: this0_movies, node: $node, name: $name, projection_movies_actorsConnection: $projection_movies_actorsConnection, auth: $auth }, false) } ] }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_name\\": \\"Dan\\",
                 \\"this0_movies_connect0_node_param0\\": \\"1\\",
+                \\"node\\": {
+                    \\"name\\": \\"Dan\\"
+                },
+                \\"name\\": \\"Dan\\",
                 \\"projection_movies_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

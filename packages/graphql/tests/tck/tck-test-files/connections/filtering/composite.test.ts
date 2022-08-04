@@ -104,6 +104,40 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
+                \\"edge\\": {
+                    \\"AND\\": [
+                        {
+                            \\"screenTime_GT\\": {
+                                \\"low\\": 30,
+                                \\"high\\": 0
+                            }
+                        },
+                        {
+                            \\"screenTime_LT\\": {
+                                \\"low\\": 90,
+                                \\"high\\": 0
+                            }
+                        }
+                    ]
+                },
+                \\"node\\": {
+                    \\"AND\\": [
+                        {
+                            \\"firstName\\": \\"Tom\\"
+                        },
+                        {
+                            \\"lastName\\": \\"Hanks\\"
+                        }
+                    ]
+                },
+                \\"AND\\": [
+                    {
+                        \\"firstName\\": \\"Tom\\"
+                    },
+                    {
+                        \\"lastName\\": \\"Hanks\\"
+                    }
+                ],
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
