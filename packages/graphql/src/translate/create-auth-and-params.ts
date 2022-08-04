@@ -386,42 +386,27 @@ function createRelationshipPredicate({
 
     if (relationField.direction === "IN") {
         innerPattern.reverse();
-        existsPattern.reverse(false); // Avoid double reverse in relationship
+        existsPattern.reverse();
     }
 
     let predicateFunction: CypherBuilder.PredicateFunction;
     if (kind === "allow") {
-        // clause = `size([${matchPattern} WHERE ${where} | 1]) > 0`;
-
-        // const comprehension=new CypherBuilder.PatternComprehension(matchPattern)
-        // CypherBuilder.size(comprehension)
-
         predicateFunction = CypherBuilder.any(
             targetNodeRef,
             new CypherBuilder.PatternComprehension(innerPattern, targetNodeRef),
             authPredicate
         );
     } else {
-        // TODO: move to size
-
         predicateFunction = CypherBuilder.all(
             targetNodeRef,
             new CypherBuilder.PatternComprehension(innerPattern, targetNodeRef),
             authPredicate
         );
-
-        // const notProperties = CypherBuilder.not(relationOperator);
-
-        // patternComprehension.where(notProperties);
-        // return CypherBuilder.eq(sizeFunction, new CypherBuilder.Literal(0));
     }
 
-    // const matchSubClause = new CypherBuilder.Match(relationship).where(authPredicate);
-    // We can get rid of exists
     const existsFunction = CypherBuilder.exists(existsPattern);
 
     return CypherBuilder.and(existsFunction, predicateFunction);
-    // return predicateFunction;
 }
 
 function createRolesPredicate(

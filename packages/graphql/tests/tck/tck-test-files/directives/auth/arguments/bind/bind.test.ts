@@ -142,7 +142,7 @@ describe("Cypher Auth Allow", () => {
             CALL apoc.util.validate(NOT ((this0_posts0_node_creator0_node.id IS NOT NULL AND this0_posts0_node_creator0_node.id = $this0_posts0_node_creator0_node_auth_bind0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             MERGE (this0_posts0_node)<-[:HAS_POST]-(this0_posts0_node_creator0_node)
             WITH this0, this0_posts0_node
-            CALL apoc.util.validate(NOT ((exists((:\`User\`)-[:HAS_POST]->(this0_posts0_node)) AND all(creator IN [(creator:\`User\`)-[:HAS_POST]->(this0_posts0_node) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this0_posts0_node_auth_bind0_creator_id)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((exists((this0_posts0_node)<-[:HAS_POST]-(:\`User\`)) AND all(creator IN [(this0_posts0_node)<-[:HAS_POST]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this0_posts0_node_auth_bind0_creator_id)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             MERGE (this0)-[:HAS_POST]->(this0_posts0_node)
             WITH this0, this0_posts0_node
             CALL {
@@ -344,7 +344,7 @@ describe("Cypher Auth Allow", () => {
             		)
             	)
             	WITH this, this_connect_creator0_node
-            	CALL apoc.util.validate(NOT ((exists((:\`User\`)-[:HAS_POST]->(this_connect_creator0_node)) AND all(creator IN [(creator:\`User\`)-[:HAS_POST]->(this_connect_creator0_node) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_connect_creator0_nodePost0_bind_auth_bind0_creator_id))) AND (this_connect_creator0_node.id IS NOT NULL AND this_connect_creator0_node.id = $this_connect_creator0_nodeUser1_bind_auth_bind0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	CALL apoc.util.validate(NOT ((exists((this_connect_creator0_node)<-[:HAS_POST]-(:\`User\`)) AND all(creator IN [(this_connect_creator0_node)<-[:HAS_POST]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_connect_creator0_nodePost0_bind_auth_bind0_creator_id))) AND (this_connect_creator0_node.id IS NOT NULL AND this_connect_creator0_node.id = $this_connect_creator0_nodeUser1_bind_auth_bind0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	RETURN count(*) AS _
             }
             WITH this
@@ -397,7 +397,7 @@ describe("Cypher Auth Allow", () => {
             DELETE this_disconnect_creator0_rel
             )
             WITH this, this_disconnect_creator0
-            CALL apoc.util.validate(NOT ((exists((:\`User\`)-[:HAS_POST]->(this_disconnect_creator0)) AND all(creator IN [(creator:\`User\`)-[:HAS_POST]->(this_disconnect_creator0) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_disconnect_creator0Post0_bind_auth_bind0_creator_id))) AND (this_disconnect_creator0.id IS NOT NULL AND this_disconnect_creator0.id = $this_disconnect_creator0User1_bind_auth_bind0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((exists((this_disconnect_creator0)<-[:HAS_POST]-(:\`User\`)) AND all(creator IN [(this_disconnect_creator0)<-[:HAS_POST]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_disconnect_creator0Post0_bind_auth_bind0_creator_id))) AND (this_disconnect_creator0.id IS NOT NULL AND this_disconnect_creator0.id = $this_disconnect_creator0User1_bind_auth_bind0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN count(*) AS _
             }
             WITH this
