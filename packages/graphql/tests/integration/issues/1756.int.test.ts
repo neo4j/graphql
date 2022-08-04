@@ -109,7 +109,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
     });
 });
 
-describe("https://github.com/neo4j/graphql/issues/1756, nested bug", () => {
+describe("https://github.com/neo4j/graphql/issues/1756, on create callback bug", () => {
     const productType = generateUniqueType("Product");
     const genreType = generateUniqueType("Genre");
 

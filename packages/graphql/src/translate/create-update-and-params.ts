@@ -343,6 +343,7 @@ export default function createUpdateAndParams({
                             refNode,
                             context,
                             withVars,
+                            callbackBucket
                         });
                         subquery.push(cypher);
                         res.params = { ...res.params, ...params };
