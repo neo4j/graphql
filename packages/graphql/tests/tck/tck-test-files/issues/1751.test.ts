@@ -84,9 +84,9 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
             WHERE this.title = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_admins0_relationship:HAS_ADMINISTRATOR]->(this_admins0:Admin)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this_admins0)<-[aggr_edge:HAS_ADMINISTRATOR]-(aggr_node:Organization)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this_admins0)<-[aggr_edge:HAS_ADMINISTRATOR]-(aggr_node:Organization)
             RETURN count(aggr_node) = $aggr_count
-            \\", { this_admins0: this_admins0, aggr_count: $aggr_count }, false )
+            \\", { this_admins0: this_admins0, aggr_count: $aggr_count })
             WITH this, collect(DISTINCT this_admins0) as this_admins0_to_delete
             FOREACH(x IN this_admins0_to_delete | DETACH DELETE x)
             DETACH DELETE this"

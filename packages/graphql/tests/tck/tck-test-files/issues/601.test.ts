@@ -92,7 +92,7 @@ describe("#601", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Stakeholder\`)
             CALL apoc.util.validate(NOT (any(r IN [\\"view\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { documents: [ (this)-[:REQUIRES]->(this_documents:Document)  WHERE apoc.util.validatePredicate(NOT (any(r IN [\\"view\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_documents { customerContactConnection: apoc.cypher.runFirstColumn(\\"CALL {
+            RETURN this { documents: [ (this)-[:REQUIRES]->(this_documents:Document)  WHERE apoc.util.validatePredicate(NOT (any(r IN [\\"view\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_documents { customerContactConnection: apoc.cypher.runFirstColumnSingle(\\"CALL {
             WITH this_documents
             MATCH (this_documents)<-[this_documents_uploaded_relationship:UPLOADED]-(this_documents_customercontact:CustomerContact)
             CALL apoc.util.validate(NOT (any(r IN [\\\\\\"view\\\\\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
@@ -100,7 +100,7 @@ describe("#601", () => {
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
             RETURN { edges: edges, totalCount: totalCount } AS customerContactConnection
-            } RETURN customerContactConnection\\", { this_documents: this_documents, auth: $auth }, false) } ] } as this"
+            } RETURN customerContactConnection\\", { this_documents: this_documents, auth: $auth }) } ] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
