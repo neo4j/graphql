@@ -61,9 +61,9 @@ describe("Cypher Where Aggregations with @node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`_Post\`:\`additionalPost\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:\`_User\`:\`additionalUser\`)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:\`_User\`:\`additionalUser\`)
             RETURN size(aggr_node.someName) > $aggr_node_someName_GT
-            \\", { this: this, aggr_node_someName_GT: $aggr_node_someName_GT }, false )
+            \\", { this: this, aggr_node_someName_GT: $aggr_node_someName_GT })
             RETURN this { .content } as this"
         `);
 

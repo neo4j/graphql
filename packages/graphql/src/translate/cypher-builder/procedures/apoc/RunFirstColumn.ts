@@ -26,18 +26,16 @@ import type { CypherEnvironment } from "../../Environment";
 export class RunFirstColumn extends CypherASTNode {
     private innerClause: Clause;
     private variables: Variable[];
-    private expectMultipleValues: Literal<boolean>;
+    private expectMultipleValues: boolean;
 
     constructor(clause: Clause, variables: Variable[], expectMultipleValues = true) {
         super();
         this.innerClause = clause;
-        this.expectMultipleValues = new Literal(expectMultipleValues);
+        this.expectMultipleValues = expectMultipleValues;
         this.variables = variables;
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const expectValuesStr = this.expectMultipleValues.getCypher(env);
-
         const clauseStr = this.innerClause.getRoot().getCypher(env);
 
         const params: Record<string, string> = {};
@@ -53,7 +51,11 @@ export class RunFirstColumn extends CypherASTNode {
             })
             .join(", ");
 
-        return `apoc.cypher.runFirstColumn("${this.escapeQuery(clauseStr)}", { ${paramsStr} }, ${expectValuesStr})`;
+        if (this.expectMultipleValues) {
+            return `apoc.cypher.runFirstColumnMany("${this.escapeQuery(clauseStr)}", { ${paramsStr} })`;
+        }
+
+        return `apoc.cypher.runFirstColumnSingle("${this.escapeQuery(clauseStr)}", { ${paramsStr} })`;
     }
 
     private escapeQuery(query: string): string {

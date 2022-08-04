@@ -345,7 +345,7 @@ describe("Cypher Create", () => {
             RETURN this0
             }
             RETURN [
-            this0 { .name, movies: [ (this0)-[:ACTED_IN]->(this0_movies:Movie)   | this0_movies { actorsConnection: apoc.cypher.runFirstColumn(\\"CALL {
+            this0 { .name, movies: [ (this0)-[:ACTED_IN]->(this0_movies:Movie)   | this0_movies { actorsConnection: apoc.cypher.runFirstColumnSingle(\\"CALL {
             WITH this0_movies
             MATCH (this0_movies)<-[this0_movies_acted_in_relationship:ACTED_IN]-(this0_movies_actor:Actor)
             WHERE this0_movies_actor.name = $projection_movies_actorsConnection.args.where.node.name
@@ -353,7 +353,7 @@ describe("Cypher Create", () => {
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
             RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
-            } RETURN actorsConnection\\", { this0_movies: this0_movies, node: $node, name: $name, projection_movies_actorsConnection: $projection_movies_actorsConnection, auth: $auth }, false) } ] }] AS data"
+            } RETURN actorsConnection\\", { this0_movies: this0_movies, node: $node, name: $name, projection_movies_actorsConnection: $projection_movies_actorsConnection, auth: $auth }) } ] }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
