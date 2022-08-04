@@ -68,7 +68,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 \\"MovieTitle\\",
                 $param1
             ) YIELD node as this
-                        WHERE (\\"Movie\\" IN labels(this) AND exists((this)<-[:DIRECTED]-(:Person)) AND all(director IN [(this)<-[:DIRECTED]-(director:Person) | director] WHERE  (director.id IS NOT NULL AND director.id = $this_auth_where0_director_id) ))
+                        WHERE (\\"Movie\\" IN labels(this) AND (exists((:\`Person\`)-[:DIRECTED]->(this)) AND all(director IN [(director:\`Person\`)-[:DIRECTED]->(this) | director] WHERE (director.id IS NOT NULL AND director.id = $this_auth_where0_director_id))))
             RETURN this { .title } as this"
         `);
 
@@ -125,7 +125,7 @@ describe("Cypher -> fulltext -> Auth", () => {
                 $param0
             ) YIELD node as this
                         WHERE \\"Movie\\" IN labels(this)
-            CALL apoc.util.validate(NOT (exists((this)<-[:DIRECTED]-(:Person)) AND any(director IN [(this)<-[:DIRECTED]-(director:Person) | director] WHERE  (director.id IS NOT NULL AND director.id = $this_auth_allow0_director_id) )), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((exists((:\`Person\`)-[:DIRECTED]->(this)) AND any(director IN [(director:\`Person\`)-[:DIRECTED]->(this) | director] WHERE (director.id IS NOT NULL AND director.id = $this_auth_allow0_director_id)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } as this"
         `);
 
