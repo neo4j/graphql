@@ -19,7 +19,6 @@
 
 import type { Node, Relationship } from "../../classes";
 import type { ConnectionWhereArg, Context } from "../../types";
-import type { ListPredicate } from "./utils";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { createConnectionWherePropertyOperation } from "./property-operations/create-connection-operation";
 
