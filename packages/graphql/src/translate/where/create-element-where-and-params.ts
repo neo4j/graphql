@@ -50,7 +50,6 @@ function createElementWhereAndParams({
     parameterPrefix: string;
     listPredicates?: ListPredicate[];
 }): [string, any] {
-    // ADD agregation where here
     if (!Object.keys(whereInput).length) {
         return ["", {}];
     }
