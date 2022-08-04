@@ -299,6 +299,10 @@ describe("Cypher Auth Where", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
+                \\"node\\": {
+                    \\"id\\": \\"some-id\\"
+                },
+                \\"id\\": \\"some-id\\",
                 \\"this_Comment_auth_where0_creator_id\\": \\"id-01\\",
                 \\"this_Post_auth_where0_creator_id\\": \\"id-01\\",
                 \\"this_contentConnection\\": {
@@ -1080,6 +1084,10 @@ describe("Cypher Auth Where", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
+                \\"node\\": {
+                    \\"id\\": \\"new-id\\"
+                },
+                \\"id\\": \\"new-id\\",
                 \\"this_content0_disconnect0_auth_where0_creator_id\\": \\"id-01\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
@@ -1212,6 +1220,10 @@ describe("Cypher Auth Where", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
+                \\"node\\": {
+                    \\"id\\": \\"some-id\\"
+                },
+                \\"id\\": \\"some-id\\",
                 \\"this_disconnect_content0_auth_where0_creator_id\\": \\"id-01\\",
                 \\"updateUsers\\": {
                     \\"args\\": {

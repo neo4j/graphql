@@ -97,6 +97,19 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> OR", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"OR\\": [
+                        {
+                            \\"role_ENDS_WITH\\": \\"Gump\\"
+                        },
+                        {
+                            \\"screenTime_LT\\": {
+                                \\"low\\": 60,
+                                \\"high\\": 0
+                            }
+                        }
+                    ]
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

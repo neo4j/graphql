@@ -169,6 +169,11 @@ describe("Cypher -> Connections -> Unions", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"subject\\": \\"Journal Subject\\"
+                },
+                \\"title\\": \\"Book Title\\",
+                \\"subject\\": \\"Journal Subject\\",
                 \\"this_publicationsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -245,6 +250,12 @@ describe("Cypher -> Connections -> Unions", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"words\\": {
+                        \\"low\\": 2000,
+                        \\"high\\": 0
+                    }
+                },
                 \\"this_publicationsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -330,6 +341,17 @@ describe("Cypher -> Connections -> Unions", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"subject\\": \\"Journal Subject\\"
+                },
+                \\"title\\": \\"Book Title\\",
+                \\"edge\\": {
+                    \\"words\\": {
+                        \\"low\\": 2000,
+                        \\"high\\": 0
+                    }
+                },
+                \\"subject\\": \\"Journal Subject\\",
                 \\"this_publicationsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

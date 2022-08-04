@@ -133,6 +133,10 @@ describe("Relationship Properties Cypher", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
+                \\"node\\": {
+                    \\"name\\": \\"Tom Hanks\\"
+                },
+                \\"name\\": \\"Tom Hanks\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

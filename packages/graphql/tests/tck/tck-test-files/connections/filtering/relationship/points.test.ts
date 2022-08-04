@@ -108,6 +108,15 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"location_DISTANCE\\": {
+                        \\"point\\": {
+                            \\"longitude\\": 1,
+                            \\"latitude\\": 2
+                        },
+                        \\"distance\\": 3
+                    }
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

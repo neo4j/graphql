@@ -91,7 +91,6 @@ function createConnectionWhereAndParams({
                 if (Object.keys(v).length === 1 && v._on && !Object.prototype.hasOwnProperty.call(v._on, node.name)) {
                     throw new Error("_on is used as the only argument and node is not present within");
                 }
-
                 const rootNodeWhere = createElementWhereAndParams({
                     whereInput: {
                         ...Object.entries(v).reduce((args, [key, value]) => {
@@ -114,7 +113,7 @@ function createConnectionWhereAndParams({
 
                 if (rootNodeWhere[0]) {
                     whereStrs = [...whereStrs, k.endsWith("_NOT") ? `(NOT ${rootNodeWhere[0]})` : rootNodeWhere[0]];
-                    params = { ...params, [k]: rootNodeWhere[1] };
+                    params = { ...params, [k]: rootNodeWhere[1], ...rootNodeWhere[1] };
                     res = { whereStrs, params };
                 }
 
@@ -137,7 +136,6 @@ function createConnectionWhereAndParams({
         },
         { whereStrs: [], params: {} }
     );
-
     return [reduced.whereStrs.join(" AND "), reduced.params];
 }
 

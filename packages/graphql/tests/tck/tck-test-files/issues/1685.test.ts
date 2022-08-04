@@ -89,6 +89,22 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"_on\\": {
+                        \\"Movie\\": {
+                            \\"genresConnection\\": {
+                                \\"node\\": {
+                                    \\"name\\": \\"Action\\"
+                                },
+                                \\"name\\": \\"Action\\"
+                            },
+                            \\"node\\": {
+                                \\"name\\": \\"Action\\"
+                            },
+                            \\"name\\": \\"Action\\"
+                        }
+                    }
+                },
                 \\"this_moviesConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

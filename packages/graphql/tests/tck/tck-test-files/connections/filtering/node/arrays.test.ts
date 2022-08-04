@@ -96,6 +96,16 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"name_IN\\": [
+                        \\"Tom Hanks\\",
+                        \\"Robin Wright\\"
+                    ]
+                },
+                \\"name_IN\\": [
+                    \\"Tom Hanks\\",
+                    \\"Robin Wright\\"
+                ],
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -150,6 +160,16 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"name_NOT_IN\\": [
+                        \\"Tom Hanks\\",
+                        \\"Robin Wright\\"
+                    ]
+                },
+                \\"name_NOT_IN\\": [
+                    \\"Tom Hanks\\",
+                    \\"Robin Wright\\"
+                ],
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -205,6 +225,10 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"favouriteColours_INCLUDES\\": \\"Blue\\"
+                },
+                \\"favouriteColours_INCLUDES\\": \\"Blue\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -257,6 +281,10 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"favouriteColours_NOT_INCLUDES\\": \\"Blue\\"
+                },
+                \\"favouriteColours_NOT_INCLUDES\\": \\"Blue\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

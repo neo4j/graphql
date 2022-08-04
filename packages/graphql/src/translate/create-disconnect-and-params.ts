@@ -91,6 +91,7 @@ function createDisconnectAndParams({
                 });
                 if (whereAndParams[0]) {
                     whereStrs.push(whereAndParams[0]);
+                    params = { ...params, ...whereAndParams[1] };
                 }
             } catch {
                 return { subquery: "", params: {} };
