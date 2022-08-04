@@ -249,7 +249,7 @@ function createAuthPredicate({
     const { allowUnauthenticated } = rule;
     const predicates: CypherBuilder.Predicate[] = [];
 
-    Object.entries(rule[kind] as any).forEach(([key, value]) => {
+    Object.entries(rule[kind] as Record<string, any>).forEach(([key, value]) => {
         if (isPredicateJoin(key)) {
             const inner: CypherBuilder.Predicate[] = [];
 
@@ -311,7 +311,7 @@ function createAuthPredicate({
             const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
             const relationVarName = relationField.fieldName;
 
-            Object.entries(value as any).forEach(([k, v]: [string, any]) => {
+            Object.entries(value as Record<string, any>).forEach(([k, v]: [string, any]) => {
                 const authPredicate = createAuthPredicate({
                     node: refNode,
                     context,
