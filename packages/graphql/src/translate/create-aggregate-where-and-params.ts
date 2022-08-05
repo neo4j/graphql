@@ -310,7 +310,7 @@ function createAggregateWhereAndParams({
     const labels = node.getLabelString(context);
     const matchStr = `MATCH (${varName})${inStr}${relTypeStr}${outStr}(${nodeVariable}${labels})`;
 
-    cyphers.push(`apoc.cypher.runFirstColumn(" ${matchStr}`);
+    cyphers.push(`apoc.cypher.runFirstColumnSingle(" ${matchStr}`);
 
     const { aggregations, params, withStrs } = createPredicate({
         aggregation,
@@ -338,7 +338,7 @@ function createAggregateWhereAndParams({
               .join(", ")}`
         : "";
 
-    cyphers.push(`", { ${varName}: ${varName}${apocParams} }, false )`);
+    cyphers.push(`", { ${varName}: ${varName}${apocParams} })`);
 
     return [cyphers.join("\n"), params];
 }

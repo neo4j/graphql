@@ -96,11 +96,11 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WHERE distance(this_actor.currentLocation, point($this_actorsConnection.args.where.node.currentLocation_DISTANCE.point)) = $this_actorsConnection.args.where.node.currentLocation_DISTANCE.distance
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, currentLocation: apoc.cypher.runFirstColumn('RETURN
+            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, currentLocation: apoc.cypher.runFirstColumnSingle('RETURN
             CASE
             	WHEN this_actor.currentLocation IS NOT NULL THEN { point: this_actor.currentLocation }
             	ELSE NULL
-            END AS result',{ this_actor: this_actor },false) } }) AS edges
+            END AS result',{ this_actor: this_actor }) } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
             RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
@@ -110,6 +110,22 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"currentLocation_DISTANCE\\": {
+                        \\"point\\": {
+                            \\"longitude\\": 1,
+                            \\"latitude\\": 2
+                        },
+                        \\"distance\\": 3
+                    }
+                },
+                \\"currentLocation_DISTANCE\\": {
+                    \\"point\\": {
+                        \\"longitude\\": 1,
+                        \\"latitude\\": 2
+                    },
+                    \\"distance\\": 3
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

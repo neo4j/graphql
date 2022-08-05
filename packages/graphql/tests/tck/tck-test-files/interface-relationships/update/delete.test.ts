@@ -95,6 +95,10 @@ describe("Interface Relationships - Update delete", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"title_STARTS_WITH\\": \\"The \\"
+                },
+                \\"title_STARTS_WITH\\": \\"The \\",
                 \\"updateActors\\": {
                     \\"args\\": {
                         \\"delete\\": {
@@ -165,6 +169,11 @@ describe("Interface Relationships - Update delete", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"name\\": \\"Actor\\"
+                },
+                \\"title_STARTS_WITH\\": \\"The \\",
+                \\"name\\": \\"Actor\\",
                 \\"updateActors\\": {
                     \\"args\\": {
                         \\"delete\\": {
@@ -241,6 +250,11 @@ describe("Interface Relationships - Update delete", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"title_STARTS_WITH\\": \\"The \\"
+                },
+                \\"title_STARTS_WITH\\": \\"The \\",
+                \\"name\\": \\"Actor\\",
                 \\"updateActors\\": {
                     \\"args\\": {
                         \\"delete\\": {
@@ -331,6 +345,11 @@ describe("Interface Relationships - Update delete", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"name\\": \\"Actor\\"
+                },
+                \\"title_STARTS_WITH\\": \\"The \\",
+                \\"name\\": \\"Actor\\",
                 \\"updateActors\\": {
                     \\"args\\": {
                         \\"delete\\": {

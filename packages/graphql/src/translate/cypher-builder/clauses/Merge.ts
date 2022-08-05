@@ -39,7 +39,6 @@ export class Merge<T extends NodeRef | RelationshipRef = any> extends Clause {
             source: addLabelsOption,
             target: addLabelsOption,
         }).withParams(params);
-        this.addChildren(this.pattern);
         this.onCreateClause = new OnCreate(this);
     }
 

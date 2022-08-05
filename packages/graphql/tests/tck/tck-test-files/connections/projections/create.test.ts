@@ -234,6 +234,10 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             "{
                 \\"this0_title\\": \\"Forrest Gump\\",
                 \\"this1_title\\": \\"Toy Story\\",
+                \\"node\\": {
+                    \\"name\\": \\"Tom Hanks\\"
+                },
+                \\"name\\": \\"Tom Hanks\\",
                 \\"this0_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

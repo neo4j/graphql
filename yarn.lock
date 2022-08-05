@@ -2542,7 +2542,7 @@ __metadata:
     "@types/crypto-js": 4.1.1
     "@types/lodash.debounce": 4.0.7
     "@types/markdown-it": 12.2.3
-    "@types/prettier": 2.6.4
+    "@types/prettier": 2.7.0
     "@types/react-dom": 18.0.6
     "@types/uuid": 8.3.4
     "@types/webpack": 5.28.0
@@ -2559,7 +2559,7 @@ __metadata:
     graphiql-explorer: ^0.9.0
     graphql: 16.5.0
     graphql-request: ^4.2.0
-    html-inline-script-webpack-plugin: 3.0.1
+    html-inline-script-webpack-plugin: 3.1.0
     html-webpack-inline-source-plugin: 0.0.10
     html-webpack-plugin: 5.5.0
     jest: 28.1.3
@@ -2583,7 +2583,7 @@ __metadata:
     ts-jest: 28.0.7
     ts-loader: 9.3.1
     ts-node: 10.9.1
-    tsconfig-paths-webpack-plugin: 3.5.2
+    tsconfig-paths-webpack-plugin: 4.0.0
     typescript: 4.7.4
     url-loader: 4.1.1
     uuid: ^8.3.2
@@ -2629,7 +2629,7 @@ __metadata:
     graphql-ws: 5.9.1
     is-uuid: 1.0.2
     jest: 28.1.3
-    jest-extended: ^3.0.1
+    jest-extended: 3.0.2
     koa: 2.13.4
     koa-jwt: 4.0.3
     koa-router: 12.0.0
@@ -2863,9 +2863,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@restart/ui@npm:^1.2.0":
-  version: 1.3.0
-  resolution: "@restart/ui@npm:1.3.0"
+"@restart/ui@npm:^1.3.1":
+  version: 1.3.1
+  resolution: "@restart/ui@npm:1.3.1"
   dependencies:
     "@babel/runtime": ^7.18.3
     "@popperjs/core": ^2.11.5
@@ -2879,7 +2879,7 @@ __metadata:
   peerDependencies:
     react: ">=16.14.0"
     react-dom: ">=16.14.0"
-  checksum: f12a33d87555856ceb6855c53425df2ce1b75d88d314bfd3f149a4d1eb908751807bfb6d6d78773e5646787182bba99202e40a0831c1b83c655b1a143dfa7fb5
+  checksum: 3f81578900475dcee6ebf8d9be5bc5c41d6c57aa1a833f0cc37135e1f4cf14e31e70419e906b4ce2ee837b3cb613f65bfe5715f398e4e053561289ad976cad8e
   languageName: node
   linkType: hard
 
@@ -3509,10 +3509,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prettier@npm:2.6.4":
-  version: 2.6.4
-  resolution: "@types/prettier@npm:2.6.4"
-  checksum: a8ec6601cbacf8040782cc883bf1a9393fdcb991ebe88440b0f875bb1556652927ac9fe61a721b6c666ac6252158ba327ce2868559bafa2c86e7dfef4089782a
+"@types/prettier@npm:2.7.0":
+  version: 2.7.0
+  resolution: "@types/prettier@npm:2.7.0"
+  checksum: bf5d0c7c1270909b39399539ac106d20ddaa85fe92eb1d59922dc99159604b4f8d5e41b0045fb29c8011585cf5bca2350b7441ef3d9816c08bd0e10ebd4b31d4
   languageName: node
   linkType: hard
 
@@ -10089,13 +10089,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-inline-script-webpack-plugin@npm:3.0.1":
-  version: 3.0.1
-  resolution: "html-inline-script-webpack-plugin@npm:3.0.1"
+"html-inline-script-webpack-plugin@npm:3.1.0":
+  version: 3.1.0
+  resolution: "html-inline-script-webpack-plugin@npm:3.1.0"
   peerDependencies:
     html-webpack-plugin: ^5.0.0
     webpack: ^5.0.0
-  checksum: fe5363613045bccf108eaa0d7d29c7f8467f4c7c908421674616ceb98426974d7932ba3f6df120e606f9503e8ec170f254c1b1bdb201e75b793714f4bc69c1f6
+  checksum: e0ab2228773ab638c6c043f8d082ee88654630a5b711547987662a4fd3d97e33b0405a3a85cffc08593c1460c1d9312d45cb1c2937a86cd368fa1396b3cd275b
   languageName: node
   linkType: hard
 
@@ -11479,15 +11479,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-extended@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "jest-extended@npm:3.0.1"
+"jest-extended@npm:3.0.2":
+  version: 3.0.2
+  resolution: "jest-extended@npm:3.0.2"
   dependencies:
     jest-diff: ^28.0.0
     jest-get-type: ^28.0.0
   peerDependencies:
     jest: ">=27.2.5"
-  checksum: 42b64a3e7aba1040b8847012d059644782ee7dd86b5cc280ec0e1b9e0f679396d5136191e9d1abf3bc52ae41507ce94aa3ea29d12f000c34b16e986596942652
+  checksum: da726bf2983e0343c70ae4450c1115d1c7cdb6041b3bd9434553fc2e2c625a705401ece0a58df5055d0578bec34d7b1d532e85e5a98773e240beed8f0f712216
   languageName: node
   linkType: hard
 
@@ -13718,7 +13718,7 @@ __metadata:
     graphql: 16.5.0
     html-webpack-plugin: 5.5.0
     react: 18.2.0
-    react-bootstrap: 2.4.0
+    react-bootstrap: 2.5.0
     react-dom: 18.2.0
     react-markdown: 8.0.3
     react-mde: 11.5.0
@@ -16070,13 +16070,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-bootstrap@npm:2.4.0":
-  version: 2.4.0
-  resolution: "react-bootstrap@npm:2.4.0"
+"react-bootstrap@npm:2.5.0":
+  version: 2.5.0
+  resolution: "react-bootstrap@npm:2.5.0"
   dependencies:
     "@babel/runtime": ^7.17.2
     "@restart/hooks": ^0.4.6
-    "@restart/ui": ^1.2.0
+    "@restart/ui": ^1.3.1
     "@types/react-transition-group": ^4.4.4
     classnames: ^2.3.1
     dom-helpers: ^5.2.1
@@ -16093,7 +16093,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 63c520b83ff23a73229f068ec93997581e4a34bdba06f694770cd5cd0648be5625065640c1232de522f8d249a5b57262e9a4aebb294a62b59f6375026ae3df37
+  checksum: 7375ae90da1ba26860ad75069aa894a3c8bd452ed21a1332802056f8787c0f92b2c08f5c73cc6a801ebb87eba9245e6c70672286fea52afe3c75e48d9cd03899
   languageName: node
   linkType: hard
 
@@ -18718,18 +18718,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfig-paths-webpack-plugin@npm:3.5.2":
-  version: 3.5.2
-  resolution: "tsconfig-paths-webpack-plugin@npm:3.5.2"
+"tsconfig-paths-webpack-plugin@npm:4.0.0":
+  version: 4.0.0
+  resolution: "tsconfig-paths-webpack-plugin@npm:4.0.0"
   dependencies:
     chalk: ^4.1.0
     enhanced-resolve: ^5.7.0
-    tsconfig-paths: ^3.9.0
-  checksum: e7872f45b10684204d4a6cbc7989073d885c99e0c9eb5222de6b2b83d2e1594bccb647f52d2f8e00c53da5b9a3084e47a2de44f41c6f7a607ec2b17330a8d9e9
+    tsconfig-paths: ^4.0.0
+  checksum: 7ff7d63c1153e6dd30ce660b006495ae5cb5cbb78b30bb59b3cb627567325d4af52c7a69dda8aec7b94d576f5385581a69307472992954c40fe6949564155397
   languageName: node
   linkType: hard
 
-"tsconfig-paths@npm:4.0.0":
+"tsconfig-paths@npm:4.0.0, tsconfig-paths@npm:^4.0.0":
   version: 4.0.0
   resolution: "tsconfig-paths@npm:4.0.0"
   dependencies:
@@ -18740,7 +18740,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfig-paths@npm:^3.14.1, tsconfig-paths@npm:^3.9.0":
+"tsconfig-paths@npm:^3.14.1":
   version: 3.14.1
   resolution: "tsconfig-paths@npm:3.14.1"
   dependencies:

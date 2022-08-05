@@ -237,9 +237,10 @@ function createConnectionAndParams({
                             resolveTree.alias
                         }.args.where${field.relationship.union ? `.${n.name}` : ""}`,
                     });
-                    const [whereClause] = where;
+                    const [whereClause, whereParams] = where;
                     if (whereClause) {
                         whereStrs.push(whereClause);
+                        globalParams = { ...globalParams, ...whereParams };
                     }
                 }
 
@@ -321,9 +322,10 @@ function createConnectionAndParams({
                     resolveTree.alias
                 }.args.where`,
             });
-            const [whereClause] = where;
+            const [whereClause, whereParams] = where;
             if (whereClause) {
                 whereStrs.push(`${whereClause}`);
+                globalParams = { ...globalParams, ...whereParams };
             }
         }
 

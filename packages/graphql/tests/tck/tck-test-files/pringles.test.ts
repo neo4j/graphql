@@ -316,7 +316,7 @@ describe("Cypher Create Pringles", () => {
             	RETURN c AS this_photos0_color_Color_unique_ignored
             }
             RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateProducts: $updateProducts, this_photos0:this_photos0, auth:$auth,this_update_photos0_description:$this_update_photos0_description,this_photos0_color0_connect0_node_param0:$this_photos0_color0_connect0_node_param0})
+            \\", \\"\\", {this:this, updateProducts: $updateProducts, this_photos0:this_photos0, auth:$auth,this_update_photos0_description:$this_update_photos0_description,node:$node,name:$name,this_photos0_color0_connect0_node_param0:$this_photos0_color0_connect0_node_param0})
             YIELD value AS _
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -324,7 +324,12 @@ describe("Cypher Create Pringles", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Pringles\\",
+                \\"node\\": {
+                    \\"name\\": \\"Green\\"
+                },
+                \\"description\\": \\"Green Photo\\",
                 \\"this_update_photos0_description\\": \\"Light Green Photo\\",
+                \\"name\\": \\"Green\\",
                 \\"this_photos0_color0_connect0_node_param0\\": \\"Light Green\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,

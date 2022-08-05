@@ -112,6 +112,9 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             "{
                 \\"param0\\": true,
                 \\"param1\\": \\"MHA\\",
+                \\"edge\\": {
+                    \\"current\\": true
+                },
                 \\"this_architectureConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -249,6 +252,9 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             "{
                 \\"param0\\": true,
                 \\"param1\\": \\"MHA\\",
+                \\"edge\\": {
+                    \\"current\\": true
+                },
                 \\"this_mainConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

@@ -63,9 +63,9 @@ describe("Cypher Aggregations where node with ID", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_node.id = $aggr_node_id_EQUAL
-            \\", { this: this, aggr_node_id_EQUAL: $aggr_node_id_EQUAL }, false )
+            \\", { this: this, aggr_node_id_EQUAL: $aggr_node_id_EQUAL })
             RETURN this { .content } as this"
         `);
 
@@ -92,9 +92,9 @@ describe("Cypher Aggregations where node with ID", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_node._someIdAlias = $aggr_node_someIdAlias_EQUAL
-            \\", { this: this, aggr_node_someIdAlias_EQUAL: $aggr_node_someIdAlias_EQUAL }, false )
+            \\", { this: this, aggr_node_someIdAlias_EQUAL: $aggr_node_someIdAlias_EQUAL })
             RETURN this { .content } as this"
         `);
 

@@ -355,6 +355,10 @@ describe("@auth allow on specific interface implementation", () => {
                         }
                     }
                 },
+                \\"node\\": {
+                    \\"id\\": \\"post-id\\"
+                },
+                \\"id\\": \\"post-id\\",
                 \\"this_content_Post0_auth_allow0_creator_id\\": \\"user-id\\"
             }"
         `);
@@ -405,6 +409,10 @@ describe("@auth allow on specific interface implementation", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"user-id\\",
+                \\"node\\": {
+                    \\"id\\": \\"post-id\\"
+                },
+                \\"id\\": \\"post-id\\",
                 \\"this_disconnect_content0Post1_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
@@ -491,6 +499,10 @@ describe("@auth allow on specific interface implementation", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"user-id\\",
+                \\"node\\": {
+                    \\"id\\": \\"comment-id\\"
+                },
+                \\"id\\": \\"comment-id\\",
                 \\"this_disconnect_content0Post1_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"this_disconnect_content0Post0_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"updateUsers\\": {

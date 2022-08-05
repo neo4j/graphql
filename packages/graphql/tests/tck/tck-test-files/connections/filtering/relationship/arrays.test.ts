@@ -96,6 +96,18 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"screenTime_IN\\": [
+                        {
+                            \\"low\\": 60,
+                            \\"high\\": 0
+                        },
+                        {
+                            \\"low\\": 70,
+                            \\"high\\": 0
+                        }
+                    ]
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -156,6 +168,18 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"screenTime_NOT_IN\\": [
+                        {
+                            \\"low\\": 60,
+                            \\"high\\": 0
+                        },
+                        {
+                            \\"low\\": 70,
+                            \\"high\\": 0
+                        }
+                    ]
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -216,6 +240,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"quotes_INCLUDES\\": \\"Life is like a box of chocolates\\"
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -267,6 +294,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"quotes_NOT_INCLUDES\\": \\"Life is like a box of chocolates\\"
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

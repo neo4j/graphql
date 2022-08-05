@@ -105,6 +105,10 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"name_CONTAINS\\": \\"Tom\\"
+                },
+                \\"name_CONTAINS\\": \\"Tom\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -156,6 +160,10 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"name_NOT_CONTAINS\\": \\"Tom\\"
+                },
+                \\"name_NOT_CONTAINS\\": \\"Tom\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -207,6 +215,10 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"name_STARTS_WITH\\": \\"Tom\\"
+                },
+                \\"name_STARTS_WITH\\": \\"Tom\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -258,6 +270,10 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"name_NOT_STARTS_WITH\\": \\"Tom\\"
+                },
+                \\"name_NOT_STARTS_WITH\\": \\"Tom\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -309,6 +325,10 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"name_ENDS_WITH\\": \\"Hanks\\"
+                },
+                \\"name_ENDS_WITH\\": \\"Hanks\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -360,6 +380,10 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"name_NOT_ENDS_WITH\\": \\"Hanks\\"
+                },
+                \\"name_NOT_ENDS_WITH\\": \\"Hanks\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -411,6 +435,10 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"name_MATCHES\\": \\"Tom.+\\"
+                },
+                \\"name_MATCHES\\": \\"Tom.+\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

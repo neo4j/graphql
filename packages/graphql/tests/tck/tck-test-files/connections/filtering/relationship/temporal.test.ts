@@ -99,6 +99,23 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"edge\\": {
+                    \\"startDate_GT\\": {
+                        \\"year\\": 2000,
+                        \\"month\\": 1,
+                        \\"day\\": 1
+                    },
+                    \\"endDateTime_LT\\": {
+                        \\"year\\": 2010,
+                        \\"month\\": 1,
+                        \\"day\\": 1,
+                        \\"hour\\": 0,
+                        \\"minute\\": 0,
+                        \\"second\\": 0,
+                        \\"nanosecond\\": 0,
+                        \\"timeZoneOffsetSeconds\\": 0
+                    }
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

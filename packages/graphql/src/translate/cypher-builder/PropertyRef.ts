@@ -22,12 +22,16 @@ import type { Variable } from "./variables/Variable";
 
 /** Reference to a Variable property */
 export class PropertyRef {
-    private variable: Variable;
+    private _variable: Variable;
     private property: string;
 
     constructor(variable: Variable, property: string) {
-        this.variable = variable;
+        this._variable = variable;
         this.property = property;
+    }
+
+    public get variable(): Variable {
+        return this._variable;
     }
 
     public getCypher(env: CypherEnvironment): string {

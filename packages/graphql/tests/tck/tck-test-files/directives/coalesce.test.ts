@@ -231,6 +231,10 @@ describe("Cypher coalesce()", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"status\\": \\"ACTIVE\\"
+                },
+                \\"status\\": \\"ACTIVE\\",
                 \\"this_moviesConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

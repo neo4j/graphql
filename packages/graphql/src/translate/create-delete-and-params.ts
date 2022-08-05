@@ -106,6 +106,7 @@ function createDeleteAndParams({
                             });
                             if (whereAndParams[0]) {
                                 whereStrs.push(whereAndParams[0]);
+                                res.params = { ...res.params, ...whereAndParams[1] };
                             }
                         } catch {
                             return;
