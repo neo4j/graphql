@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 3.6.2
+
+### Patch Changes
+
+-   [#1837](https://github.com/neo4j/graphql/pull/1837) [`07d2b61e`](https://github.com/neo4j/graphql/commit/07d2b61e35820def7c399b110a7bc99217f76e60) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix nested filters on aggregations
+
 ## 3.6.1
 
 ### Patch Changes
