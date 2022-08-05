@@ -1,5 +1,12 @@
 # @neo4j/graphql
 
+## 3.6.2
+
+### Patch Changes
+
+-   [#1849](https://github.com/neo4j/graphql/pull/1849) [`68e44f53`](https://github.com/neo4j/graphql/commit/68e44f53672740780cd51d7985f15c85fd7def54) Thanks [@tbwiss](https://github.com/tbwiss)! - Fix: Cypher generation syntax error
+    Generated cypher statement when executed produces a syntax error, requires white spaces between AND and variable name.
+
 ## 3.6.1
 
 ### Patch Changes
