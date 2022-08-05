@@ -230,7 +230,7 @@ function createProjectionAndParams({
                         const labelsStatements = refNode
                             .getLabels(context)
                             .map((label) => `${varName}_${alias}:\`${label}\``);
-                        unionWheres.push(`(${labelsStatements.join("AND")})`);
+                        unionWheres.push(`(${labelsStatements.join(" AND ")})`);
 
                         const innerHeadStr: string[] = [
                             `[ ${varName}_${alias} IN [${varName}_${alias}] WHERE (${labelsStatements.join(" AND ")})`,
