@@ -44,6 +44,34 @@ interface Bind {
     chainStr?: string;
 }
 
+type Operator = "=" | "<" | "<=" | ">" | ">=";
+
+const logicalOperators = ["EQUAL", "GT", "GTE", "LT", "LTE"];
+
+function createOperator(input: string): Operator {
+    let operator: Operator = "=";
+
+    switch (input) {
+        case "LT":
+            operator = "<";
+            break;
+        case "LTE":
+            operator = "<=";
+            break;
+        case "GT":
+            operator = ">";
+            break;
+        case "GTE":
+            operator = ">=";
+            break;
+        default:
+            operator = "=";
+            break;
+    }
+
+    return operator;
+}
+
 function createRolesStr({ roles, escapeQuotes }: { roles: string[]; escapeQuotes?: boolean }) {
     const quote = escapeQuotes ? `\\"` : `"`;
 
@@ -98,7 +126,8 @@ function createAuthPredicate({
                 res.strs.push(joinPredicates(inner, key));
             }
 
-            const authableField = node.authableFields.find((field) => field.fieldName === key);
+            const [fieldName, operatorString] = key.split("_");
+            const authableField = node.authableFields.find((field) => field.fieldName === fieldName);
             if (authableField) {
                 const jwtPath = isString(value) ? ContextParser.parseTag(value, "jwt") : undefined;
                 let ctxPath = isString(value) ? ContextParser.parseTag(value, "context") : undefined;
@@ -114,15 +143,19 @@ function createAuthPredicate({
                     throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
                 }
 
-                const dbFieldName = mapToDbProperty(node, key);
+                const dbFieldName = mapToDbProperty(node, fieldName);
+
                 if (paramValue === undefined) {
                     res.strs.push("false");
                 } else if (paramValue === null) {
-                    res.strs.push(`${varName}.${dbFieldName} IS NULL`);
+                    const operator = `IS${operatorString === "NOT" ? " NOT" : ""}`;
+                    res.strs.push(`${varName}.${dbFieldName} ${operator} NULL`);
                 } else {
-                    const param = `${chainStr}_${key}`;
-                    res.params[param] = paramValue;
-                    res.strs.push(`${varName}.${dbFieldName} IS NOT NULL AND ${varName}.${dbFieldName} = $${param}`);
+                    const paramVariable = `${chainStr}_${key}`;
+                    const param = authableField.typeMeta.name === "DateTime" ? `datetime($${paramVariable})` : `$${paramVariable}`;
+                    const operator = createOperator(operatorString);
+                    res.params[paramVariable] = paramValue;
+                    res.strs.push(`${varName}.${dbFieldName} IS NOT NULL AND ${varName}.${dbFieldName} ${operator} ${param}`);
                 }
             }
 
