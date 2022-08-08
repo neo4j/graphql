@@ -43,6 +43,7 @@ import { ActionElementsBar } from "./ActionElementsBar";
 import { SchemaEditor } from "./SchemaEditor";
 import { ConstraintState, Favorite } from "src/types";
 import { Favorites } from "./Favorites";
+import { Modal } from "@neo4j-ndl/react";
 
 export interface Props {
     hasSchema: boolean;
@@ -53,6 +54,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const auth = useContext(AuthContext);
     const settings = useContext(SettingsContext);
     const [error, setError] = useState<string | GraphQLError>("");
+    const [showIntrospectionModal, setShowIntrospectionModal] = useState(true);
     const [loading, setLoading] = useState(false);
     const [isIntrospecting, setIsIntrospecting] = useState(false);
     const refForEditorMirror = useRef<EditorFromTextArea | null>(null);
@@ -156,6 +158,16 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
 
     return (
         <div className="w-full flex">
+            {auth.showIntrospectionPrompt ? (
+                <Modal
+                    id="introspection-modal"
+                    className="p-2 n-bg-neutral-10 rounded-lg"
+                    open={showIntrospectionModal}
+                    onClose={() => setShowIntrospectionModal(false)}
+                >
+                    Update text
+                </Modal>
+            ) : null}
             <div className="flex flex-col w-full">
                 <div className="h-12 w-full bg-white">
                     <ActionElementsBar hasSchema={hasSchema} loading={loading} onSubmit={onSubmit} />

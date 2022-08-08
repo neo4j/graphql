@@ -20,8 +20,18 @@
 import React, { Dispatch, useState, SetStateAction, useEffect } from "react";
 import * as neo4j from "neo4j-driver";
 import { encrypt, decrypt } from "../utils/utils";
-import { LOCAL_STATE_LOGIN, LOCAL_STATE_SELECTED_DATABASE_NAME, VERIFY_CONNECTION_INTERVAL_MS } from "../constants";
-import { getDatabases, resolveNeo4jDesktopLoginPayload, resolveSelectedDatabaseName } from "./utils";
+import {
+    LOCAL_STATE_HIDE_INTROSPECTION_PROMPT,
+    LOCAL_STATE_LOGIN,
+    LOCAL_STATE_SELECTED_DATABASE_NAME,
+    VERIFY_CONNECTION_INTERVAL_MS,
+} from "../constants";
+import {
+    checkDatabaseHasData,
+    getDatabases,
+    resolveNeo4jDesktopLoginPayload,
+    resolveSelectedDatabaseName,
+} from "./utils";
 import { LoginPayload, Neo4jDatabase } from "../types";
 import { Storage } from "../utils/storage";
 
@@ -39,6 +49,7 @@ export interface State {
     isNeo4jDesktop?: boolean;
     databases?: Neo4jDatabase[];
     selectedDatabaseName?: string;
+    showIntrospectionPrompt?: boolean;
     login: (options: LoginOptions) => Promise<void>;
     logout: () => void;
     setSelectedDatabaseName: (databaseName: string) => void;
@@ -98,6 +109,13 @@ export function AuthProvider(props: any) {
             const databases = await getDatabases(driver);
             const selectedDatabaseName = resolveSelectedDatabaseName(databases || []);
 
+            let isShowIntrospectionPrompt = false;
+            const storedShowIntrospectionPrompt = Storage.retrieve(LOCAL_STATE_HIDE_INTROSPECTION_PROMPT);
+            if (storedShowIntrospectionPrompt !== "true") {
+                isShowIntrospectionPrompt = await checkDatabaseHasData(driver, selectedDatabaseName);
+                Storage.store(LOCAL_STATE_HIDE_INTROSPECTION_PROMPT, "true");
+            }
+
             const encodedPayload = encrypt({
                 username: options.username,
                 password: options.password,
@@ -115,17 +133,25 @@ export function AuthProvider(props: any) {
                 username: options.username,
                 connectUrl: options.url,
                 isConnected: true,
+                showIntrospectionPrompt: isShowIntrospectionPrompt,
                 databases,
                 selectedDatabaseName,
             }));
         },
         logout: () => {
             Storage.remove(LOCAL_STATE_LOGIN);
+            Storage.remove(LOCAL_STATE_HIDE_INTROSPECTION_PROMPT);
             if (intervalId) {
                 clearInterval(intervalId);
             }
 
-            setValue((v) => ({ ...v, driver: undefined, connectUrl: undefined, isConnected: false }));
+            setValue((v) => ({
+                ...v,
+                driver: undefined,
+                connectUrl: undefined,
+                isConnected: false,
+                showIntrospectionPrompt: false,
+            }));
         },
         setSelectedDatabaseName: (databaseName: string) => {
             Storage.store(LOCAL_STATE_SELECTED_DATABASE_NAME, databaseName);

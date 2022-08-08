@@ -163,11 +163,11 @@ export const Editor = (props: Props) => {
                         </div>
                     </div>
                     {showDocs ? (
-                        <div className="h-content-container flex justify-start w-96 bg-white border-l border-gray-100">
+                        <div className="graphiql-explorer-docs-container h-content-docs-container w-96 bg-white shadow rounded">
                             <DocExplorerComponent
-                                onClickClose={() => {}}
-                                onClickBack={() => {}}
                                 schema={props.schema}
+                                displayBackButton={false}
+                                onClickClose={() => setShowDocs(false)}
                             />
                         </div>
                     ) : null}

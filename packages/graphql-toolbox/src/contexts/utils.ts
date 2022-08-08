@@ -145,6 +145,25 @@ export const getDatabases = async (driver: neo4j.Driver): Promise<Neo4jDatabase[
     }
 };
 
+export const checkDatabaseHasData = async (driver: neo4j.Driver, selectedDatabaseName: string): Promise<boolean> => {
+    const session = driver.session({ database: selectedDatabaseName });
+
+    try {
+        const result = await session.run("MATCH (n) RETURN n LIMIT 10");
+        if (!result || !result.records) return false;
+
+        const resultLength = result.records.map((rec) => rec.toObject()).length;
+
+        await session.close();
+        return resultLength > 0;
+    } catch (error) {
+        await session.close();
+        // eslint-disable-next-line no-console
+        console.error("Error while checking of database contains data, e: ", error);
+        return false;
+    }
+};
+
 export const getUrlSearchParam = (paramName: string): string | null => {
     const queryString = window.location.search;
     if (!queryString) return null;

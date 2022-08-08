@@ -5,11 +5,17 @@ import { DocExplorer } from "../EditorView/docexplorer";
 
 interface Props {
     onClickClose: () => void;
-    onClickBack: () => void;
+    onClickBack?: () => void;
+    displayBackButton?: boolean;
     schema?: GraphQLSchema;
 }
 
-export const DocExplorerComponent = ({ schema, onClickClose, onClickBack }: Props): JSX.Element => {
+export const DocExplorerComponent = ({
+    schema,
+    displayBackButton = true,
+    onClickClose,
+    onClickBack,
+}: Props): JSX.Element => {
     return (
         <DocExplorer
             schema={schema}
@@ -24,14 +30,16 @@ export const DocExplorerComponent = ({ schema, onClickClose, onClickBack }: Prop
                 </button>
             }
             titleBarBackButton={
-                <button
-                    className="docExplorerCloseIcon"
-                    onClick={onClickBack}
-                    aria-label="Back to Help drawer"
-                    data-test-help-drawer-doc-explorer-back-button
-                >
-                    <img src={ArrowLeft} alt="arrow left" className="inline w-5 h-5" />
-                </button>
+                displayBackButton ? (
+                    <button
+                        className="docExplorerCloseIcon"
+                        onClick={() => onClickBack && onClickBack()}
+                        aria-label="Back to Help drawer"
+                        data-test-help-drawer-doc-explorer-back-button
+                    >
+                        <img src={ArrowLeft} alt="arrow left" className="inline w-5 h-5" />
+                    </button>
+                ) : null
             }
         />
     );

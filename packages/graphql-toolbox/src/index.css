@@ -44,6 +44,13 @@ li.CodeMirror-hint-active {
     z-index: 20;
 }
 
+.graphiql-explorer-docs-container {
+    position: absolute;
+    left: 373px;
+    margin: 5px 0;
+    z-index: 100;
+}
+
 .graphiql-container .graphiql-explorer-actions select {
     border: 1px solid #C4C8CD;
     margin-left: 5px;

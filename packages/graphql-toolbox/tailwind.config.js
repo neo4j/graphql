@@ -5,6 +5,7 @@ module.exports = {
       height: {
         "content-container": "calc(100vh - 4rem)",
         "content-container-ext": "calc(100vh - 7rem)",
+        "content-docs-container": "calc(100vh - 7rem - 10px)",
         "favorite": "35rem",
       },
       width: {
