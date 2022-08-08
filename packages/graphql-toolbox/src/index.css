@@ -37,6 +37,13 @@ li.CodeMirror-hint-active {
     padding-top: 0.2rem;
 }
 
+.graphiql-explorer-open-docs-container {
+    position: absolute;
+    left: 262px;
+    top: 152px;
+    z-index: 20;
+}
+
 .graphiql-container .graphiql-explorer-actions select {
     border: 1px solid #C4C8CD;
     margin-left: 5px;

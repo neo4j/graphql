@@ -20,7 +20,7 @@
 import { useCallback, useState, useRef, useEffect, useContext, Fragment } from "react";
 import { graphql, GraphQLSchema } from "graphql";
 import GraphiQLExplorer from "graphiql-explorer";
-import { Button, HeroIcon, IconButton } from "@neo4j-ndl/react";
+import { Button, HeroIcon, IconButton, Switch } from "@neo4j-ndl/react";
 import tokens from "@neo4j-ndl/base/lib/tokens/js/tokens";
 import { EditorFromTextArea } from "codemirror";
 import debounce from "lodash.debounce";
@@ -38,9 +38,9 @@ import { formatCode, safeParse, ParserOptions } from "./utils";
 import { Extension } from "../../components/Filename";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
 import { SettingsContext } from "../../contexts/settings";
-import { ThemeContext } from "../../contexts/theme";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
+import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
 import { Storage } from "../../utils/storage";
 
 const DEBOUNCE_TIMEOUT = 500;
@@ -51,13 +51,13 @@ export interface Props {
 
 export const Editor = (props: Props) => {
     const settings = useContext(SettingsContext);
-    const theme = useContext(ThemeContext);
     const [initialLoad, setInitialLoad] = useState(false);
     const [loading, setLoading] = useState(false);
     const [query, setQuery] = useState("");
     const [variableValues, setVariableValues] = useState("");
     const [initVariableValues, setInitVariableValues] = useState("");
     const [output, setOutput] = useState("");
+    const [showDocs, setShowDocs] = useState(false);
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
@@ -125,34 +125,52 @@ export const Editor = (props: Props) => {
                     <div className="h-content-container flex justify-start w-96 bg-white graphiql-container border-t border-gray-100">
                         <div className="p-6 h-content-container">
                             {props.schema && initialLoad ? (
-                                <GraphiQLExplorer
-                                    schema={props.schema}
-                                    query={query}
-                                    onEdit={setQuery}
-                                    onRunOperation={onSubmit}
-                                    explorerIsOpen={true}
-                                    styles={{
-                                        buttonStyle: {
-                                            display: "block",
-                                            fontWeight: "bold",
-                                            backgroundColor: "#E6E9EE",
-                                            margin: "5px 5px 5px 10px",
-                                            width: "50px !important",
-                                        },
-                                        explorerActionsStyle: {
-                                            margin: "4px -8px -8px",
-                                            paddingTop: "5px",
-                                            bottom: "0px",
-                                            textAlign: "center",
-                                            background: "none",
-                                            borderTop: "none",
-                                            borderBottom: "none",
-                                        },
-                                    }}
-                                />
+                                <Fragment>
+                                    <div className="graphiql-explorer-open-docs-container">
+                                        <Switch
+                                            label="Docs"
+                                            checked={showDocs}
+                                            onChange={() => setShowDocs(!showDocs)}
+                                        />
+                                    </div>
+                                    <GraphiQLExplorer
+                                        schema={props.schema}
+                                        query={query}
+                                        onEdit={setQuery}
+                                        onRunOperation={onSubmit}
+                                        explorerIsOpen={true}
+                                        styles={{
+                                            buttonStyle: {
+                                                display: "block",
+                                                fontWeight: "bold",
+                                                backgroundColor: "#E6E9EE",
+                                                margin: "5px 5px 5px 10px",
+                                                width: "50px !important",
+                                            },
+                                            explorerActionsStyle: {
+                                                margin: "4px -8px -8px",
+                                                paddingTop: "5px",
+                                                bottom: "0px",
+                                                textAlign: "center",
+                                                background: "none",
+                                                borderTop: "none",
+                                                borderBottom: "none",
+                                            },
+                                        }}
+                                    />
+                                </Fragment>
                             ) : null}
                         </div>
                     </div>
+                    {showDocs ? (
+                        <div className="h-content-container flex justify-start w-96 bg-white border-l border-gray-100">
+                            <DocExplorerComponent
+                                onClickClose={() => {}}
+                                onClickBack={() => {}}
+                                schema={props.schema}
+                            />
+                        </div>
+                    ) : null}
                     {/* <div
                         className={`h-content-container flex justify-start p-4 ${       ------ check this!
                             showRightPanel ? "w-editor-container" : "w-full"
