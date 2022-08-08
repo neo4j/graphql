@@ -624,7 +624,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         expect(res.errors).toBeUndefined();
 
         expect(res.data).toEqual({
-            [testMain.plural]: [
+            [testMain.plural]: expect.toIncludeAllMembers([
                 {
                     mainConnection: {
                         edges: [
@@ -681,7 +681,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                     },
                     id: "1621",
                 },
-            ],
+            ]),
         });
     });
 });
