@@ -2462,7 +2462,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^2.3.2
     "@graphql-codegen/typescript": ^2.4.2
     "@graphql-tools/merge": ^8.2.1
-    "@neo4j/graphql": ^3.6.1
+    "@neo4j/graphql": ^3.6.2
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/jest": 28.1.6
     "@types/node": 16.11.47
@@ -2505,7 +2505,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-plugin-subscriptions-amqp@workspace:packages/plugins/graphql-plugin-subscriptions-amqp"
   dependencies:
-    "@neo4j/graphql": ^3.6.1
+    "@neo4j/graphql": ^3.6.2
     "@types/amqplib": 0.8.2
     "@types/debug": 4.1.7
     "@types/jest": 28.1.6
@@ -2524,7 +2524,7 @@ __metadata:
     typescript: 4.7.4
     ws: 8.8.1
   peerDependencies:
-    "@neo4j/graphql": ^3.6.1
+    "@neo4j/graphql": ^3.6.2
   languageName: unknown
   linkType: soft
 
@@ -2569,7 +2569,7 @@ __metadata:
     neo4j-driver: 4.4.7
     node-polyfill-webpack-plugin: 2.0.1
     parse5: 5.1.1
-    postcss: 8.4.14
+    postcss: 8.4.16
     postcss-loader: 7.0.1
     prettier: ^2.6.2
     process: 0.11.10
@@ -2594,7 +2594,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@^3.5.0, @neo4j/graphql@^3.6.1, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@^3.5.0, @neo4j/graphql@^3.6.2, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -8313,9 +8313,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:26.7.0":
-  version: 26.7.0
-  resolution: "eslint-plugin-jest@npm:26.7.0"
+"eslint-plugin-jest@npm:26.8.0":
+  version: 26.8.0
+  resolution: "eslint-plugin-jest@npm:26.8.0"
   dependencies:
     "@typescript-eslint/utils": ^5.10.0
   peerDependencies:
@@ -8326,7 +8326,7 @@ __metadata:
       optional: true
     jest:
       optional: true
-  checksum: 21dbeb3820a1640185e0bd3847f65feba98b479812bcaa3f353e725bd0538618b16544b4dfc74ac147b5150afed9cf28760d7aaad54158611403810776fe6353
+  checksum: 5dceef6c58422d912e29346be86940ad24602026517a92ce61ddb29814c2185609887a1ea0b6061080ca19d9ee6749549d3424102b28620088e53ec45aefa915
   languageName: node
   linkType: hard
 
@@ -13763,7 +13763,7 @@ __metadata:
     randomstring: 1.1.5
     ts-jest: 28.0.7
     ts-node: 10.9.1
-    tsconfig-paths: 4.0.0
+    tsconfig-paths: 4.1.0
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
@@ -13815,7 +13815,7 @@ __metadata:
     eslint-import-resolver-typescript: 3.4.0
     eslint-plugin-eslint-comments: 3.2.0
     eslint-plugin-import: 2.26.0
-    eslint-plugin-jest: 26.7.0
+    eslint-plugin-jest: 26.8.0
     eslint-plugin-jsx-a11y: 6.6.1
     eslint-plugin-react: 7.30.1
     graphql: 16.5.0
@@ -15558,7 +15558,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:8.4.14, postcss@npm:^8.4.12, postcss@npm:^8.4.14, postcss@npm:^8.4.7":
+"postcss@npm:8.4.16":
+  version: 8.4.16
+  resolution: "postcss@npm:8.4.16"
+  dependencies:
+    nanoid: ^3.3.4
+    picocolors: ^1.0.0
+    source-map-js: ^1.0.2
+  checksum: 10eee25efd77868036403858577da0cefaf2e0905feeaba5770d5438ccdddba3d01cba8063e96b8aac4c6daa0ed413dd5ae0554a433a3c4db38df1d134cffc1f
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^8.4.12, postcss@npm:^8.4.14, postcss@npm:^8.4.7":
   version: 8.4.14
   resolution: "postcss@npm:8.4.14"
   dependencies:
@@ -18729,14 +18740,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsconfig-paths@npm:4.0.0, tsconfig-paths@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "tsconfig-paths@npm:4.0.0"
+"tsconfig-paths@npm:4.1.0":
+  version: 4.1.0
+  resolution: "tsconfig-paths@npm:4.1.0"
   dependencies:
     json5: ^2.2.1
     minimist: ^1.2.6
     strip-bom: ^3.0.0
-  checksum: a8cf746ffe438513a71c70c1bcdee8da7d62ab2af286efbe2728ff55c4d4c92c2aea80a0822982ded6d0a13c7686c24632934d7c0f4f564be9e1b2cdc3d65eea
+  checksum: e4b101f81b2abd95499d8145e0aa73144e857c2c359191058486cef101b7accae22a69114e5d5814a13d5ab3b0bae70dd0c85bcdb7e829bbe1bfda5c9067c9b1
   languageName: node
   linkType: hard
 
@@ -18749,6 +18760,17 @@ __metadata:
     minimist: ^1.2.6
     strip-bom: ^3.0.0
   checksum: 8afa01c673ebb4782ba53d3a12df97fa837ce524f8ad38ee4e2b2fd57f5ac79abc21c574e9e9eb014d93efe7fe8214001b96233b5c6ea75bd1ea82afe17a4c6d
+  languageName: node
+  linkType: hard
+
+"tsconfig-paths@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "tsconfig-paths@npm:4.0.0"
+  dependencies:
+    json5: ^2.2.1
+    minimist: ^1.2.6
+    strip-bom: ^3.0.0
+  checksum: a8cf746ffe438513a71c70c1bcdee8da7d62ab2af286efbe2728ff55c4d4c92c2aea80a0822982ded6d0a13c7686c24632934d7c0f4f564be9e1b2cdc3d65eea
   languageName: node
   linkType: hard
 
