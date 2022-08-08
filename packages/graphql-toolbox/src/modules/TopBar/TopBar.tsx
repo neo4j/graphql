@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Button, HeroIcon, IconButton } from "@neo4j-ndl/react";
+import { Button, HeroIcon, IconButton, Label } from "@neo4j-ndl/react";
 import { Fragment, useContext } from "react";
 import { DEFAULT_BOLT_URL } from "src/constants";
 // @ts-ignore - SVG Import
@@ -59,7 +59,9 @@ export const TopBar = () => {
                 <div className="flex items-center">
                     <img src={Neo4jLogoIcon} alt="Neo4j logo Icon" className="ml-8 w-24" />
                     <p className="ml-6 text-base">GraphQL Toolbox</p>
-                    <div className="px-2 py-1 ml-3 rounded n-bg-danger-20 n-text-danger-60 text-sm">beta</div>
+                    <Label className="ml-3" color="info" fill="outlined">
+                        Beta
+                    </Label>
                 </div>
             </div>
             <div className="flex-1 flex justify-center">

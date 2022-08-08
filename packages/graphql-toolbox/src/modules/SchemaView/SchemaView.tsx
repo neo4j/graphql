@@ -156,41 +156,46 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
 
     return (
         <div className="w-full flex">
-            <div className="h-content-container flex justify-start w-96 bg-white">
-                <div className="p-6 w-full">
-                    <SchemaSettings
-                        isRegexChecked={isRegexChecked}
-                        isDebugChecked={isDebugChecked}
-                        constraintState={constraintState}
-                        setIsRegexChecked={setIsRegexChecked}
-                        setIsDebugChecked={setIsDebugChecked}
-                        setConstraintState={setConstraintState}
-                    />
-                    <hr className="my-8" />
-                    <Favorites
-                        favorites={favorites}
-                        setFavorites={setFavorites}
-                        onSelectFavorite={setTypeDefsFromFavorite}
-                    />
+            <div className="flex flex-col w-full">
+                <div className="h-12 w-full bg-white">
+                    <ActionElementsBar hasSchema={hasSchema} loading={loading} onSubmit={onSubmit} />
                 </div>
-            </div>
-            <div className="flex-1 flex justify-start w-full p-6" style={{ height: "87vh" }}>
-                <div className="flex flex-col w-full h-full">
-                    <ActionElementsBar
-                        hasSchema={hasSchema}
-                        loading={loading}
-                        isIntrospecting={isIntrospecting}
-                        formatTheCode={formatTheCode}
-                        onSubmit={onSubmit}
-                        introspect={introspect}
-                        saveAsFavorite={saveAsFavorite}
-                    />
-                    <SchemaErrorDisplay error={error} />
-                    <SchemaEditor mirrorRef={refForEditorMirror} loading={loading} />
+                <div className="flex">
+                    <div className="h-content-container-ext flex justify-start w-96 bg-white border-t border-gray-100">
+                        <div className="p-6 w-full">
+                            <SchemaSettings
+                                isRegexChecked={isRegexChecked}
+                                isDebugChecked={isDebugChecked}
+                                constraintState={constraintState}
+                                setIsRegexChecked={setIsRegexChecked}
+                                setIsDebugChecked={setIsDebugChecked}
+                                setConstraintState={setConstraintState}
+                            />
+                            <hr className="my-8" />
+                            <Favorites
+                                favorites={favorites}
+                                setFavorites={setFavorites}
+                                onSelectFavorite={setTypeDefsFromFavorite}
+                            />
+                        </div>
+                    </div>
+                    <div className="flex-1 flex justify-start w-full p-4" style={{ height: "86vh" }}>
+                        <div className="flex flex-col w-full h-full">
+                            <SchemaErrorDisplay error={error} />
+                            <SchemaEditor
+                                mirrorRef={refForEditorMirror}
+                                loading={loading}
+                                isIntrospecting={isIntrospecting}
+                                formatTheCode={formatTheCode}
+                                introspect={introspect}
+                                saveAsFavorite={saveAsFavorite}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
             {showRightPanel ? (
-                <div className="h-content-container flex justify-start w-96 bg-white">
+                <div className="h-content-container flex justify-start w-96 bg-white border-l border-gray-100">
                     {settings.isShowHelpDrawer ? (
                         <HelpDrawer onClickClose={() => settings.setIsShowHelpDrawer(false)} />
                     ) : null}

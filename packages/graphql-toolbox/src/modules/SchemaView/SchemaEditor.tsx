@@ -17,8 +17,10 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useRef, useState } from "react";
+import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { EditorFromTextArea } from "codemirror";
+import { Button, HeroIcon, IconButton } from "@neo4j-ndl/react";
+import tokens from "@neo4j-ndl/base/lib/tokens/js/tokens";
 import { CodeMirror } from "../../utils/utils";
 import {
     DEFAULT_TYPE_DEFS,
@@ -33,13 +35,25 @@ import { Extension, FileName } from "../../components/Filename";
 import { ThemeContext, Theme } from "../../contexts/theme";
 import { Storage } from "../../utils/storage";
 import { AppSettingsContext } from "../../contexts/appsettings";
+import { ProTooltip } from "src/components/ProTooltip";
 
 export interface Props {
     loading: boolean;
+    isIntrospecting: boolean;
     mirrorRef: React.MutableRefObject<EditorFromTextArea | null>;
+    formatTheCode: () => void;
+    introspect: () => Promise<void>;
+    saveAsFavorite: () => void;
 }
 
-export const SchemaEditor = ({ loading, mirrorRef }: Props) => {
+export const SchemaEditor = ({
+    loading,
+    isIntrospecting,
+    mirrorRef,
+    formatTheCode,
+    introspect,
+    saveAsFavorite,
+}: Props) => {
     const theme = useContext(ThemeContext);
     const appsettings = useContext(AppSettingsContext);
     const ref = useRef<HTMLTextAreaElement | null>(null);
@@ -150,7 +164,72 @@ export const SchemaEditor = ({ loading, mirrorRef }: Props) => {
 
     return (
         <div className="rounded-b-xl" style={{ width: "100%", height: "100%" }}>
-            <FileName extension={Extension.GRAPHQL} name="type-definitions"></FileName>
+            <FileName
+                extension={Extension.GRAPHQL}
+                name="type-definitions"
+                buttons={
+                    <Fragment>
+                        <ProTooltip
+                            tooltipText="This will overwrite your current typeDefs!"
+                            width={250}
+                            left={-79}
+                            top={39}
+                        >
+                            <Button
+                                data-test-schema-editor-introspect-button
+                                aria-label="Generate type definitions"
+                                className="mr-2"
+                                color="primary"
+                                fill="outlined"
+                                buttonSize="small"
+                                onClick={introspect}
+                                disabled={loading}
+                                loading={isIntrospecting}
+                            >
+                                Introspect
+                            </Button>
+                        </ProTooltip>
+
+                        <Button
+                            data-test-schema-editor-prettify-button
+                            aria-label="Prettify code"
+                            className="mr-2"
+                            color="neutral"
+                            fill="outlined"
+                            buttonSize="small"
+                            onClick={formatTheCode}
+                            disabled={loading}
+                        >
+                            Prettify
+                        </Button>
+
+                        <ProTooltip
+                            tooltipText="Save as Favorite"
+                            arrowPositionOverride="top-right"
+                            width={110}
+                            left={-72}
+                            top={42}
+                        >
+                            <IconButton
+                                data-test-schema-editor-favourite-button
+                                aria-label="Save as favorite"
+                                buttonSize="small"
+                                color="neutral"
+                                onClick={saveAsFavorite}
+                                disabled={loading}
+                            >
+                                <HeroIcon
+                                    style={{
+                                        color: tokens.colors.neutral[80],
+                                    }}
+                                    iconName="StarIcon"
+                                    type="outline"
+                                />
+                            </IconButton>
+                        </ProTooltip>
+                    </Fragment>
+                }
+            ></FileName>
             <textarea id={SCHEMA_EDITOR_INPUT} ref={ref} style={{ width: "100%", height: "100%" }} />
         </div>
     );

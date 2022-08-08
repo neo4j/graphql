@@ -4,7 +4,8 @@ module.exports = {
     extend: {
       height: {
         "content-container": "calc(100vh - 4rem)",
-        "favorite": "30rem",
+        "content-container-ext": "calc(100vh - 7rem)",
+        "favorite": "35rem",
       },
       width: {
         "editor-container": "calc(100% - (24rem + 24rem))",

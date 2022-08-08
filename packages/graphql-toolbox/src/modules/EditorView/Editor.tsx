@@ -40,7 +40,6 @@ import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
 import { SettingsContext } from "../../contexts/settings";
 import { Theme, ThemeContext } from "../../contexts/theme";
 import { AppSettings } from "../AppSettings/AppSettings";
-import { ProTooltip } from "../../components/ProTooltip";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
 import { Storage } from "../../utils/storage";
 
@@ -112,120 +111,118 @@ export const Editor = (props: Props) => {
 
     return (
         <div className="w-full flex">
-            <div className="h-content-container flex justify-start w-96 bg-white graphiql-container">
-                <div className="p-6">
-                    {props.schema && initialLoad ? (
-                        <GraphiQLExplorer
-                            schema={props.schema}
-                            query={query}
-                            onEdit={setQuery}
-                            onRunOperation={onSubmit}
-                            explorerIsOpen={true}
+            <div className="flex flex-col w-full">
+                <div className="h-12 w-full bg-white flex items-center px-6">
+                    <div className="justify-start">
+                        <ViewSelectorComponent
+                            key="editor-view-selector"
+                            elementKey="editor-view-selector"
+                            isEditorDisabled={!!props.schema || loading}
                         />
-                    ) : null}
+                    </div>
                 </div>
-            </div>
-            <div
-                className={`h-content-container flex justify-start p-6 ${
-                    showRightPanel ? "w-editor-container" : "w-full"
-                }`}
-            >
-                <div className="flex flex-col w-full">
-                    <div className="flex items-center w-full pb-4">
-                        <div className="justify-start">
-                            <ViewSelectorComponent
-                                key="editor-view-selector"
-                                elementKey="editor-view-selector"
-                                isEditorDisabled={!!props.schema || loading}
+                <div className="flex w-full">
+                    <div className="h-content-container flex justify-start w-96 bg-white graphiql-container border-t border-gray-100">
+                        <div className="p-6">
+                            {props.schema && initialLoad ? (
+                                <GraphiQLExplorer
+                                    schema={props.schema}
+                                    query={query}
+                                    onEdit={setQuery}
+                                    onRunOperation={onSubmit}
+                                    explorerIsOpen={true}
+                                />
+                            ) : null}
+                        </div>
+                    </div>
+                    {/* <div
+                        className={`h-content-container flex justify-start p-4 ${       ------ check this!
+                            showRightPanel ? "w-editor-container" : "w-full"
+                        }`}
+                    > */}
+                    <div className="h-content-container flex justify-start p-4 w-full">
+                        <div className="flex flex-col w-full">
+                            <Grid
+                                isRightPanelVisible={showRightPanel}
+                                queryEditor={
+                                    props.schema ? (
+                                        <GraphQLQueryEditor
+                                            schema={props.schema}
+                                            query={query}
+                                            loading={loading}
+                                            mirrorRef={refForQueryEditorMirror}
+                                            onChangeQuery={(query) => {
+                                                setQuery(query);
+                                                debouncedSave(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query));
+                                            }}
+                                            executeQuery={onSubmit}
+                                            buttons={
+                                                <Fragment>
+                                                    <Button
+                                                        aria-label="Prettify code"
+                                                        className="mr-2"
+                                                        color="neutral"
+                                                        fill="outlined"
+                                                        buttonSize="small"
+                                                        onClick={formatTheCode}
+                                                        disabled={loading}
+                                                    >
+                                                        Prettify
+                                                    </Button>
+                                                    <IconButton
+                                                        data-test-editor-query-button
+                                                        aria-label="Execute query"
+                                                        color="primary"
+                                                        clean
+                                                        onClick={() => onSubmit()}
+                                                        disabled={!props.schema || loading}
+                                                    >
+                                                        <HeroIcon
+                                                            style={{
+                                                                color: tokens.colors.primary[50],
+                                                            }}
+                                                            iconName="PlayIcon"
+                                                            type="outline"
+                                                        />
+                                                    </IconButton>
+                                                </Fragment>
+                                            }
+                                        />
+                                    ) : null
+                                }
+                                parameterEditor={
+                                    <JSONEditor
+                                        id={EDITOR_PARAMS_INPUT}
+                                        fileName="params"
+                                        loading={loading}
+                                        fileExtension={Extension.JSON}
+                                        readonly={false}
+                                        initialValue={initVariableValues}
+                                        onChange={(params) => {
+                                            setVariableValues(params);
+                                            debouncedSave(LOCAL_STATE_TYPE_LAST_PARAMS, JSON.stringify(params));
+                                        }}
+                                    />
+                                }
+                                resultView={
+                                    <JSONEditor
+                                        id={EDITOR_RESPONSE_OUTPUT}
+                                        fileName="response"
+                                        loading={loading}
+                                        fileExtension={Extension.JSON}
+                                        readonly={true}
+                                        json={output}
+                                        onChange={setOutput}
+                                    />
+                                }
                             />
                         </div>
                     </div>
-
-                    <Grid
-                        isRightPanelVisible={showRightPanel}
-                        queryEditor={
-                            props.schema ? (
-                                <GraphQLQueryEditor
-                                    schema={props.schema}
-                                    query={query}
-                                    loading={loading}
-                                    mirrorRef={refForQueryEditorMirror}
-                                    onChangeQuery={(query) => {
-                                        setQuery(query);
-                                        debouncedSave(LOCAL_STATE_TYPE_LAST_QUERY, JSON.stringify(query));
-                                    }}
-                                    executeQuery={onSubmit}
-                                    buttons={
-                                        <Fragment>
-                                            <ProTooltip tooltipText="Prettify" width={60} left={-14} top={38}>
-                                                <IconButton
-                                                    aria-label="Prettify code"
-                                                    clean
-                                                    buttonSize="small"
-                                                    onClick={formatTheCode}
-                                                    disabled={loading}
-                                                >
-                                                    <HeroIcon
-                                                        className={theme.theme === Theme.DARK ? "text-white" : ""}
-                                                        iconName="CodeIcon"
-                                                        type="outline"
-                                                    />
-                                                </IconButton>
-                                            </ProTooltip>
-                                            <IconButton
-                                                data-test-editor-query-button
-                                                aria-label="Execute query"
-                                                color="primary"
-                                                clean
-                                                onClick={() => onSubmit()}
-                                                disabled={!props.schema || loading}
-                                            >
-                                                <HeroIcon
-                                                    style={{
-                                                        color:
-                                                            theme.theme === Theme.DARK
-                                                                ? tokens.colors.neutral[10]
-                                                                : tokens.colors.primary[50],
-                                                    }}
-                                                    iconName="PlayIcon"
-                                                    type="outline"
-                                                />
-                                            </IconButton>
-                                        </Fragment>
-                                    }
-                                />
-                            ) : null
-                        }
-                        parameterEditor={
-                            <JSONEditor
-                                id={EDITOR_PARAMS_INPUT}
-                                fileName="params"
-                                loading={loading}
-                                fileExtension={Extension.JSON}
-                                readonly={false}
-                                initialValue={initVariableValues}
-                                onChange={(params) => {
-                                    setVariableValues(params);
-                                    debouncedSave(LOCAL_STATE_TYPE_LAST_PARAMS, JSON.stringify(params));
-                                }}
-                            />
-                        }
-                        resultView={
-                            <JSONEditor
-                                id={EDITOR_RESPONSE_OUTPUT}
-                                fileName="response"
-                                loading={loading}
-                                fileExtension={Extension.JSON}
-                                readonly={true}
-                                json={output}
-                                onChange={setOutput}
-                            />
-                        }
-                    />
                 </div>
             </div>
+
             {showRightPanel ? (
-                <div className="h-content-container flex justify-start w-96 bg-white">
+                <div className="h-content-container flex justify-start w-96 bg-white border-l border-gray-100">
                     {settings.isShowHelpDrawer ? (
                         <HelpDrawer onClickClose={() => settings.setIsShowHelpDrawer(false)} schema={props.schema} />
                     ) : null}

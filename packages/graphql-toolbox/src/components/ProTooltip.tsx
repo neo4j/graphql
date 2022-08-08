@@ -26,7 +26,7 @@ interface Props {
     width?: number;
     left?: number;
     top?: number;
-    arrowPositionLeft?: boolean;
+    arrowPositionOverride?: "bottom" | "left" | "right" | "top" | "top-left" | "top-right";
     blockVisibility?: boolean;
 }
 
@@ -36,7 +36,7 @@ export const ProTooltip = ({
     width,
     top,
     left,
-    arrowPositionLeft,
+    arrowPositionOverride = "top",
     blockVisibility = false,
 }: Props) => {
     const [visible, setVisible] = useState(false);
@@ -54,7 +54,7 @@ export const ProTooltip = ({
             {children}
             {visible ? (
                 <Tooltip
-                    arrowPosition={arrowPositionLeft ? "left" : "top"}
+                    arrowPosition={arrowPositionOverride || "top"}
                     style={{
                         position: "absolute",
                         width: `${width || 140}px`,
