@@ -86,9 +86,8 @@ describe("Filtering Operations", () => {
         expect(result.errors).toBeUndefined();
 
         const moviesResult = result.data?.[movieType.plural];
-        expect(moviesResult).toHaveLength(2);
         expect(moviesResult).toEqual(
-            expect.arrayContaining([
+            expect.toIncludeSameMembers([
                 { title: "The Italian Job", released: 2003 },
                 { title: "The Lion King", released: 1994 },
             ])

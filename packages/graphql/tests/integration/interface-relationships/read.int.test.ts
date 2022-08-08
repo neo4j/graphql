@@ -142,11 +142,10 @@ describe("interface relationships", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        expect((gqlResult.data as any)?.[typeActor.plural][0].actedIn).toHaveLength(2);
         expect(gqlResult.data).toEqual({
             [typeActor.plural]: [
                 {
-                    actedIn: expect.arrayContaining([
+                    actedIn: expect.toIncludeSameMembers([
                         {
                             runtime: movieRuntime,
                             title: movieTitle,
@@ -376,11 +375,10 @@ describe("interface relationships", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        expect((gqlResult.data as any)?.[typeActor.plural][0].actedIn).toHaveLength(2);
         expect(gqlResult.data).toEqual({
             [typeActor.plural]: [
                 {
-                    actedIn: expect.arrayContaining([
+                    actedIn: expect.toIncludeSameMembers([
                         {
                             runtime: movieRuntime,
                             title: "Apple",
@@ -512,11 +510,10 @@ describe("interface relationships", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        expect((gqlResult.data as any)?.[typeActor.plural][0].actedIn).toHaveLength(2);
         expect(gqlResult.data).toEqual({
             [typeActor.plural]: [
                 {
-                    actedIn: expect.arrayContaining([
+                    actedIn: expect.toIncludeSameMembers([
                         {
                             runtime: movieRuntime,
                             title: "Pear",

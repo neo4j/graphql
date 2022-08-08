@@ -163,9 +163,8 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
 
         expect(res.errors).toBeUndefined();
 
-        expect(res.data?.[seriesType.plural]).toHaveLength(2);
         expect(res.data).toEqual({
-            [seriesType.plural]: expect.arrayContaining([
+            [seriesType.plural]: expect.toIncludeSameMembers([
                 {
                     name: "123",
                     current: true,

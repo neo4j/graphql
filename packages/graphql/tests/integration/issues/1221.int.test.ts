@@ -102,7 +102,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 CREATE (m:${testMasterData} { current: true, id: "323" })
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(m)<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "421" })
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(m)
-                
+
                 // For verification purpose, this should be filtered out by the where clause:
                 CREATE (:${testNameDetails} { fullName: "MHBB" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })
             `);
@@ -199,7 +199,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             await session.run(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "323" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })
-                
+
                 // For verification purpose, this should be filtered out by the where clause:
                 CREATE (:${testNameDetails} { fullName: "MHBB" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })
             `);
@@ -317,7 +317,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(m:${testMasterData} { current: true, id: "123" })
                 CREATE (m)<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })
                 CREATE (m)<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "921" })
-                
+
                 // For verification purpose, this should be filtered out by the where clause:
                 CREATE (:${testNameDetails} { fullName: "MHDD" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })
             `);
@@ -376,9 +376,8 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         expect(res.errors).toBeUndefined();
 
-        expect(res.data?.[testSeries.plural]).toHaveLength(2);
         expect(res.data).toEqual({
-            [testSeries.plural]: expect.arrayContaining([
+            [testSeries.plural]: expect.toIncludeSameMembers([
                 {
                     architectureConnection: {
                         edges: [
@@ -437,7 +436,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 CREATE (s:${testSeries} { current: true, id: "421" })
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(s)<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1321" })
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "1123" })<-[:ARCHITECTURE { current: true }]-(s)
-               
+
                 // For verification purpose, this should be filtered out by the where clause:
                 CREATE (:${testNameDetails} { fullName: "MHBB" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1621" })
             `);
@@ -555,7 +554,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 CREATE (m)<-[:ARCHITECTURE { current: true }]-(s:${testSeries} { current: true, id: "921" })
                 CREATE (s)<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1321" })
                 CREATE (s)<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1621" })
-                
+
                 // For verification purpose, this should be filtered out by the where clause:
                 CREATE (:${testNameDetails} { fullName: "MHCC" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1621" })
             `);

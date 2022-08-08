@@ -2055,7 +2055,7 @@ describe("Advanced Filtering", () => {
                     expect(gqlMovies).toHaveLength(1);
                     expect(gqlMovies).toContainEqual({
                         id: movies[0].id,
-                        actors: expect.arrayContaining([actors[0], actors[2]]),
+                        actors: expect.toIncludeSameMembers([actors[0], actors[2]]),
                     });
                 });
 
@@ -2093,7 +2093,7 @@ describe("Advanced Filtering", () => {
                     expect(gqlMovies).toHaveLength(1);
                     expect(gqlMovies).toContainEqual({
                         id: movies[1].id,
-                        actors: expect.arrayContaining([actors[2]]),
+                        actors: expect.toIncludeSameMembers([actors[2]]),
                     });
                 });
 
@@ -2112,15 +2112,15 @@ describe("Advanced Filtering", () => {
                     expect(gqlMovies).toHaveLength(3);
                     expect(gqlMovies).toContainEqual({
                         id: movies[0].id,
-                        actors: expect.arrayContaining([actors[0], actors[2]]),
+                        actors: expect.toIncludeSameMembers([actors[0], actors[2]]),
                     });
                     expect(gqlMovies).toContainEqual({
                         id: movies[1].id,
-                        actors: expect.arrayContaining([actors[2]]),
+                        actors: expect.toIncludeSameMembers([actors[2]]),
                     });
                     expect(gqlMovies).toContainEqual({
                         id: movies[3].id,
-                        actors: expect.arrayContaining([actors[0], actors[2]]),
+                        actors: expect.toIncludeSameMembers([actors[0], actors[2]]),
                     });
                 });
             });
@@ -2153,7 +2153,7 @@ describe("Advanced Filtering", () => {
                     expect(gqlMovies).toHaveLength(1);
                     expect(gqlMovies).toContainEqual({
                         id: movies[0].id,
-                        actors: expect.arrayContaining([actors[0], actors[2]]),
+                        actors: expect.toIncludeSameMembers([actors[0], actors[2]]),
                     });
                 });
 
@@ -2191,7 +2191,7 @@ describe("Advanced Filtering", () => {
                     expect(gqlMovies).toHaveLength(1);
                     expect(gqlMovies).toContainEqual({
                         id: movies[1].id,
-                        actors: expect.arrayContaining([actors[2]]),
+                        actors: expect.toIncludeSameMembers([actors[2]]),
                     });
                 });
 
@@ -2210,15 +2210,15 @@ describe("Advanced Filtering", () => {
                     expect(gqlMovies).toHaveLength(3);
                     expect(gqlMovies).toContainEqual({
                         id: movies[0].id,
-                        actors: expect.arrayContaining([actors[0], actors[2]]),
+                        actors: expect.toIncludeSameMembers([actors[0], actors[2]]),
                     });
                     expect(gqlMovies).toContainEqual({
                         id: movies[1].id,
-                        actors: expect.arrayContaining([actors[2]]),
+                        actors: expect.toIncludeSameMembers([actors[2]]),
                     });
                     expect(gqlMovies).toContainEqual({
                         id: movies[3].id,
-                        actors: expect.arrayContaining([actors[0], actors[2]]),
+                        actors: expect.toIncludeSameMembers([actors[0], actors[2]]),
                     });
                 });
             });
