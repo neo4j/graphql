@@ -36,3 +36,14 @@ li.CodeMirror-hint-active {
 .pt-02 {
     padding-top: 0.2rem;
 }
+
+.graphiql-container .graphiql-explorer-actions select {
+    border: 1px solid #C4C8CD;
+    margin-left: 5px;
+    border-radius: 5px;
+    padding: 3px;
+}
+
+.graphiql-container .graphiql-explorer-actions > span {
+    display: none !important;
+}

@@ -207,7 +207,7 @@ export const SchemaEditor = ({
                             tooltipText="Save as Favorite"
                             arrowPositionOverride="top-right"
                             width={110}
-                            left={-72}
+                            left={-71}
                             top={42}
                         >
                             <IconButton

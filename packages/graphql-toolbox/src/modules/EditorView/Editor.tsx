@@ -38,7 +38,7 @@ import { formatCode, safeParse, ParserOptions } from "./utils";
 import { Extension } from "../../components/Filename";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
 import { SettingsContext } from "../../contexts/settings";
-import { Theme, ThemeContext } from "../../contexts/theme";
+import { ThemeContext } from "../../contexts/theme";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
 import { Storage } from "../../utils/storage";
@@ -123,7 +123,7 @@ export const Editor = (props: Props) => {
                 </div>
                 <div className="flex w-full">
                     <div className="h-content-container flex justify-start w-96 bg-white graphiql-container border-t border-gray-100">
-                        <div className="p-6">
+                        <div className="p-6 h-content-container">
                             {props.schema && initialLoad ? (
                                 <GraphiQLExplorer
                                     schema={props.schema}
@@ -131,6 +131,24 @@ export const Editor = (props: Props) => {
                                     onEdit={setQuery}
                                     onRunOperation={onSubmit}
                                     explorerIsOpen={true}
+                                    styles={{
+                                        buttonStyle: {
+                                            display: "block",
+                                            fontWeight: "bold",
+                                            backgroundColor: "#E6E9EE",
+                                            margin: "5px 5px 5px 10px",
+                                            width: "50px !important",
+                                        },
+                                        explorerActionsStyle: {
+                                            margin: "4px -8px -8px",
+                                            paddingTop: "5px",
+                                            bottom: "0px",
+                                            textAlign: "center",
+                                            background: "none",
+                                            borderTop: "none",
+                                            borderBottom: "none",
+                                        },
+                                    }}
                                 />
                             ) : null}
                         </div>
