@@ -32,6 +32,7 @@ export const IntrospectionPrompt = ({ open, onClose, onDisconnect, onIntrospect 
         <Modal
             className="w-introspection-prompt p-12 n-bg-neutral-10 rounded-lg"
             id="introspection-prompt"
+            data-test-introspect-prompt
             open={open}
             onClose={() => onClose()}
         >
@@ -46,14 +47,21 @@ export const IntrospectionPrompt = ({ open, onClose, onDisconnect, onIntrospect 
                 definitions automatically?
             </div>
             <div className="flex w-full">
-                <Button fill="outlined" color="neutral" onClick={() => onClose()}>
+                <Button data-test-introspect-prompt-cancel fill="outlined" color="neutral" onClick={() => onClose()}>
                     Cancel
                 </Button>
                 <div className="mr-0 ml-auto">
-                    <Button className="mr-3" fill="outlined" color="primary" onClick={() => onDisconnect()}>
+                    <Button
+                        data-test-introspect-prompt-logout
+                        className="mr-3"
+                        fill="outlined"
+                        color="primary"
+                        onClick={() => onDisconnect()}
+                    >
                         Switch connection
                     </Button>
                     <Button
+                        data-test-introspect-prompt-introspect
                         style={{ backgroundColor: tokens.colors.primary[50] }}
                         fill="filled"
                         color="primary"

@@ -29,6 +29,7 @@ import {
     LOCAL_STATE_ENABLE_DEBUG,
     LOCAL_STATE_ENABLE_REGEX,
     LOCAL_STATE_FAVORITES,
+    LOCAL_STATE_HIDE_INTROSPECTION_PROMPT,
     LOCAL_STATE_TYPE_DEFS,
 } from "../../constants";
 import { formatCode, ParserOptions } from "../EditorView/utils";
@@ -161,13 +162,18 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
             {auth.showIntrospectionPrompt ? (
                 <IntrospectionPrompt
                     open={showIntrospectionModal}
-                    onClose={() => setShowIntrospectionModal(false)}
+                    onClose={() => {
+                        setShowIntrospectionModal(false);
+                        auth.setShowIntrospectionPrompt(false);
+                    }}
                     onDisconnect={() => {
                         setShowIntrospectionModal(false);
+                        auth.setShowIntrospectionPrompt(false);
                         auth.logout();
                     }}
                     onIntrospect={() => {
                         setShowIntrospectionModal(false);
+                        auth.setShowIntrospectionPrompt(false);
                         introspect();
                     }}
                 />

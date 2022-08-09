@@ -21,7 +21,7 @@ export const DocExplorerComponent = ({
             schema={schema}
             closeButton={
                 <button
-                    data-test-help-drawer-doc-explorer-close-button
+                    data-test-doc-explorer-close-button
                     className="docExplorerCloseIcon"
                     onClick={onClickClose}
                     aria-label="Close Documentation Explorer"
@@ -32,10 +32,10 @@ export const DocExplorerComponent = ({
             titleBarBackButton={
                 displayBackButton ? (
                     <button
+                        data-test-doc-explorer-back-button
                         className="docExplorerCloseIcon"
                         onClick={() => onClickBack && onClickBack()}
                         aria-label="Back to Help drawer"
-                        data-test-help-drawer-doc-explorer-back-button
                     >
                         <img src={ArrowLeft} alt="arrow left" className="inline w-5 h-5" />
                     </button>

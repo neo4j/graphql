@@ -53,6 +53,7 @@ export interface State {
     login: (options: LoginOptions) => Promise<void>;
     logout: () => void;
     setSelectedDatabaseName: (databaseName: string) => void;
+    setShowIntrospectionPrompt: (nextState: boolean) => void;
 }
 
 export const AuthContext = React.createContext({} as State);
@@ -156,6 +157,9 @@ export function AuthProvider(props: any) {
         setSelectedDatabaseName: (databaseName: string) => {
             Storage.store(LOCAL_STATE_SELECTED_DATABASE_NAME, databaseName);
             setValue((v) => ({ ...v, selectedDatabaseName: databaseName }));
+        },
+        setShowIntrospectionPrompt: (nextState: boolean) => {
+            setValue((v) => ({ ...v, showIntrospectionPrompt: nextState }));
         },
     });
 

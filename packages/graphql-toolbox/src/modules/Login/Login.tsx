@@ -59,7 +59,7 @@ export const Login = () => {
     );
 
     return (
-        <div className="grid place-items-center h-screen n-bg-neutral-90">
+        <div data-test-login-form className="grid place-items-center h-screen n-bg-neutral-90">
             <div className="w-login flex flex-col align-center justify-center bg-white shadow-md rounded p-8">
                 <div className="mb-6 text-center">
                     <img src={Icon} alt="Neo4j Logo" className="h-12 w-12 mx-auto" />

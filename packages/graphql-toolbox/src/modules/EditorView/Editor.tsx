@@ -128,6 +128,7 @@ export const Editor = ({ schema }: Props) => {
                                 <Fragment>
                                     <div className="graphiql-explorer-open-docs-container">
                                         <Switch
+                                            data-test-explorer-show-docs-switch
                                             label="Docs"
                                             checked={showDocs}
                                             onChange={() => setShowDocs(!showDocs)}

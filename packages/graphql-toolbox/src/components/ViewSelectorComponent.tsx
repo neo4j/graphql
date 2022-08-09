@@ -49,8 +49,14 @@ export const ViewSelectorComponent = ({ isEditorDisabled = true, elementKey, onC
             size="small"
         >
             <Fragment key={`${elementKey}-screen-fragment`}>
-                <ViewSelectorItem value={Screen.TYPEDEFS.toString()}>Type definitions</ViewSelectorItem>
-                <ViewSelectorItem value={Screen.EDITOR.toString()} disabled={isEditorDisabled}>
+                <ViewSelectorItem data-test-view-selector-type-defs value={Screen.TYPEDEFS.toString()}>
+                    Type definitions
+                </ViewSelectorItem>
+                <ViewSelectorItem
+                    data-test-view-selector-editor
+                    value={Screen.EDITOR.toString()}
+                    disabled={isEditorDisabled}
+                >
                     Query editor
                 </ViewSelectorItem>
             </Fragment>

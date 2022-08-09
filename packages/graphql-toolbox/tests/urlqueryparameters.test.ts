@@ -18,13 +18,17 @@
  */
 
 import * as neo4j from "neo4j-driver";
+import { generate } from "randomstring";
 import { Login } from "./pages/Login";
 import { test, describe, expect, beforeAll, afterAll } from "./utils/pagemodel";
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
 describe("URL query parameters", () => {
-    const randomString = Math.random().toString(36).slice(2, 8);
+    const randomString = generate({
+        charset: "alphabetic",
+        length: 8,
+    });
     const databaseName = `graphqltoolboxe2etestdb${randomString}`;
 
     let driver: neo4j.Driver;
