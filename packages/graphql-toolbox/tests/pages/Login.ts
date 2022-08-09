@@ -55,7 +55,6 @@ export class Login extends Screen {
     public async dismissIntrospectionPrompt() {
         await this.page.waitForTimeout(500);
         if (await this.page.isVisible("[data-test-introspect-prompt]")) {
-            await this.page.waitForSelector("[data-test-introspect-prompt]");
             await this.page.waitForSelector("[data-test-introspect-prompt-cancel]");
             await this.page.click("[data-test-introspect-prompt-cancel]");
         }

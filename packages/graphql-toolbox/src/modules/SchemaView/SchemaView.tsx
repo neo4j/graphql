@@ -29,7 +29,6 @@ import {
     LOCAL_STATE_ENABLE_DEBUG,
     LOCAL_STATE_ENABLE_REGEX,
     LOCAL_STATE_FAVORITES,
-    LOCAL_STATE_HIDE_INTROSPECTION_PROMPT,
     LOCAL_STATE_TYPE_DEFS,
 } from "../../constants";
 import { formatCode, ParserOptions } from "../EditorView/utils";
@@ -183,7 +182,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     <ActionElementsBar hasSchema={hasSchema} loading={loading} onSubmit={onSubmit} />
                 </div>
                 <div className="flex">
-                    <div className="h-content-container-ext flex justify-start w-96 bg-white border-t border-gray-100">
+                    <div className="h-content-container-extended flex justify-start w-96 bg-white border-t border-gray-100">
                         <div className="p-6 w-full">
                             <SchemaSettings
                                 isRegexChecked={isRegexChecked}

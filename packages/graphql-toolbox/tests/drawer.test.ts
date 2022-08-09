@@ -19,7 +19,7 @@
 
 import { test, describe } from "./utils/pagemodel";
 
-describe("drawers", () => {
+describe("drawer", () => {
     const typeDefs = `
         type Movie {
             name: String!

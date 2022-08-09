@@ -56,15 +56,6 @@ describe("Introspection prompt", () => {
         }
     });
 
-    test("should log in and dismiss introspection prompt", async ({ loginPage }) => {
-        await loginPage.setUsername(NEO_USER);
-        await loginPage.setPassword(NEO_PASSWORD);
-        await loginPage.setURL(NEO_URL);
-        await loginPage.submit();
-        await loginPage.dismissIntrospectionPrompt();
-        await loginPage.awaitSuccess();
-    });
-
     test("should log in and introspect via introspection prompt button", async ({
         page,
         loginPage,

@@ -121,6 +121,7 @@ export const Editor = ({ schema }: Props) => {
                         />
                     </div>
                 </div>
+
                 <div className="flex w-full h-full">
                     <div className="h-full w-96 bg-white graphiql-container border-t border-gray-100">
                         <div className="h-content-docs-container p-6">
@@ -163,6 +164,7 @@ export const Editor = ({ schema }: Props) => {
                             ) : null}
                         </div>
                     </div>
+
                     {showDocs ? (
                         <div className="graphiql-explorer-docs-container h-content-docs-container w-96 bg-white shadow rounded">
                             <DocExplorerComponent
@@ -172,6 +174,7 @@ export const Editor = ({ schema }: Props) => {
                             />
                         </div>
                     ) : null}
+
                     <div className="flex justify-start p-4 w-content-container">
                         <div className="flex flex-col w-full">
                             <Grid
