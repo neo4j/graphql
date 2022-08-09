@@ -58,7 +58,7 @@ export function createConnectOrCreateAndParams({
     callbackBucket: CallbackBucket
 }): CypherBuilder.CypherResult {
     const withVarsVariables = withVars.map((name) => new CypherBuilder.NamedVariable(name));
-
+    
     const statements = asArray(input).map((inputItem, index) => {
         const subqueryBaseName = `${varName}${index}`;
         const result = createConnectOrCreatePartialStatement({
@@ -68,6 +68,7 @@ export function createConnectOrCreateAndParams({
             relationField,
             refNode,
             context,
+            varName,
             callbackBucket
         });
         return result;
@@ -95,6 +96,7 @@ function createConnectOrCreatePartialStatement({
     relationField,
     refNode,
     context,
+    varName,
     callbackBucket
 }: {
     input: CreateOrConnectInput;
@@ -103,6 +105,7 @@ function createConnectOrCreatePartialStatement({
     relationField: RelationField;
     refNode: Node;
     context: Context;
+    varName: string;
     callbackBucket: CallbackBucket;
 }): CypherBuilder.Clause {
     const mergeQuery = mergeStatement({
@@ -111,7 +114,7 @@ function createConnectOrCreatePartialStatement({
         context,
         relationField,
         parentNode: new CypherBuilder.NamedNode(parentVar),
-        baseName,
+        varName,
         callbackBucket
     });
 
@@ -133,7 +136,7 @@ function mergeStatement({
     context,
     relationField,
     parentNode,
-    baseName,
+    varName,
     callbackBucket
 }: {
     input: CreateOrConnectInput;
@@ -141,7 +144,7 @@ function mergeStatement({
     context: Context;
     relationField: RelationField;
     parentNode: CypherBuilder.Node;
-    baseName: string
+    varName: string
     callbackBucket: CallbackBucket;
 }): CypherBuilder.Clause {
     const whereNodeParameters = getCypherParameters(input.where?.node, refNode);
@@ -156,8 +159,8 @@ function mergeStatement({
     const callbackFields = getCallbackFields(refNode); 
     
     const callbackParams = callbackFields.map((callbackField): [CypherBuilder.PropertyRef, CypherBuilder.RawCypher] | [] => {
-        const varName = new CypherBuilder.NamedVariable(baseName);
-        return addCallbackAndSetParamCypher(callbackField, varName, parentNode, callbackBucket, "CREATE");
+        const varNameVariable = new CypherBuilder.NamedVariable(varName);
+        return addCallbackAndSetParamCypher(callbackField, varNameVariable, parentNode, callbackBucket, "CREATE", node);
     }).filter(tuple => tuple.length !== 0) as [CypherBuilder.PropertyRef, CypherBuilder.RawCypher][];
 
     const rawNodeParams = {

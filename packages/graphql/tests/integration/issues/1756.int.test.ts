@@ -34,7 +34,6 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
-        // user bug
         const typeDefs = `
         interface INode {
             id: ID! @callback(operations: [CREATE], name: "nanoid")
@@ -55,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
         const nanoid = (_parent, _args, context) => {
             return `callback_value`;
         };
-        
+
         const neoGraphql = new Neo4jGraphQL({ typeDefs, driver, config: { callbacks: { nanoid } } });
         schema = await neoGraphql.getSchema();
     });
@@ -102,87 +101,46 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
 
         expect(result.errors).toBeFalsy();
         expect(result?.data?.[productType.operations.create]).toEqual({
-            [productType.plural]: [{
-                id: "callback_value"
-            }]
+            [productType.plural]: [
+                {
+                    id: "callback_value",
+                },
+            ],
         });
     });
-});
-
-describe("https://github.com/neo4j/graphql/issues/1756, on create callback bug", () => {
-    const productType = generateUniqueType("Product");
-    const genreType = generateUniqueType("Genre");
-
-    let schema: GraphQLSchema;
-    let driver: Driver;
-    let neo4j: Neo4j;
-
-    beforeAll(async () => {
-        neo4j = new Neo4j();
-        driver = await neo4j.getDriver();
-        // user bug
-        const typeDefs = `
-        interface INode {
-            id: ID @callback(operations: [CREATE], name: "nanoid")
-        }
-        
-        type ${productType.name} implements INode {
-            id: ID
-            name: String!
-            genre: [${genreType.name}!]! @relationship(type: "HAS_GENRE", direction: OUT)
-        }
-        
-        type ${genreType.name} implements INode {
-            id: ID
-            value: String! @unique
-        }
-        `;
-
-        const nanoid = (_parent, _args, context) => {
-            return `callback_value`;
-        };
-        
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver, config: { callbacks: { nanoid } } });
-        schema = await neoGraphql.getSchema();
-    });
-
-    afterAll(async () => {
-        await driver.close();
-    });
-
     test("should define the ID using the callback function", async () => {
         const query = `
-        mutation {
-            ${productType.operations.create}(input: {
-              name: "TestProduct",
-              genre: {
-                connectOrCreate: [
-                  {
-                    where: {
-                      node: {
-                        value: "Action"
-                      }
-                    },
-                    onCreate: {
-                      node: {
-                        value: "Action"
-                      }
+      mutation {
+          ${productType.operations.create}(input: {
+            name: "TestProduct",
+            genre: {
+              connectOrCreate: [
+                {
+                  where: {
+                    node: {
+                      value: "Action"
+                    }
+                  },
+                  onCreate: {
+                    node: {
+                      value: "Action"
                     }
                   }
-                ]
-              }
-            }) {
-              ${productType.plural} {
-                id
-                name
-                genre {
-                    id
-                    value
                 }
+              ]
+            }
+          }) {
+            ${productType.plural} {
+              id
+              name
+              genre {
+                  id
+                  value
               }
             }
           }
-      `;
+        }
+    `;
 
         const result = await graphql({
             schema,
@@ -193,15 +151,18 @@ describe("https://github.com/neo4j/graphql/issues/1756, on create callback bug",
 
         expect(result.errors).toBeFalsy();
         expect(result?.data?.[productType.operations.create]).toEqual({
-            [productType.plural]: [{
-                id: "callback_value",
-                name: "TestProduct",
-                genre: [{
+            [productType.plural]: [
+                {
                     id: "callback_value",
-                    value: "Action"
-                }]
-            }],
+                    name: "TestProduct",
+                    genre: [
+                        {
+                            id: "callback_value",
+                            value: "Action",
+                        },
+                    ],
+                },
+            ],
         });
     });
 });
-

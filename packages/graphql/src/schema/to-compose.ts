@@ -87,12 +87,11 @@ export function objectFieldsToComposeFields(fields: BaseField[]): {
 export function objectFieldsToCreateInputFields(fields: BaseField[]): Record<string, InputField> {
     return fields
         .filter((f) => {
-        const isAutogenerate=(f as PrimitiveField)?.autogenerate
-        const isCallback=(f as PrimitiveField)?.autogenerate
-        const isTemporal=(f as TemporalField)?.timestamps
-       
-        return !isAutogenerate && !isCallback && !isTemporal
-        });
+            const isAutogenerate = (f as PrimitiveField)?.autogenerate;
+            const isCallback = (f as PrimitiveField)?.callback;
+            const isTemporal = (f as TemporalField)?.timestamps;
+            return !isAutogenerate && !isCallback && !isTemporal;
+        })
         .reduce((res, f) => {
             const fieldType = f.typeMeta.input.create.pretty;
             const defaultValue = (f as PrimitiveField)?.defaultValue;

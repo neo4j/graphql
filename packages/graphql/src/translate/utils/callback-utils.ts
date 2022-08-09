@@ -49,14 +49,14 @@ export const addCallbackAndSetParamCypher = (
     variable: CypherBuilder.Variable,
     parent: any,
     callbackBucket: CallbackBucket,
-    operation: "CREATE" | "UPDATE"
+    operation: "CREATE" | "UPDATE",
+    node: CypherBuilder.Node
 ): [CypherBuilder.PropertyRef, CypherBuilder.RawCypher] | [] => {
     if (!field.callback || !field.callback.operations.includes(operation)) {
         return [];
     }
 
-    const propRef = variable.property(field.dbPropertyName as string);
-
+    const propRef = node.property(field.dbPropertyName as string);
     const rawCypherStatement = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
         const variableCypher = variable.getCypher(env);
         const paramName = `${variableCypher}_${field.fieldName}_${field.callback?.name}`;
