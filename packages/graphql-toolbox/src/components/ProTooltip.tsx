@@ -39,7 +39,7 @@ export const ProTooltip = ({
     arrowPositionOverride = "top",
     blockVisibility = false,
 }: Props) => {
-    const [visible, setVisible] = useState(false);
+    const [visible, setVisible] = useState<boolean>(false);
 
     const onMouseAction = (nextVisibilityState: boolean) => {
         if (blockVisibility) {

@@ -29,11 +29,11 @@ import { getConnectUrlSearchParamValue } from "../../contexts/utils";
 
 export const Login = () => {
     const auth = useContext(AuthContext);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
     const { url: searchParamUrl, username: searchParamUsername } = getConnectUrlSearchParamValue() || {};
-    const [url, setUrl] = useState(searchParamUrl || DEFAULT_BOLT_URL);
-    const [username, setUsername] = useState(searchParamUsername || DEFAULT_USERNAME);
+    const [url, setUrl] = useState<string>(searchParamUrl || DEFAULT_BOLT_URL);
+    const [username, setUsername] = useState<string>(searchParamUsername || DEFAULT_USERNAME);
 
     const onSubmit = useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {

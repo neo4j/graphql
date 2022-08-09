@@ -43,7 +43,6 @@ import { ActionElementsBar } from "./ActionElementsBar";
 import { SchemaEditor } from "./SchemaEditor";
 import { ConstraintState, Favorite } from "src/types";
 import { Favorites } from "./Favorites";
-import { Modal } from "@neo4j-ndl/react";
 import { IntrospectionPrompt } from "./IntrospectionPrompt";
 
 export interface Props {
@@ -55,9 +54,9 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const auth = useContext(AuthContext);
     const settings = useContext(SettingsContext);
     const [error, setError] = useState<string | GraphQLError>("");
-    const [showIntrospectionModal, setShowIntrospectionModal] = useState(true);
-    const [loading, setLoading] = useState(false);
-    const [isIntrospecting, setIsIntrospecting] = useState(false);
+    const [showIntrospectionModal, setShowIntrospectionModal] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [isIntrospecting, setIsIntrospecting] = useState<boolean>(false);
     const refForEditorMirror = useRef<EditorFromTextArea | null>(null);
     const [isDebugChecked, setIsDebugChecked] = useState<string | null>(Storage.retrieve(LOCAL_STATE_ENABLE_DEBUG));
     const [isRegexChecked, setIsRegexChecked] = useState<string | null>(Storage.retrieve(LOCAL_STATE_ENABLE_REGEX));
@@ -159,7 +158,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
 
     return (
         <div className="w-full flex">
-            {!auth.showIntrospectionPrompt ? (
+            {auth.showIntrospectionPrompt ? (
                 <IntrospectionPrompt
                     open={showIntrospectionModal}
                     onClose={() => setShowIntrospectionModal(false)}

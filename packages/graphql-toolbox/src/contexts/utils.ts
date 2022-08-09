@@ -159,7 +159,7 @@ export const checkDatabaseHasData = async (driver: neo4j.Driver, selectedDatabas
     } catch (error) {
         await session.close();
         // eslint-disable-next-line no-console
-        console.error("Error while checking of database contains data, e: ", error);
+        console.error("Error while checking if database contains data, e: ", error);
         return false;
     }
 };

@@ -170,9 +170,9 @@ export const SchemaEditor = ({
                 buttons={
                     <Fragment>
                         <ProTooltip
-                            tooltipText="This will overwrite your current typeDefs!"
-                            width={250}
-                            left={-79}
+                            tooltipText="This will overwrite your current type definitions!"
+                            width={290}
+                            left={-99}
                             top={39}
                         >
                             <Button

@@ -51,13 +51,13 @@ export interface Props {
 
 export const Editor = ({ schema }: Props) => {
     const settings = useContext(SettingsContext);
-    const [initialLoad, setInitialLoad] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [query, setQuery] = useState("");
-    const [variableValues, setVariableValues] = useState("");
-    const [initVariableValues, setInitVariableValues] = useState("");
-    const [output, setOutput] = useState("");
-    const [showDocs, setShowDocs] = useState(false);
+    const [initialLoad, setInitialLoad] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [query, setQuery] = useState<string>("");
+    const [variableValues, setVariableValues] = useState<string>("");
+    const [initVariableValues, setInitVariableValues] = useState<string>("");
+    const [output, setOutput] = useState<string>("");
+    const [showDocs, setShowDocs] = useState<boolean>(false);
     const refForQueryEditorMirror = useRef<EditorFromTextArea | null>(null);
     const showRightPanel = settings.isShowHelpDrawer || settings.isShowSettingsDrawer;
 
