@@ -26,7 +26,7 @@
         "neo4j-driver": "4.4.7"
     },
     "devDependencies": {
-        "@faker-js/faker": "7.3.0",
+        "@faker-js/faker": "7.4.0",
         "@types/bcrypt": "5.0.0",
         "@types/debug": "4.1.7",
         "@types/dotenv": "8.2.0",
