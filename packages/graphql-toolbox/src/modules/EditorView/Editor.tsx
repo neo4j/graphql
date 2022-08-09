@@ -111,7 +111,7 @@ export const Editor = ({ schema }: Props) => {
 
     return (
         <div className="w-full flex">
-            <div className="flex flex-col w-full">
+            <div className={`flex flex-col ${showRightPanel ? "w-content-container" : "w-full"}`}>
                 <div className="h-12 w-full bg-white flex items-center px-6">
                     <div className="justify-start">
                         <ViewSelectorComponent
@@ -172,12 +172,7 @@ export const Editor = ({ schema }: Props) => {
                             />
                         </div>
                     ) : null}
-                    {/* <div
-                        className={`h-content-container flex justify-start p-4 ${       ------ check this!
-                            showRightPanel ? "w-editor-container" : "w-full"
-                        }`}
-                    > */}
-                    <div className="h-content-container flex justify-start p-4 w-full">
+                    <div className="h-content-container flex justify-start p-4 w-content-container">
                         <div className="flex flex-col w-full">
                             <Grid
                                 isRightPanelVisible={showRightPanel}

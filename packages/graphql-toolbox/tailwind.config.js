@@ -9,6 +9,7 @@ module.exports = {
         "favorite": "35rem",
       },
       width: {
+        "content-container": "calc(100% - 24rem)",
         "editor-container": "calc(100% - (24rem + 24rem))",
         "introspection-prompt": "750px",
         "login": "30rem",

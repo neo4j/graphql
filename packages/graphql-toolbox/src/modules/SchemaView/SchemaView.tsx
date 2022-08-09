@@ -178,7 +178,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     }}
                 />
             ) : null}
-            <div className="flex flex-col w-full">
+            <div className={`flex flex-col ${showRightPanel ? "w-content-container" : "w-full"}`}>
                 <div className="h-12 w-full bg-white">
                     <ActionElementsBar hasSchema={hasSchema} loading={loading} onSubmit={onSubmit} />
                 </div>
