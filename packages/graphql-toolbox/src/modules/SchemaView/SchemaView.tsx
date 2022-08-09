@@ -44,6 +44,7 @@ import { SchemaEditor } from "./SchemaEditor";
 import { ConstraintState, Favorite } from "src/types";
 import { Favorites } from "./Favorites";
 import { Modal } from "@neo4j-ndl/react";
+import { IntrospectionPrompt } from "./IntrospectionPrompt";
 
 export interface Props {
     hasSchema: boolean;
@@ -158,15 +159,19 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
 
     return (
         <div className="w-full flex">
-            {auth.showIntrospectionPrompt ? (
-                <Modal
-                    id="introspection-modal"
-                    className="p-2 n-bg-neutral-10 rounded-lg"
+            {!auth.showIntrospectionPrompt ? (
+                <IntrospectionPrompt
                     open={showIntrospectionModal}
                     onClose={() => setShowIntrospectionModal(false)}
-                >
-                    Update text
-                </Modal>
+                    onDisconnect={() => {
+                        setShowIntrospectionModal(false);
+                        auth.logout();
+                    }}
+                    onIntrospect={() => {
+                        setShowIntrospectionModal(false);
+                        introspect();
+                    }}
+                />
             ) : null}
             <div className="flex flex-col w-full">
                 <div className="h-12 w-full bg-white">

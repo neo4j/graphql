@@ -49,7 +49,7 @@ export interface Props {
     schema?: GraphQLSchema;
 }
 
-export const Editor = (props: Props) => {
+export const Editor = ({ schema }: Props) => {
     const settings = useContext(SettingsContext);
     const [initialLoad, setInitialLoad] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -77,11 +77,11 @@ export const Editor = (props: Props) => {
         async (override?: string) => {
             let result: string;
             setLoading(true);
-            if (!props.schema) return;
+            if (!schema) return;
 
             try {
                 const response = await graphql({
-                    schema: props.schema,
+                    schema: schema,
                     source: override || query || "",
                     contextValue: {},
                     variableValues: safeParse(variableValues, {}),
@@ -117,14 +117,14 @@ export const Editor = (props: Props) => {
                         <ViewSelectorComponent
                             key="editor-view-selector"
                             elementKey="editor-view-selector"
-                            isEditorDisabled={!!props.schema || loading}
+                            isEditorDisabled={!!schema || loading}
                         />
                     </div>
                 </div>
                 <div className="flex w-full">
                     <div className="h-content-container flex justify-start w-96 bg-white graphiql-container border-t border-gray-100">
                         <div className="p-6 h-content-container">
-                            {props.schema && initialLoad ? (
+                            {schema && initialLoad ? (
                                 <Fragment>
                                     <div className="graphiql-explorer-open-docs-container">
                                         <Switch
@@ -134,7 +134,7 @@ export const Editor = (props: Props) => {
                                         />
                                     </div>
                                     <GraphiQLExplorer
-                                        schema={props.schema}
+                                        schema={schema}
                                         query={query}
                                         onEdit={setQuery}
                                         onRunOperation={onSubmit}
@@ -165,7 +165,7 @@ export const Editor = (props: Props) => {
                     {showDocs ? (
                         <div className="graphiql-explorer-docs-container h-content-docs-container w-96 bg-white shadow rounded">
                             <DocExplorerComponent
-                                schema={props.schema}
+                                schema={schema}
                                 displayBackButton={false}
                                 onClickClose={() => setShowDocs(false)}
                             />
@@ -181,9 +181,9 @@ export const Editor = (props: Props) => {
                             <Grid
                                 isRightPanelVisible={showRightPanel}
                                 queryEditor={
-                                    props.schema ? (
+                                    schema ? (
                                         <GraphQLQueryEditor
-                                            schema={props.schema}
+                                            schema={schema}
                                             query={query}
                                             loading={loading}
                                             mirrorRef={refForQueryEditorMirror}
@@ -211,7 +211,7 @@ export const Editor = (props: Props) => {
                                                         color="primary"
                                                         clean
                                                         onClick={() => onSubmit()}
-                                                        disabled={!props.schema || loading}
+                                                        disabled={!schema || loading}
                                                     >
                                                         <HeroIcon
                                                             style={{
@@ -260,7 +260,7 @@ export const Editor = (props: Props) => {
             {showRightPanel ? (
                 <div className="h-content-container flex justify-start w-96 bg-white border-l border-gray-100">
                     {settings.isShowHelpDrawer ? (
-                        <HelpDrawer onClickClose={() => settings.setIsShowHelpDrawer(false)} schema={props.schema} />
+                        <HelpDrawer onClickClose={() => settings.setIsShowHelpDrawer(false)} schema={schema} />
                     ) : null}
                     {settings.isShowSettingsDrawer ? (
                         <AppSettings onClickClose={() => settings.setIsShowSettingsDrawer(false)} />
