@@ -2578,7 +2578,7 @@ __metadata:
     react-dom: 18.2.0
     react-resizable: ^3.0.4
     style-loader: 3.3.1
-    tailwindcss: 3.1.7
+    tailwindcss: 3.1.8
     terser-webpack-plugin: 5.3.3
     ts-jest: 28.0.7
     ts-loader: 9.3.1
@@ -8313,9 +8313,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:26.8.1":
-  version: 26.8.1
-  resolution: "eslint-plugin-jest@npm:26.8.1"
+"eslint-plugin-jest@npm:26.8.2":
+  version: 26.8.2
+  resolution: "eslint-plugin-jest@npm:26.8.2"
   dependencies:
     "@typescript-eslint/utils": ^5.10.0
   peerDependencies:
@@ -8326,7 +8326,7 @@ __metadata:
       optional: true
     jest:
       optional: true
-  checksum: bd50499f9b1fd12e701cf918b23e1220fb78161085205c4d0bb2146d60a5f0db84de3fea1f4a3467629e00c092c1b57473f41983449a0daae03e19e932f00587
+  checksum: 78d61467fef83fc0ce896cc54343d5b20e587baceb2e2d44f39a0c5fb1b693ee4adde7ed3b18e090381c4cd8a6b1094ad116caa502362f4152f9918b0a351a3e
   languageName: node
   linkType: hard
 
@@ -13815,7 +13815,7 @@ __metadata:
     eslint-import-resolver-typescript: 3.4.0
     eslint-plugin-eslint-comments: 3.2.0
     eslint-plugin-import: 2.26.0
-    eslint-plugin-jest: 26.8.1
+    eslint-plugin-jest: 26.8.2
     eslint-plugin-jsx-a11y: 6.6.1
     eslint-plugin-react: 7.30.1
     graphql: 16.5.0
@@ -18204,9 +18204,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:3.1.7":
-  version: 3.1.7
-  resolution: "tailwindcss@npm:3.1.7"
+"tailwindcss@npm:3.1.8":
+  version: 3.1.8
+  resolution: "tailwindcss@npm:3.1.8"
   dependencies:
     arg: ^5.0.2
     chokidar: ^3.5.3
@@ -18235,7 +18235,7 @@ __metadata:
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: adbc9869b72f741e9a0fc281b79710863617a588fd5d897316b676f789b6482c79f46f324223300ca962afbe55bed3ec16a37a6ccf4bb2c99c53cf8c5dd9700d
+  checksum: 86480301fc6ae1e392c2aba8264ab425bd919078176b010fda724518a7c265e950da5f4120c69c9041509c318207985fa9d680b6f5021e23f8214135a61a54b6
   languageName: node
   linkType: hard
 
