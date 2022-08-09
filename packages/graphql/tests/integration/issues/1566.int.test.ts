@@ -116,7 +116,7 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
             [testCommunity.plural]: [
                 {
                     id: 4656564,
-                    hasFeedItems: expect.arrayContaining([
+                    hasFeedItems: expect.toIncludeSameMembers([
                         {
                             __typename: testContent.name,
                             name: "content",

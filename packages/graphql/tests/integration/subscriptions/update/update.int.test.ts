@@ -139,9 +139,8 @@ describe("Subscriptions update", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(plugin.eventList).toHaveLength(2);
         expect(plugin.eventList).toEqual(
-            expect.arrayContaining([
+            expect.toIncludeSameMembers([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -214,9 +213,8 @@ describe("Subscriptions update", () => {
             [typeMovie.plural]: [{ id: "1" }, { id: "2" }],
         });
 
-        expect(plugin.eventList).toHaveLength(3);
         expect(plugin.eventList).toEqual(
-            expect.arrayContaining([
+            expect.toIncludeSameMembers([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -303,9 +301,8 @@ describe("Subscriptions update", () => {
 
         expect(gqlResult.errors).toBeUndefined();
 
-        expect(plugin.eventList).toHaveLength(5);
         expect(plugin.eventList).toEqual(
-            expect.arrayContaining([
+            expect.toIncludeSameMembers([
                 {
                     event: "update",
                     id: expect.any(Number),
@@ -393,9 +390,8 @@ describe("Subscriptions update", () => {
             [typeMovie.plural]: [{ id: "1", actors: [{ name: "Arnold" }] }],
         });
 
-        expect(plugin.eventList).toHaveLength(2);
         expect(plugin.eventList).toEqual(
-            expect.arrayContaining([
+            expect.toIncludeSameMembers([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -462,9 +458,8 @@ describe("Subscriptions update", () => {
             [typeMovie.plural]: [{ id: "1", actors: [] }],
         });
 
-        expect(plugin.eventList).toHaveLength(2);
         expect(plugin.eventList).toEqual(
-            expect.arrayContaining([
+            expect.toIncludeSameMembers([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -536,9 +531,8 @@ describe("Subscriptions update", () => {
             [typeMovie.plural]: [{ id: "1", actors: [{ name: "New Arnold" }] }],
         });
 
-        expect(plugin.eventList).toHaveLength(3);
         expect(plugin.eventList).toEqual(
-            expect.arrayContaining([
+            expect.toIncludeSameMembers([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -638,9 +632,8 @@ describe("Subscriptions update", () => {
             [typeMovie.plural]: [{ id: "1", actors: [{ name: "New Arnold" }] }],
         });
 
-        expect(plugin.eventList).toHaveLength(5);
         expect(plugin.eventList).toEqual(
-            expect.arrayContaining([
+            expect.toIncludeSameMembers([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),

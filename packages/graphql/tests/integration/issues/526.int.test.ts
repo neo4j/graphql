@@ -110,10 +110,10 @@ describe("https://github.com/neo4j/graphql/issues/526 - Int Argument on Custom Q
         expect(result.errors).toBeFalsy();
 
         expect(result.data as any).toEqual({
-            movie_tags: expect.arrayContaining([
+            movie_tags: expect.toIncludeSameMembers([
                 expect.objectContaining({
                     title: "M1",
-                    tags: expect.arrayContaining([{ name: "T1" }, { name: "T2" }]),
+                    tags: expect.toIncludeSameMembers([{ name: "T1" }, { name: "T2" }]),
                 }),
                 expect.objectContaining({
                     title: "M2",
