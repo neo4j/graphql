@@ -37,16 +37,9 @@ li.CodeMirror-hint-active {
     padding-top: 0.2rem;
 }
 
-.graphiql-explorer-open-docs-container {
-    position: absolute;
-    left: 262px;
-    top: 152px;
-    z-index: 20;
-}
-
 .graphiql-explorer-docs-container {
     position: absolute;
-    left: 373px;
+    left: 388px;
     margin: 5px 0;
     z-index: 100;
 }

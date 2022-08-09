@@ -110,7 +110,7 @@ export const Editor = ({ schema }: Props) => {
     }, []);
 
     return (
-        <div className="w-full flex">
+        <div className="w-full h-full flex">
             <div className={`flex flex-col ${showRightPanel ? "w-content-container" : "w-full"}`}>
                 <div className="h-12 w-full bg-white flex items-center px-6">
                     <div className="justify-start">
@@ -121,12 +121,12 @@ export const Editor = ({ schema }: Props) => {
                         />
                     </div>
                 </div>
-                <div className="flex w-full">
-                    <div className="h-content-container flex justify-start w-96 bg-white graphiql-container border-t border-gray-100">
-                        <div className="p-6 h-content-container">
+                <div className="flex w-full h-full">
+                    <div className="h-full w-96 bg-white graphiql-container border-t border-gray-100">
+                        <div className="h-content-docs-container p-6">
                             {schema && initialLoad ? (
                                 <Fragment>
-                                    <div className="graphiql-explorer-open-docs-container">
+                                    <div className="flex justify-end">
                                         <Switch
                                             data-test-explorer-show-docs-switch
                                             label="Docs"
@@ -172,7 +172,7 @@ export const Editor = ({ schema }: Props) => {
                             />
                         </div>
                     ) : null}
-                    <div className="h-content-container flex justify-start p-4 w-content-container">
+                    <div className="flex justify-start p-4 w-content-container">
                         <div className="flex flex-col w-full">
                             <Grid
                                 isRightPanelVisible={showRightPanel}
@@ -254,7 +254,7 @@ export const Editor = ({ schema }: Props) => {
             </div>
 
             {showRightPanel ? (
-                <div className="h-content-container flex justify-start w-96 bg-white border-l border-gray-100">
+                <div className="h-full flex justify-start w-96 bg-white border-l border-gray-100">
                     {settings.isShowHelpDrawer ? (
                         <HelpDrawer onClickClose={() => settings.setIsShowHelpDrawer(false)} schema={schema} />
                     ) : null}
