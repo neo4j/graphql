@@ -363,6 +363,7 @@ export default async function translateUpdate({
                     refNode,
                     context,
                     withVars,
+                    callbackBucket
                 });
                 connectStrs.push(cypher);
                 cypherParams = { ...cypherParams, ...params };
