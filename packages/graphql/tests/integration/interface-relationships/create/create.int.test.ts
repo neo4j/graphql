@@ -264,20 +264,15 @@ describe("interface relationships", () => {
 
             expect(gqlResult.errors).toBeFalsy();
 
-            expect((gqlResult.data as any)?.createActors.actors[0].actedIn).toHaveLength(2);
-            expect(
-                (gqlResult.data as any)?.createActors.actors[0].actedIn.find((actedIn) => actedIn.title === movieTitle)
-                    .actors
-            ).toHaveLength(2);
             expect(gqlResult.data).toEqual({
                 createActors: {
                     actors: [
                         {
-                            actedIn: expect.arrayContaining([
+                            actedIn: expect.toIncludeSameMembers([
                                 {
                                     runtime: movieRuntime,
                                     title: movieTitle,
-                                    actors: expect.arrayContaining([{ name: name2 }, { name: name1 }]),
+                                    actors: expect.toIncludeSameMembers([{ name: name2 }, { name: name1 }]),
                                 },
                                 {
                                     title: seriesTitle,

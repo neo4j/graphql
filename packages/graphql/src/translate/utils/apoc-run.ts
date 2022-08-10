@@ -28,9 +28,12 @@ export function wrapInApocRunFirstColumn(
 ): string {
     const serializedParams = stringifyObject(params);
     const escapedQuery = escapeQuery(query);
-    return `apoc.cypher.runFirstColumn("${escapedQuery}", ${serializedParams}${
-        expectMultipleValues === false ? ", false" : ""
-    })`;
+
+    if (expectMultipleValues === false) {
+        return `apoc.cypher.runFirstColumnSingle("${escapedQuery}", ${serializedParams})`;
+    }
+
+    return `apoc.cypher.runFirstColumnMany("${escapedQuery}", ${serializedParams})`;
 }
 
 export function serializeParamsForApocRun(params: Record<string, any>): Record<string, string> {

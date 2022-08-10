@@ -17,24 +17,24 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "./Environment";
-import type { Clause } from "./clauses/Clause";
-import { CypherASTNode } from "./CypherASTNode";
-import { padBlock } from "./utils";
+import type { CypherEnvironment } from "../Environment";
+import { Projection, ProjectionColumn } from "../sub-clauses/Projection";
+import { Clause } from "./Clause";
 
-export class Exists extends CypherASTNode {
-    private subQuery: CypherASTNode;
+export class Unwind extends Clause {
+    private projection: Projection;
 
-    constructor(subQuery: Clause, parent?: CypherASTNode) {
-        super(parent);
-        const rootQuery = subQuery.getRoot();
-        this.addChildren(rootQuery);
-        this.subQuery = rootQuery;
+    constructor(...columns: Array<"*" | ProjectionColumn>) {
+        super();
+        this.projection = new Projection(columns);
+    }
+
+    public addColumns(...columns: Array<"*" | ProjectionColumn>): void {
+        this.projection.addColumns(columns);
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const subQueryStr = this.subQuery.getCypher(env);
-        const paddedSubQuery = padBlock(subQueryStr);
-        return `EXISTS {\n${paddedSubQuery}\n}`;
+        const projectionStr = this.projection.getCypher(env);
+        return `UNWIND ${projectionStr}`;
     }
 }

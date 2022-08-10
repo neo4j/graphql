@@ -108,7 +108,11 @@ describe("Interface Relationships - Delete delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"node\\": {
+                    \\"title_STARTS_WITH\\": \\"The \\"
+                },
+                \\"title_STARTS_WITH\\": \\"The \\"
             }"
         `);
     });
@@ -187,7 +191,12 @@ describe("Interface Relationships - Delete delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"node\\": {
+                    \\"name\\": \\"Actor\\"
+                },
+                \\"title_STARTS_WITH\\": \\"The \\",
+                \\"name\\": \\"Actor\\"
             }"
         `);
     });
@@ -267,7 +276,12 @@ describe("Interface Relationships - Delete delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"node\\": {
+                    \\"title_STARTS_WITH\\": \\"The \\"
+                },
+                \\"title_STARTS_WITH\\": \\"The \\",
+                \\"name\\": \\"Actor\\"
             }"
         `);
     });
@@ -364,7 +378,12 @@ describe("Interface Relationships - Delete delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"node\\": {
+                    \\"name\\": \\"Actor\\"
+                },
+                \\"title_STARTS_WITH\\": \\"The \\",
+                \\"name\\": \\"Actor\\"
             }"
         `);
     });

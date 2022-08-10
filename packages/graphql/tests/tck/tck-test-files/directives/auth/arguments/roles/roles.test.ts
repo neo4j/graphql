@@ -184,7 +184,7 @@ describe("Cypher Auth Roles", () => {
             CALL apoc.util.validate(NOT (any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
             CALL apoc.util.validate(NOT (any(r IN [\\"super-admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { history: [this_history IN apoc.cypher.runFirstColumn(\\"MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h\\", {this: this, auth: $auth}, true) WHERE apoc.util.validatePredicate(NOT (any(r IN [\\"super-admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_history { .url }] } as this"
+            RETURN this { history: [this_history IN apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h\\", {this: this, auth: $auth}) WHERE apoc.util.validatePredicate(NOT (any(r IN [\\"super-admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_history { .url }] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -658,7 +658,7 @@ describe("Cypher Auth Roles", () => {
             	RETURN c AS this_post0_creator_User_unique_ignored
             }
             RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateComments: $updateComments, this_post0:this_post0, auth:$auth})
+            \\", \\"\\", {this:this, updateComments: $updateComments, this_post0:this_post0, auth:$auth,node:$node,id:$id})
             YIELD value AS _
             WITH this
             CALL {
@@ -673,6 +673,10 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"id\\": \\"user-id\\"
+                },
+                \\"id\\": \\"user-id\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [

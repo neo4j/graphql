@@ -33,7 +33,7 @@ import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
-import { getRelationshipDirection } from "../utils/get-relationship-direction";
+import { getRelationshipDirectionStr } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 
@@ -47,7 +47,7 @@ export interface ProjectionMeta {
     authValidateStrs?: string[];
     connectionFields?: ResolveTree[];
     interfaceFields?: ResolveTree[];
-    rootConnectionCypherSortFields?: { alias: string; apocStr: string }[];
+    cypherSortFields?: { alias: string; apocStr: string }[];
 }
 
 function createNodeWhereAndParams({
@@ -230,7 +230,7 @@ function createProjectionAndParams({
                         const labelsStatements = refNode
                             .getLabels(context)
                             .map((label) => `${varName}_${alias}:\`${label}\``);
-                        unionWheres.push(`(${labelsStatements.join("AND")})`);
+                        unionWheres.push(`(${labelsStatements.join(" AND ")})`);
 
                         const innerHeadStr: string[] = [
                             `[ ${varName}_${alias} IN [${varName}_${alias}] WHERE (${labelsStatements.join(" AND ")})`,
@@ -303,8 +303,7 @@ function createProjectionAndParams({
                 ...(context.cypherParams ? { cypherParams: context.cypherParams } : {}),
             };
 
-            const expectMultipleValues =
-                (referenceNode || referenceUnion) && cypherField.typeMeta.array ? "true" : "false";
+            const expectMultipleValues = (referenceNode || referenceUnion) && cypherField.typeMeta.array;
             const apocWhere = projectionAuthStrs.length
                 ? `WHERE apoc.util.validatePredicate(NOT (${projectionAuthStrs.join(
                       " AND "
@@ -319,28 +318,32 @@ function createProjectionAndParams({
 
             const apocStr = `${
                 !cypherField.isScalar && !cypherField.isEnum ? `${param} IN` : ""
-            } apoc.cypher.runFirstColumn("${cypherField.statement}", ${apocParamsStr}, ${expectMultipleValues})${
-                apocWhere ? ` ${apocWhere}` : ""
-            }${unionWhere ? ` ${unionWhere} ` : ""}${
+            } apoc.cypher.runFirstColumn${expectMultipleValues ? "Many" : "Single"}("${
+                cypherField.statement
+            }", ${apocParamsStr})${apocWhere ? ` ${apocWhere}` : ""}${unionWhere ? ` ${unionWhere} ` : ""}${
                 !isProjectionStrEmpty ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ""
             }`;
 
-            // if this is a root connection field, and is also the sort argument
-            // push the fieldName into the projection and stash the apocStr in the
-            // returned meta object
-            if (isRootConnectionField) {
-                const sortInput = (context.resolveTree.args.sort ?? []) as GraphQLSortArg[];
-                const isSortArg = sortInput.find((obj) => Object.keys(obj)[0] === alias);
-                if (isSortArg) {
-                    if (!res.meta.rootConnectionCypherSortFields) {
-                        res.meta.rootConnectionCypherSortFields = [];
-                    }
+            const sortInput = (context.resolveTree.args.sort ??
+                (context.resolveTree.args.options as any)?.sort ??
+                []) as GraphQLSortArg[];
+            const isSortArg = sortInput.find((obj) => Object.keys(obj)[0] === alias);
+            if (isSortArg) {
+                if (!res.meta.cypherSortFields) {
+                    res.meta.cypherSortFields = [];
+                }
 
-                    res.meta.rootConnectionCypherSortFields.push({
-                        alias,
-                        apocStr,
-                    });
+                res.meta.cypherSortFields.push({
+                    alias,
+                    apocStr,
+                });
+                if (isRootConnectionField) {
                     res.projection.push(`${alias}: edges.${alias}`);
+
+                    return res;
+                }
+                if (cypherField.isScalar || cypherField.isEnum) {
+                    res.projection.push(`${alias}: ${alias}`);
 
                     return res;
                 }
@@ -382,7 +385,7 @@ function createProjectionAndParams({
             const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 
-            const { inStr, outStr } = getRelationshipDirection(relationField, field.args);
+            const { inStr, outStr } = getRelationshipDirectionStr(relationField, field.args);
 
             if (relationField.interface) {
                 if (!res.meta.interfaceFields) {
@@ -608,9 +611,9 @@ function createProjectionAndParams({
             ];
 
             res.projection.push(
-                `${field.name}: apoc.cypher.runFirstColumn("${connection[0].replace(/("|')/g, "\\$1")} RETURN ${
+                `${field.name}: apoc.cypher.runFirstColumnSingle("${connection[0].replace(/("|')/g, "\\$1")} RETURN ${
                     field.name
-                }", { ${runFirstColumnParams.join(", ")} }, false)`
+                }", { ${runFirstColumnParams.join(", ")} })`
             );
             res.params = { ...res.params, ...connection[1] };
             return res;

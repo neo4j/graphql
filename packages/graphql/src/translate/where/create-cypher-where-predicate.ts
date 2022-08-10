@@ -26,7 +26,7 @@ import { filterTruthy } from "../../utils/utils";
 import { createWherePropertyOperation } from "./property-operations/create-where-property-operation";
 
 /** Translate a target node and GraphQL input into a Cypher operation o valid where expression */
-export function createCypherWhereParams({
+export function createCypherWherePredicate({
     targetElement,
     whereInput,
     context,
@@ -36,7 +36,7 @@ export function createCypherWhereParams({
     whereInput: GraphQLWhereArg;
     context: Context;
     element: GraphElement;
-}): CypherBuilder.WhereParams | undefined {
+}): CypherBuilder.Predicate | undefined {
     const mappedProperties = mapPropertiesToOperators({
         whereInput,
         targetElement,
@@ -62,7 +62,7 @@ function mapPropertiesToOperators({
     const whereFields = Object.entries(whereInput);
 
     return filterTruthy(
-        whereFields.map(([key, value]): CypherBuilder.WhereParams | undefined => {
+        whereFields.map(([key, value]): CypherBuilder.Predicate | undefined => {
             if (key === "OR") {
                 const nested = mapBooleanPropertiesToOperators({ value, element, targetElement, context });
                 return CypherBuilder.or(...nested);
@@ -86,9 +86,9 @@ function mapBooleanPropertiesToOperators({
     element: GraphElement;
     targetElement: CypherBuilder.Variable;
     context: Context;
-}): Array<CypherBuilder.ComparisonOp | CypherBuilder.BooleanOp | CypherBuilder.RawCypher | CypherBuilder.Exists> {
+}): Array<CypherBuilder.Predicate> {
     const nestedOperations = value.map((v) => {
-        return createCypherWhereParams({ whereInput: v, element, targetElement, context });
+        return createCypherWherePredicate({ whereInput: v, element, targetElement, context });
     });
 
     return filterTruthy(nestedOperations);

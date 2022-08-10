@@ -95,6 +95,10 @@ describe("Cypher -> Connections -> Filtering -> Node -> Equality", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"name\\": \\"Tom Hanks\\"
+                },
+                \\"name\\": \\"Tom Hanks\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -146,6 +150,10 @@ describe("Cypher -> Connections -> Filtering -> Node -> Equality", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"node\\": {
+                    \\"name_NOT\\": \\"Tom Hanks\\"
+                },
+                \\"name_NOT\\": \\"Tom Hanks\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

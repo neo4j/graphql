@@ -59,11 +59,11 @@ describe("createPointElement", () => {
         });
 
         expect(element).toMatchInlineSnapshot(`
-            "point: apoc.cypher.runFirstColumn('RETURN
+            "point: apoc.cypher.runFirstColumnSingle('RETURN
             CASE
             	WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
             	ELSE NULL
-            END AS result',{ this: this },false)"
+            END AS result',{ this: this })"
         `);
     });
 
@@ -105,11 +105,11 @@ describe("createPointElement", () => {
         });
 
         expect(element).toMatchInlineSnapshot(`
-            "points: apoc.cypher.runFirstColumn('RETURN
+            "points: apoc.cypher.runFirstColumnSingle('RETURN
             CASE
             	WHEN this.points IS NOT NULL THEN [p in this.points | { point:p, crs: p.crs }]
             	ELSE NULL
-            END AS result',{ this: this },false)"
+            END AS result',{ this: this })"
         `);
     });
 });

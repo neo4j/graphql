@@ -18,12 +18,13 @@
  */
 
 import { dedent } from "graphql-compose";
-import type { Variable } from "../../CypherBuilder";
-import type { CypherEnvironment } from "../../Environment";
-import { Where, WhereParams } from "../../sub-clauses/Where";
-import type { NodeRef } from "../../variables/NodeRef";
-import { Clause } from "../Clause";
-import { Return } from "../Return";
+import type { Predicate, Variable } from "../CypherBuilder";
+import type { CypherEnvironment } from "../Environment";
+import { Where } from "../sub-clauses/Where";
+import type { NodeRef } from "../variables/NodeRef";
+import { Clause } from "../clauses/Clause";
+import { WithReturn } from "../clauses/mixins/WithReturn";
+import { applyMixins } from "../clauses/utils/apply-mixin";
 
 export class FullTextQueryNodes extends Clause {
     private targetNode: NodeRef;
@@ -31,7 +32,6 @@ export class FullTextQueryNodes extends Clause {
     private phrase: Variable;
 
     private whereClause: Where | undefined;
-    private returnClause: Return | undefined;
 
     constructor(targetNode: NodeRef, indexName: string, phrase: Variable, parent?: Clause) {
         super(parent);
@@ -40,7 +40,7 @@ export class FullTextQueryNodes extends Clause {
         this.phrase = phrase;
     }
 
-    public where(input: WhereParams): this {
+    public where(input: Predicate): this {
         if (!this.whereClause) {
             const whereStatement = new Where(this, input);
             this.addChildren(whereStatement);
@@ -55,7 +55,7 @@ export class FullTextQueryNodes extends Clause {
         const targetId = env.getVariableId(this.targetNode);
 
         const whereStr = this.whereClause?.getCypher(env) || "";
-        const returnStr = this.returnClause?.getCypher(env) || "";
+        const returnStr = this.returnStatement?.getCypher(env) || "";
 
         const textSearchStr = dedent`CALL db.index.fulltext.queryNodes(
             "${this.indexName}",
@@ -67,10 +67,7 @@ export class FullTextQueryNodes extends Clause {
             ${returnStr}
         `;
     }
-
-    public return(node: NodeRef, fields?: string[], alias?: string): Return {
-        this.returnClause = new Return([node, fields, alias]);
-        this.addChildren(this.returnClause);
-        return this.returnClause;
-    }
 }
+
+export interface FullTextQueryNodes extends WithReturn {}
+applyMixins(FullTextQueryNodes, [WithReturn]);

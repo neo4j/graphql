@@ -22,11 +22,26 @@ import type { Operation } from "./operations/Operation";
 import type { PropertyRef } from "./PropertyRef";
 import type { CypherFunction } from "./functions/CypherFunction";
 import type { Literal } from "./variables/Literal";
-import type { Exists } from "./Exists";
+import type { Exists } from "./sub-clauses/Exists";
 import type { CypherEnvironment } from "./Environment";
 import type { ComprehensionExpr } from "./list/ComprehensionExpr";
+import type { MapExpr } from "./variables/map/MapExpr";
+import type { BooleanOp } from "./operations/boolean";
+import type { ComparisonOp } from "./operations/comparison";
+import type { RawCypher } from "./clauses/RawCypher";
 
-export type Expr = Operation | Variable | PropertyRef | CypherFunction | Literal | Exists | ComprehensionExpr;
+export type Expr =
+    | Operation
+    | Variable
+    | PropertyRef
+    | CypherFunction
+    | Literal
+    | Predicate
+    | ComprehensionExpr
+    | MapExpr;
+
+/** Represents a predicate statement (i.e returns a boolean). Note that RawCypher is only added for compatibility */
+export type Predicate = BooleanOp | ComparisonOp | RawCypher | Exists;
 
 export type CypherResult = {
     cypher: string;

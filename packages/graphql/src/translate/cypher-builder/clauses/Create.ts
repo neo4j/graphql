@@ -21,56 +21,33 @@ import type { CypherEnvironment } from "../Environment";
 import type { NodeRef } from "../variables/NodeRef";
 import type { Param } from "../variables/Param";
 import { Pattern } from "../Pattern";
-import { PropertyRef } from "../PropertyRef";
 import { SetClause } from "../sub-clauses/Set";
 import { Clause } from "./Clause";
-import { Return } from "./Return";
 import { compileCypherIfExists } from "../utils";
-import type { Variable } from "../CypherBuilder";
-
-type CreateSetParams = [PropertyRef | string, Variable];
+import { WithReturn } from "./mixins/WithReturn";
+import { applyMixins } from "./utils/apply-mixin";
+import { WithSet } from "./mixins/WithSet";
 
 type Params = Record<string, Param<any>>;
 
 export class Create extends Clause {
-    private node: NodeRef;
     private pattern: Pattern<NodeRef>;
-    private setClause: SetClause;
-    private returnStatement: Return | undefined;
 
     constructor(node: NodeRef, params: Params = {}, parent?: Clause) {
         super(parent);
         this.pattern = new Pattern(node).withParams(params);
-        this.addChildren(this.pattern);
-        this.setClause = new SetClause(this);
-        this.node = node;
-    }
-
-    public set(...params: CreateSetParams[]): this {
-        const formattedParams: Array<[PropertyRef, Variable]> = params.map(([prop, param]) => {
-            if (typeof prop === "string") {
-                const property = new PropertyRef(this.node, prop);
-                return [property, param];
-            }
-            return [prop, param];
-        });
-        this.setClause.addParams(...formattedParams);
-        return this;
+        this.setSubClause = new SetClause(this);
     }
 
     public getCypher(env: CypherEnvironment): string {
         const nodeCypher = this.pattern.getCypher(env);
 
-        const setCypher = compileCypherIfExists(this.setClause, env, { prefix: "\n" });
+        const setCypher = compileCypherIfExists(this.setSubClause, env, { prefix: "\n" });
         const returnCypher = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
 
         return `CREATE ${nodeCypher}${setCypher}${returnCypher}`;
     }
-
-    public return(node: NodeRef, fields?: string[], alias?: string): Return {
-        const returnStatement = new Return([node, fields, alias]);
-        this.addChildren(returnStatement);
-        this.returnStatement = returnStatement;
-        return returnStatement;
-    }
 }
+
+export interface Create extends WithReturn, WithSet {}
+applyMixins(Create, [WithReturn, WithSet]);

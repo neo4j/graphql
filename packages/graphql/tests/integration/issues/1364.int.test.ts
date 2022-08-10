@@ -38,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
         return graphql({
             schema,
             source: query,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
     }
 

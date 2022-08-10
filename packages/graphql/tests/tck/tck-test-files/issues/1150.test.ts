@@ -147,6 +147,9 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
+                \\"edge\\": {
+                    \\"current\\": true
+                },
                 \\"this_driveCompositionsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

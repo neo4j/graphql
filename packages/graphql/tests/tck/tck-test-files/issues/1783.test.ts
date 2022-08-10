@@ -160,6 +160,9 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 \\"param3\\": \\"MHA\\",
                 \\"param4\\": true,
                 \\"param5\\": \\"1\\",
+                \\"edge\\": {
+                    \\"current\\": true
+                },
                 \\"this_nameDetailsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

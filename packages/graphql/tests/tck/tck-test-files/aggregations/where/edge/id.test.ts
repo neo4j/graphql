@@ -66,9 +66,9 @@ describe("Cypher Aggregations where edge with ID", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_edge.id = $aggr_edge_id_EQUAL
-            \\", { this: this, aggr_edge_id_EQUAL: $aggr_edge_id_EQUAL }, false )
+            \\", { this: this, aggr_edge_id_EQUAL: $aggr_edge_id_EQUAL })
             RETURN this { .content } as this"
         `);
 
@@ -95,9 +95,9 @@ describe("Cypher Aggregations where edge with ID", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_edge._someIdAlias = $aggr_edge_someIdAlias_EQUAL
-            \\", { this: this, aggr_edge_someIdAlias_EQUAL: $aggr_edge_someIdAlias_EQUAL }, false )
+            \\", { this: this, aggr_edge_someIdAlias_EQUAL: $aggr_edge_someIdAlias_EQUAL })
             RETURN this { .content } as this"
         `);
 

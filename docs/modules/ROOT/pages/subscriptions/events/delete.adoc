@@ -44,8 +44,8 @@ Only events matching these properties and type will be returned to this subscrip
 Assuming the same type definitions as before, we can filter our movies by their genre:
 
 ```graphql
-movieCreated(where: {genre: "Drama"}) {
-    createdMovie {
+movieDeleted(where: {genre: "Drama"}) {
+    deletedMovie {
         title
     }
 }

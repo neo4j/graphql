@@ -17,71 +17,35 @@
  * limitations under the License.
  */
 
-import { isString } from "graphql-compose";
-import { NamedVariable, Variable } from "../variables/Variable";
 import type { CypherEnvironment } from "../Environment";
-import { Clause } from "./Clause";
+import { Projection, ProjectionColumn } from "../sub-clauses/Projection";
 import { compileCypherIfExists } from "../utils";
-
-type WithVariable = Variable | string;
-type WithInputElement = WithVariable | [WithVariable, WithVariable];
-
-type WithVariableAndAlias = {
-    variable: Variable;
-    alias?: Variable;
-};
+import { Clause } from "./Clause";
+import { WithOrder } from "./mixins/WithOrder";
+import { WithReturn } from "./mixins/WithReturn";
+import { applyMixins } from "./utils/apply-mixin";
 
 export class With extends Clause {
-    private variables: WithVariableAndAlias[] = [];
-    private star = false;
+    private projection: Projection;
 
-    constructor(str: "*");
-    constructor(...variables: Array<WithInputElement>);
-    constructor(str1: WithInputElement | "*", ...variables: Array<WithInputElement>) {
+    constructor(...columns: Array<"*" | ProjectionColumn>) {
         super();
-        if (str1 === "*") {
-            this.star = true;
-        } else {
-            this.variables = this.parseVarInput([str1, ...variables]);
-        }
+        this.projection = new Projection(columns);
+    }
+
+    public addColumns(...columns: Array<"*" | ProjectionColumn>): void {
+        this.projection.addColumns(columns);
     }
 
     public getCypher(env: CypherEnvironment): string {
-        if (this.star === true) {
-            return `WITH *`;
-        }
+        const projectionStr = this.projection.getCypher(env);
+        const orderByStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });
+        const returnStr = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
 
-        const projection = this.variables
-            .map((v) => {
-                const varCypher = v.variable.getCypher(env);
-                const aliasCypher = compileCypherIfExists(v.alias, env, { prefix: " AS " });
-                return `${varCypher}${aliasCypher}`;
-            })
-            .join(",");
-
-        return `WITH ${projection}`;
-    }
-
-    private parseVarInput(variables: Array<WithInputElement>): WithVariableAndAlias[] {
-        return variables.map((rawVar) => {
-            if (Array.isArray(rawVar)) {
-                const [variableOrString, aliasOrString] = rawVar;
-
-                return {
-                    variable: this.varOrStringToVar(variableOrString),
-                    alias: this.varOrStringToVar(aliasOrString),
-                };
-            }
-            return {
-                variable: this.varOrStringToVar(rawVar),
-            };
-        });
-    }
-
-    private varOrStringToVar(rawVar: Variable | string): Variable {
-        if (isString(rawVar)) {
-            return new NamedVariable(rawVar);
-        }
-        return rawVar;
+        return `WITH ${projectionStr}${orderByStr}${returnStr}`;
     }
 }
+
+export interface With extends WithOrder, WithReturn {}
+
+applyMixins(With, [WithOrder, WithReturn]);

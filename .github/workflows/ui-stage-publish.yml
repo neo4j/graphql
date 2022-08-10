@@ -51,7 +51,7 @@ jobs:
         with:
           number: ${{ steps.get-pr-number.outputs.pr-number }}
           message: |
-            Looks like you've updated the UI!
+            Made some changes to the GraphQL Toolbox? Or made some changes to the core library perhaps?
 
             Check out your changes at
              http://neo4j-graphql-toolbox-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh (=> for local development; use for instance [Neo4j Desktop](https://neo4j.com/download/))
