@@ -86,10 +86,11 @@ export const wrapResolver =
             context.jwt = await decodeToken(token, context.plugins.auth);
         }
 
-        const hasGlobalAuthentication = context.plugins?.auth?.getGlobalAuthentication();
-        if (hasGlobalAuthentication) {
+        const needsGlobalAuthentication = context.plugins?.auth?.hasGlobalAuthentication();
+        if (needsGlobalAuthentication) {
             if (!context.jwt)
                 throw new Neo4jGraphQLAuthenticationError("Global authentication requires a valid JWT token");
+            // TODO: need a roles check? context.jwt.roles, throw if no roles? Maybe not, what if an org uses a JWT without roles..
         }
 
         context.auth = createAuthParam({ context });

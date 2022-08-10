@@ -75,7 +75,7 @@ class Neo4jGraphQLAuthJWTPlugin {
     }
     /* eslint-enable @typescript-eslint/require-await */
 
-    public getGlobalAuthentication(): boolean {
+    public hasGlobalAuthentication(): boolean {
         return this.globalAuthentication;
     }
 }

@@ -353,7 +353,7 @@ export interface Neo4jGraphQLAuthPlugin {
     rolesPath?: string;
 
     decode<T>(token: string): Promise<T | undefined>;
-    getGlobalAuthentication(): boolean;
+    hasGlobalAuthentication(): boolean;
 }
 
 /** Raw event metadata returned from queries */
