@@ -149,7 +149,7 @@ export const checkDatabaseHasData = async (driver: neo4j.Driver, selectedDatabas
     const session = driver.session({ database: selectedDatabaseName });
 
     try {
-        const result = await session.run("MATCH (n) RETURN n LIMIT 10");
+        const result = await session.run("MATCH (n) RETURN n LIMIT 5");
         if (!result || !result.records) return false;
 
         const resultLength = result.records.map((rec) => rec.toObject()).length;

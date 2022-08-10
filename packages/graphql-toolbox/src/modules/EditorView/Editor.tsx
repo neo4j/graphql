@@ -147,7 +147,6 @@ export const Editor = ({ schema }: Props) => {
                                                 fontWeight: "bold",
                                                 backgroundColor: "#E6E9EE",
                                                 margin: "5px 5px 5px 10px",
-                                                width: "50px !important",
                                             },
                                             explorerActionsStyle: {
                                                 margin: "4px -8px -8px",
