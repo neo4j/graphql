@@ -40,6 +40,7 @@
 ** xref:auth/index.adoc[]
 *** xref:auth/setup.adoc[]
 *** xref:auth/auth-directive.adoc[]
+*** xref:auth/global-authentication.adoc[]
 *** xref:auth/authentication.adoc[]
 *** xref:auth/authorization/index.adoc[]
 **** xref:auth/authorization/allow.adoc[]
