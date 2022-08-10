@@ -72,7 +72,7 @@ describe("Global authentication - Auth JWKS plugin", () => {
         await tearDown({ jwksMock, server });
     });
 
-    test("should fail if no JWT token is present and global authentication is set", async () => {
+    test("should fail if no JWT token is present and global authentication is enabled", async () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
@@ -92,13 +92,13 @@ describe("Global authentication - Auth JWKS plugin", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as unknown as Neo4jGraphQLAuthenticationError[]).some((el) =>
-                el.message.includes("Global authentication requires a valid JWT token")
+                el.message.includes("Enabled global authentication requires a valid JWT token")
             )
         ).toBeTruthy();
         expect(gqlResult.data).toBeNull();
     });
 
-    test("should fail if invalid JWT token is provided and global authentication is set", async () => {
+    test("should fail if invalid JWT token is provided and global authentication is enabled", async () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
@@ -122,13 +122,13 @@ describe("Global authentication - Auth JWKS plugin", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as unknown as Neo4jGraphQLAuthenticationError[]).some((el) =>
-                el.message.includes("Global authentication requires a valid JWT token")
+                el.message.includes("Enabled global authentication requires a valid JWT token")
             )
         ).toBeTruthy();
         expect(gqlResult.data).toBeNull();
     });
 
-    test("should not fail if valid JWT token is present and global authentication is set", async () => {
+    test("should not fail if valid JWT token is present and global authentication is enabled", async () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {

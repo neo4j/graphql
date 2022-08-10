@@ -73,7 +73,7 @@ describe("Neo4jGraphQLAuthJWTPlugin", () => {
         expect(decoded).toMatchObject(payload);
     });
 
-    test("should throw an error if both noVerify and globalAuthentication are set to true", async () => {
+    test("should throw an error if both noVerify and globalAuthentication are enabled", async () => {
         let initError: Error | null | unknown = null;
         try {
             const payload = {
@@ -97,7 +97,7 @@ describe("Neo4jGraphQLAuthJWTPlugin", () => {
 
         expect(initError).toBeDefined();
         expect((initError as Error).message).toBe(
-            "Neo4jGraphQLAuthJWTPlugin: noVerify and globalAuthentication can not both be set to 'true' simultaneously."
+            "Neo4jGraphQLAuthJWTPlugin: noVerify and globalAuthentication can not both be enabled simultaneously."
         );
     });
 });

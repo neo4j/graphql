@@ -46,7 +46,7 @@ interface Neo4jGraphQLAuthPlugin {
 
     decode<T>(token: string | any): Promise<T | undefined>;
 
-    hasGlobalAuthentication(): boolean;
+    getGlobalAuthenticationEnabled(): boolean;
 }
 ----
 

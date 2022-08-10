@@ -68,7 +68,7 @@ class Neo4jGraphQLAuthJWKSPlugin {
         return result;
     }
 
-    public hasGlobalAuthentication(): boolean {
+    public getGlobalAuthenticationEnabled(): boolean {
         return this.globalAuthentication;
     }
 

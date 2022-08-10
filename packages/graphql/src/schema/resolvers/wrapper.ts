@@ -156,9 +156,10 @@ function verifyGlobalAuthentication(
     context: SubscriptionContext | Context,
     plugin: Neo4jGraphQLAuthPlugin | undefined
 ): void {
-    const hasGlobalAuthentication = plugin?.hasGlobalAuthentication();
-    if (hasGlobalAuthentication) {
-        if (!context.jwt) throw new Neo4jGraphQLAuthenticationError("Global authentication requires a valid JWT token");
+    const isGlobalAuthenticationEnabled = plugin?.getGlobalAuthenticationEnabled();
+    if (isGlobalAuthenticationEnabled) {
+        if (!context.jwt)
+            throw new Neo4jGraphQLAuthenticationError("Enabled global authentication requires a valid JWT token");
         // TODO: need a roles check? context.jwt.roles, throw if no roles? Maybe not, what if an org uses a JWT without roles..
     }
 }

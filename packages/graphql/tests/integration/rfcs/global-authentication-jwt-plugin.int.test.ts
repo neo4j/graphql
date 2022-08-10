@@ -56,7 +56,7 @@ describe("Global authentication - Auth JWT plugin", () => {
         await driver.close();
     });
 
-    test("should fail if no JWT token is present and global authentication is set", async () => {
+    test("should fail if no JWT token is present and global authentication is enabled", async () => {
         const neoSchema = new Neo4jGraphQL({
             driver,
             typeDefs,
@@ -77,13 +77,13 @@ describe("Global authentication - Auth JWT plugin", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as unknown as Neo4jGraphQLAuthenticationError[]).some((el) =>
-                el.message.includes("Global authentication requires a valid JWT token")
+                el.message.includes("Enabled global authentication requires a valid JWT token")
             )
         ).toBeTruthy();
         expect(gqlResult.data).toBeNull();
     });
 
-    test("should fail if invalid JWT token is present and global authentication is set", async () => {
+    test("should fail if invalid JWT token is present and global authentication is enabled", async () => {
         const neoSchema = new Neo4jGraphQL({
             driver,
             typeDefs,
@@ -106,13 +106,13 @@ describe("Global authentication - Auth JWT plugin", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as unknown as Neo4jGraphQLAuthenticationError[]).some((el) =>
-                el.message.includes("Global authentication requires a valid JWT token")
+                el.message.includes("Enabled global authentication requires a valid JWT token")
             )
         ).toBeTruthy();
         expect(gqlResult.data).toBeNull();
     });
 
-    test("should fail if noVerify and global authentication are both set to true", async () => {
+    test("should fail if noVerify and global authentication are both enabled", async () => {
         let initError: Error | null | unknown;
         try {
             const neoSchema = new Neo4jGraphQL({
@@ -140,7 +140,7 @@ describe("Global authentication - Auth JWT plugin", () => {
         expect(initError).toBeDefined();
         expect(
             (initError as Error)?.message.includes(
-                "Neo4jGraphQLAuthJWTPlugin: noVerify and globalAuthentication can not both be set to 'true' simultaneously."
+                "Neo4jGraphQLAuthJWTPlugin: noVerify and globalAuthentication can not both be enabled simultaneously."
             )
         ).toBeTruthy();
     });
@@ -176,7 +176,7 @@ describe("Global authentication - Auth JWT plugin", () => {
         expect(initError).toBeUndefined();
     });
 
-    test("should not fail if valid JWT token is present and global authentication is set", async () => {
+    test("should not fail if valid JWT token is present and global authentication is enabled", async () => {
         const neoSchema = new Neo4jGraphQL({
             driver,
             typeDefs,
