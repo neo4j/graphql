@@ -33,28 +33,25 @@ export interface JWTPluginInput {
 class Neo4jGraphQLAuthJWTPlugin {
     private secret: jsonwebtoken.Secret;
     private noVerify?: boolean;
-    private globalAuthentication?: boolean;
+    private globalAuthentication: boolean;
     rolesPath?: string;
 
     constructor(input: JWTPluginInput) {
         this.secret = input.secret;
         this.noVerify = input.noVerify;
-        this.globalAuthentication = input.globalAuthentication;
+        this.globalAuthentication = input.globalAuthentication || false;
         this.rolesPath = input.rolesPath;
 
         if (this.noVerify && this.globalAuthentication) {
-            throw new Error("noVerify and globalAuthentication can not both be set to 'true' simultaneously.");
+            throw new Error(
+                "Neo4jGraphQLAuthJWTPlugin: noVerify and globalAuthentication can not both be set to 'true' simultaneously."
+            );
         }
     }
 
     /* eslint-disable @typescript-eslint/require-await */
     async decode<T>(token: string): Promise<T | undefined> {
         let result: T | undefined;
-
-        if (this.noVerify && this.globalAuthentication) {
-            // TODO: needed?
-            throw new Error("noVerify and globalAuthentication can not both be set to 'true' simultaneously.");
-        }
 
         try {
             if (this.noVerify) {

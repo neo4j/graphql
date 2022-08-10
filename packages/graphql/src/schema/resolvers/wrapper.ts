@@ -86,8 +86,8 @@ export const wrapResolver =
             context.jwt = await decodeToken(token, context.plugins.auth);
         }
 
-        const isGlobalAuthentication = context.plugins.auth.getGlobalAuthentication();
-        if (isGlobalAuthentication) {
+        const hasGlobalAuthentication = context.plugins?.auth?.getGlobalAuthentication();
+        if (hasGlobalAuthentication) {
             if (!context.jwt)
                 throw new Neo4jGraphQLAuthenticationError("Global authentication requires a valid JWT token");
         }
