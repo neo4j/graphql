@@ -41,7 +41,7 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             interface Entity {
                 id: String!
             }
-            
+
             type ${personType.name} implements Entity {
                 id   : String! @unique
                 name : String!
@@ -51,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
                 id: String! @unique
                 location: Point!
             }
-            
+
             type ${interactionType.name}  {
                 id       : ID! @id
                 kind     : String!
@@ -149,7 +149,7 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             [interactionType.plural]: [
                 {
                     id: interactionId,
-                    subjects: expect.arrayContaining([
+                    subjects: expect.toIncludeSameMembers([
                         {
                             id: "eve",
                         },
@@ -157,7 +157,7 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
                             id: "adam",
                         },
                     ]),
-                    objects: expect.arrayContaining([
+                    objects: expect.toIncludeSameMembers([
                         {
                             id: "cain",
                         },
