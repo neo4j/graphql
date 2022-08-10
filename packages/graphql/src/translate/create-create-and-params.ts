@@ -190,6 +190,7 @@ function createCreateAndParams({
                         refNode,
                         context,
                         withVars,
+                        callbackBucket
                     });
                     res.creates.push(cypher);
                     res.params = { ...res.params, ...params };
