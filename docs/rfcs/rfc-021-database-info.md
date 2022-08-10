@@ -64,16 +64,15 @@ sequenceDiagram
     participant Library
     participant Neo4j Instance
     Client->>Library: GraphQL Request
-    opt Neo4jVersion is not yet defined
+    alt Version is defined in the context
+        Library->>Library: Use version defined in the context
+    else Version is not yet defined
         Library->>Library: Get DB version
         Library->>Neo4j Instance: Execute Cypher `dbms.components`
         Neo4j Instance->>Library: Response `dbms.components`
         Library->>Library: Set DB version
-    end
-    alt Version defined in the context
-        Library->>Library: Use version defined in the context
-    else 
-        Library->>Library: Use version defined in the configuration
+    else Version is already defined
+        Library->>Library: Use the previously defined version
     end
     Library->>Library: Generate version-specific Cypher 
     Library->>Neo4j Instance: Execute Cypher
