@@ -33,6 +33,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   integration-tests:
+    needs:
+      - ecr-login
+
     strategy:
       matrix:
         packages:
