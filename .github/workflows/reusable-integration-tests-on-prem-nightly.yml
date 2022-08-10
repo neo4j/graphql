@@ -1,4 +1,4 @@
-name: "Integration tests (on-prem, nightly build)"
+name: "Integration tests (on-prem, Neo4j nightly build)"
 
 on:
   workflow_call:
