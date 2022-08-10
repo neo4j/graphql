@@ -122,7 +122,7 @@ export const Editor = ({ schema }: Props) => {
                     </div>
                 </div>
 
-                <div className="flex w-full h-full">
+                <div className="w-full h-full flex">
                     <div className="h-full w-96 bg-white graphiql-container border-t border-gray-100">
                         <div className="h-content-docs-container p-6">
                             {schema && initialLoad ? (
@@ -175,7 +175,7 @@ export const Editor = ({ schema }: Props) => {
                         </div>
                     ) : null}
 
-                    <div className="flex justify-start p-4 w-content-container">
+                    <div className="w-content-container h-content-container-extended flex justify-start p-4">
                         <div className="flex flex-col w-full">
                             <Grid
                                 isRightPanelVisible={showRightPanel}

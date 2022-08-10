@@ -58,7 +58,7 @@ export const TopBar = () => {
             <div className="flex-1 flex justify-start">
                 <div className="flex items-center">
                     <img src={Neo4jLogoIcon} alt="Neo4j logo Icon" className="ml-8 w-24" />
-                    <p className="ml-6 text-base">GraphQL Toolbox</p>
+                    <p className="ml-6 text-base whitespace-nowrap">GraphQL Toolbox</p>
                     <Label className="ml-3" color="info" fill="outlined">
                         Beta
                     </Label>

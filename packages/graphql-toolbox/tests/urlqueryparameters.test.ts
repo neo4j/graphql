@@ -28,6 +28,7 @@ describe("URL query parameters", () => {
     const randomString = generate({
         charset: "alphabetic",
         length: 8,
+        capitalization: "lowercase",
     });
     const databaseName = `graphqltoolboxe2etestdb${randomString}`;
 
