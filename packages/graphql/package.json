@@ -86,7 +86,7 @@
     "dependencies": {
         "@graphql-tools/merge": "^8.2.1",
         "@graphql-tools/resolvers-composition": "^6.4.1",
-        "@graphql-tools/schema": "^8.3.1",
+        "@graphql-tools/schema": "9.0.0",
         "@graphql-tools/utils": "^8.6.0",
         "camelcase": "^6.2.0",
         "debug": "^4.3.2",
