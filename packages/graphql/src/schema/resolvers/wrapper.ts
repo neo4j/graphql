@@ -18,7 +18,7 @@
  */
 
 import Debug from "debug";
-import type { GraphQLResolveInfo, GraphQLSchema} from "graphql";
+import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
 import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
 import type { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
@@ -86,6 +86,12 @@ export const wrapResolver =
             context.jwt = await decodeToken(token, context.plugins.auth);
         }
 
+        const isGlobalAuthentication = context.plugins.auth.getGlobalAuthentication();
+        if (isGlobalAuthentication) {
+            if (!context.jwt)
+                throw new Neo4jGraphQLAuthenticationError("Global authentication requires a valid JWT token");
+        }
+
         context.auth = createAuthParam({ context });
 
         const executorConstructorParam: ExecutorConstructorParam = {
@@ -125,6 +131,8 @@ export const wrapSubscription =
         const subscriptionContext: SubscriptionContext = {
             plugin: plugins.subscriptions,
         };
+
+        // TODO: global auth needed here?
 
         if (!context?.jwt && contextParams.authorization) {
             const token = parseBearerToken(contextParams.authorization);
