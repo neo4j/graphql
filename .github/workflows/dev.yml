@@ -36,6 +36,13 @@ jobs:
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
+  integration-tests-on-prem-nightly:
+    uses: ./.github/workflows/reusable-integration-tests-on-prem-nightly.yml
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_NEO4J_DEV_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_NEO4J_DEV_SECRET_ACCESS_KEY }}
+
   toolbox-tests:
     uses: ./.github/workflows/reusable-toolbox-tests.yml
 
