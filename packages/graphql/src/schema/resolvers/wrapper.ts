@@ -86,12 +86,7 @@ export const wrapResolver =
             context.jwt = await decodeToken(token, context.plugins.auth);
         }
 
-        const needsGlobalAuthentication = context.plugins?.auth?.hasGlobalAuthentication();
-        if (needsGlobalAuthentication) {
-            if (!context.jwt)
-                throw new Neo4jGraphQLAuthenticationError("Global authentication requires a valid JWT token");
-            // TODO: need a roles check? context.jwt.roles, throw if no roles? Maybe not, what if an org uses a JWT without roles..
-        }
+        verifyGlobalAuthentication(context, context.plugins?.auth);
 
         context.auth = createAuthParam({ context });
 
@@ -133,12 +128,12 @@ export const wrapSubscription =
             plugin: plugins.subscriptions,
         };
 
-        // TODO: global auth needed here?
-
         if (!context?.jwt && contextParams.authorization) {
             const token = parseBearerToken(contextParams.authorization);
             subscriptionContext.jwt = await decodeToken(token, plugins.auth);
         }
+
+        verifyGlobalAuthentication(subscriptionContext, plugins.auth);
 
         return next(root, args, { ...context, ...contextParams, ...subscriptionContext }, info);
     };
@@ -155,4 +150,15 @@ async function decodeToken(
         return jwt;
     }
     return undefined;
+}
+
+function verifyGlobalAuthentication(
+    context: SubscriptionContext | Context,
+    plugin: Neo4jGraphQLAuthPlugin | undefined
+): void {
+    const hasGlobalAuthentication = plugin?.hasGlobalAuthentication();
+    if (hasGlobalAuthentication) {
+        if (!context.jwt) throw new Neo4jGraphQLAuthenticationError("Global authentication requires a valid JWT token");
+        // TODO: need a roles check? context.jwt.roles, throw if no roles? Maybe not, what if an org uses a JWT without roles..
+    }
 }
