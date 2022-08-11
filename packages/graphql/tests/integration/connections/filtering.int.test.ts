@@ -153,11 +153,10 @@ describe("Connections Filtering", () => {
             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
         expect(result.errors).toBeFalsy();
-        expect((result?.data as any)?.[movieType.plural][0].actorsConnection.edges).toHaveLength(2);
         expect((result?.data as any)?.[movieType.plural]).toEqual([
             {
                 actorsConnection: {
-                    edges: expect.arrayContaining([
+                    edges: expect.toIncludeSameMembers([
                         {
                             node: { name: actor1Name },
                         },

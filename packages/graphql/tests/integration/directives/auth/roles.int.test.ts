@@ -1065,9 +1065,8 @@ describe("auth/roles", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: adminReq }),
                 });
 
-                expect(gqlResultAdmin.data?.[type.plural]).toHaveLength(2);
                 expect(gqlResultAdmin.data).toEqual({
-                    [type.plural]: expect.arrayContaining([
+                    [type.plural]: expect.toIncludeSameMembers([
                         { id: userId, name: "User1", password: "password" },
                         { id: userId2, name: "User2", password: "password" },
                     ]),

@@ -677,7 +677,7 @@ describe("array-pop", () => {
 
         const update = `
             mutation($id: ID, $numberToPop: Int) {
-                ${actor.operations.update}(where: { id: $id }, 
+                ${actor.operations.update}(where: { id: $id },
                     update: {
                         worksInMovies: [
                             {
@@ -720,7 +720,7 @@ describe("array-pop", () => {
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult.data as any)[actor.operations.update][actor.plural]).toEqual(
-            expect.arrayContaining([{ name: actorName, worksInMovies: [{ viewers: [1] }] }])
+            expect.toIncludeSameMembers([{ name: actorName, worksInMovies: [{ viewers: [1] }] }])
         );
     });
 
@@ -733,7 +733,7 @@ describe("array-pop", () => {
                 title: String
                 actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
-            
+
             type ${actor.name} {
                 id: ID!
                 name: String!
@@ -817,7 +817,7 @@ describe("array-pop", () => {
                 title: String
                 actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
-            
+
             type ${actor.name} {
                 id: ID!
                 name: String!
@@ -887,7 +887,7 @@ describe("array-pop", () => {
 
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult.data as any)[actor.operations.update][actor.plural]).toEqual(
-            expect.arrayContaining([
+            expect.toIncludeSameMembers([
                 {
                     name: "Keanu",
                     actedIn: [{ title: "The Matrix" }],

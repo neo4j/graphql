@@ -175,7 +175,7 @@ describe("Connections -> Interfaces", () => {
                 {
                     name: actorName,
                     actedInConnection: {
-                        edges: expect.arrayContaining([
+                        edges: expect.toIncludeSameMembers([
                             {
                                 screenTime: movie1ScreenTime,
                                 node: {

@@ -1,4 +1,4 @@
-name: "Integration tests (on-prem)"
+name: "Integration tests (on-prem, Neo4j nightly build)"
 
 on:
   workflow_call:
@@ -6,12 +6,37 @@ on:
       CODECOV_TOKEN:
         required: false
         description: "API token for Codecov, if it is available in the current context"
+      AWS_ACCESS_KEY_ID:
+        required: true
+        description: "AWS Access Key ID"
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+        description: "AWS Secret Access Key"
 
 env:
   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 jobs:
+  ecr-login:
+    runs-on: ubuntu-latest
+
+    outputs:
+      docker_user: ${{ steps.login-to-ecr.outputs.docker_username_535893049302_dkr_ecr_eu_west_1_amazonaws_com }}
+      docker_password: ${{ steps.login-to-ecr.outputs.docker_password_535893049302_dkr_ecr_eu_west_1_amazonaws_com }}
+
+    steps:
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v1
+        id: login-to-ecr
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: eu-west-1
+
   integration-tests:
+    needs:
+      - ecr-login
+
     strategy:
       matrix:
         packages:
@@ -23,10 +48,6 @@ jobs:
             { package: "graphql", shard: 3/4 },
             { package: "graphql", shard: 4/4 },
           ]
-        neo4j-version:
-          - 4.3.2
-          - 4.3
-          - 4.4
         graphql-version:
           - "^15.0.0"
           - "^16.0.0"
@@ -35,7 +56,10 @@ jobs:
 
     services:
       neo4j:
-        image: neo4j:${{ matrix.neo4j-version }}-enterprise
+        image: 535893049302.dkr.ecr.eu-west-1.amazonaws.com/neo4j-dev:nightly-enterprise
+        credentials:
+          username: ${{ needs.ecr-login.outputs.docker_user }}
+          password: ${{ needs.ecr-login.outputs.docker_password }}
         env:
           NEO4J_AUTH: neo4j/password
           NEO4JLABS_PLUGINS: '["apoc"]'
@@ -57,7 +81,7 @@ jobs:
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --shard=${{ matrix.packages.shard }} --coverage
-          mv coverage coverage-${{ matrix.neo4j-version }}
+          mv coverage coverage-nightly
         working-directory: packages/${{ matrix.packages.package }}
         env:
           NEO_USER: neo4j
@@ -68,6 +92,6 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          directory: ./packages/${{ matrix.packages.package }}/coverage-${{ matrix.neo4j-version }}/
-          flags: ${{ matrix.packages.package }},${{ matrix.neo4j-version }},integration
+          directory: ./packages/${{ matrix.packages.package }}/coverage-nightly/
+          flags: ${{ matrix.packages.package }},nightly,integration
           fail_ci_if_error: true
