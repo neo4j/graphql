@@ -1,4 +1,4 @@
-# Example Title
+# Projection Subqueries
 
 ## Problem
 Currently, projection and nested filtering is done in the `RETURN` statement, through [Pattern Comprehension](https://neo4j.com/docs/cypher-manual/current/syntax/lists/#cypher-pattern-comprehension). 
