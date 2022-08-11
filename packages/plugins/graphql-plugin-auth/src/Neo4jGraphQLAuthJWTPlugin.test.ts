@@ -56,7 +56,7 @@ describe("Neo4jGraphQLAuthJWTPlugin", () => {
         expect(decoded).toMatchObject(payload);
     });
 
-    test("should decode token with globalAuthentication set to true", async () => {
+    test("should decode JWT token with globalAuthentication enabled", async () => {
         const payload = {
             sub: "my-id",
         };

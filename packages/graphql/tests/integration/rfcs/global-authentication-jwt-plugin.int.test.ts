@@ -199,6 +199,4 @@ describe("Global authentication - Auth JWT plugin", () => {
         expect(gqlResult.errors).toBeUndefined();
         expect((gqlResult.data as any)[testMovie.plural]).toHaveLength(0);
     });
-
-    // TODO: =====>>> JWKS plugin test, see directives/auth/jwks-endpoint.int.test.ts
 });
