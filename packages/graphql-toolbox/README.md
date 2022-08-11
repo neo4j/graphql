@@ -16,7 +16,7 @@ Experiment with your Neo4j GraphQL API.
 
 1. [Documentation](https://neo4j.com/docs/graphql-manual/current/toolbox/)
 
-![GraphQL Toolbox](https://github.com/neo4j/graphql/blob/dev/docs/modules/ROOT/images/toolbox-editor-view.png)
+![Neo4j GraphQL Toolbox](https://github.com/neo4j/graphql/blob/dev/docs/modules/ROOT/images/toolbox-editor-view.png)
 
 ## Link
 
@@ -25,11 +25,11 @@ Access the Neo4j GraphQL Toolbox here: https://graphql-toolbox.neo4j.io/
 ## Usage
 
 1. Connect to the database with your credentials
-2. Define (or Introspect) Typedefs
+2. Define (or Introspect) the Type definitions
 3. Build Neo4j GraphQL schema
-4. Experiment and play
+4. Experiment, query and play
 
-## Devleopment
+## Development
 
 On the `root` of the project, install the dependencies.
 
@@ -67,6 +67,6 @@ This will pre-fill the login window input fields `Username` with `testuser` and 
 
 Note: The plus symbol (+) in the connectURL needs to be URL encoded to become `%2B`. For example `bolt+s` becomes `bolt%2Bs`.
 
-## Licence
+## License
 
 [Apache 2.0](https://github.com/neo4j/graphql/blob/master/packages/toolbox/LICENSE.txt)
