@@ -78,7 +78,7 @@ export function createConnectionOperation({
         const whereOperator = createConnectionWherePropertyOperation({
             context,
             whereInput: entry[1] as any,
-            relationshipRef: relationship,
+            edgeRef: relationship,
             targetNode: childNode,
             edge: contextRelationship,
             node: refNode,
@@ -100,10 +100,10 @@ export function createConnectionOperation({
     return CypherBuilder.and(...operations) as CypherBuilder.BooleanOp | undefined;
 }
 
-function createConnectionWherePropertyOperation({
+export function createConnectionWherePropertyOperation({
     context,
     whereInput,
-    relationshipRef,
+    edgeRef,
     targetNode,
     node,
     edge,
@@ -112,7 +112,7 @@ function createConnectionWherePropertyOperation({
     context: Context;
     node: Node;
     edge: Relationship;
-    relationshipRef: CypherBuilder.Relationship;
+    edgeRef: CypherBuilder.Variable;
     targetNode: CypherBuilder.Node;
 }): CypherBuilder.Predicate | undefined {
     const params = Object.entries(whereInput).map(([key, value]) => {
@@ -121,7 +121,7 @@ function createConnectionWherePropertyOperation({
                 return createConnectionWherePropertyOperation({
                     context,
                     whereInput: input,
-                    relationshipRef,
+                    edgeRef,
                     targetNode,
                     node,
                     edge,
@@ -138,7 +138,7 @@ function createConnectionWherePropertyOperation({
         if (key.startsWith("edge")) {
             const nestedProperties: Record<string, any> = value;
             const result = createCypherWherePredicate({
-                targetElement: relationshipRef,
+                targetElement: edgeRef,
                 whereInput: nestedProperties,
                 context,
                 element: edge,

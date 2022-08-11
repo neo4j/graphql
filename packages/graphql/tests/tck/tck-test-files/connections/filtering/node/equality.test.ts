@@ -84,7 +84,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Equality", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name = $this_actorsConnection.args.where.node.name
+            WHERE this_actor.name = $this_actorsConnection_args_where_Actorparam0
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -95,10 +95,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Equality", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"name\\": \\"Tom Hanks\\"
-                },
-                \\"name\\": \\"Tom Hanks\\",
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Tom Hanks\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -139,7 +136,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Equality", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE (NOT this_actor.name = $this_actorsConnection.args.where.node.name_NOT)
+            WHERE NOT (this_actor.name = $this_actorsConnection_args_where_Actorparam0)
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -150,10 +147,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Equality", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"name_NOT\\": \\"Tom Hanks\\"
-                },
-                \\"name_NOT\\": \\"Tom Hanks\\",
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Tom Hanks\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

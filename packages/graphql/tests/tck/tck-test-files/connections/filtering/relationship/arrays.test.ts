@@ -85,7 +85,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_acted_in_relationship.screenTime IN $this_actorsConnection.args.where.edge.screenTime_IN
+            WHERE this_acted_in_relationship.screenTime IN $this_actorsConnection_args_where_Actorparam0
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -96,18 +96,16 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"edge\\": {
-                    \\"screenTime_IN\\": [
-                        {
-                            \\"low\\": 60,
-                            \\"high\\": 0
-                        },
-                        {
-                            \\"low\\": 70,
-                            \\"high\\": 0
-                        }
-                    ]
-                },
+                \\"this_actorsConnection_args_where_Actorparam0\\": [
+                    {
+                        \\"low\\": 60,
+                        \\"high\\": 0
+                    },
+                    {
+                        \\"low\\": 70,
+                        \\"high\\": 0
+                    }
+                ],
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -157,7 +155,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE (NOT this_acted_in_relationship.screenTime IN $this_actorsConnection.args.where.edge.screenTime_NOT_IN)
+            WHERE NOT (this_acted_in_relationship.screenTime IN $this_actorsConnection_args_where_Actorparam0)
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -168,18 +166,16 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"edge\\": {
-                    \\"screenTime_NOT_IN\\": [
-                        {
-                            \\"low\\": 60,
-                            \\"high\\": 0
-                        },
-                        {
-                            \\"low\\": 70,
-                            \\"high\\": 0
-                        }
-                    ]
-                },
+                \\"this_actorsConnection_args_where_Actorparam0\\": [
+                    {
+                        \\"low\\": 60,
+                        \\"high\\": 0
+                    },
+                    {
+                        \\"low\\": 70,
+                        \\"high\\": 0
+                    }
+                ],
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -229,7 +225,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE $this_actorsConnection.args.where.edge.quotes_INCLUDES IN this_acted_in_relationship.quotes
+            WHERE $this_actorsConnection_args_where_Actorparam0 IN this_acted_in_relationship.quotes
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -240,9 +236,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"edge\\": {
-                    \\"quotes_INCLUDES\\": \\"Life is like a box of chocolates\\"
-                },
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Life is like a box of chocolates\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -283,7 +277,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE (NOT $this_actorsConnection.args.where.edge.quotes_NOT_INCLUDES IN this_acted_in_relationship.quotes)
+            WHERE NOT ($this_actorsConnection_args_where_Actorparam0 IN this_acted_in_relationship.quotes)
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -294,9 +288,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"edge\\": {
-                    \\"quotes_NOT_INCLUDES\\": \\"Life is like a box of chocolates\\"
-                },
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Life is like a box of chocolates\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

@@ -85,13 +85,13 @@ describe("https://github.com/neo4j/graphql/issues/1263", () => {
             CALL {
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-            WHERE this_Movie.title = $this_actedInConnection.args.where.node.title AND this_Movie.runtime > $this_actedInConnection.args.where.node._on.Movie.runtime_GT
+            WHERE (this_Movie.title = $this_actedInConnection_args_where_Movieparam0 AND this_Movie.runtime > $this_actedInConnection_args_where_Movieparam1)
             WITH { node: { __resolveType: \\"Movie\\", title: this_Movie.title } } AS edge
             RETURN edge
             UNION
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
-            WHERE this_Series.title = $this_actedInConnection.args.where.node.title AND this_Series.episodes > $this_actedInConnection.args.where.node._on.Series.episodes_GT
+            WHERE (this_Series.title = $this_actedInConnection_args_where_Seriesparam0 AND this_Series.episodes > $this_actedInConnection_args_where_Seriesparam1)
             WITH { node: { __resolveType: \\"Series\\", title: this_Series.title } } AS edge
             RETURN edge
             }
@@ -104,17 +104,16 @@ describe("https://github.com/neo4j/graphql/issues/1263", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"_on\\": {
-                        \\"Series\\": {
-                            \\"episodes_GT\\": {
-                                \\"low\\": 50,
-                                \\"high\\": 0
-                            }
-                        }
-                    }
+                \\"this_actedInConnection_args_where_Movieparam0\\": \\"foo\\",
+                \\"this_actedInConnection_args_where_Movieparam1\\": {
+                    \\"low\\": 90,
+                    \\"high\\": 0
                 },
-                \\"title\\": \\"foo\\",
+                \\"this_actedInConnection_args_where_Seriesparam0\\": \\"foo\\",
+                \\"this_actedInConnection_args_where_Seriesparam1\\": {
+                    \\"low\\": 50,
+                    \\"high\\": 0
+                },
                 \\"this_actedInConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

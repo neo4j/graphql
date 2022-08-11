@@ -525,7 +525,7 @@ describe("Cypher Auth Allow", () => {
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
-            WHERE this_posts0.id = $this_deleteUsers.args.delete.posts[0].where.node.id
+            WHERE this_posts0.id = $this_deleteUsers_args_delete_posts0_where_Postparam0
             WITH this, this_posts0
             CALL apoc.util.validate(NOT ((exists((this_posts0)<-[:HAS_POST]-(:\`User\`)) AND any(creator IN [(this_posts0)<-[:HAS_POST]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_posts0_auth_allow0_creator_id)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this, collect(DISTINCT this_posts0) as this_posts0_to_delete
@@ -554,10 +554,7 @@ describe("Cypher Auth Allow", () => {
                         }
                     }
                 },
-                \\"node\\": {
-                    \\"id\\": \\"post-id\\"
-                },
-                \\"id\\": \\"post-id\\",
+                \\"this_deleteUsers_args_delete_posts0_where_Postparam0\\": \\"post-id\\",
                 \\"this_posts0_auth_allow0_creator_id\\": \\"user-id\\"
             }"
         `);
@@ -586,7 +583,7 @@ describe("Cypher Auth Allow", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
-            WHERE this_disconnect_posts0.id = $updateUsers.args.disconnect.posts[0].where.node.id
+            WHERE this_disconnect_posts0.id = $updateUsers_args_disconnect_posts0_where_Postparam0
             WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisUser0_allow_auth_allow0_id) AND (exists((this_disconnect_posts0)<-[:HAS_POST]-(:\`User\`)) AND any(creator IN [(this_disconnect_posts0)<-[:HAS_POST]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_disconnect_posts0Post1_allow_auth_allow0_creator_id)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             FOREACH(_ IN CASE WHEN this_disconnect_posts0 IS NULL THEN [] ELSE [1] END |
@@ -600,10 +597,7 @@ describe("Cypher Auth Allow", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"user-id\\",
-                \\"node\\": {
-                    \\"id\\": \\"post-id\\"
-                },
-                \\"id\\": \\"post-id\\",
+                \\"updateUsers_args_disconnect_posts0_where_Postparam0\\": \\"post-id\\",
                 \\"thisUser0_allow_auth_allow0_id\\": \\"user-id\\",
                 \\"this_disconnect_posts0Post1_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"updateUsers\\": {
@@ -665,7 +659,7 @@ describe("Cypher Auth Allow", () => {
             CALL {
             WITH this, this_post0_disconnect0
             OPTIONAL MATCH (this_post0_disconnect0)<-[this_post0_disconnect0_creator0_rel:HAS_POST]-(this_post0_disconnect0_creator0:User)
-            WHERE this_post0_disconnect0_creator0.id = $updateComments.args.update.post.disconnect.disconnect.creator.where.node.id
+            WHERE this_post0_disconnect0_creator0.id = $updateComments_args_update_post_disconnect_disconnect_creator_where_Userparam0
             WITH this, this_post0_disconnect0, this_post0_disconnect0_creator0, this_post0_disconnect0_creator0_rel
             CALL apoc.util.validate(NOT ((exists((this_post0_disconnect0)<-[:HAS_POST]-(:\`User\`)) AND any(creator IN [(this_post0_disconnect0)<-[:HAS_POST]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_post0_disconnect0Post0_allow_auth_allow0_creator_id))) AND (this_post0_disconnect0_creator0.id IS NOT NULL AND this_post0_disconnect0_creator0.id = $this_post0_disconnect0_creator0User1_allow_auth_allow0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             FOREACH(_ IN CASE WHEN this_post0_disconnect0_creator0 IS NULL THEN [] ELSE [1] END |
@@ -698,10 +692,7 @@ describe("Cypher Auth Allow", () => {
                 \\"param0\\": \\"comment-id\\",
                 \\"thisComment0_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"this_post0_disconnect0Post1_allow_auth_allow0_creator_id\\": \\"user-id\\",
-                \\"node\\": {
-                    \\"id\\": \\"user-id\\"
-                },
-                \\"id\\": \\"user-id\\",
+                \\"updateComments_args_update_post_disconnect_disconnect_creator_where_Userparam0\\": \\"user-id\\",
                 \\"this_post0_disconnect0Post0_allow_auth_allow0_creator_id\\": \\"user-id\\",
                 \\"this_post0_disconnect0_creator0User1_allow_auth_allow0_id\\": \\"user-id\\",
                 \\"this_auth_allow0_creator_id\\": \\"user-id\\",
