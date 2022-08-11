@@ -89,9 +89,8 @@ describe("https://github.com/neo4j/graphql/issues/1779", () => {
         });
 
         expect(result.errors).toBeFalsy();
-        expect(result?.data?.[personType.plural]).toHaveLength(4);
         expect(result?.data?.[personType.plural]).toEqual(
-            expect.arrayContaining([
+            expect.toIncludeSameMembers([
                 {
                     name: "A",
                     attends: [

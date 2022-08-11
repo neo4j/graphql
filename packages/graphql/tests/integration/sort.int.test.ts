@@ -33,6 +33,7 @@ describe("sort", () => {
     let neo4j: Neo4j;
     let schema: GraphQLSchema;
     let session: Session;
+    let bookmarks: string[];
 
     const movieType = generateUniqueType("Movie");
     const seriesType = generateUniqueType("Series");
@@ -145,6 +146,8 @@ describe("sort", () => {
             { movies, series, actors }
         );
 
+        bookmarks = session2.lastBookmark();
+
         await session2.close();
     });
 
@@ -170,7 +173,7 @@ describe("sort", () => {
                     schema,
                     source,
                     variableValues: { movieIds: movies.map(({ id }) => id), direction },
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 });
 
             describe("with field in selection set", () => {
@@ -289,7 +292,7 @@ describe("sort", () => {
                 graphql({
                     schema,
                     source,
-                    contextValue: neo4j.getContextValues(),
+                    contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                     variableValues: { movieIds: movies.map(({ id }) => id), direction },
                 });
 
@@ -429,7 +432,7 @@ describe("sort", () => {
             graphql({
                 schema,
                 source,
-                contextValue: neo4j.getContextValues(),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: { movieId: movies[1].id, actorIds: actors.map(({ id }) => id), direction },
             });
 
@@ -714,7 +717,7 @@ describe("sort", () => {
                 graphql({
                     schema,
                     source,
-                    contextValue: neo4j.getContextValues(),
+                    contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                     variableValues: { actorId: actors[0].id, direction },
                 });
             describe("with field in selection set", () => {
@@ -861,7 +864,7 @@ describe("sort", () => {
             graphql({
                 schema,
                 source,
-                contextValue: neo4j.getContextValues(),
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
                 variableValues: { actorId: actors[0].id, direction },
             });
         describe("node", () => {

@@ -100,7 +100,7 @@ describe("Subscriptions delete", () => {
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data[typeMovie.operations.delete].nodesDeleted).toBe(2);
 
-        expect(plugin.eventList).toEqual([
+        expect(plugin.eventList).toIncludeAllMembers([
             {
                 id: expect.any(Number),
                 timestamp: expect.any(Number),
@@ -142,9 +142,8 @@ describe("Subscriptions delete", () => {
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data[typeMovie.operations.delete].nodesDeleted).toBe(5);
 
-        expect(plugin.eventList).toHaveLength(5);
         expect(plugin.eventList).toEqual(
-            expect.arrayContaining([
+            expect.toIncludeSameMembers([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -221,9 +220,8 @@ describe("Subscriptions delete", () => {
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data[typeMovie.operations.delete].nodesDeleted).toBe(4);
 
-        expect(plugin.eventList).toHaveLength(4);
         expect(plugin.eventList).toEqual(
-            expect.arrayContaining([
+            expect.toIncludeSameMembers([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),

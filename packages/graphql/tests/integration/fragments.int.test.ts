@@ -175,9 +175,8 @@ describe("fragments", () => {
 
         expect(graphqlActors).toHaveLength(1);
         expect(graphqlActors[0].name).toBe(actorName);
-        expect(graphqlActors[0].actedIn).toHaveLength(2);
         expect(graphqlActors[0].actedIn).toEqual(
-            expect.arrayContaining([{ title: movieTitle }, { title: seriesTitle }])
+            expect.toIncludeSameMembers([{ title: movieTitle }, { title: seriesTitle }])
         );
     });
 
@@ -219,9 +218,8 @@ describe("fragments", () => {
 
         expect(graphqlActors).toHaveLength(1);
         expect(graphqlActors[0].name).toBe(actorName);
-        expect(graphqlActors[0].actedIn).toHaveLength(2);
         expect(graphqlActors[0].actedIn).toEqual(
-            expect.arrayContaining([
+            expect.toIncludeSameMembers([
                 { title: movieTitle, runtime: movieRuntime },
                 { title: seriesTitle, runtime: seriesRuntime },
             ])
