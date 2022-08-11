@@ -61,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/1779", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Person\`)
-            RETURN this { .name, attends: [ (this)-[:attends]->(this_attends:School)  WHERE size([(this_attends_this0:\`Person\`)-[:attends]->(this_attends) WHERE NOT this_attends_this0.age > $this_attends_param0 | 1]) = 0 | this_attends { .name } ] } as this"
+            RETURN this { .name, attends: [ (this)-[:attends]->(this_attends:School)  WHERE size([(this_attends_this0:\`Person\`)-[:attends]->(this_attends) WHERE NOT (this_attends_this0.age > $this_attends_param0) | 1]) = 0 | this_attends { .name } ] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

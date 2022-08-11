@@ -53,6 +53,7 @@ export class Pattern<T extends MatchableElement = any> implements CypherCompilab
     public readonly matchElement: T;
     private parameters: MatchParams<T>;
     private options: MatchPatternOptions;
+    private reversed = false;
 
     constructor(input: T, options?: MatchPatternOptions) {
         this.matchElement = input;
@@ -94,6 +95,16 @@ export class Pattern<T extends MatchableElement = any> implements CypherCompilab
         return this.getNodeCypher(env, this.matchElement, this.parameters as MatchParams<NodeRef>);
     }
 
+    /** Reverses the pattern direction, not the underlying relationship */
+    public reverse() {
+        if (!this.isRelationshipPattern()) throw new Error("Cannot reverse a node pattern");
+        this.reversed = true;
+    }
+
+    private isRelationshipPattern(): this is Pattern<RelationshipRef> {
+        return (this.matchElement as any).source;
+    }
+
     private getRelationshipCypher(env: CypherEnvironment, relationship: RelationshipRef): string {
         const referenceId = this.options?.relationship?.variable ? env.getVariableId(relationship) : "";
 
@@ -104,15 +115,17 @@ export class Pattern<T extends MatchableElement = any> implements CypherCompilab
 
         const sourceStr = this.getNodeCypher(env, relationship.source, parameterOptions.source, "source");
         const targetStr = this.getNodeCypher(env, relationship.target, parameterOptions.target, "target");
-        const arrowStr = this.getRelationshipArrow();
+        const arrowStrs = this.getRelationshipArrows();
 
         const relationshipStr = `${referenceId}${relationshipType}${relationshipParamsStr}`;
 
-        return `${sourceStr}-[${relationshipStr}]${arrowStr}${targetStr}`;
+        return `${sourceStr}${arrowStrs[0]}[${relationshipStr}]${arrowStrs[1]}${targetStr}`;
     }
 
-    private getRelationshipArrow(): "-" | "->" {
-        return this.options.directed === false ? "-" : "->";
+    private getRelationshipArrows(): ["<-" | "-", "-" | "->"] {
+        if (this.options.directed === false) return ["-", "-"];
+        if (this.reversed) return ["<-", "-"];
+        return ["-", "->"];
     }
 
     // Note: This allows us to remove cycle dependency between pattern and relationship

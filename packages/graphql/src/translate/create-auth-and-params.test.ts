@@ -85,10 +85,8 @@ describe("createAuthAndParams", () => {
                 allow: { parentNode: node, varName: "this" },
             });
 
-            expect(trimmer(result[0])).toEqual(
-                trimmer(`
-                    ((this.id IS NOT NULL AND this.id = $this_auth_allow0_id) OR (any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr))))
-                `)
+            expect(result[0]).toMatchInlineSnapshot(
+                `"((this.id IS NOT NULL AND this.id = $this_auth_allow0_id) OR any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)))"`
             );
 
             expect(result[1]).toMatchObject({
@@ -158,10 +156,8 @@ describe("createAuthAndParams", () => {
                 where: { node, varName: "this" },
             });
 
-            expect(trimmer(result[0])).toEqual(
-                trimmer(`
-                    ((any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr))) OR ((any(r IN ["member"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND this.id IS NOT NULL AND this.id = $this_auth_where1_id)))
-                `)
+            expect(result[0]).toMatchInlineSnapshot(
+                `"(any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)) OR (any(var3 IN [\\"member\\"] WHERE any(var2 IN $auth.roles WHERE var2 = var3)) AND (this.id IS NOT NULL AND this.id = $this_auth_where1_id)))"`
             );
 
             expect(result[1]).toMatchObject({
@@ -228,10 +224,8 @@ describe("createAuthAndParams", () => {
                 allow: { parentNode: node, varName: "this" },
             });
 
-            expect(trimmer(result[0])).toEqual(
-                trimmer(`
-                    ((this.id IS NOT NULL AND this.id = $this_auth_allow0_id) OR (any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr))))
-                `)
+            expect(result[0]).toMatchInlineSnapshot(
+                `"((this.id IS NOT NULL AND this.id = $this_auth_allow0_id) OR any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)))"`
             );
 
             expect(result[1]).toMatchObject({
@@ -296,12 +290,9 @@ describe("createAuthAndParams", () => {
                 allow: { parentNode: node, varName: "this" },
             });
 
-            expect(trimmer(result[0])).toEqual(
-                trimmer(`
-                     (any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND this.id IS NOT NULL AND this.id = $this_auth_allow0_id)
-                `)
+            expect(result[0]).toMatchInlineSnapshot(
+                `"(any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)) AND (this.id IS NOT NULL AND this.id = $this_auth_allow0_id))"`
             );
-
             expect(result[1]).toMatchObject({
                 this_auth_allow0_id: sub,
             });
@@ -366,10 +357,8 @@ describe("createAuthAndParams", () => {
                 allow: { parentNode: node, varName: "this" },
             });
 
-            expect(trimmer(result[0])).toEqual(
-                trimmer(`
-                        (this.id IS NOT NULL AND this.id = $thisAND0_auth_allow0_id AND any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr)))
-                    `)
+            expect(result[0]).toMatchInlineSnapshot(
+                `"((this.id IS NOT NULL AND this.id = $thisAND0_auth_allow0_id) AND any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)))"`
             );
 
             expect(result[1]).toMatchObject({
@@ -434,12 +423,9 @@ describe("createAuthAndParams", () => {
                 allow: { parentNode: node, varName: "this" },
             });
 
-            expect(trimmer(result[0])).toEqual(
-                trimmer(`
-                    ((this.id IS NOT NULL AND this.id = $thisOR0_auth_allow0_id) OR (any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr))))
-                `)
+            expect(result[0]).toMatchInlineSnapshot(
+                `"((this.id IS NOT NULL AND this.id = $thisOR0_auth_allow0_id) OR any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)))"`
             );
-
             expect(result[1]).toMatchObject({
                 [`thisOR0_auth_allow0_id`]: sub,
             });
@@ -509,16 +495,8 @@ describe("createAuthAndParams", () => {
                 allow: { parentNode: node, varName: "this" },
             });
 
-            expect(trimmer(result[0])).toEqual(
-                trimmer(`
-                    (any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr))
-                AND
-                    this.id IS NOT NULL AND this.id = $this_auth_allow0_id
-                AND
-                    (this.id IS NOT NULL AND this.id = $thisAND0_auth_allow0_id AND any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr)))
-                AND
-                    ((this.id IS NOT NULL AND this.id = $thisOR0_auth_allow0_id) OR (any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr)))))
-                `)
+            expect(result[0]).toMatchInlineSnapshot(
+                `"(any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)) AND (this.id IS NOT NULL AND this.id = $this_auth_allow0_id) AND ((this.id IS NOT NULL AND this.id = $thisAND0_auth_allow0_id) AND any(var3 IN [\\"admin\\"] WHERE any(var2 IN $auth.roles WHERE var2 = var3))) AND ((this.id IS NOT NULL AND this.id = $thisOR0_auth_allow0_id) OR any(var5 IN [\\"admin\\"] WHERE any(var4 IN $auth.roles WHERE var4 = var5))))"`
             );
 
             expect(result[1]).toMatchObject({
@@ -619,10 +597,8 @@ describe("createAuthAndParams", () => {
                 allow: { parentNode: node, varName: "this" },
             });
 
-            expect(trimmer(result[0])).toEqual(
-                trimmer(`
-                    (this.id IS NOT NULL AND this.id = $this_auth_allow0_AND0_id AND this.id IS NOT NULL AND this.id = $this_auth_allow0_AND1_id AND this.id IS NOT NULL AND this.id = $this_auth_allow0_AND2_id)
-                `)
+            expect(result[0]).toMatchInlineSnapshot(
+                `"((this.id IS NOT NULL AND this.id = $this_auth_allow0_AND0_id) AND (this.id IS NOT NULL AND this.id = $this_auth_allow0_AND1_id) AND (this.id IS NOT NULL AND this.id = $this_auth_allow0_AND2_id))"`
             );
 
             expect(result[1]).toMatchObject({
@@ -721,12 +697,9 @@ describe("createAuthAndParams", () => {
                 allow: { parentNode: node, varName: "this" },
             });
 
-            expect(trimmer(result[0])).toEqual(
-                trimmer(`
-                    ((this.id IS NOT NULL AND this.id = $this_auth_allow0_OR0_id) OR (this.id IS NOT NULL AND this.id = $this_auth_allow0_OR1_id) OR (this.id IS NOT NULL AND this.id = $this_auth_allow0_OR2_id))
-                `)
+            expect(result[0]).toMatchInlineSnapshot(
+                `"((this.id IS NOT NULL AND this.id = $this_auth_allow0_OR0_id) OR (this.id IS NOT NULL AND this.id = $this_auth_allow0_OR1_id) OR (this.id IS NOT NULL AND this.id = $this_auth_allow0_OR2_id))"`
             );
-
             expect(result[1]).toMatchObject({
                 [`this_auth_allow0_OR0_id`]: sub,
                 [`this_auth_allow0_OR1_id`]: sub,
@@ -907,8 +880,8 @@ describe("createAuthAndParams", () => {
                 allow: { parentNode: node, varName: "this" },
             });
 
-            expect(trimmer(result[0])).toEqual(
-                trimmer('((false) OR (any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr))))')
+            expect(result[0]).toMatchInlineSnapshot(
+                `"(false OR any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)))"`
             );
             expect(result[1]).toEqual({});
         });
@@ -968,8 +941,8 @@ describe("createAuthAndParams", () => {
                 allow: { parentNode: node, varName: "this" },
             });
 
-            expect(trimmer(result[0])).toEqual(
-                trimmer('((false) OR (any(r IN ["admin"] WHERE any(rr IN $auth.roles WHERE r = rr))))')
+            expect(result[0]).toMatchInlineSnapshot(
+                `"(false OR any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)))"`
             );
             expect(result[1]).toEqual({});
         });

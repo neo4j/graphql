@@ -39,9 +39,11 @@ export abstract class CypherASTNode implements CypherCompilable {
     public abstract getCypher(env: CypherEnvironment): string;
 
     /** Sets the parent-child relationship for build traversal */
-    protected addChildren(...nodes: CypherASTNode[]): void {
+    protected addChildren(...nodes: CypherCompilable[]): void {
         for (const node of nodes) {
-            node.setParent(this);
+            if (node instanceof CypherASTNode) {
+                node.setParent(this);
+            }
         }
     }
 

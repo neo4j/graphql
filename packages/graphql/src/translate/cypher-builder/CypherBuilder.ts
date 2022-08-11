@@ -38,7 +38,7 @@ export * as apoc from "./procedures/apoc/apoc";
 // Variables and references
 export { NodeRef as Node, NamedNode } from "./variables/NodeRef";
 export { RelationshipRef as Relationship } from "./variables/RelationshipRef";
-export { Param, RawParam } from "./variables/Param";
+export { Param, RawParam, NamedParam } from "./variables/Param";
 export { NamedVariable, Variable } from "./variables/Variable";
 export { CypherNull as Null } from "./variables/Null";
 export { Literal } from "./variables/Literal";
@@ -83,8 +83,8 @@ export {
     avg,
     sum,
 } from "./functions/CypherFunction";
-
 export * from "./functions/ListFunctions";
+export { any, all, exists } from "./functions/PredicateFunctions";
 
 // Types
 export type { CypherResult } from "./types";
@@ -98,3 +98,4 @@ export type { Expr, Predicate } from "./types";
 export type { CypherFunction as Function } from "./functions/CypherFunction";
 export type { ComprehensionExpr } from "./list/ComprehensionExpr";
 export type { ProjectionColumn } from "./sub-clauses/Projection";
+export type { PredicateFunction } from "./functions/PredicateFunctions";
