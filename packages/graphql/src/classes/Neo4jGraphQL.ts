@@ -19,21 +19,25 @@
 
 import type { Driver } from "neo4j-driver";
 import type { GraphQLSchema } from "graphql";
-import type { IExecutableSchemaDefinition} from "@graphql-tools/schema";
+import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import { composeResolvers } from "@graphql-tools/resolvers-composition";
 import type { IResolvers } from "@graphql-tools/utils";
 import { forEachField } from "@graphql-tools/utils";
 import { mergeResolvers } from "@graphql-tools/merge";
 import Debug from "debug";
-import type { DriverConfig, CypherQueryOptions, Neo4jGraphQLPlugins, Neo4jGraphQLCallbacks, Neo4jFeaturesSettings} from "../types";
+import type {
+    DriverConfig,
+    CypherQueryOptions,
+    Neo4jGraphQLPlugins,
+    Neo4jGraphQLCallbacks,
+    Neo4jFeaturesSettings,
+} from "../types";
 import { makeAugmentedSchema } from "../schema";
 import type Node from "./Node";
 import type Relationship from "./Relationship";
 import checkNeo4jCompat from "./utils/verify-database";
-import type {
-    AssertIndexesAndConstraintsOptions,
-} from "./utils/asserts-indexes-and-constraints";
+import type { AssertIndexesAndConstraintsOptions } from "./utils/asserts-indexes-and-constraints";
 import assertIndexesAndConstraints from "./utils/asserts-indexes-and-constraints";
 import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
@@ -144,7 +148,6 @@ class Neo4jGraphQL {
     private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
         forEachField(schema, (field) => {
             if (!field.resolve) {
-                 
                 field.resolve = defaultFieldResolver;
             }
         });
@@ -184,7 +187,7 @@ class Neo4jGraphQL {
     }
 
     private addWrappedResolversToSchema(resolverlessSchema: GraphQLSchema, resolvers: IResolvers): GraphQLSchema {
-        const schema = addResolversToSchema(resolverlessSchema, resolvers);
+        const schema = addResolversToSchema({ schema: resolverlessSchema, resolvers });
         return this.addDefaultFieldResolvers(schema);
     }
 

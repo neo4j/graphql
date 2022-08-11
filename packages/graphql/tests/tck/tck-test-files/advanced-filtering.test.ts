@@ -144,7 +144,7 @@ describe("Cypher Advanced Filtering", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE NOT this.id = $param0
+            WHERE NOT (this.id = $param0)
             RETURN this { .id } as this"
         `);
 
@@ -171,7 +171,7 @@ describe("Cypher Advanced Filtering", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE NOT this.id IN $param0
+            WHERE NOT (this.id IN $param0)
             RETURN this { .id } as this"
         `);
 
@@ -227,7 +227,7 @@ describe("Cypher Advanced Filtering", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE NOT this.id CONTAINS $param0
+            WHERE NOT (this.id CONTAINS $param0)
             RETURN this { .id } as this"
         `);
 
@@ -281,7 +281,7 @@ describe("Cypher Advanced Filtering", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE NOT this.id STARTS WITH $param0
+            WHERE NOT (this.id STARTS WITH $param0)
             RETURN this { .id } as this"
         `);
 
@@ -335,7 +335,7 @@ describe("Cypher Advanced Filtering", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WHERE NOT this.id ENDS WITH $param0
+            WHERE NOT (this.id ENDS WITH $param0)
             RETURN this { .id } as this"
         `);
 
@@ -419,7 +419,6 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query, {
             req,
         });
-        console.log(result.params);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title < $param0
@@ -506,7 +505,6 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query, {
             req,
         });
-        console.log(result.params);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title <= $param0
@@ -593,7 +591,6 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query, {
             req,
         });
-        console.log(result.params);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title > $param0
@@ -680,7 +677,6 @@ describe("Cypher Advanced Filtering", () => {
         const result = await translateQuery(neoSchema, query, {
             req,
         });
-        console.log(result.params);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title >= $param0
@@ -768,7 +764,7 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
-                    WHERE size([(this)-[:IN_GENRE]->(this0:\`Genre\`) WHERE NOT this0.name = $param0 | 1]) = 0
+                    WHERE size([(this)-[:IN_GENRE]->(this0:\`Genre\`) WHERE NOT (this0.name = $param0) | 1]) = 0
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`

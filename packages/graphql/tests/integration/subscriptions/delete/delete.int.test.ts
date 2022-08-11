@@ -100,7 +100,7 @@ describe("Subscriptions delete", () => {
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data[typeMovie.operations.delete].nodesDeleted).toBe(2);
 
-        expect(plugin.eventList).toEqual([
+        expect(plugin.eventList).toIncludeAllMembers([
             {
                 id: expect.any(Number),
                 timestamp: expect.any(Number),

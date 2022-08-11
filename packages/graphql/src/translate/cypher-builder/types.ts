@@ -29,6 +29,8 @@ import type { MapExpr } from "./variables/map/MapExpr";
 import type { BooleanOp } from "./operations/boolean";
 import type { ComparisonOp } from "./operations/comparison";
 import type { RawCypher } from "./clauses/RawCypher";
+import type { PredicateFunction } from "./functions/PredicateFunctions";
+import type { ValidatePredicate } from "./procedures/apoc/apoc";
 
 export type Expr =
     | Operation
@@ -41,7 +43,14 @@ export type Expr =
     | MapExpr;
 
 /** Represents a predicate statement (i.e returns a boolean). Note that RawCypher is only added for compatibility */
-export type Predicate = BooleanOp | ComparisonOp | RawCypher | Exists;
+export type Predicate =
+    | BooleanOp
+    | ComparisonOp
+    | RawCypher
+    | Exists
+    | PredicateFunction
+    | ValidatePredicate
+    | Literal<boolean>;
 
 export type CypherResult = {
     cypher: string;

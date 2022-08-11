@@ -235,7 +235,7 @@ export default async function translateCreate({
     let resolvedCallbacks = {};
 
     ({ cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({ cypher }));
-
+ 
     const createQuery = new CypherBuilder.RawCypher(() => {
         return [
             cypher,
