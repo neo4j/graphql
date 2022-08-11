@@ -21,7 +21,7 @@ import { Driver, Neo4jError, QueryResult, Result, Session, SessionMode, Transact
 import Debug from "debug";
 
 import type { AuthContext, CypherQueryOptions } from "../types";
-import environment from "../environment";
+import { NPM_PACKAGE_NAME, NPM_PACKAGE_VERSION } from "../environment";
 import {
     Neo4jGraphQLAuthenticationError,
     Neo4jGraphQLConstraintValidationError,
@@ -180,7 +180,7 @@ export class Executor {
     }
 
     private getTransactionConfig(): TransactionConfig {
-        const app = `${environment.NPM_PACKAGE_NAME}@${environment.NPM_PACKAGE_VERSION}`;
+        const app = `${NPM_PACKAGE_NAME}@${NPM_PACKAGE_VERSION}`;
 
         return {
             metadata: {

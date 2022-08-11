@@ -51,6 +51,7 @@ export interface Context {
     jwt?: JwtPayload;
     subscriptionsEnabled: boolean;
     executionContext: Driver | Session | Transaction;
+    queryOptions?: CypherQueryOptions;
     executor: Executor;
     [k: string]: any;
 }

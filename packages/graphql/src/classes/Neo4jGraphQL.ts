@@ -43,6 +43,7 @@ import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
 import { asArray } from "../utils/utils";
 import { DEBUG_ALL } from "../constants";
+import { parseEnvironmentQueryOptions } from "../utils/parse-environment-query-options";
 
 export interface Neo4jGraphQLJWT {
     jwksEndpoint?: string;
@@ -88,6 +89,9 @@ class Neo4jGraphQL {
         this.schemaDefinition = schemaDefinition;
 
         this.checkEnableDebug();
+
+        const environmentQueryOptions = parseEnvironmentQueryOptions();
+        this.config.queryOptions = { ...this.config.queryOptions, ...environmentQueryOptions };
     }
 
     public get nodes(): Node[] {

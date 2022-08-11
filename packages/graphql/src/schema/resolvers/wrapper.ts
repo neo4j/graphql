@@ -18,7 +18,7 @@
  */
 
 import Debug from "debug";
-import type { GraphQLResolveInfo, GraphQLSchema} from "graphql";
+import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
 import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
 import type { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
@@ -27,7 +27,7 @@ import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
-import type { Context, Neo4jGraphQLPlugins, JwtPayload, Neo4jGraphQLAuthPlugin } from "../../types";
+import type { Context, Neo4jGraphQLPlugins, JwtPayload, Neo4jGraphQLAuthPlugin, CypherQueryOptions } from "../../types";
 import { getToken, parseBearerToken } from "../../utils/get-token";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
 
@@ -93,8 +93,10 @@ export const wrapResolver =
             auth: context.auth,
         };
 
-        if (config.queryOptions) {
-            executorConstructorParam.queryOptions = config.queryOptions;
+        const queryOptions = { ...config.queryOptions, ...context.queryOptions };
+
+        if (queryOptions) {
+            executorConstructorParam.queryOptions = queryOptions;
         }
 
         if (context.driverConfig?.database) {
