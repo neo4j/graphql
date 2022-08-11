@@ -18,6 +18,10 @@ Experiment with your Neo4j GraphQL API.
 
 ![GraphQL Toolbox](https://github.com/neo4j/graphql/blob/dev/docs/modules/ROOT/images/toolbox-editor-view.png)
 
+## Link
+
+Access the Neo4j GraphQL Toolbox here: https://graphql-toolbox.neo4j.io/
+
 ## Usage
 
 1. Connect to the database with your credentials
@@ -55,7 +59,11 @@ The query string is preceded by a question mark (?) and contains key-value pairs
 | connectURL    | Form: scheme://username@bolt-url:port; Used at login, pre-populates the Username and Connection URI input field with the provided value                | bolt://admin@localhost:7687 |
 | db            | Only applicable for multi-database supported Neo4j DBMSs. The provided value is used as the selected database name. This will be applied _after_ login | neo4j                       |
 
-An example with the URL parameters `connectURL` and `db`: `http://localhost:4242?connectURL=bolt%2Bs://testuser@xxxx.databases.neo4j.io&db=mydatabase`. This will pre-fill the login window input fields `Username` with `testuser` and `Connect URI` with `bolt+s://xxxx.databases.neo4j.io`. After a successful login, the selected database will be set according to the provided `db` parameter.
+An example with the URL parameters `connectURL` and `db`:
+
+`http://localhost:4242?connectURL=bolt%2Bs://testuser@xxxx.databases.neo4j.io&db=mydatabase`
+
+This will pre-fill the login window input fields `Username` with `testuser` and `Connect URI` with `bolt+s://xxxx.databases.neo4j.io`. After a successful login, the selected database will be set according to the provided `db` parameter.
 
 Note: The plus symbol (+) in the connectURL needs to be URL encoded to become `%2B`. For example `bolt+s` becomes `bolt%2Bs`.
 
