@@ -77,13 +77,18 @@ export async function translateQuery(
     options?: {
         req?: IncomingMessage;
         variableValues?: Record<string, any>;
+        contextValues?: Record<string, any>;
     }
 ): Promise<{ cypher: string; params: Record<string, any> }> {
     const driverBuilder = new DriverBuilder();
 
-    const contextValue: Record<string, any> = { driver: driverBuilder.instance() };
+    let contextValue: Record<string, any> = { driver: driverBuilder.instance() };
     if (options?.req) {
         contextValue.req = options.req;
+    }
+
+    if (options?.contextValues) {
+        contextValue = { ...contextValue, ...options.contextValues };
     }
 
     const graphqlArgs: GraphQLArgs = {
