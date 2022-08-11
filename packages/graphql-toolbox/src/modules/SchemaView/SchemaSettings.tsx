@@ -63,7 +63,7 @@ export const SchemaSettings = ({
         return (
             <ProTooltip
                 tooltipText={text}
-                arrowPositionLeft={true}
+                arrowPositionOverride="left"
                 blockVisibility={false}
                 width={width || 200}
                 left={28}

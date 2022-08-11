@@ -65,7 +65,7 @@ export default async function translateUpdate({
     let deleteStr = "";
     let projAuth = "";
     let projStr = "";
-    let cypherParams: { [k: string]: any } = {};
+    let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
     const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
 
     const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "UPDATE" });
@@ -363,7 +363,7 @@ export default async function translateUpdate({
                     refNode,
                     context,
                     withVars,
-                    callbackBucket
+                    callbackBucket,
                 });
                 connectStrs.push(cypher);
                 cypherParams = { ...cypherParams, ...params };

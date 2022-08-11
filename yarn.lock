@@ -26,17 +26,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@antora/cli@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "@antora/cli@npm:3.0.1"
+"@antora/cli@npm:3.0.3":
+  version: 3.0.3
+  resolution: "@antora/cli@npm:3.0.3"
   dependencies:
-    "@antora/logger": 3.0.1
-    "@antora/playbook-builder": 3.0.1
+    "@antora/logger": 3.0.3
+    "@antora/playbook-builder": 3.0.3
     "@antora/user-require-helper": ~2.0
     commander: ~8.3
   bin:
     antora: bin/antora
-  checksum: 3dbd288b63e05a63d23346609786bf27820637d3f9a45ff94831f96022d17ff09da88aef999eedc410dcb8b9678c9dbc53175f932f2bee971a09cb2c8703a6f5
+  checksum: 33c4c5dec303227969672734719fdd27dc7759fcab9393b82e32850e79e30b5464d453f172a1c134a0a19dc56825247602a8f352d2515eca0881a8ca2428976f
   languageName: node
   linkType: hard
 
@@ -115,6 +115,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@antora/logger@npm:3.0.3":
+  version: 3.0.3
+  resolution: "@antora/logger@npm:3.0.3"
+  dependencies:
+    "@antora/expand-path-helper": ~2.0
+    pino: ~7.6
+    pino-pretty: ~7.3
+    sonic-boom: ~2.4
+  checksum: 884092863a5d329388f6c8a764267b596a6d758d53d71e461cae9210be00c86be941d35a9618c62bcdb5b73738ac648234a555218c43232bc22a84dc8844840a
+  languageName: node
+  linkType: hard
+
 "@antora/navigation-builder@npm:3.0.1":
   version: 3.0.1
   resolution: "@antora/navigation-builder@npm:3.0.1"
@@ -145,6 +157,19 @@ __metadata:
     js-yaml: ~4.1
     json5: ~2.2
   checksum: 786879e76f38090a1c1c3869cf7acaa035c7d6f40c1e9da1d6fc50028fcabfe2354ca6177975d0f9e4082dd447d4f6f989b8f478f98b63f08d2190cd7ba19e9f
+  languageName: node
+  linkType: hard
+
+"@antora/playbook-builder@npm:3.0.3":
+  version: 3.0.3
+  resolution: "@antora/playbook-builder@npm:3.0.3"
+  dependencies:
+    "@iarna/toml": ~2.2
+    camelcase-keys: ~7.0
+    convict: ~6.2
+    js-yaml: ~4.1
+    json5: ~2.2
+  checksum: 942a1d2af13eb0896f931716f0e473d7a9f531616b77c44e7478b873b9cb10097f3396530281f4f5491a6569f7f1acf8fdf3ff7bb0b1f3452a3017544e697dcd
   languageName: node
   linkType: hard
 
@@ -236,7 +261,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/client@npm:^3.5.10":
+"@apollo/client@npm:3.6.9":
   version: 3.6.9
   resolution: "@apollo/client@npm:3.6.9"
   dependencies:
@@ -2411,14 +2436,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:^0.6.0":
+"@neo4j-ndl/base@npm:0.6.0, @neo4j-ndl/base@npm:^0.6.0":
   version: 0.6.0
   resolution: "@neo4j-ndl/base@npm:0.6.0"
   checksum: e011892fc17f68f5faa6938cd3b122810c0180d7cc9164de48754ec29805805384f9d4106d2668b82dbe487ceac0b821ae15d6550d051aaf3c33b487f610bba8
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:^0.6.0":
+"@neo4j-ndl/react@npm:0.6.0":
   version: 0.6.0
   resolution: "@neo4j-ndl/react@npm:0.6.0"
   dependencies:
@@ -2492,8 +2517,8 @@ __metadata:
     "@types/jest": 28.1.6
     "@types/node": 16.11.47
     amqplib: ^0.10.0
-    apollo-server: 3.10.0
-    apollo-server-express: 3.10.0
+    apollo-server: 3.10.1
+    apollo-server-express: 3.10.1
     camelcase: 6.3.0
     graphql-ws: 5.10.0
     jest: 28.1.3
@@ -2513,8 +2538,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@neo4j-ndl/base": ^0.6.0
-    "@neo4j-ndl/react": ^0.6.0
+    "@neo4j-ndl/base": 0.6.0
+    "@neo4j-ndl/react": 0.6.0
     "@neo4j/graphql": 3.6.2
     "@neo4j/introspector": ^1.0.1
     "@playwright/test": 1.24.2
@@ -2595,8 +2620,8 @@ __metadata:
     "@types/semver": 7.3.10
     "@types/supertest": 2.0.12
     "@types/ws": 8.5.3
-    apollo-server: 3.10.0
-    apollo-server-express: 3.10.0
+    apollo-server: 3.10.1
+    apollo-server-express: 3.10.1
     camelcase: ^6.2.0
     debug: ^4.3.2
     dedent: 0.7.0
@@ -3148,7 +3173,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express-serve-static-core@npm:*, @types/express-serve-static-core@npm:4.17.29, @types/express-serve-static-core@npm:^4.17.18":
+"@types/express-serve-static-core@npm:*, @types/express-serve-static-core@npm:^4.17.18":
   version: 4.17.29
   resolution: "@types/express-serve-static-core@npm:4.17.29"
   dependencies:
@@ -3156,6 +3181,17 @@ __metadata:
     "@types/qs": "*"
     "@types/range-parser": "*"
   checksum: ec4194dc59276ec6dd906887fc377be0cadf4aaa4d535d9052ab9624937ef2b984a8d9da2c11c96979e21f3d9f78f1da93e767dbcec637f7f13d2e3003151145
+  languageName: node
+  linkType: hard
+
+"@types/express-serve-static-core@npm:4.17.30":
+  version: 4.17.30
+  resolution: "@types/express-serve-static-core@npm:4.17.30"
+  dependencies:
+    "@types/node": "*"
+    "@types/qs": "*"
+    "@types/range-parser": "*"
+  checksum: c40d9027884ab9e97fa29d9d41d1b75a5966109312e26594cf03c61b278b5bf8e095f53589e47899b34a2e224291a44043617695c3e8bd22284f988e48582ee6
   languageName: node
   linkType: hard
 
@@ -4358,9 +4394,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-server-core@npm:^3.10.0":
-  version: 3.10.0
-  resolution: "apollo-server-core@npm:3.10.0"
+"apollo-server-core@npm:^3.10.1":
+  version: 3.10.1
+  resolution: "apollo-server-core@npm:3.10.1"
   dependencies:
     "@apollo/utils.keyvaluecache": ^1.0.1
     "@apollo/utils.logger": ^1.0.0
@@ -4386,7 +4422,7 @@ __metadata:
     whatwg-mimetype: ^3.0.0
   peerDependencies:
     graphql: ^15.3.0 || ^16.0.0
-  checksum: f1da8de59a4db9271d140b9ab42cb84e8185bd0828b8aa84eff60dcbb3c149468585e73e632aff7615ab7002eb1e986bfb0ebffe4698e552b99812aa3eaff834
+  checksum: 3ceb93b186719b50a8642ce0bdab3928fe6c2f92a08dd13ec625fc7c89ceaca009f0dbdd825e4845aaeb57f9fd33e5e6bb59218b54618d55ff55234520cd635d
   languageName: node
   linkType: hard
 
@@ -4408,17 +4444,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-server-express@npm:3.10.0, apollo-server-express@npm:^3.10.0, apollo-server-express@npm:^3.6.7":
-  version: 3.10.0
-  resolution: "apollo-server-express@npm:3.10.0"
+"apollo-server-express@npm:3.10.1, apollo-server-express@npm:^3.10.1":
+  version: 3.10.1
+  resolution: "apollo-server-express@npm:3.10.1"
   dependencies:
     "@types/accepts": ^1.3.5
     "@types/body-parser": 1.19.2
     "@types/cors": 2.8.12
     "@types/express": 4.17.13
-    "@types/express-serve-static-core": 4.17.29
+    "@types/express-serve-static-core": 4.17.30
     accepts: ^1.3.5
-    apollo-server-core: ^3.10.0
+    apollo-server-core: ^3.10.1
     apollo-server-types: ^3.6.2
     body-parser: ^1.19.0
     cors: ^2.8.5
@@ -4426,7 +4462,7 @@ __metadata:
   peerDependencies:
     express: ^4.17.1
     graphql: ^15.3.0 || ^16.0.0
-  checksum: 4b525f8ae0f8d24599505fa9460c11d79ab8b0477bfdd67b8b162fa32443ab480cea87808ba359bf8fe5a25069e3ba82011478c2be722037cf1f7628278c28a2
+  checksum: 8449a615aa727ba81a96d346b14e358024986bbdd623914bdda1255694d82e3547bb8a5a32ef61e98d6441f37c8ea5a732de7c1af769b7e78b150b89772647bd
   languageName: node
   linkType: hard
 
@@ -4455,17 +4491,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-server@npm:3.10.0, apollo-server@npm:^3.6.1":
-  version: 3.10.0
-  resolution: "apollo-server@npm:3.10.0"
+"apollo-server@npm:3.10.1":
+  version: 3.10.1
+  resolution: "apollo-server@npm:3.10.1"
   dependencies:
     "@types/express": 4.17.13
-    apollo-server-core: ^3.10.0
-    apollo-server-express: ^3.10.0
+    apollo-server-core: ^3.10.1
+    apollo-server-express: ^3.10.1
     express: ^4.17.1
   peerDependencies:
     graphql: ^15.3.0 || ^16.0.0
-  checksum: 05522f7eb258f641d47e4f95e6f65462532a506830684a4bd62134ff54dc03777863b578a82a3a977e2366ca5dfbaf54e0dbf93f2cbaf675bc3842924ca39fee
+  checksum: 83a4733aa1c787cb06d31c80a7dfffb3b9da6c4429e31570d7ad06a1b9c8b732dcc52f46e6a87592a7875ff41d7788f152b7b23bffca4ed53e6fb33c20b7f76e
   languageName: node
   linkType: hard
 
@@ -9243,7 +9279,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "graphql-manual@workspace:docs"
   dependencies:
-    "@antora/cli": ^3.0.1
+    "@antora/cli": 3.0.3
     "@antora/site-generator-default": ^3.0.1
     "@neo4j-antora/antora-add-notes": ^0.3.0
     "@neo4j-antora/antora-modify-sitemaps": ^0.4.2
@@ -12702,7 +12738,7 @@ __metadata:
   resolution: "migration@workspace:examples/migration"
   dependencies:
     "@neo4j/graphql": ^3.5.0
-    apollo-server: ^3.6.1
+    apollo-server: 3.10.1
     graphql: 16.5.0
     neo4j-driver: 4.4.7
   languageName: unknown
@@ -13085,7 +13121,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "neo-push-client@workspace:examples/neo-push/client"
   dependencies:
-    "@apollo/client": ^3.5.10
+    "@apollo/client": 3.6.9
     "@fortawesome/fontawesome-svg-core": 6.1.2
     "@fortawesome/free-solid-svg-icons": 6.1.2
     "@fortawesome/react-fontawesome": 0.2.0
@@ -13131,7 +13167,7 @@ __metadata:
     "@types/jsonwebtoken": 8.5.1
     "@types/node": 16.11.47
     "@types/uuid": 8.3.4
-    apollo-server-express: ^3.6.7
+    apollo-server-express: 3.10.1
     bcrypt: 5.0.1
     cross-env: 7.0.3
     debug: 4.3.4

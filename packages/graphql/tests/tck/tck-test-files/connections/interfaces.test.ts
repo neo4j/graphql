@@ -148,13 +148,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
             CALL {
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-            WHERE this_Movie.title STARTS WITH $this_actedInConnection.args.where.node.title_STARTS_WITH
+            WHERE this_Movie.title STARTS WITH $this_actedInConnection_args_where_Movieparam0
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
             RETURN edge
             UNION
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
-            WHERE this_Series.title STARTS WITH $this_actedInConnection.args.where.node.title_STARTS_WITH
+            WHERE this_Series.title STARTS WITH $this_actedInConnection_args_where_Seriesparam0
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
             RETURN edge
             }
@@ -168,10 +168,8 @@ describe("Cypher -> Connections -> Interfaces", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"title_STARTS_WITH\\": \\"The \\"
-                },
-                \\"title_STARTS_WITH\\": \\"The \\",
+                \\"this_actedInConnection_args_where_Movieparam0\\": \\"The \\",
+                \\"this_actedInConnection_args_where_Seriesparam0\\": \\"The \\",
                 \\"this_actedInConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -222,13 +220,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
             CALL {
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-            WHERE this_Movie.runtime > $this_actedInConnection.args.where.node._on.Movie.runtime_GT
+            WHERE this_Movie.runtime > $this_actedInConnection_args_where_Movieparam0
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
             RETURN edge
             UNION
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
-            WHERE this_Series.episodes > $this_actedInConnection.args.where.node._on.Series.episodes_GT
+            WHERE this_Series.episodes > $this_actedInConnection_args_where_Seriesparam0
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
             RETURN edge
             }
@@ -242,15 +240,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"_on\\": {
-                        \\"Series\\": {
-                            \\"episodes_GT\\": {
-                                \\"low\\": 50,
-                                \\"high\\": 0
-                            }
-                        }
-                    }
+                \\"this_actedInConnection_args_where_Movieparam0\\": {
+                    \\"low\\": 90,
+                    \\"high\\": 0
+                },
+                \\"this_actedInConnection_args_where_Seriesparam0\\": {
+                    \\"low\\": 50,
+                    \\"high\\": 0
                 },
                 \\"this_actedInConnection\\": {
                     \\"args\\": {
@@ -313,13 +309,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
             CALL {
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-            WHERE this_acted_in_relationship.screenTime > $this_actedInConnection.args.where.edge.screenTime_GT
+            WHERE this_acted_in_relationship.screenTime > $this_actedInConnection_args_where_Movieparam0
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
             RETURN edge
             UNION
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
-            WHERE this_acted_in_relationship.screenTime > $this_actedInConnection.args.where.edge.screenTime_GT
+            WHERE this_acted_in_relationship.screenTime > $this_actedInConnection_args_where_Seriesparam0
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
             RETURN edge
             }
@@ -333,11 +329,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"edge\\": {
-                    \\"screenTime_GT\\": {
-                        \\"low\\": 60,
-                        \\"high\\": 0
-                    }
+                \\"this_actedInConnection_args_where_Movieparam0\\": {
+                    \\"low\\": 60,
+                    \\"high\\": 0
+                },
+                \\"this_actedInConnection_args_where_Seriesparam0\\": {
+                    \\"low\\": 60,
+                    \\"high\\": 0
                 },
                 \\"this_actedInConnection\\": {
                     \\"args\\": {
