@@ -50,4 +50,9 @@ export class SchemaEditor extends Screen {
         await this.page.waitForSelector("[data-test-schema-editor-introspect-button]");
         await this.page.click("[data-test-schema-editor-introspect-button]");
     }
+
+    public async goToEditorView() {
+        await this.page.waitForSelector("[data-test-view-selector-editor]");
+        await this.page.click("[data-test-view-selector-editor]");
+    }
 }

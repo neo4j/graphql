@@ -43,6 +43,7 @@ import { ActionElementsBar } from "./ActionElementsBar";
 import { SchemaEditor } from "./SchemaEditor";
 import { ConstraintState, Favorite } from "src/types";
 import { Favorites } from "./Favorites";
+import { IntrospectionPrompt } from "./IntrospectionPrompt";
 
 export interface Props {
     hasSchema: boolean;
@@ -53,8 +54,9 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const auth = useContext(AuthContext);
     const settings = useContext(SettingsContext);
     const [error, setError] = useState<string | GraphQLError>("");
-    const [loading, setLoading] = useState(false);
-    const [isIntrospecting, setIsIntrospecting] = useState(false);
+    const [showIntrospectionModal, setShowIntrospectionModal] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [isIntrospecting, setIsIntrospecting] = useState<boolean>(false);
     const refForEditorMirror = useRef<EditorFromTextArea | null>(null);
     const [isDebugChecked, setIsDebugChecked] = useState<string | null>(Storage.retrieve(LOCAL_STATE_ENABLE_DEBUG));
     const [isRegexChecked, setIsRegexChecked] = useState<string | null>(Storage.retrieve(LOCAL_STATE_ENABLE_REGEX));
@@ -156,41 +158,65 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
 
     return (
         <div className="w-full flex">
-            <div className="h-content-container flex justify-start w-96 bg-white">
-                <div className="p-6 w-full">
-                    <SchemaSettings
-                        isRegexChecked={isRegexChecked}
-                        isDebugChecked={isDebugChecked}
-                        constraintState={constraintState}
-                        setIsRegexChecked={setIsRegexChecked}
-                        setIsDebugChecked={setIsDebugChecked}
-                        setConstraintState={setConstraintState}
-                    />
-                    <hr className="my-8" />
-                    <Favorites
-                        favorites={favorites}
-                        setFavorites={setFavorites}
-                        onSelectFavorite={setTypeDefsFromFavorite}
-                    />
+            {auth.showIntrospectionPrompt ? (
+                <IntrospectionPrompt
+                    open={showIntrospectionModal}
+                    onClose={() => {
+                        setShowIntrospectionModal(false);
+                        auth.setShowIntrospectionPrompt(false);
+                    }}
+                    onDisconnect={() => {
+                        setShowIntrospectionModal(false);
+                        auth.setShowIntrospectionPrompt(false);
+                        auth.logout();
+                    }}
+                    onIntrospect={() => {
+                        setShowIntrospectionModal(false);
+                        auth.setShowIntrospectionPrompt(false);
+                        introspect();
+                    }}
+                />
+            ) : null}
+            <div className={`flex flex-col ${showRightPanel ? "w-content-container" : "w-full"}`}>
+                <div className="h-12 w-full bg-white">
+                    <ActionElementsBar hasSchema={hasSchema} loading={loading} onSubmit={onSubmit} />
                 </div>
-            </div>
-            <div className="flex-1 flex justify-start w-full p-6" style={{ height: "87vh" }}>
-                <div className="flex flex-col w-full h-full">
-                    <ActionElementsBar
-                        hasSchema={hasSchema}
-                        loading={loading}
-                        isIntrospecting={isIntrospecting}
-                        formatTheCode={formatTheCode}
-                        onSubmit={onSubmit}
-                        introspect={introspect}
-                        saveAsFavorite={saveAsFavorite}
-                    />
-                    <SchemaErrorDisplay error={error} />
-                    <SchemaEditor mirrorRef={refForEditorMirror} loading={loading} />
+                <div className="flex">
+                    <div className="h-content-container-extended flex justify-start w-96 bg-white border-t border-gray-100">
+                        <div className="p-6 w-full">
+                            <SchemaSettings
+                                isRegexChecked={isRegexChecked}
+                                isDebugChecked={isDebugChecked}
+                                constraintState={constraintState}
+                                setIsRegexChecked={setIsRegexChecked}
+                                setIsDebugChecked={setIsDebugChecked}
+                                setConstraintState={setConstraintState}
+                            />
+                            <hr className="my-8" />
+                            <Favorites
+                                favorites={favorites}
+                                setFavorites={setFavorites}
+                                onSelectFavorite={setTypeDefsFromFavorite}
+                            />
+                        </div>
+                    </div>
+                    <div className="flex-1 flex justify-start w-full p-4" style={{ height: "86vh" }}>
+                        <div className="flex flex-col w-full h-full">
+                            <SchemaErrorDisplay error={error} />
+                            <SchemaEditor
+                                mirrorRef={refForEditorMirror}
+                                loading={loading}
+                                isIntrospecting={isIntrospecting}
+                                formatTheCode={formatTheCode}
+                                introspect={introspect}
+                                saveAsFavorite={saveAsFavorite}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
             {showRightPanel ? (
-                <div className="h-content-container flex justify-start w-96 bg-white">
+                <div className="h-content-container flex justify-start w-96 bg-white border-l border-gray-100">
                     {settings.isShowHelpDrawer ? (
                         <HelpDrawer onClickClose={() => settings.setIsShowHelpDrawer(false)} />
                     ) : null}

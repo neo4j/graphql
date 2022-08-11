@@ -52,8 +52,47 @@ export class Login extends Screen {
         await this.page.click("[data-test-login-button]");
     }
 
+    public async dismissIntrospectionPrompt() {
+        await this.page.waitForTimeout(500);
+        if (await this.page.isVisible("[data-test-introspect-prompt]")) {
+            await this.page.waitForSelector("[data-test-introspect-prompt-cancel]");
+            await this.page.click("[data-test-introspect-prompt-cancel]");
+        }
+    }
+
+    public async introspectionPromptIntrospect() {
+        await this.page.waitForSelector("[data-test-introspect-prompt-introspect]");
+        await this.page.click("[data-test-introspect-prompt-introspect]");
+    }
+
+    public async introspectionPromptLogout() {
+        await this.page.waitForSelector("[data-test-introspect-prompt-logout]");
+        await this.page.click("[data-test-introspect-prompt-logout]");
+    }
+
+    public async getIsIntrospectionPromptHidden() {
+        return this.page.isHidden("[data-test-introspect-prompt]");
+    }
+
     public async awaitSuccess() {
         await this.page.waitForSelector("[data-test-schema-editor-build-button]");
+    }
+
+    public async getIsLoginWindowVisible() {
+        return this.page.isVisible("[data-test-login-form]");
+    }
+
+    public async loginDismissIntrospection(
+        username: string = NEO_USER,
+        password: string = NEO_PASSWORD,
+        url: string = NEO_URL
+    ) {
+        await this.setUsername(username);
+        await this.setPassword(password);
+        await this.setURL(url);
+        await this.submit();
+        await this.dismissIntrospectionPrompt();
+        await this.awaitSuccess();
     }
 
     public async login(username: string = NEO_USER, password: string = NEO_PASSWORD, url: string = NEO_URL) {
