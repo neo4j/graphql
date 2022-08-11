@@ -142,7 +142,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Equality", () =>
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE NOT this_acted_in_relationship.screenTime = $this_actorsConnection_args_where_Actorparam0
+            WHERE NOT (this_acted_in_relationship.screenTime = $this_actorsConnection_args_where_Actorparam0)
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount

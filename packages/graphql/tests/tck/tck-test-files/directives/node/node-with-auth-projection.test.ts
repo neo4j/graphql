@@ -80,11 +80,11 @@ describe("Cypher Auth Projection On Connections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Person\`)
-            CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_allow0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $this_auth_allow0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
             WITH this
             MATCH (this)-[this_has_post_relationship:HAS_POST]->(this_post:\`Comment\`)
-            CALL apoc.util.validate(NOT (exists((this_post)<-[:HAS_POST]-(:\`Person\`)) AND any(creator IN [(this_post)<-[:HAS_POST]-(creator:\`Person\`) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_post_auth_allow0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((exists((this_post)<-[:HAS_POST]-(:\`Person\`)) AND any(creator IN [(this_post)<-[:HAS_POST]-(creator:\`Person\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_post_auth_allow0_creator_id)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { content: this_post.content } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount

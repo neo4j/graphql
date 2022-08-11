@@ -143,7 +143,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE NOT this_actor.name IN $this_actorsConnection_args_where_Actorparam0
+            WHERE NOT (this_actor.name IN $this_actorsConnection_args_where_Actorparam0)
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -255,7 +255,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE NOT $this_actorsConnection_args_where_Actorparam0 IN this_actor.favouriteColours
+            WHERE NOT ($this_actorsConnection_args_where_Actorparam0 IN this_actor.favouriteColours)
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, favouriteColours: this_actor.favouriteColours } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount

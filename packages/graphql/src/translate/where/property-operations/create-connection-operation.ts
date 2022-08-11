@@ -114,7 +114,7 @@ export function createConnectionWherePropertyOperation({
     edge: Relationship;
     edgeRef: CypherBuilder.Variable;
     targetNode: CypherBuilder.Node;
-}): CypherBuilder.ComparisonOp | CypherBuilder.BooleanOp | CypherBuilder.RawCypher | CypherBuilder.Exists | undefined {
+}): CypherBuilder.Predicate | undefined {
     const params = Object.entries(whereInput).map(([key, value]) => {
         if (key === "AND" || key === "OR") {
             const subOperations = (value as Array<any>).map((input) => {
