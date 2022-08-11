@@ -27,7 +27,8 @@ import { CypherFunction } from "./CypherFunction";
 
 export class PredicateFunction extends CypherFunction {}
 
-class PredicateFunctionWithPattern extends PredicateFunction {
+/** Predicate function that uses a list comprehension "var IN list WHERE .." */
+class ListPredicateFunction extends PredicateFunction {
     private variable: Variable;
     private listExpr: Expr;
     private whereSubClause: Where | undefined;
@@ -52,11 +53,11 @@ class PredicateFunctionWithPattern extends PredicateFunction {
 }
 
 export function any(variable: Variable, listExpr: Expr, whereFilter?: Predicate): PredicateFunction {
-    return new PredicateFunctionWithPattern("any", variable, listExpr, whereFilter);
+    return new ListPredicateFunction("any", variable, listExpr, whereFilter);
 }
 
 export function all(variable: Variable, listExpr: Expr, whereFilter?: Predicate): PredicateFunction {
-    return new PredicateFunctionWithPattern("all", variable, listExpr, whereFilter);
+    return new ListPredicateFunction("all", variable, listExpr, whereFilter);
 }
 
 class ExistsFunction extends PredicateFunction {
