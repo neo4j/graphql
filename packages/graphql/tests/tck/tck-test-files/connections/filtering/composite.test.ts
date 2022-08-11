@@ -92,7 +92,7 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE ((this_acted_in_relationship.screenTime > $this_actorsConnection.args.where.edge.AND[0].screenTime_GT) AND (this_acted_in_relationship.screenTime < $this_actorsConnection.args.where.edge.AND[1].screenTime_LT)) AND ((this_actor.firstName = $this_actorsConnection.args.where.node.AND[0].firstName) AND (this_actor.lastName = $this_actorsConnection.args.where.node.AND[1].lastName))
+            WHERE ((this_acted_in_relationship.screenTime > $this_actorsConnection_args_where_Actorparam0 AND this_acted_in_relationship.screenTime < $this_actorsConnection_args_where_Actorparam1) AND (this_actor.firstName = $this_actorsConnection_args_where_Actorparam2 AND this_actor.lastName = $this_actorsConnection_args_where_Actorparam3))
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { firstName: this_actor.firstName, lastName: this_actor.lastName } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -104,6 +104,16 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
+                \\"this_actorsConnection_args_where_Actorparam0\\": {
+                    \\"low\\": 30,
+                    \\"high\\": 0
+                },
+                \\"this_actorsConnection_args_where_Actorparam1\\": {
+                    \\"low\\": 90,
+                    \\"high\\": 0
+                },
+                \\"this_actorsConnection_args_where_Actorparam2\\": \\"Tom\\",
+                \\"this_actorsConnection_args_where_Actorparam3\\": \\"Hanks\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

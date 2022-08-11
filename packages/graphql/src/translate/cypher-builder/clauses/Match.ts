@@ -37,7 +37,6 @@ export class Match<T extends MatchableElement = any> extends Clause {
         } else {
             this.pattern = new Pattern(variable).withParams(parameters);
         }
-        this.addChildren(this.pattern);
     }
 
     public getCypher(env: CypherEnvironment): string {

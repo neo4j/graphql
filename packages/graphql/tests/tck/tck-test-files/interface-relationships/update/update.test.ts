@@ -88,7 +88,7 @@ describe("Interface Relationships - Update update", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            WHERE this_actedIn0.title = $updateActors.args.update.actedIn[0].where.node.title
+            WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Movieparam0
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
             SET this_actedIn0.title = $this_update_actedIn0_title
             RETURN count(*) AS _
@@ -98,7 +98,7 @@ describe("Interface Relationships - Update update", () => {
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
-            WHERE this_actedIn0.title = $updateActors.args.update.actedIn[0].where.node.title
+            WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Seriesparam0
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
             SET this_actedIn0.title = $this_update_actedIn0_title
             RETURN count(*) AS _
@@ -111,11 +111,13 @@ describe("Interface Relationships - Update update", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"updateActors_args_update_actedIn0_where_Movieparam0\\": \\"Old Title\\",
                 \\"this_update_actedIn0_title\\": \\"New Title\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": false,
                     \\"roles\\": []
                 },
+                \\"updateActors_args_update_actedIn0_where_Seriesparam0\\": \\"Old Title\\",
                 \\"updateActors\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -170,7 +172,7 @@ describe("Interface Relationships - Update update", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            WHERE this_actedIn0.title = $updateActors.args.update.actedIn[0].where.node.title
+            WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Movieparam0
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
             WITH this, this_actedIn0
             OPTIONAL MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
@@ -186,7 +188,7 @@ describe("Interface Relationships - Update update", () => {
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
-            WHERE this_actedIn0.title = $updateActors.args.update.actedIn[0].where.node.title
+            WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Seriesparam0
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
             WITH this, this_actedIn0
             OPTIONAL MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
@@ -205,11 +207,13 @@ describe("Interface Relationships - Update update", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"updateActors_args_update_actedIn0_where_Movieparam0\\": \\"Old Title\\",
                 \\"this_update_actedIn0_actors0_name\\": \\"New Actor Name\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": false,
                     \\"roles\\": []
                 },
+                \\"updateActors_args_update_actedIn0_where_Seriesparam0\\": \\"Old Title\\",
                 \\"updateActors\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -274,7 +278,7 @@ describe("Interface Relationships - Update update", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            WHERE this_actedIn0.title = $updateActors.args.update.actedIn[0].where.node.title
+            WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Movieparam0
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
             WITH this, this_actedIn0
             OPTIONAL MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
@@ -290,7 +294,7 @@ describe("Interface Relationships - Update update", () => {
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
-            WHERE this_actedIn0.title = $updateActors.args.update.actedIn[0].where.node.title
+            WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Seriesparam0
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
             RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth})
@@ -302,11 +306,13 @@ describe("Interface Relationships - Update update", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"updateActors_args_update_actedIn0_where_Movieparam0\\": \\"Old Title\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": false,
                     \\"roles\\": []
                 },
                 \\"this_update_actedIn0_on_Movie_actors0_name\\": \\"New Actor Name\\",
+                \\"updateActors_args_update_actedIn0_where_Seriesparam0\\": \\"Old Title\\",
                 \\"updateActors\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -378,7 +384,7 @@ describe("Interface Relationships - Update update", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            WHERE this_actedIn0.title = $updateActors.args.update.actedIn[0].where.node.title
+            WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Movieparam0
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
             WITH this, this_actedIn0
             OPTIONAL MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
@@ -394,7 +400,7 @@ describe("Interface Relationships - Update update", () => {
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
-            WHERE this_actedIn0.title = $updateActors.args.update.actedIn[0].where.node.title
+            WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Seriesparam0
             CALL apoc.do.when(this_actedIn0 IS NOT NULL, \\"
             WITH this, this_actedIn0
             OPTIONAL MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
@@ -413,11 +419,13 @@ describe("Interface Relationships - Update update", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"updateActors_args_update_actedIn0_where_Movieparam0\\": \\"Old Title\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": false,
                     \\"roles\\": []
                 },
                 \\"this_update_actedIn0_on_Movie_actors0_name\\": \\"Different Actor Name\\",
+                \\"updateActors_args_update_actedIn0_where_Seriesparam0\\": \\"Old Title\\",
                 \\"this_update_actedIn0_actors0_name\\": \\"New Actor Name\\",
                 \\"updateActors\\": {
                     \\"args\\": {

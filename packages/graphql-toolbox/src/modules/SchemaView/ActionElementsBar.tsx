@@ -17,39 +17,27 @@
  * limitations under the License.
  */
 
+import { Button, HeroIcon } from "@neo4j-ndl/react";
 import { ProTooltip } from "../../components/ProTooltip";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
-import { Button, HeroIcon, IconButton } from "@neo4j-ndl/react";
 
 interface Props {
     hasSchema: boolean;
     loading: boolean;
-    isIntrospecting: boolean;
-    formatTheCode: () => void;
-    introspect: () => Promise<void>;
     onSubmit: () => void;
-    saveAsFavorite: () => void;
 }
 
-export const ActionElementsBar = ({
-    hasSchema,
-    loading,
-    isIntrospecting,
-    formatTheCode,
-    introspect,
-    onSubmit,
-    saveAsFavorite,
-}: Props) => {
+export const ActionElementsBar = ({ hasSchema, loading, onSubmit }: Props) => {
     return (
-        <div className="flex items-center w-full pb-4">
+        <div className="flex items-center h-12 w-full px-6">
             <div className="justify-start">
                 <ProTooltip
-                    tooltipText="Build the schema to use the Editor"
-                    arrowPositionLeft={true}
+                    tooltipText="Build the schema to use the editor"
+                    arrowPositionOverride="left"
                     blockVisibility={hasSchema}
                     width={210}
-                    left={200}
-                    top={1}
+                    left={253}
+                    top={-3}
                 >
                     <ViewSelectorComponent
                         key="schema-editor-view-selector"
@@ -58,45 +46,7 @@ export const ActionElementsBar = ({
                     />
                 </ProTooltip>
             </div>
-            <div className="flex-1 flex justify-end gap-2">
-                <ProTooltip tooltipText="Save as Favorite" width={120} left={-42} top={45}>
-                    <IconButton
-                        data-test-schema-editor-favourite-button
-                        aria-label="Save as favorite"
-                        // Icon button background should be white, remove bg-white
-                        // as soon as it's fixed
-                        className="bg-white"
-                        color="neutral"
-                        onClick={saveAsFavorite}
-                        disabled={loading}
-                    >
-                        <HeroIcon iconName="StarIcon" type="outline" />
-                    </IconButton>
-                </ProTooltip>
-                <ProTooltip tooltipText="Prettify" width={60} left={-12} top={45}>
-                    <IconButton
-                        data-test-schema-editor-prettify-button
-                        aria-label="Prettify code"
-                        className="bg-white"
-                        color="neutral"
-                        onClick={formatTheCode}
-                        disabled={loading}
-                    >
-                        <HeroIcon iconName="CodeIcon" type="outline" />
-                    </IconButton>
-                </ProTooltip>
-                <ProTooltip tooltipText="This will overwrite your current typeDefs!" width={260} left={-40} top={45}>
-                    <Button
-                        data-test-schema-editor-introspect-button
-                        color="neutral"
-                        fill="outlined"
-                        onClick={introspect}
-                        disabled={loading}
-                        loading={isIntrospecting}
-                    >
-                        Generate type definitions
-                    </Button>
-                </ProTooltip>
+            <div className="flex-1 flex justify-end">
                 <Button
                     data-test-schema-editor-build-button
                     style={{ backgroundColor: "#006FD6" }}
@@ -104,6 +54,7 @@ export const ActionElementsBar = ({
                     onClick={onSubmit}
                     disabled={loading}
                 >
+                    <HeroIcon iconName="PlayIcon" className="h-5 w-5 pr-1" />
                     Build schema
                 </Button>
             </div>

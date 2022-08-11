@@ -86,7 +86,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_activeOrganization0_rel:ACTIVELY_MANAGING]->(this_disconnect_activeOrganization0:Organization)
-            WHERE (NOT this_disconnect_activeOrganization0._id = $updateUsers.args.disconnect.activeOrganization.where.node.id_NOT)
+            WHERE NOT (this_disconnect_activeOrganization0._id = $updateUsers_args_disconnect_activeOrganization_where_Organizationparam0)
             FOREACH(_ IN CASE WHEN this_disconnect_activeOrganization0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_activeOrganization0_rel
             )
@@ -106,6 +106,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Luke Skywalker\\",
+                \\"updateUsers_args_disconnect_activeOrganization_where_Organizationparam0\\": \\"test-id\\",
                 \\"this_connect_activeOrganization0_node_param0\\": \\"test-id\\",
                 \\"updateUsers\\": {
                     \\"args\\": {

@@ -23,7 +23,7 @@ import type { Context, RelationField, GraphQLWhereArg } from "../../types";
 
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
-import { createCypherWhereParams } from "../where/create-cypher-where-params";
+import { createCypherWherePredicate } from "../where/create-cypher-where-predicate";
 
 export function createCountExpression({
     sourceNode,
@@ -39,7 +39,7 @@ export function createCountExpression({
     context: Context;
     relationAggregationField: RelationField;
     field: ResolveTree;
-    authCallWhere: CypherBuilder.WhereParams | undefined;
+    authCallWhere: CypherBuilder.Predicate | undefined;
     targetNode: CypherBuilder.Node;
 }): CypherBuilder.Expr {
     const relationship = new CypherBuilder.Relationship({
@@ -56,7 +56,7 @@ export function createCountExpression({
     const relationshipPattern = relationship.pattern({
         directed: !(direction === "undirected"),
     });
-    const whereParams = createCypherWhereParams({
+    const wherePredicate = createCypherWherePredicate({
         element: referenceNode,
         context,
         whereInput: (field.args.where as GraphQLWhereArg) || {},
@@ -65,8 +65,8 @@ export function createCountExpression({
 
     const patternComprehension = new CypherBuilder.PatternComprehension(relationshipPattern, targetNode);
 
-    if (whereParams) {
-        patternComprehension.where(whereParams);
+    if (wherePredicate) {
+        patternComprehension.where(wherePredicate);
     }
     if (authCallWhere) {
         patternComprehension.and(authCallWhere);

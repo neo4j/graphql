@@ -388,13 +388,13 @@ describe("Interface Relationships", () => {
             CALL {
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-            WHERE this_acted_in_relationship.screenTime > $this_actedInConnection.args.where.edge.screenTime_GT AND this_Movie.title STARTS WITH $this_actedInConnection.args.where.node.title_STARTS_WITH
+            WHERE (this_acted_in_relationship.screenTime > $this_actedInConnection_args_where_Movieparam0 AND this_Movie.title STARTS WITH $this_actedInConnection_args_where_Movieparam1)
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
             RETURN edge
             UNION
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
-            WHERE this_acted_in_relationship.screenTime > $this_actedInConnection.args.where.edge.screenTime_GT AND this_Series.title STARTS WITH $this_actedInConnection.args.where.node.title_STARTS_WITH
+            WHERE (this_acted_in_relationship.screenTime > $this_actedInConnection_args_where_Seriesparam0 AND this_Series.title STARTS WITH $this_actedInConnection_args_where_Seriesparam1)
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
             RETURN edge
             }
@@ -408,6 +408,16 @@ describe("Interface Relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_actedInConnection_args_where_Movieparam0\\": {
+                    \\"low\\": 60,
+                    \\"high\\": 0
+                },
+                \\"this_actedInConnection_args_where_Movieparam1\\": \\"The \\",
+                \\"this_actedInConnection_args_where_Seriesparam0\\": {
+                    \\"low\\": 60,
+                    \\"high\\": 0
+                },
+                \\"this_actedInConnection_args_where_Seriesparam1\\": \\"The \\",
                 \\"this_actedInConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -460,7 +470,7 @@ describe("Interface Relationships", () => {
             CALL {
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-            WHERE this_acted_in_relationship.screenTime > $this_actedInConnection.args.where.edge.screenTime_GT AND this_Movie.title STARTS WITH $this_actedInConnection.args.where.node._on.Movie.title_STARTS_WITH
+            WHERE (this_acted_in_relationship.screenTime > $this_actedInConnection_args_where_Movieparam0 AND this_Movie.title STARTS WITH $this_actedInConnection_args_where_Movieparam1)
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
             RETURN edge
             }
@@ -474,6 +484,11 @@ describe("Interface Relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_actedInConnection_args_where_Movieparam0\\": {
+                    \\"low\\": 60,
+                    \\"high\\": 0
+                },
+                \\"this_actedInConnection_args_where_Movieparam1\\": \\"The \\",
                 \\"this_actedInConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -536,13 +551,13 @@ describe("Interface Relationships", () => {
             CALL {
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-            WHERE this_acted_in_relationship.screenTime > $this_actedInConnection.args.where.edge.screenTime_GT AND this_Movie.title STARTS WITH $this_actedInConnection.args.where.node._on.Movie.title_STARTS_WITH
+            WHERE (this_acted_in_relationship.screenTime > $this_actedInConnection_args_where_Movieparam0 AND this_Movie.title STARTS WITH $this_actedInConnection_args_where_Movieparam1)
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
             RETURN edge
             UNION
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
-            WHERE this_acted_in_relationship.screenTime > $this_actedInConnection.args.where.edge.screenTime_GT AND this_Series.title STARTS WITH $this_actedInConnection.args.where.node.title_STARTS_WITH
+            WHERE (this_acted_in_relationship.screenTime > $this_actedInConnection_args_where_Seriesparam0 AND this_Series.title STARTS WITH $this_actedInConnection_args_where_Seriesparam1)
             WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
             RETURN edge
             }
@@ -556,6 +571,16 @@ describe("Interface Relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_actedInConnection_args_where_Movieparam0\\": {
+                    \\"low\\": 60,
+                    \\"high\\": 0
+                },
+                \\"this_actedInConnection_args_where_Movieparam1\\": \\"A \\",
+                \\"this_actedInConnection_args_where_Seriesparam0\\": {
+                    \\"low\\": 60,
+                    \\"high\\": 0
+                },
+                \\"this_actedInConnection_args_where_Seriesparam1\\": \\"The \\",
                 \\"this_actedInConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

@@ -19,10 +19,10 @@
 
 import type { CypherEnvironment } from "../Environment";
 
-type LiteralValues = string | number | null;
+type LiteralValues = string | number | boolean | null;
 
 /** Represents a literal value, it is not a variable */
-export class Literal<T = LiteralValues> {
+export class Literal<T = LiteralValues | LiteralValues[]> {
     public value: T;
 
     constructor(value: T) {
@@ -30,6 +30,10 @@ export class Literal<T = LiteralValues> {
     }
 
     public getCypher(_env: CypherEnvironment): string {
+        // TODO: Literal should wrap strings in ""
+        if (Array.isArray(this.value)) {
+            return `[${this.value.map((v) => `"${v}"`).join(", ")}]`;
+        }
         return `${this.value}`;
     }
 }

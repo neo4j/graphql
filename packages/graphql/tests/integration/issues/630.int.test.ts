@@ -127,7 +127,7 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
                         ...movie,
                         actorsConnection: {
                             totalCount: 2,
-                            edges: expect.arrayContaining([
+                            edges: expect.toIncludeSameMembers([
                                 {
                                     node: actors[0],
                                 },

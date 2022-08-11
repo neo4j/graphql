@@ -141,10 +141,12 @@ describe("root-connections", () => {
             expect(result.errors).toBeFalsy();
             expect(result?.data?.[aircraftType.operations.connection]).toEqual({
                 totalCount: 20,
-                edges: dummyAircrafts.map((node) => ({
-                    cursor: expect.any(String),
-                    node,
-                })),
+                edges: expect.toIncludeAllMembers(
+                    dummyAircrafts.map((node) => ({
+                        cursor: expect.any(String),
+                        node,
+                    }))
+                ),
             });
         } finally {
             await session.run(`

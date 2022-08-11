@@ -125,7 +125,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
             CALL {
             WITH this
             MATCH (this)-[this_has_name_relationship:HAS_NAME]->(this_namedetails:NameDetails)
-            WHERE this_has_name_relationship.current = $this_nameDetailsConnection.args.where.edge.current
+            WHERE this_has_name_relationship.current = $this_nameDetailsConnection_args_where_NameDetailsparam0
             WITH collect({ node: { fullName: this_namedetails.fullName } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -134,11 +134,11 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
             CALL {
             WITH this
             MATCH (this)-[this_architecture_relationship:ARCHITECTURE]->(this_masterdata:MasterData)
-            WHERE this_architecture_relationship.current = $this_architectureConnection.args.where.edge.current
+            WHERE this_architecture_relationship.current = $this_architectureConnection_args_where_MasterDataparam0
             CALL {
             WITH this_masterdata
             MATCH (this_masterdata)-[this_masterdata_has_name_relationship:HAS_NAME]->(this_masterdata_namedetails:NameDetails)
-            WHERE this_masterdata_has_name_relationship.current = $this_architectureConnection.edges.node.nameDetailsConnection.args.where.edge.current
+            WHERE this_masterdata_has_name_relationship.current = $this_architectureConnection_edges_node_nameDetailsConnection_args_where_NameDetailsparam0
             WITH collect({ node: { fullName: this_masterdata_namedetails.fullName } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -160,6 +160,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 \\"param3\\": \\"MHA\\",
                 \\"param4\\": true,
                 \\"param5\\": \\"1\\",
+                \\"this_nameDetailsConnection_args_where_NameDetailsparam0\\": true,
                 \\"this_nameDetailsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -169,6 +170,8 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                         }
                     }
                 },
+                \\"this_architectureConnection_args_where_MasterDataparam0\\": true,
+                \\"this_architectureConnection_edges_node_nameDetailsConnection_args_where_NameDetailsparam0\\": true,
                 \\"this_architectureConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

@@ -81,8 +81,8 @@ describe("Mixed nesting", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name = $this_actorsConnection.args.where.node.name
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, movies: [ (this_actor)-[:ACTED_IN]->(this_actor_movies:Movie)  WHERE NOT this_actor_movies.title = $this_actor_movies_param0 | this_actor_movies { .title } ] } }) AS edges
+            WHERE this_actor.name = $this_actorsConnection_args_where_Actorparam0
+            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, movies: [ (this_actor)-[:ACTED_IN]->(this_actor_movies:Movie)  WHERE NOT (this_actor_movies.title = $this_actor_movies_param0) | this_actor_movies { .title } ] } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
             RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
@@ -93,6 +93,7 @@ describe("Mixed nesting", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Tom Hanks\\",
                 \\"this_actor_movies_param0\\": \\"Forrest Gump\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
@@ -145,12 +146,12 @@ describe("Mixed nesting", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name = $this_actorsConnection.args.where.node.name
+            WHERE this_actor.name = $this_actorsConnection_args_where_Actorparam0
             CALL {
             WITH this_actor
             MATCH (this_actor)-[this_actor_acted_in_relationship:ACTED_IN]->(this_actor_movie:Movie)
-            WHERE (NOT this_actor_movie.title = $this_actorsConnection.edges.node.moviesConnection.args.where.node.title_NOT)
-            WITH collect({ node: { title: this_actor_movie.title, actors: [ (this_actor_movie)<-[:ACTED_IN]-(this_actor_movie_actors:Actor)  WHERE NOT this_actor_movie_actors.name = $this_actor_movie_actors_param0 | this_actor_movie_actors { .name } ] } }) AS edges
+            WHERE NOT (this_actor_movie.title = $this_actorsConnection_edges_node_moviesConnection_args_where_Movieparam0)
+            WITH collect({ node: { title: this_actor_movie.title, actors: [ (this_actor_movie)<-[:ACTED_IN]-(this_actor_movie_actors:Actor)  WHERE NOT (this_actor_movie_actors.name = $this_actor_movie_actors_param0) | this_actor_movie_actors { .name } ] } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
             RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
@@ -166,6 +167,8 @@ describe("Mixed nesting", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Tom Hanks\\",
+                \\"this_actorsConnection_edges_node_moviesConnection_args_where_Movieparam0\\": \\"Forrest Gump\\",
                 \\"this_actor_movie_actors_param0\\": \\"Tom Hanks\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
@@ -221,20 +224,21 @@ describe("Mixed nesting", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
-            RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor)  WHERE this_actors.name = $this_actors_param0 | this_actors { .name, moviesConnection: apoc.cypher.runFirstColumn(\\"CALL {
+            RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor)  WHERE this_actors.name = $this_actors_param0 | this_actors { .name, moviesConnection: apoc.cypher.runFirstColumnSingle(\\"CALL {
             WITH this_actors
             MATCH (this_actors)-[this_actors_acted_in_relationship:ACTED_IN]->(this_actors_movie:Movie)
-            WHERE (NOT this_actors_movie.title = $this_actors_moviesConnection.args.where.node.title_NOT)
+            WHERE NOT (this_actors_movie.title = $this_actors_moviesConnection_args_where_Movieparam0)
             WITH collect({ screenTime: this_actors_acted_in_relationship.screenTime, node: { title: this_actors_movie.title } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
             RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
-            } RETURN moviesConnection\\", { this_actors: this_actors, this_actors_moviesConnection: $this_actors_moviesConnection, auth: $auth }, false) } ] } as this"
+            } RETURN moviesConnection\\", { this_actors: this_actors, this_actors_moviesConnection_args_where_Movieparam0: $this_actors_moviesConnection_args_where_Movieparam0, this_actors_moviesConnection: $this_actors_moviesConnection, auth: $auth }) } ] } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
+                \\"this_actors_moviesConnection_args_where_Movieparam0\\": \\"Forrest Gump\\",
                 \\"this_actors_moviesConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

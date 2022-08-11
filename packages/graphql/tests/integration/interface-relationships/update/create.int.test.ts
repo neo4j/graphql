@@ -162,7 +162,7 @@ describe("interface relationships", () => {
                 updateActors: {
                     actors: [
                         {
-                            actedIn: expect.arrayContaining([
+                            actedIn: expect.toIncludeSameMembers([
                                 {
                                     runtime: movieRuntime,
                                     title: movieTitle,
@@ -176,7 +176,6 @@ describe("interface relationships", () => {
                     ],
                 },
             });
-            expect((gqlResult.data as any)?.updateActors.actors[0].actedIn).toHaveLength(2);
         } finally {
             await session.close();
         }
@@ -282,11 +281,11 @@ describe("interface relationships", () => {
                 updateActors: {
                     actors: [
                         {
-                            actedIn: expect.arrayContaining([
+                            actedIn: expect.toIncludeSameMembers([
                                 {
                                     runtime: movieRuntime,
                                     title: movieTitle,
-                                    actors: expect.arrayContaining([{ name: actorName1 }, { name: actorName2 }]),
+                                    actors: expect.toIncludeSameMembers([{ name: actorName1 }, { name: actorName2 }]),
                                 },
                                 {
                                     title: seriesTitle,
@@ -298,10 +297,6 @@ describe("interface relationships", () => {
                     ],
                 },
             });
-            expect(
-                (gqlResult.data as any)?.updateActors.actors[0].actedIn.find((actedIn) => actedIn.title === movieTitle)
-                    .actors
-            ).toHaveLength(2);
         } finally {
             await session.close();
         }

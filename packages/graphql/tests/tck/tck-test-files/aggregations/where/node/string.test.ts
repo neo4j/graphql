@@ -62,9 +62,9 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_node.name = $aggr_node_name_EQUAL
-            \\", { this: this, aggr_node_name_EQUAL: $aggr_node_name_EQUAL }, false )
+            \\", { this: this, aggr_node_name_EQUAL: $aggr_node_name_EQUAL })
             RETURN this { .content } as this"
         `);
 
@@ -91,9 +91,9 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_node._someStringAlias = $aggr_node_someStringAlias_EQUAL
-            \\", { this: this, aggr_node_someStringAlias_EQUAL: $aggr_node_someStringAlias_EQUAL }, false )
+            \\", { this: this, aggr_node_someStringAlias_EQUAL: $aggr_node_someStringAlias_EQUAL })
             RETURN this { .content } as this"
         `);
 
@@ -120,9 +120,9 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN size(aggr_node.name) > $aggr_node_name_GT
-            \\", { this: this, aggr_node_name_GT: $aggr_node_name_GT }, false )
+            \\", { this: this, aggr_node_name_GT: $aggr_node_name_GT })
             RETURN this { .content } as this"
         `);
 
@@ -152,9 +152,9 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN size(aggr_node.name) >= $aggr_node_name_GTE
-            \\", { this: this, aggr_node_name_GTE: $aggr_node_name_GTE }, false )
+            \\", { this: this, aggr_node_name_GTE: $aggr_node_name_GTE })
             RETURN this { .content } as this"
         `);
 
@@ -184,9 +184,9 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN size(aggr_node.name) < $aggr_node_name_LT
-            \\", { this: this, aggr_node_name_LT: $aggr_node_name_LT }, false )
+            \\", { this: this, aggr_node_name_LT: $aggr_node_name_LT })
             RETURN this { .content } as this"
         `);
 
@@ -216,9 +216,9 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN size(aggr_node.name) <= $aggr_node_name_LTE
-            \\", { this: this, aggr_node_name_LTE: $aggr_node_name_LTE }, false )
+            \\", { this: this, aggr_node_name_LTE: $aggr_node_name_LTE })
             RETURN this { .content } as this"
         `);
 
@@ -248,10 +248,10 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             WITH aggr_node, aggr_edge, size(aggr_node.name) AS aggr_node_name_SHORTEST_EQUAL_SIZE
             RETURN min(aggr_node_name_SHORTEST_EQUAL_SIZE) = $aggr_node_name_SHORTEST_EQUAL
-            \\", { this: this, aggr_node_name_SHORTEST_EQUAL: $aggr_node_name_SHORTEST_EQUAL }, false )
+            \\", { this: this, aggr_node_name_SHORTEST_EQUAL: $aggr_node_name_SHORTEST_EQUAL })
             RETURN this { .content } as this"
         `);
 
@@ -281,10 +281,10 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             WITH aggr_node, aggr_edge, size(aggr_node.name) AS aggr_node_name_SHORTEST_GT_SIZE
             RETURN min(aggr_node_name_SHORTEST_GT_SIZE) > $aggr_node_name_SHORTEST_GT
-            \\", { this: this, aggr_node_name_SHORTEST_GT: $aggr_node_name_SHORTEST_GT }, false )
+            \\", { this: this, aggr_node_name_SHORTEST_GT: $aggr_node_name_SHORTEST_GT })
             RETURN this { .content } as this"
         `);
 
@@ -314,10 +314,10 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             WITH aggr_node, aggr_edge, size(aggr_node.name) AS aggr_node_name_SHORTEST_GTE_SIZE
             RETURN min(aggr_node_name_SHORTEST_GTE_SIZE) >= $aggr_node_name_SHORTEST_GTE
-            \\", { this: this, aggr_node_name_SHORTEST_GTE: $aggr_node_name_SHORTEST_GTE }, false )
+            \\", { this: this, aggr_node_name_SHORTEST_GTE: $aggr_node_name_SHORTEST_GTE })
             RETURN this { .content } as this"
         `);
 
@@ -347,10 +347,10 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             WITH aggr_node, aggr_edge, size(aggr_node.name) AS aggr_node_name_SHORTEST_LT_SIZE
             RETURN min(aggr_node_name_SHORTEST_LT_SIZE) < $aggr_node_name_SHORTEST_LT
-            \\", { this: this, aggr_node_name_SHORTEST_LT: $aggr_node_name_SHORTEST_LT }, false )
+            \\", { this: this, aggr_node_name_SHORTEST_LT: $aggr_node_name_SHORTEST_LT })
             RETURN this { .content } as this"
         `);
 
@@ -380,10 +380,10 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             WITH aggr_node, aggr_edge, size(aggr_node.name) AS aggr_node_name_SHORTEST_LTE_SIZE
             RETURN min(aggr_node_name_SHORTEST_LTE_SIZE) <= $aggr_node_name_SHORTEST_LTE
-            \\", { this: this, aggr_node_name_SHORTEST_LTE: $aggr_node_name_SHORTEST_LTE }, false )
+            \\", { this: this, aggr_node_name_SHORTEST_LTE: $aggr_node_name_SHORTEST_LTE })
             RETURN this { .content } as this"
         `);
 
@@ -413,10 +413,10 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             WITH aggr_node, aggr_edge, size(aggr_node.name) AS aggr_node_name_LONGEST_EQUAL_SIZE
             RETURN max(aggr_node_name_LONGEST_EQUAL_SIZE) = $aggr_node_name_LONGEST_EQUAL
-            \\", { this: this, aggr_node_name_LONGEST_EQUAL: $aggr_node_name_LONGEST_EQUAL }, false )
+            \\", { this: this, aggr_node_name_LONGEST_EQUAL: $aggr_node_name_LONGEST_EQUAL })
             RETURN this { .content } as this"
         `);
 
@@ -446,10 +446,10 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             WITH aggr_node, aggr_edge, size(aggr_node.name) AS aggr_node_name_LONGEST_GT_SIZE
             RETURN max(aggr_node_name_LONGEST_GT_SIZE) > $aggr_node_name_LONGEST_GT
-            \\", { this: this, aggr_node_name_LONGEST_GT: $aggr_node_name_LONGEST_GT }, false )
+            \\", { this: this, aggr_node_name_LONGEST_GT: $aggr_node_name_LONGEST_GT })
             RETURN this { .content } as this"
         `);
 
@@ -479,10 +479,10 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             WITH aggr_node, aggr_edge, size(aggr_node.name) AS aggr_node_name_LONGEST_GTE_SIZE
             RETURN max(aggr_node_name_LONGEST_GTE_SIZE) >= $aggr_node_name_LONGEST_GTE
-            \\", { this: this, aggr_node_name_LONGEST_GTE: $aggr_node_name_LONGEST_GTE }, false )
+            \\", { this: this, aggr_node_name_LONGEST_GTE: $aggr_node_name_LONGEST_GTE })
             RETURN this { .content } as this"
         `);
 
@@ -512,10 +512,10 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             WITH aggr_node, aggr_edge, size(aggr_node.name) AS aggr_node_name_LONGEST_LT_SIZE
             RETURN max(aggr_node_name_LONGEST_LT_SIZE) < $aggr_node_name_LONGEST_LT
-            \\", { this: this, aggr_node_name_LONGEST_LT: $aggr_node_name_LONGEST_LT }, false )
+            \\", { this: this, aggr_node_name_LONGEST_LT: $aggr_node_name_LONGEST_LT })
             RETURN this { .content } as this"
         `);
 
@@ -545,10 +545,10 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             WITH aggr_node, aggr_edge, size(aggr_node.name) AS aggr_node_name_LONGEST_LTE_SIZE
             RETURN max(aggr_node_name_LONGEST_LTE_SIZE) <= $aggr_node_name_LONGEST_LTE
-            \\", { this: this, aggr_node_name_LONGEST_LTE: $aggr_node_name_LONGEST_LTE }, false )
+            \\", { this: this, aggr_node_name_LONGEST_LTE: $aggr_node_name_LONGEST_LTE })
             RETURN this { .content } as this"
         `);
 
@@ -578,10 +578,10 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             WITH aggr_node, aggr_edge, size(aggr_node.name) AS aggr_node_name_AVERAGE_EQUAL_SIZE
             RETURN avg(aggr_node_name_AVERAGE_EQUAL_SIZE) = toFloat($aggr_node_name_AVERAGE_EQUAL)
-            \\", { this: this, aggr_node_name_AVERAGE_EQUAL: $aggr_node_name_AVERAGE_EQUAL }, false )
+            \\", { this: this, aggr_node_name_AVERAGE_EQUAL: $aggr_node_name_AVERAGE_EQUAL })
             RETURN this { .content } as this"
         `);
 
@@ -608,10 +608,10 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             WITH aggr_node, aggr_edge, size(aggr_node.name) AS aggr_node_name_AVERAGE_GT_SIZE
             RETURN avg(aggr_node_name_AVERAGE_GT_SIZE) > toFloat($aggr_node_name_AVERAGE_GT)
-            \\", { this: this, aggr_node_name_AVERAGE_GT: $aggr_node_name_AVERAGE_GT }, false )
+            \\", { this: this, aggr_node_name_AVERAGE_GT: $aggr_node_name_AVERAGE_GT })
             RETURN this { .content } as this"
         `);
 
@@ -638,10 +638,10 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             WITH aggr_node, aggr_edge, size(aggr_node.name) AS aggr_node_name_AVERAGE_GTE_SIZE
             RETURN avg(aggr_node_name_AVERAGE_GTE_SIZE) >= toFloat($aggr_node_name_AVERAGE_GTE)
-            \\", { this: this, aggr_node_name_AVERAGE_GTE: $aggr_node_name_AVERAGE_GTE }, false )
+            \\", { this: this, aggr_node_name_AVERAGE_GTE: $aggr_node_name_AVERAGE_GTE })
             RETURN this { .content } as this"
         `);
 
@@ -668,10 +668,10 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             WITH aggr_node, aggr_edge, size(aggr_node.name) AS aggr_node_name_AVERAGE_LT_SIZE
             RETURN avg(aggr_node_name_AVERAGE_LT_SIZE) < toFloat($aggr_node_name_AVERAGE_LT)
-            \\", { this: this, aggr_node_name_AVERAGE_LT: $aggr_node_name_AVERAGE_LT }, false )
+            \\", { this: this, aggr_node_name_AVERAGE_LT: $aggr_node_name_AVERAGE_LT })
             RETURN this { .content } as this"
         `);
 
@@ -698,10 +698,10 @@ describe("Cypher Aggregations where node with String", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             WITH aggr_node, aggr_edge, size(aggr_node.name) AS aggr_node_name_AVERAGE_LTE_SIZE
             RETURN avg(aggr_node_name_AVERAGE_LTE_SIZE) <= toFloat($aggr_node_name_AVERAGE_LTE)
-            \\", { this: this, aggr_node_name_AVERAGE_LTE: $aggr_node_name_AVERAGE_LTE }, false )
+            \\", { this: this, aggr_node_name_AVERAGE_LTE: $aggr_node_name_AVERAGE_LTE })
             RETURN this { .content } as this"
         `);
 

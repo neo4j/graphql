@@ -69,7 +69,7 @@ describe("workflow", () => {
     });
 
     test("should perform workflow end-to-end", async ({ page, loginPage, schemaEditorPage, editorPage }) => {
-        await loginPage.login();
+        await loginPage.loginDismissIntrospection();
 
         await schemaEditorPage.setTypeDefs(typeDefs);
         await schemaEditorPage.buildSchema();
@@ -110,5 +110,21 @@ describe("workflow", () => {
                 movies: [{ id }],
             },
         });
+    });
+
+    test("should be able to switch between type defs view and editor view", async ({
+        loginPage,
+        schemaEditorPage,
+        editorPage,
+    }) => {
+        await loginPage.loginDismissIntrospection();
+
+        await schemaEditorPage.setTypeDefs(typeDefs);
+        await schemaEditorPage.buildSchema();
+
+        await editorPage.goToTypeDefinitionView();
+        await schemaEditorPage.goToEditorView();
+        await editorPage.goToTypeDefinitionView();
+        await schemaEditorPage.goToEditorView();
     });
 });

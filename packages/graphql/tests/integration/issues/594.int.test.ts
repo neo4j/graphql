@@ -93,9 +93,8 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect(gqlResult.data[typeMovie.plural]).toHaveLength(2);
         expect(gqlResult.data[typeMovie.plural]).toEqual(
-            expect.arrayContaining([
+            expect.toIncludeSameMembers([
                 { actorsAggregate: { node: { nickname: { shortest: "SName" } } } },
                 { actorsAggregate: { node: { nickname: { shortest: null } } } },
             ])

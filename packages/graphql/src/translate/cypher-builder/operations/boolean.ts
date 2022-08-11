@@ -17,14 +17,12 @@
  * limitations under the License.
  */
 
-import type { Exists, RawCypher } from "../CypherBuilder";
+import { filterTruthy } from "../../../utils/utils";
 import type { CypherEnvironment } from "../Environment";
-import type { ComparisonOp } from "./comparison";
+import type { Predicate } from "../types";
 import { Operation } from "./Operation";
 
 type BooleanOperator = "AND" | "NOT" | "OR";
-
-type BooleanOpChild = BooleanOp | ComparisonOp | RawCypher | Exists;
 
 export abstract class BooleanOp extends Operation {
     protected operator: BooleanOperator;
@@ -36,9 +34,9 @@ export abstract class BooleanOp extends Operation {
 }
 
 class BinaryOp extends BooleanOp {
-    private children: BooleanOpChild[];
+    private children: Predicate[];
 
-    constructor(operator: BooleanOperator, left: BooleanOpChild, right: BooleanOpChild, ...extra: BooleanOpChild[]) {
+    constructor(operator: BooleanOperator, left: Predicate, right: Predicate, ...extra: Predicate[]) {
         super(operator);
         this.children = [left, right, ...extra];
         this.addChildren(...this.children);
@@ -55,9 +53,9 @@ class BinaryOp extends BooleanOp {
 }
 
 class NotOp extends BooleanOp {
-    private child: BooleanOpChild;
+    private child: Predicate;
 
-    constructor(child: BooleanOpChild) {
+    constructor(child: Predicate) {
         super("NOT");
         this.child = child;
         this.addChildren(this.child);
@@ -65,32 +63,40 @@ class NotOp extends BooleanOp {
 
     public getCypher(env: CypherEnvironment): string {
         const childStr = this.child.getCypher(env);
-        return `${this.operator} ${childStr}`;
+
+        // This check is just to avoid double parenthesis (e.g. "NOT ((a AND b))" ), both options are valid cypher
+        if (this.child instanceof BinaryOp) {
+            return `${this.operator} ${childStr}`;
+        }
+
+        return `${this.operator} (${childStr})`;
     }
 }
 
-export function and(left: BooleanOpChild, right: BooleanOpChild, ...extra: BooleanOpChild[]): BooleanOp;
-export function and(...ops: BooleanOpChild[]): BooleanOpChild | BooleanOp | undefined;
-export function and(...ops: BooleanOpChild[]): BooleanOp | BooleanOpChild | undefined {
-    const op1 = ops.shift();
-    const op2 = ops.shift();
+export function and(left: Predicate, ...extra: Array<Predicate | undefined>): BooleanOp;
+export function and(...ops: Array<Predicate | undefined>): BooleanOp | Predicate | undefined;
+export function and(...ops: Array<Predicate | undefined>): BooleanOp | Predicate | undefined {
+    const filteredOprs = filterTruthy(ops);
+    const op1 = filteredOprs.shift();
+    const op2 = filteredOprs.shift();
     if (op1 && op2) {
-        return new BinaryOp("AND", op1, op2, ...ops);
+        return new BinaryOp("AND", op1, op2, ...filteredOprs);
     }
     return op1;
 }
 
-export function not(child: BooleanOpChild): BooleanOp {
+export function not(child: Predicate): BooleanOp {
     return new NotOp(child);
 }
 
-export function or(left: BooleanOpChild, right: BooleanOpChild, ...extra: BooleanOpChild[]): BooleanOp;
-export function or(...ops: BooleanOpChild[]): BooleanOpChild | BooleanOp | undefined;
-export function or(...ops: BooleanOpChild[]): BooleanOp | BooleanOpChild | undefined {
-    const op1 = ops.shift();
-    const op2 = ops.shift();
+export function or(left: Predicate, ...extra: Array<Predicate | undefined>): BooleanOp;
+export function or(...ops: Array<Predicate | undefined>): BooleanOp | Predicate | undefined;
+export function or(...ops: Array<Predicate | undefined>): BooleanOp | Predicate | undefined {
+    const filteredOprs = filterTruthy(ops);
+    const op1 = filteredOprs.shift();
+    const op2 = filteredOprs.shift();
     if (op1 && op2) {
-        return new BinaryOp("OR", op1, op2, ...ops);
+        return new BinaryOp("OR", op1, op2, ...filteredOprs);
     }
     return op1;
 }

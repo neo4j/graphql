@@ -28,12 +28,17 @@ export class Param<T = any> extends Variable {
         this.value = value;
     }
 
+    /** Defines if the Param has a value that needs to be returned by the builder */
+    public get hasValue(): boolean {
+        return this.value !== undefined;
+    }
+
     public getCypher(env: CypherEnvironment): string {
         if (this.isNull) {
             return "NULL";
         }
 
-        return `${env.getVariableId(this)}`;
+        return `$${env.getVariableId(this)}`;
     }
 
     public get isNull(): boolean {
@@ -41,6 +46,22 @@ export class Param<T = any> extends Variable {
     }
 }
 
+export class NamedParam extends Param<any> {
+    public id: string;
+
+    constructor(name: string, value?: any) {
+        super(value);
+        this.id = name;
+    }
+
+    public getCypher(env: CypherEnvironment): string {
+        env.addNamedParamReference(this.id, this);
+        return super.getCypher(env);
+    }
+}
+
+// Careful, can lead to cypher injection
+// TODO: this should be RawVariable
 export class RawParam<T> extends Param<T> {
     public getCypher(_env: CypherEnvironment): string {
         return `${this.value}`;

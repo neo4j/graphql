@@ -230,7 +230,7 @@ function createProjectionAndParams({
                         const labelsStatements = refNode
                             .getLabels(context)
                             .map((label) => `${varName}_${alias}:\`${label}\``);
-                        unionWheres.push(`(${labelsStatements.join("AND")})`);
+                        unionWheres.push(`(${labelsStatements.join(" AND ")})`);
 
                         const innerHeadStr: string[] = [
                             `[ ${varName}_${alias} IN [${varName}_${alias}] WHERE (${labelsStatements.join(" AND ")})`,
@@ -303,8 +303,7 @@ function createProjectionAndParams({
                 ...(context.cypherParams ? { cypherParams: context.cypherParams } : {}),
             };
 
-            const expectMultipleValues =
-                (referenceNode || referenceUnion) && cypherField.typeMeta.array ? "true" : "false";
+            const expectMultipleValues = (referenceNode || referenceUnion) && cypherField.typeMeta.array;
             const apocWhere = projectionAuthStrs.length
                 ? `WHERE apoc.util.validatePredicate(NOT (${projectionAuthStrs.join(
                       " AND "
@@ -319,9 +318,9 @@ function createProjectionAndParams({
 
             const apocStr = `${
                 !cypherField.isScalar && !cypherField.isEnum ? `${param} IN` : ""
-            } apoc.cypher.runFirstColumn("${cypherField.statement}", ${apocParamsStr}, ${expectMultipleValues})${
-                apocWhere ? ` ${apocWhere}` : ""
-            }${unionWhere ? ` ${unionWhere} ` : ""}${
+            } apoc.cypher.runFirstColumn${expectMultipleValues ? "Many" : "Single"}("${
+                cypherField.statement
+            }", ${apocParamsStr})${apocWhere ? ` ${apocWhere}` : ""}${unionWhere ? ` ${unionWhere} ` : ""}${
                 !isProjectionStrEmpty ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ""
             }`;
 
@@ -612,9 +611,9 @@ function createProjectionAndParams({
             ];
 
             res.projection.push(
-                `${field.name}: apoc.cypher.runFirstColumn("${connection[0].replace(/("|')/g, "\\$1")} RETURN ${
+                `${field.name}: apoc.cypher.runFirstColumnSingle("${connection[0].replace(/("|')/g, "\\$1")} RETURN ${
                     field.name
-                }", { ${runFirstColumnParams.join(", ")} }, false)`
+                }", { ${runFirstColumnParams.join(", ")} })`
             );
             res.params = { ...res.params, ...connection[1] };
             return res;

@@ -95,7 +95,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_acted_in_relationship.role CONTAINS $this_actorsConnection.args.where.edge.role_CONTAINS
+            WHERE this_acted_in_relationship.role CONTAINS $this_actorsConnection_args_where_Actorparam0
             WITH collect({ role: this_acted_in_relationship.role, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -106,6 +106,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Forrest\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -146,7 +147,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE (NOT this_acted_in_relationship.role CONTAINS $this_actorsConnection.args.where.edge.role_NOT_CONTAINS)
+            WHERE NOT (this_acted_in_relationship.role CONTAINS $this_actorsConnection_args_where_Actorparam0)
             WITH collect({ role: this_acted_in_relationship.role, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -157,6 +158,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Forrest\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -197,7 +199,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_acted_in_relationship.role STARTS WITH $this_actorsConnection.args.where.edge.role_STARTS_WITH
+            WHERE this_acted_in_relationship.role STARTS WITH $this_actorsConnection_args_where_Actorparam0
             WITH collect({ role: this_acted_in_relationship.role, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -208,6 +210,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Forrest\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -248,7 +251,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE (NOT this_acted_in_relationship.role STARTS WITH $this_actorsConnection.args.where.edge.role_NOT_STARTS_WITH)
+            WHERE NOT (this_acted_in_relationship.role STARTS WITH $this_actorsConnection_args_where_Actorparam0)
             WITH collect({ role: this_acted_in_relationship.role, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -259,6 +262,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Forrest\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -299,7 +303,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_acted_in_relationship.role ENDS WITH $this_actorsConnection.args.where.edge.role_ENDS_WITH
+            WHERE this_acted_in_relationship.role ENDS WITH $this_actorsConnection_args_where_Actorparam0
             WITH collect({ role: this_acted_in_relationship.role, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -310,6 +314,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Gump\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -350,7 +355,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE (NOT this_acted_in_relationship.role ENDS WITH $this_actorsConnection.args.where.edge.role_NOT_ENDS_WITH)
+            WHERE NOT (this_acted_in_relationship.role ENDS WITH $this_actorsConnection_args_where_Actorparam0)
             WITH collect({ role: this_acted_in_relationship.role, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -361,6 +366,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Gump\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -401,7 +407,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_acted_in_relationship.role =~ $this_actorsConnection.args.where.edge.role_MATCHES
+            WHERE this_acted_in_relationship.role =~ $this_actorsConnection_args_where_Actorparam0
             WITH collect({ role: this_acted_in_relationship.role, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -412,6 +418,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Forrest.+\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

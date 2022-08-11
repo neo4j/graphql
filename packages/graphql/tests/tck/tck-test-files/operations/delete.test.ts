@@ -93,7 +93,7 @@ describe("Cypher Delete", () => {
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
-            WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
+            WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
             WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
             FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
             DETACH DELETE this"
@@ -116,7 +116,8 @@ describe("Cypher Delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"this_deleteMovies_args_delete_actors0_where_Actorparam0\\": \\"Actor to delete\\"
             }"
         `);
     });
@@ -148,12 +149,12 @@ describe("Cypher Delete", () => {
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
-            WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
+            WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
             WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
             FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
             WITH this
             OPTIONAL MATCH (this)<-[this_actors1_relationship:ACTED_IN]-(this_actors1:Actor)
-            WHERE this_actors1.name = $this_deleteMovies.args.delete.actors[1].where.node.name
+            WHERE this_actors1.name = $this_deleteMovies_args_delete_actors1_where_Actorparam0
             WITH this, collect(DISTINCT this_actors1) as this_actors1_to_delete
             FOREACH(x IN this_actors1_to_delete | DETACH DELETE x)
             DETACH DELETE this"
@@ -183,7 +184,9 @@ describe("Cypher Delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"this_deleteMovies_args_delete_actors0_where_Actorparam0\\": \\"Actor to delete\\",
+                \\"this_deleteMovies_args_delete_actors1_where_Actorparam0\\": \\"Another actor to delete\\"
             }"
         `);
     });
@@ -215,10 +218,10 @@ describe("Cypher Delete", () => {
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
-            WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
+            WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
             WITH this, this_actors0
             OPTIONAL MATCH (this_actors0)-[this_actors0_movies0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
-            WHERE this_actors0_movies0.id = $this_deleteMovies.args.delete.actors[0].delete.movies[0].where.node.id
+            WHERE this_actors0_movies0.id = $this_deleteMovies_args_delete_actors0_delete_movies0_where_Movieparam0
             WITH this, this_actors0, collect(DISTINCT this_actors0_movies0) as this_actors0_movies0_to_delete
             FOREACH(x IN this_actors0_movies0_to_delete | DETACH DELETE x)
             WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
@@ -254,7 +257,9 @@ describe("Cypher Delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"this_deleteMovies_args_delete_actors0_where_Actorparam0\\": \\"Actor to delete\\",
+                \\"this_deleteMovies_args_delete_actors0_delete_movies0_where_Movieparam0\\": \\"321\\"
             }"
         `);
     });
@@ -291,13 +296,13 @@ describe("Cypher Delete", () => {
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
-            WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
+            WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
             WITH this, this_actors0
             OPTIONAL MATCH (this_actors0)-[this_actors0_movies0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
-            WHERE this_actors0_movies0.id = $this_deleteMovies.args.delete.actors[0].delete.movies[0].where.node.id
+            WHERE this_actors0_movies0.id = $this_deleteMovies_args_delete_actors0_delete_movies0_where_Movieparam0
             WITH this, this_actors0, this_actors0_movies0
             OPTIONAL MATCH (this_actors0_movies0)<-[this_actors0_movies0_actors0_relationship:ACTED_IN]-(this_actors0_movies0_actors0:Actor)
-            WHERE this_actors0_movies0_actors0.name = $this_deleteMovies.args.delete.actors[0].delete.movies[0].delete.actors[0].where.node.name
+            WHERE this_actors0_movies0_actors0.name = $this_deleteMovies_args_delete_actors0_delete_movies0_delete_actors0_where_Actorparam0
             WITH this, this_actors0, this_actors0_movies0, collect(DISTINCT this_actors0_movies0_actors0) as this_actors0_movies0_actors0_to_delete
             FOREACH(x IN this_actors0_movies0_actors0_to_delete | DETACH DELETE x)
             WITH this, this_actors0, collect(DISTINCT this_actors0_movies0) as this_actors0_movies0_to_delete
@@ -346,7 +351,10 @@ describe("Cypher Delete", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"this_deleteMovies_args_delete_actors0_where_Actorparam0\\": \\"Actor to delete\\",
+                \\"this_deleteMovies_args_delete_actors0_delete_movies0_where_Movieparam0\\": \\"321\\",
+                \\"this_deleteMovies_args_delete_actors0_delete_movies0_delete_actors0_where_Actorparam0\\": \\"Another actor to delete\\"
             }"
         `);
     });

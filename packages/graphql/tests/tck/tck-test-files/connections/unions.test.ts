@@ -149,13 +149,13 @@ describe("Cypher -> Connections -> Unions", () => {
             CALL {
             WITH this
             MATCH (this)-[this_wrote_relationship:WROTE]->(this_Book:Book)
-            WHERE this_Book.title = $this_publicationsConnection.args.where.Book.node.title
+            WHERE this_Book.title = $this_publicationsConnection_args_where_Book_Bookparam0
             WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
             RETURN edge
             UNION
             WITH this
             MATCH (this)-[this_wrote_relationship:WROTE]->(this_Journal:Journal)
-            WHERE this_Journal.subject = $this_publicationsConnection.args.where.Journal.node.subject
+            WHERE this_Journal.subject = $this_publicationsConnection_args_where_Journal_Journalparam0
             WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
             RETURN edge
             }
@@ -169,6 +169,8 @@ describe("Cypher -> Connections -> Unions", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_publicationsConnection_args_where_Book_Bookparam0\\": \\"Book Title\\",
+                \\"this_publicationsConnection_args_where_Journal_Journalparam0\\": \\"Journal Subject\\",
                 \\"this_publicationsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -225,13 +227,13 @@ describe("Cypher -> Connections -> Unions", () => {
             CALL {
             WITH this
             MATCH (this)-[this_wrote_relationship:WROTE]->(this_Book:Book)
-            WHERE this_wrote_relationship.words = $this_publicationsConnection.args.where.Book.edge.words
+            WHERE this_wrote_relationship.words = $this_publicationsConnection_args_where_Book_Bookparam0
             WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
             RETURN edge
             UNION
             WITH this
             MATCH (this)-[this_wrote_relationship:WROTE]->(this_Journal:Journal)
-            WHERE this_wrote_relationship.words = $this_publicationsConnection.args.where.Journal.edge.words
+            WHERE this_wrote_relationship.words = $this_publicationsConnection_args_where_Journal_Journalparam0
             WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
             RETURN edge
             }
@@ -245,6 +247,14 @@ describe("Cypher -> Connections -> Unions", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_publicationsConnection_args_where_Book_Bookparam0\\": {
+                    \\"low\\": 1000,
+                    \\"high\\": 0
+                },
+                \\"this_publicationsConnection_args_where_Journal_Journalparam0\\": {
+                    \\"low\\": 2000,
+                    \\"high\\": 0
+                },
                 \\"this_publicationsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -310,13 +320,13 @@ describe("Cypher -> Connections -> Unions", () => {
             CALL {
             WITH this
             MATCH (this)-[this_wrote_relationship:WROTE]->(this_Book:Book)
-            WHERE this_Book.title = $this_publicationsConnection.args.where.Book.node.title AND this_wrote_relationship.words = $this_publicationsConnection.args.where.Book.edge.words
+            WHERE (this_Book.title = $this_publicationsConnection_args_where_Book_Bookparam0 AND this_wrote_relationship.words = $this_publicationsConnection_args_where_Book_Bookparam1)
             WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
             RETURN edge
             UNION
             WITH this
             MATCH (this)-[this_wrote_relationship:WROTE]->(this_Journal:Journal)
-            WHERE this_Journal.subject = $this_publicationsConnection.args.where.Journal.node.subject AND this_wrote_relationship.words = $this_publicationsConnection.args.where.Journal.edge.words
+            WHERE (this_Journal.subject = $this_publicationsConnection_args_where_Journal_Journalparam0 AND this_wrote_relationship.words = $this_publicationsConnection_args_where_Journal_Journalparam1)
             WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
             RETURN edge
             }
@@ -330,6 +340,16 @@ describe("Cypher -> Connections -> Unions", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_publicationsConnection_args_where_Book_Bookparam0\\": \\"Book Title\\",
+                \\"this_publicationsConnection_args_where_Book_Bookparam1\\": {
+                    \\"low\\": 1000,
+                    \\"high\\": 0
+                },
+                \\"this_publicationsConnection_args_where_Journal_Journalparam0\\": \\"Journal Subject\\",
+                \\"this_publicationsConnection_args_where_Journal_Journalparam1\\": {
+                    \\"low\\": 2000,
+                    \\"high\\": 0
+                },
                 \\"this_publicationsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
