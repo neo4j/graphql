@@ -22,7 +22,17 @@ import type { CypherEnvironment } from "../Environment";
 import type { Expr } from "../types";
 import type { NodeRef } from "../variables/NodeRef";
 
-type FunctionType = "coalesce" | "point" | "distance" | "datetime" | "labels" | "size" | "count" | "min" | "max";
+type FunctionType =
+    | "coalesce"
+    | "point"
+    | "distance"
+    | "point.distance"
+    | "datetime"
+    | "labels"
+    | "size"
+    | "count"
+    | "min"
+    | "max";
 
 export class CypherFunction extends CypherASTNode {
     protected name: FunctionType;
@@ -56,6 +66,10 @@ export function point(variable: Expr): CypherFunction {
 
 export function distance(lexpr: Expr, rexpr: Expr): CypherFunction {
     return new CypherFunction("distance", [lexpr, rexpr]);
+}
+
+export function pointDistance(lexpr: Expr, rexpr: Expr): CypherFunction {
+    return new CypherFunction("point.distance", [lexpr, rexpr]);
 }
 
 export function labels(nodeRef: NodeRef): CypherFunction {

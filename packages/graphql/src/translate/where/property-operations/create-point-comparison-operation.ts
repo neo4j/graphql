@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type { Neo4jDatabaseInfo } from "../../../classes";
 import type { PointField } from "../../../types";
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 
@@ -26,13 +27,15 @@ export function createPointComparisonOperation({
     propertyRefOrCoalesce,
     param,
     pointField,
+    neo4jDatabaseInfo
 }: {
     operator: string | undefined;
     propertyRefOrCoalesce: CypherBuilder.PropertyRef | CypherBuilder.Function;
     param: CypherBuilder.Param;
     pointField: PointField;
+    neo4jDatabaseInfo: Neo4jDatabaseInfo;
 }): CypherBuilder.ComparisonOp {
-    const pointDistance = createPointDistanceExpression(propertyRefOrCoalesce, param);
+    const pointDistance = createPointDistanceExpression(propertyRefOrCoalesce, param, neo4jDatabaseInfo);
     const distanceRef = param.property("distance");
 
     switch (operator || "EQ") {
@@ -76,8 +79,12 @@ function createPointListComprehension(param: CypherBuilder.Param): CypherBuilder
 
 function createPointDistanceExpression(
     property: CypherBuilder.Expr,
-    param: CypherBuilder.Param
+    param: CypherBuilder.Param,
+    neo4jDatabaseInfo: Neo4jDatabaseInfo
 ): CypherBuilder.Function {
     const nestedPointRef = param.property("point");
+    if (neo4jDatabaseInfo.gte("4.4")) {
+        return CypherBuilder.pointDistance(property, CypherBuilder.point(nestedPointRef));
+    }
     return CypherBuilder.distance(property, CypherBuilder.point(nestedPointRef));
 }

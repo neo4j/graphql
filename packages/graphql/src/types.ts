@@ -43,7 +43,7 @@ export interface Context {
     driver?: Driver;
     driverConfig?: DriverConfig;
     resolveTree: ResolveTree;
-    neo4jDatabaseInfo?: Neo4jDatabaseInfo;
+    neo4jDatabaseInfo: Neo4jDatabaseInfo;
     nodes: Node[];
     relationships: Relationship[];
     schema: GraphQLSchema;

@@ -24,20 +24,14 @@ import {
     Neo4jGraphQLConfig,
     Node,
     Relationship,
-    VersionMismatchError,
     Neo4jGraphQLAuthenticationError,
-    Neo4jDatabaseInfo
+    Neo4jDatabaseInfo,
 } from "../../classes";
 import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
 import { DBMS_COMPONENTS_QUERY, DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
-import type {
-    Context,
-    Neo4jGraphQLPlugins,
-    JwtPayload,
-    Neo4jGraphQLAuthPlugin,
-} from "../../types";
+import type { Context, Neo4jGraphQLPlugins, JwtPayload, Neo4jGraphQLAuthPlugin } from "../../types";
 import { getToken, parseBearerToken } from "../../utils/get-token";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
 import type { Neo4jEdition } from "../../classes/Neo4jGraphQL";
@@ -60,7 +54,6 @@ export const wrapResolver =
     (next) =>
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
         const { driverConfig } = config;
-
         if (debug.enabled) {
             const query = print(info.operation);
 
@@ -118,47 +111,25 @@ export const wrapResolver =
             executorConstructorParam.bookmarks = context.driverConfig?.bookmarks;
         }
 
-        if (!neo4jDatabaseInfo?.version) {
-            if (config.dbVersion) { 
-                neo4jDatabaseInfo = config.dbVersion;
-            } else {
+        if (!context.neo4jDatabaseInfo?.version) {
+            if (!neo4jDatabaseInfo?.version) {
                 const dbmsComponentsQueryResult = await new Executor(executorConstructorParam).execute(
-                    DBMS_COMPONENTS_QUERY,
+                    DBMS_COMPONENTS_QUERY as string,
                     {},
                     "READ"
                 );
                 const rawRow = dbmsComponentsQueryResult?.records[0];
                 const [rawVersion, edition] = rawRow;
-                neo4jDatabaseInfo = new Neo4jDatabaseInfo(rawVersion as string, edition as Neo4jEdition, true);
+                neo4jDatabaseInfo = new Neo4jDatabaseInfo(rawVersion as string, edition as Neo4jEdition);
             }
+            context.neo4jDatabaseInfo = neo4jDatabaseInfo;
         }
-        executorConstructorParam.neo4jDatabaseInfo = neo4jDatabaseInfo;
+
+        executorConstructorParam.neo4jDatabaseInfo = context.neo4jDatabaseInfo;
         context.executor = new Executor(executorConstructorParam);
-        context.neo4jDatabaseInfo = neo4jDatabaseInfo;
 
-        return versionMismatchHandler(next)(root, args, context, info);
+        return next(root, args, context, info);
     };
-
-export function versionMismatchHandler(resolver: any) {
-    return async (_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) => {
-        let resolverResponse;
-        try {
-            resolverResponse = await resolver(_root, args, _context, info);
-        } catch (error) {
-            if (error instanceof VersionMismatchError) {
-                ((_context as Context).neo4jDatabaseInfo as Neo4jDatabaseInfo).version = {
-                    major: error.major,
-                    minor: error.minor,
-                };
-                resolverResponse = await resolver(_root, args, _context, info);
-            } else {
-                throw error;
-            }
-        
-        }
-        return resolverResponse;
-    };
-}
 
 export const wrapSubscription =
     (resolverArgs: WrapResolverArguments) =>

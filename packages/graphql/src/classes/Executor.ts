@@ -25,7 +25,6 @@ import {
     Neo4jGraphQLConstraintValidationError,
     Neo4jGraphQLForbiddenError,
     Neo4jGraphQLRelationshipValidationError,
-    VersionMismatchError,
 } from "./Error";
 import {
     AUTH_FORBIDDEN_ERROR,
@@ -115,18 +114,18 @@ export class Executor {
             if (isDriverLike(this.executionContext)) {
                 const session = this.executionContext.session(this.getSessionParam(defaultAccessMode));
                 const result = await this.sessionRun(query, parameters, defaultAccessMode, session);
+                this.versionMismatchWarn(result?.summary?.server);
                 await session.close();
                 return result;
             }
 
             if (isSessionLike(this.executionContext)) {
-                return await this.sessionRun(query, parameters, defaultAccessMode, this.executionContext);
+                const result = await this.sessionRun(query, parameters, defaultAccessMode, this.executionContext);
+                this.versionMismatchWarn(result?.summary?.server);
+                return result;
             }
-
             const result = await this.transactionRun(query, parameters, this.executionContext);
-            if (result?.summary?.server) {
-                this.throwIfVersionMismatch(result.summary.server)
-            };
+            this.versionMismatchWarn(result?.summary?.server);
             return result;
         } catch (error) {
             throw this.formatError(error);
@@ -134,9 +133,6 @@ export class Executor {
     }
 
     private formatError(error: unknown) {
-        if (error instanceof VersionMismatchError) {
-            return error;
-        }
         if (error instanceof Neo4jError) {
             if (error.message.includes(`Caused by: java.lang.RuntimeException: ${AUTH_FORBIDDEN_ERROR}`)) {
                 return new Neo4jGraphQLForbiddenError("Forbidden");
@@ -207,26 +203,26 @@ export class Executor {
         };
     }
 
-    private throwIfVersionMismatch(serverInfo: ServerInfo) {
+    private versionMismatchWarn(serverInfo: ServerInfo) {
+        if (!serverInfo) return;
         const protocolVersion = serverInfo.protocolVersion;
-        if (this.neo4jDatabaseInfo && this.neo4jDatabaseInfo.autoDetection && protocolVersion) {
+        if (this.neo4jDatabaseInfo && protocolVersion) {
             const protocolVersionStr = protocolVersion.toString();
             if (!this.neo4jDatabaseInfo.eq(protocolVersionStr)) {
                 const { major, minor } = this.neo4jDatabaseInfo.neo4jVersionBuilder(protocolVersionStr);
-                throw new VersionMismatchError(major, minor);
+                debug(
+                    "Version mismatch, version in use: %s, version detected: %s",
+                    `${this.neo4jDatabaseInfo.version.major}.${this.neo4jDatabaseInfo.version.minor}`,
+                    `${major}.${minor}`
+                );
             }
         }
     }
 
     private async sessionRun(query: string, parameters, defaultAccessMode, session): Promise<QueryResult> {
         const transactionType = `${defaultAccessMode.toLowerCase()}Transaction`;
-        const result = await session[transactionType](async (transaction: Transaction) => {
-            const txResult = await this.transactionRun(query, parameters, transaction);
-            if (txResult?.summary?.server) {
-                this.throwIfVersionMismatch(txResult.summary.server);
-            }
-            
-            return txResult;
+        const result = await session[transactionType]((transaction: Transaction) => {
+            return this.transactionRun(query, parameters, transaction);
         }, this.getTransactionConfig());
         const lastBookmark = session.lastBookmark();
         if (Array.isArray(lastBookmark) && lastBookmark[0]) {

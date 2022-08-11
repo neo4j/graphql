@@ -237,7 +237,7 @@ function createElementWhereAndParams({
             (x) => x.fieldName === fieldName && x.typeMeta.name === "Duration"
         );
 
-        res.clauses.push(createWhereClause({ param, property, operator, isNot, pointField, durationField }));
+        res.clauses.push(createWhereClause({ param, property, operator, isNot, pointField, durationField, neo4jDatabaseInfo: context.neo4jDatabaseInfo }));
 
         res.params[key] = value;
         return res;

@@ -70,9 +70,8 @@ export const VERSION_NOT_DETACTABLE = "Neo4j version not detectable";
 export class Neo4jDatabaseInfo {
     public version: Neo4jVersion;
     public edition: Neo4jEdition | undefined;
-    readonly autoDetection: boolean;
 
-    constructor(version: Neo4jVersion | string, edition: Neo4jEdition, autoDetection = false) {
+    constructor(version: Neo4jVersion | string, edition?: Neo4jEdition) {
         if (!version){
             throw new Error(VERSION_NOT_DETACTABLE);
         } else if (typeof version === "string") {
@@ -82,11 +81,31 @@ export class Neo4jDatabaseInfo {
             this.version = version as Neo4jVersion;
         }
         this.edition = edition;
-        this.autoDetection = autoDetection;
+    }
+
+    toSemVer(version: string): semver.SemVer {
+       return semver.coerce(version) as semver.SemVer;
+    }
+
+    eq(version: string) {
+        return semver.eq(this.toSemVer(`${this.version.major}.${this.version.minor}`), this.toSemVer(version as string));
     }
     
-    eq(version: string) {
-        return version && semver.eq(semver.coerce(version as string) as semver.SemVer, semver.coerce(`${this.version.major}.${this.version.minor}`) as semver.SemVer);
+
+    gt(version: string) {
+        return semver.gt(this.toSemVer(`${this.version.major}.${this.version.minor}`), this.toSemVer(version as string));
+    }
+
+    gte(version: string) {
+        return semver.gte(this.toSemVer(`${this.version.major}.${this.version.minor}`), this.toSemVer(version as string));
+    }
+
+    lt(version: string) {
+        return semver.lt(this.toSemVer(`${this.version.major}.${this.version.minor}`), this.toSemVer(version as string));
+    }
+
+    lte(version: string) {
+        return semver.lt(this.toSemVer(`${this.version.major}.${this.version.minor}`), this.toSemVer(version as string));
     }
 
     neo4jVersionBuilder(version: string): Neo4jVersion {

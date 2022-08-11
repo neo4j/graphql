@@ -24,6 +24,7 @@ import createAuthParam from "../../../src/translate/create-auth-param";
 import type { Neo4jGraphQL } from "../../../src";
 import { DriverBuilder } from "../../utils/builders/driver-builder";
 import { getQuerySource } from "../../utils/get-query-source";
+import { Neo4jDatabaseInfo } from "../../../src/classes";
 
 export function compareParams({
     params,
@@ -77,11 +78,12 @@ export async function translateQuery(
     options?: {
         req?: IncomingMessage;
         variableValues?: Record<string, any>;
+        neo4jVersion?: string;
     }
 ): Promise<{ cypher: string; params: Record<string, any> }> {
     const driverBuilder = new DriverBuilder();
-
-    const contextValue: Record<string, any> = { driver: driverBuilder.instance() };
+    const neo4jDatabaseInfo = new Neo4jDatabaseInfo(options?.neo4jVersion ?? "4.3");
+    const contextValue: Record<string, any> = { driver: driverBuilder.instance(), neo4jDatabaseInfo};
     if (options?.req) {
         contextValue.req = options.req;
     }

@@ -138,6 +138,7 @@ export function createWherePropertyOperation({
         operator,
         durationField,
         pointField,
+        neo4jDatabaseInfo: context.neo4jDatabaseInfo
     });
     if (isNot) {
         return CypherBuilder.not(comparisonOp);
