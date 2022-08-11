@@ -68,18 +68,7 @@ RETURN this { actorsAggregate: { node: { name: head(apoc.cypher.runFirstColumnMa
 ## Proposed Solution
 This RFC proposes to move the projection out of the return clause.
 
-Using `OPTIONAL MATCH` we can perform multiple matches and collect them. A list comprehension can be used to return them in the same way as before:
-```cypher
-MATCH (this:`Movie`)
-WHERE this.released = 1999
-OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors:Person)
-WHERE this_actors.name = "Keanu Reeves"
-WITH this, collect(this_actors) as this_actors
-RETURN this { .title, actors: [x IN this_actors | x { .name }]}
-```
-
-
-Using `CALL`, both the `OPTIONAL` and `WITH` statements are not needed, leaving a slightly easier to compose query:
+Using `CALL`, we can compose subqueries easily:
 ```cypher
 MATCH (this:`Movie`)
 WHERE this.released = 1999
@@ -91,8 +80,6 @@ CALL {
 }
 RETURN this { .title, actors: this_actors }
 ```
-
-This option, however, may have negative performance implications, over the current PatternComprehension and `OPTIONAL MATCH`.
 
 By using CALL, it would be easier to compose in a nested fashion:
 
@@ -106,7 +93,7 @@ CALL {
     CALL {
       WITH this_actors
       MATCH(this_actors)-[:DIRECTED]->(this_movies:Movie)
-      WHERE m.released > 1999
+      WHERE this_movies.released > 1999
       RETURN collect(this_movies {.title}) as this_movies
     }
     RETURN collect(this_actors {.name, directed: this_movies}) as this_actors
@@ -167,14 +154,30 @@ RETURN this { .released, actorsConnection } as this
 
 
 ## Risks
--
+- Nested CALL statements may have a performance impact
 
 ### Security consideration
-Auth checks need to be moved accordingly.
+Auth checks need to be updated accordingly.
 
 ## Out of Scope
 
--
+- Remove `runFirstColumn`
+
+## Alternative solutions
+
+Using `OPTIONAL MATCH` we can perform multiple matches and collect them. A list comprehension can be used to return them in the same way as before:
+```cypher
+MATCH (this:`Movie`)
+WHERE this.released = 1999
+OPTIONAL MATCH (this)<-[:ACTED_IN]-(this_actors:Person)
+WHERE this_actors.name = "Keanu Reeves"
+WITH this, collect(this_actors) as this_actors
+RETURN this { .title, actors: [x IN this_actors | x { .name }]}
+```
+
+This alternative **may be** more performant that `CALL`.
 
 ## Related Work
 * https://github.com/neo4j/graphql/pull/983
+
+
