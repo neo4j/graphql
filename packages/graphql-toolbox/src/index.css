@@ -36,3 +36,21 @@ li.CodeMirror-hint-active {
 .pt-02 {
     padding-top: 0.2rem;
 }
+
+.graphiql-explorer-docs-container {
+    position: absolute;
+    left: 388px;
+    margin: 5px 0;
+    z-index: 100;
+}
+
+.graphiql-container .graphiql-explorer-actions select {
+    border: 1px solid #C4C8CD;
+    margin-left: 5px;
+    border-radius: 5px;
+    padding: 3px;
+}
+
+.graphiql-container .graphiql-explorer-actions > span {
+    display: none !important;
+}

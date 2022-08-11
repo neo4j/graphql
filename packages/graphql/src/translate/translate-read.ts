@@ -46,7 +46,7 @@ export function translateRead({
     let authStr = "";
     let projAuth = "";
 
-    let cypherParams: { [k: string]: any } = {};
+    let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
 
