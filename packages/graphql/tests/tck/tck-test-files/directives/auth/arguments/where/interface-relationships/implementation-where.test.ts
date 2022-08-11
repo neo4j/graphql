@@ -102,7 +102,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE exists((this)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id)
+            WHERE (exists((this)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id)))
             RETURN this { .id } as this"
         `);
 
@@ -129,7 +129,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE (this.content = $param0 AND exists((this)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id))
+            WHERE (this.content = $param0 AND (exists((this)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id))))
             RETURN this { .id } as this"
         `);
 
@@ -162,7 +162,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             WITH this
@@ -173,7 +173,7 @@ describe("Cypher Auth Where", () => {
             UNION
             WITH this
             MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
-            WHERE exists((this_Post)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)
+            WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)))
             RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS content
             }
             RETURN collect(content) AS content
@@ -214,7 +214,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             CALL {
             WITH this
             CALL {
@@ -225,7 +225,7 @@ describe("Cypher Auth Where", () => {
             UNION
             WITH this
             MATCH (this)-[this_has_content_relationship:HAS_CONTENT]->(this_Post:Post)
-            WHERE exists((this_Post)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)
+            WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)))
             WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
             RETURN edge
             }
@@ -269,7 +269,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             CALL {
             WITH this
             CALL {
@@ -281,7 +281,7 @@ describe("Cypher Auth Where", () => {
             UNION
             WITH this
             MATCH (this)-[this_has_content_relationship:HAS_CONTENT]->(this_Post:Post)
-            WHERE this_Post.id = $this_contentConnection.args.where.node.id AND exists((this_Post)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)
+            WHERE this_Post.id = $this_contentConnection.args.where.node.id AND (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)))
             WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
             RETURN edge
             }
@@ -331,7 +331,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE exists((this)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id)
+            WHERE (exists((this)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id)))
             SET this.content = $this_update_content
             WITH this
             CALL {
@@ -371,7 +371,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE (this.content = $param0 AND exists((this)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id))
+            WHERE (this.content = $param0 AND (exists((this)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id))))
             SET this.content = $this_update_content
             WITH this
             CALL {
@@ -412,7 +412,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             WITH this
@@ -434,7 +434,7 @@ describe("Cypher Auth Where", () => {
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
-            WHERE exists((this_content0)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_auth_where0_creator_id)
+            WHERE (exists((this_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_content0)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_content0_auth_where0_creator_id)))
             CALL apoc.do.when(this_content0 IS NOT NULL, \\"
             SET this_content0.id = $this_update_content0_id
             WITH this, this_content0
@@ -506,7 +506,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE exists((this)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id)
+            WHERE (exists((this)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id)))
             DETACH DELETE this"
         `);
 
@@ -533,7 +533,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE (this.content = $param0 AND exists((this)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id))
+            WHERE (this.content = $param0 AND (exists((this)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_auth_where0_creator_id))))
             DETACH DELETE this"
         `);
 
@@ -561,14 +561,14 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
             WITH this, collect(DISTINCT this_content_Comment0) as this_content_Comment0_to_delete
             FOREACH(x IN this_content_Comment0_to_delete | DETACH DELETE x)
             WITH this
             OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
-            WHERE exists((this_content_Post0)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this_content_Post0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content_Post0_auth_where0_creator_id)
+            WHERE (exists((this_content_Post0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_content_Post0)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_content_Post0_auth_where0_creator_id)))
             WITH this, collect(DISTINCT this_content_Post0) as this_content_Post0_to_delete
             FOREACH(x IN this_content_Post0_to_delete | DETACH DELETE x)
             DETACH DELETE this"
@@ -621,7 +621,7 @@ describe("Cypher Auth Where", () => {
             UNION
             	WITH this0
             	OPTIONAL MATCH (this0_content_connect0_node:Post)
-            	WHERE exists((this0_content_connect0_node)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this0_content_connect0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_content_connect0_node_auth_where0_creator_id)
+            	WHERE (exists((this0_content_connect0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this0_content_connect0_node)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this0_content_connect0_node_auth_where0_creator_id)))
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE WHEN this0_content_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
@@ -691,7 +691,7 @@ describe("Cypher Auth Where", () => {
             UNION
             	WITH this0
             	OPTIONAL MATCH (this0_content_connect0_node:Post)
-            	WHERE this0_content_connect0_node.id = $this0_content_connect0_node_param0 AND exists((this0_content_connect0_node)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this0_content_connect0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_content_connect0_node_auth_where0_creator_id)
+            	WHERE this0_content_connect0_node.id = $this0_content_connect0_node_param0 AND (exists((this0_content_connect0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this0_content_connect0_node)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this0_content_connect0_node_auth_where0_creator_id)))
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE WHEN this0_content_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
@@ -735,11 +735,11 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             WITH this
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             	WITH this
@@ -754,12 +754,12 @@ describe("Cypher Auth Where", () => {
             RETURN count(*) AS _
             UNION
             WITH this
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Post)
-            	WHERE exists((this_content0_connect0_node)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this_content0_connect0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_connect0_node_auth_where0_creator_id)
+            	WHERE (exists((this_content0_connect0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_content0_connect0_node)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_content0_connect0_node_auth_where0_creator_id)))
             	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE WHEN this_content0_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
@@ -799,11 +799,11 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             WITH this
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             	WITH this
@@ -819,12 +819,12 @@ describe("Cypher Auth Where", () => {
             RETURN count(*) AS _
             UNION
             WITH this
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Post)
-            	WHERE this_content0_connect0_node.id = $this_content0_connect0_node_param0 AND exists((this_content0_connect0_node)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this_content0_connect0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_connect0_node_auth_where0_creator_id)
+            	WHERE this_content0_connect0_node.id = $this_content0_connect0_node_param0 AND (exists((this_content0_connect0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_content0_connect0_node)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_content0_connect0_node_auth_where0_creator_id)))
             	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE WHEN this_content0_connect0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
@@ -865,9 +865,9 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             	WITH this
@@ -881,7 +881,7 @@ describe("Cypher Auth Where", () => {
             UNION
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
-            	WHERE exists((this_connect_content0_node)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_content0_node_auth_where0_creator_id)
+            	WHERE (exists((this_connect_content0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_connect_content0_node_auth_where0_creator_id)))
             	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE WHEN this_connect_content0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
@@ -919,9 +919,9 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             	WITH this
@@ -936,7 +936,7 @@ describe("Cypher Auth Where", () => {
             UNION
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
-            	WHERE this_connect_content0_node.id = $this_connect_content0_node_param0 AND exists((this_connect_content0_node)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_content0_node_auth_where0_creator_id)
+            	WHERE this_connect_content0_node.id = $this_connect_content0_node_param0 AND (exists((this_connect_content0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_connect_content0_node_auth_where0_creator_id)))
             	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE WHEN this_connect_content0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
@@ -975,11 +975,11 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             WITH this
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             WITH this
@@ -992,12 +992,12 @@ describe("Cypher Auth Where", () => {
             RETURN count(*) AS _
             UNION
             WITH this
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
-            WHERE exists((this_content0_disconnect0)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_disconnect0_auth_where0_creator_id)
+            WHERE (exists((this_content0_disconnect0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_content0_disconnect0_auth_where0_creator_id)))
             FOREACH(_ IN CASE WHEN this_content0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_content0_disconnect0_rel
             )
@@ -1035,11 +1035,11 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             WITH this
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             WITH this
@@ -1053,12 +1053,12 @@ describe("Cypher Auth Where", () => {
             RETURN count(*) AS _
             UNION
             WITH this
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
-            WHERE this_content0_disconnect0.id = $updateUsers.args.update.content[0].disconnect[0].where.node.id AND exists((this_content0_disconnect0)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_content0_disconnect0_auth_where0_creator_id)
+            WHERE this_content0_disconnect0.id = $updateUsers.args.update.content[0].disconnect[0].where.node.id AND (exists((this_content0_disconnect0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_content0_disconnect0_auth_where0_creator_id)))
             FOREACH(_ IN CASE WHEN this_content0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_content0_disconnect0_rel
             )
@@ -1119,9 +1119,9 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             WITH this
@@ -1133,7 +1133,7 @@ describe("Cypher Auth Where", () => {
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
-            WHERE exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_content0_auth_where0_creator_id)
+            WHERE (exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_disconnect_content0_auth_where0_creator_id)))
             FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
@@ -1180,9 +1180,9 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
-            WHERE this.id IS NOT NULL AND this.id = $this_auth_where0_id
+            WHERE (this.id IS NOT NULL AND this.id = $this_auth_where0_id)
             WITH this
             CALL {
             WITH this
@@ -1195,7 +1195,7 @@ describe("Cypher Auth Where", () => {
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
-            WHERE this_disconnect_content0.id = $updateUsers.args.disconnect.content[0].where.node.id AND exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:User)) AND all(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_content0_auth_where0_creator_id)
+            WHERE this_disconnect_content0.id = $updateUsers.args.disconnect.content[0].where.node.id AND (exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_disconnect_content0_auth_where0_creator_id)))
             FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
