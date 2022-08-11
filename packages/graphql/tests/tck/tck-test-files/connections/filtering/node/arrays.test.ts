@@ -85,7 +85,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name IN $this_actorsConnection.args.where.node.name_IN
+            WHERE this_actor.name IN $this_actorsConnection_args_where_Actorparam0
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -96,13 +96,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"name_IN\\": [
-                        \\"Tom Hanks\\",
-                        \\"Robin Wright\\"
-                    ]
-                },
-                \\"name_IN\\": [
+                \\"this_actorsConnection_args_where_Actorparam0\\": [
                     \\"Tom Hanks\\",
                     \\"Robin Wright\\"
                 ],
@@ -149,7 +143,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE (NOT this_actor.name IN $this_actorsConnection.args.where.node.name_NOT_IN)
+            WHERE NOT (this_actor.name IN $this_actorsConnection_args_where_Actorparam0)
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -160,13 +154,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"name_NOT_IN\\": [
-                        \\"Tom Hanks\\",
-                        \\"Robin Wright\\"
-                    ]
-                },
-                \\"name_NOT_IN\\": [
+                \\"this_actorsConnection_args_where_Actorparam0\\": [
                     \\"Tom Hanks\\",
                     \\"Robin Wright\\"
                 ],
@@ -214,7 +202,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE $this_actorsConnection.args.where.node.favouriteColours_INCLUDES IN this_actor.favouriteColours
+            WHERE $this_actorsConnection_args_where_Actorparam0 IN this_actor.favouriteColours
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, favouriteColours: this_actor.favouriteColours } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -225,10 +213,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"favouriteColours_INCLUDES\\": \\"Blue\\"
-                },
-                \\"favouriteColours_INCLUDES\\": \\"Blue\\",
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Blue\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -270,7 +255,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE (NOT $this_actorsConnection.args.where.node.favouriteColours_NOT_INCLUDES IN this_actor.favouriteColours)
+            WHERE NOT ($this_actorsConnection_args_where_Actorparam0 IN this_actor.favouriteColours)
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, favouriteColours: this_actor.favouriteColours } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -281,10 +266,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"favouriteColours_NOT_INCLUDES\\": \\"Blue\\"
-                },
-                \\"favouriteColours_NOT_INCLUDES\\": \\"Blue\\",
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Blue\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

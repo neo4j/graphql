@@ -238,7 +238,7 @@ describe("Cypher Auth Allow", () => {
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_has_post0_relationship:HAS_POST]->(this_posts0:Post)
-            WHERE this_posts0.id = $updateUsers.args.update.posts[0].where.node.id
+            WHERE this_posts0.id = $updateUsers_args_update_posts0_where_Postparam0
             CALL apoc.do.when(this_posts0 IS NOT NULL, \\"
             WITH this, this_posts0
             OPTIONAL MATCH (this_posts0)<-[this_posts0_has_post0_relationship:HAS_POST]-(this_posts0_creator0:User)
@@ -268,10 +268,7 @@ describe("Cypher Auth Allow", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"id-01\\",
-                \\"node\\": {
-                    \\"id\\": \\"post-id\\"
-                },
-                \\"id\\": \\"post-id\\",
+                \\"updateUsers_args_update_posts0_where_Postparam0\\": \\"post-id\\",
                 \\"this_update_posts0_creator0_id\\": \\"not bound\\",
                 \\"this_posts0_creator0_auth_bind0_id\\": \\"id-01\\",
                 \\"auth\\": {
@@ -396,7 +393,7 @@ describe("Cypher Auth Allow", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_creator0_rel:HAS_POST]-(this_disconnect_creator0:User)
-            WHERE this_disconnect_creator0.id = $updatePosts.args.disconnect.creator.where.node.id
+            WHERE this_disconnect_creator0.id = $updatePosts_args_disconnect_creator_where_Userparam0
             FOREACH(_ IN CASE WHEN this_disconnect_creator0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_creator0_rel
             )
@@ -418,10 +415,7 @@ describe("Cypher Auth Allow", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"post-id\\",
-                \\"node\\": {
-                    \\"id\\": \\"user-id\\"
-                },
-                \\"id\\": \\"user-id\\",
+                \\"updatePosts_args_disconnect_creator_where_Userparam0\\": \\"user-id\\",
                 \\"this_disconnect_creator0Post0_bind_auth_bind0_creator_id\\": \\"id-01\\",
                 \\"this_disconnect_creator0User1_bind_auth_bind0_id\\": \\"id-01\\",
                 \\"updatePosts\\": {

@@ -279,13 +279,13 @@ describe("Cypher Auth Where", () => {
             CALL {
             WITH this
             MATCH (this)-[this_has_content_relationship:HAS_CONTENT]->(this_Comment:Comment)
-            WHERE this_Comment.id = $this_contentConnection.args.where.node.id AND (exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_Comment)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_Comment_auth_where0_creator_id)))
+            WHERE this_Comment.id = $this_contentConnection_args_where_Commentparam0 AND (exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_Comment)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_Comment_auth_where0_creator_id)))
             WITH { node: { __resolveType: \\"Comment\\" } } AS edge
             RETURN edge
             UNION
             WITH this
             MATCH (this)-[this_has_content_relationship:HAS_CONTENT]->(this_Post:Post)
-            WHERE this_Post.id = $this_contentConnection.args.where.node.id AND (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)))
+            WHERE this_Post.id = $this_contentConnection_args_where_Postparam0 AND (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_Post)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_Post_auth_where0_creator_id)))
             WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
             RETURN edge
             }
@@ -299,11 +299,9 @@ describe("Cypher Auth Where", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"node\\": {
-                    \\"id\\": \\"some-id\\"
-                },
-                \\"id\\": \\"some-id\\",
+                \\"this_contentConnection_args_where_Commentparam0\\": \\"some-id\\",
                 \\"this_Comment_auth_where0_creator_id\\": \\"id-01\\",
+                \\"this_contentConnection_args_where_Postparam0\\": \\"some-id\\",
                 \\"this_Post_auth_where0_creator_id\\": \\"id-01\\",
                 \\"this_contentConnection\\": {
                     \\"args\\": {
@@ -1056,7 +1054,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Comment)
-            WHERE this_content0_disconnect0.id = $updateUsers.args.update.content[0].disconnect[0].where.node.id AND (exists((this_content0_disconnect0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_content0_disconnect0_auth_where0_creator_id)))
+            WHERE this_content0_disconnect0.id = $updateUsers_args_update_content0_disconnect0_where_Commentparam0 AND (exists((this_content0_disconnect0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_content0_disconnect0_auth_where0_creator_id)))
             FOREACH(_ IN CASE WHEN this_content0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_content0_disconnect0_rel
             )
@@ -1070,7 +1068,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
-            WHERE this_content0_disconnect0.id = $updateUsers.args.update.content[0].disconnect[0].where.node.id AND (exists((this_content0_disconnect0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_content0_disconnect0_auth_where0_creator_id)))
+            WHERE this_content0_disconnect0.id = $updateUsers_args_update_content0_disconnect0_where_Postparam0 AND (exists((this_content0_disconnect0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_content0_disconnect0_auth_where0_creator_id)))
             FOREACH(_ IN CASE WHEN this_content0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_content0_disconnect0_rel
             )
@@ -1084,11 +1082,9 @@ describe("Cypher Auth Where", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"node\\": {
-                    \\"id\\": \\"new-id\\"
-                },
-                \\"id\\": \\"new-id\\",
+                \\"updateUsers_args_update_content0_disconnect0_where_Commentparam0\\": \\"new-id\\",
                 \\"this_content0_disconnect0_auth_where0_creator_id\\": \\"id-01\\",
+                \\"updateUsers_args_update_content0_disconnect0_where_Postparam0\\": \\"new-id\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -1200,7 +1196,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
-            WHERE this_disconnect_content0.id = $updateUsers.args.disconnect.content[0].where.node.id AND (exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_disconnect_content0_auth_where0_creator_id)))
+            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Commentparam0 AND (exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_disconnect_content0_auth_where0_creator_id)))
             FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
@@ -1208,7 +1204,7 @@ describe("Cypher Auth Where", () => {
             UNION
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
-            WHERE this_disconnect_content0.id = $updateUsers.args.disconnect.content[0].where.node.id AND (exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_disconnect_content0_auth_where0_creator_id)))
+            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Postparam0 AND (exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(creator IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_disconnect_content0_auth_where0_creator_id)))
             FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
@@ -1220,11 +1216,9 @@ describe("Cypher Auth Where", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_auth_where0_id\\": \\"id-01\\",
-                \\"node\\": {
-                    \\"id\\": \\"some-id\\"
-                },
-                \\"id\\": \\"some-id\\",
+                \\"updateUsers_args_disconnect_content0_where_Commentparam0\\": \\"some-id\\",
                 \\"this_disconnect_content0_auth_where0_creator_id\\": \\"id-01\\",
+                \\"updateUsers_args_disconnect_content0_where_Postparam0\\": \\"some-id\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
