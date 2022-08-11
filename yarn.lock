@@ -3148,7 +3148,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express-serve-static-core@npm:*, @types/express-serve-static-core@npm:4.17.29, @types/express-serve-static-core@npm:^4.17.18":
+"@types/express-serve-static-core@npm:*, @types/express-serve-static-core@npm:^4.17.18":
   version: 4.17.29
   resolution: "@types/express-serve-static-core@npm:4.17.29"
   dependencies:
@@ -4369,38 +4369,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-server-core@npm:^3.10.0":
-  version: 3.10.0
-  resolution: "apollo-server-core@npm:3.10.0"
-  dependencies:
-    "@apollo/utils.keyvaluecache": ^1.0.1
-    "@apollo/utils.logger": ^1.0.0
-    "@apollo/utils.usagereporting": ^1.0.0
-    "@apollographql/apollo-tools": ^0.5.3
-    "@apollographql/graphql-playground-html": 1.6.29
-    "@graphql-tools/mock": ^8.1.2
-    "@graphql-tools/schema": ^8.0.0
-    "@josephg/resolvable": ^1.0.0
-    apollo-datasource: ^3.3.2
-    apollo-reporting-protobuf: ^3.3.2
-    apollo-server-env: ^4.2.1
-    apollo-server-errors: ^3.3.1
-    apollo-server-plugin-base: ^3.6.2
-    apollo-server-types: ^3.6.2
-    async-retry: ^1.2.1
-    fast-json-stable-stringify: ^2.1.0
-    graphql-tag: ^2.11.0
-    loglevel: ^1.6.8
-    lru-cache: ^6.0.0
-    sha.js: ^2.4.11
-    uuid: ^8.0.0
-    whatwg-mimetype: ^3.0.0
-  peerDependencies:
-    graphql: ^15.3.0 || ^16.0.0
-  checksum: f1da8de59a4db9271d140b9ab42cb84e8185bd0828b8aa84eff60dcbb3c149468585e73e632aff7615ab7002eb1e986bfb0ebffe4698e552b99812aa3eaff834
-  languageName: node
-  linkType: hard
-
 "apollo-server-core@npm:^3.10.1":
   version: 3.10.1
   resolution: "apollo-server-core@npm:3.10.1"
@@ -4451,28 +4419,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-server-express@npm:3.10.0, apollo-server-express@npm:^3.10.0":
-  version: 3.10.0
-  resolution: "apollo-server-express@npm:3.10.0"
-  dependencies:
-    "@types/accepts": ^1.3.5
-    "@types/body-parser": 1.19.2
-    "@types/cors": 2.8.12
-    "@types/express": 4.17.13
-    "@types/express-serve-static-core": 4.17.29
-    accepts: ^1.3.5
-    apollo-server-core: ^3.10.0
-    apollo-server-types: ^3.6.2
-    body-parser: ^1.19.0
-    cors: ^2.8.5
-    parseurl: ^1.3.3
-  peerDependencies:
-    express: ^4.17.1
-    graphql: ^15.3.0 || ^16.0.0
-  checksum: 4b525f8ae0f8d24599505fa9460c11d79ab8b0477bfdd67b8b162fa32443ab480cea87808ba359bf8fe5a25069e3ba82011478c2be722037cf1f7628278c28a2
-  languageName: node
-  linkType: hard
-
 "apollo-server-express@npm:3.10.1, apollo-server-express@npm:^3.10.1":
   version: 3.10.1
   resolution: "apollo-server-express@npm:3.10.1"
@@ -4517,20 +4463,6 @@ __metadata:
   peerDependencies:
     graphql: ^15.3.0 || ^16.0.0
   checksum: 410d7c0e6cfcc68dbc5f0182e07008235c6ecf5ab7d01d334a2af3c4deed3921cff12e32f54206d16aad88d5213f67f5f5302762ac92a6883b778800334e2016
-  languageName: node
-  linkType: hard
-
-"apollo-server@npm:3.10.0":
-  version: 3.10.0
-  resolution: "apollo-server@npm:3.10.0"
-  dependencies:
-    "@types/express": 4.17.13
-    apollo-server-core: ^3.10.0
-    apollo-server-express: ^3.10.0
-    express: ^4.17.1
-  peerDependencies:
-    graphql: ^15.3.0 || ^16.0.0
-  checksum: 05522f7eb258f641d47e4f95e6f65462532a506830684a4bd62134ff54dc03777863b578a82a3a977e2366ca5dfbaf54e0dbf93f2cbaf675bc3842924ca39fee
   languageName: node
   linkType: hard
 
@@ -12781,7 +12713,7 @@ __metadata:
   resolution: "migration@workspace:examples/migration"
   dependencies:
     "@neo4j/graphql": ^3.5.0
-    apollo-server: 3.10.0
+    apollo-server: 3.10.1
     graphql: 16.5.0
     neo4j-driver: 4.4.7
   languageName: unknown
@@ -13210,7 +13142,7 @@ __metadata:
     "@types/jsonwebtoken": 8.5.1
     "@types/node": 16.11.47
     "@types/uuid": 8.3.4
-    apollo-server-express: 3.10.0
+    apollo-server-express: 3.10.1
     bcrypt: 5.0.1
     cross-env: 7.0.3
     debug: 4.3.4
