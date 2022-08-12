@@ -185,6 +185,8 @@ CALL {
 RETURN this { .released, actorsConnection } as this
 ```
 
+Projections insider connections, however, may required nested CALL statements
+
 
 ## Risks
 - Nested CALL statements may have a performance impact
