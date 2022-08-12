@@ -703,10 +703,10 @@ describe("Advanced Filtering", () => {
                 expect(gqlResult.errors).toBeUndefined();
 
                 expect((gqlResult.data as any)[movieType.plural]).toHaveLength(2);
-                expect((gqlResult.data as any)[movieType.plural]).toEqual([
+                expect((gqlResult.data as any)[movieType.plural]).toEqual(expect.arrayContaining([
                     { title: matrixReloaded },
                     { title: matrixRevolutions },
-                ]);
+                ]));
             } finally {
                 await session.close();
             }
@@ -774,11 +774,11 @@ describe("Advanced Filtering", () => {
                 expect(gqlResult.errors).toBeUndefined();
 
                 expect((gqlResult.data as any)[movieType.plural]).toHaveLength(3);
-                expect((gqlResult.data as any)[movieType.plural]).toEqual([
+                expect((gqlResult.data as any)[movieType.plural]).toEqual(expect.arrayContaining([
                     { title: matrix },
                     { title: matrixReloaded },
                     { title: matrixResurrections },
-                ]);
+                ]));
             } finally {
                 await session.close();
             }
@@ -846,11 +846,11 @@ describe("Advanced Filtering", () => {
                 expect(gqlResult.errors).toBeUndefined();
 
                 expect((gqlResult.data as any)[movieType.plural]).toHaveLength(3);
-                expect((gqlResult.data as any)[movieType.plural]).toEqual([
+                expect((gqlResult.data as any)[movieType.plural]).toEqual(expect.arrayContaining([
                     { title: matrix },
                     { title: matrixReloaded },
                     { title: matrixRevolutions },
-                ]);
+                ]));
             } finally {
                 await session.close();
             }
@@ -919,12 +919,12 @@ describe("Advanced Filtering", () => {
                 expect(gqlResult.errors).toBeUndefined();
 
                 expect((gqlResult.data as any)[movieType.plural]).toHaveLength(4);
-                expect((gqlResult.data as any)[movieType.plural]).toEqual([
+                expect((gqlResult.data as any)[movieType.plural]).toEqual(expect.arrayContaining([
                     { title: matrix },
                     { title: matrixReloaded },
                     { title: matrixRevolutions },
                     { title: matrixResurrections },
-                ]);
+                ]));
             } finally {
                 await session.close();
             }
