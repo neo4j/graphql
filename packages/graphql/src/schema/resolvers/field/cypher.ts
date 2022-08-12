@@ -71,7 +71,8 @@ export function cypherResolver({
                 context,
                 varName: `this`,
             });
-            const [str, p, meta] = recurse;
+
+            const { projection: str, params: p, meta } = recurse;
             projectionStr = str;
             params = { ...params, ...p };
 
@@ -114,7 +115,11 @@ export function cypherResolver({
                     const innerHeadStr: string[] = [`[ this IN [this] WHERE (${labelsStatements.join(" AND ")})`];
 
                     if (resolveTree.fieldsByTypeName[node.name]) {
-                        const [str, p, meta] = createProjectionAndParams({
+                        const {
+                            projection: str,
+                            params: p,
+                            meta,
+                        } = createProjectionAndParams({
                             resolveTree,
                             node,
                             context,

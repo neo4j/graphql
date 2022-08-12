@@ -50,79 +50,13 @@ export interface ProjectionMeta {
     cypherSortFields?: { alias: string; apocStr: string }[];
 }
 
-function createNodeWhereAndParams({
-    whereInput,
-    varName,
-    context,
-    node,
-    authValidateStrs,
-    chainStr,
-}: {
-    whereInput?: any;
-    context: Context;
-    node: Node;
-    varName: string;
-    authValidateStrs?: string[];
-    chainStr?: string;
-}): [string, any] {
-    const whereStrs: string[] = [];
-    let params = {};
+export type ProjectionResult = {
+    projection: string;
+    params: Record<string, any>;
+    meta: ProjectionMeta | undefined;
+};
 
-    if (whereInput) {
-        const whereAndParams = createWhereAndParams({
-            context,
-            node,
-            varName,
-            whereInput,
-            chainStr,
-            recursing: true,
-        });
-        if (whereAndParams[0]) {
-            whereStrs.push(whereAndParams[0]);
-            params = { ...params, ...whereAndParams[1] };
-        }
-    }
-
-    const whereAuth = createAuthAndParams({
-        entity: node,
-        operations: "READ",
-        context,
-        where: {
-            varName,
-            chainStr,
-            node,
-        },
-    });
-    if (whereAuth[0]) {
-        whereStrs.push(whereAuth[0]);
-        params = { ...params, ...whereAuth[1] };
-    }
-
-    const preAuth = createAuthAndParams({
-        entity: node,
-        operations: "READ",
-        context,
-        allow: {
-            parentNode: node,
-            varName,
-            chainStr,
-        },
-    });
-    if (preAuth[0]) {
-        whereStrs.push(`apoc.util.validatePredicate(NOT (${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-        params = { ...params, ...preAuth[1] };
-    }
-
-    if (authValidateStrs?.length) {
-        whereStrs.push(
-            `apoc.util.validatePredicate(NOT (${authValidateStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-        );
-    }
-
-    return [whereStrs.join(" AND "), params];
-}
-
-function createProjectionAndParams({
+export default function createProjectionAndParams({
     resolveTree,
     node,
     context,
@@ -142,7 +76,7 @@ function createProjectionAndParams({
     resolveType?: boolean;
     inRelationshipProjection?: boolean;
     isRootConnectionField?: boolean;
-}): [string, any, ProjectionMeta | undefined] {
+}): ProjectionResult {
     function reducer(res: Res, field: ResolveTree): Res {
         const alias = field.alias;
         let param = "";
@@ -194,7 +128,11 @@ function createProjectionAndParams({
             const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
 
             if (referenceNode) {
-                const recurse = createProjectionAndParams({
+                const {
+                    projection: str,
+                    params: p,
+                    meta,
+                } = createProjectionAndParams({
                     resolveTree: field,
                     node: referenceNode || node,
                     context,
@@ -203,7 +141,7 @@ function createProjectionAndParams({
                     isRootConnectionField,
                     inRelationshipProjection: true,
                 });
-                const [str, p, meta] = recurse;
+
                 projectionStr = str;
                 res.params = { ...res.params, ...p };
                 if (meta?.authValidateStrs?.length) {
@@ -237,7 +175,11 @@ function createProjectionAndParams({
                         ];
 
                         if (fieldFields[refNode.name]) {
-                            const [str, p, meta] = createProjectionAndParams({
+                            const {
+                                projection: str,
+                                params: p,
+                                meta,
+                            } = createProjectionAndParams({
                                 resolveTree: field,
                                 node: refNode,
                                 context,
@@ -483,7 +425,7 @@ function createProjectionAndParams({
                         innerHeadStr.push(
                             [
                                 `| ${param} { __resolveType: "${refNode.name}", `,
-                                ...recurse[0].replace("{", "").split(""),
+                                ...recurse.projection.replace("{", "").split(""),
                             ].join("")
                         );
                         res.params = { ...res.params, ...recurse[1] };
@@ -514,7 +456,6 @@ function createProjectionAndParams({
                 return res;
             }
 
-            let projectionStr = "";
             const recurse = createProjectionAndParams({
                 resolveTree: field,
                 node: referenceNode || node,
@@ -524,8 +465,7 @@ function createProjectionAndParams({
                 inRelationshipProjection: true,
                 isRootConnectionField,
             });
-            [projectionStr] = recurse;
-            res.params = { ...res.params, ...recurse[1] };
+            res.params = { ...res.params, ...recurse.params };
 
             let whereStr = "";
             const nodeWhereAndParams = createNodeWhereAndParams({
@@ -533,7 +473,7 @@ function createProjectionAndParams({
                 varName: `${varName}_${alias}`,
                 node: referenceNode,
                 context,
-                authValidateStrs: recurse[2]?.authValidateStrs,
+                authValidateStrs: recurse.meta?.authValidateStrs,
             });
             if (nodeWhereAndParams[0]) {
                 whereStr = `WHERE ${nodeWhereAndParams[0]}`;
@@ -541,7 +481,7 @@ function createProjectionAndParams({
             }
 
             const pathStr = `${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
-            const innerStr = `${pathStr}  ${whereStr} | ${param} ${projectionStr}`;
+            const innerStr = `${pathStr}  ${whereStr} | ${param} ${recurse.projection}`;
             let nestedQuery: string;
 
             if (optionsInput) {
@@ -693,7 +633,11 @@ function createProjectionAndParams({
         meta: {},
     });
 
-    return [`{ ${projection.join(", ")} }`, params, meta];
+    return {
+        projection: `{ ${projection.join(", ")} }`,
+        params,
+        meta,
+    };
 }
 
 function sortReducer(s: string[], sort: GraphQLSortArg) {
@@ -708,8 +652,6 @@ function sortReducer(s: string[], sort: GraphQLSortArg) {
         }),
     ];
 }
-
-export default createProjectionAndParams;
 
 // Generates any missing fields required for sorting
 const generateMissingOrAliasedSortFields = ({
@@ -742,3 +684,75 @@ const generateMissingOrAliasedRequiredFields = ({
 
     return generateMissingOrAliasedFields({ fieldNames: requiredFields, selection });
 };
+
+function createNodeWhereAndParams({
+    whereInput,
+    varName,
+    context,
+    node,
+    authValidateStrs,
+    chainStr,
+}: {
+    whereInput?: any;
+    context: Context;
+    node: Node;
+    varName: string;
+    authValidateStrs?: string[];
+    chainStr?: string;
+}): [string, any] {
+    const whereStrs: string[] = [];
+    let params = {};
+
+    if (whereInput) {
+        const whereAndParams = createWhereAndParams({
+            context,
+            node,
+            varName,
+            whereInput,
+            chainStr,
+            recursing: true,
+        });
+        if (whereAndParams[0]) {
+            whereStrs.push(whereAndParams[0]);
+            params = { ...params, ...whereAndParams[1] };
+        }
+    }
+
+    const whereAuth = createAuthAndParams({
+        entity: node,
+        operations: "READ",
+        context,
+        where: {
+            varName,
+            chainStr,
+            node,
+        },
+    });
+    if (whereAuth[0]) {
+        whereStrs.push(whereAuth[0]);
+        params = { ...params, ...whereAuth[1] };
+    }
+
+    const preAuth = createAuthAndParams({
+        entity: node,
+        operations: "READ",
+        context,
+        allow: {
+            parentNode: node,
+            varName,
+            chainStr,
+        },
+    });
+    if (preAuth[0]) {
+        whereStrs.push(`apoc.util.validatePredicate(NOT (${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
+        params = { ...params, ...preAuth[1] };
+    }
+
+    if (authValidateStrs?.length) {
+        whereStrs.push(
+            `apoc.util.validatePredicate(NOT (${authValidateStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+        );
+    }
+
+    return [whereStrs.join(" AND "), params];
+}

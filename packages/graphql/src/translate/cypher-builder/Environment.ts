@@ -43,7 +43,9 @@ export class CypherEnvironment {
     public getParams(): Record<string, any> {
         return this.params.reduce((acc, param: Param) => {
             const key = this.getVariableId(param);
-            acc[key] = param.value;
+            if (param.hasValue) {
+                acc[key] = param.value;
+            }
             return acc;
         }, {} as Record<string, any>);
     }

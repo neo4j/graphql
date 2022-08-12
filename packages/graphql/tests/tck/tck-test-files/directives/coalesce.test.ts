@@ -104,7 +104,7 @@ describe("Cypher coalesce()", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE (coalesce(this.id, \\"00000000-00000000-00000000-00000000\\") = $param0 AND coalesce(this.name, \\"Jane Smith\\") =~ $param1 AND NOT this.verified = $param2 AND this.numberOfFriends > $param3 AND coalesce(this.rating, 2.5) < $param4 AND coalesce(this.fromInterface, \\"From Interface\\") = $param5 AND coalesce(this.toBeOverridden, \\"Overridden\\") = $param6)
+            WHERE (coalesce(this.id, \\"00000000-00000000-00000000-00000000\\") = $param0 AND coalesce(this.name, \\"Jane Smith\\") =~ $param1 AND NOT (this.verified = $param2) AND this.numberOfFriends > $param3 AND coalesce(this.rating, 2.5) < $param4 AND coalesce(this.fromInterface, \\"From Interface\\") = $param5 AND coalesce(this.toBeOverridden, \\"Overridden\\") = $param6)
             RETURN this { .name } as this"
         `);
 
@@ -220,7 +220,7 @@ describe("Cypher coalesce()", () => {
             CALL {
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
-            WHERE coalesce(this_movie.status, \\"ACTIVE\\") = $this_moviesConnection.args.where.node.status
+            WHERE coalesce(this_movie.status, \\"ACTIVE\\") = $this_moviesConnection_args_where_Movieparam0
             WITH collect({ node: { id: this_movie.id, status: this_movie.status } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -231,10 +231,7 @@ describe("Cypher coalesce()", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"node\\": {
-                    \\"status\\": \\"ACTIVE\\"
-                },
-                \\"status\\": \\"ACTIVE\\",
+                \\"this_moviesConnection_args_where_Movieparam0\\": \\"ACTIVE\\",
                 \\"this_moviesConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

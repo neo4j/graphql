@@ -58,7 +58,7 @@ function mapPropertiesToOperators({
     element: GraphElement;
     targetElement: CypherBuilder.Variable;
     context: Context;
-}): Array<CypherBuilder.ComparisonOp | CypherBuilder.BooleanOp | CypherBuilder.RawCypher | CypherBuilder.Exists> {
+}): Array<CypherBuilder.Predicate> {
     const whereFields = Object.entries(whereInput);
 
     return filterTruthy(

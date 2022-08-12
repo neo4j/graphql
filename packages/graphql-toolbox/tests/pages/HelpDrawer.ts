@@ -48,9 +48,9 @@ export class HelpDrawer extends Screen {
     public async displaysSchemaDocumentation() {
         await this.page.waitForSelector("[data-test-help-drawer-schema-doc-tile]");
         await this.page.click("[data-test-help-drawer-schema-doc-tile]");
-        await this.page.waitForSelector("[data-test-help-drawer-doc-explorer-close-button]");
-        await this.page.waitForSelector("[data-test-help-drawer-doc-explorer-back-button]");
-        await this.page.click("[data-test-help-drawer-doc-explorer-back-button]");
+        await this.page.waitForSelector("[data-test-doc-explorer-close-button]");
+        await this.page.waitForSelector("[data-test-doc-explorer-back-button]");
+        await this.page.click("[data-test-doc-explorer-back-button]");
         await this.page.waitForSelector("[data-test-help-drawer-title]");
     }
 

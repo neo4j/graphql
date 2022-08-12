@@ -82,7 +82,7 @@ describe("Cypher Auth Allow", () => {
             SET this0.id = $this0_id
             SET this0.name = $this0_name
             WITH this0
-            CALL apoc.util.validate(NOT (this0.id IS NOT NULL AND this0.id = $this0_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this0.id IS NOT NULL AND this0.id = $this0_auth_bind0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
             RETURN [
@@ -139,10 +139,10 @@ describe("Cypher Auth Allow", () => {
             CREATE (this0_posts0_node_creator0_node:User)
             SET this0_posts0_node_creator0_node.id = $this0_posts0_node_creator0_node_id
             WITH this0, this0_posts0_node, this0_posts0_node_creator0_node
-            CALL apoc.util.validate(NOT (this0_posts0_node_creator0_node.id IS NOT NULL AND this0_posts0_node_creator0_node.id = $this0_posts0_node_creator0_node_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this0_posts0_node_creator0_node.id IS NOT NULL AND this0_posts0_node_creator0_node.id = $this0_posts0_node_creator0_node_auth_bind0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             MERGE (this0_posts0_node)<-[:HAS_POST]-(this0_posts0_node_creator0_node)
             WITH this0, this0_posts0_node
-            CALL apoc.util.validate(NOT (exists((this0_posts0_node)<-[:HAS_POST]-(:User)) AND all(creator IN [(this0_posts0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this0_posts0_node_auth_bind0_creator_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((exists((this0_posts0_node)<-[:HAS_POST]-(:\`User\`)) AND all(creator IN [(this0_posts0_node)<-[:HAS_POST]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this0_posts0_node_auth_bind0_creator_id)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             MERGE (this0)-[:HAS_POST]->(this0_posts0_node)
             WITH this0, this0_posts0_node
             CALL {
@@ -153,7 +153,7 @@ describe("Cypher Auth Allow", () => {
             	RETURN c AS this0_posts0_node_creator_User_unique_ignored
             }
             WITH this0
-            CALL apoc.util.validate(NOT (this0.id IS NOT NULL AND this0.id = $this0_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this0.id IS NOT NULL AND this0.id = $this0_auth_bind0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
             RETURN [
@@ -195,7 +195,7 @@ describe("Cypher Auth Allow", () => {
             WHERE this.id = $param0
             SET this.id = $this_update_id
             WITH this
-            CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $this_auth_bind0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -238,14 +238,14 @@ describe("Cypher Auth Allow", () => {
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_has_post0_relationship:HAS_POST]->(this_posts0:Post)
-            WHERE this_posts0.id = $updateUsers.args.update.posts[0].where.node.id
+            WHERE this_posts0.id = $updateUsers_args_update_posts0_where_Postparam0
             CALL apoc.do.when(this_posts0 IS NOT NULL, \\"
             WITH this, this_posts0
             OPTIONAL MATCH (this_posts0)<-[this_posts0_has_post0_relationship:HAS_POST]-(this_posts0_creator0:User)
             CALL apoc.do.when(this_posts0_creator0 IS NOT NULL, \\\\\\"
             SET this_posts0_creator0.id = $this_update_posts0_creator0_id
             WITH this, this_posts0, this_posts0_creator0
-            CALL apoc.util.validate(NOT (this_posts0_creator0.id IS NOT NULL AND this_posts0_creator0.id = $this_posts0_creator0_auth_bind0_id), \\\\\\\\\\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\\\\\\\\\", [0])
+            CALL apoc.util.validate(NOT ((this_posts0_creator0.id IS NOT NULL AND this_posts0_creator0.id = $this_posts0_creator0_auth_bind0_id)), \\\\\\\\\\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\\\\\\\\\", [0])
             RETURN count(*) AS _
             \\\\\\", \\\\\\"\\\\\\", {this:this, this_posts0:this_posts0, updateUsers: $updateUsers, this_posts0_creator0:this_posts0_creator0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id})
             YIELD value AS _
@@ -261,17 +261,14 @@ describe("Cypher Auth Allow", () => {
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_posts0:this_posts0, auth:$auth,this_update_posts0_creator0_id:$this_update_posts0_creator0_id,this_posts0_creator0_auth_bind0_id:$this_posts0_creator0_auth_bind0_id})
             YIELD value AS _
             WITH this
-            CALL apoc.util.validate(NOT (this.id IS NOT NULL AND this.id = $this_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $this_auth_bind0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"id-01\\",
-                \\"node\\": {
-                    \\"id\\": \\"post-id\\"
-                },
-                \\"id\\": \\"post-id\\",
+                \\"updateUsers_args_update_posts0_where_Postparam0\\": \\"post-id\\",
                 \\"this_update_posts0_creator0_id\\": \\"not bound\\",
                 \\"this_posts0_creator0_auth_bind0_id\\": \\"id-01\\",
                 \\"auth\\": {
@@ -348,7 +345,7 @@ describe("Cypher Auth Allow", () => {
             		)
             	)
             	WITH this, this_connect_creator0_node
-            	CALL apoc.util.validate(NOT (exists((this_connect_creator0_node)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_connect_creator0_node)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_connect_creator0_nodePost0_bind_auth_bind0_creator_id) AND this_connect_creator0_node.id IS NOT NULL AND this_connect_creator0_node.id = $this_connect_creator0_nodeUser1_bind_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	CALL apoc.util.validate(NOT ((exists((this_connect_creator0_node)<-[:HAS_POST]-(:\`User\`)) AND all(creator IN [(this_connect_creator0_node)<-[:HAS_POST]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_connect_creator0_nodePost0_bind_auth_bind0_creator_id))) AND (this_connect_creator0_node.id IS NOT NULL AND this_connect_creator0_node.id = $this_connect_creator0_nodeUser1_bind_auth_bind0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	RETURN count(*) AS _
             }
             WITH this
@@ -396,12 +393,12 @@ describe("Cypher Auth Allow", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_creator0_rel:HAS_POST]-(this_disconnect_creator0:User)
-            WHERE this_disconnect_creator0.id = $updatePosts.args.disconnect.creator.where.node.id
+            WHERE this_disconnect_creator0.id = $updatePosts_args_disconnect_creator_where_Userparam0
             FOREACH(_ IN CASE WHEN this_disconnect_creator0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_creator0_rel
             )
             WITH this, this_disconnect_creator0
-            CALL apoc.util.validate(NOT (exists((this_disconnect_creator0)<-[:HAS_POST]-(:User)) AND all(creator IN [(this_disconnect_creator0)<-[:HAS_POST]-(creator:User) | creator] WHERE creator.id IS NOT NULL AND creator.id = $this_disconnect_creator0Post0_bind_auth_bind0_creator_id) AND this_disconnect_creator0.id IS NOT NULL AND this_disconnect_creator0.id = $this_disconnect_creator0User1_bind_auth_bind0_id), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((exists((this_disconnect_creator0)<-[:HAS_POST]-(:\`User\`)) AND all(creator IN [(this_disconnect_creator0)<-[:HAS_POST]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_disconnect_creator0Post0_bind_auth_bind0_creator_id))) AND (this_disconnect_creator0.id IS NOT NULL AND this_disconnect_creator0.id = $this_disconnect_creator0User1_bind_auth_bind0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN count(*) AS _
             }
             WITH this
@@ -418,10 +415,7 @@ describe("Cypher Auth Allow", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"post-id\\",
-                \\"node\\": {
-                    \\"id\\": \\"user-id\\"
-                },
-                \\"id\\": \\"user-id\\",
+                \\"updatePosts_args_disconnect_creator_where_Userparam0\\": \\"user-id\\",
                 \\"this_disconnect_creator0Post0_bind_auth_bind0_creator_id\\": \\"id-01\\",
                 \\"this_disconnect_creator0User1_bind_auth_bind0_id\\": \\"id-01\\",
                 \\"updatePosts\\": {
