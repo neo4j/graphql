@@ -2498,7 +2498,7 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/jest": 28.1.6
     "@types/node": 16.11.47
-    amqplib: ^0.10.0
+    amqplib: 0.10.2
     apollo-server: 3.10.1
     apollo-server-express: 3.10.1
     camelcase: 6.3.0
@@ -4264,15 +4264,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"amqplib@npm:^0.10.0":
-  version: 0.10.0
-  resolution: "amqplib@npm:0.10.0"
+"amqplib@npm:0.10.2":
+  version: 0.10.2
+  resolution: "amqplib@npm:0.10.2"
   dependencies:
     bitsyntax: ~0.1.0
     buffer-more-ints: ~1.0.0
     readable-stream: 1.x >=1.1.9
     url-parse: ~1.5.10
-  checksum: d4273af395e4fbb0c0c17b9b93ef6f8e64394788a01e9722f785ef17e6062c4caad07824d610e879fcd2e4098e317492a876ae26cd4a08aa956c927050ab6cb3
+  checksum: aa52b7f807d031d724cc59b26f8dc7ed2781932d759da0a474c07e152d9575072e3a8ba311514df3d5f623b8a97f0801d0cd38a3a30fd77cd16acbbc95f0f319
   languageName: node
   linkType: hard
 
