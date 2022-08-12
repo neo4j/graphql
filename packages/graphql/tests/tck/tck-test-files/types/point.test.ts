@@ -413,17 +413,17 @@ describe("Cypher Points", () => {
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
             req,
-            neo4jVersion: "4.4"
+            neo4jVersion: "4.4",
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
             WHERE point.distance(this.point, point($param0.point)) < $param0.distance
-            RETURN this { point: apoc.cypher.runFirstColumn('RETURN
+            RETURN this { point: apoc.cypher.runFirstColumnSingle('RETURN
             CASE
             	WHEN this.point IS NOT NULL THEN { point: this.point }
             	ELSE NULL
-            END AS result',{ this: this },false) } as this"
+            END AS result',{ this: this }) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -454,17 +454,17 @@ describe("Cypher Points", () => {
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
             req,
-            neo4jVersion: "4.4"
+            neo4jVersion: "4.4",
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
             WHERE point.distance(this.point, point($param0.point)) <= $param0.distance
-            RETURN this { point: apoc.cypher.runFirstColumn('RETURN
+            RETURN this { point: apoc.cypher.runFirstColumnSingle('RETURN
             CASE
             	WHEN this.point IS NOT NULL THEN { point: this.point }
             	ELSE NULL
-            END AS result',{ this: this },false) } as this"
+            END AS result',{ this: this }) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -495,17 +495,17 @@ describe("Cypher Points", () => {
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
             req,
-            neo4jVersion: "4.4"
+            neo4jVersion: "4.4",
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
             WHERE point.distance(this.point, point($param0.point)) > $param0.distance
-            RETURN this { point: apoc.cypher.runFirstColumn('RETURN
+            RETURN this { point: apoc.cypher.runFirstColumnSingle('RETURN
             CASE
             	WHEN this.point IS NOT NULL THEN { point: this.point }
             	ELSE NULL
-            END AS result',{ this: this },false) } as this"
+            END AS result',{ this: this }) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -536,17 +536,17 @@ describe("Cypher Points", () => {
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
             req,
-            neo4jVersion: "4.4"
+            neo4jVersion: "4.4",
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
             WHERE point.distance(this.point, point($param0.point)) >= $param0.distance
-            RETURN this { point: apoc.cypher.runFirstColumn('RETURN
+            RETURN this { point: apoc.cypher.runFirstColumnSingle('RETURN
             CASE
             	WHEN this.point IS NOT NULL THEN { point: this.point }
             	ELSE NULL
-            END AS result',{ this: this },false) } as this"
+            END AS result',{ this: this }) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -579,17 +579,17 @@ describe("Cypher Points", () => {
         const req = createJwtRequest("secret", {});
         const result = await translateQuery(neoSchema, query, {
             req,
-            neo4jVersion: "4.4"
+            neo4jVersion: "4.4",
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
             WHERE point.distance(this.point, point($param0.point)) = $param0.distance
-            RETURN this { point: apoc.cypher.runFirstColumn('RETURN
+            RETURN this { point: apoc.cypher.runFirstColumnSingle('RETURN
             CASE
             	WHEN this.point IS NOT NULL THEN { point: this.point }
             	ELSE NULL
-            END AS result',{ this: this },false) } as this"
+            END AS result',{ this: this }) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
