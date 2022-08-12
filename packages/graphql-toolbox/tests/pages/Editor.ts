@@ -57,7 +57,23 @@ export class Editor extends Screen {
         return output as unknown as string;
     }
 
+    public async showSchemaDocs() {
+        await this.page.waitForSelector("[data-test-explorer-show-docs-switch]");
+        await this.page.check("[data-test-explorer-show-docs-switch]");
+        await this.page.waitForSelector("[data-test-doc-explorer-close-button]");
+    }
+
+    public async hideSchemaDocs() {
+        await this.page.waitForSelector("[data-test-doc-explorer-close-button]");
+        await this.page.uncheck("[data-test-explorer-show-docs-switch]");
+    }
+
     public async awaitSuccess() {
         await this.page.waitForSelector("[data-test-schema-editor-build-button]");
+    }
+
+    public async goToTypeDefinitionView() {
+        await this.page.waitForSelector("[data-test-view-selector-type-defs]");
+        await this.page.click("[data-test-view-selector-type-defs]");
     }
 }

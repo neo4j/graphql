@@ -27,6 +27,7 @@ describe("login", () => {
         await loginPage.setPassword(NEO_PASSWORD);
         await loginPage.setURL(NEO_URL);
         await loginPage.submit();
+        await loginPage.dismissIntrospectionPrompt();
         await loginPage.awaitSuccess();
     });
 });

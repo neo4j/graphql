@@ -120,7 +120,7 @@ const EditorScreenDrawer = ({
     setShowSubComponent: Dispatch<SetStateAction<boolean>>;
     schema?: GraphQLSchema;
 }) => {
-    const [selectedTile, setSelectedTile] = useState("");
+    const [selectedTile, setSelectedTile] = useState<string>("");
 
     const handleOnClickSchemaDocTile = () => {
         setSelectedTile(EditorViewTiles.SCHEMA_DOCS.toString());
@@ -161,7 +161,7 @@ const EditorScreenDrawer = ({
 
 export const HelpDrawer = ({ onClickClose, schema }: Props) => {
     const screen = useContext(ScreenContext);
-    const [showSubComponent, setShowSubComponent] = useState(false);
+    const [showSubComponent, setShowSubComponent] = useState<boolean>(false);
 
     return (
         <div className="p-6 w-full" data-test-help-drawer>

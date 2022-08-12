@@ -27,7 +27,7 @@ import { translateTopLevelMatch } from "./translate-top-level-match";
 function translateAggregate({ node, context }: { node: Node; context: Context }): [string, any] {
     const { fieldsByTypeName } = context.resolveTree;
     const varName = "this";
-    let cypherParams: { [k: string]: any } = {};
+    let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
     const cypherStrs: string[] = [];
 
     const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "READ" });

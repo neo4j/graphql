@@ -29,11 +29,11 @@ import { getConnectUrlSearchParamValue } from "../../contexts/utils";
 
 export const Login = () => {
     const auth = useContext(AuthContext);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
     const { url: searchParamUrl, username: searchParamUsername } = getConnectUrlSearchParamValue() || {};
-    const [url, setUrl] = useState(searchParamUrl || DEFAULT_BOLT_URL);
-    const [username, setUsername] = useState(searchParamUsername || DEFAULT_USERNAME);
+    const [url, setUrl] = useState<string>(searchParamUrl || DEFAULT_BOLT_URL);
+    const [username, setUsername] = useState<string>(searchParamUsername || DEFAULT_USERNAME);
 
     const onSubmit = useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {
@@ -59,7 +59,7 @@ export const Login = () => {
     );
 
     return (
-        <div className="grid place-items-center h-screen n-bg-neutral-90">
+        <div data-test-login-form className="grid place-items-center h-screen n-bg-neutral-90">
             <div className="w-login flex flex-col align-center justify-center bg-white shadow-md rounded p-8">
                 <div className="mb-6 text-center">
                     <img src={Icon} alt="Neo4j Logo" className="h-12 w-12 mx-auto" />
