@@ -378,16 +378,16 @@ export default async function translateUpdate({
             resolveTree: nodeProjection,
             varName,
         });
-        [projStr] = projection;
-        cypherParams = { ...cypherParams, ...projection[1] };
-        if (projection[2]?.authValidateStrs?.length) {
-            projAuth = `CALL apoc.util.validate(NOT (${projection[2].authValidateStrs.join(
+        projStr = projection.projection;
+        cypherParams = { ...cypherParams, ...projection.params };
+        if (projection.meta?.authValidateStrs?.length) {
+            projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
                 " AND "
             )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
         }
 
-        if (projection[2]?.connectionFields?.length) {
-            projection[2].connectionFields.forEach((connectionResolveTree) => {
+        if (projection.meta?.connectionFields?.length) {
+            projection.meta.connectionFields.forEach((connectionResolveTree) => {
                 const connectionField = node.connectionFields.find(
                     (x) => x.fieldName === connectionResolveTree.name
                 ) as ConnectionField;
@@ -403,9 +403,9 @@ export default async function translateUpdate({
             });
         }
 
-        if (projection[2]?.interfaceFields?.length) {
+        if (projection.meta?.interfaceFields?.length) {
             const prevRelationshipFields: string[] = [];
-            projection[2].interfaceFields.forEach((interfaceResolveTree) => {
+            projection.meta.interfaceFields.forEach((interfaceResolveTree) => {
                 const relationshipField = node.relationFields.find(
                     (x) => x.fieldName === interfaceResolveTree.name
                 ) as RelationField;
