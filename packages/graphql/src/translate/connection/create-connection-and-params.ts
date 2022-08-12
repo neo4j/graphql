@@ -35,6 +35,7 @@ import filterInterfaceNodes from "../../utils/filter-interface-nodes";
 import { asArray, isString, removeDuplicates } from "../../utils/utils";
 import { generateMissingOrAliasedFields } from "../utils/resolveTree";
 import { getRelationshipDirectionStr } from "../../utils/get-relationship-direction";
+import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 
 function createConnectionAndParams({
     resolveTree,
@@ -371,13 +372,14 @@ function createConnectionAndParams({
             subquery.push(`ORDER BY ${sort.join(", ")}`);
         }
 
-        const nestedSubqueries: string[] = [];
-
         if (node) {
+            const nestedSubqueries: string[] = [];
+
             const {
                 projection: nodeProjection,
                 params: nodeProjectionParams,
                 meta: projectionMeta,
+                subqueries: projectionSubqueries,
             } = createProjectionAndParams({
                 resolveTree: node,
                 node: relatedNode,
@@ -385,6 +387,7 @@ function createConnectionAndParams({
                 varName: relatedNodeVariable,
                 literalElements: true,
             });
+
             elementsToCollect.push(`node: ${nodeProjection}`);
             globalParams = { ...globalParams, ...nodeProjectionParams };
 
@@ -434,9 +437,16 @@ function createConnectionAndParams({
                     }
                 });
             }
+            if (nestedSubqueries.length) subquery.push(nestedSubqueries.join("\n"));
+            if (projectionSubqueries.length > 0) {
+                const projectionQuery = CypherBuilder.concat(...projectionSubqueries);
+                const projectionSubqueryResult = projectionQuery.build(`${relatedNodeVariable}_connection`);
+
+                subquery.push(projectionSubqueryResult.cypher);
+                globalParams = { ...globalParams, ...projectionSubqueryResult.params };
+            }
         }
 
-        if (nestedSubqueries.length) subquery.push(nestedSubqueries.join("\n"));
         subquery.push(`WITH collect({ ${elementsToCollect.join(", ")} }) AS edges`);
     }
 
