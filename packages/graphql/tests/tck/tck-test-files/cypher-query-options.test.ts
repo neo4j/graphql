@@ -45,6 +45,100 @@ describe("Cypher query options", () => {
         neoSchema = undefined;
     });
 
+    test("can be set in environment variables", async () => {
+        process.env.CYPHER_RUNTIME = "interpreted";
+
+        // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
+        const { Neo4jGraphQL: Neo4jGraphQLWithEnvironment } = require("../../../src");
+
+        const query = gql`
+            {
+                movies {
+                    title
+                }
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQLWithEnvironment({
+            typeDefs,
+            config: { queryOptions: { runtime: CypherRuntime.INTERPRETED } },
+        });
+
+        const result = await translateQuery(neoSchema!, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER runtime=interpreted
+            MATCH (this:\`Movie\`)
+            RETURN this { .title } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("set in constructor are overridden by environment variables", async () => {
+        process.env.CYPHER_RUNTIME = "interpreted";
+
+        // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
+        const { Neo4jGraphQL: Neo4jGraphQLWithEnvironment } = require("../../../src");
+
+        const query = gql`
+            {
+                movies {
+                    title
+                }
+            }
+        `;
+
+        neoSchema = new Neo4jGraphQLWithEnvironment({
+            typeDefs,
+            config: { queryOptions: { runtime: CypherRuntime.SLOTTED } },
+        });
+
+        const result = await translateQuery(neoSchema!, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER runtime=slotted
+            MATCH (this:\`Movie\`)
+            RETURN this { .title } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
+    test("set in context override all other definitions", async () => {
+        process.env.CYPHER_RUNTIME = "interpreted";
+
+        // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
+        const { Neo4jGraphQL: Neo4jGraphQLWithEnvironment } = require("../../../src");
+
+        const query = gql`
+            {
+                movies {
+                    title
+                }
+            }
+        `;
+
+        process.env.CYPHER_RUNTIME = "interpreted";
+
+        neoSchema = new Neo4jGraphQLWithEnvironment({
+            typeDefs,
+            config: { queryOptions: { runtime: CypherRuntime.SLOTTED } },
+        });
+
+        const result = await translateQuery(neoSchema!, query, {
+            contextValue: { queryOptions: { runtime: CypherRuntime.PIPELINED } },
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER runtime=pipelined
+            MATCH (this:\`Movie\`)
+            RETURN this { .title } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
     test("can be set in the constructor", async () => {
         const query = gql`
             {
