@@ -112,6 +112,35 @@ describe("Global authentication - Auth JWT plugin", () => {
         expect(gqlResult.data).toBeNull();
     });
 
+    test("should fail if a JWT token with a wrong secret is present and global authentication is enabled", async () => {
+        const neoSchema = new Neo4jGraphQL({
+            driver,
+            typeDefs,
+            plugins: {
+                auth: new Neo4jGraphQLAuthJWTPlugin({
+                    secret,
+                    globalAuthentication: true,
+                }),
+            },
+        });
+
+        const req = createJwtRequest("wrong-secret", { sub: "test" });
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValues({ req }),
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+        expect(
+            (gqlResult.errors as unknown as Neo4jGraphQLAuthenticationError[]).some((el) =>
+                el.message.includes("Enabled global authentication requires a valid JWT token")
+            )
+        ).toBeTruthy();
+        expect(gqlResult.data).toBeNull();
+    });
+
     test("should fail if noVerify and global authentication are both enabled", async () => {
         let initError: Error | null | unknown;
         try {
