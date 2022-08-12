@@ -1,6 +1,5 @@
 ---
 "@neo4j/graphql-toolbox": minor
-"@neo4j/graphql": patch
 ---
 
 feat: Toolbox restructure after UX feedback
