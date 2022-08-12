@@ -23,7 +23,7 @@ import { FormInput } from "./FormInput";
 import { Button } from "@neo4j-ndl/react";
 import { DEFAULT_BOLT_URL, DEFAULT_USERNAME } from "../../constants";
 // @ts-ignore - SVG Import
-import Icon from "../../assets/toolbox-icon.svg";
+import Icon from "../../assets/neo4j-color.svg";
 import { AuthContext } from "../../contexts/auth";
 import { getConnectUrlSearchParamValue } from "../../contexts/utils";
 
