@@ -55,7 +55,6 @@ export interface Neo4jGraphQLConfig {
     skipValidateTypeDefs?: boolean;
     queryOptions?: CypherQueryOptions;
     callbacks?: Neo4jGraphQLCallbacks;
-    dbVersion?: Neo4jDatabaseInfo;
 }
 
 export type Neo4jVersion = {

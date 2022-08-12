@@ -39,7 +39,6 @@ export class ContextBuilder extends Builder<Context, Context> {
             subscriptionsEnabled: false,
             executionContext: {} as neo4j.Driver,
             executor: new Executor({ executionContext: {} as neo4j.Driver, auth: {} as AuthContext }),
-            neo4jDatabaseInfo: {} as Neo4jDatabaseInfo,
             ...newOptions,
         });
     }

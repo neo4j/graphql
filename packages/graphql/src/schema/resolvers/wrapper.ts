@@ -124,8 +124,6 @@ export const wrapResolver =
             }
             context.neo4jDatabaseInfo = neo4jDatabaseInfo;
         }
-
-        executorConstructorParam.neo4jDatabaseInfo = context.neo4jDatabaseInfo;
         context.executor = new Executor(executorConstructorParam);
 
         return next(root, args, context, info);

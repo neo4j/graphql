@@ -32,7 +32,6 @@ import {
     DEBUG_EXECUTE,
     RELATIONSHIP_REQUIREMENT_PREFIX,
 } from "../constants";
-import type { Neo4jDatabaseInfo } from "./Neo4jGraphQL";
 import type { AuthContext, CypherQueryOptions } from "../types";
 
 const debug = Debug(DEBUG_EXECUTE);
@@ -77,7 +76,6 @@ export type ExecutorConstructorParam = {
     queryOptions?: CypherQueryOptions;
     database?: string;
     bookmarks?: string | string[];
-    neo4jDatabaseInfo?: Neo4jDatabaseInfo;
 };
 
 export class Executor {
@@ -90,7 +88,6 @@ export class Executor {
 
     private database: string | undefined;
     private bookmarks: string | string[] | undefined;
-    private neo4jDatabaseInfo: Neo4jDatabaseInfo | undefined;
 
     constructor({
         executionContext,
@@ -98,7 +95,6 @@ export class Executor {
         queryOptions,
         database,
         bookmarks,
-        neo4jDatabaseInfo,
     }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.lastBookmark = null;
@@ -106,7 +102,6 @@ export class Executor {
         this.auth = auth;
         this.database = database;
         this.bookmarks = bookmarks;
-        this.neo4jDatabaseInfo = neo4jDatabaseInfo;
     }
 
     public async execute(query: string, parameters: any, defaultAccessMode: SessionMode): Promise<QueryResult> {
