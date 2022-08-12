@@ -17,24 +17,23 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "./Environment";
-import type { Clause } from "./clauses/Clause";
-import { CypherASTNode } from "./CypherASTNode";
-import { padBlock } from "./utils";
+import { CypherASTNode } from "../../CypherASTNode";
+import type { CypherEnvironment } from "../../Environment";
+import type { Predicate } from "../../types";
 
-export class Exists extends CypherASTNode {
-    private subQuery: CypherASTNode;
+export class ValidatePredicate extends CypherASTNode {
+    private predicate: Predicate;
+    private message: string | undefined;
 
-    constructor(subQuery: Clause, parent?: CypherASTNode) {
-        super(parent);
-        const rootQuery = subQuery.getRoot();
-        this.addChildren(rootQuery);
-        this.subQuery = rootQuery;
+    constructor(predicate: Predicate, message?: string) {
+        super();
+        this.predicate = predicate;
+        this.message = message;
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const subQueryStr = this.subQuery.getCypher(env);
-        const paddedSubQuery = padBlock(subQueryStr);
-        return `EXISTS {\n${paddedSubQuery}\n}`;
+        const predicateCypher = this.predicate.getCypher(env);
+        const messageStr = this.message ? `, "${this.message}"` : "";
+        return `apoc.util.validatePredicate(${predicateCypher}${messageStr}, [0])`;
     }
 }

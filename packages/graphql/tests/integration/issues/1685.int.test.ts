@@ -49,13 +49,13 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
                 id: ID
                 title: String
             }
-            
+
             type ${movieType.name} implements ${productionType.name} {
                 id: ID
                 title: String
                 genres: [${genreType.name}!]! @relationship(type: "HAS_GENRE", direction: OUT)
             }
-            
+
             type ${genreType.name} {
                 name: String
                 movies: [${productionType.name}!]! @relationship(type: "HAS_GENRE", direction: IN)
@@ -105,9 +105,8 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
 
         const result = await graphqlQuery(query);
         expect(result.errors).toBeUndefined();
-        expect((result?.data as any)[genreType.plural]).toHaveLength(3);
         expect((result?.data as any)[genreType.plural]).toEqual(
-            expect.arrayContaining([
+            expect.toIncludeSameMembers([
                 {
                     name: "Sci-fi",
                     moviesConnection: {

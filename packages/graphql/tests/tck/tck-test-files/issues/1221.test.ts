@@ -90,11 +90,11 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             CALL {
             WITH this
             MATCH (this)-[this_architecture_relationship:ARCHITECTURE]->(this_masterdata:MasterData)
-            WHERE this_architecture_relationship.current = $this_architectureConnection.args.where.edge.current
+            WHERE this_architecture_relationship.current = $this_architectureConnection_args_where_MasterDataparam0
             CALL {
             WITH this_masterdata
             MATCH (this_masterdata)-[this_masterdata_has_name_relationship:HAS_NAME]->(this_masterdata_namedetails:NameDetails)
-            WHERE this_masterdata_has_name_relationship.current = $this_architectureConnection.edges.node.nameDetailsConnection.args.where.edge.current
+            WHERE this_masterdata_has_name_relationship.current = $this_architectureConnection_edges_node_nameDetailsConnection_args_where_NameDetailsparam0
             WITH collect({ node: { fullName: this_masterdata_namedetails.fullName } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -112,6 +112,8 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             "{
                 \\"param0\\": true,
                 \\"param1\\": \\"MHA\\",
+                \\"this_architectureConnection_args_where_MasterDataparam0\\": true,
+                \\"this_architectureConnection_edges_node_nameDetailsConnection_args_where_NameDetailsparam0\\": true,
                 \\"this_architectureConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -218,15 +220,15 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             CALL {
             WITH this
             MATCH (this)-[this_main_relationship:MAIN]->(this_series:Series)
-            WHERE this_main_relationship.current = $this_mainConnection.args.where.edge.current
+            WHERE this_main_relationship.current = $this_mainConnection_args_where_Seriesparam0
             CALL {
             WITH this_series
             MATCH (this_series)-[this_series_architecture_relationship:ARCHITECTURE]->(this_series_masterdata:MasterData)
-            WHERE this_series_architecture_relationship.current = $this_mainConnection.edges.node.architectureConnection.args.where.edge.current
+            WHERE this_series_architecture_relationship.current = $this_mainConnection_edges_node_architectureConnection_args_where_MasterDataparam0
             CALL {
             WITH this_series_masterdata
             MATCH (this_series_masterdata)-[this_series_masterdata_has_name_relationship:HAS_NAME]->(this_series_masterdata_namedetails:NameDetails)
-            WHERE this_series_masterdata_has_name_relationship.current = $this_mainConnection.edges.node.architectureConnection.edges.node.nameDetailsConnection.args.where.edge.current
+            WHERE this_series_masterdata_has_name_relationship.current = $this_mainConnection_edges_node_architectureConnection_edges_node_nameDetailsConnection_args_where_NameDetailsparam0
             WITH collect({ node: { fullName: this_series_masterdata_namedetails.fullName } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -249,6 +251,9 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             "{
                 \\"param0\\": true,
                 \\"param1\\": \\"MHA\\",
+                \\"this_mainConnection_args_where_Seriesparam0\\": true,
+                \\"this_mainConnection_edges_node_architectureConnection_args_where_MasterDataparam0\\": true,
+                \\"this_mainConnection_edges_node_architectureConnection_edges_node_nameDetailsConnection_args_where_NameDetailsparam0\\": true,
                 \\"this_mainConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

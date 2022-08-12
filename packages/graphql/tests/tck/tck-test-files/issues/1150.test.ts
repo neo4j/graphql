@@ -114,20 +114,20 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             CALL {
             WITH this
             MATCH (this)-[this_consists_of_relationship:CONSISTS_OF]->(this_drivecomposition:DriveComposition)
-            WHERE this_consists_of_relationship.current = $this_driveCompositionsConnection.args.where.edge.current
+            WHERE this_consists_of_relationship.current = $this_driveCompositionsConnection_args_where_DriveCompositionparam0
             CALL {
             WITH this_drivecomposition
             CALL {
             WITH this_drivecomposition
             MATCH (this_drivecomposition)-[this_drivecomposition_has_relationship:HAS]->(this_drivecomposition_Battery:Battery)
-            WHERE this_drivecomposition_has_relationship.current = $this_driveCompositionsConnection.edges.node.driveComponentConnection.args.where.Battery.edge.current
-            CALL apoc.util.validate(NOT ((any(r IN [\\"admin\\"] WHERE any(rr IN $auth.roles WHERE r = rr)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE this_drivecomposition_has_relationship.current = $this_driveCompositionsConnection_edges_node_driveComponentConnection_args_where_Battery_Batteryparam0
+            CALL apoc.util.validate(NOT ((any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH { current: this_drivecomposition_has_relationship.current, node: { __resolveType: \\"Battery\\", id: this_drivecomposition_Battery.id } } AS edge
             RETURN edge
             UNION
             WITH this_drivecomposition
             MATCH (this_drivecomposition)-[this_drivecomposition_has_relationship:HAS]->(this_drivecomposition_CombustionEngine:CombustionEngine)
-            WHERE this_drivecomposition_has_relationship.current = $this_driveCompositionsConnection.edges.node.driveComponentConnection.args.where.CombustionEngine.edge.current
+            WHERE this_drivecomposition_has_relationship.current = $this_driveCompositionsConnection_edges_node_driveComponentConnection_args_where_CombustionEngine_CombustionEngineparam0
             WITH { current: this_drivecomposition_has_relationship.current, node: { __resolveType: \\"CombustionEngine\\", id: this_drivecomposition_CombustionEngine.id } } AS edge
             RETURN edge
             }
@@ -147,6 +147,9 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
+                \\"this_driveCompositionsConnection_args_where_DriveCompositionparam0\\": true,
+                \\"this_driveCompositionsConnection_edges_node_driveComponentConnection_args_where_Battery_Batteryparam0\\": true,
+                \\"this_driveCompositionsConnection_edges_node_driveComponentConnection_args_where_CombustionEngine_CombustionEngineparam0\\": true,
                 \\"this_driveCompositionsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

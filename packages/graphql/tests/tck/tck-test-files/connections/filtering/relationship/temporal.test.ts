@@ -88,7 +88,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_acted_in_relationship.startDate > $this_actorsConnection.args.where.edge.startDate_GT AND this_acted_in_relationship.endDateTime < $this_actorsConnection.args.where.edge.endDateTime_LT
+            WHERE (this_acted_in_relationship.startDate > $this_actorsConnection_args_where_Actorparam0 AND this_acted_in_relationship.endDateTime < $this_actorsConnection_args_where_Actorparam1)
             WITH collect({ startDate: this_acted_in_relationship.startDate, endDateTime: apoc.date.convertFormat(toString(this_acted_in_relationship.endDateTime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -99,6 +99,21 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_actorsConnection_args_where_Actorparam0\\": {
+                    \\"year\\": 2000,
+                    \\"month\\": 1,
+                    \\"day\\": 1
+                },
+                \\"this_actorsConnection_args_where_Actorparam1\\": {
+                    \\"year\\": 2010,
+                    \\"month\\": 1,
+                    \\"day\\": 1,
+                    \\"hour\\": 0,
+                    \\"minute\\": 0,
+                    \\"second\\": 0,
+                    \\"nanosecond\\": 0,
+                    \\"timeZoneOffsetSeconds\\": 0
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

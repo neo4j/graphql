@@ -79,13 +79,19 @@ export async function translateQuery(
         req?: IncomingMessage;
         variableValues?: Record<string, any>;
         neo4jVersion?: string;
+        contextValues?: Record<string, any>;
     }
 ): Promise<{ cypher: string; params: Record<string, any> }> {
     const driverBuilder = new DriverBuilder();
     const neo4jDatabaseInfo = new Neo4jDatabaseInfo(options?.neo4jVersion ?? "4.3");
-    const contextValue: Record<string, any> = { driver: driverBuilder.instance(), neo4jDatabaseInfo};
+    let contextValue: Record<string, any> = { driver: driverBuilder.instance(), neo4jDatabaseInfo};
+
     if (options?.req) {
         contextValue.req = options.req;
+    }
+
+    if (options?.contextValues) {
+        contextValue = { ...contextValue, ...options.contextValues };
     }
 
     const graphqlArgs: GraphQLArgs = {

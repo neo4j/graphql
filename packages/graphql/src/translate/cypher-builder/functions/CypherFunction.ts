@@ -35,10 +35,10 @@ type FunctionType =
     | "max";
 
 export class CypherFunction extends CypherASTNode {
-    protected name: FunctionType;
+    protected name: string;
     private params: Array<Expr>;
 
-    constructor(name: FunctionType, params: Array<Expr> = []) {
+    constructor(name: string, params: Array<Expr> = []) {
         super();
         this.name = name;
         this.params = params;
@@ -80,16 +80,22 @@ export function cypherDatetime(): CypherFunction {
     return new CypherFunction("datetime");
 }
 
-export function size(expr: Expr): CypherFunction {
-    return new CypherFunction("size", [expr]);
-}
-
 export function count(expr: Expr): CypherFunction {
     return new CypherFunction("count", [expr]);
 }
+
 export function min(expr: Expr): CypherFunction {
     return new CypherFunction("min", [expr]);
 }
+
 export function max(expr: Expr): CypherFunction {
     return new CypherFunction("max", [expr]);
+}
+
+export function avg(expr: Expr): CypherFunction {
+    return new CypherFunction("avg", [expr]);
+}
+
+export function sum(expr: Expr): CypherFunction {
+    return new CypherFunction("sum", [expr]);
 }

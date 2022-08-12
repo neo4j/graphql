@@ -134,10 +134,10 @@ describe("CypherBuilder Match", () => {
 
         const queryResult = matchQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
-                "MATCH (this0:\`Movie\`)
-                WHERE NOT this0.name = $param0
-                RETURN this0"
-            `);
+            "MATCH (this0:\`Movie\`)
+            WHERE NOT (this0.name = $param0)
+            RETURN this0"
+        `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`
                 Object {
@@ -245,7 +245,7 @@ describe("CypherBuilder Match", () => {
         const queryResult = queryMatch.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "MATCH (this0:\`Movie\`)
-            WHERE NOT this0.title = $param0"
+            WHERE NOT (this0.title = $param0)"
         `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`

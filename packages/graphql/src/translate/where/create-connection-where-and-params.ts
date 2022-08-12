@@ -19,10 +19,10 @@
 
 import type { Node, Relationship } from "../../classes";
 import type { ConnectionWhereArg, Context } from "../../types";
-import createElementWhereAndParams from "./create-element-where-and-params";
-import type { ListPredicate } from "./utils";
+import * as CypherBuilder from "../cypher-builder/CypherBuilder";
+import { createConnectionWherePropertyOperation } from "./property-operations/create-connection-operation";
 
-function createConnectionWhereAndParams({
+export default function createConnectionWhereAndParams({
     whereInput,
     context,
     node,
@@ -30,7 +30,6 @@ function createConnectionWhereAndParams({
     relationship,
     relationshipVariable,
     parameterPrefix,
-    listPredicates,
 }: {
     whereInput: ConnectionWhereArg;
     context: Context;
@@ -39,106 +38,26 @@ function createConnectionWhereAndParams({
     relationship: Relationship;
     relationshipVariable: string;
     parameterPrefix: string;
-    listPredicates?: ListPredicate[];
 }): [string, any] {
-    const reduced = Object.entries(whereInput).reduce<{ whereStrs: string[]; params: any }>(
-        (res, [k, v]) => {
-            if (["AND", "OR"].includes(k)) {
-                const innerClauses: string[] = [];
-                const innerParams: any[] = [];
+    const nodeRef = new CypherBuilder.NamedNode(nodeVariable);
+    const edgeRef = new CypherBuilder.NamedVariable(relationshipVariable);
 
-                v.forEach((o, i) => {
-                    const or = createConnectionWhereAndParams({
-                        whereInput: o,
-                        node,
-                        nodeVariable,
-                        relationship,
-                        relationshipVariable,
-                        context,
-                        parameterPrefix: `${parameterPrefix}.${k}[${i}]`,
-                    });
+    const andOp = createConnectionWherePropertyOperation({
+        context,
+        whereInput,
+        edgeRef,
+        targetNode: nodeRef,
+        node,
+        edge: relationship,
+    });
 
-                    innerClauses.push(`${or[0]}`);
-                    innerParams.push(or[1]);
-                });
+    const whereCypher = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+        const cypher = andOp?.getCypher(env) || "";
 
-                const whereStrs = [...res.whereStrs, `(${innerClauses.filter((clause) => !!clause).join(` ${k} `)})`];
-                const params = { ...res.params, [k]: innerParams };
-                return { whereStrs, params };
-            }
+        return [cypher, {}];
+    });
 
-            if (k.startsWith("edge")) {
-                const relationshipWhere = createElementWhereAndParams({
-                    whereInput: v,
-                    element: relationship,
-                    varName: relationshipVariable,
-                    context,
-                    parameterPrefix: `${parameterPrefix}.${k}`,
-                    listPredicates,
-                });
-                const whereStrs = [
-                    ...res.whereStrs,
-                    k === "edge_NOT" ? `(NOT ${relationshipWhere[0]})` : relationshipWhere[0],
-                ];
-                const params = { ...res.params, [k]: relationshipWhere[1] };
-                return { whereStrs, params };
-            }
-
-            if (k.startsWith("node") || k.startsWith(node.name)) {
-                let { whereStrs } = res;
-                let { params } = res;
-
-                if (Object.keys(v).length === 1 && v._on && !Object.prototype.hasOwnProperty.call(v._on, node.name)) {
-                    throw new Error("_on is used as the only argument and node is not present within");
-                }
-
-                const rootNodeWhere = createElementWhereAndParams({
-                    whereInput: {
-                        ...Object.entries(v).reduce((args, [key, value]) => {
-                            if (key !== "_on") {
-                                if (v?._on?.[node.name]?.[key]) {
-                                    return args;
-                                }
-                                return { ...args, [key]: value };
-                            }
-
-                            return args;
-                        }, {}),
-                    },
-                    element: node,
-                    varName: nodeVariable,
-                    context,
-                    parameterPrefix: `${parameterPrefix}.${k}`,
-                    listPredicates,
-                });
-
-                if (rootNodeWhere[0]) {
-                    whereStrs = [...whereStrs, k.endsWith("_NOT") ? `(NOT ${rootNodeWhere[0]})` : rootNodeWhere[0]];
-                    params = { ...params, [k]: rootNodeWhere[1] };
-                    res = { whereStrs, params };
-                }
-
-                if (v?._on?.[node.name]) {
-                    const onTypeNodeWhere = createElementWhereAndParams({
-                        whereInput: v._on[node.name],
-                        element: node,
-                        varName: nodeVariable,
-                        context,
-                        parameterPrefix: `${parameterPrefix}.${k}._on.${node.name}`,
-                        listPredicates,
-                    });
-
-                    whereStrs = [...whereStrs, k.endsWith("_NOT") ? `(NOT ${onTypeNodeWhere[0]})` : onTypeNodeWhere[0]];
-                    params = { ...params, [k]: { _on: { [node.name]: onTypeNodeWhere[1] } } };
-                    res = { whereStrs, params };
-                }
-            }
-            return res;
-        },
-        { whereStrs: [], params: {} }
-    );
-
-    return [reduced.whereStrs.join(" AND "), reduced.params];
+    // NOTE: the following prefix is just to avoid collision until this is refactored into a single cypher ast
+    const result = whereCypher.build(`${parameterPrefix.replace(/\./g, "_").replace(/\[|\]/g, "")}_${node.name}`);
+    return [result.cypher, result.params];
 }
-
-export default createConnectionWhereAndParams;

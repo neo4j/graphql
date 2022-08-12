@@ -61,9 +61,9 @@ describe("Cypher Aggregations where with count", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN count(aggr_node) = $aggr_count
-            \\", { this: this, aggr_count: $aggr_count }, false )
+            \\", { this: this, aggr_count: $aggr_count })
             RETURN this { .content } as this"
         `);
 
@@ -93,9 +93,9 @@ describe("Cypher Aggregations where with count", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN count(aggr_node) < $aggr_count_LT
-            \\", { this: this, aggr_count_LT: $aggr_count_LT }, false )
+            \\", { this: this, aggr_count_LT: $aggr_count_LT })
             RETURN this { .content } as this"
         `);
 
@@ -125,9 +125,9 @@ describe("Cypher Aggregations where with count", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN count(aggr_node) <= $aggr_count_LTE
-            \\", { this: this, aggr_count_LTE: $aggr_count_LTE }, false )
+            \\", { this: this, aggr_count_LTE: $aggr_count_LTE })
             RETURN this { .content } as this"
         `);
 
@@ -157,9 +157,9 @@ describe("Cypher Aggregations where with count", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN count(aggr_node) > $aggr_count_GT
-            \\", { this: this, aggr_count_GT: $aggr_count_GT }, false )
+            \\", { this: this, aggr_count_GT: $aggr_count_GT })
             RETURN this { .content } as this"
         `);
 
@@ -189,9 +189,9 @@ describe("Cypher Aggregations where with count", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
-            WHERE apoc.cypher.runFirstColumn(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
+            WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN count(aggr_node) >= $aggr_count_GTE
-            \\", { this: this, aggr_count_GTE: $aggr_count_GTE }, false )
+            \\", { this: this, aggr_count_GTE: $aggr_count_GTE })
             RETURN this { .content } as this"
         `);
 
