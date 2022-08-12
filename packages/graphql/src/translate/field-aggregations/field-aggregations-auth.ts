@@ -19,7 +19,7 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
-import createAuthAndParams from "../create-auth-and-params";
+import { createAuthAndParams } from "../create-auth-and-params";
 import type { Context } from "../../types";
 import type { Node } from "../../classes";
 
