@@ -100,3 +100,4 @@ export type { ComprehensionExpr } from "./list/ComprehensionExpr";
 export type { ProjectionColumn } from "./sub-clauses/Projection";
 export type { SetParam } from "./sub-clauses/Set";
 export type { PredicateFunction } from "./functions/PredicateFunctions";
+export type { Order } from "./sub-clauses/OrderBy";

@@ -19,6 +19,7 @@
 
 import type { CypherEnvironment } from "../../Environment";
 import type { CypherCompilable, Expr } from "../../types";
+import type { Variable } from "../Variable";
 
 /** Represents a Map */
 export class MapExpr implements CypherCompilable {
@@ -44,3 +45,11 @@ export class MapExpr implements CypherCompilable {
         return `{ ${valuesList.join(", ")} }`;
     }
 }
+
+// TODO
+// export class MapProjection extends MapExpr {
+//     private baseVariable: Variable;
+//     private projectionValues: string[];
+
+//     select(value: string)
+// }

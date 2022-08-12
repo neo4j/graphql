@@ -33,14 +33,17 @@ import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
-import { getRelationshipDirectionStr } from "../utils/get-relationship-direction";
+import { getRelationshipDirection, getRelationshipDirectionStr } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
+import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import { createProjectionSubquery } from "./projection/elements/create-projection-subquery";
 
 interface Res {
     projection: string[];
     params: any;
     meta: ProjectionMeta;
+    subqueries: Array<CypherBuilder.Clause>;
 }
 
 export interface ProjectionMeta {
@@ -53,7 +56,8 @@ export interface ProjectionMeta {
 export type ProjectionResult = {
     projection: string;
     params: Record<string, any>;
-    meta: ProjectionMeta | undefined;
+    meta: ProjectionMeta;
+    subqueries: Array<CypherBuilder.Clause>;
 };
 
 export default function createProjectionAndParams({
@@ -330,6 +334,7 @@ export default function createProjectionAndParams({
             const { inStr, outStr } = getRelationshipDirectionStr(relationField, field.args);
 
             if (relationField.interface) {
+                // TODO: interfaces
                 if (!res.meta.interfaceFields) {
                     res.meta.interfaceFields = [];
                 }
@@ -361,6 +366,7 @@ export default function createProjectionAndParams({
             }
 
             if (relationField.union) {
+                // TODO: unions
                 const referenceNodes = context.nodes.filter(
                     (x) =>
                         relationField.union?.nodes?.includes(x.name) &&
@@ -466,6 +472,26 @@ export default function createProjectionAndParams({
                 isRootConnectionField,
             });
             res.params = { ...res.params, ...recurse.params };
+            // res.subqueries.push(...recurse.subqueries); // TODO: This should probably be nested in the subquery with CALL
+
+            const parentNode = new CypherBuilder.NamedNode(chainStr || varName); // TODO: improve this
+
+            const direction = getRelationshipDirection(relationField, field.args);
+            const subquery = createProjectionSubquery({
+                parentNode,
+                whereInput,
+                node: referenceNode || node, // Why || node?
+                context,
+                alias: param,
+                nestedProjection: recurse.projection,
+                nestedSubqueries: recurse.subqueries,
+                relationField,
+                relationshipDirection: direction,
+                optionsInput,
+            });
+
+            res.subqueries.push(subquery.subquery);
+            res.projection.push(`${alias}: ${param}`);
 
             let whereStr = "";
             const nodeWhereAndParams = createNodeWhereAndParams({
@@ -500,7 +526,7 @@ export default function createProjectionAndParams({
                 nestedQuery = `${alias}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${!isArray ? ")" : ""}`;
             }
 
-            res.projection.push(nestedQuery);
+            // res.projection.push(nestedQuery);
 
             return res;
         }
@@ -627,16 +653,18 @@ export default function createProjectionAndParams({
         generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
     ]);
 
-    const { projection, params, meta } = Object.values(mergedFields).reduce(reducer, {
+    const { projection, params, meta, subqueries } = Object.values(mergedFields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
         params: {},
         meta: {},
+        subqueries: [],
     });
 
     return {
         projection: `{ ${projection.join(", ")} }`,
         params,
         meta,
+        subqueries,
     };
 }
 
