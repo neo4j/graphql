@@ -2599,7 +2599,7 @@ __metadata:
     "@types/node": 16.11.47
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
-    "@types/semver": 7.3.10
+    "@types/semver": 7.3.12
     "@types/supertest": 2.0.12
     "@types/ws": 8.5.3
     apollo-server: 3.10.1
@@ -3575,10 +3575,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:7.3.10":
-  version: 7.3.10
-  resolution: "@types/semver@npm:7.3.10"
-  checksum: 7047c2822b1759b2b950f39cfcf261f2b9dca47b4b55bdebba0905a8553631f1531eb0f59264ffe4834d1198c8331c8e0010a4cd742f4e0b60abbf399d134364
+"@types/semver@npm:7.3.12":
+  version: 7.3.12
+  resolution: "@types/semver@npm:7.3.12"
+  checksum: 35536b2fc5602904f21cae681f6c9498e177dab3f54ae37c92f9a1b7e43c35f18bcd81e1c98c1cf0d33ee046bb06c771e9928c1c00a401d56a03f56549252a15
   languageName: node
   linkType: hard
 
