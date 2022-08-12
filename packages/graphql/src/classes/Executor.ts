@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Driver, Neo4jError, QueryResult, Result, ServerInfo, Session, SessionMode, Transaction } from "neo4j-driver";
+import { Driver, Neo4jError, QueryResult, Result, Session, SessionMode, Transaction } from "neo4j-driver";
 import Debug from "debug";
 import environment from "../environment";
 import {
@@ -114,19 +114,15 @@ export class Executor {
             if (isDriverLike(this.executionContext)) {
                 const session = this.executionContext.session(this.getSessionParam(defaultAccessMode));
                 const result = await this.sessionRun(query, parameters, defaultAccessMode, session);
-                this.versionMismatchWarn(result?.summary?.server);
                 await session.close();
                 return result;
             }
 
             if (isSessionLike(this.executionContext)) {
-                const result = await this.sessionRun(query, parameters, defaultAccessMode, this.executionContext);
-                this.versionMismatchWarn(result?.summary?.server);
-                return result;
+                return await this.sessionRun(query, parameters, defaultAccessMode, this.executionContext);
             }
-            const result = await this.transactionRun(query, parameters, this.executionContext);
-            this.versionMismatchWarn(result?.summary?.server);
-            return result;
+        
+            return await this.transactionRun(query, parameters, this.executionContext);
         } catch (error) {
             throw this.formatError(error);
         }
@@ -201,22 +197,6 @@ export class Executor {
                 type: "user-transpiled",
             },
         };
-    }
-
-    private versionMismatchWarn(serverInfo: ServerInfo) {
-        if (!serverInfo) return;
-        const protocolVersion = serverInfo.protocolVersion;
-        if (this.neo4jDatabaseInfo && protocolVersion) {
-            const protocolVersionStr = protocolVersion.toString();
-            if (!this.neo4jDatabaseInfo.eq(protocolVersionStr)) {
-                const { major, minor } = this.neo4jDatabaseInfo.neo4jVersionBuilder(protocolVersionStr);
-                debug(
-                    "Version mismatch, version in use: %s, version detected: %s",
-                    `${this.neo4jDatabaseInfo.version.major}.${this.neo4jDatabaseInfo.version.minor}`,
-                    `${major}.${minor}`
-                );
-            }
-        }
     }
 
     private async sessionRun(query: string, parameters, defaultAccessMode, session): Promise<QueryResult> {
