@@ -1,11 +1,11 @@
 [[auth-global-authentication]]
 = Global Authentication
 
-In some cases the GraphQL API needs to be secured globally to restrict access to _any_ of the top-level types without prior authentication. In the Neo4j GraphQL Library this is referred to as global authentication. It is also known as API-wide authorization. 
+For some cases the GraphQL API needs to be secured globally to restrict access to _any_ of the top-level GraphQL types without prior authentication. In the Neo4j GraphQL Library this is referred to as global authentication. It is also known as API-wide authorization. 
 
 == Configuration
 
-As for the general auth capabilities, it is required to have an instance of an auth plugin for the Neo4j GraphQL Library. For most use cases you will only need to use our provided plugins at `@neo4j/graphql-plugin-auth`. Below is an example configuration enabling global authentication via the `Neo4jGraphQLAuthJWTPlugin` class:
+To use the global authentication functionality, it is required to have an instance of an auth plugin for the Neo4j GraphQL Library. For most use cases you will only need to use our provided plugins at `@neo4j/graphql-plugin-auth`. Below is an example configuration enabling global authentication via the `Neo4jGraphQLAuthJWTPlugin` class:
 
 [source, javascript, indent=0]
 ----
@@ -45,5 +45,4 @@ const neoSchema = new Neo4jGraphQL({
 
 == Functionality
 
-If global authentication is enabled in the auth plugin for the Neo4j GraphQL Library, it is required that _every_ request contains a valid JWT token in the `authorization` header. Otherwise an authentication error will be thrown.
-Note that no additional checks for roles or permissions of the JWT token are performed as part of the global authentication verification.
+If global authentication is enabled in the auth plugin for the Neo4j GraphQL Library, it is required that _each_ request contains a valid JWT token in the `authorization` header. Otherwise an authentication error will be thrown.
