@@ -2418,27 +2418,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:0.6.0, @neo4j-ndl/base@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@neo4j-ndl/base@npm:0.6.0"
-  checksum: e011892fc17f68f5faa6938cd3b122810c0180d7cc9164de48754ec29805805384f9d4106d2668b82dbe487ceac0b821ae15d6550d051aaf3c33b487f610bba8
+"@neo4j-ndl/base@npm:0.6.2, @neo4j-ndl/base@npm:^0.6.2":
+  version: 0.6.2
+  resolution: "@neo4j-ndl/base@npm:0.6.2"
+  checksum: 71092f7476fad734c1f39c3a0ebefaec55fb22d98ad669bd110e3ad505a7c2fcbd6e8de2ca26a8164e2b4729f9ef97ae999a45b09225cebd404041a9b9400770
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:0.6.0":
-  version: 0.6.0
-  resolution: "@neo4j-ndl/react@npm:0.6.0"
+"@neo4j-ndl/react@npm:0.6.3":
+  version: 0.6.3
+  resolution: "@neo4j-ndl/react@npm:0.6.3"
   dependencies:
     "@heroicons/react": ^1.0.5
-    "@neo4j-ndl/base": ^0.6.0
+    "@neo4j-ndl/base": ^0.6.2
     classnames: ^2.3.1
-    react-dropzone: ^12.0.4
+    detect-browser: ^5.3.0
+    react-dropzone: ^14.0.0
     react-select: ^5.3.2
     react-table: ^7.7.0
     react-use: ^17.4.0
   peerDependencies:
     react: 17.x
-  checksum: 34e03d284e910126f322a02ae4fc9c4c781b4c160a5d923a4d9c1edaffd31be66a2f1be9f312d8cd2c450026fd578df8e82291d16a6a30985cc94380bfca4837
+  checksum: 78baa860b3eff0f24478b13cbdd82f27e48a96c0dffb8d59ba2b13261bb5a7e6143ab2bc79fa3659153c121ceccb84a5d5b4341adea5b4fbf3f46bb2e72c02cf
   languageName: node
   linkType: hard
 
@@ -2520,8 +2521,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@neo4j-ndl/base": 0.6.0
-    "@neo4j-ndl/react": 0.6.0
+    "@neo4j-ndl/base": 0.6.2
+    "@neo4j-ndl/react": 0.6.3
     "@neo4j/graphql": 3.6.2
     "@neo4j/introspector": ^1.0.1
     "@playwright/test": 1.24.2
@@ -7112,6 +7113,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"detect-browser@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "detect-browser@npm:5.3.0"
+  checksum: dd6e08d55da1d9e0f22510ac79872078ae03d9dfa13c5e66c96baedc1c86567345a88f96949161f6be8f3e0fafa93bf179bdb1cd311b14f5f163112fcc70ab49
+  languageName: node
+  linkType: hard
+
 "detect-indent@npm:^6.0.0":
   version: 6.1.0
   resolution: "detect-indent@npm:6.1.0"
@@ -8532,12 +8540,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-selector@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "file-selector@npm:0.5.0"
+"file-selector@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "file-selector@npm:0.6.0"
   dependencies:
-    tslib: ^2.0.3
-  checksum: f95a06938123a2b765d136a4430cc8b19165f06a53e7ae1dcca4947716d61e9181453fcfeb2358c2660cbcecf96d7334f0528ba60071fed81f8bd358ea08454a
+    tslib: ^2.4.0
+  checksum: 7d051b6e5d793f3c6e2ab287ba5e7c2c6a0971bccc9d56e044c8047ba483e18f60fc0b5771c951dc707c0d15f4f36ccb4f1f1aaf385d21ec8f7700dadf8325ba
   languageName: node
   linkType: hard
 
@@ -15427,16 +15435,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dropzone@npm:^12.0.4":
-  version: 12.1.0
-  resolution: "react-dropzone@npm:12.1.0"
+"react-dropzone@npm:^14.0.0":
+  version: 14.2.2
+  resolution: "react-dropzone@npm:14.2.2"
   dependencies:
     attr-accept: ^2.2.2
-    file-selector: ^0.5.0
+    file-selector: ^0.6.0
     prop-types: ^15.8.1
   peerDependencies:
-    react: ">= 16.8"
-  checksum: 1be37433cf42b8a9f98c8f59678e30fffc1e9b8e3fdb20f3a376557948f727156123ca0a7e45cd3882606184d945ea1139f17da0e1e5ba0b646a23be0ed65fb3
+    react: ">= 16.8 || 18.0.0"
+  checksum: ef9ea7b3b5734e8eade2d29efc26da410dd7d6d046216331f6a51e2df4459c35f3a8f950fa7f723f3db6b0ead8aa68f58f6adbd39b98575c9fc8d8dfe02b671f
   languageName: node
   linkType: hard
 
