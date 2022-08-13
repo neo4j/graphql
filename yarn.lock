@@ -2535,7 +2535,7 @@ __metadata:
     "@types/uuid": 8.3.4
     "@types/webpack": 5.28.0
     autoprefixer: 10.4.8
-    codemirror: ^5.65.3
+    codemirror: 5.65.7
     codemirror-graphql: ^1.2.17
     compression-webpack-plugin: 10.0.0
     copy-webpack-plugin: 11.0.0
@@ -5990,10 +5990,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror@npm:^5.65.3":
-  version: 5.65.6
-  resolution: "codemirror@npm:5.65.6"
-  checksum: d65aa28af06df5e37fc34a0ae0cd96566411f2c62a157047a2993c2d4db312452e3e5542a64aad66e9bd2114a2dfce448032be71fb382452753d7a6deeaa08dc
+"codemirror@npm:5.65.7":
+  version: 5.65.7
+  resolution: "codemirror@npm:5.65.7"
+  checksum: 84e28000241fee3d605c1dd928d816f69e93b92621752d048f9273e18083ccaaa4e66783908060df13d0d566a20a1e007cd5bd0c0629cebd0e1c395d62f75795
   languageName: node
   linkType: hard
 
