@@ -56,29 +56,18 @@ describe("Empty fields on unions due to escaped labels", () => {
         `;
 
         neoSchema = new Neo4jGraphQL({ typeDefs });
-        try {
-            session = await neo4j.getSession();
-            await session.run(`CREATE (u:${typeUser.name} {name: "dan"})
+        session = await neo4j.getSession();
+        await session.run(`CREATE (u:${typeUser.name} {name: "dan"})
               CREATE (b:${typeBlog.name} {title:"my cool blog"})
               CREATE (p:${typePost.name} {content: "my cool post"})
 
               MERGE(u)-[:HAS_CONTENT]->(b)
               MERGE(b)-[:HAS_POST]->(p)
             `);
-        } finally {
-            await session.close();
-        }
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-    });
-
-    afterEach(async () => {
-        await session.close();
     });
 
     afterAll(async () => {
+        await session.close();
         await driver.close();
     });
 
