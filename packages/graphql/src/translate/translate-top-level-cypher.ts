@@ -66,7 +66,7 @@ export function translateTopLevelCypher({
 
     const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
 
-    let projectionSubquery: CypherBuilder.Clause | undefined;
+    let projectionSubqueries: CypherBuilder.Clause[] = [];
     if (referenceNode) {
         const recurse = createProjectionAndParams({
             resolveTree,
@@ -77,7 +77,7 @@ export function translateTopLevelCypher({
 
         const { projection: str, params: p, meta, subqueries } = recurse;
         projectionStr = str;
-        projectionSubquery = CypherBuilder.concat(...subqueries);
+        projectionSubqueries.push(...subqueries);
         params = { ...params, ...p };
 
         if (meta?.authValidateStrs?.length) {
@@ -101,7 +101,9 @@ export function translateTopLevelCypher({
                 params = { ...params, ...nestedP };
             });
         }
-    } else if (referenceUnion) {
+    }
+
+    if (referenceUnion) {
         const headStrs: string[] = [];
         const referencedNodes =
             referenceUnion?.types
@@ -129,7 +131,7 @@ export function translateTopLevelCypher({
                         varName: "this",
                     });
 
-                    projectionSubquery = CypherBuilder.concat(...subqueries);
+                    projectionSubqueries.push(...subqueries);
 
                     innerHeadStr.push(
                         [`| this { __resolveType: "${node.name}", `, ...str.replace("{", "").split("")].join("")
@@ -205,6 +207,7 @@ export function translateTopLevelCypher({
     }
 
     cypherStrs.push(connectionProjectionStrs.join("\n"));
+    const projectionSubquery = CypherBuilder.concat(...projectionSubqueries);
 
     return new CypherBuilder.RawCypher((env) => {
         const subqueriesStr = compileCypherIfExists(projectionSubquery, env);
