@@ -144,7 +144,32 @@ describe("auth/allow", () => {
             }
         });
 
-        test("should throw forbidden when reading a nested property with invalid allow", async () => {
+        // MATCH (this:`Post`)
+        // WHERE this.id = $param0
+        // CALL {
+        //     WITH this
+        //     MATCH (this_creator:`User`)-[thisthis0:HAS_POST]->(this)
+        //     WITH this_creator { .password } AS this_creator
+        //     RETURN head(collect(this_creator)) AS this_creator
+        // }
+        // RETURN this { creator: this_creator } as this
+        // Params:
+        // {
+        //   "param0": "itFEYsvxpvCuektMynRHyNUOMjuMswGa",
+        //   "this_creatorauth_param0": "invalid"
+        // }
+
+        //         MATCH (this:`Post`)
+        // WHERE this.id = $param0
+        // RETURN this { creator: head([ (this)<-[:HAS_POST]-(this_creator:User)
+        //  WHERE apoc.util.validatePredicate(NOT ((this_creator.id IS NOT NULL
+        // AND this_creator.id = $this_creator_password_auth_allow0_id)), "@neo4j/graphql/FORBIDDEN", [0]) | this_creator { .password } ]) } as this
+        // Params:
+        // {
+        //   "param0": "LRUwIPkzUeuipmzcHgUwEqCQcJHHzEpG",
+        //   "this_creator_password_auth_allow0_id": "invalid"
+        // }
+        test.only("should throw forbidden when reading a nested property with invalid allow", async () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             const typeDefs = `

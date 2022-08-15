@@ -488,25 +488,26 @@ export default function createProjectionAndParams({
                 relationField,
                 relationshipDirection: direction,
                 optionsInput,
+                authValidateStrs: recurse.meta?.authValidateStrs,
             });
 
             res.subqueries.push(subquery.subquery);
             res.projection.push(`${alias}: ${param}`);
 
-            let whereStr = "";
-            const nodeWhereAndParams = createNodeWhereAndParams({
-                whereInput,
-                varName: `${varName}_${alias}`,
-                node: referenceNode,
-                context,
-                authValidateStrs: recurse.meta?.authValidateStrs,
-            });
-            if (nodeWhereAndParams[0]) {
-                whereStr = `WHERE ${nodeWhereAndParams[0]}`;
-                res.params = { ...res.params, ...nodeWhereAndParams[1] };
-            }
+            // let whereStr = "";
+            // const nodeWhereAndParams = createNodeWhereAndParams({
+            //     whereInput,
+            //     varName: `${varName}_${alias}`,
+            //     node: referenceNode,
+            //     context,
+            //     authValidateStrs: recurse.meta?.authValidateStrs,
+            // });
+            // if (nodeWhereAndParams[0]) {
+            //     whereStr = `WHERE ${nodeWhereAndParams[0]}`;
+            //     res.params = { ...res.params, ...nodeWhereAndParams[1] };
+            // }
 
-            const pathStr = `${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
+            // const pathStr = `${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
             // const innerStr = `${pathStr}  ${whereStr} | ${param} ${recurse.projection}`;
             // let nestedQuery: string;
 

@@ -36,6 +36,7 @@ export function createProjectionSubquery({
     relationField,
     relationshipDirection,
     optionsInput,
+    authValidateStrs,
 }: {
     parentNode: CypherBuilder.Node;
     whereInput?: GraphQLWhereArg;
@@ -47,6 +48,7 @@ export function createProjectionSubquery({
     relationField: RelationField;
     relationshipDirection: RelationshipDirection;
     optionsInput: GraphQLOptionsArg;
+    authValidateStrs: string[] | undefined;
 }): {
     subquery: CypherBuilder.Clause;
     projectionColumn: CypherBuilder.ProjectionColumn[];
@@ -114,11 +116,21 @@ export function createProjectionSubquery({
         subqueryMatch.and(allowAuth);
     }
 
-    //     if (authValidateStrs?.length) {
-    //         whereStrs.push(
-    //             `apoc.util.validatePredicate(NOT (${authValidateStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-    //         );
-    //     }
+    if (authValidateStrs?.length) {
+        const authValidateStatements = authValidateStrs.map((str) => new CypherBuilder.RawCypher(str));
+        const authValidatePredicate = CypherBuilder.and(...authValidateStatements) as CypherBuilder.Predicate;
+
+        const authStatement = new CypherBuilder.apoc.ValidatePredicate(
+            CypherBuilder.not(authValidatePredicate),
+            AUTH_FORBIDDEN_ERROR
+        );
+
+        subqueryMatch.and(authStatement);
+
+        // whereStrs.push(
+        //     `apoc.util.validatePredicate(NOT (${authValidateStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+        // );
+    }
 
     const returnVariable = new CypherBuilder.NamedVariable(alias);
     const withStatement: CypherBuilder.With = new CypherBuilder.With([projection, returnVariable]); // This only works if nestedProjection is a map
