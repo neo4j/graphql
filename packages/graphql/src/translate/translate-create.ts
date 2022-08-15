@@ -229,7 +229,10 @@ export default async function translateCreate({
         // TODO: avoid REPLACE_ME
         const replacedProjectionSubqueryStrs = createStrs.length
             ? createStrs.map((_, i) => {
-                  return projectionSubqueryStr.replace(/REPLACE_ME/g, `this${i}`);
+                  return projectionSubqueryStr
+                      .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
+                      .replace(/\$REPLACE_ME/g, "$projection")
+                      .replace(/REPLACE_ME/g, `this${i}`);
               })
             : [];
 
