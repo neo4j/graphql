@@ -18,7 +18,7 @@
  */
 
 import type { Session } from "neo4j-driver";
-import semver from "semver";
+import * as semver from "semver";
 import { MIN_VERSIONS } from "../../constants";
 
 export async function verifyVersion(sessionFactory: () => Session): Promise<void> {
