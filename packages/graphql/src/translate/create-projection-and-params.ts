@@ -507,24 +507,24 @@ export default function createProjectionAndParams({
             }
 
             const pathStr = `${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
-            const innerStr = `${pathStr}  ${whereStr} | ${param} ${recurse.projection}`;
-            let nestedQuery: string;
+            // const innerStr = `${pathStr}  ${whereStr} | ${param} ${recurse.projection}`;
+            // let nestedQuery: string;
 
-            if (optionsInput) {
-                const offsetLimit = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
+            // if (optionsInput) {
+            //     const offsetLimit = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
 
-                if (optionsInput.sort) {
-                    const sorts = optionsInput.sort.reduce(sortReducer, []);
+            //     if (optionsInput.sort) {
+            //         const sorts = optionsInput.sort.reduce(sortReducer, []);
 
-                    nestedQuery = `${alias}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${offsetLimit}`;
-                } else {
-                    nestedQuery = `${alias}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${offsetLimit}${
-                        !isArray ? ")" : ""
-                    }`;
-                }
-            } else {
-                nestedQuery = `${alias}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${!isArray ? ")" : ""}`;
-            }
+            //         nestedQuery = `${alias}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${offsetLimit}`;
+            //     } else {
+            //         nestedQuery = `${alias}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${offsetLimit}${
+            //             !isArray ? ")" : ""
+            //         }`;
+            //     }
+            // } else {
+            //     nestedQuery = `${alias}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${!isArray ? ")" : ""}`;
+            // }
 
             // res.projection.push(nestedQuery);
 

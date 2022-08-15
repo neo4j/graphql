@@ -33,6 +33,8 @@ import { translateTopLevelMatch } from "./translate-top-level-match";
 import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 import { CallbackBucket } from "../classes/CallbackBucket";
+import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import { compileCypherIfExists } from "./cypher-builder/utils";
 
 export default async function translateUpdate({
     node,
@@ -371,6 +373,7 @@ export default async function translateUpdate({
         });
     }
 
+    let projectionSubquery: CypherBuilder.Clause | undefined;
     if (nodeProjection?.fieldsByTypeName) {
         const projection = createProjectionAndParams({
             node,
@@ -378,6 +381,7 @@ export default async function translateUpdate({
             resolveTree: nodeProjection,
             varName,
         });
+        projectionSubquery = CypherBuilder.concat(...projection.subqueries);
         projStr = projection.projection;
         cypherParams = { ...cypherParams, ...projection.params };
         if (projection.meta?.authValidateStrs?.length) {
@@ -427,37 +431,46 @@ export default async function translateUpdate({
 
     const relationshipValidationStr = !updateInput ? createRelationshipValidationStr({ node, context, varName }) : "";
 
-    let cypher = [
-        ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
-        matchAndWhereStr,
-        updateStr,
-        connectStrs.join("\n"),
-        disconnectStrs.join("\n"),
-        createStrs.join("\n"),
-        deleteStr,
-        ...(connectionStrs.length || projAuth ? [`WITH ${withVars.join(", ")}`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
-        ...(projAuth ? [projAuth] : []),
-        ...(relationshipValidationStr ? [`WITH ${withVars.join(", ")}`, relationshipValidationStr] : []),
-        ...connectionStrs,
-        ...interfaceStrs,
-        ...(context.subscriptionsEnabled ? [`WITH ${withVars.join(", ")}`, `UNWIND ${META_CYPHER_VARIABLE} AS m`] : []),
-        returnStatement,
-    ]
-        .filter(Boolean)
-        .join("\n");
+    const updateQuery = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+        const projectionSubqueryStr = compileCypherIfExists(projectionSubquery, env);
 
-    let resolvedCallbacks = {};
+        const cypher = [
+            ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),
+            matchAndWhereStr,
+            updateStr,
+            connectStrs.join("\n"),
+            disconnectStrs.join("\n"),
+            createStrs.join("\n"),
+            deleteStr,
+            projectionSubqueryStr,
+            // ...(connectionStrs.length || projAuth ? [`WITH ${withVars.join(", ")}`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
+            ...(connectionStrs.length || projAuth ? [`WITH *`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
+            ...(projAuth ? [projAuth] : []),
+            ...(relationshipValidationStr ? [`WITH ${withVars.join(", ")}`, relationshipValidationStr] : []),
+            ...connectionStrs,
+            ...interfaceStrs,
+            ...(context.subscriptionsEnabled
+                ? [`WITH ${withVars.join(", ")}`, `UNWIND ${META_CYPHER_VARIABLE} AS m`]
+                : []),
+            returnStatement,
+        ]
+            .filter(Boolean)
+            .join("\n");
 
-    ({ cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({ cypher }));
+        return [
+            cypher,
+            {
+                ...cypherParams,
+                ...(Object.keys(updateArgs).length ? { [resolveTree.name]: { args: updateArgs } } : {}),
+            },
+        ];
+    });
 
-    return [
-        cypher,
-        {
-            ...cypherParams,
-            ...(Object.keys(updateArgs).length ? { [resolveTree.name]: { args: updateArgs } } : {}),
-            resolvedCallbacks,
-        },
-    ];
+    const result = updateQuery.build();
+    const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
+        cypher: result.cypher,
+    });
+    return [cypher, { ...result.params, resolvedCallbacks }];
 }
 
 function generateUpdateReturnStatement(

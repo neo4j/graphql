@@ -650,6 +650,60 @@ describe("array-push", () => {
         expect(storedValue.records[0].get("pay")).toEqual([initialPay, payIncrement]);
     });
 
+    // MATCH (this:`howpMVgTActor`)
+    // WHERE this.id = $param0
+
+    // WITH this
+    // OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:AyYjuCKsMovie)
+    // CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, "
+    // SET this_acted_in0_relationship.locations = this_acted_in0_relationship.locations + [p in $updateHowpMVgTActors.args.update.actedIn[0].update.edge.locations_PUSH | point(p)]
+    // RETURN count(*) AS _
+    // ", "", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateHowpMVgTActors: $updateHowpMVgTActors, resolvedCallbacks: $resolvedCallbacks})
+    // YIELD value AS this_acted_in0_relationship_actedIn0_edge
+
+    // WITH this
+    // CALL {
+    // WITH this
+    // MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_ayyjucksmovie:AyYjuCKsMovie)
+    // WITH collect({ locations: apoc.cypher.runFirstColumnSingle('RETURN
+    // CASE
+    // 	WHEN this_acted_in_relationship.locations IS NOT NULL THEN [p in this_acted_in_relationship.locations | { point:p }]
+    // 	ELSE NULL
+    // END AS result',{ this_acted_in_relationship: this_acted_in_relationship }) }) AS edges
+    // UNWIND edges as edge
+    // WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+    // RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+    // }
+    // RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection }) AS data
+
+    /// ////////////////////
+
+    // MATCH (this:`iFThPxgkActor`)
+    // WHERE this.id = $param0
+
+    // WITH this
+    // OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:LuEZVmexMovie)
+    // CALL apoc.do.when(this_acted_in0_relationship IS NOT NULL, "
+    // SET this_acted_in0_relationship.locations = this_acted_in0_relationship.locations + [p in $updateIFThPxgkActors.args.update.actedIn[0].update.edge.locations_PUSH | point(p)]
+    // RETURN count(*) AS _
+    // ", "", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateIFThPxgkActors: $updateIFThPxgkActors, resolvedCallbacks: $resolvedCallbacks})
+    // YIELD value AS this_acted_in0_relationship_actedIn0_edge
+
+    // WITH this
+    // CALL {
+    // WITH this
+    // MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_luezvmexmovie:LuEZVmexMovie)
+    // WITH collect({ locations: apoc.cypher.runFirstColumnSingle('RETURN
+    // CASE
+    // 	WHEN this_acted_in_relationship.locations IS NOT NULL THEN [p in this_acted_in_relationship.locations | { point:p }]
+    // 	ELSE NULL
+    // END AS result',{ this_acted_in_relationship: this_acted_in_relationship }) }) AS edges
+    // UNWIND edges as edge
+    // WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+    // RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+    // }
+    // RETURN collect(DISTINCT this { .name, actedIn: [ (this)-[:ACTED_IN]->(this_actedIn:LuEZVmexMovie)   | this_actedIn { .title } ], actedInConnection }) AS data
+
     test("should be possible to update Point relationship properties", async () => {
         const movie = generateUniqueType("Movie");
         const actor = generateUniqueType("Actor");
