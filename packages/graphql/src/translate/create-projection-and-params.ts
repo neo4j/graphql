@@ -23,7 +23,7 @@ import { mergeDeep } from "@graphql-tools/utils";
 import type { Node } from "../classes";
 import createWhereAndParams from "./where/create-where-and-params";
 import type { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
-import createAuthAndParams from "./create-auth-and-params";
+import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import createPointElement from "./projection/elements/create-point-element";
