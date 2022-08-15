@@ -29,9 +29,9 @@
     },
     "author": "Neo4j Inc.",
     "dependencies": {
-        "debug": "^4.3.3",
-        "jsonwebtoken": "^8.5.1",
-        "jwks-rsa": "^2.0.5"
+        "debug": "4.3.4",
+        "jsonwebtoken": "8.5.1",
+        "jwks-rsa": "2.1.4"
     },
     "devDependencies": {
         "@types/debug": "4.1.7",
