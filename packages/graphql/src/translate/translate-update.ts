@@ -447,12 +447,14 @@ export default async function translateUpdate({
             projectionSubqueryStr,
             ...(connectionStrs.length || projAuth ? [`WITH *`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
             ...(projAuth ? [projAuth] : []),
-            ...(relationshipValidationStr ? [`WITH ${withVars.join(", ")}`, relationshipValidationStr] : []),
+            ...(relationshipValidationStr ? [`WITH *`, relationshipValidationStr] : []),
+            // ...(relationshipValidationStr ? [`WITH ${withVars.join(", ")}`, relationshipValidationStr] : []),
             ...connectionStrs,
             ...interfaceStrs,
-            ...(context.subscriptionsEnabled
-                ? [`WITH ${withVars.join(", ")}`, `UNWIND ${META_CYPHER_VARIABLE} AS m`]
-                : []),
+            ...(context.subscriptionsEnabled ? [`WITH *`, `UNWIND ${META_CYPHER_VARIABLE} AS m`] : []),
+            // ...(context.subscriptionsEnabled
+            //     ? [`WITH ${withVars.join(", ")}`, `UNWIND ${META_CYPHER_VARIABLE} AS m`]
+            //     : []),
             returnStatement,
         ]
             .filter(Boolean)
