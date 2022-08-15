@@ -94,15 +94,12 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 CREATE (m:${testMasterData} { current: true, id: "323" })
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(m)<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "421" })
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(m)
-                
+
                 // For verification purpose, this should be filtered out by the where clause:
                 CREATE (:${testNameDetails} { fullName: "MHBB" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })
             `);
-        } finally {
-            await session.close();
-        }
 
-        const query = `
+            const query = `
                 query (
                     $where: ${testSeries}Where
                     $connectionWhere: RelationPropsWhere
@@ -133,79 +130,82 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 }
             `;
 
-        const variableValues = {
-            where: {
-                current: true,
-                nameDetailsConnection: {
-                    edge: {
-                        current: true,
+            const variableValues = {
+                where: {
+                    current: true,
+                    nameDetailsConnection: {
+                        edge: {
+                            current: true,
+                        },
+                        node: {
+                            fullName_CONTAINS: "1",
+                        },
                     },
-                    node: {
-                        fullName_CONTAINS: "1",
-                    },
-                },
-                architectureConnection_SINGLE: {
-                    edge: {
-                        current: true,
-                    },
-                    node: {
-                        nameDetailsConnection: {
-                            edge: {
-                                current: true,
-                            },
-                            node: {
-                                fullName: "MHA",
+                    architectureConnection_SINGLE: {
+                        edge: {
+                            current: true,
+                        },
+                        node: {
+                            nameDetailsConnection: {
+                                edge: {
+                                    current: true,
+                                },
+                                node: {
+                                    fullName: "MHA",
+                                },
                             },
                         },
                     },
                 },
-            },
-            connectionWhere: {
-                current: true,
-            },
-        };
+                connectionWhere: {
+                    current: true,
+                },
+            };
 
-        const res = await graphql({
-            schema,
-            source: query,
-            variableValues,
-            contextValue: neo4j.getContextValues(),
-        });
+            const res = await graphql({
+                schema,
+                source: query,
+                variableValues,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            });
 
-        expect(res.errors).toBeUndefined();
+            expect(res.errors).toBeUndefined();
 
-        expect(res.data).toEqual({
-            [testSeries.plural]: [
-                {
-                    nameDetailsConnection: {
-                        edges: [
-                            {
-                                node: {
-                                    fullName: "MHA1",
-                                },
-                            },
-                        ],
-                    },
-                    architectureConnection: {
-                        edges: [
-                            {
-                                node: {
-                                    nameDetailsConnection: {
-                                        edges: [
-                                            {
-                                                node: {
-                                                    fullName: "MHA",
-                                                },
-                                            },
-                                        ],
+            expect(res.data).toEqual({
+                [testSeries.plural]: [
+                    {
+                        nameDetailsConnection: {
+                            edges: [
+                                {
+                                    node: {
+                                        fullName: "MHA1",
                                     },
                                 },
-                            },
-                        ],
+                            ],
+                        },
+                        architectureConnection: {
+                            edges: [
+                                {
+                                    node: {
+                                        nameDetailsConnection: {
+                                            edges: [
+                                                {
+                                                    node: {
+                                                        fullName: "MHA",
+                                                    },
+                                                },
+                                            ],
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                        id: "3213",
                     },
-                    id: "3213",
-                },
-            ],
-        });
+                ],
+            });
+        } finally {
+            await session.close();
+        }
     });
 });

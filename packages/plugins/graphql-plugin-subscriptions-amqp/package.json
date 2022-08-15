@@ -37,7 +37,7 @@
         "@types/amqplib": "0.8.2",
         "@types/debug": "4.1.7",
         "@types/jest": "28.1.6",
-        "@types/node": "16.11.47",
+        "@types/node": "16.11.48",
         "apollo-server": "3.10.1",
         "apollo-server-express": "3.10.1",
         "camelcase": "6.3.0",
@@ -52,7 +52,7 @@
         "ws": "8.8.1"
     },
     "dependencies": {
-        "amqplib": "^0.10.0"
+        "amqplib": "0.10.2"
     },
     "peerDependencies": {
         "@neo4j/graphql": "^3.6.2"
