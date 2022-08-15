@@ -26,6 +26,7 @@ export { Return } from "./clauses/Return";
 export { RawCypher } from "./clauses/RawCypher";
 export { With } from "./clauses/With";
 export { Unwind } from "./clauses/Unwind";
+export { Union } from "./clauses/Union";
 
 // Clauses-like things
 export { Exists } from "./sub-clauses/Exists";

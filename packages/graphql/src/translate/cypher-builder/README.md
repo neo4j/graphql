@@ -58,6 +58,7 @@ The available Clauses are:
 -   **With**
 -   **Call**
 -   **Unwind**
+-   **Union**
 
 ### SubClauses
 
