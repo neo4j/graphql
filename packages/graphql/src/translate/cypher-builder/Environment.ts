@@ -20,15 +20,30 @@
 import type { Variable } from "./variables/Variable";
 import { Param } from "./variables/Param";
 
+export type EnvPrefix = {
+    params?: string;
+    variables?: string;
+};
+
 /** Hold the internal references of Cypher parameters and variables */
 export class CypherEnvironment {
-    public readonly globalPrefix: string;
+    private readonly globalPrefix: EnvPrefix;
 
     private references: Map<Variable, string> = new Map();
     private params: Param[] = [];
 
-    constructor(prefix?: string) {
-        this.globalPrefix = prefix || "";
+    constructor(prefix?: string | EnvPrefix) {
+        if (!prefix || typeof prefix === "string") {
+            this.globalPrefix = {
+                params: prefix || "",
+                variables: prefix || "",
+            };
+        } else {
+            this.globalPrefix = {
+                params: prefix.params || "",
+                variables: prefix.variables || "",
+            };
+        }
     }
 
     public getVariableId(variable: Variable): string {
@@ -73,12 +88,12 @@ export class CypherEnvironment {
         const paramIndex = this.getParamsSize(); // Indexes are separate for readability reasons
 
         if (variable instanceof Param) {
-            const varId = `${this.globalPrefix}${variable.prefix}${paramIndex}`;
+            const varId = `${this.globalPrefix.params}${variable.prefix}${paramIndex}`;
             return this.addParam(varId, variable);
         }
 
         const varIndex = this.references.size - paramIndex;
-        const varId = `${this.globalPrefix}${variable.prefix}${varIndex}`;
+        const varId = `${this.globalPrefix.variables}${variable.prefix}${varIndex}`;
         this.references.set(variable, varId);
         return varId;
     }

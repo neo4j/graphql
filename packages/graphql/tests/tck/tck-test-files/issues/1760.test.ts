@@ -129,11 +129,11 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             ORDER BY relatedId ASC
             SKIP $this_offset
             LIMIT $this_limit
-            CALL apoc.util.validate(NOT ((any(var1 IN [\\"ALL\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"ALL\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
             WITH this
             MATCH (this)-[this_has_name_relationship:HAS_NAME]->(this_namedetails:NameDetails)
-            CALL apoc.util.validate(NOT ((any(var1 IN [\\"ALL\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"ALL\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { fullName: this_namedetails.fullName } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -142,11 +142,11 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             CALL {
             WITH this
             MATCH (this)-[this_has_markets_relationship:HAS_MARKETS]->(this_market:Market)
-            CALL apoc.util.validate(NOT ((any(var1 IN [\\"ALL\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"ALL\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
             WITH this_market
             MATCH (this_market)-[this_market_has_name_relationship:HAS_NAME]->(this_market_namedetails:NameDetails)
-            CALL apoc.util.validate(NOT ((any(var1 IN [\\"ALL\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"ALL\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { fullName: this_market_namedetails.fullName } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -160,7 +160,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_has_base_relationship:HAS_BASE]-(this_baseobject:BaseObject)
-            CALL apoc.util.validate(NOT ((any(var1 IN [\\"ALL\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"ALL\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { id: this_baseobject.id } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
