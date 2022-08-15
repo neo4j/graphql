@@ -97,7 +97,7 @@ export function createAuthAndParams({
         return orPredicates.getCypher(env);
     });
 
-    const chainStr = `${where?.chainStr || ""}${allow?.chainStr || ""}${bind?.chainStr || ""}`;
+    const chainStr = `${where?.varName || ""}${allow?.varName || ""}${bind?.varName || ""}`;
 
     const authCypher = authPredicate.build(`${chainStr}auth_`);
     return [authCypher.cypher, authCypher.params];
