@@ -28,128 +28,251 @@ describe("tck/rfs/022 subquery projection", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
-    beforeAll(() => {
-        typeDefs = gql`
-            type Movie {
-                title: String!
-                released: Int
-                actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-                directors: [Person!]! @relationship(type: "DIRECTED", direction: IN)
-            }
-
-            type Person {
-                name: String!
-                movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-                directed: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
-            }
-
-            interface ActedIn @relationshipProperties {
-                year: Int
-            }
-        `;
-
-        neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            config: { enableRegex: true },
-            plugins: {
-                auth: new Neo4jGraphQLAuthJWTPlugin({
-                    secret: "secret",
-                }),
-            },
-        });
-    });
-
-    test("Nested query", async () => {
-        const query = gql`
-            query Query {
-                movies(where: { released: 1999 }) {
-                    title
-                    actors(where: { name: "Keanu Reeves" }) {
-                        name
-                    }
+    describe("no auth", () => {
+        beforeAll(() => {
+            typeDefs = gql`
+                type Movie {
+                    title: String!
+                    released: Int
+                    actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                    directors: [Person!]! @relationship(type: "DIRECTED", direction: IN)
                 }
-            }
-        `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
+                type Person {
+                    name: String!
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                    directed: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
+                }
+
+                interface ActedIn @relationshipProperties {
+                    year: Int
+                }
+            `;
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                config: { enableRegex: true },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
         });
 
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
-            WHERE this.released = $param0
-            CALL {
-                WITH this
-                MATCH (this_actors:\`Person\`)-[thisthis0:ACTED_IN]-(this)
-                WHERE this_actors.name = $thisparam0
-                WITH this_actors { .name } AS this_actors
-                RETURN collect(this_actors) AS this_actors
-            }
-            RETURN this { .title, actors: this_actors } as this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": {
-                    \\"low\\": 1999,
-                    \\"high\\": 0
-                },
-                \\"this_actors_param0\\": \\"Keanu Reeves\\",
-                \\"thisparam0\\": \\"Keanu Reeves\\"
-            }"
-        `);
-    });
-
-    test("Double nested query", async () => {
-        const query = gql`
-            query Query {
-                movies(where: { released: 1999 }) {
-                    title
-                    actors(where: { name: "Keanu Reeves" }) {
-                        name
-                        directed {
-                            title
-                            released
+        test("Nested query", async () => {
+            const query = gql`
+                query Query {
+                    movies(where: { released: 1999 }) {
+                        title
+                        actors(where: { name: "Keanu Reeves" }) {
+                            name
                         }
                     }
                 }
-            }
-        `;
+            `;
 
-        const req = createJwtRequest("secret", {});
-        const result = await translateQuery(neoSchema, query, {
-            req,
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Movie\`)
+                WHERE this.released = $param0
+                CALL {
+                    WITH this
+                    MATCH (this_actors:\`Person\`)-[thisthis0:ACTED_IN]->(this)
+                    WHERE this_actors.name = $thisparam0
+                    WITH this_actors { .name } AS this_actors
+                    RETURN collect(this_actors) AS this_actors
+                }
+                RETURN this { .title, actors: this_actors } as this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                            "{
+                                \\"param0\\": {
+                                    \\"low\\": 1999,
+                                    \\"high\\": 0
+                                },
+                                \\"this_actors_param0\\": \\"Keanu Reeves\\",
+                                \\"thisparam0\\": \\"Keanu Reeves\\"
+                            }"
+                    `);
         });
 
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
-            WHERE this.released = $param0
-            CALL {
-                WITH this
-                MATCH (this_actors:\`Person\`)-[thisthis0:ACTED_IN]-(this)
-                WHERE this_actors.name = $thisparam0
-                CALL {
-                    WITH this_actors
-                    MATCH (this_actors)-[thisthis1:DIRECTED]-(this_actors_directed:\`Movie\`)
-                    WITH this_actors_directed { .title, .released } AS this_actors_directed
-                    RETURN collect(this_actors_directed) AS this_actors_directed
+        test("Double nested query", async () => {
+            const query = gql`
+                query Query {
+                    movies(where: { released: 1999 }) {
+                        title
+                        actors(where: { name: "Keanu Reeves" }) {
+                            name
+                            directed {
+                                title
+                                released
+                            }
+                        }
+                    }
                 }
-                WITH this_actors { .name, directed: this_actors_directed } AS this_actors
-                RETURN collect(this_actors) AS this_actors
-            }
-            RETURN this { .title, actors: this_actors } as this"
-        `);
+            `;
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": {
-                    \\"low\\": 1999,
-                    \\"high\\": 0
+            const req = createJwtRequest("secret", {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Movie\`)
+                WHERE this.released = $param0
+                CALL {
+                    WITH this
+                    MATCH (this_actors:\`Person\`)-[thisthis0:ACTED_IN]->(this)
+                    WHERE this_actors.name = $thisparam0
+                    CALL {
+                        WITH this_actors
+                        MATCH (this_actors)-[thisthis1:DIRECTED]->(this_actors_directed:\`Movie\`)
+                        WITH this_actors_directed { .title, .released } AS this_actors_directed
+                        RETURN collect(this_actors_directed) AS this_actors_directed
+                    }
+                    WITH this_actors { .name, directed: this_actors_directed } AS this_actors
+                    RETURN collect(this_actors) AS this_actors
+                }
+                RETURN this { .title, actors: this_actors } as this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                            "{
+                                \\"param0\\": {
+                                    \\"low\\": 1999,
+                                    \\"high\\": 0
+                                },
+                                \\"this_actors_param0\\": \\"Keanu Reeves\\",
+                                \\"thisparam0\\": \\"Keanu Reeves\\"
+                            }"
+                    `);
+        });
+    });
+
+    describe("With auth", () => {
+        beforeAll(() => {
+            typeDefs = gql`
+                type Movie {
+                    title: String!
+                    released: Int
+                    actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                }
+
+                type Person
+                    @auth(
+                        rules: [
+                            {
+                                isAuthenticated: true
+                                where: { name: "The Matrix" }
+                                allow: { name: "$jwt.test" }
+                                roles: ["admin"]
+                            }
+                        ]
+                    ) {
+                    name: String!
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                }
+
+                interface ActedIn @relationshipProperties {
+                    year: Int
+                }
+            `;
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                config: { enableRegex: true },
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
                 },
-                \\"this_actors_param0\\": \\"Keanu Reeves\\",
-                \\"thisparam0\\": \\"Keanu Reeves\\"
-            }"
-        `);
+            });
+        });
+
+        //     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+        //         "MATCH (this:\`Movie\`)
+        //         WHERE this.released = $param0
+        //         RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Person)  WHERE this_actors.name = $this_actors_param0
+
+        // AND (any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1))
+        // AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
+        // AND (this_actors.name IS NOT NULL AND this_actors.name = $this_actors_auth_where0_name))
+
+        // AND apoc.util.validatePredicate(NOT ((any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1))
+        //    AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
+        //      AND (this_actors.name IS NOT NULL AND this_actors.name = $this_actors_auth_allow0_name))),
+        // \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_actors { .name } ] } as this"
+        //     `);
+
+        //     expect(formatParams(result.params)).toMatchInlineSnapshot(`
+        //         "{
+        //             \\"param0\\": {
+        //                 \\"low\\": 1999,
+        //                 \\"high\\": 0
+        //             },
+        //             \\"this_actors_param0\\": \\"Keanu Reeves\\",
+        //             \\"this_actors_auth_where0_name\\": \\"The Matrix\\",
+        //             \\"this_actors_auth_allow0_name\\": \\"my-test\\",
+        //             \\"auth\\": {
+        //                 \\"isAuthenticated\\": true,
+        //                 \\"roles\\": [],
+        //                 \\"jwt\\": {
+        //                     \\"roles\\": [],
+        //                     \\"test\\": \\"my-test\\"
+        //                 }
+        //             }
+        //         }"
+        //     `);
+
+        test("Nested query", async () => {
+            const query = gql`
+                query Query {
+                    movies(where: { released: 1999 }) {
+                        title
+                        actors(where: { name: "Keanu Reeves" }) {
+                            name
+                        }
+                    }
+                }
+            `;
+
+            const req = createJwtRequest("secret", {
+                test: "my-test",
+            });
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Movie\`)
+                WHERE this.released = $param0
+                CALL {
+                    WITH this
+                    MATCH (this_actors:\`Person\`)-[thisthis0:ACTED_IN]->(this)
+                    WHERE this_actors.name = $thisparam0
+                    WITH this_actors { .name } AS this_actors
+                    RETURN collect(this_actors) AS this_actors
+                }
+                RETURN this { .title, actors: this_actors } as this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"param0\\": {
+                        \\"low\\": 1999,
+                        \\"high\\": 0
+                    },
+                    \\"this_actors_param0\\": \\"Keanu Reeves\\",
+                    \\"this_actorsauth_param2\\": \\"my-test\\",
+                    \\"thisparam0\\": \\"Keanu Reeves\\"
+                }"
+            `);
+        });
     });
 });

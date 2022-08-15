@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import createWhereAndParams from "../../where/create-where-and-params";
 import type { Node } from "../../../classes";
 import type { Context, GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, RelationField } from "../../../types";
-
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 import { createCypherWherePredicate } from "../../where/create-cypher-where-predicate";
-import type { RelationshipDirection } from "src/utils/get-relationship-direction";
+import type { RelationshipDirection } from "../../../utils/get-relationship-direction";
+import { createAuthPredicates } from "../../create-auth-and-params";
+import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 
 export function createProjectionSubquery({
     parentNode,
@@ -55,9 +55,7 @@ export function createProjectionSubquery({
     const targetNode = new CypherBuilder.NamedNode(alias, {
         labels: node.getLabels(context),
     });
-    // const targetNode = new CypherBuilder.NamedNode(alias, {
-    //     labels: node.getLabels(context),
-    // });
+
     const relationship = new CypherBuilder.Relationship({
         source: parentNode,
         target: targetNode,
@@ -87,8 +85,43 @@ export function createProjectionSubquery({
         if (wherePredicate) subqueryMatch.where(wherePredicate); // TODO: should return var a projectionColumn
     }
 
+    const whereAuth = createAuthPredicates({
+        entity: node,
+        operations: "READ",
+        context,
+        where: {
+            varName: alias,
+            node,
+        },
+    });
+
+    if (whereAuth) {
+        subqueryMatch.and(whereAuth);
+    }
+
+    const preAuth = createAuthPredicates({
+        entity: node,
+        operations: "READ",
+        context,
+        allow: {
+            parentNode: node,
+            varName: alias,
+        },
+    });
+
+    if (preAuth) {
+        const allowAuth = new CypherBuilder.apoc.ValidatePredicate(CypherBuilder.not(preAuth), AUTH_FORBIDDEN_ERROR);
+        subqueryMatch.and(allowAuth);
+    }
+
+    //     if (authValidateStrs?.length) {
+    //         whereStrs.push(
+    //             `apoc.util.validatePredicate(NOT (${authValidateStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+    //         );
+    //     }
+
     const returnVariable = new CypherBuilder.NamedVariable(alias);
-    let withStatement: CypherBuilder.With = new CypherBuilder.With([projection, returnVariable]); // This only works if nestedProjection is a map
+    const withStatement: CypherBuilder.With = new CypherBuilder.With([projection, returnVariable]); // This only works if nestedProjection is a map
 
     // TODO: limit and skip options
     if (optionsInput.sort) {
@@ -131,76 +164,3 @@ function createOrderByParams({
         return [target.property(field), order];
     });
 }
-
-// TODO: move to cypherbuilder
-// function createNodeWhereAndParams({
-//     whereInput,
-//     varName,
-//     context,
-//     node,
-//     authValidateStrs,
-//     chainStr,
-// }: {
-//     whereInput?: any;
-//     context: Context;
-//     node: Node;
-//     varName: string;
-//     authValidateStrs?: string[];
-//     chainStr?: string;
-// }): [string, any] {
-//     const whereStrs: string[] = [];
-//     let params = {};
-
-//     if (whereInput) {
-//         const whereAndParams = createWhereAndParams({
-//             context,
-//             node,
-//             varName,
-//             whereInput,
-//             chainStr,
-//             recursing: true,
-//         });
-//         if (whereAndParams[0]) {
-//             whereStrs.push(whereAndParams[0]);
-//             params = { ...params, ...whereAndParams[1] };
-//         }
-//     }
-
-//     const whereAuth = createAuthAndParams({
-//         entity: node,
-//         operations: "READ",
-//         context,
-//         where: {
-//             varName,
-//             chainStr,
-//             node,
-//         },
-//     });
-//     if (whereAuth[0]) {
-//         whereStrs.push(whereAuth[0]);
-//         params = { ...params, ...whereAuth[1] };
-//     }
-
-//     const preAuth = createAuthAndParams({
-//         entity: node,
-//         operations: "READ",
-//         context,
-//         allow: {
-//             parentNode: node,
-//             varName,
-//             chainStr,
-//         },
-//     });
-//     if (preAuth[0]) {
-//         whereStrs.push(`apoc.util.validatePredicate(NOT (${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-//         params = { ...params, ...preAuth[1] };
-//     }
-
-//     if (authValidateStrs?.length) {
-//         whereStrs.push(
-//             `apoc.util.validatePredicate(NOT (${authValidateStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-//         );
-//     }
-
-//     return [whereStrs.join(" AND "), params];
-// }
