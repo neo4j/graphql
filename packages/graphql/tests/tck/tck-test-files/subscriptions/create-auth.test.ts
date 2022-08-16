@@ -83,7 +83,7 @@ describe("Subscriptions metadata on create", () => {
             SET this0.id = $this0_id
             WITH meta + { event: \\"create\\", id: id(this0), properties: { old: null, new: this0 { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta, this0
             WITH this0, meta
-            CALL apoc.util.validate(NOT ((this0.id IS NOT NULL AND this0.id = $this0_auth_bind0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this0.id IS NOT NULL AND this0.id = $this0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0, meta AS this0_meta
             }
             CALL {
@@ -92,7 +92,7 @@ describe("Subscriptions metadata on create", () => {
             SET this1.id = $this1_id
             WITH meta + { event: \\"create\\", id: id(this1), properties: { old: null, new: this1 { .* } }, timestamp: timestamp(), typename: \\"Actor\\" } AS meta, this1
             WITH this1, meta
-            CALL apoc.util.validate(NOT ((this1.id IS NOT NULL AND this1.id = $this1_auth_bind0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this1.id IS NOT NULL AND this1.id = $this1auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this1, meta AS this1_meta
             }
             WITH this0, this1, this0_meta + this1_meta AS meta
@@ -104,9 +104,9 @@ describe("Subscriptions metadata on create", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_id\\": \\"1\\",
-                \\"this0_auth_bind0_id\\": \\"super_admin\\",
+                \\"this0auth_param0\\": \\"super_admin\\",
                 \\"this1_id\\": \\"2\\",
-                \\"this1_auth_bind0_id\\": \\"super_admin\\",
+                \\"this1auth_param0\\": \\"super_admin\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
