@@ -21,6 +21,7 @@ import type { CypherEnvironment } from "../Environment";
 
 import { CypherASTNode } from "../CypherASTNode";
 import type { Expr } from "../types";
+import { compileCypherIfExists } from "../utils";
 
 export type Order = "ASC" | "DESC";
 
@@ -29,20 +30,19 @@ type OrderProjectionElement = [Expr, Order];
 export class OrderBy extends CypherASTNode {
     private exprs: OrderProjectionElement[] = [];
 
-    // TODO: these could be children nodes in the AST
-    private skipValue: number | undefined;
-    private limitValue: number | undefined;
+    private skipClause: Skip | undefined;
+    private limitClause: Limit | undefined;
 
     public setOrderElements(exprs: OrderProjectionElement[]) {
         this.exprs = exprs;
     }
 
     public skip(offset: number): void {
-        this.skipValue = offset;
+        this.skipClause = new Skip(offset);
     }
 
     public limit(limit: number): void {
-        this.limitValue = limit;
+        this.limitClause = new Limit(limit);
     }
 
     private hasOrder(): boolean {
@@ -51,8 +51,8 @@ export class OrderBy extends CypherASTNode {
 
     public getCypher(env: CypherEnvironment): string {
         let orderStr = "";
-        let skipStr = "";
-        let limitStr = "";
+        const limitStr = compileCypherIfExists(this.limitClause, env, { prefix: "\n" });
+        const skipStr = compileCypherIfExists(this.skipClause, env, { prefix: "\n" });
 
         if (this.hasOrder()) {
             const exprStr = this.exprs
@@ -64,13 +64,32 @@ export class OrderBy extends CypherASTNode {
             orderStr = `ORDER BY ${exprStr}`;
         }
 
-        if (this.skipValue !== undefined) {
-            skipStr = `SKIP ${this.skipValue}`;
-        }
-        if (this.limitValue !== undefined) {
-            limitStr = `LIMIT ${this.limitValue}`;
-        }
+        return `${orderStr}${limitStr}${skipStr}`;
+    }
+}
 
-        return `${orderStr}\n${limitStr}\n${skipStr}`;
+class Skip extends CypherASTNode {
+    private value: number;
+
+    constructor(value: number) {
+        super();
+        this.value = value;
+    }
+
+    public getCypher(env: CypherEnvironment): string {
+        return `SKIP ${this.value}`;
+    }
+}
+
+class Limit extends CypherASTNode {
+    private value: number;
+
+    constructor(value: number) {
+        super();
+        this.value = value;
+    }
+
+    public getCypher(env: CypherEnvironment): string {
+        return `LIMIT ${this.value}`;
     }
 }
