@@ -34,7 +34,7 @@
         "@graphql-codegen/core": "2.5.1",
         "@graphql-codegen/plugin-helpers": "2.4.2",
         "@graphql-codegen/typescript": "2.6.0",
-        "@graphql-tools/merge": "8.3.1",
+        "@graphql-tools/merge": "8.3.3",
         "@neo4j/graphql": "^3.6.2",
         "prettier": "2.7.1"
     },
