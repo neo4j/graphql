@@ -66,7 +66,7 @@ export function translateTopLevelCypher({
 
     const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
 
-    let projectionSubqueries: CypherBuilder.Clause[] = [];
+    const projectionSubqueries: CypherBuilder.Clause[] = [];
     if (referenceNode) {
         const recurse = createProjectionAndParams({
             resolveTree,

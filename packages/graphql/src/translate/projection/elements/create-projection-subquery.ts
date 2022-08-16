@@ -132,7 +132,6 @@ export function createProjectionSubquery({
     const returnVariable = new CypherBuilder.NamedVariable(alias);
     const withStatement: CypherBuilder.With = new CypherBuilder.With([projection, returnVariable]); // This only works if nestedProjection is a map
 
-    // TODO: limit and skip options
     if (optionsInput.sort) {
         const orderByParams = createOrderByParams({
             optionsInput,

@@ -325,10 +325,7 @@ export default function createProjectionAndParams({
                 optionsInput.limit = referenceNode.queryOptions.getLimit(optionsInput.limit);
             }
 
-            const nodeMatchStr = `(${chainStr || varName})`;
             const relTypeStr = `[:${relationField.type}]`;
-            const labels = referenceNode?.getLabelString(context);
-            const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 
             const { inStr, outStr } = getRelationshipDirectionStr(relationField, field.args);
@@ -472,7 +469,6 @@ export default function createProjectionAndParams({
                 isRootConnectionField,
             });
             res.params = { ...res.params, ...recurse.params };
-            // res.subqueries.push(...recurse.subqueries); // TODO: This should probably be nested in the subquery with CALL
 
             const parentNode = new CypherBuilder.NamedNode(chainStr || varName); // TODO: improve this
 
@@ -493,41 +489,6 @@ export default function createProjectionAndParams({
 
             res.subqueries.push(subquery.subquery);
             res.projection.push(`${alias}: ${param}`);
-
-            // let whereStr = "";
-            // const nodeWhereAndParams = createNodeWhereAndParams({
-            //     whereInput,
-            //     varName: `${varName}_${alias}`,
-            //     node: referenceNode,
-            //     context,
-            //     authValidateStrs: recurse.meta?.authValidateStrs,
-            // });
-            // if (nodeWhereAndParams[0]) {
-            //     whereStr = `WHERE ${nodeWhereAndParams[0]}`;
-            //     res.params = { ...res.params, ...nodeWhereAndParams[1] };
-            // }
-
-            // const pathStr = `${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
-            // const innerStr = `${pathStr}  ${whereStr} | ${param} ${recurse.projection}`;
-            // let nestedQuery: string;
-
-            // if (optionsInput) {
-            //     const offsetLimit = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
-
-            //     if (optionsInput.sort) {
-            //         const sorts = optionsInput.sort.reduce(sortReducer, []);
-
-            //         nestedQuery = `${alias}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${offsetLimit}`;
-            //     } else {
-            //         nestedQuery = `${alias}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${offsetLimit}${
-            //             !isArray ? ")" : ""
-            //         }`;
-            //     }
-            // } else {
-            //     nestedQuery = `${alias}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${!isArray ? ")" : ""}`;
-            // }
-
-            // res.projection.push(nestedQuery);
 
             return res;
         }

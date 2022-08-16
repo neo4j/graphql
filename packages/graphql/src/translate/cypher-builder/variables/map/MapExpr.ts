@@ -19,7 +19,6 @@
 
 import type { CypherEnvironment } from "../../Environment";
 import type { CypherCompilable, Expr } from "../../types";
-import type { Variable } from "../Variable";
 
 /** Represents a Map */
 export class MapExpr implements CypherCompilable {
