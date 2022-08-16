@@ -91,15 +91,14 @@ describe("tck/rfs/022 subquery projection", () => {
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                            "{
-                                \\"param0\\": {
-                                    \\"low\\": 1999,
-                                    \\"high\\": 0
-                                },
-                                \\"this_actors_param0\\": \\"Keanu Reeves\\",
-                                \\"thisparam0\\": \\"Keanu Reeves\\"
-                            }"
-                    `);
+                "{
+                    \\"param0\\": {
+                        \\"low\\": 1999,
+                        \\"high\\": 0
+                    },
+                    \\"thisparam0\\": \\"Keanu Reeves\\"
+                }"
+            `);
         });
 
         test("Double nested query", async () => {
@@ -143,15 +142,14 @@ describe("tck/rfs/022 subquery projection", () => {
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                            "{
-                                \\"param0\\": {
-                                    \\"low\\": 1999,
-                                    \\"high\\": 0
-                                },
-                                \\"this_actors_param0\\": \\"Keanu Reeves\\",
-                                \\"thisparam0\\": \\"Keanu Reeves\\"
-                            }"
-                    `);
+                "{
+                    \\"param0\\": {
+                        \\"low\\": 1999,
+                        \\"high\\": 0
+                    },
+                    \\"thisparam0\\": \\"Keanu Reeves\\"
+                }"
+            `);
         });
     });
 
@@ -195,41 +193,6 @@ describe("tck/rfs/022 subquery projection", () => {
             });
         });
 
-        //     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-        //         "MATCH (this:\`Movie\`)
-        //         WHERE this.released = $param0
-        //         RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Person)  WHERE this_actors.name = $this_actors_param0
-
-        // AND (any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1))
-        // AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
-        // AND (this_actors.name IS NOT NULL AND this_actors.name = $this_actors_auth_where0_name))
-
-        // AND apoc.util.validatePredicate(NOT ((any(var1 IN [\\"admin\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1))
-        //    AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])
-        //      AND (this_actors.name IS NOT NULL AND this_actors.name = $this_actors_auth_allow0_name))),
-        // \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_actors { .name } ] } as this"
-        //     `);
-
-        //     expect(formatParams(result.params)).toMatchInlineSnapshot(`
-        //         "{
-        //             \\"param0\\": {
-        //                 \\"low\\": 1999,
-        //                 \\"high\\": 0
-        //             },
-        //             \\"this_actors_param0\\": \\"Keanu Reeves\\",
-        //             \\"this_actors_auth_where0_name\\": \\"The Matrix\\",
-        //             \\"this_actors_auth_allow0_name\\": \\"my-test\\",
-        //             \\"auth\\": {
-        //                 \\"isAuthenticated\\": true,
-        //                 \\"roles\\": [],
-        //                 \\"jwt\\": {
-        //                     \\"roles\\": [],
-        //                     \\"test\\": \\"my-test\\"
-        //                 }
-        //             }
-        //         }"
-        //     `);
-
         test("Nested query", async () => {
             const query = gql`
                 query Query {
@@ -255,7 +218,7 @@ describe("tck/rfs/022 subquery projection", () => {
                 CALL {
                     WITH this
                     MATCH (this_actors:\`Person\`)-[thisthis0:ACTED_IN]->(this)
-                    WHERE this_actors.name = $thisparam0
+                    WHERE ((this_actors.name = $thisparam0 AND (any(thisvar2 IN [\\"admin\\"] WHERE any(thisvar1 IN $auth.roles WHERE thisvar1 = thisvar2)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND (this_actors.name IS NOT NULL AND this_actors.name = $thisparam3))) AND apoc.util.validatePredicate(NOT ((any(thisvar3 IN [\\"admin\\"] WHERE any(thisvar2 IN $auth.roles WHERE thisvar2 = thisvar3)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND (this_actors.name IS NOT NULL AND this_actors.name = $thisparam6))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     WITH this_actors { .name } AS this_actors
                     RETURN collect(this_actors) AS this_actors
                 }
@@ -268,9 +231,17 @@ describe("tck/rfs/022 subquery projection", () => {
                         \\"low\\": 1999,
                         \\"high\\": 0
                     },
-                    \\"this_actors_param0\\": \\"Keanu Reeves\\",
-                    \\"this_actorsauth_param2\\": \\"my-test\\",
-                    \\"thisparam0\\": \\"Keanu Reeves\\"
+                    \\"thisparam0\\": \\"Keanu Reeves\\",
+                    \\"thisparam3\\": \\"The Matrix\\",
+                    \\"thisparam6\\": \\"my-test\\",
+                    \\"auth\\": {
+                        \\"isAuthenticated\\": true,
+                        \\"roles\\": [],
+                        \\"jwt\\": {
+                            \\"roles\\": [],
+                            \\"test\\": \\"my-test\\"
+                        }
+                    }
                 }"
             `);
         });

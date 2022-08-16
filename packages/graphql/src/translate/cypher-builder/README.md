@@ -68,6 +68,9 @@ Most clauses support subclauses, these can be used after the main clause, but no
 -   **Where**
 -   **OnCreate**
 -   **With**: Import with at the beginning of a `CALL` block. Not to be confused with top-level **WITH** clause.
+-   **OrderBy**
+    -   **Skip**
+    -   **Limit**
 
 ### Concat
 
