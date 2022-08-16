@@ -28,8 +28,11 @@ import neo4j from "neo4j-driver";
 const DURATION_REGEX_ISO =
     /^(?<negated>-?)?P(?!$)(?:(?<years>-?\d+(?:\.\d+(?=Y$))?)Y)?(?:(?<months>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<weeks>-?(5[0-3]|[1-4][0-9]|[1-9])(?:\.\d+(?=W$))?)W)?(?:(?<days>-?\d+(?:\.\d+(?=D$))?)D)?(?:T(?!$)(?:(?<hours>-?\d+(?:\.\d+(?=H$))?)H)?(?:(?<minutes>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<seconds>-?\d+(?:\.\d+(?=S$))?)S)?)?$/;
 
-const DURATION_REGEX_DELIMITER =
-    /^(?<negated>-?)?P(?<years>\d{4})-?(?<months>\d{2})-?(?<days>\d{2})T(?<hours>\d{2}):?(?<minutes>\d{2}):?(?<seconds>\d{2})/;
+const DURATION_REGEX_WITH_DELIMITERS =
+    /^(?<negated>-?)?P(?<years>\d{4})-(?<months>\d{2})-(?<days>\d{2})T(?<hours>\d{2}):(?<minutes>\d{2}):(?<seconds>\d{2})/;
+
+const DURATION_REGEX_NO_DELIMITERS =
+    /^(?<negated>-?)?P(?<years>\d{4})(?<months>\d{2})(?<days>\d{2})T(?<hours>\d{2})(?<minutes>\d{2})(?<seconds>\d{2})/;
 
 // Normalized components per https://neo4j.com/docs/cypher-manual/current/syntax/operators/#cypher-ordering
 export const MONTHS_PER_YEAR = 12;
@@ -44,9 +47,10 @@ export const NANOSECONDS_PER_SECOND = 1000000000;
 
 export const parseDuration = (value: string) => {
     const matchIso = DURATION_REGEX_ISO.exec(value);
-    const matchDelimiter = DURATION_REGEX_DELIMITER.exec(value);
+    const matchDelimiter = DURATION_REGEX_WITH_DELIMITERS.exec(value);
+    const matchNoDelimiter = DURATION_REGEX_NO_DELIMITERS.exec(value);
 
-    const match = matchIso || matchDelimiter;
+    const match = matchIso || matchDelimiter || matchNoDelimiter;
     if (!match) {
         throw new TypeError(`Value must be formatted as Duration: ${value}`);
     }
@@ -126,7 +130,11 @@ export const GraphQLDuration = new GraphQLScalarType({
             return value.toString();
         }
 
-        if (!DURATION_REGEX_ISO.test(value) || !DURATION_REGEX_DELIMITER.test(value)) {
+        if (
+            !DURATION_REGEX_ISO.test(value) ||
+            !DURATION_REGEX_WITH_DELIMITERS.test(value) ||
+            !!DURATION_REGEX_NO_DELIMITERS.test(value)
+        ) {
             throw new TypeError(`Value must be formatted as Duration: ${value}`);
         }
 

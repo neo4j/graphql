@@ -35,6 +35,7 @@ describe("Duration Scalar", () => {
         ["-P2Y-3M", { months: -2 * MONTHS_PER_YEAR + 3, days: 0, seconds: 0, nanoseconds: 0 }],
         ["P3M", { months: 3, days: 0, seconds: 0, nanoseconds: 0 }],
         ["P87D", { months: 0, days: 87, seconds: 0, nanoseconds: 0 }],
+        ["P52W", { months: 0, days: 52 * DAYS_PER_WEEK, seconds: 0, nanoseconds: 0 }],
         ["P15W", { months: 0, days: 15 * DAYS_PER_WEEK, seconds: 0, nanoseconds: 0 }],
         ["P2W", { months: 0, days: 2 * DAYS_PER_WEEK, seconds: 0, nanoseconds: 0 }],
         ["P-15W", { months: 0, days: -15 * DAYS_PER_WEEK, seconds: 0, nanoseconds: 0 }],
