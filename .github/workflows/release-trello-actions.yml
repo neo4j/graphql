@@ -18,7 +18,7 @@ jobs:
           echo "LIST=$list" >> "$GITHUB_ENV"
       - name: Create changelog card
         run: |
-          card=$( curl --request POST --url "https://api.trello.com/1/cards?idList=$LIST&name=${{ github.event.release.name }}&desc=${{ github.event.release.body }}&key=${{ secrets.API_KEY }}&token=${{ secrets.API_TOKEN }}" --header 'Accept: application/json' | jq .id )
+          card=$( curl --request POST --url "https://api.trello.com/1/cards?idList=$LIST&name=Changelog&desc=${{ github.event.release.body }}&idLabels=${{ secrets.CHANGELOG_LABEL }}&key=${{ secrets.API_KEY }}&token=${{ secrets.API_TOKEN }}" --header 'Accept: application/json' | jq .id )
           echo "CARD=$card" >> "$GITHUB_ENV"
       - name: Attach release
         run: |
