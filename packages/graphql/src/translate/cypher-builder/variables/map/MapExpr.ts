@@ -46,10 +46,4 @@ export class MapExpr implements CypherCompilable {
     }
 }
 
-// TODO
-// export class MapProjection extends MapExpr {
-//     private baseVariable: Variable;
-//     private projectionValues: string[];
-
-//     select(value: string)
-// }
+// TODO class MapProjection extends MapExpr {
