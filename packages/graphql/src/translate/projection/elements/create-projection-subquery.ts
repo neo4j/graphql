@@ -24,6 +24,7 @@ import { createCypherWherePredicate } from "../../where/create-cypher-where-pred
 import type { RelationshipDirection } from "../../../utils/get-relationship-direction";
 import { createAuthPredicates } from "../../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
+import { toNumber } from "../../../utils/utils";
 
 export function createProjectionSubquery({
     parentNode,
@@ -126,10 +127,6 @@ export function createProjectionSubquery({
         );
 
         subqueryMatch.and(authStatement);
-
-        // whereStrs.push(
-        //     `apoc.util.validatePredicate(NOT (${authValidateStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-        // );
     }
 
     const returnVariable = new CypherBuilder.NamedVariable(alias);
@@ -144,6 +141,14 @@ export function createProjectionSubquery({
         if (orderByParams.length > 0) {
             withStatement.orderBy(...orderByParams);
         }
+    }
+    if (optionsInput.limit) {
+        const limit = toNumber(optionsInput.limit);
+        withStatement.limit(limit);
+    }
+    if (optionsInput.offset) {
+        const offset = toNumber(optionsInput.offset);
+        withStatement.skip(offset);
     }
 
     let returnProjection = CypherBuilder.collect(targetNode);

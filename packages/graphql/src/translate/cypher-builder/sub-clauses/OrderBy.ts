@@ -27,20 +27,50 @@ export type Order = "ASC" | "DESC";
 type OrderProjectionElement = [Expr, Order];
 
 export class OrderBy extends CypherASTNode {
-    private exprs: OrderProjectionElement[];
+    private exprs: OrderProjectionElement[] = [];
 
-    constructor(exprs: OrderProjectionElement[]) {
-        super();
+    // TODO: these could be children nodes in the AST
+    private skipValue: number | undefined;
+    private limitValue: number | undefined;
+
+    public setOrderElements(exprs: OrderProjectionElement[]) {
         this.exprs = exprs;
     }
 
-    public getCypher(env: CypherEnvironment): string {
-        const exprStr = this.exprs
-            .map(([expr, order]) => {
-                return `${expr.getCypher(env)} ${order}`;
-            })
-            .join(", ");
+    public skip(offset: number): void {
+        this.skipValue = offset;
+    }
 
-        return `ORDER BY ${exprStr}`;
+    public limit(limit: number): void {
+        this.limitValue = limit;
+    }
+
+    private hasOrder(): boolean {
+        return this.exprs.length > 0;
+    }
+
+    public getCypher(env: CypherEnvironment): string {
+        let orderStr = "";
+        let skipStr = "";
+        let limitStr = "";
+
+        if (this.hasOrder()) {
+            const exprStr = this.exprs
+                .map(([expr, order]) => {
+                    return `${expr.getCypher(env)} ${order}`;
+                })
+                .join(", ");
+
+            orderStr = `ORDER BY ${exprStr}`;
+        }
+
+        if (this.skipValue !== undefined) {
+            skipStr = `SKIP ${this.skipValue}`;
+        }
+        if (this.limitValue !== undefined) {
+            limitStr = `LIMIT ${this.limitValue}`;
+        }
+
+        return `${orderStr}\n${limitStr}\n${skipStr}`;
     }
 }
