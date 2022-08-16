@@ -97,7 +97,7 @@ describe("Neo4jGraphQLAuthJWTPlugin", () => {
 
         expect(initError).toBeDefined();
         expect((initError as Error).message).toBe(
-            "Neo4jGraphQLAuthJWTPlugin: noVerify and globalAuthentication can not both be enabled simultaneously."
+            "Neo4jGraphQLAuthJWTPlugin, noVerify and globalAuthentication can not both be enabled simultaneously."
         );
     });
 });
