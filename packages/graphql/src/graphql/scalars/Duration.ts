@@ -130,11 +130,11 @@ export const GraphQLDuration = new GraphQLScalarType({
             return value.toString();
         }
 
-        if (
-            !DURATION_REGEX_ISO.test(value) ||
-            !DURATION_REGEX_WITH_DELIMITERS.test(value) ||
-            !!DURATION_REGEX_NO_DELIMITERS.test(value)
-        ) {
+        const testIso = DURATION_REGEX_ISO.test(value);
+        const testWithDelimiters = DURATION_REGEX_WITH_DELIMITERS.test(value);
+        const testNoDelimiters = DURATION_REGEX_NO_DELIMITERS.test(value);
+        const isCorrectFormat = testIso || testWithDelimiters || testNoDelimiters;
+        if (!isCorrectFormat) {
             throw new TypeError(`Value must be formatted as Duration: ${value}`);
         }
 
