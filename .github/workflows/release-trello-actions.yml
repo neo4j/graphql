@@ -22,4 +22,4 @@ jobs:
           echo "CARD=$card" >> "$GITHUB_ENV"
       - name: Attach release
         run: |
-          curl --request POST --url 'https://api.trello.com/1/cards/${CARD}/attachments?url=${{ github.event.release.html_url }}&key=${{ secrets.API_KEY }}&token=${{ secrets.API_TOKEN }}' --header 'Accept: application/json'
+          curl --request POST --url "https://api.trello.com/1/cards/${CARD}/attachments?url=${{ github.event.release.html_url }}&key=${{ secrets.API_KEY }}&token=${{ secrets.API_TOKEN }}" --header 'Accept: application/json'
