@@ -318,6 +318,7 @@ describe("connectOrCreate", () => {
                     MERGE (this)-[this_genres0_connectOrCreate_this1:IN_GENRE]->(this_genres0_connectOrCreate_this0)
                     RETURN COUNT(*) AS _
                 }
+                WITH *
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);
 
@@ -367,6 +368,7 @@ describe("connectOrCreate", () => {
                     MERGE (this)-[this_genres0_connectOrCreate_this1:IN_GENRE]->(this_genres0_connectOrCreate_this0)
                     RETURN COUNT(*) AS _
                 }
+                WITH *
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);
 
@@ -416,6 +418,7 @@ describe("connectOrCreate", () => {
                     MERGE (this)-[this_genres0_connectOrCreate_this1:IN_GENRE]->(this_genres0_connectOrCreate_this0)
                     RETURN COUNT(*) AS _
                 }
+                WITH *
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);
 
@@ -465,6 +468,7 @@ describe("connectOrCreate", () => {
                     MERGE (this)-[this_genres0_connectOrCreate_this1:IN_GENRE]->(this_genres0_connectOrCreate_this0)
                     RETURN COUNT(*) AS _
                 }
+                WITH *
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);
 
@@ -524,6 +528,7 @@ describe("connectOrCreate", () => {
                     MERGE (this)-[this_connectOrCreate_genres_this1:IN_GENRE]->(this_connectOrCreate_genres_this0)
                     RETURN COUNT(*) AS _
                 }
+                WITH *
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);
 
@@ -573,6 +578,7 @@ describe("connectOrCreate", () => {
                     MERGE (this)-[this_connectOrCreate_genres_this1:IN_GENRE]->(this_connectOrCreate_genres_this0)
                     RETURN COUNT(*) AS _
                 }
+                WITH *
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);
 
@@ -622,6 +628,7 @@ describe("connectOrCreate", () => {
                     MERGE (this)-[this_connectOrCreate_genres_this1:IN_GENRE]->(this_connectOrCreate_genres_this0)
                     RETURN COUNT(*) AS _
                 }
+                WITH *
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);
 
@@ -671,6 +678,7 @@ describe("connectOrCreate", () => {
                     MERGE (this)-[this_connectOrCreate_genres_this1:IN_GENRE]->(this_connectOrCreate_genres_this0)
                     RETURN COUNT(*) AS _
                 }
+                WITH *
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);
 
@@ -728,6 +736,7 @@ describe("connectOrCreate", () => {
                     MERGE (this)-[this_connectOrCreate_genres_this1:IN_GENRE]->(this_connectOrCreate_genres_this0)
                     RETURN COUNT(*) AS _
                 }
+                WITH *
                 RETURN collect(DISTINCT this { .title }) AS data"
             `);
 

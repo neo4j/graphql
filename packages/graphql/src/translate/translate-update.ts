@@ -442,9 +442,16 @@ export default async function translateUpdate({
             disconnectStrs.join("\n"),
             createStrs.join("\n"),
             deleteStr,
-            "WITH *",
+            ...(deleteStr.length ||
+            connectStrs.length ||
+            disconnectStrs.length ||
+            createStrs.length ||
+            projectionSubqueryStr
+                ? [`WITH *`]
+                : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
+
             projectionSubqueryStr,
-            ...((connectionStrs.length || projAuth) && projectionSubqueryStr ? [`WITH *`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
+            ...(connectionStrs.length || projAuth ? [`WITH *`] : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
             ...(projAuth ? [projAuth] : []),
             ...(relationshipValidationStr ? [`WITH *`, relationshipValidationStr] : []),
             ...connectionStrs,

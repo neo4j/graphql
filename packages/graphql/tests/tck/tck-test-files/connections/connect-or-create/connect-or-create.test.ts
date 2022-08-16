@@ -163,6 +163,7 @@ describe("Create or Connect", () => {
                         this_movies0_connectOrCreate_this1.screentime = $this_movies0_connectOrCreate_param2
                     RETURN COUNT(*) AS _
                 }
+                WITH *
                 RETURN collect(DISTINCT this { .name }) AS data"
             `);
 
@@ -390,6 +391,7 @@ describe("Create or Connect", () => {
                         this_movies0_connectOrCreate_this1.screentime = $this_movies0_connectOrCreate_param2
                     RETURN COUNT(*) AS _
                 }
+                WITH *
                 RETURN collect(DISTINCT this { .name }) AS data"
             `);
 
@@ -451,6 +453,7 @@ describe("Create or Connect", () => {
                         this_movies0_connectOrCreate_this1.screentime = $this_movies0_connectOrCreate_param2
                     RETURN COUNT(*) AS _
                 }
+                WITH *
                 RETURN collect(DISTINCT this { .name }) AS data"
             `);
 
@@ -615,6 +618,7 @@ describe("Create or Connect", () => {
                         this_movies0_connectOrCreate_this1.screentime = $this_movies0_connectOrCreate_param2
                     RETURN COUNT(*) AS _
                 }
+                WITH *
                 RETURN collect(DISTINCT this { .name }) AS data"
             `);
 
