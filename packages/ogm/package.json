@@ -39,7 +39,7 @@
         "prettier": "2.7.1"
     },
     "peerDependencies": {
-        "graphql": "16.5.0",
+        "graphql": "16.6.0",
         "neo4j-driver": "4.4.7"
     },
     "devDependencies": {

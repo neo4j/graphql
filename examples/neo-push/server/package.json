@@ -21,7 +21,7 @@
         "debug": "4.3.4",
         "dotenv": "16.0.1",
         "express": "4.17.1",
-        "graphql": "16.5.0",
+        "graphql": "16.6.0",
         "jsonwebtoken": "8.5.1",
         "neo4j-driver": "4.4.7"
     },
