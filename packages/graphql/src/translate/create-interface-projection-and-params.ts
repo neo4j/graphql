@@ -23,7 +23,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import type { ConnectionField, Context, InterfaceWhereArg, RelationField } from "../types";
 import filterInterfaceNodes from "../utils/filter-interface-nodes";
 import createConnectionAndParams from "./connection/create-connection-and-params";
-import createAuthAndParams from "./create-auth-and-params";
+import { createAuthAndParams } from "./create-auth-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
 import { getRelationshipDirectionStr } from "../utils/get-relationship-direction";
 import createElementWhereAndParams from "./where/create-element-where-and-params";

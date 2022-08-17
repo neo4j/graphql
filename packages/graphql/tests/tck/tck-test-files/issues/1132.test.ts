@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             	OPTIONAL MATCH (this_connect_targets0_node:Target)
             	WHERE this_connect_targets0_node.id = $this_connect_targets0_node_param0
             	WITH this, this_connect_targets0_node
-            	CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisSource1_allow_auth_allow0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
             		FOREACH(_ IN CASE WHEN this_connect_targets0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:HAS_TARGET]->(this_connect_targets0_node)
@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_connect_targets0_node_param0\\": \\"1\\",
-                \\"thisSource1_allow_auth_allow0_id\\": \\"1\\",
+                \\"thisauth_param0\\": \\"1\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -126,7 +126,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             OPTIONAL MATCH (this)-[this_disconnect_targets0_rel:HAS_TARGET]->(this_disconnect_targets0:Target)
             WHERE this_disconnect_targets0.id = $updateSources_args_disconnect_targets0_where_Targetparam0
             WITH this, this_disconnect_targets0, this_disconnect_targets0_rel
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisSource0_allow_auth_allow0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             FOREACH(_ IN CASE WHEN this_disconnect_targets0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_targets0_rel
             )
@@ -138,7 +138,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"updateSources_args_disconnect_targets0_where_Targetparam0\\": \\"1\\",
-                \\"thisSource0_allow_auth_allow0_id\\": \\"1\\",
+                \\"thisauth_param0\\": \\"1\\",
                 \\"updateSources\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
