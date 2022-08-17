@@ -1,19 +1,18 @@
-name: New feature requests
+name: Add new feature requests to Trello
 
 on:
   issues:
     types: [opened]
 
 jobs:
-  add-new-feature-requests-to-project:
+  create-trello-card:
     if: contains(github.event.issue.labels.*.name, 'feature request')
 
     runs-on: ubuntu-latest
 
+    environment: trello
+
     steps:
-      - uses: alex-page/github-project-automation-plus@bb266ff4dde9242060e2d5418e120a133586d488 # renovate: tag=v0.8.1
-        with:
-          project: Feature Requests
-          column: Feature requests
-          repo-token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
-          action: add
+      - name: Create card
+        run: |
+          curl --request POST --url "https://api.trello.com/1/cards?idList=${{ secrets.FEATURE_REQUEST_INBOX_LIST }}&urlSource=${{ github.event.issue.html_url }}&key=${{ secrets.TRELLO_API_KEY }}&token=${{ secrets.TRELLO_API_TOKEN }}" --header 'Accept: application/json'
