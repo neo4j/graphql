@@ -53,7 +53,7 @@
         "@types/is-uuid": "1.0.0",
         "@types/jest": "28.1.7",
         "@types/jsonwebtoken": "8.5.8",
-        "@types/node": "16.11.48",
+        "@types/node": "16.11.49",
         "@types/pluralize": "0.0.29",
         "@types/randomstring": "1.1.8",
         "@types/semver": "7.3.12",
@@ -78,16 +78,16 @@
         "randomstring": "1.2.2",
         "rimraf": "3.0.2",
         "supertest": "6.2.4",
-        "ts-jest": "28.0.7",
+        "ts-jest": "28.0.8",
         "ts-node": "10.9.1",
         "typescript": "4.7.4",
         "ws": "8.8.1"
     },
     "dependencies": {
-        "@graphql-tools/merge": "8.3.1",
-        "@graphql-tools/resolvers-composition": "6.5.0",
-        "@graphql-tools/schema": "9.0.0",
-        "@graphql-tools/utils": "8.9.0",
+        "@graphql-tools/merge": "8.3.3",
+        "@graphql-tools/resolvers-composition": "6.5.3",
+        "@graphql-tools/schema": "9.0.1",
+        "@graphql-tools/utils": "8.10.0",
         "camelcase": "6.3.0",
         "debug": "4.3.4",
         "deep-equal": "2.0.5",
@@ -99,7 +99,7 @@
         "semver": "7.3.7"
     },
     "peerDependencies": {
-        "graphql": "16.5.0",
+        "graphql": "16.6.0",
         "neo4j-driver": "4.4.7"
     }
 }

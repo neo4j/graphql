@@ -1761,15 +1761,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/merge@npm:8.3.2":
-  version: 8.3.2
-  resolution: "@graphql-tools/merge@npm:8.3.2"
+"@graphql-tools/merge@npm:8.3.3":
+  version: 8.3.3
+  resolution: "@graphql-tools/merge@npm:8.3.3"
   dependencies:
-    "@graphql-tools/utils": 8.9.1
+    "@graphql-tools/utils": 8.10.0
     tslib: ^2.4.0
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 0a8a5d5aa69f66e295fcc3b83bb044194f8078ce6e14e32ca6ffe60716c37942aa7d8fbffb899f3d21c2015c58181e593f42653e3f64dbed3588dab19d4d19c2
+  checksum: fe8979cd5d82b56eca66e383700519bd674babb0ccd189cd30625418917893b62448686dc771cd4f0b0be000dfdf2f2e6bbfac7a54653241db15862bd2c2f6fc
   languageName: node
   linkType: hard
 
@@ -1811,17 +1811,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/resolvers-composition@npm:6.5.0":
-  version: 6.5.0
-  resolution: "@graphql-tools/resolvers-composition@npm:6.5.0"
+"@graphql-tools/resolvers-composition@npm:6.5.3":
+  version: 6.5.3
+  resolution: "@graphql-tools/resolvers-composition@npm:6.5.3"
   dependencies:
-    "@graphql-tools/utils": 8.8.0
+    "@graphql-tools/utils": 8.10.0
     lodash: 4.17.21
     micromatch: ^4.0.4
     tslib: ^2.4.0
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: a43344e0d957a8cc6aa0e6d68795c53dda680b7fbf37d390f20bf931972f273b54fe574fe746a188c8f5431f22a99f60ea622eaed5bea97d1b6c5626c9d34f59
+  checksum: 45e5fe150811fd126e0a27dfd4adcb64e7bbd8a4d2818e4d7242886b04594375f3fd96d3c827c118064bab46b8ff936adae847eaba5739eba3132505f430f50c
   languageName: node
   linkType: hard
 
@@ -1853,17 +1853,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/schema@npm:9.0.0":
-  version: 9.0.0
-  resolution: "@graphql-tools/schema@npm:9.0.0"
+"@graphql-tools/schema@npm:9.0.1":
+  version: 9.0.1
+  resolution: "@graphql-tools/schema@npm:9.0.1"
   dependencies:
-    "@graphql-tools/merge": 8.3.2
-    "@graphql-tools/utils": 8.9.1
+    "@graphql-tools/merge": 8.3.3
+    "@graphql-tools/utils": 8.10.0
     tslib: ^2.4.0
     value-or-promise: 1.0.11
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: de8fd6b93afba3eb048c312e946d8ad7452e3bb4de3b0bee7685d31139405692058f14ca61d59029e3417886bfb76063eddb6134875f3281f4428cea24a19383
+  checksum: 84f2d2bb0469e1905738edc6211f0a05a7e0a07ff9bdbb1dccfa0793fe44375eaa62a1c2fc9ad5fb8fa4010b3a5762cc9d5af8c042b51f57b2421a8f65e6cad3
+  languageName: node
+  linkType: hard
+
+"@graphql-tools/utils@npm:8.10.0":
+  version: 8.10.0
+  resolution: "@graphql-tools/utils@npm:8.10.0"
+  dependencies:
+    tslib: ^2.4.0
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 1070959ab24c23510d70e8a557d1d2a90d2c041f2f7b1458e18158cede172b1964d50a803e3d206add73cb843998aaa434713f7c89e2e174974815385a3cad70
   languageName: node
   linkType: hard
 
@@ -1886,17 +1897,6 @@ __metadata:
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
   checksum: 8d1d8a11722e211dc8723cd3fd7a97fa5401ab22146e4240a0f9d45547792476c34814ff914524578beec961db7b0ff23a6ddff8fe059764537e594cff35c906
-  languageName: node
-  linkType: hard
-
-"@graphql-tools/utils@npm:8.9.1":
-  version: 8.9.1
-  resolution: "@graphql-tools/utils@npm:8.9.1"
-  dependencies:
-    tslib: ^2.4.0
-  peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 7e7130841e19663ccef49e30e0292c6ebe12ffa243bc1c8b2ef31eaa1663686a0831ae2e7c7dc12856751b9fa4df024b1b1d1af38d8162d342f3e33789f60c50
   languageName: node
   linkType: hard
 
@@ -2443,11 +2443,11 @@ __metadata:
     "@graphql-codegen/core": 2.5.1
     "@graphql-codegen/plugin-helpers": 2.4.2
     "@graphql-codegen/typescript": 2.6.0
-    "@graphql-tools/merge": 8.3.1
+    "@graphql-tools/merge": 8.3.3
     "@neo4j/graphql": ^3.6.2
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/jest": 28.1.7
-    "@types/node": 16.11.48
+    "@types/node": 16.11.49
     camelcase: 6.3.0
     graphql-tag: 2.12.6
     jest: 28.1.3
@@ -2458,10 +2458,10 @@ __metadata:
     prettier: 2.7.1
     randomstring: 1.2.2
     semver: 7.3.7
-    ts-jest: 28.0.7
+    ts-jest: 28.0.8
     typescript: 4.7.4
   peerDependencies:
-    graphql: 16.5.0
+    graphql: 16.6.0
     neo4j-driver: 4.4.7
   languageName: unknown
   linkType: soft
@@ -2473,12 +2473,12 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/jest": 28.1.7
     "@types/jsonwebtoken": 8.5.8
-    "@types/node": 16.11.48
+    "@types/node": 16.11.49
     debug: 4.3.4
     jest: 28.1.3
     jsonwebtoken: 8.5.1
     jwks-rsa: 2.1.4
-    ts-jest: 28.0.7
+    ts-jest: 28.0.8
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
@@ -2491,7 +2491,7 @@ __metadata:
     "@types/amqplib": 0.8.2
     "@types/debug": 4.1.7
     "@types/jest": 28.1.7
-    "@types/node": 16.11.48
+    "@types/node": 16.11.49
     amqplib: 0.10.2
     apollo-server: 3.10.1
     apollo-server-express: 3.10.1
@@ -2502,7 +2502,7 @@ __metadata:
     pluralize: 8.0.0
     randomstring: 1.1.5
     supertest: 6.2.4
-    ts-jest: 28.0.7
+    ts-jest: 28.0.8
     typescript: 4.7.4
     ws: 8.8.1
   peerDependencies:
@@ -2539,7 +2539,7 @@ __metadata:
     file-loader: 6.2.0
     fork-ts-checker-webpack-plugin: 7.2.13
     graphiql-explorer: 0.9.0
-    graphql: 16.5.0
+    graphql: 16.6.0
     graphql-request: 4.3.0
     html-inline-script-webpack-plugin: 3.1.0
     html-webpack-inline-source-plugin: 0.0.10
@@ -2562,7 +2562,7 @@ __metadata:
     style-loader: 3.3.1
     tailwindcss: 3.1.8
     terser-webpack-plugin: 5.3.3
-    ts-jest: 28.0.7
+    ts-jest: 28.0.8
     ts-loader: 9.3.1
     ts-node: 10.9.1
     tsconfig-paths-webpack-plugin: 4.0.0
@@ -2581,16 +2581,16 @@ __metadata:
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
     "@faker-js/faker": 7.4.0
-    "@graphql-tools/merge": 8.3.1
-    "@graphql-tools/resolvers-composition": 6.5.0
-    "@graphql-tools/schema": 9.0.0
-    "@graphql-tools/utils": 8.9.0
+    "@graphql-tools/merge": 8.3.3
+    "@graphql-tools/resolvers-composition": 6.5.3
+    "@graphql-tools/schema": 9.0.1
+    "@graphql-tools/utils": 8.10.0
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
     "@types/jest": 28.1.7
     "@types/jsonwebtoken": 8.5.8
-    "@types/node": 16.11.48
+    "@types/node": 16.11.49
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
     "@types/semver": 7.3.12
@@ -2624,12 +2624,12 @@ __metadata:
     rimraf: 3.0.2
     semver: 7.3.7
     supertest: 6.2.4
-    ts-jest: 28.0.7
+    ts-jest: 28.0.8
     ts-node: 10.9.1
     typescript: 4.7.4
     ws: 8.8.1
   peerDependencies:
-    graphql: 16.5.0
+    graphql: 16.6.0
     neo4j-driver: 4.4.7
   languageName: unknown
   linkType: soft
@@ -2640,13 +2640,13 @@ __metadata:
   dependencies:
     "@neo4j/graphql": ^3.5.0
     "@types/jest": 28.1.7
-    "@types/node": 16.11.48
+    "@types/node": 16.11.49
     "@types/pluralize": 0.0.29
     camelcase: 6.3.0
     debug: 4.3.4
     jest: 28.1.3
     pluralize: 8.0.0
-    ts-jest: 28.0.7
+    ts-jest: 28.0.8
     typescript: 4.7.4
   peerDependencies:
     neo4j-driver: 4.4.7
@@ -3421,10 +3421,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:16.11.48":
-  version: 16.11.48
-  resolution: "@types/node@npm:16.11.48"
-  checksum: 10cd539cb2cf5a8f51f3c2bd761c093b752e534b1f2dc0d7193debd7986145b68db2a5fd48498af641e8641fb8d24b7c4851ea3e30fb8f56cc13ac719cad1e1f
+"@types/node@npm:16.11.49":
+  version: 16.11.49
+  resolution: "@types/node@npm:16.11.49"
+  checksum: 05545ee49da3b783ab77cddca45db6f4d47861c2bb148a17b774688e1082f20f27177591d140923724bcd8643b32291203f6f1eadba397e394232d4a1e28e07a
   languageName: node
   linkType: hard
 
@@ -9350,10 +9350,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:16.5.0":
-  version: 16.5.0
-  resolution: "graphql@npm:16.5.0"
-  checksum: a82a926d085818934d04fdf303a269af170e79de943678bd2726370a96194f9454ade9d6d76c2de69afbd7b9f0b4f8061619baecbbddbe82125860e675ac219e
+"graphql@npm:16.6.0":
+  version: 16.6.0
+  resolution: "graphql@npm:16.6.0"
+  checksum: bf1d9e3c1938ce3c1a81e909bd3ead1ae4707c577f91cff1ca2eca474bfbc7873d5d7b942e1e9777ff5a8304421dba57a4b76d7a29eb19de8711cb70e3c2415e
   languageName: node
   linkType: hard
 
@@ -12722,7 +12722,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": ^3.5.0
     apollo-server: 3.10.1
-    graphql: 16.5.0
+    graphql: 16.6.0
     neo4j-driver: 4.4.7
   languageName: unknown
   linkType: soft
@@ -13116,7 +13116,7 @@ __metadata:
     css-loader: 6.7.1
     dotenv-webpack: 7.1.1
     file-loader: 6.2.0
-    graphql: 16.5.0
+    graphql: 16.6.0
     html-webpack-plugin: 5.5.0
     react: 18.2.0
     react-bootstrap: 2.5.0
@@ -13148,7 +13148,7 @@ __metadata:
     "@types/express": 4.17.9
     "@types/jest": 28.1.7
     "@types/jsonwebtoken": 8.5.1
-    "@types/node": 16.11.48
+    "@types/node": 16.11.49
     "@types/uuid": 8.3.4
     apollo-server-express: 3.10.1
     bcrypt: 5.0.1
@@ -13156,13 +13156,13 @@ __metadata:
     debug: 4.3.4
     dotenv: 16.0.1
     express: 4.17.1
-    graphql: 16.5.0
+    graphql: 16.6.0
     jest: 28.1.3
     jsonwebtoken: 8.5.1
     neo4j-driver: 4.4.7
     nodemon: 2.0.19
     randomstring: 1.1.5
-    ts-jest: 28.0.7
+    ts-jest: 28.0.8
     ts-node: 10.9.1
     tsconfig-paths: 4.1.0
     typescript: 4.7.4
@@ -13219,7 +13219,7 @@ __metadata:
     eslint-plugin-jest: 26.8.3
     eslint-plugin-jsx-a11y: 6.6.1
     eslint-plugin-react: 7.30.1
-    graphql: 16.5.0
+    graphql: 16.6.0
     husky: 8.0.1
     jest: 28.1.3
     lint-staged: 13.0.3
@@ -13227,7 +13227,7 @@ __metadata:
     npm-run-all: 4.1.5
     prettier: 2.7.1
     set-tz: 0.2.0
-    ts-jest: 28.0.7
+    ts-jest: 28.0.8
     typescript: 4.7.4
   languageName: unknown
   linkType: soft
@@ -17888,9 +17888,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:28.0.7":
-  version: 28.0.7
-  resolution: "ts-jest@npm:28.0.7"
+"ts-jest@npm:28.0.8":
+  version: 28.0.8
+  resolution: "ts-jest@npm:28.0.8"
   dependencies:
     bs-logger: 0.x
     fast-json-stable-stringify: 2.x
@@ -17917,7 +17917,7 @@ __metadata:
       optional: true
   bin:
     ts-jest: cli.js
-  checksum: be6ad6382e3b2e7b0c45d06616a4a02aeb6815bad2026fe8eeb4e0941205faa50ac3f5930adb7ba2fda5fea6a5739bfa507e2eac8764d2c729ddc8010681707a
+  checksum: c72e9292709e77ce47ac7813cb24feaa9d01dc983598d29a821f224b5cc190dc7d67e17379cef089095404c00b9d582ee91c727916f9ec289cb1b723df408ae3
   languageName: node
   linkType: hard
 
