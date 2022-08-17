@@ -28,7 +28,7 @@ import createProjectionAndParams from "../create-projection-and-params";
 import type Relationship from "../../classes/Relationship";
 import createRelationshipPropertyElement from "../projection/elements/create-relationship-property-element";
 import createConnectionWhereAndParams from "../where/create-connection-where-and-params";
-import createAuthAndParams from "../create-auth-and-params";
+import { createAuthAndParams } from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createOffsetLimitStr } from "../../schema/pagination";
 import filterInterfaceNodes from "../../utils/filter-interface-nodes";
