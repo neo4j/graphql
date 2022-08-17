@@ -19,7 +19,7 @@
 
 import type { AuthOperations, Context, GraphQLWhereArg } from "../types";
 import type { Node } from "../classes";
-import createAuthAndParams from "./create-auth-and-params";
+import { createAuthAndParams } from "./create-auth-and-params";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { createCypherWherePredicate } from "./where/create-cypher-where-predicate";
 

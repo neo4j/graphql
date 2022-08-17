@@ -20,7 +20,7 @@
 import type { Node } from "../classes";
 import type { Context } from "../types";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
-import createAuthAndParams from "./create-auth-and-params";
+import { createAuthAndParams } from "./create-auth-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import { createEventMeta } from "./subscriptions/create-event-meta";
