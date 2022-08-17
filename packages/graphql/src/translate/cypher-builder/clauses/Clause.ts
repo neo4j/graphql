@@ -19,7 +19,7 @@
 
 import { CypherASTNode } from "../CypherASTNode";
 import { CypherEnvironment, EnvPrefix } from "../Environment";
-import type { CypherResult } from "../types";
+import type { CypherCompilable, CypherResult } from "../types";
 
 /** Represents a clause ast node */
 export abstract class Clause extends CypherASTNode {
@@ -38,5 +38,19 @@ export abstract class Clause extends CypherASTNode {
 
     private getEnv(prefix?: string | EnvPrefix): CypherEnvironment {
         return new CypherEnvironment(prefix);
+    }
+}
+
+/** For testing purposes only */
+export class TestClause extends Clause {
+    children: CypherCompilable[];
+
+    constructor(...children: CypherCompilable[]) {
+        super();
+        this.children = children;
+    }
+
+    public getCypher(env: CypherEnvironment): string {
+        return this.children.map((c) => c.getCypher(env)).join("");
     }
 }

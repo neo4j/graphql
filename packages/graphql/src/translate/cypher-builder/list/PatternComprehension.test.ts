@@ -20,29 +20,32 @@
 import { TestClause } from "../clauses/Clause";
 import * as CypherBuilder from "../CypherBuilder";
 
-describe("Functions", () => {
-    test("coalesce", () => {
-        const testParam = new CypherBuilder.Param("Hello");
-        const nullParam = CypherBuilder.Null;
-        const literal = new CypherBuilder.Literal(`"arthur"`);
+describe("Pattern comprehension", () => {
+    test("comprehension with filter", () => {
+        const node = new CypherBuilder.Node({ labels: ["Movie"] });
+        const andExpr = CypherBuilder.eq(node.property("released"), new CypherBuilder.Param(1999));
 
-        const coalesceFunction = CypherBuilder.coalesce(nullParam, testParam, literal);
-        const queryResult = new TestClause(coalesceFunction).build();
+        const comprehension = new CypherBuilder.PatternComprehension(node.pattern(), andExpr);
 
-        expect(queryResult.cypher).toMatchInlineSnapshot(`"coalesce(NULL, $param0, \\"arthur\\")"`);
+        const queryResult = new TestClause(comprehension).build();
+
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"[(this0:\`Movie\`) | this0.released = $param0]"`);
 
         expect(queryResult.params).toMatchInlineSnapshot(`
             Object {
-              "param0": "Hello",
+              "param0": 1999,
             }
         `);
     });
 
-    test("cypherDatetime", () => {
-        const datetimeFn = CypherBuilder.datetime();
-        const queryResult = new TestClause(datetimeFn).build();
+    test("comprehension without filter", () => {
+        const node = new CypherBuilder.Node({ labels: ["Movie"] });
 
-        expect(queryResult.cypher).toMatchInlineSnapshot(`"datetime()"`);
+        const comprehension = new CypherBuilder.PatternComprehension(node.pattern());
+
+        const queryResult = new TestClause(comprehension).build();
+
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"[(this0:\`Movie\`)]"`);
 
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
     });
