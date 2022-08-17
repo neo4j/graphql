@@ -95,6 +95,7 @@ export const TopBar = () => {
                         <div className="mr-4 pr-4 border-r border-gray-700">
                             <Button
                                 data-test-topbar-disconnect-button
+                                className="w-36"
                                 color="primary"
                                 fill="text"
                                 onClick={() => auth?.logout()}

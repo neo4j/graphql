@@ -19,7 +19,7 @@
 
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
@@ -27,6 +27,7 @@ import { generateUniqueType } from "../../utils/graphql-types";
 describe("https://github.com/neo4j/graphql/issues/1221", () => {
     let schema: GraphQLSchema;
     let driver: Driver;
+    let session: Session;
     let neo4j: Neo4j;
     const testMain = generateUniqueType("Main");
     const testSeries = generateUniqueType("Series");
@@ -71,9 +72,11 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         driver = await neo4j.getDriver();
     });
 
-    afterEach(async () => {
-        const session = await neo4j.getSession();
+    beforeEach(async () => {
+        session = await neo4j.getSession();
+    });
 
+    afterEach(async () => {
         try {
             await session.run(`MATCH (o:${testMain}) DETACH DELETE o`);
             await session.run(`MATCH (s:${testSeries}) DETACH DELETE s`);
@@ -95,9 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         });
         schema = await neoGraphql.getSchema();
 
-        const session = await neo4j.getSession();
-        try {
-            await session.run(`
+        await session.run(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })
                 CREATE (m:${testMasterData} { current: true, id: "323" })
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(m)<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "421" })
@@ -106,9 +107,6 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 // For verification purpose, this should be filtered out by the where clause:
                 CREATE (:${testNameDetails} { fullName: "MHBB" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })
             `);
-        } finally {
-            await session.close();
-        }
 
         const query = `
                 query (
@@ -156,7 +154,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             schema,
             source: query,
             variableValues,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(res.errors).toBeUndefined();
@@ -194,18 +192,13 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         });
         schema = await neoGraphql.getSchema();
 
-        const session = await neo4j.getSession();
-        try {
-            await session.run(`
+        await session.run(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "323" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })
 
                 // For verification purpose, this should be filtered out by the where clause:
                 CREATE (:${testNameDetails} { fullName: "MHBB" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })
             `);
-        } finally {
-            await session.close();
-        }
 
         const query = `
                 query (
@@ -253,7 +246,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             schema,
             source: query,
             variableValues,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(res.errors).toBeUndefined();
@@ -311,9 +304,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         });
         schema = await neoGraphql.getSchema();
 
-        const session = await neo4j.getSession();
-        try {
-            await session.run(`
+        await session.run(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(m:${testMasterData} { current: true, id: "123" })
                 CREATE (m)<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })
                 CREATE (m)<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "921" })
@@ -321,9 +312,6 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 // For verification purpose, this should be filtered out by the where clause:
                 CREATE (:${testNameDetails} { fullName: "MHDD" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })
             `);
-        } finally {
-            await session.close();
-        }
 
         const query = `
                 query (
@@ -371,7 +359,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             schema,
             source: query,
             variableValues,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(res.errors).toBeUndefined();
@@ -429,9 +417,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         });
         schema = await neoGraphql.getSchema();
 
-        const session = await neo4j.getSession();
-        try {
-            await session.run(`
+        await session.run(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1321" })
                 CREATE (s:${testSeries} { current: true, id: "421" })
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "123" })<-[:ARCHITECTURE { current: true }]-(s)<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1321" })
@@ -440,9 +426,6 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 // For verification purpose, this should be filtered out by the where clause:
                 CREATE (:${testNameDetails} { fullName: "MHBB" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1621" })
             `);
-        } finally {
-            await session.close();
-        }
 
         const query = `
                 query (
@@ -500,7 +483,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             schema,
             source: query,
             variableValues,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(res.errors).toBeUndefined();
@@ -546,9 +529,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         });
         schema = await neoGraphql.getSchema();
 
-        const session = await neo4j.getSession();
-        try {
-            await session.run(`
+        await session.run(`
                 CREATE (:${testNameDetails} { fullName: "MHA" })<-[:HAS_NAME { current: true }]-(m:${testMasterData} { current: true, id: "123" })
                 CREATE (m)<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "321" })
                 CREATE (m)<-[:ARCHITECTURE { current: true }]-(s:${testSeries} { current: true, id: "921" })
@@ -558,9 +539,6 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 // For verification purpose, this should be filtered out by the where clause:
                 CREATE (:${testNameDetails} { fullName: "MHCC" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })<-[:MAIN { current: true }]-(:${testMain} { current: true, id: "1621" })
             `);
-        } finally {
-            await session.close();
-        }
 
         const query = `
                 query (
@@ -618,7 +596,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             schema,
             source: query,
             variableValues,
-            contextValue: neo4j.getContextValues(),
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
         });
 
         expect(res.errors).toBeUndefined();
