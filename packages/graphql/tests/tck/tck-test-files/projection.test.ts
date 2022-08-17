@@ -110,28 +110,104 @@ describe("Cypher Projection", () => {
             SET this1.id = $this1_id
             RETURN this1
             }
+            CALL {
+                WITH this0
+                MATCH (this0)-[create_this0:HAS_PHOTO]->(this0_photos:\`Photo\`)
+                WHERE this0_photos.url = $create_param0
+                WITH this0_photos { .url, location: apoc.cypher.runFirstColumnSingle('RETURN
+                CASE
+                	WHEN this0_photos.location IS NOT NULL THEN { point: this0_photos.location }
+                	ELSE NULL
+                END AS result',{ this0_photos: this0_photos }) } AS this0_photos
+                RETURN collect(this0_photos) AS this0_photos
+            }
+            CALL {
+                WITH this0
+                MATCH (this0)-[create_this1:HAS_COLOR]->(this0_colors:\`Color\`)
+                WHERE this0_colors.id = $create_param1
+                WITH this0_colors { .id } AS this0_colors
+                RETURN collect(this0_colors) AS this0_colors
+            }
+            CALL {
+                WITH this0
+                MATCH (this0)-[create_this2:HAS_SIZE]->(this0_sizes:\`Size\`)
+                WHERE this0_sizes.name = $create_param2
+                WITH this0_sizes { .name } AS this0_sizes
+                RETURN collect(this0_sizes) AS this0_sizes
+            }
+            CALL {
+                WITH this1
+                MATCH (this1)-[create_this0:HAS_PHOTO]->(this1_photos:\`Photo\`)
+                WHERE this1_photos.url = $create_param0
+                WITH this1_photos { .url, location: apoc.cypher.runFirstColumnSingle('RETURN
+                CASE
+                	WHEN this1_photos.location IS NOT NULL THEN { point: this1_photos.location }
+                	ELSE NULL
+                END AS result',{ this1_photos: this1_photos }) } AS this1_photos
+                RETURN collect(this1_photos) AS this1_photos
+            }
+            CALL {
+                WITH this1
+                MATCH (this1)-[create_this1:HAS_COLOR]->(this1_colors:\`Color\`)
+                WHERE this1_colors.id = $create_param1
+                WITH this1_colors { .id } AS this1_colors
+                RETURN collect(this1_colors) AS this1_colors
+            }
+            CALL {
+                WITH this1
+                MATCH (this1)-[create_this2:HAS_SIZE]->(this1_sizes:\`Size\`)
+                WHERE this1_sizes.name = $create_param2
+                WITH this1_sizes { .name } AS this1_sizes
+                RETURN collect(this1_sizes) AS this1_sizes
+            }
             RETURN [
-            this0 { .id, photos: [ (this0)-[:HAS_PHOTO]->(this0_photos:Photo)  WHERE this0_photos.url = $projection_photos_param0 | this0_photos { .url, location: apoc.cypher.runFirstColumnSingle('RETURN
-            CASE
-            	WHEN this0_photos.location IS NOT NULL THEN { point: this0_photos.location }
-            	ELSE NULL
-            END AS result',{ this0_photos: this0_photos }) } ], colors: [ (this0)-[:HAS_COLOR]->(this0_colors:Color)  WHERE this0_colors.id = $projection_colors_param0 | this0_colors { .id } ], sizes: [ (this0)-[:HAS_SIZE]->(this0_sizes:Size)  WHERE this0_sizes.name = $projection_sizes_param0 | this0_sizes { .name } ] },
-            this1 { .id, photos: [ (this1)-[:HAS_PHOTO]->(this1_photos:Photo)  WHERE this1_photos.url = $projection_photos_param0 | this1_photos { .url, location: apoc.cypher.runFirstColumnSingle('RETURN
-            CASE
-            	WHEN this1_photos.location IS NOT NULL THEN { point: this1_photos.location }
-            	ELSE NULL
-            END AS result',{ this1_photos: this1_photos }) } ], colors: [ (this1)-[:HAS_COLOR]->(this1_colors:Color)  WHERE this1_colors.id = $projection_colors_param0 | this1_colors { .id } ], sizes: [ (this1)-[:HAS_SIZE]->(this1_sizes:Size)  WHERE this1_sizes.name = $projection_sizes_param0 | this1_sizes { .name } ] }] AS data"
+            this0 { .id, photos: this0_photos, colors: this0_colors, sizes: this0_sizes },
+            this1 { .id, photos: this1_photos, colors: this1_colors, sizes: this1_sizes }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"create_param0\\": \\"url.com\\",
+                \\"create_param1\\": \\"123\\",
+                \\"create_param2\\": \\"small\\",
                 \\"this0_id\\": \\"1\\",
                 \\"this1_id\\": \\"2\\",
-                \\"projection_photos_param0\\": \\"url.com\\",
-                \\"projection_colors_param0\\": \\"123\\",
-                \\"projection_sizes_param0\\": \\"small\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
+        // expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+        //     "CALL {
+        //     CREATE (this0:Product)
+        //     SET this0.id = $this0_id
+        //     RETURN this0
+        //     }
+        //     CALL {
+        //     CREATE (this1:Product)
+        //     SET this1.id = $this1_id
+        //     RETURN this1
+        //     }
+        //     RETURN [
+        //     this0 { .id, photos: [ (this0)-[:HAS_PHOTO]->(this0_photos:Photo)  WHERE this0_photos.url = $projection_photos_param0 | this0_photos { .url, location: apoc.cypher.runFirstColumnSingle('RETURN
+        //     CASE
+        //     	WHEN this0_photos.location IS NOT NULL THEN { point: this0_photos.location }
+        //     	ELSE NULL
+        //     END AS result',{ this0_photos: this0_photos }) } ], colors: [ (this0)-[:HAS_COLOR]->(this0_colors:Color)  WHERE this0_colors.id = $projection_colors_param0 | this0_colors { .id } ], sizes: [ (this0)-[:HAS_SIZE]->(this0_sizes:Size)  WHERE this0_sizes.name = $projection_sizes_param0 | this0_sizes { .name } ] },
+        //     this1 { .id, photos: [ (this1)-[:HAS_PHOTO]->(this1_photos:Photo)  WHERE this1_photos.url = $projection_photos_param0 | this1_photos { .url, location: apoc.cypher.runFirstColumnSingle('RETURN
+        //     CASE
+        //     	WHEN this1_photos.location IS NOT NULL THEN { point: this1_photos.location }
+        //     	ELSE NULL
+        //     END AS result',{ this1_photos: this1_photos }) } ], colors: [ (this1)-[:HAS_COLOR]->(this1_colors:Color)  WHERE this1_colors.id = $projection_colors_param0 | this1_colors { .id } ], sizes: [ (this1)-[:HAS_SIZE]->(this1_sizes:Size)  WHERE this1_sizes.name = $projection_sizes_param0 | this1_sizes { .name } ] }] AS data"
+        // `);
+
+        // expect(formatParams(result.params)).toMatchInlineSnapshot(`
+        //     "{
+        //         \\"this0_id\\": \\"1\\",
+        //         \\"this1_id\\": \\"2\\",
+        //         \\"projection_photos_param0\\": \\"url.com\\",
+        //         \\"projection_colors_param0\\": \\"123\\",
+        //         \\"projection_sizes_param0\\": \\"small\\",
+        //         \\"resolvedCallbacks\\": {}
+        //     }"
+        // `);
     });
 });

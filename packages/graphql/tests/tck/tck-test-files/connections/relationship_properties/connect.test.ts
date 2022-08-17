@@ -238,6 +238,7 @@ describe("Relationship Properties Connect Cypher", () => {
             	RETURN count(*) AS _
             }
             WITH *
+            WITH *
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
@@ -304,6 +305,7 @@ describe("Relationship Properties Connect Cypher", () => {
             	)
             	RETURN count(*) AS _
             }
+            WITH *
             WITH *
             CALL {
             WITH this

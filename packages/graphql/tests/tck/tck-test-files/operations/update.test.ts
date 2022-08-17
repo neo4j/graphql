@@ -291,6 +291,7 @@ describe("Cypher Update", () => {
             	)
             	RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -351,6 +352,7 @@ describe("Cypher Update", () => {
             	)
             	RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -393,6 +395,7 @@ describe("Cypher Update", () => {
             )
             RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -464,6 +467,7 @@ describe("Cypher Update", () => {
             )
             RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -530,7 +534,14 @@ describe("Cypher Update", () => {
             SET this_movies0_create0_node.id = $this_movies0_create0_node_id
             SET this_movies0_create0_node.title = $this_movies0_create0_node_title
             MERGE (this)-[:ACTED_IN]->(this_movies0_create0_node)
-            RETURN collect(DISTINCT this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie)   | this_movies { .id, .title } ] }) AS data"
+            WITH *
+            CALL {
+                WITH this
+                MATCH (this)-[update_this0:ACTED_IN]->(this_movies:\`Movie\`)
+                WITH this_movies { .id, .title } AS this_movies
+                RETURN collect(this_movies) AS this_movies
+            }
+            RETURN collect(DISTINCT this { .name, movies: this_movies }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -573,7 +584,14 @@ describe("Cypher Update", () => {
             SET this_create_movies0_node.id = $this_create_movies0_node_id
             SET this_create_movies0_node.title = $this_create_movies0_node_title
             MERGE (this)-[this_create_movies0_relationship:ACTED_IN]->(this_create_movies0_node)
-            RETURN collect(DISTINCT this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie)   | this_movies { .id, .title } ] }) AS data"
+            WITH *
+            CALL {
+                WITH this
+                MATCH (this)-[update_this0:ACTED_IN]->(this_movies:\`Movie\`)
+                WITH this_movies { .id, .title } AS this_movies
+                RETURN collect(this_movies) AS this_movies
+            }
+            RETURN collect(DISTINCT this { .name, movies: this_movies }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -625,7 +643,14 @@ describe("Cypher Update", () => {
             SET this_create_movies1_node.id = $this_create_movies1_node_id
             SET this_create_movies1_node.title = $this_create_movies1_node_title
             MERGE (this)-[this_create_movies1_relationship:ACTED_IN]->(this_create_movies1_node)
-            RETURN collect(DISTINCT this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:Movie)   | this_movies { .id, .title } ] }) AS data"
+            WITH *
+            CALL {
+                WITH this
+                MATCH (this)-[update_this0:ACTED_IN]->(this_movies:\`Movie\`)
+                WITH this_movies { .id, .title } AS this_movies
+                RETURN collect(this_movies) AS this_movies
+            }
+            RETURN collect(DISTINCT this { .name, movies: this_movies }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -667,6 +692,7 @@ describe("Cypher Update", () => {
             WHERE (this_delete_actors0_relationship.screenTime = $updateMovies_args_delete_actors0_where_Actorparam0 AND this_delete_actors0.name = $updateMovies_args_delete_actors0_where_Actorparam1)
             WITH this, collect(DISTINCT this_delete_actors0) as this_delete_actors0_to_delete
             FOREACH(x IN this_delete_actors0_to_delete | DETACH DELETE x)
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -745,6 +771,7 @@ describe("Cypher Update", () => {
             WHERE this_delete_actors0.name = $updateMovies_args_delete_actors0_where_Actorparam0
             WITH this, collect(DISTINCT this_delete_actors0) as this_delete_actors0_to_delete
             FOREACH(x IN this_delete_actors0_to_delete | DETACH DELETE x)
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 

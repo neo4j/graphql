@@ -82,7 +82,6 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             RETURN count(*) AS _
             \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies, resolvedCallbacks: $resolvedCallbacks})
             YIELD value AS this_acted_in0_relationship_actors0_edge
-            WITH *
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
@@ -160,7 +159,6 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             RETURN count(*) AS _
             \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateMovies: $updateMovies, resolvedCallbacks: $resolvedCallbacks})
             YIELD value AS this_acted_in0_relationship_actors0_edge
-            WITH *
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
 

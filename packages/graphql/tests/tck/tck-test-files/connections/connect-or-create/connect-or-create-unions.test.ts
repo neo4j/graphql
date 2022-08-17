@@ -233,7 +233,6 @@ describe("Create or connect with unions", () => {
                     this_actedIn_Series0_connectOrCreate_this1.screentime = $this_actedIn_Series0_connectOrCreate_param3
                 RETURN COUNT(*) AS _
             }
-            WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
