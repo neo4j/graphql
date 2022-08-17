@@ -90,17 +90,17 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $this_auth_allow0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
             WITH this
             CALL {
             WITH this
             MATCH (this)-[this_published_relationship:PUBLISHED]->(this_Post:Post)
-            CALL apoc.util.validate(NOT ((exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND any(creator IN [(this_Post)<-[:HAS_POST]-(creator:\`User\`) | creator] WHERE (creator.id IS NOT NULL AND creator.id = $this_Post_auth_allow0_creator_id)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this_Post)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Postauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
             WITH this, this_Post
             MATCH (this_Post)<-[this_Post_has_post_relationship:HAS_POST]-(this_Post_user:User)
-            CALL apoc.util.validate(NOT ((this_Post_user.id IS NOT NULL AND this_Post_user.id = $this_Post_user_auth_allow0_id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this_Post_user.id IS NOT NULL AND this_Post_user.id = $this_Post_userauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: { name: this_Post_user.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -118,9 +118,9 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_Post_user_auth_allow0_id\\": \\"super_admin\\",
-                \\"this_Post_auth_allow0_creator_id\\": \\"super_admin\\",
-                \\"this_auth_allow0_id\\": \\"super_admin\\"
+                \\"this_Post_userauth_param0\\": \\"super_admin\\",
+                \\"this_Postauth_param0\\": \\"super_admin\\",
+                \\"thisauth_param0\\": \\"super_admin\\"
             }"
         `);
     });

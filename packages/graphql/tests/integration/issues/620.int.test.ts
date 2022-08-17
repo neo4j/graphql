@@ -49,26 +49,15 @@ describe("https://github.com/neo4j/graphql/issues/620", () => {
         `;
 
         neoSchema = new Neo4jGraphQL({ typeDefs });
-        try {
-            session = await neo4j.getSession();
-            await session.run(`
+        session = await neo4j.getSession();
+        await session.run(`
               CREATE (u:${typeUser.name} {id: "1234", name: "arthur"})
               CREATE (b:${typeBusiness.name} {id: "1234", name: "ford"})
             `);
-        } finally {
-            await session.close();
-        }
-    });
-
-    beforeEach(async () => {
-        session = await neo4j.getSession();
-    });
-
-    afterEach(async () => {
-        await session.close();
     });
 
     afterAll(async () => {
+        await session.close();
         await driver.close();
     });
 

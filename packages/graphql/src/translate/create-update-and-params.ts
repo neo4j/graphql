@@ -26,7 +26,7 @@ import createCreateAndParams from "./create-create-and-params";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE, META_OLD_PROPS_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createAuthParam from "./create-auth-param";
-import createAuthAndParams from "./create-auth-and-params";
+import { createAuthAndParams } from "./create-auth-and-params";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
@@ -344,7 +344,7 @@ export default function createUpdateAndParams({
                             refNode,
                             context,
                             withVars,
-                            callbackBucket
+                            callbackBucket,
                         });
                         subquery.push(cypher);
                         res.params = { ...res.params, ...params };
