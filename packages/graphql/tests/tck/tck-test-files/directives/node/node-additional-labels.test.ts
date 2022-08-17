@@ -95,7 +95,13 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`:\`Multimedia\`)
-            RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:\`Actor\`:\`Person\`)   | this_actors { .name } ] } as this"
+            CALL {
+                WITH this
+                MATCH (this_actors:\`Actor\`:\`Person\`)-[thisthis0:ACTED_IN]->(this)
+                WITH this_actors { .name } AS this_actors
+                RETURN collect(this_actors) AS this_actors
+            }
+            RETURN this { .title, actors: this_actors } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

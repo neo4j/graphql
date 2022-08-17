@@ -95,17 +95,18 @@ describe("Interface Relationships - Update create", () => {
             SET this_create_actedIn_Movie0_node_Movie.runtime = $this_create_actedIn_Movie0_node_Movie_runtime
             MERGE (this)-[this_create_actedIn_Movie0_relationship:ACTED_IN]->(this_create_actedIn_Movie0_node_Movie)
             SET this_create_actedIn_Movie0_relationship.screenTime = $this_create_actedIn_Movie0_relationship_screenTime
+            WITH *
             WITH this
             CALL {
             WITH this
             CALL {
-            WITH this
-            MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
-            RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
-            UNION
-            WITH this
-            MATCH (this)-[:ACTED_IN]->(this_Series:Series)
-            RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
+                WITH this
+                MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
+                RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
+                UNION
+                WITH this
+                MATCH (this)-[:ACTED_IN]->(this_Series:Series)
+                RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
             RETURN collect(actedIn) AS actedIn
             }

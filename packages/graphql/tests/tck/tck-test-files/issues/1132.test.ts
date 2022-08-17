@@ -73,6 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             	)
             	RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -132,6 +133,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             )
             RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 

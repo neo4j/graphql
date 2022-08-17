@@ -90,6 +90,7 @@ describe("Interface Relationships - Update delete", () => {
             WHERE this_delete_actedIn_Series0.title STARTS WITH $updateActors_args_delete_actedIn0_where_Seriesparam0
             WITH this, collect(DISTINCT this_delete_actedIn_Series0) as this_delete_actedIn_Series0_to_delete
             FOREACH(x IN this_delete_actedIn_Series0_to_delete | DETACH DELETE x)
+            WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
@@ -162,6 +163,7 @@ describe("Interface Relationships - Update delete", () => {
             FOREACH(x IN this_delete_actedIn_Series0_actors0_to_delete | DETACH DELETE x)
             WITH this, collect(DISTINCT this_delete_actedIn_Series0) as this_delete_actedIn_Series0_to_delete
             FOREACH(x IN this_delete_actedIn_Series0_to_delete | DETACH DELETE x)
+            WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
@@ -241,6 +243,7 @@ describe("Interface Relationships - Update delete", () => {
             WHERE this_delete_actedIn_Series0.title STARTS WITH $updateActors_args_delete_actedIn0_where_Seriesparam0
             WITH this, collect(DISTINCT this_delete_actedIn_Series0) as this_delete_actedIn_Series0_to_delete
             FOREACH(x IN this_delete_actedIn_Series0_to_delete | DETACH DELETE x)
+            WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
@@ -334,6 +337,7 @@ describe("Interface Relationships - Update delete", () => {
             FOREACH(x IN this_delete_actedIn_Series0_actors0_to_delete | DETACH DELETE x)
             WITH this, collect(DISTINCT this_delete_actedIn_Series0) as this_delete_actedIn_Series0_to_delete
             FOREACH(x IN this_delete_actedIn_Series0_to_delete | DETACH DELETE x)
+            WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
 

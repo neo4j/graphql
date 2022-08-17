@@ -203,7 +203,7 @@ function translateRootField({
 
     const sortCypherFields = projection.meta?.cypherSortFields ?? [];
     const sortCypherProj = sortCypherFields.map(({ alias, apocStr }) => `${apocStr} AS ${alias}`);
-    const sortOffsetLimit: string[] = [[`WITH ${varName}`, ...sortCypherProj].join(", ")];
+    const sortOffsetLimit: string[] = [[`WITH *`, ...sortCypherProj].join(", ")];
 
     if (optionsInput.sort && optionsInput.sort.length) {
         const sortArr = optionsInput.sort.reduce((res: string[], sort: GraphQLSortArg) => {

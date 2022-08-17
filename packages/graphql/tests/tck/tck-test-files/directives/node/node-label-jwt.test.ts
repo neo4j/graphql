@@ -97,7 +97,14 @@ describe("Label in Node directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`:\`Person\`)
             WHERE this.age > $param0
-            RETURN this { .name, movies: [ (this)-[:ACTED_IN]->(this_movies:\`Film\`)  WHERE this_movies.title = $this_movies_param0 | this_movies { .title } ] } as this"
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:ACTED_IN]->(this_movies:\`Film\`)
+                WHERE this_movies.title = $thisparam0
+                WITH this_movies { .title } AS this_movies
+                RETURN collect(this_movies) AS this_movies
+            }
+            RETURN this { .name, movies: this_movies } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -106,7 +113,7 @@ describe("Label in Node directive", () => {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"this_movies_param0\\": \\"terminator\\"
+                \\"thisparam0\\": \\"terminator\\"
             }"
         `);
     });
