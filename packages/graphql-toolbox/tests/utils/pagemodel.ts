@@ -34,11 +34,6 @@ type Pages = {
     topBarPage: TopBar;
 };
 
-const pageInitialSetup = async (page: base.Page): Promise<void> => {
-    await page.setViewportSize({ width: 1920, height: 1080 });
-    await page.goto("/");
-};
-
 const test = base.test.extend<Pages>({
     editorPage: async ({ page }, use) => {
         use(new Editor(page));
@@ -47,7 +42,7 @@ const test = base.test.extend<Pages>({
         use(new HelpDrawer(page));
     },
     loginPage: async ({ page }, use) => {
-        await pageInitialSetup(page);
+        await page.goto("/");
         const loginPage = await new Login(page);
         await use(loginPage);
         if (!(await loginPage.getIsLoginWindowVisible)) {

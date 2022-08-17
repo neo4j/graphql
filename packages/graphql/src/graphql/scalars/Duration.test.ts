@@ -25,21 +25,19 @@ describe("Duration Scalar", () => {
     test.each<unknown>([42, () => 5, { a: 3, b: 4 }, null, undefined])("should not match %p and throw error", (value) =>
         expect(() => parseDuration(value as string)).toThrow(TypeError)
     );
-    test.each<string>([
-        "P",
-        "PT",
-        "P233WT4H",
-        "P5.2Y4M",
-        "P18871104T12:00:00",
-        "P1887-11-04T120000",
-    ])("should not match %s and throw error", (value) => expect(() => parseDuration(value)).toThrow(TypeError));
+    test.each<string>(["P", "PT", "P233WT4H", "P54W", "P5.2Y4M", "P18871104T12:00:00", "P1887-11-04T120000"])(
+        "should not match %s and throw error",
+        (value) => expect(() => parseDuration(value)).toThrow(TypeError)
+    );
     test.each<[string, ParsedDuration]>([
         ["P2Y", { months: 2 * MONTHS_PER_YEAR, days: 0, seconds: 0, nanoseconds: 0 }],
         ["P2Y-3M", { months: 2 * MONTHS_PER_YEAR - 3, days: 0, seconds: 0, nanoseconds: 0 }],
         ["-P2Y-3M", { months: -2 * MONTHS_PER_YEAR + 3, days: 0, seconds: 0, nanoseconds: 0 }],
         ["P3M", { months: 3, days: 0, seconds: 0, nanoseconds: 0 }],
         ["P87D", { months: 0, days: 87, seconds: 0, nanoseconds: 0 }],
+        ["P52W", { months: 0, days: 52 * DAYS_PER_WEEK, seconds: 0, nanoseconds: 0 }],
         ["P15W", { months: 0, days: 15 * DAYS_PER_WEEK, seconds: 0, nanoseconds: 0 }],
+        ["P2W", { months: 0, days: 2 * DAYS_PER_WEEK, seconds: 0, nanoseconds: 0 }],
         ["P-15W", { months: 0, days: -15 * DAYS_PER_WEEK, seconds: 0, nanoseconds: 0 }],
         ["-P-15W", { months: 0, days: 15 * DAYS_PER_WEEK, seconds: 0, nanoseconds: 0 }],
         ["PT50H", { months: 0, days: 0, seconds: 50 * SECONDS_PER_HOUR, nanoseconds: 0 }],
