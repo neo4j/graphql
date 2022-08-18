@@ -470,7 +470,7 @@ export default function createProjectionAndParams({
             });
             res.params = { ...res.params, ...recurse.params };
 
-            const parentNode = new CypherBuilder.NamedNode(chainStr || varName); // TODO: improve this
+            const parentNode = new CypherBuilder.NamedNode(chainStr || varName);
 
             const direction = getRelationshipDirection(relationField, field.args);
             const subquery = createProjectionSubquery({

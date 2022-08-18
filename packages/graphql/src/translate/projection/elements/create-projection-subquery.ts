@@ -85,7 +85,7 @@ export function createProjectionSubquery({
             whereInput,
             targetElement: targetNode,
         });
-        if (wherePredicate) subqueryMatch.where(wherePredicate); // TODO: should return var a projectionColumn
+        if (wherePredicate) subqueryMatch.where(wherePredicate);
     }
 
     const whereAuth = createAuthPredicates({

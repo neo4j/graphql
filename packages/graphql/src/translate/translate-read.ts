@@ -264,7 +264,7 @@ function translateRootConnectionField({
         projAuth: string;
         connectionStrs: string[];
         interfaceStrs: string[];
-        projectionSubqueries: string; // TODO: subqueries here?
+        projectionSubqueries: string;
     };
 }): [string, Record<string, any>] {
     const { resolveTree } = context;
