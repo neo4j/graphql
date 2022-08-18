@@ -34,7 +34,7 @@ const config: PlaywrightTestConfig = {
     timeout: process.env.CI ? 60 * 1000 : 30 * 1000,
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
-    workers: process.env.CI ? 6 : undefined,
+    workers: process.env.CI ? 8 : undefined,
     projects: [
         {
             name: "chromium",
