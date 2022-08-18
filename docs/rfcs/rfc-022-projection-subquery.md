@@ -104,6 +104,39 @@ RETURN this { .title, actors: this_actors}
 
 ### Examples
 
+#### With Order
+Currently, ordering is done with apoc.coll.sortMulti
+
+
+```graphql
+query Movies {
+  movies {
+    actors(options: {sort: {name: ASC}}) {
+      name
+    }
+  }
+}
+```
+
+```cypher
+MATCH (this:`Movie`)
+RETURN this { actors: apoc.coll.sortMulti([ (this)<-[:ACTED_IN]-(this_actors:Person)   | this_actors { .name } ], ['^name']) } as this
+```
+
+By using subqueries, we can stop using `sortMulti` and use `ORDER BY` instead:
+
+```cypher
+MATCH (this:`Movie`)
+CALL {
+    WITH this
+    MATCH (thisthis1:`Person`)-[thisthis0:ACTED_IN]-(this)
+    WITH thisthis1
+    ORDER BY thisthis1.name ASC
+    RETURN collect(thisthis1 { .name }) AS this_actors
+}
+RETURN this { actors: this_actors } as this
+```
+
 #### Connections
 Connection queries already use a separate, nested `CALL` to perform this subqueries:
 
@@ -151,6 +184,8 @@ CALL {
 }
 RETURN this { .released, actorsConnection } as this
 ```
+
+Projections inside connections, however, may require nested CALL statements
 
 
 ## Risks
