@@ -476,7 +476,7 @@ export default function createProjectionAndParams({
             const subquery = createProjectionSubquery({
                 parentNode,
                 whereInput,
-                node: referenceNode || node, // Why || node?
+                node: referenceNode,
                 context,
                 alias: param,
                 nestedProjection: recurse.projection,

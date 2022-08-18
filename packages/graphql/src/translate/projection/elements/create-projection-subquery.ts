@@ -135,7 +135,7 @@ export function createProjectionSubquery({
     if (optionsInput.sort) {
         const orderByParams = createOrderByParams({
             optionsInput,
-            target: returnVariable, // Note: this works because targetNode uses alias
+            target: returnVariable, // This works because targetNode uses alias
         });
         if (orderByParams.length > 0) {
             withStatement.orderBy(...orderByParams);
