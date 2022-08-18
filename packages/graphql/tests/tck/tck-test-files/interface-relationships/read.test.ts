@@ -180,9 +180,13 @@ describe("Interface Relationships", () => {
                 MATCH (this)-[:ACTED_IN]->(this_Series:Series)
                 RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
+            WITH *
+            ORDER BY actedIn.title DESC
+            LIMIT 10
+            SKIP 5
             RETURN collect(actedIn) AS actedIn
             }
-            RETURN this { actedIn: apoc.coll.sortMulti(actedIn, ['title'])[5..15] } as this"
+            RETURN this { actedIn: actedIn } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
