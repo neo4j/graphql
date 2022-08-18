@@ -18,13 +18,13 @@
  */
 
 import type { Node } from "../../../classes";
-import type { Context, GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, RelationField } from "../../../types";
+import type { Context, GraphQLOptionsArg, GraphQLWhereArg, RelationField } from "../../../types";
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 import { createCypherWherePredicate } from "../../where/create-cypher-where-predicate";
 import type { RelationshipDirection } from "../../../utils/get-relationship-direction";
 import { createAuthPredicates } from "../../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
-import { toNumber } from "../../../utils/utils";
+import { addSortAndLimitOptionsToClause } from "./add-sort-and-limit-to-clause";
 
 export function createProjectionSubquery({
     parentNode,
@@ -132,23 +132,11 @@ export function createProjectionSubquery({
     const returnVariable = new CypherBuilder.NamedVariable(alias);
     const withStatement: CypherBuilder.With = new CypherBuilder.With([projection, returnVariable]); // This only works if nestedProjection is a map
 
-    if (optionsInput.sort) {
-        const orderByParams = createOrderByParams({
-            optionsInput,
-            target: returnVariable, // This works because targetNode uses alias
-        });
-        if (orderByParams.length > 0) {
-            withStatement.orderBy(...orderByParams);
-        }
-    }
-    if (optionsInput.limit) {
-        const limit = toNumber(optionsInput.limit);
-        withStatement.limit(limit);
-    }
-    if (optionsInput.offset) {
-        const offset = toNumber(optionsInput.offset);
-        withStatement.skip(offset);
-    }
+    addSortAndLimitOptionsToClause({
+        optionsInput,
+        target: returnVariable,
+        projectionClause: withStatement,
+    });
 
     let returnProjection = CypherBuilder.collect(targetNode);
     if (!isArray) {
@@ -163,20 +151,4 @@ export function createProjectionSubquery({
         subquery: new CypherBuilder.Call(subquery).with(parentNode),
         projectionColumn: [],
     };
-}
-
-function createOrderByParams({
-    optionsInput,
-    target,
-}: {
-    optionsInput: GraphQLOptionsArg;
-    target: CypherBuilder.Variable;
-}): Array<[CypherBuilder.Expr, CypherBuilder.Order]> {
-    const orderList = (optionsInput.sort || []).flatMap((arg: GraphQLSortArg): Array<[string, "ASC" | "DESC"]> => {
-        return Object.entries(arg);
-    });
-
-    return orderList.map(([field, order]) => {
-        return [target.property(field), order];
-    });
 }
