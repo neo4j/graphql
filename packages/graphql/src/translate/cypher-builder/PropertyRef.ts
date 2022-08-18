@@ -23,19 +23,23 @@ import type { Variable } from "./variables/Variable";
 /** Reference to a Variable property */
 export class PropertyRef {
     private _variable: Variable;
-    private property: string;
+    private _property: string;
 
     constructor(variable: Variable, property: string) {
         this._variable = variable;
-        this.property = property;
+        this._property = property;
     }
 
     public get variable(): Variable {
         return this._variable;
     }
 
+    public property(path: string): PropertyRef {
+        return new PropertyRef(this.variable, `${this._property}.${path}`);
+    }
+
     public getCypher(env: CypherEnvironment): string {
         const variableStr = this.variable.getCypher(env);
-        return `${variableStr}.${this.property}`;
+        return `${variableStr}.${this._property}`;
     }
 }

@@ -47,7 +47,7 @@ describe("List comprehension", () => {
         const exprVariable = new CypherBuilder.Param([1, 2, 5]);
         const andExpr = CypherBuilder.eq(variable, new CypherBuilder.Param(5));
 
-        const listComprehension = new CypherBuilder.ListComprehension(variable, exprVariable, andExpr);
+        const listComprehension = new CypherBuilder.ListComprehension(variable, exprVariable).where(andExpr);
 
         const queryResult = new TestClause(listComprehension).build();
 

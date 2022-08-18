@@ -18,7 +18,7 @@
  */
 
 import { MatchPatternOptions, Pattern } from "../Pattern";
-import { escapeLabel } from "../utils";
+import { escapeLabel } from "../utils/utils";
 import { Variable } from "./Variable";
 
 type NodeRefOptions = {

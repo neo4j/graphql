@@ -181,7 +181,10 @@ describe("Arrays Methods", () => {
             "MATCH (this:\`Movie\`)
             CALL apoc.util.validate(this.filmingLocations IS NULL, \\"Property %s cannot be NULL\\", ['filmingLocations'])
             SET this.filmingLocations = this.filmingLocations + [p in $this_update_filmingLocations_PUSH | point(p)]
-            RETURN collect(DISTINCT this { .title, filmingLocations: (CASE WHEN this.filmingLocations IS NOT NULL THEN [p in this.filmingLocations | { point:p }] ELSE NULL END) }) AS data"
+            RETURN collect(DISTINCT this { .title, filmingLocations: (CASE
+                WHEN this.filmingLocations IS NOT NULL THEN [p_var0 IN this.filmingLocations | { point: p_var0 }]
+                ELSE NULL
+            END) }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

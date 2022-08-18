@@ -27,7 +27,7 @@ import type { WhereOperator } from "../types";
 // eslint-disable-next-line import/no-cycle
 import { createCypherWherePredicate } from "../create-cypher-where-predicate";
 import { filterTruthy } from "../../../utils/utils";
-import { compileCypherIfExists } from "../../cypher-builder/utils";
+import { compileCypherIfExists } from "../../cypher-builder/utils/utils";
 
 export function createConnectionOperation({
     connectionField,

@@ -111,8 +111,14 @@ describe("Cypher Projection", () => {
             RETURN this1
             }
             RETURN [
-            this0 { .id, photos: [ (this0)-[:HAS_PHOTO]->(this0_photos:Photo)  WHERE this0_photos.url = $projection_photos_param0 | this0_photos { .url, location: (CASE WHEN this0_photos.location IS NOT NULL THEN { point: this0_photos.location } ELSE NULL END) } ], colors: [ (this0)-[:HAS_COLOR]->(this0_colors:Color)  WHERE this0_colors.id = $projection_colors_param0 | this0_colors { .id } ], sizes: [ (this0)-[:HAS_SIZE]->(this0_sizes:Size)  WHERE this0_sizes.name = $projection_sizes_param0 | this0_sizes { .name } ] },
-            this1 { .id, photos: [ (this1)-[:HAS_PHOTO]->(this1_photos:Photo)  WHERE this1_photos.url = $projection_photos_param0 | this1_photos { .url, location: (CASE WHEN this1_photos.location IS NOT NULL THEN { point: this1_photos.location } ELSE NULL END) } ], colors: [ (this1)-[:HAS_COLOR]->(this1_colors:Color)  WHERE this1_colors.id = $projection_colors_param0 | this1_colors { .id } ], sizes: [ (this1)-[:HAS_SIZE]->(this1_sizes:Size)  WHERE this1_sizes.name = $projection_sizes_param0 | this1_sizes { .name } ] }] AS data"
+            this0 { .id, photos: [ (this0)-[:HAS_PHOTO]->(this0_photos:Photo)  WHERE this0_photos.url = $projection_photos_param0 | this0_photos { .url, location: (CASE
+                WHEN this0_photos.location IS NOT NULL THEN { point: this0_photos.location }
+                ELSE NULL
+            END) } ], colors: [ (this0)-[:HAS_COLOR]->(this0_colors:Color)  WHERE this0_colors.id = $projection_colors_param0 | this0_colors { .id } ], sizes: [ (this0)-[:HAS_SIZE]->(this0_sizes:Size)  WHERE this0_sizes.name = $projection_sizes_param0 | this0_sizes { .name } ] },
+            this1 { .id, photos: [ (this1)-[:HAS_PHOTO]->(this1_photos:Photo)  WHERE this1_photos.url = $projection_photos_param0 | this1_photos { .url, location: (CASE
+                WHEN this1_photos.location IS NOT NULL THEN { point: this1_photos.location }
+                ELSE NULL
+            END) } ], colors: [ (this1)-[:HAS_COLOR]->(this1_colors:Color)  WHERE this1_colors.id = $projection_colors_param0 | this1_colors { .id } ], sizes: [ (this1)-[:HAS_SIZE]->(this1_sizes:Size)  WHERE this1_sizes.name = $projection_sizes_param0 | this1_sizes { .name } ] }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -20,7 +20,7 @@
 import type { CypherEnvironment } from "../Environment";
 import type { Clause } from "../clauses/Clause";
 import { CypherASTNode } from "../CypherASTNode";
-import { padBlock } from "../utils";
+import { padBlock } from "../utils/utils";
 
 export class Exists extends CypherASTNode {
     private subQuery: CypherASTNode;
