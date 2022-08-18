@@ -22,12 +22,6 @@ import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import type { JWKSMock } from "mock-jwks";
 import createJWKSMock from "mock-jwks";
-import supertest from "supertest";
-import Koa from "koa";
-import Router from "koa-router";
-import jwt from "koa-jwt";
-// eslint-disable-next-line import/no-extraneous-dependencies
-import jwksRsa from "jwks-rsa";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import type { Neo4jGraphQLAuthenticationError } from "../../../src/classes";
@@ -35,7 +29,6 @@ import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("Global authentication - Auth JWKS plugin", () => {
     let jwksMock: JWKSMock;
-    let server: any;
     let driver: Driver;
     let neo4j: Neo4j;
 
@@ -65,15 +58,17 @@ describe("Global authentication - Auth JWKS plugin", () => {
     });
 
     beforeEach(() => {
-        ({ jwksMock, server } = createContext());
+        // This creates a local Public Key Infrastructure (PKI)
+        jwksMock = createJWKSMock("https://myAuthTest.auth0.com");
     });
 
     afterEach(async () => {
-        await tearDown({ jwksMock, server });
+        await jwksMock.stop();
     });
 
     test("should fail if no JWT token is present and global authentication is enabled", async () => {
         const neoSchema = new Neo4jGraphQL({
+            driver,
             typeDefs,
             plugins: {
                 auth: new Neo4jGraphQLAuthJWKSPlugin({
@@ -100,6 +95,7 @@ describe("Global authentication - Auth JWKS plugin", () => {
 
     test("should fail if invalid JWT token is provided and global authentication is enabled", async () => {
         const neoSchema = new Neo4jGraphQL({
+            driver,
             typeDefs,
             plugins: {
                 auth: new Neo4jGraphQLAuthJWKSPlugin({
@@ -130,6 +126,7 @@ describe("Global authentication - Auth JWKS plugin", () => {
 
     test("should not fail if valid JWT token is present and global authentication is enabled", async () => {
         const neoSchema = new Neo4jGraphQL({
+            driver,
             typeDefs,
             plugins: {
                 auth: new Neo4jGraphQLAuthJWKSPlugin({
@@ -139,7 +136,6 @@ describe("Global authentication - Auth JWKS plugin", () => {
             },
         });
 
-        // Start the JWKS Mock Server Application
         jwksMock.start();
 
         const accessToken = jwksMock.token({
@@ -160,51 +156,3 @@ describe("Global authentication - Auth JWKS plugin", () => {
         expect((gqlResult.data as any)[testMovie.plural]).toHaveLength(0);
     });
 });
-
-const createContext = () => {
-    // This creates the local PKI
-    const jwksMock = createJWKSMock("https://myAuthTest.auth0.com");
-
-    // We start our app.
-    const server = createApp({
-        jwksUri: "https://myAuthTest.auth0.com/.well-known/jwks.json",
-    }).listen();
-
-    const request = supertest(server);
-    return {
-        jwksMock,
-        request,
-        server,
-    };
-};
-
-const tearDown = async ({ jwksMock, server }) => {
-    await server.close();
-    await jwksMock.stop();
-};
-
-const createApp = ({ jwksUri }) => {
-    const app = new Koa();
-
-    // We set up the jwksRsa client as usual (with production host)
-    // We switch off caching to show how things work in ours tests.
-    app.use(
-        jwt({
-            secret: jwksRsa.koaJwtSecret({
-                cache: false,
-                jwksUri,
-            }),
-            algorithms: ["RS256"],
-        })
-    );
-
-    const router = new Router();
-
-    // This route is protected by the authentication middleware
-    router.get("/", (ctx) => {
-        ctx.body = "Authenticated!";
-    });
-
-    app.use(router.middleware());
-    return app;
-};
