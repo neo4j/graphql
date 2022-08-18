@@ -22,14 +22,14 @@ import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
 import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
 import type { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
-import { Neo4jGraphQLAuthenticationError } from "../../classes";
 import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
-import type { Context, Neo4jGraphQLPlugins, JwtPayload, Neo4jGraphQLAuthPlugin } from "../../types";
+import type { Context, Neo4jGraphQLPlugins } from "../../types";
 import { getToken, parseBearerToken } from "../../utils/get-token";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
+import { decodeToken, verifyGlobalAuthentication } from "./wrapper-utils";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -137,29 +137,3 @@ export const wrapSubscription =
 
         return next(root, args, { ...context, ...contextParams, ...subscriptionContext }, info);
     };
-
-async function decodeToken(
-    token: string | undefined,
-    plugin: Neo4jGraphQLAuthPlugin | undefined
-): Promise<JwtPayload | undefined> {
-    if (token && plugin) {
-        const jwt = await plugin.decode<JwtPayload>(token);
-        if (typeof jwt === "string") {
-            throw new Neo4jGraphQLAuthenticationError("JWT payload cannot be a string");
-        }
-        return jwt;
-    }
-    return undefined;
-}
-
-function verifyGlobalAuthentication(
-    context: SubscriptionContext | Context,
-    plugin: Neo4jGraphQLAuthPlugin | undefined
-): void {
-    const isGlobalAuthenticationEnabled = plugin?.getGlobalAuthenticationEnabled();
-    if (isGlobalAuthenticationEnabled) {
-        if (!context.jwt) {
-            throw new Neo4jGraphQLAuthenticationError("Enabled global authentication requires a valid JWT token");
-        }
-    }
-}

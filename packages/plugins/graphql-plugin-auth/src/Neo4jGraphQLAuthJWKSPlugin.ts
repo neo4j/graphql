@@ -22,6 +22,7 @@ import type JwksRsa from "jwks-rsa";
 import { JwksClient } from "jwks-rsa";
 import Debug from "debug";
 import { DEBUG_PREFIX } from "./constants";
+import { AuthPlugin } from "./AuthPlugin";
 
 const debug = Debug(DEBUG_PREFIX);
 
@@ -31,14 +32,13 @@ export interface JWKSPluginInput {
     globalAuthentication?: boolean;
 }
 
-class Neo4jGraphQLAuthJWKSPlugin {
-    private globalAuthentication: boolean;
+class Neo4jGraphQLAuthJWKSPlugin extends AuthPlugin {
     rolesPath?: string;
     client: JwksClient;
 
     constructor(input: JWKSPluginInput) {
+        super(input.globalAuthentication);
         this.rolesPath = input.rolesPath;
-        this.globalAuthentication = input.globalAuthentication || false;
 
         const options: JwksRsa.Options = {
             jwksUri: input.jwksEndpoint,
@@ -66,10 +66,6 @@ class Neo4jGraphQLAuthJWKSPlugin {
         }
 
         return result;
-    }
-
-    public getGlobalAuthenticationEnabled(): boolean {
-        return this.globalAuthentication;
     }
 
     private async verifyJWKS<T>({ token }: { token: string }): Promise<T> {

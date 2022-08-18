@@ -354,7 +354,7 @@ export interface Neo4jGraphQLAuthPlugin {
 
     decode<T>(token: string): Promise<T | undefined>;
 
-    getGlobalAuthenticationEnabled(): boolean;
+    isGlobalAuthenticationEnabled(): boolean;
 }
 
 /** Raw event metadata returned from queries */
