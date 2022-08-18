@@ -37,4 +37,4 @@ jobs:
         env:
           NEO_USER: neo4j
           NEO_PASSWORD: password
-          NEO_URL: bolt://localhost:7687
+          NEO_URL: neo4j://localhost:7687
