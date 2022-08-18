@@ -73,7 +73,7 @@ class NotOp extends BooleanOp {
     }
 }
 
-export function and(left: Predicate, ...extra: Array<Predicate | undefined>): Predicate;
+export function and(left: Predicate, right: Predicate, ...extra: Array<Predicate | undefined>): BooleanOp;
 export function and(...ops: Array<Predicate>): Predicate;
 export function and(...ops: Array<Predicate | undefined>): Predicate | undefined;
 export function and(...ops: Array<Predicate | undefined>): Predicate | undefined {
@@ -90,7 +90,7 @@ export function not(child: Predicate): BooleanOp {
     return new NotOp(child);
 }
 
-export function or(left: Predicate, ...extra: Array<Predicate | undefined>): Predicate;
+export function or(left: Predicate, right: Predicate, ...extra: Array<Predicate | undefined>): BooleanOp;
 export function or(...ops: Array<Predicate>): Predicate;
 export function or(...ops: Array<Predicate | undefined>): Predicate | undefined;
 export function or(...ops: Array<Predicate | undefined>): Predicate | undefined {
