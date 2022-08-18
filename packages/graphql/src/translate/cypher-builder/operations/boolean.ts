@@ -73,30 +73,32 @@ class NotOp extends BooleanOp {
     }
 }
 
-export function and(left: Predicate, ...extra: Array<Predicate | undefined>): BooleanOp;
-export function and(...ops: Array<Predicate | undefined>): BooleanOp | Predicate | undefined;
-export function and(...ops: Array<Predicate | undefined>): BooleanOp | Predicate | undefined {
-    const filteredOprs = filterTruthy(ops);
-    const op1 = filteredOprs.shift();
-    const op2 = filteredOprs.shift();
-    if (op1 && op2) {
-        return new BinaryOp("AND", op1, op2, ...filteredOprs);
+export function and(left: Predicate, ...extra: Array<Predicate | undefined>): Predicate;
+export function and(...ops: Array<Predicate>): Predicate;
+export function and(...ops: Array<Predicate | undefined>): Predicate | undefined;
+export function and(...ops: Array<Predicate | undefined>): Predicate | undefined {
+    const filteredPredicates = filterTruthy(ops);
+    const predicate1 = filteredPredicates.shift();
+    const predicate2 = filteredPredicates.shift();
+    if (predicate1 && predicate2) {
+        return new BinaryOp("AND", predicate1, predicate2, ...filteredPredicates);
     }
-    return op1;
+    return predicate1;
 }
 
 export function not(child: Predicate): BooleanOp {
     return new NotOp(child);
 }
 
-export function or(left: Predicate, ...extra: Array<Predicate | undefined>): BooleanOp;
-export function or(...ops: Array<Predicate | undefined>): BooleanOp | Predicate | undefined;
-export function or(...ops: Array<Predicate | undefined>): BooleanOp | Predicate | undefined {
-    const filteredOprs = filterTruthy(ops);
-    const op1 = filteredOprs.shift();
-    const op2 = filteredOprs.shift();
-    if (op1 && op2) {
-        return new BinaryOp("OR", op1, op2, ...filteredOprs);
+export function or(left: Predicate, ...extra: Array<Predicate | undefined>): Predicate;
+export function or(...ops: Array<Predicate>): Predicate;
+export function or(...ops: Array<Predicate | undefined>): Predicate | undefined;
+export function or(...ops: Array<Predicate | undefined>): Predicate | undefined {
+    const filteredPredicates = filterTruthy(ops);
+    const predicate1 = filteredPredicates.shift();
+    const predicate2 = filteredPredicates.shift();
+    if (predicate1 && predicate2) {
+        return new BinaryOp("OR", predicate1, predicate2, ...filteredPredicates);
     }
-    return op1;
+    return predicate1;
 }

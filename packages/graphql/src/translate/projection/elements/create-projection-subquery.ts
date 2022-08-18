@@ -119,7 +119,7 @@ export function createProjectionSubquery({
 
     if (authValidateStrs?.length) {
         const authValidateStatements = authValidateStrs.map((str) => new CypherBuilder.RawCypher(str));
-        const authValidatePredicate = CypherBuilder.and(...authValidateStatements) as CypherBuilder.Predicate;
+        const authValidatePredicate = CypherBuilder.and(...authValidateStatements);
 
         const authStatement = new CypherBuilder.apoc.ValidatePredicate(
             CypherBuilder.not(authValidatePredicate),
