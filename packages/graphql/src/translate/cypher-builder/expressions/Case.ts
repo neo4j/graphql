@@ -20,20 +20,20 @@
 import type { CypherEnvironment } from "../Environment";
 import { CypherASTNode } from "../CypherASTNode";
 import { compileCypherIfExists, padBlock } from "../utils";
-import type { Expr } from "../types";
+import type { Expr, Predicate } from "../types";
 
-// TODO: implement generic CASE without comparator
-export class Case extends CypherASTNode {
-    private comparator: Expr;
-    private whenClauses: When[] = [];
+/** Case statement <https://neo4j.com/docs/cypher-manual/current/syntax/expressions/#query-syntax-case> */
+export class Case<C extends Expr | undefined = undefined> extends CypherASTNode {
+    private comparator: Expr | undefined;
+    private whenClauses: When<C>[] = [];
     private default: Expr | undefined;
 
-    constructor(comparator: Expr) {
+    constructor(comparator?: C) {
         super();
         this.comparator = comparator;
     }
 
-    public when(expr: Expr): When {
+    public when(expr: C extends Expr ? Expr : Predicate): When<C> {
         const whenClause = new When(this, expr);
         this.whenClauses.push(whenClause);
         return whenClause;
@@ -45,28 +45,28 @@ export class Case extends CypherASTNode {
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const comparatorStr = this.comparator.getCypher(env);
+        const comparatorStr = compileCypherIfExists(this.comparator, env, { prefix: " " });
         const whenStr = this.whenClauses.map((c) => c.getCypher(env)).join("\n");
         const defaultStr = compileCypherIfExists(this.default, env, { prefix: "\nELSE " });
 
         const innerStr = padBlock(`${whenStr}${defaultStr}`);
 
-        return `CASE ${comparatorStr}\n${innerStr}\nEND`;
+        return `CASE${comparatorStr}\n${innerStr}\nEND`;
     }
 }
 
-class When extends CypherASTNode {
-    protected parent: Case;
+class When<T extends Expr | undefined> extends CypherASTNode {
+    protected parent: Case<T>;
     private predicate: Expr;
     private result: Expr | undefined;
 
-    constructor(parent: Case, predicate: Expr) {
+    constructor(parent: Case<T>, predicate: Expr) {
         super();
         this.parent = parent;
         this.predicate = predicate;
     }
 
-    public then(expr: Expr): Case {
+    public then(expr: Expr): Case<T> {
         this.result = expr;
         return this.parent;
     }

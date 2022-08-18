@@ -45,4 +45,29 @@ describe("Case", () => {
             }
         `);
     });
+
+    test("generic case ... then ... else without comparator", () => {
+        const testParam = new CypherBuilder.Param("Hello");
+
+        const caseClause = new CypherBuilder.Case()
+            .when(CypherBuilder.eq(new CypherBuilder.Literal(`"Hello"`), testParam))
+            .then(new CypherBuilder.Literal(true));
+
+        caseClause.else(new CypherBuilder.Literal(false));
+
+        const queryResult = new TestClause(caseClause).build();
+
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "CASE
+                WHEN \\"Hello\\" = $param0 THEN true
+                ELSE false
+            END"
+        `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": "Hello",
+            }
+        `);
+    });
 });
