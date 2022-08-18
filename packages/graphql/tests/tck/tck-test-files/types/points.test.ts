@@ -62,11 +62,7 @@ describe("Cypher Points", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
             WHERE this.points = [var0 IN $param0 | point(var0)]
-            RETURN this { points: apoc.cypher.runFirstColumnSingle('RETURN
-            CASE
-            	WHEN this.points IS NOT NULL THEN [p in this.points | { point:p, crs: p.crs }]
-            	ELSE NULL
-            END AS result',{ this: this }) } as this"
+            RETURN this { points: (CASE WHEN this.points IS NOT NULL THEN [p in this.points | { point:p, crs: p.crs }] ELSE NULL END) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -101,11 +97,7 @@ describe("Cypher Points", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
             WHERE NOT (this.points = [var0 IN $param0 | point(var0)])
-            RETURN this { points: apoc.cypher.runFirstColumnSingle('RETURN
-            CASE
-            	WHEN this.points IS NOT NULL THEN [p in this.points | { point:p }]
-            	ELSE NULL
-            END AS result',{ this: this }) } as this"
+            RETURN this { points: (CASE WHEN this.points IS NOT NULL THEN [p in this.points | { point:p }] ELSE NULL END) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -141,11 +133,7 @@ describe("Cypher Points", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
             WHERE point($param0) IN this.points
-            RETURN this { points: apoc.cypher.runFirstColumnSingle('RETURN
-            CASE
-            	WHEN this.points IS NOT NULL THEN [p in this.points | { point:p, crs: p.crs }]
-            	ELSE NULL
-            END AS result',{ this: this }) } as this"
+            RETURN this { points: (CASE WHEN this.points IS NOT NULL THEN [p in this.points | { point:p, crs: p.crs }] ELSE NULL END) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -179,11 +167,7 @@ describe("Cypher Points", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`PointContainer\`)
             WHERE NOT (point($param0) IN this.points)
-            RETURN this { points: apoc.cypher.runFirstColumnSingle('RETURN
-            CASE
-            	WHEN this.points IS NOT NULL THEN [p in this.points | { point:p, crs: p.crs }]
-            	ELSE NULL
-            END AS result',{ this: this }) } as this"
+            RETURN this { points: (CASE WHEN this.points IS NOT NULL THEN [p in this.points | { point:p, crs: p.crs }] ELSE NULL END) } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -223,11 +207,7 @@ describe("Cypher Points", () => {
             RETURN this0
             }
             RETURN [
-            this0 { points: apoc.cypher.runFirstColumnSingle('RETURN
-            CASE
-            	WHEN this0.points IS NOT NULL THEN [p in this0.points | { point:p, crs: p.crs }]
-            	ELSE NULL
-            END AS result',{ this0: this0 }) }] AS data"
+            this0 { points: (CASE WHEN this0.points IS NOT NULL THEN [p in this0.points | { point:p, crs: p.crs }] ELSE NULL END) }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -267,11 +247,7 @@ describe("Cypher Points", () => {
             "MATCH (this:\`PointContainer\`)
             WHERE this.id = $param0
             SET this.points = [p in $this_update_points | point(p)]
-            RETURN collect(DISTINCT this { points: apoc.cypher.runFirstColumnSingle('RETURN
-            CASE
-            	WHEN this.points IS NOT NULL THEN [p in this.points | { point:p, crs: p.crs }]
-            	ELSE NULL
-            END AS result',{ this: this }) }) AS data"
+            RETURN collect(DISTINCT this { points: (CASE WHEN this.points IS NOT NULL THEN [p in this.points | { point:p, crs: p.crs }] ELSE NULL END) }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
