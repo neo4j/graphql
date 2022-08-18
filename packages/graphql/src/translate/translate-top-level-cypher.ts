@@ -45,16 +45,8 @@ export function translateTopLevelCypher({
 }): CypherBuilder.CypherResult {
     context.resolveTree = getNeo4jResolveTree(info);
     const { resolveTree } = context;
-    const cypherStrs: string[] = [];
-    const connectionProjectionStrs: string[] = [];
-    let projectionStr = "";
-    const unionWhere: string[] = [];
-    const projectionAuthStrs: string[] = [];
     let params = { ...args, auth: createAuthParam({ context }), cypherParams: context.cypherParams };
-
-    const isArray = field.typeMeta.array;
-
-    const graphqlType = context.schema.getType(field.typeMeta.name);
+    const cypherStrs: string[] = [];
 
     const preAuth = createAuthAndParams({ entity: field, context });
     if (preAuth[0]) {
@@ -62,11 +54,13 @@ export function translateTopLevelCypher({
         cypherStrs.push(`CALL apoc.util.validate(NOT (${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
     }
 
+    let projectionStr = "";
+    const projectionAuthStrs: string[] = [];
+    const projectionSubqueries: CypherBuilder.Clause[] = [];
+    const connectionProjectionStrs: string[] = [];
+
     const referenceNode = context.nodes.find((x) => x.name === field.typeMeta.name);
 
-    const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
-
-    const projectionSubqueries: CypherBuilder.Clause[] = [];
     if (referenceNode) {
         const recurse = createProjectionAndParams({
             resolveTree,
@@ -80,11 +74,11 @@ export function translateTopLevelCypher({
         projectionSubqueries.push(...subqueries);
         params = { ...params, ...p };
 
-        if (meta?.authValidateStrs?.length) {
+        if (meta.authValidateStrs?.length) {
             projectionAuthStrs.push(...projectionAuthStrs, meta.authValidateStrs.join(" AND "));
         }
 
-        if (meta?.connectionFields?.length) {
+        if (meta.connectionFields?.length) {
             meta.connectionFields.forEach((connectionResolveTree) => {
                 const connectionField = referenceNode.connectionFields.find(
                     (x) => x.fieldName === connectionResolveTree.name
@@ -103,10 +97,15 @@ export function translateTopLevelCypher({
         }
     }
 
+    const unionWhere: string[] = [];
+
+    const graphqlType = context.schema.getType(field.typeMeta.name);
+    const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
+
     if (referenceUnion) {
         const headStrs: string[] = [];
         const referencedNodes =
-            referenceUnion?.types
+            referenceUnion.types
                 ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
                 ?.filter((b) => b !== undefined)
                 ?.filter((n) => Object.keys(resolveTree.fieldsByTypeName).includes(n?.name ?? "")) || [];
@@ -138,7 +137,7 @@ export function translateTopLevelCypher({
                     );
                     params = { ...params, ...p };
 
-                    if (meta?.authValidateStrs?.length) {
+                    if (meta.authValidateStrs?.length) {
                         projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
                     }
                 } else {
@@ -167,19 +166,21 @@ export function translateTopLevelCypher({
     );
 
     const apocParams = Object.entries({ ...nullArgumentValues, ...resolveTree.args }).reduce(
-        (r: { strs: string[]; params: any }, entry) => ({
-            strs: [...r.strs, `${entry[0]}: $${entry[0]}`],
-            params: { ...r.params, [entry[0]]: entry[1] },
+        (result: { strs: string[]; params: { [key: string]: unknown } }, entry) => ({
+            strs: [...result.strs, `${entry[0]}: $${entry[0]}`],
+            params: { ...result.params, [entry[0]]: entry[1] },
         }),
         { strs: initApocParamsStrs, params }
-    ) as { strs: string[]; params: any };
+    );
 
     params = { ...params, ...apocParams.params };
 
     const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
 
-    const expectMultipleValues = !field.isScalar && !field.isEnum && isArray;
     if (type === "Query") {
+        const isArray = field.typeMeta.array;
+        const expectMultipleValues = !field.isScalar && !field.isEnum && isArray;
+
         if (expectMultipleValues) {
             cypherStrs.push(`WITH apoc.cypher.runFirstColumnMany("${statement}", ${apocParamsStr}) as x`);
         } else {
