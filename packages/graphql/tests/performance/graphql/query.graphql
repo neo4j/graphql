@@ -23,7 +23,7 @@ query SimpleQueryWithNestedWhere {
     }
 }
 
-query DeeplyNested {
+query DeeplyNested_skip {
     movies {
         actors {
             name
