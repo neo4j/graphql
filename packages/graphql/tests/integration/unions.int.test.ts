@@ -18,14 +18,10 @@
  */
 
 import type { Driver } from "neo4j-driver";
-import { DocumentNode, graphql } from "graphql";
+import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
-import { generateUniqueType } from "../utils/graphql-types";
-import Neo4jGraphQLAuthJWTPlugin from "../../../plugins/graphql-plugin-auth/src/Neo4jGraphQLAuthJWTPlugin";
-import gql from "graphql-tag";
-import { createJwtRequest } from "../utils/create-jwt-request";
 
 describe("unions", () => {
     let driver: Driver;
@@ -690,98 +686,5 @@ describe("unions", () => {
         } finally {
             await session.close();
         }
-    });
-
-    describe("Unions with auth", () => {
-        const secret = "secret";
-        let typeDefs: DocumentNode;
-        let neoSchema: Neo4jGraphQL;
-
-        const typeGenre = generateUniqueType("Genre");
-        const typeMovie = generateUniqueType("Movie");
-
-        beforeAll(() => {
-            typeDefs = gql`
-                union Search = ${typeMovie} | ${typeGenre}
-
-                type ${typeGenre} @auth(rules: [{ operations: [READ], allow: { name: "$jwt.jwtAllowedNamesExample" } }]) {
-                    name: String
-                }
-
-                type ${typeMovie} {
-                    title: String
-                    search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
-                }
-            `;
-
-            neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                config: { enableRegex: true },
-                plugins: {
-                    auth: new Neo4jGraphQLAuthJWTPlugin({
-                        secret,
-                    }),
-                },
-            });
-        });
-
-        test("Read Unions with auth", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
-            const query = `
-                {
-                    ${typeMovie.plural}(where: { title: "some title" }) {
-                        search(
-                            where: { ${typeMovie}: { title: "The Matrix" }, ${typeGenre}: { name: "Horror" } }
-                            options: { offset: 1, limit: 10 }
-                        ) {
-                            ... on ${typeMovie} {
-                                title
-                            }
-                            ... on ${typeGenre} {
-                                name
-                            }
-                        }
-                    }
-                }
-            `;
-
-            try {
-                const req = createJwtRequest(secret, { jwtAllowedNamesExample: ["Horror"] });
-
-                const gqlResult = await graphql({
-                    schema: await neoSchema.getSchema(),
-                    source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
-                });
-
-                // expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-                // TODO: check auth params
-                console.log(gqlResult.data);
-            } finally {
-                await session.close();
-            }
-            //     const result = await translateQuery(neoSchema, query, {
-            //         req,
-            //     });
-
-            //     expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            //     "MATCH (this:\`Movie\`)
-            //     WHERE this.title = $param0
-            //     RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search) WHERE (\\"Genre\\" IN labels(this_search)) OR (\\"Movie\\" IN labels(this_search)) | head( [ this_search IN [this_search] WHERE (\\"Genre\\" IN labels(this_search)) AND this_search.name = $this_search_Genrethis_search_param0 AND apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $this_searchauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"Movie\\" IN labels(this_search)) AND this_search.title = $this_search_Moviethis_search_param0 | this_search { __resolveType: \\"Movie\\",  .title } ] ) ] WHERE this_search IS NOT NULL] [1..11]  } as this"
-            // `);
-
-            //     expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            //     "{
-            //         \\"param0\\": \\"some title\\",
-            //         \\"this_search_Genrethis_search_param0\\": \\"Horror\\",
-            //         \\"this_searchauth_param0\\": [
-            //             \\"Horror\\"
-            //         ],
-            //         \\"this_search_Moviethis_search_param0\\": \\"The Matrix\\"
-            //     }"
-            // `);
-            // });
-        });
     });
 });
