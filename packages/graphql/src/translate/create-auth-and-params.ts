@@ -40,7 +40,7 @@ interface Bind {
     chainStr?: string;
 }
 
-export default function createAuthAndParams({
+export function createAuthAndParams({
     entity,
     operations,
     skipRoles,
@@ -75,10 +75,9 @@ export default function createAuthAndParams({
     if (where && !authRules.some(hasWhere)) {
         return ["", [{}]];
     }
-    const subPredicates = authRules.map((authRule: AuthRule, index) => {
+    const subPredicates = authRules.map((authRule: AuthRule) => {
         const predicate = createSubPredicate({
             authRule,
-            index,
             skipRoles,
             skipIsAuthenticated,
             allow,
@@ -97,14 +96,16 @@ export default function createAuthAndParams({
     const authPredicate = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
         return orPredicates.getCypher(env);
     });
-    const authCypher = authPredicate.build();
+
+    const chainStr = `${where?.varName || ""}${allow?.varName || ""}${bind?.varName || ""}`;
+
+    // Params must be globally unique, variables can be just slightly different, as each auth statement is scoped
+    const authCypher = authPredicate.build({ params: `${chainStr}auth_`, variables: `auth_` });
     return [authCypher.cypher, authCypher.params];
 }
 
 function createSubPredicate({
     authRule,
-    index,
-    chainStr,
     skipRoles,
     skipIsAuthenticated,
     allow,
@@ -114,9 +115,6 @@ function createSubPredicate({
     where,
 }: {
     authRule: AuthRule | BaseAuthRule;
-    index: number;
-    chainStr?: string;
-
     skipRoles?: boolean;
     skipIsAuthenticated?: boolean;
     allow?: Allow;
@@ -142,12 +140,12 @@ function createSubPredicate({
     }
 
     if (allow && authRule.allow) {
+        const nodeRef = new CypherBuilder.NamedNode(allow.varName);
         const allowAndParams = createAuthPredicate({
             context,
             node: allow.parentNode,
-            varName: allow.varName,
+            nodeRef,
             rule: authRule,
-            chainStr: `${allow.chainStr || allow.varName}${chainStr || ""}_auth_allow${index}`,
             kind: "allow",
         });
         if (allowAndParams) {
@@ -164,11 +162,9 @@ function createSubPredicate({
 
         const predicates: CypherBuilder.Predicate[] = [];
 
-        value.forEach((v, i) => {
+        value.forEach((v) => {
             const predicate = createSubPredicate({
                 authRule: v,
-                index: i,
-                chainStr: chainStr ? `${chainStr}${key}${i}` : `${key}${i}`,
                 skipRoles,
                 skipIsAuthenticated,
                 allow,
@@ -197,12 +193,13 @@ function createSubPredicate({
     });
 
     if (where && authRule.where) {
+        const nodeRef = new CypherBuilder.NamedNode(where.varName);
+
         const wherePredicate = createAuthPredicate({
             context,
             node: where.node,
-            varName: where.varName,
+            nodeRef,
             rule: authRule,
-            chainStr: `${where.chainStr || where.varName}${chainStr || ""}_auth_where${index}`,
             kind: "where",
         });
         if (wherePredicate) {
@@ -211,12 +208,13 @@ function createSubPredicate({
     }
 
     if (bind && authRule.bind) {
+        const nodeRef = new CypherBuilder.NamedNode(bind.varName);
+
         const allowPredicate = createAuthPredicate({
             context,
             node: bind.parentNode,
-            varName: bind.varName,
+            nodeRef,
             rule: authRule,
-            chainStr: `${bind.chainStr || bind.varName}${chainStr || ""}_auth_bind${index}`,
             kind: "bind",
         });
         if (allowPredicate) {
@@ -230,16 +228,14 @@ function createSubPredicate({
 function createAuthPredicate({
     rule,
     node,
-    varName,
+    nodeRef,
     context,
-    chainStr,
     kind,
 }: {
     context: Context;
-    varName: string;
+    nodeRef: CypherBuilder.Node;
     node: Node;
     rule: AuthRule;
-    chainStr: string;
     kind: "allow" | "bind" | "where";
 }): CypherBuilder.Predicate | undefined {
     if (!rule[kind]) {
@@ -253,15 +249,14 @@ function createAuthPredicate({
         if (isPredicateJoin(key)) {
             const inner: CypherBuilder.Predicate[] = [];
 
-            (value as any[]).forEach((v, i) => {
+            (value as any[]).forEach((v) => {
                 const authPredicate = createAuthPredicate({
                     rule: {
                         [kind]: v,
                         allowUnauthenticated,
                     } as AuthRule,
-                    varName,
+                    nodeRef,
                     node,
-                    chainStr: `${chainStr}_${key}${i}`,
                     context,
                     kind,
                 });
@@ -296,10 +291,10 @@ function createAuthPredicate({
                 throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
             }
             const fieldPredicate = createAuthField({
-                param: new CypherBuilder.NamedParam(`${chainStr}_${key}`, paramValue), // TODO: change
+                param: new CypherBuilder.Param(paramValue),
                 key,
                 node,
-                nodeRef: new CypherBuilder.NamedNode(varName),
+                elementRef: nodeRef,
             });
 
             predicates.push(fieldPredicate);
@@ -309,14 +304,14 @@ function createAuthPredicate({
 
         if (relationField) {
             const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-            const relationVarName = relationField.fieldName;
-
+            const relationshipNodeRef = new CypherBuilder.Node({
+                labels: refNode.getLabels(context),
+            });
             Object.entries(value as Record<string, any>).forEach(([k, v]: [string, any]) => {
                 const authPredicate = createAuthPredicate({
                     node: refNode,
                     context,
-                    chainStr: `${chainStr}_${key}`,
-                    varName: relationVarName,
+                    nodeRef: relationshipNodeRef,
                     rule: {
                         [kind]: { [k]: v },
                         allowUnauthenticated,
@@ -326,10 +321,8 @@ function createAuthPredicate({
                 if (!authPredicate) throw new Error("Invalid predicate");
 
                 const relationshipPredicate = createRelationshipPredicate({
-                    targetNode: refNode,
-                    nodeRef: new CypherBuilder.NamedNode(varName),
-                    relationVarName, // TODO: this should be autogenerated node
-                    context,
+                    targetNodeRef: relationshipNodeRef,
+                    nodeRef,
                     relationField,
                     authPredicate,
                     kind,
@@ -345,21 +338,16 @@ function createAuthPredicate({
 function createRelationshipPredicate({
     nodeRef,
     relationField,
-    relationVarName,
-    targetNode,
-    context,
+    targetNodeRef,
     authPredicate,
     kind,
 }: {
     nodeRef: CypherBuilder.Node;
     relationField: RelationField;
-    relationVarName: string;
-    targetNode: Node;
-    context: Context;
+    targetNodeRef: CypherBuilder.Node;
     authPredicate: CypherBuilder.Predicate;
     kind: string;
 }): CypherBuilder.Predicate {
-    const targetNodeRef = new CypherBuilder.NamedNode(relationVarName, { labels: targetNode.getLabels(context) });
     const relationship = new CypherBuilder.Relationship({
         source: nodeRef,
         target: targetNodeRef,
@@ -437,16 +425,16 @@ function createAuthenticatedPredicate(
 function createAuthField({
     node,
     key,
-    nodeRef,
+    elementRef,
     param,
 }: {
     node: Node;
     key: string;
-    nodeRef: CypherBuilder.Node;
+    elementRef: CypherBuilder.Node | CypherBuilder.Relationship;
     param: CypherBuilder.Param;
 }): CypherBuilder.Predicate {
     const dbFieldName = mapToDbProperty(node, key);
-    const fieldPropertyRef = nodeRef.property(dbFieldName);
+    const fieldPropertyRef = elementRef.property(dbFieldName);
     if (param.value === undefined) {
         return new CypherBuilder.Literal(false);
     }

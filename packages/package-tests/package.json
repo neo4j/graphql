@@ -29,6 +29,6 @@
         "rimraf": "3.0.2"
     },
     "dependencies": {
-        "upper-case-first": "^2.0.2"
+        "upper-case-first": "2.0.2"
     }
 }

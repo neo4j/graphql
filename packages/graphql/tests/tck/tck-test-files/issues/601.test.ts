@@ -91,11 +91,11 @@ describe("#601", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Stakeholder\`)
-            CALL apoc.util.validate(NOT (any(var1 IN [\\"view\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { documents: [ (this)-[:REQUIRES]->(this_documents:Document)  WHERE apoc.util.validatePredicate(NOT (any(var1 IN [\\"view\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_documents { customerContactConnection: apoc.cypher.runFirstColumnSingle(\\"CALL {
+            CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"view\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            RETURN this { documents: [ (this)-[:REQUIRES]->(this_documents:Document)  WHERE apoc.util.validatePredicate(NOT (any(auth_var1 IN [\\"view\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_documents { customerContactConnection: apoc.cypher.runFirstColumnSingle(\\"CALL {
             WITH this_documents
             MATCH (this_documents)<-[this_documents_uploaded_relationship:UPLOADED]-(this_documents_customercontact:CustomerContact)
-            CALL apoc.util.validate(NOT (any(var1 IN [\\\\\\"view\\\\\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1))), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
+            CALL apoc.util.validate(NOT (any(auth_var1 IN [\\\\\\"view\\\\\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
             WITH collect({ fileId: this_documents_uploaded_relationship.fileId, uploadedAt: apoc.date.convertFormat(toString(this_documents_uploaded_relationship.uploadedAt), \\\\\\"iso_zoned_date_time\\\\\\", \\\\\\"iso_offset_date_time\\\\\\") }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount

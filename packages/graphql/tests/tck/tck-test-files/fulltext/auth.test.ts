@@ -68,14 +68,14 @@ describe("Cypher -> fulltext -> Auth", () => {
                 \\"MovieTitle\\",
                 $param1
             ) YIELD node as this
-                        WHERE (\\"Movie\\" IN labels(this) AND (exists((this)<-[:DIRECTED]-(:\`Person\`)) AND all(director IN [(this)<-[:DIRECTED]-(director:\`Person\`) | director] WHERE (director.id IS NOT NULL AND director.id = $this_auth_where0_director_id))))
+                        WHERE (\\"Movie\\" IN labels(this) AND (exists((this)<-[:DIRECTED]-(:\`Person\`)) AND all(auth_this0 IN [(this)<-[:DIRECTED]-(auth_this0:\`Person\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0))))
             RETURN this { .title } as this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`
             Object {
               "param1": "something AND something",
-              "this_auth_where0_director_id": "my-sub",
+              "thisauth_param0": "my-sub",
             }
         `);
     });
@@ -125,14 +125,14 @@ describe("Cypher -> fulltext -> Auth", () => {
                 $param0
             ) YIELD node as this
                         WHERE \\"Movie\\" IN labels(this)
-            CALL apoc.util.validate(NOT ((exists((this)<-[:DIRECTED]-(:\`Person\`)) AND any(director IN [(this)<-[:DIRECTED]-(director:\`Person\`) | director] WHERE (director.id IS NOT NULL AND director.id = $this_auth_allow0_director_id)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((exists((this)<-[:DIRECTED]-(:\`Person\`)) AND any(auth_this0 IN [(this)<-[:DIRECTED]-(auth_this0:\`Person\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } as this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`
             Object {
               "param0": "something AND something",
-              "this_auth_allow0_director_id": "my-sub",
+              "thisauth_param0": "my-sub",
             }
         `);
     });

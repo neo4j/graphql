@@ -22,7 +22,7 @@ import { GraphQLUnionType } from "graphql";
 import { execute } from "../../../utils";
 import type { ConnectionField, Context, CypherField } from "../../../types";
 import { graphqlArgsToCompose } from "../../to-compose";
-import createAuthAndParams from "../../../translate/create-auth-and-params";
+import { createAuthAndParams } from "../../../translate/create-auth-and-params";
 import createAuthParam from "../../../translate/create-auth-param";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import createProjectionAndParams from "../../../translate/create-projection-and-params";
