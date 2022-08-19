@@ -125,3 +125,23 @@ query DeeplyNestedConnectionWhere {
         title
     }
 }
+
+query DeeplyNestedWithRelationshipFilters {
+    people(
+        where: {
+            name_STARTS_WITH: "T"
+            movies_SOME: {
+                title_CONTAINS: "i"
+                actors_SOME: {
+                    name_CONTAINS: "i"
+                    movies_SOME: {
+                        title_NOT: "non-existant"
+                        # actors_SOME: { name_CONTAINS: "i", movies_NONE: { title: "The Matrix" } } # Commented out due to being extremely slow
+                    }
+                }
+            }
+        }
+    ) {
+        name
+    }
+}
