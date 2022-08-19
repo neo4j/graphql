@@ -17,9 +17,27 @@
  * limitations under the License.
  */
 
-export { default as translateCreate } from "./translate-create";
-export { translateRead } from "./translate-read";
-export { default as translateUpdate } from "./translate-update";
-export { translateDelete } from "./translate-delete";
-export { default as translateAggregate } from "./translate-aggregate";
-export { translateTopLevelCypher } from "./translate-top-level-cypher";
+import type { CypherEnvironment } from "../Environment";
+import { Clause } from "./Clause";
+
+export class Union extends Clause {
+    private subqueries: Clause[] = [];
+    private includeAll = false;
+
+    constructor(...subqueries: Clause[]) {
+        super();
+        this.subqueries = subqueries;
+    }
+
+    public all(): this {
+        this.includeAll = true;
+        return this;
+    }
+
+    public getCypher(env: CypherEnvironment): string {
+        const subqueriesStr = this.subqueries.map((s) => s.getCypher(env));
+        const unionStr = this.includeAll ? "UNION ALL" : "UNION";
+
+        return subqueriesStr.join(`\n${unionStr}\n`);
+    }
+}

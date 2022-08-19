@@ -88,13 +88,13 @@ describe("Interface Relationships", () => {
             CALL {
             WITH this
             CALL {
-            WITH this
-            MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
-            RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
-            UNION
-            WITH this
-            MATCH (this)-[:ACTED_IN]->(this_Series:Series)
-            RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
+                WITH this
+                MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
+                RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
+                UNION
+                WITH this
+                MATCH (this)-[:ACTED_IN]->(this_Series:Series)
+                RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
             RETURN collect(actedIn) AS actedIn
             }
@@ -130,13 +130,13 @@ describe("Interface Relationships", () => {
             "MATCH (this:\`Actor\`)
             WITH this
             CALL {
-            WITH this
-            MATCH (this)-[:CURRENTLY_ACTING_IN]->(this_Movie:Movie)
-            RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS currentlyActingIn
-            UNION
-            WITH this
-            MATCH (this)-[:CURRENTLY_ACTING_IN]->(this_Series:Series)
-            RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS currentlyActingIn
+                WITH this
+                MATCH (this)-[:CURRENTLY_ACTING_IN]->(this_Movie:Movie)
+                RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS currentlyActingIn
+                UNION
+                WITH this
+                MATCH (this)-[:CURRENTLY_ACTING_IN]->(this_Series:Series)
+                RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS currentlyActingIn
             }
             RETURN this { currentlyActingIn: currentlyActingIn } as this"
         `);
@@ -172,13 +172,13 @@ describe("Interface Relationships", () => {
             CALL {
             WITH this
             CALL {
-            WITH this
-            MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
-            RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
-            UNION
-            WITH this
-            MATCH (this)-[:ACTED_IN]->(this_Series:Series)
-            RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
+                WITH this
+                MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
+                RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
+                UNION
+                WITH this
+                MATCH (this)-[:ACTED_IN]->(this_Series:Series)
+                RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
             RETURN collect(actedIn) AS actedIn
             }
@@ -213,10 +213,10 @@ describe("Interface Relationships", () => {
             CALL {
             WITH this
             CALL {
-            WITH this
-            MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
-            WHERE this_Movie.title STARTS WITH $this_actedIn.args.where._on.Movie.title_STARTS_WITH
-            RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
+                WITH this
+                MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
+                WHERE this_Movie.title STARTS WITH $this_actedIn.args.where._on.Movie.title_STARTS_WITH
+                RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
             }
             RETURN collect(actedIn) AS actedIn
             }
@@ -268,15 +268,15 @@ describe("Interface Relationships", () => {
             CALL {
             WITH this
             CALL {
-            WITH this
-            MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
-            WHERE this_Movie.title STARTS WITH $this_actedIn.args.where._on.Movie.title_STARTS_WITH
-            RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
-            UNION
-            WITH this
-            MATCH (this)-[:ACTED_IN]->(this_Series:Series)
-            WHERE this_Series.title STARTS WITH $this_actedIn.args.where.title_STARTS_WITH
-            RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
+                WITH this
+                MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
+                WHERE this_Movie.title STARTS WITH $this_actedIn.args.where._on.Movie.title_STARTS_WITH
+                RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
+                UNION
+                WITH this
+                MATCH (this)-[:ACTED_IN]->(this_Series:Series)
+                WHERE this_Series.title STARTS WITH $this_actedIn.args.where.title_STARTS_WITH
+                RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
             RETURN collect(actedIn) AS actedIn
             }

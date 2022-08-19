@@ -70,7 +70,13 @@ describe("#190", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE size([(this)-[:HAS_DEMOGRAPHIC]->(this0:\`UserDemographics\`) WHERE (this0.type = $param0 AND this0.value = $param1) | 1]) > 0
-            RETURN this { .uid, demographics: [ (this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics)   | this_demographics { .type, .value } ] } as this"
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:HAS_DEMOGRAPHIC]->(this_demographics:\`UserDemographics\`)
+                WITH this_demographics { .type, .value } AS this_demographics
+                RETURN collect(this_demographics) AS this_demographics
+            }
+            RETURN this { .uid, demographics: this_demographics } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -106,7 +112,13 @@ describe("#190", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE size([(this)-[:HAS_DEMOGRAPHIC]->(this0:\`UserDemographics\`) WHERE ((this0.type = $param0 AND this0.value = $param1) OR this0.type = $param2 OR this0.type = $param3) | 1]) > 0
-            RETURN this { .uid, demographics: [ (this)-[:HAS_DEMOGRAPHIC]->(this_demographics:UserDemographics)   | this_demographics { .type, .value } ] } as this"
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:HAS_DEMOGRAPHIC]->(this_demographics:\`UserDemographics\`)
+                WITH this_demographics { .type, .value } AS this_demographics
+                RETURN collect(this_demographics) AS this_demographics
+            }
+            RETURN this { .uid, demographics: this_demographics } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -22,7 +22,7 @@ import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
-describe("integration/rfs/003", () => {
+describe("tck/rfs/003", () => {
     describe("one-to-one", () => {
         describe("create", () => {
             test("should add validation when creating node with a required relationship", async () => {
@@ -723,7 +723,8 @@ describe("integration/rfs/003", () => {
                             FOREACH(x IN this_delete_director0_address0_to_delete | DETACH DELETE x)
                             WITH this, collect(DISTINCT this_delete_director0) as this_delete_director0_to_delete
                             FOREACH(x IN this_delete_director0_to_delete | DETACH DELETE x)
-                            WITH this
+                            WITH *
+                            WITH *
                             CALL {
                             	WITH this
                             	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
@@ -835,7 +836,8 @@ describe("integration/rfs/003", () => {
                             FOREACH(x IN this_delete_director0_address0_to_delete | DETACH DELETE x)
                             WITH this, collect(DISTINCT this_delete_director0) as this_delete_director0_to_delete
                             FOREACH(x IN this_delete_director0_to_delete | DETACH DELETE x)
-                            WITH this
+                            WITH *
+                            WITH *
                             CALL {
                             	WITH this
                             	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
@@ -1181,7 +1183,8 @@ describe("integration/rfs/003", () => {
                         )
                         RETURN count(*) AS _
                         }
-                        WITH this
+                        WITH *
+                        WITH *
                         CALL {
                         	WITH this
                         	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
@@ -1284,7 +1287,14 @@ describe("integration/rfs/003", () => {
                         )
                         RETURN count(*) AS _
                         }
-                        WITH this
+                        WITH *
+                        CALL {
+                            WITH this
+                            MATCH (this_director:\`Director\`)-[update_this0:DIRECTED]->(this)
+                            WITH this_director { .id } AS this_director
+                            RETURN head(collect(this_director)) AS this_director
+                        }
+                        WITH *
                         CALL {
                         	WITH this
                         	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
@@ -1292,7 +1302,7 @@ describe("integration/rfs/003", () => {
                         	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director required', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
-                        RETURN collect(DISTINCT this { .id, director: head([ (this)<-[:DIRECTED]-(this_director:Director)   | this_director { .id } ]) }) AS data"
+                        RETURN collect(DISTINCT this { .id, director: this_director }) AS data"
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1386,7 +1396,14 @@ describe("integration/rfs/003", () => {
                         )
                         RETURN count(*) AS _
                         }
-                        WITH this
+                        WITH *
+                        CALL {
+                            WITH this
+                            MATCH (this_director:\`Director\`)-[update_this0:DIRECTED]->(this)
+                            WITH this_director { .id } AS this_director
+                            RETURN head(collect(this_director)) AS this_director
+                        }
+                        WITH *
                         CALL {
                         	WITH this
                         	MATCH (this)<-[this_director_Director_unique:DIRECTED]-(:Director)
@@ -1394,7 +1411,7 @@ describe("integration/rfs/003", () => {
                         	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one', [0])
                         	RETURN c AS this_director_Director_unique_ignored
                         }
-                        RETURN collect(DISTINCT this { .id, director: head([ (this)<-[:DIRECTED]-(this_director:Director)   | this_director { .id } ]) }) AS data"
+                        RETURN collect(DISTINCT this { .id, director: this_director }) AS data"
                     `);
 
                     expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -33,14 +33,17 @@ import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
-import { getRelationshipDirectionStr } from "../utils/get-relationship-direction";
+import { getRelationshipDirection, getRelationshipDirectionStr } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
+import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import { createProjectionSubquery } from "./projection/elements/create-projection-subquery";
 
 interface Res {
     projection: string[];
     params: any;
     meta: ProjectionMeta;
+    subqueries: Array<CypherBuilder.Clause>;
 }
 
 export interface ProjectionMeta {
@@ -53,7 +56,8 @@ export interface ProjectionMeta {
 export type ProjectionResult = {
     projection: string;
     params: Record<string, any>;
-    meta: ProjectionMeta | undefined;
+    meta: ProjectionMeta;
+    subqueries: Array<CypherBuilder.Clause>;
 };
 
 export default function createProjectionAndParams({
@@ -321,15 +325,13 @@ export default function createProjectionAndParams({
                 optionsInput.limit = referenceNode.queryOptions.getLimit(optionsInput.limit);
             }
 
-            const nodeMatchStr = `(${chainStr || varName})`;
             const relTypeStr = `[:${relationField.type}]`;
-            const labels = referenceNode?.getLabelString(context);
-            const nodeOutStr = `(${param}${labels})`;
             const isArray = relationField.typeMeta.array;
 
             const { inStr, outStr } = getRelationshipDirectionStr(relationField, field.args);
 
             if (relationField.interface) {
+                // TODO: interfaces
                 if (!res.meta.interfaceFields) {
                     res.meta.interfaceFields = [];
                 }
@@ -361,6 +363,7 @@ export default function createProjectionAndParams({
             }
 
             if (relationField.union) {
+                // TODO: unions
                 const referenceNodes = context.nodes.filter(
                     (x) =>
                         relationField.union?.nodes?.includes(x.name) &&
@@ -467,40 +470,25 @@ export default function createProjectionAndParams({
             });
             res.params = { ...res.params, ...recurse.params };
 
-            let whereStr = "";
-            const nodeWhereAndParams = createNodeWhereAndParams({
+            const parentNode = new CypherBuilder.NamedNode(chainStr || varName);
+
+            const direction = getRelationshipDirection(relationField, field.args);
+            const subquery = createProjectionSubquery({
+                parentNode,
                 whereInput,
-                varName: `${varName}_${alias}`,
                 node: referenceNode,
                 context,
+                alias: param,
+                nestedProjection: recurse.projection,
+                nestedSubqueries: recurse.subqueries,
+                relationField,
+                relationshipDirection: direction,
+                optionsInput,
                 authValidateStrs: recurse.meta?.authValidateStrs,
             });
-            if (nodeWhereAndParams[0]) {
-                whereStr = `WHERE ${nodeWhereAndParams[0]}`;
-                res.params = { ...res.params, ...nodeWhereAndParams[1] };
-            }
 
-            const pathStr = `${nodeMatchStr}${inStr}${relTypeStr}${outStr}${nodeOutStr}`;
-            const innerStr = `${pathStr}  ${whereStr} | ${param} ${recurse.projection}`;
-            let nestedQuery: string;
-
-            if (optionsInput) {
-                const offsetLimit = createOffsetLimitStr({ offset: optionsInput.offset, limit: optionsInput.limit });
-
-                if (optionsInput.sort) {
-                    const sorts = optionsInput.sort.reduce(sortReducer, []);
-
-                    nestedQuery = `${alias}: apoc.coll.sortMulti([ ${innerStr} ], [${sorts.join(", ")}])${offsetLimit}`;
-                } else {
-                    nestedQuery = `${alias}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${offsetLimit}${
-                        !isArray ? ")" : ""
-                    }`;
-                }
-            } else {
-                nestedQuery = `${alias}: ${!isArray ? "head(" : ""}[ ${innerStr} ]${!isArray ? ")" : ""}`;
-            }
-
-            res.projection.push(nestedQuery);
+            res.subqueries.push(subquery.subquery);
+            res.projection.push(`${alias}: ${param}`);
 
             return res;
         }
@@ -627,16 +615,18 @@ export default function createProjectionAndParams({
         generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
     ]);
 
-    const { projection, params, meta } = Object.values(mergedFields).reduce(reducer, {
+    const { projection, params, meta, subqueries } = Object.values(mergedFields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
         params: {},
         meta: {},
+        subqueries: [],
     });
 
     return {
         projection: `{ ${projection.join(", ")} }`,
         params,
         meta,
+        subqueries,
     };
 }
 
