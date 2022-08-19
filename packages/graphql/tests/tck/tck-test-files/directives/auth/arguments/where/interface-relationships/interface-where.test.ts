@@ -167,15 +167,15 @@ describe("Cypher Auth Where", () => {
             CALL {
             WITH this
             CALL {
-            WITH this
-            MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
-            WHERE (exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_Comment)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Commentauth_param0)))
-            RETURN { __resolveType: \\"Comment\\" } AS content
-            UNION
-            WITH this
-            MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
-            WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_Post)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Postauth_param0)))
-            RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS content
+                WITH this
+                MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
+                WHERE (exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_Comment)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Commentauth_param0)))
+                RETURN { __resolveType: \\"Comment\\" } AS content
+                UNION
+                WITH this
+                MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
+                WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_Post)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Postauth_param0)))
+                RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS content
             }
             RETURN collect(content) AS content
             }
@@ -898,6 +898,7 @@ describe("Cypher Auth Where", () => {
             	)
             	RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -953,6 +954,7 @@ describe("Cypher Auth Where", () => {
             	)
             	RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -1148,6 +1150,7 @@ describe("Cypher Auth Where", () => {
             )
             RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -1210,6 +1213,7 @@ describe("Cypher Auth Where", () => {
             )
             RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 

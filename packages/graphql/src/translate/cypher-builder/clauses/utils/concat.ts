@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { filterTruthy } from "../../../../utils/utils";
 import type { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import { Clause } from "../Clause";
@@ -38,6 +39,6 @@ class CompositeClause extends Clause {
 }
 
 /** Concatenates multiple clauses into a clause */
-export function concat(...clauses: Clause[]): Clause {
-    return new CompositeClause(clauses, "\n");
+export function concat(...clauses: Array<Clause | undefined>): Clause {
+    return new CompositeClause(filterTruthy(clauses), "\n");
 }

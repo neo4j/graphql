@@ -66,7 +66,7 @@ describe("tck/rfcs/query-limits", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WITH this
+                WITH *
                 LIMIT $this_limit
                 RETURN this { .id } as this"
             `);
@@ -97,7 +97,7 @@ describe("tck/rfcs/query-limits", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Show\`)
-                WITH this
+                WITH *
                 LIMIT $this_limit
                 RETURN this { .id } as this"
             `);
@@ -128,7 +128,7 @@ describe("tck/rfcs/query-limits", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Show\`)
-                WITH this
+                WITH *
                 LIMIT $this_limit
                 RETURN this { .id } as this"
             `);
@@ -164,9 +164,16 @@ describe("tck/rfcs/query-limits", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this_actors:\`Person\`)-[thisthis0:ACTED_IN]->(this)
+                    WITH this_actors { .id } AS this_actors
+                    LIMIT 2
+                    RETURN collect(this_actors) AS this_actors
+                }
+                WITH *
                 LIMIT $this_limit
-                RETURN this { .id, actors: [ (this)<-[:ACTED_IN]-(this_actors:Person)   | this_actors { .id } ][..2] } as this"
+                RETURN this { .id, actors: this_actors } as this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -202,7 +209,7 @@ describe("tck/rfcs/query-limits", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WITH this
+                WITH *
                 LIMIT $this_limit
                 CALL {
                 WITH this
@@ -243,9 +250,16 @@ describe("tck/rfcs/query-limits", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this_actors:\`Person\`)-[thisthis0:ACTED_IN]->(this)
+                    WITH this_actors { .id } AS this_actors
+                    LIMIT 2
+                    RETURN collect(this_actors) AS this_actors
+                }
+                WITH *
                 LIMIT $this_limit
-                RETURN this { .id, actors: [ (this)<-[:ACTED_IN]-(this_actors:Person)   | this_actors { .id } ][..2] } as this"
+                RETURN this { .id, actors: this_actors } as this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`

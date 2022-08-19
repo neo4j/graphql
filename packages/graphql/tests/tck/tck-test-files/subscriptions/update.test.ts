@@ -80,7 +80,7 @@ describe("Subscriptions metadata on update", () => {
             }
             WITH *, update_meta as meta
             WITH this, meta + { event: \\"update\\", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp(), typename: \\"Movie\\" } AS meta
-            WITH this, meta
+            WITH *
             UNWIND meta AS m
             RETURN collect(DISTINCT this { .id }) AS data, collect(DISTINCT m) as meta"
         `);

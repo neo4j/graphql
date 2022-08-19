@@ -61,8 +61,53 @@ export function createAuthAndParams({
     bind?: Bind;
     where?: { varName: string; chainStr?: string; node: Node };
 }): [string, any] {
+    const authPredicate = createAuthPredicates({
+        entity,
+        operations,
+        skipRoles,
+        skipIsAuthenticated,
+        allow,
+        context,
+        escapeQuotes,
+        bind,
+        where,
+    });
+    if (!authPredicate) return ["", {}];
+
+    const authPredicateExpr = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+        return authPredicate.getCypher(env);
+    });
+
+    const chainStr = `${where?.varName || ""}${allow?.varName || ""}${bind?.varName || ""}`;
+
+    // Params must be globally unique, variables can be just slightly different, as each auth statement is scoped
+    const authCypher = authPredicateExpr.build({ params: `${chainStr}auth_`, variables: `auth_` });
+    return [authCypher.cypher, authCypher.params];
+}
+
+export function createAuthPredicates({
+    entity,
+    operations,
+    skipRoles,
+    skipIsAuthenticated,
+    allow,
+    context,
+    escapeQuotes,
+    bind,
+    where,
+}: {
+    entity: Node | BaseField;
+    operations?: AuthOperations | AuthOperations[];
+    skipRoles?: boolean;
+    skipIsAuthenticated?: boolean;
+    allow?: Allow;
+    context: Context;
+    escapeQuotes?: boolean;
+    bind?: Bind;
+    where?: { varName: string; chainStr?: string; node: Node };
+}): CypherBuilder.Predicate | undefined {
     if (!entity.auth) {
-        return ["", {}];
+        return undefined;
     }
 
     /** FIXME: this is required to keep compatibility with BaseField type */
@@ -73,7 +118,7 @@ export function createAuthAndParams({
         !!(rule.where || rule.AND?.some(hasWhere) || rule.OR?.some(hasWhere));
 
     if (where && !authRules.some(hasWhere)) {
-        return ["", [{}]];
+        return undefined;
     }
     const subPredicates = authRules.map((authRule: AuthRule) => {
         const predicate = createSubPredicate({
@@ -91,17 +136,12 @@ export function createAuthAndParams({
     });
 
     const orPredicates = CypherBuilder.or(...subPredicates);
-    if (!orPredicates) return ["", {}];
+    if (!orPredicates) return undefined;
 
     const authPredicate = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
         return orPredicates.getCypher(env);
     });
-
-    const chainStr = `${where?.varName || ""}${allow?.varName || ""}${bind?.varName || ""}`;
-
-    // Params must be globally unique, variables can be just slightly different, as each auth statement is scoped
-    const authCypher = authPredicate.build({ params: `${chainStr}auth_`, variables: `auth_` });
-    return [authCypher.cypher, authCypher.params];
+    return authPredicate;
 }
 
 function createSubPredicate({

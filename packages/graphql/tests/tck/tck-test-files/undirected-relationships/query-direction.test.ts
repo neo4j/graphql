@@ -67,7 +67,19 @@ describe("QueryDirection in relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | this_friends { .name } ], directedFriends: [ (this)-[:FRIENDS_WITH]->(this_directedFriends:User)   | this_directedFriends { .name } ] } as this"
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:FRIENDS_WITH]-(this_friends:\`User\`)
+                WITH this_friends { .name } AS this_friends
+                RETURN collect(this_friends) AS this_friends
+            }
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis1:FRIENDS_WITH]->(this_directedFriends:\`User\`)
+                WITH this_directedFriends { .name } AS this_directedFriends
+                RETURN collect(this_directedFriends) AS this_directedFriends
+            }
+            RETURN this { .name, friends: this_friends, directedFriends: this_directedFriends } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -110,7 +122,19 @@ describe("QueryDirection in relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | this_friends { .name } ], undirectedFriends: [ (this)-[:FRIENDS_WITH]-(this_undirectedFriends:User)   | this_undirectedFriends { .name } ] } as this"
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:FRIENDS_WITH]->(this_friends:\`User\`)
+                WITH this_friends { .name } AS this_friends
+                RETURN collect(this_friends) AS this_friends
+            }
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis1:FRIENDS_WITH]-(this_undirectedFriends:\`User\`)
+                WITH this_undirectedFriends { .name } AS this_undirectedFriends
+                RETURN collect(this_undirectedFriends) AS this_undirectedFriends
+            }
+            RETURN this { .name, friends: this_friends, undirectedFriends: this_undirectedFriends } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -150,7 +174,13 @@ describe("QueryDirection in relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]->(this_friends:User)   | this_friends { .name } ] } as this"
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:FRIENDS_WITH]->(this_friends:\`User\`)
+                WITH this_friends { .name } AS this_friends
+                RETURN collect(this_friends) AS this_friends
+            }
+            RETURN this { .name, friends: this_friends } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -189,7 +219,13 @@ describe("QueryDirection in relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            RETURN this { .name, friends: [ (this)-[:FRIENDS_WITH]-(this_friends:User)   | this_friends { .name } ] } as this"
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:FRIENDS_WITH]-(this_friends:\`User\`)
+                WITH this_friends { .name } AS this_friends
+                RETURN collect(this_friends) AS this_friends
+            }
+            RETURN this { .name, friends: this_friends } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

@@ -167,8 +167,14 @@ describe("Subscriptions metadata on create", () => {
             RETURN this0, meta AS this0_meta
             }
             WITH this0, this0_meta AS meta
+            CALL {
+                WITH this0
+                MATCH (this0_actors:\`Actor\`)-[create_this0:ACTED_IN]->(this0)
+                WITH this0_actors { .name } AS this0_actors
+                RETURN collect(this0_actors) AS this0_actors
+            }
             RETURN [
-            this0 { .id, actors: [ (this0)<-[:ACTED_IN]-(this0_actors:Actor)   | this0_actors { .name } ] }] AS data, meta"
+            this0 { .id, actors: this0_actors }] AS data, meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -223,8 +229,14 @@ describe("Subscriptions metadata on create", () => {
             RETURN this0, meta AS this0_meta
             }
             WITH this0, this0_meta AS meta
+            CALL {
+                WITH this0
+                MATCH (this0_actors:\`Actor\`)-[create_this0:ACTED_IN]->(this0)
+                WITH this0_actors { .name } AS this0_actors
+                RETURN collect(this0_actors) AS this0_actors
+            }
             RETURN [
-            this0 { .id, actors: [ (this0)<-[:ACTED_IN]-(this0_actors:Actor)   | this0_actors { .name } ] }] AS data, meta"
+            this0 { .id, actors: this0_actors }] AS data, meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -301,8 +313,26 @@ describe("Subscriptions metadata on create", () => {
             RETURN this0, meta AS this0_meta
             }
             WITH this0, this0_meta AS meta
+            CALL {
+                WITH this0
+                MATCH (this0_actors:\`Actor\`)-[create_this0:ACTED_IN]->(this0)
+                CALL {
+                    WITH this0_actors
+                    MATCH (this0_actors)-[create_this1:ACTED_IN]->(this0_actors_movies:\`Movie\`)
+                    CALL {
+                        WITH this0_actors_movies
+                        MATCH (this0_actors_movies_actors:\`Actor\`)-[create_this2:ACTED_IN]->(this0_actors_movies)
+                        WITH this0_actors_movies_actors { .name } AS this0_actors_movies_actors
+                        RETURN collect(this0_actors_movies_actors) AS this0_actors_movies_actors
+                    }
+                    WITH this0_actors_movies { .id, actors: this0_actors_movies_actors } AS this0_actors_movies
+                    RETURN collect(this0_actors_movies) AS this0_actors_movies
+                }
+                WITH this0_actors { .name, movies: this0_actors_movies } AS this0_actors
+                RETURN collect(this0_actors) AS this0_actors
+            }
             RETURN [
-            this0 { .id, actors: [ (this0)<-[:ACTED_IN]-(this0_actors:Actor)   | this0_actors { .name, movies: [ (this0_actors)-[:ACTED_IN]->(this0_actors_movies:Movie)   | this0_actors_movies { .id, actors: [ (this0_actors_movies)<-[:ACTED_IN]-(this0_actors_movies_actors:Actor)   | this0_actors_movies_actors { .name } ] } ] } ] }] AS data, meta"
+            this0 { .id, actors: this0_actors }] AS data, meta"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
