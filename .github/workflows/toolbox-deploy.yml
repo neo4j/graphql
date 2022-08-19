@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: refs/tags/${{ github.event.release.tag }}
+          ref: refs/tags/${{ github.event.release.tag_name }}
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
