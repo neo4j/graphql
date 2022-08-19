@@ -50,24 +50,14 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
         `;
 
         neoSchema = new Neo4jGraphQL({ typeDefs });
-        try {
-            session = await neo4j.getSession();
-            await session.run(`CREATE (:${typeMovie.name} {title: "Cool Movie"})<-[:ACTED_IN]-(:${typePerson.name} {name: "Some Name", nickname: "SName"})
-                CREATE (:${typeMovie.name} {title: "Super Cool Movie"})<-[:ACTED_IN]-(:${typePerson.name} {name: "Super Cool Some Name"})`);
-        } finally {
-            await session.close();
-        }
-    });
 
-    beforeEach(async () => {
         session = await neo4j.getSession();
-    });
-
-    afterEach(async () => {
-        await session.close();
+        await session.run(`CREATE (:${typeMovie.name} {title: "Cool Movie"})<-[:ACTED_IN]-(:${typePerson.name} {name: "Some Name", nickname: "SName"})
+                CREATE (:${typeMovie.name} {title: "Super Cool Movie"})<-[:ACTED_IN]-(:${typePerson.name} {name: "Super Cool Some Name"})`);
     });
 
     afterAll(async () => {
+        await session.close();
         await driver.close();
     });
 
@@ -93,9 +83,8 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect(gqlResult.data[typeMovie.plural]).toHaveLength(2);
         expect(gqlResult.data[typeMovie.plural]).toEqual(
-            expect.arrayContaining([
+            expect.toIncludeSameMembers([
                 { actorsAggregate: { node: { nickname: { shortest: "SName" } } } },
                 { actorsAggregate: { node: { nickname: { shortest: null } } } },
             ])

@@ -23,7 +23,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import type { ConnectionField, Context, InterfaceWhereArg, RelationField } from "../types";
 import filterInterfaceNodes from "../utils/filter-interface-nodes";
 import createConnectionAndParams from "./connection/create-connection-and-params";
-import createAuthAndParams from "./create-auth-and-params";
+import { createAuthAndParams } from "./create-auth-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
 import { getRelationshipDirectionStr } from "../utils/get-relationship-direction";
 import createElementWhereAndParams from "./where/create-element-where-and-params";
@@ -158,7 +158,11 @@ function createInterfaceProjectionAndParams({
             subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
         }
 
-        const recurse = createProjectionAndParams({
+        const {
+            projection: projectionStr,
+            params: projectionParams,
+            meta,
+        } = createProjectionAndParams({
             resolveTree,
             node: refNode,
             context,
@@ -167,8 +171,8 @@ function createInterfaceProjectionAndParams({
             resolveType: true,
         });
 
-        if (recurse[2]?.connectionFields?.length) {
-            recurse[2].connectionFields.forEach((connectionResolveTree) => {
+        if (meta?.connectionFields?.length) {
+            meta.connectionFields.forEach((connectionResolveTree) => {
                 const connectionField = refNode.connectionFields.find(
                     (x) => x.fieldName === connectionResolveTree.name
                 ) as ConnectionField;
@@ -179,13 +183,13 @@ function createInterfaceProjectionAndParams({
                     nodeVariable: param,
                 });
                 subquery.push(connection[0]);
-                params = { ...params, ...connection[1] };
+                params = { ...params, ...projectionParams };
             });
         }
 
-        if (recurse[2]?.interfaceFields?.length) {
+        if (meta?.interfaceFields?.length) {
             const prevRelationshipFields: string[] = [];
-            recurse[2].interfaceFields.forEach((interfaceResolveTree) => {
+            meta.interfaceFields.forEach((interfaceResolveTree) => {
                 const relationshipField = refNode.relationFields.find(
                     (x) => x.fieldName === interfaceResolveTree.name
                 ) as RelationField;
@@ -202,10 +206,10 @@ function createInterfaceProjectionAndParams({
             });
         }
 
-        subquery.push(`RETURN ${recurse[0]} AS ${field.fieldName}`);
+        subquery.push(`RETURN ${projectionStr} AS ${field.fieldName}`);
         globalParams = {
             ...globalParams,
-            ...recurse[1],
+            ...projectionParams,
         };
 
         return subquery.join("\n");

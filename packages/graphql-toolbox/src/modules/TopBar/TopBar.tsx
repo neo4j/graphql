@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import { Button, HeroIcon, IconButton } from "@neo4j-ndl/react";
+import { Button, HeroIcon, IconButton, Label } from "@neo4j-ndl/react";
 import { Fragment, useContext } from "react";
 import { DEFAULT_BOLT_URL } from "src/constants";
 // @ts-ignore - SVG Import
-import Neo4jLogoIcon from "../../assets/Neo4j-logo-color.svg";
+import Neo4jLogoIcon from "../../assets/neo4j-logo-color.svg";
 import { CustomSelect } from "../../components/CustomSelect";
 import { AuthContext } from "../../contexts/auth";
 import { Screen, ScreenContext } from "../../contexts/screen";
@@ -58,8 +58,10 @@ export const TopBar = () => {
             <div className="flex-1 flex justify-start">
                 <div className="flex items-center">
                     <img src={Neo4jLogoIcon} alt="Neo4j logo Icon" className="ml-8 w-24" />
-                    <p className="ml-6 text-base">GraphQL Toolbox</p>
-                    <div className="px-2 py-1 ml-3 rounded n-bg-danger-20 n-text-danger-60 text-sm">beta</div>
+                    <p className="ml-6 text-base whitespace-nowrap">GraphQL Toolbox</p>
+                    <Label className="ml-3" color="info" fill="outlined">
+                        Beta
+                    </Label>
                 </div>
             </div>
             <div className="flex-1 flex justify-center">
@@ -93,6 +95,7 @@ export const TopBar = () => {
                         <div className="mr-4 pr-4 border-r border-gray-700">
                             <Button
                                 data-test-topbar-disconnect-button
+                                className="w-36"
                                 color="primary"
                                 fill="text"
                                 onClick={() => auth?.logout()}

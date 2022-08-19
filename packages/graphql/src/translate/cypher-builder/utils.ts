@@ -49,7 +49,7 @@ export function convertToCypherParams<T>(original: Record<string, T>): Record<st
 export function compileCypherIfExists(
     element: CypherCompilable | undefined,
     env: CypherEnvironment,
-    { prefix = "", suffix = "" }
+    { prefix = "", suffix = "" } = {}
 ): string {
     if (!element) return "";
     const cypher = element.getCypher(env);

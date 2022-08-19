@@ -286,7 +286,7 @@ describe("Label in Node directive", () => {
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
-            WHERE this_actors0.name = $updateMovies.args.update.actors[0].where.node.name
+            WHERE this_actors0.name = $updateMovies_args_update_actors0_where_Actorparam0
             CALL apoc.do.when(this_actors0 IS NOT NULL, \\"
             SET this_actors0.name = $this_update_actors0_name
             RETURN count(*) AS _
@@ -298,6 +298,7 @@ describe("Label in Node directive", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
+                \\"updateMovies_args_update_actors0_where_Actorparam0\\": \\"old name\\",
                 \\"this_update_actors0_name\\": \\"new name\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
@@ -397,7 +398,7 @@ describe("Label in Node directive", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:\`Person\`)
-            WHERE this_disconnect_actors0.name = $updateMovies.args.disconnect.actors[0].where.node.name
+            WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actorparam0
             FOREACH(_ IN CASE WHEN this_disconnect_actors0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actors0_rel
             )
@@ -409,6 +410,7 @@ describe("Label in Node directive", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
+                \\"updateMovies_args_disconnect_actors0_where_Actorparam0\\": \\"Daniel\\",
                 \\"updateMovies\\": {
                     \\"args\\": {
                         \\"disconnect\\": {
@@ -475,7 +477,7 @@ describe("Label in Node directive", () => {
             WHERE this.id = $param0
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
-            WHERE this_actors0.name = $this_deleteMovies.args.delete.actors[0].where.node.name
+            WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
             WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
             FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
             DETACH DELETE this"
@@ -498,7 +500,8 @@ describe("Label in Node directive", () => {
                             ]
                         }
                     }
-                }
+                },
+                \\"this_deleteMovies_args_delete_actors0_where_Actorparam0\\": \\"Actor to delete\\"
             }"
         `);
     });

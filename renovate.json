@@ -3,6 +3,11 @@
     "baseBranches": ["dev"],
     "rebaseWhen": "auto",
     "automerge": true,
+    "major": {
+        "automerge": false
+    },
+    "timezone": "Europe/London",
+    "schedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"],
     "ignorePaths": [
         "**/node_modules/**",
         "**/bower_components/**",
@@ -13,6 +18,10 @@
         "**/__fixtures__/**"
     ],
     "packageRules": [
+        {
+            "matchPackageNames": ["@neo4j/graphql-toolbox"],
+            "extends": "config:js-app"
+        },
         {
             "groupName": "neo4j-ndl",
             "matchPackagePatterns": ["^@neo4j-ndl/"]
@@ -36,11 +45,6 @@
             "matchDepTypes": ["dependencies"],
             "matchFiles": ["packages/graphql-plugin-auth/package.json"],
             "labels": ["dependency upgrade", "graphql-plugin-auth"]
-        },
-        {
-            "matchDepTypes": ["dependencies"],
-            "matchUpdateTypes": ["major"],
-            "automerge": false
         },
         {
             "matchPackagePatterns": ["graphql"],

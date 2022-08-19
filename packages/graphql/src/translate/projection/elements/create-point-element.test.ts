@@ -58,13 +58,9 @@ describe("createPointElement", () => {
             variable: "this",
         });
 
-        expect(element).toMatchInlineSnapshot(`
-            "point: apoc.cypher.runFirstColumn('RETURN
-            CASE
-            	WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
-            	ELSE NULL
-            END AS result',{ this: this },false)"
-        `);
+        expect(element).toMatchInlineSnapshot(
+            `"point: (CASE WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs } ELSE NULL END)"`
+        );
     });
 
     test("returns projection element for array of point values", () => {
@@ -104,12 +100,8 @@ describe("createPointElement", () => {
             variable: "this",
         });
 
-        expect(element).toMatchInlineSnapshot(`
-            "points: apoc.cypher.runFirstColumn('RETURN
-            CASE
-            	WHEN this.points IS NOT NULL THEN [p in this.points | { point:p, crs: p.crs }]
-            	ELSE NULL
-            END AS result',{ this: this },false)"
-        `);
+        expect(element).toMatchInlineSnapshot(
+            `"points: (CASE WHEN this.points IS NOT NULL THEN [p in this.points | { point:p, crs: p.crs }] ELSE NULL END)"`
+        );
     });
 });

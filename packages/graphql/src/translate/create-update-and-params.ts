@@ -26,7 +26,7 @@ import createCreateAndParams from "./create-create-and-params";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE, META_OLD_PROPS_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createAuthParam from "./create-auth-param";
-import createAuthAndParams from "./create-auth-and-params";
+import { createAuthAndParams } from "./create-auth-and-params";
 import createSetRelationshipProperties from "./create-set-relationship-properties";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
@@ -141,9 +141,10 @@ export default function createUpdateAndParams({
                                         relationField.union ? `.${refNode.name}` : ""
                                     }${relationField.typeMeta.array ? `[${index}]` : ``}.where`,
                                 });
-                                const [whereClause] = where;
+                                const [whereClause, whereParams] = where;
                                 if (whereClause) {
                                     whereStrs.push(whereClause);
+                                    res.params = { ...res.params, ...whereParams };
                                 }
                             } catch {
                                 return;
@@ -343,6 +344,7 @@ export default function createUpdateAndParams({
                             refNode,
                             context,
                             withVars,
+                            callbackBucket,
                         });
                         subquery.push(cypher);
                         res.params = { ...res.params, ...params };
@@ -484,7 +486,9 @@ export default function createUpdateAndParams({
             } else if (hasMatched) {
                 const mathDescriptor = mathDescriptorBuilder(value as number, node, mathMatch);
                 if (updateInput[mathDescriptor.dbName]) {
-                    throw new Error(`Cannot mutate the same field multiple times in one Mutation: ${mathDescriptor.dbName}`);
+                    throw new Error(
+                        `Cannot mutate the same field multiple times in one Mutation: ${mathDescriptor.dbName}`
+                    );
                 }
 
                 const mathStatements = buildMathStatements(mathDescriptor, varName, withVars, param);
@@ -532,7 +536,9 @@ export default function createUpdateAndParams({
         const pushField = node.mutableFields.find((x) => `${x.fieldName}${pushSuffix}` === key);
         if (pushField) {
             if (pushField.dbPropertyName && updateInput[pushField.dbPropertyName]) {
-                throw new Error(`Cannot mutate the same field multiple times in one Mutation: ${pushField.dbPropertyName}`);
+                throw new Error(
+                    `Cannot mutate the same field multiple times in one Mutation: ${pushField.dbPropertyName}`
+                );
             }
 
             validateNonNullProperty(res, varName, pushField);
@@ -555,7 +561,9 @@ export default function createUpdateAndParams({
         const popField = node.mutableFields.find((x) => `${x.fieldName}${popSuffix}` === key);
         if (popField) {
             if (popField.dbPropertyName && updateInput[popField.dbPropertyName]) {
-                throw new Error(`Cannot mutate the same field multiple times in one Mutation: ${popField.dbPropertyName}`);
+                throw new Error(
+                    `Cannot mutate the same field multiple times in one Mutation: ${popField.dbPropertyName}`
+                );
             }
 
             validateNonNullProperty(res, varName, popField);

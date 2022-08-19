@@ -28,7 +28,7 @@ import createProjectionAndParams from "../create-projection-and-params";
 import type Relationship from "../../classes/Relationship";
 import createRelationshipPropertyElement from "../projection/elements/create-relationship-property-element";
 import createConnectionWhereAndParams from "../where/create-connection-where-and-params";
-import createAuthAndParams from "../create-auth-and-params";
+import { createAuthAndParams } from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createOffsetLimitStr } from "../../schema/pagination";
 import filterInterfaceNodes from "../../utils/filter-interface-nodes";
@@ -163,15 +163,15 @@ function createConnectionAndParams({
                         literalElements: true,
                         resolveType: true,
                     });
-                    const [nodeProjection, nodeProjectionParams] = nodeProjectionAndParams;
+                    const { projection: nodeProjection, params: nodeProjectionParams } = nodeProjectionAndParams;
                     subqueryElementsToCollect.push(`node: ${nodeProjection}`);
                     globalParams = {
                         ...globalParams,
                         ...nodeProjectionParams,
                     };
 
-                    if (nodeProjectionAndParams[2]?.connectionFields?.length) {
-                        nodeProjectionAndParams[2].connectionFields.forEach((connectionResolveTree) => {
+                    if (nodeProjectionAndParams.meta?.connectionFields?.length) {
+                        nodeProjectionAndParams.meta.connectionFields.forEach((connectionResolveTree) => {
                             const connectionField = n.connectionFields.find(
                                 (x) => x.fieldName === connectionResolveTree.name
                             ) as ConnectionField;
@@ -237,9 +237,10 @@ function createConnectionAndParams({
                             resolveTree.alias
                         }.args.where${field.relationship.union ? `.${n.name}` : ""}`,
                     });
-                    const [whereClause] = where;
+                    const [whereClause, whereParams] = where;
                     if (whereClause) {
                         whereStrs.push(whereClause);
+                        globalParams = { ...globalParams, ...whereParams };
                     }
                 }
 
@@ -321,9 +322,10 @@ function createConnectionAndParams({
                     resolveTree.alias
                 }.args.where`,
             });
-            const [whereClause] = where;
+            const [whereClause, whereParams] = where;
             if (whereClause) {
                 whereStrs.push(`${whereClause}`);
+                globalParams = { ...globalParams, ...whereParams };
             }
         }
 
@@ -372,14 +374,17 @@ function createConnectionAndParams({
         const nestedSubqueries: string[] = [];
 
         if (node) {
-            const nodeProjectionAndParams = createProjectionAndParams({
+            const {
+                projection: nodeProjection,
+                params: nodeProjectionParams,
+                meta: projectionMeta,
+            } = createProjectionAndParams({
                 resolveTree: node,
                 node: relatedNode,
                 context,
                 varName: relatedNodeVariable,
                 literalElements: true,
             });
-            const [nodeProjection, nodeProjectionParams, projectionMeta] = nodeProjectionAndParams;
             elementsToCollect.push(`node: ${nodeProjection}`);
             globalParams = { ...globalParams, ...nodeProjectionParams };
 

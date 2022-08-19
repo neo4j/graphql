@@ -21,9 +21,9 @@ import type { Integer } from "neo4j-driver";
 import { int } from "neo4j-driver";
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
-import createProjectionAndParams, { ProjectionMeta } from "./create-projection-and-params";
+import createProjectionAndParams, { ProjectionResult } from "./create-projection-and-params";
 import type { GraphQLOptionsArg, GraphQLSortArg, Context, ConnectionField, RelationField } from "../types";
-import createAuthAndParams from "./create-auth-and-params";
+import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
@@ -46,7 +46,7 @@ export function translateRead({
     let authStr = "";
     let projAuth = "";
 
-    let cypherParams: { [k: string]: any } = {};
+    let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
 
@@ -66,16 +66,17 @@ export function translateRead({
         varName,
         isRootConnectionField,
     });
-    cypherParams = { ...cypherParams, ...projection[1] };
 
-    if (projection[2]?.authValidateStrs?.length) {
-        projAuth = `CALL apoc.util.validate(NOT (${projection[2].authValidateStrs.join(
+    cypherParams = { ...cypherParams, ...projection.params };
+
+    if (projection.meta?.authValidateStrs?.length) {
+        projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
             " AND "
         )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
-    if (projection[2]?.connectionFields?.length) {
-        projection[2].connectionFields.forEach((connectionResolveTree) => {
+    if (projection.meta?.connectionFields?.length) {
+        projection.meta.connectionFields.forEach((connectionResolveTree) => {
             const connectionField = node.connectionFields.find(
                 (x) => x.fieldName === connectionResolveTree.name
             ) as ConnectionField;
@@ -90,9 +91,9 @@ export function translateRead({
         });
     }
 
-    if (projection[2]?.interfaceFields?.length) {
+    if (projection.meta?.interfaceFields?.length) {
         const prevRelationshipFields: string[] = [];
-        projection[2].interfaceFields.forEach((interfaceResolveTree) => {
+        projection.meta.interfaceFields.forEach((interfaceResolveTree) => {
             const relationshipField = node.relationFields.find(
                 (x) => x.fieldName === interfaceResolveTree.name
             ) as RelationField;
@@ -170,7 +171,7 @@ function translateRootField({
     node: Node;
     context: Context;
     varName: string;
-    projection: [string, Record<string, any>, ProjectionMeta | undefined];
+    projection: ProjectionResult;
     subStr: {
         matchAndWhereStr: string;
         authStr: string;
@@ -192,7 +193,7 @@ function translateRootField({
     const params = {} as Record<string, any>;
     const hasOffset = Boolean(optionsInput.offset) || optionsInput.offset === 0;
 
-    const sortCypherFields = projection[2]?.cypherSortFields ?? [];
+    const sortCypherFields = projection.meta?.cypherSortFields ?? [];
     const sortCypherProj = sortCypherFields.map(({ alias, apocStr }) => `${apocStr} AS ${alias}`);
     const sortOffsetLimit: string[] = [[`WITH ${varName}`, ...sortCypherProj].join(", ")];
 
@@ -224,7 +225,7 @@ function translateRootField({
 
     const withStrs = subStr.projAuth ? [`WITH ${varName}`, subStr.projAuth] : [];
 
-    const returnStrs = [`RETURN ${varName} ${projection[0]} as ${varName}`];
+    const returnStrs = [`RETURN ${varName} ${projection.projection} as ${varName}`];
 
     const cypher: string[] = [
         subStr.matchAndWhereStr,
@@ -247,7 +248,7 @@ function translateRootConnectionField({
 }: {
     context: Context;
     varName: string;
-    projection: [string, Record<string, any>, ProjectionMeta | undefined];
+    projection: ProjectionResult;
     subStr: {
         matchAndWhereStr: string;
         authStr: string;
@@ -268,7 +269,7 @@ function translateRootConnectionField({
     const hasFirst = Boolean(firstInput);
     const hasSort = Boolean(sortInput && sortInput.length);
 
-    const sortCypherFields = projection[2]?.cypherSortFields ?? [];
+    const sortCypherFields = projection.meta?.cypherSortFields ?? [];
     const sortCypherProj = sortCypherFields.map(({ alias, apocStr }) => `${alias}: ${apocStr}`);
 
     let sortStr = "";
@@ -303,7 +304,7 @@ function translateRootConnectionField({
     }
 
     const returnStrs: string[] = [
-        `WITH COLLECT({ node: ${varName} ${projection[0]} }) as edges, totalCount`,
+        `WITH COLLECT({ node: ${varName} ${projection.projection} }) as edges, totalCount`,
         `RETURN { edges: edges, totalCount: totalCount } as ${varName}`,
     ];
 

@@ -117,7 +117,7 @@ describe("Connections Alias", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name = $this_hanks.args.where.node.name
+            WHERE this_actor.name = $this_hanks_args_where_Actorparam0
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -126,7 +126,7 @@ describe("Connections Alias", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name = $this_jenny.args.where.node.name
+            WHERE this_actor.name = $this_jenny_args_where_Actorparam0
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -138,6 +138,7 @@ describe("Connections Alias", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
+                \\"this_hanks_args_where_Actorparam0\\": \\"Tom Hanks\\",
                 \\"this_hanks\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -147,6 +148,7 @@ describe("Connections Alias", () => {
                         }
                     }
                 },
+                \\"this_jenny_args_where_Actorparam0\\": \\"Robin Wright\\",
                 \\"this_jenny\\": {
                     \\"args\\": {
                         \\"where\\": {

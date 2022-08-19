@@ -19,9 +19,9 @@
 
 import type { AuthOperations, Context, GraphQLWhereArg } from "../types";
 import type { Node } from "../classes";
-import createAuthAndParams from "./create-auth-and-params";
+import { createAuthAndParams } from "./create-auth-and-params";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
-import { createCypherWhereParams } from "./where/create-cypher-where-params";
+import { createCypherWherePredicate } from "./where/create-cypher-where-predicate";
 
 export function translateTopLevelMatch({
     node,
@@ -63,7 +63,7 @@ export function translateTopLevelMatch({
     }
 
     if (whereInput) {
-        const whereOp = createCypherWhereParams({
+        const whereOp = createCypherWherePredicate({
             whereInput,
             element: node,
             context,

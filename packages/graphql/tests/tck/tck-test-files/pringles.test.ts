@@ -282,14 +282,14 @@ describe("Cypher Create Pringles", () => {
             WHERE this.name = $param0
             WITH this
             OPTIONAL MATCH (this)-[this_has_photo0_relationship:HAS_PHOTO]->(this_photos0:Photo)
-            WHERE this_photos0.description = $updateProducts.args.update.photos[0].where.node.description
+            WHERE this_photos0.description = $updateProducts_args_update_photos0_where_Photoparam0
             CALL apoc.do.when(this_photos0 IS NOT NULL, \\"
             SET this_photos0.description = $this_update_photos0_description
             WITH this, this_photos0
             CALL {
             WITH this, this_photos0
             OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
-            WHERE this_photos0_color0_disconnect0.name = $updateProducts.args.update.photos[0].update.node.color.disconnect.where.node.name
+            WHERE this_photos0_color0_disconnect0.name = $updateProducts_args_update_photos0_update_node_color_disconnect_where_Colorparam0
             FOREACH(_ IN CASE WHEN this_photos0_color0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_photos0_color0_disconnect0_rel
             )
@@ -316,7 +316,7 @@ describe("Cypher Create Pringles", () => {
             	RETURN c AS this_photos0_color_Color_unique_ignored
             }
             RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateProducts: $updateProducts, this_photos0:this_photos0, auth:$auth,this_update_photos0_description:$this_update_photos0_description,this_photos0_color0_connect0_node_param0:$this_photos0_color0_connect0_node_param0})
+            \\", \\"\\", {this:this, updateProducts: $updateProducts, this_photos0:this_photos0, auth:$auth,this_update_photos0_description:$this_update_photos0_description,updateProducts_args_update_photos0_update_node_color_disconnect_where_Colorparam0:$updateProducts_args_update_photos0_update_node_color_disconnect_where_Colorparam0,this_photos0_color0_connect0_node_param0:$this_photos0_color0_connect0_node_param0})
             YIELD value AS _
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -324,7 +324,9 @@ describe("Cypher Create Pringles", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Pringles\\",
+                \\"updateProducts_args_update_photos0_where_Photoparam0\\": \\"Green Photo\\",
                 \\"this_update_photos0_description\\": \\"Light Green Photo\\",
+                \\"updateProducts_args_update_photos0_update_node_color_disconnect_where_Colorparam0\\": \\"Green\\",
                 \\"this_photos0_color0_connect0_node_param0\\": \\"Light Green\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,

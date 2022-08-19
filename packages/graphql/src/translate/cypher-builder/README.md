@@ -57,6 +57,7 @@ The available Clauses are:
 -   **Return**
 -   **With**
 -   **Call**
+-   **Unwind**
 
 ### SubClauses
 
@@ -94,7 +95,8 @@ Exists behaves similarly to a top-level clause, however it cannot be built direc
 
 The following procedures can be used as clauses:
 
--   **db.FullTextQueryNodes**: Similar to Match, can be used for FullText queries
+-   **db.FullTextQueryNodes**: Similar to Match, can be used for FullText queries.
+-   **apoc.RunFirstColumn**
 
 ## RawCypher
 
@@ -118,7 +120,7 @@ The are different types of variables:
     -   **NamedNode**: In some cases, the name of the node needs to be pre-defined, for these cases, it can be done with `new CypherBuilder.NamedNode("this_movie", {labels: ["Movie"]})`.
 -   **RelationshipRef**: Holds a reference to a relationship: `new CypherBuilder.Relationship({type: "ACTED_IN", source: actorNode, target: movieNode})`.
 -   **Param**: Params behave like any variable, however, its value will be pushed to the `params` result, and an arbitrary id will be used in the cypher query.
-    -   **RawParam** Like with nodes, in some cases a param may already exists, and a reference to it needs to be made.
+    -   **NamedParam** Like with nodes, in some cases a param may already exists, and a reference to it needs to be made.
 -   **Variable**: A plain value that does not hold any value at compile time,can be used to reference new variables created in the cypher (e.g. `WITH $param as var1`).
     -   **NamedVariable**: For keeping track of variables that already exist in the Cypher strings.
 -   **Literal**: Will get translated to a literal value in the Cypher. Useful for static values (e.g. `count(*) > 1`).
@@ -139,6 +141,10 @@ movieNode.property("title"); // Will be translated to this0.title
 Expressions are a conglomeration of entities that can be used in several places, an expression can be an operation, function, variable or some clauses such as exists. Most operators and functions support expressions as their input. The Expression type can be accessed with `CypherBuilder.Expr`.
 
 Expressions can be used in `RETURN` `WITH` and `SET` statements.
+
+### Predicates
+
+Some expressions are predicates, these expressions return a boolean value, and can be used in where filters.
 
 ## Operations
 
@@ -217,7 +223,20 @@ Functions can be used in expressions, each function has a name and a certain num
 -   **distance(expr, expr)**
 -   **labels(nodeRef)**
 -   **datetime()**
+-   **count(expr)**
+-   **min(expr)**
+-   **max(expr)**
+-   **avg(expr)**
+-   **sum(expr)**
+
+### List Functions
+
+List functions take a list as input
+
 -   **size(expr)**
+-   **collect(expr)**
+-   **head(expr)**
+-   **last(expr)**
 
 ## List
 

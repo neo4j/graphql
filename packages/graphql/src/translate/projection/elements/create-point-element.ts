@@ -49,15 +49,9 @@ function createPointElement({
         ? `[p in ${variable}.${dbFieldName} | { ${fields.join(", ")} }]`
         : `{ ${fields.join(", ")} }`;
 
-    const cypher = [
-        "apoc.cypher.runFirstColumn(",
-        `'RETURN\nCASE\n\tWHEN ${variable}.${dbFieldName} IS NOT NULL THEN ${projection}\n\tELSE NULL\nEND AS result',`,
-        `{ ${variable}: ${variable} },`,
-        "false",
-        ")",
-    ];
+    const cypher = `(CASE WHEN ${variable}.${dbFieldName} IS NOT NULL THEN ${projection} ELSE NULL END)`;
 
-    return `${resolveTree.alias}: ${cypher.join("")}`;
+    return `${resolveTree.alias}: ${cypher}`;
 }
 
 export default createPointElement;

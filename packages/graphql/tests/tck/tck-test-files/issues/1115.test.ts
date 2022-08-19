@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
             WITH this
             CALL {
                 WITH this
-                CALL apoc.util.validate(NOT (any(r IN [\\"upstream\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"upstream\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 MERGE (this_connectOrCreate_children_this0:\`Child\` { tcId: $this_connectOrCreate_children_param0 })
                 ON CREATE SET
                     this_connectOrCreate_children_this0.tcId = $this_connectOrCreate_children_param1
@@ -89,7 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
             WITH this
             CALL {
                 WITH this
-                CALL apoc.util.validate(NOT (any(r IN [\\"upstream\\"] WHERE any(rr IN $auth.roles WHERE r = rr))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"upstream\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 MERGE (this_connectOrCreate_children_this2:\`Child\` { tcId: $this_connectOrCreate_children_param2 })
                 ON CREATE SET
                     this_connectOrCreate_children_this2.tcId = $this_connectOrCreate_children_param3

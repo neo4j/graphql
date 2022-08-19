@@ -27,7 +27,7 @@ const CypherOperatorMap = new Map<string, string>([
     ["_MULTIPLY", "*"],
     ["_DIVIDE", "/"],
     ["_INCREMENT", "+"],
-    ["_DECREMENT", "-"]
+    ["_DECREMENT", "-"],
 ]);
 
 function mathOperatorToSymbol(mathOperator: string): string {
@@ -37,7 +37,8 @@ function mathOperatorToSymbol(mathOperator: string): string {
     throw new Error(`${mathOperator} is not a valid math operator`);
 }
 
-export const MATH_FIELD_REGX = /(?<propertyName>\w*)(?<operatorName>_INCREMENT|_DECREMENT|_ADD|_SUBTRACT|_DIVIDE|_MULTIPLY)\b/;
+export const MATH_FIELD_REGX =
+    /(?<propertyName>\w*)(?<operatorName>_INCREMENT|_DECREMENT|_ADD|_SUBTRACT|_DIVIDE|_MULTIPLY)\b/;
 
 interface MathDescriptor {
     dbName: string;
@@ -53,7 +54,7 @@ interface MathMatch {
     operatorName: string;
     propertyName: string;
 }
-// Returns True in case of a valid match and the potential match. 
+// Returns True in case of a valid match and the potential match.
 export function matchMathField(graphQLFieldName: string): MathMatch {
     const mathFieldMatch = graphQLFieldName.match(MATH_FIELD_REGX);
     if (mathFieldMatch && mathFieldMatch.groups) {
@@ -62,14 +63,14 @@ export function matchMathField(graphQLFieldName: string): MathMatch {
         return {
             hasMatched,
             operatorName,
-            propertyName
-        }
-    } 
+            propertyName,
+        };
+    }
     return {
         hasMatched: false,
         operatorName: "",
-        propertyName: ""
-    }
+        propertyName: "",
+    };
 }
 
 export function mathDescriptorBuilder(value: number, entity: GraphElement, fieldMatch: MathMatch): MathDescriptor {
@@ -84,13 +85,18 @@ export function mathDescriptorBuilder(value: number, entity: GraphElement, field
         fieldName,
         operationName: fieldMatch.operatorName,
         operationSymbol: mathOperatorToSymbol(fieldMatch.operatorName),
-        value
+        value,
     };
 }
 
-export function buildMathStatements(mathDescriptor: MathDescriptor, scope: string, withVars: string[], param: string): Array<string> {
+export function buildMathStatements(
+    mathDescriptor: MathDescriptor,
+    scope: string,
+    withVars: string[],
+    param: string
+): Array<string> {
     if (mathDescriptor.operationSymbol === "/" && mathDescriptor.value === 0) {
-        throw new Error('Division by zero is not supported');
+        throw new Error("Division by zero is not supported");
     }
     const statements: string[] = [];
     const mathScope = Array.from(new Set([scope, ...withVars]));
@@ -98,14 +104,27 @@ export function buildMathStatements(mathDescriptor: MathDescriptor, scope: strin
     statements.push(`CALL {`);
     statements.push(`WITH ${scope}`);
     // Raise for operations with NAN
-    statements.push(`CALL apoc.util.validate(apoc.meta.type(${scope}.${mathDescriptor.dbName}) = "NULL", 'Cannot %s %s to Nan', ["${mathDescriptor.operationName}", $${param}])`);
+    statements.push(
+        `CALL apoc.util.validate(${scope}.${mathDescriptor.dbName} IS NULL, 'Cannot %s %s to Nan', ["${mathDescriptor.operationName}", $${param}])`
+    );
     const bitSize = mathDescriptor.graphQLType === "Int" ? 32 : 64;
     // Avoid overflows, for 64 bit overflows, a long overflow is raised anyway by Neo4j
-    statements.push(`CALL apoc.util.validate(${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param} > 2^${bitSize-1}-1, 'Overflow: Value returned from operator %s is larger than %s bit', ["${mathDescriptor.operationName}", "${bitSize}"])`);
-    const cypherType = mathDescriptor.graphQLType === "Int" || mathDescriptor.graphQLType === "BigInt" ? "INTEGER" : "FLOAT";
-    // Avoid type coercion
-    statements.push(`CALL apoc.util.validate(apoc.meta.type(${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}) <> "${cypherType}", 'Type Mismatch: Value returned from operator %s does not match: %s', ["${mathDescriptor.operationName}", "${mathDescriptor.graphQLType}"])`);
-    statements.push(`SET ${scope}.${mathDescriptor.dbName} = ${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}`);
+    statements.push(
+        `CALL apoc.util.validate(${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param} > 2^${
+            bitSize - 1
+        }-1, 'Overflow: Value returned from operator %s is larger than %s bit', ["${
+            mathDescriptor.operationName
+        }", "${bitSize}"])`
+    );
+    // Avoid type coercion where dividing an integer would result in a float value
+    if (mathDescriptor.graphQLType === "Int" || mathDescriptor.graphQLType === "BigInt") {
+        statements.push(
+            `CALL apoc.util.validate((${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}) % 1 <> 0, 'Type Mismatch: Value returned from operator %s does not match: %s', ["${mathDescriptor.operationName}", "${mathDescriptor.graphQLType}"])`
+        );
+    }
+    statements.push(
+        `SET ${scope}.${mathDescriptor.dbName} = ${scope}.${mathDescriptor.dbName} ${mathDescriptor.operationSymbol} $${param}`
+    );
     statements.push(`RETURN ${scope} as ${scope}_${mathDescriptor.dbName}_${mathDescriptor.operationName}`);
     statements.push(`}`);
     return statements;

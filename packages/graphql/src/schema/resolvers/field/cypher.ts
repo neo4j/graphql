@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { GraphQLResolveInfo} from "graphql";
+import type { GraphQLResolveInfo } from "graphql";
 import { GraphQLUnionType } from "graphql";
 import { execute } from "../../../utils";
 import type { ConnectionField, Context, CypherField } from "../../../types";
 import { graphqlArgsToCompose } from "../../to-compose";
-import createAuthAndParams from "../../../translate/create-auth-and-params";
+import { createAuthAndParams } from "../../../translate/create-auth-and-params";
 import createAuthParam from "../../../translate/create-auth-param";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
 import createProjectionAndParams from "../../../translate/create-projection-and-params";
@@ -71,7 +71,8 @@ export function cypherResolver({
                 context,
                 varName: `this`,
             });
-            const [str, p, meta] = recurse;
+
+            const { projection: str, params: p, meta } = recurse;
             projectionStr = str;
             params = { ...params, ...p };
 
@@ -114,7 +115,11 @@ export function cypherResolver({
                     const innerHeadStr: string[] = [`[ this IN [this] WHERE (${labelsStatements.join(" AND ")})`];
 
                     if (resolveTree.fieldsByTypeName[node.name]) {
-                        const [str, p, meta] = createProjectionAndParams({
+                        const {
+                            projection: str,
+                            params: p,
+                            meta,
+                        } = createProjectionAndParams({
                             resolveTree,
                             node,
                             context,
@@ -166,13 +171,15 @@ export function cypherResolver({
 
         const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
 
-        const expectMultipleValues = !field.isScalar && !field.isEnum && isArray ? "true" : "false";
+        const expectMultipleValues = !field.isScalar && !field.isEnum && isArray;
         if (type === "Query") {
-            cypherStrs.push(`
-                WITH apoc.cypher.runFirstColumn("${statement}", ${apocParamsStr}, ${expectMultipleValues}) as x
-                UNWIND x as this
-                WITH this
-            `);
+            if (expectMultipleValues) {
+                cypherStrs.push(`WITH apoc.cypher.runFirstColumnMany("${statement}", ${apocParamsStr}) as x`);
+            } else {
+                cypherStrs.push(`WITH apoc.cypher.runFirstColumnSingle("${statement}", ${apocParamsStr}) as x`);
+            }
+
+            cypherStrs.push("UNWIND x as this\nWITH this");
         } else {
             cypherStrs.push(`
                 CALL apoc.cypher.doIt("${statement}", ${apocParamsStr}) YIELD value

@@ -19,31 +19,27 @@
 
 import type { CypherASTNode } from "../CypherASTNode";
 import type { CypherEnvironment } from "../Environment";
-import type { ComparisonOp } from "../operations/comparison";
-import { and, BooleanOp } from "../operations/boolean";
+import { and } from "../operations/boolean";
+import type { Predicate } from "../types";
 import { SubClause } from "./SubClause";
-import type { RawCypher } from "../clauses/RawCypher";
-import type { Exists } from "../Exists";
-
-export type WhereParams = BooleanOp | ComparisonOp | RawCypher | Exists;
 
 export class Where extends SubClause {
-    private whereParams: WhereParams;
+    private wherePredicate: Predicate;
     protected whereClause = "WHERE";
 
-    constructor(parent: CypherASTNode | undefined, whereInput: WhereParams) {
+    constructor(parent: CypherASTNode | undefined, whereInput: Predicate) {
         super(parent);
-        this.whereParams = whereInput;
-        this.addChildren(this.whereParams);
+        this.wherePredicate = whereInput;
+        this.addChildren(this.wherePredicate);
     }
 
-    public and(op: WhereParams): void {
-        this.whereParams = and(this.whereParams, op);
-        this.addChildren(this.whereParams);
+    public and(op: Predicate): void {
+        this.wherePredicate = and(this.wherePredicate, op);
+        this.addChildren(this.wherePredicate);
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const opStr = this.whereParams.getCypher(env);
+        const opStr = this.wherePredicate.getCypher(env);
         if (!opStr) return "";
         return `WHERE ${opStr}`;
     }

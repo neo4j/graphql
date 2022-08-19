@@ -79,7 +79,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Relationship", () => {
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE EXISTS { (this_actor)-[:ACTED_IN]->(this_actor_movies:Movie) WHERE this_actor_movies.title = $this_actorsConnection.args.where.node.movies.title }
+            WHERE size([(this_actor)-[:ACTED_IN]->(this_actorsConnection_args_where_Actorthis0:\`Movie\`) WHERE this_actorsConnection_args_where_Actorthis0.title = $this_actorsConnection_args_where_Actorparam0 | 1]) > 0
             WITH collect({ node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -90,6 +90,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Relationship", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Forrest Gump\\",
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

@@ -25,7 +25,7 @@ import { listPredicateToSizeFunction } from "../list-predicate-to-size-function"
 import type { WhereOperator } from "../types";
 // Recursive function
 // eslint-disable-next-line import/no-cycle
-import { createCypherWhereParams } from "../create-cypher-where-params";
+import { createCypherWherePredicate } from "../create-cypher-where-predicate";
 import { filterTruthy } from "../../../utils/utils";
 import { compileCypherIfExists } from "../../cypher-builder/utils";
 
@@ -78,7 +78,7 @@ export function createConnectionOperation({
         const whereOperator = createConnectionWherePropertyOperation({
             context,
             whereInput: entry[1] as any,
-            relationshipRef: relationship,
+            edgeRef: relationship,
             targetNode: childNode,
             edge: contextRelationship,
             node: refNode,
@@ -100,10 +100,10 @@ export function createConnectionOperation({
     return CypherBuilder.and(...operations) as CypherBuilder.BooleanOp | undefined;
 }
 
-function createConnectionWherePropertyOperation({
+export function createConnectionWherePropertyOperation({
     context,
     whereInput,
-    relationshipRef,
+    edgeRef,
     targetNode,
     node,
     edge,
@@ -112,16 +112,16 @@ function createConnectionWherePropertyOperation({
     context: Context;
     node: Node;
     edge: Relationship;
-    relationshipRef: CypherBuilder.Relationship;
+    edgeRef: CypherBuilder.Variable;
     targetNode: CypherBuilder.Node;
-}): CypherBuilder.ComparisonOp | CypherBuilder.BooleanOp | CypherBuilder.RawCypher | CypherBuilder.Exists | undefined {
+}): CypherBuilder.Predicate | undefined {
     const params = Object.entries(whereInput).map(([key, value]) => {
         if (key === "AND" || key === "OR") {
             const subOperations = (value as Array<any>).map((input) => {
                 return createConnectionWherePropertyOperation({
                     context,
                     whereInput: input,
-                    relationshipRef,
+                    edgeRef,
                     targetNode,
                     node,
                     edge,
@@ -137,8 +137,8 @@ function createConnectionWherePropertyOperation({
 
         if (key.startsWith("edge")) {
             const nestedProperties: Record<string, any> = value;
-            const result = createCypherWhereParams({
-                targetElement: relationshipRef,
+            const result = createCypherWherePredicate({
+                targetElement: edgeRef,
                 whereInput: nestedProperties,
                 context,
                 element: edge,
@@ -161,7 +161,7 @@ function createConnectionWherePropertyOperation({
                 throw new Error("_on is used as the only argument and node is not present within");
             }
 
-            const result = createCypherWhereParams({
+            const result = createCypherWherePredicate({
                 targetElement: targetNode,
                 whereInput: nestedProperties,
                 context,

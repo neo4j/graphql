@@ -110,20 +110,20 @@ export default async function translateCreate({
             resolveTree: nodeProjection,
             varName: "REPLACE_ME",
         });
-        if (projection[2]?.authValidateStrs?.length) {
-            projAuth = `CALL apoc.util.validate(NOT (${projection[2].authValidateStrs.join(
+        if (projection.meta?.authValidateStrs?.length) {
+            projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
                 " AND "
             )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
         }
 
-        replacedProjectionParams = Object.entries(projection[1]).reduce((res, [key, value]) => {
+        replacedProjectionParams = Object.entries(projection.params).reduce((res, [key, value]) => {
             return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
         }, {});
 
         projectionStr = createStrs
             .map(
                 (_, i) =>
-                    `\nthis${i} ${projection[0]
+                    `\nthis${i} ${projection.projection
                         // First look to see if projection param is being reassigned
                         // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
                         .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
@@ -137,8 +137,8 @@ export default async function translateCreate({
             .join("\n");
 
         const withVars = context.subscriptionsEnabled ? [META_CYPHER_VARIABLE] : [];
-        if (projection[2]?.connectionFields?.length) {
-            projection[2].connectionFields.forEach((connectionResolveTree) => {
+        if (projection.meta?.connectionFields?.length) {
+            projection.meta.connectionFields.forEach((connectionResolveTree) => {
                 const connectionField = node.connectionFields.find(
                     (x) => x.fieldName === connectionResolveTree.name
                 ) as ConnectionField;
@@ -155,9 +155,9 @@ export default async function translateCreate({
             });
         }
 
-        if (projection[2]?.interfaceFields?.length) {
+        if (projection.meta?.interfaceFields?.length) {
             const prevRelationshipFields: string[] = [];
-            projection[2].interfaceFields.forEach((interfaceResolveTree) => {
+            projection.meta.interfaceFields.forEach((interfaceResolveTree) => {
                 const relationshipField = node.relationFields.find(
                     (x) => x.fieldName === interfaceResolveTree.name
                 ) as RelationField;

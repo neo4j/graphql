@@ -161,7 +161,7 @@ describe("Connections -> Unions", () => {
                 {
                     name: authorName,
                     publicationsConnection: {
-                        edges: expect.arrayContaining([
+                        edges: expect.toIncludeSameMembers([
                             {
                                 words: book1WordCount,
                                 node: {
@@ -411,7 +411,7 @@ describe("Connections -> Unions", () => {
                 {
                     name: authorName,
                     publicationsConnection: {
-                        edges: expect.arrayContaining([
+                        edges: expect.toIncludeSameMembers([
                             {
                                 words: book1WordCount,
                                 node: {

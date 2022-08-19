@@ -33,14 +33,6 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
     let neo4j: Neo4j;
     let driver: Driver;
 
-    async function graphqlQuery(query: string) {
-        return graphql({
-            schema,
-            source: query,
-            contextValue: neo4j.getContextValues(),
-        });
-    }
-
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
@@ -106,33 +98,38 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
 
         try {
             await session.run(cypher);
+
+            const result = await graphql({
+                schema,
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            });
+
+            expect(result.errors).toBeUndefined();
+            expect(result.data as any).toEqual({
+                [testCommunity.plural]: [
+                    {
+                        id: 4656564,
+                        hasFeedItems: expect.toIncludeSameMembers([
+                            {
+                                __typename: testContent.name,
+                                name: "content",
+                            },
+                            {
+                                __typename: testProject.name,
+                                name: "project1",
+                            },
+                            {
+                                __typename: testProject.name,
+                                name: "project2",
+                            },
+                        ]),
+                    },
+                ],
+            });
+            expect((result.data as any)[testCommunity.plural][0].hasFeedItems).toHaveLength(3);
         } finally {
             await session.close();
         }
-
-        const result = await graphqlQuery(query);
-        expect(result.errors).toBeUndefined();
-        expect(result.data as any).toEqual({
-            [testCommunity.plural]: [
-                {
-                    id: 4656564,
-                    hasFeedItems: expect.arrayContaining([
-                        {
-                            __typename: testContent.name,
-                            name: "content",
-                        },
-                        {
-                            __typename: testProject.name,
-                            name: "project1",
-                        },
-                        {
-                            __typename: testProject.name,
-                            name: "project2",
-                        },
-                    ]),
-                },
-            ],
-        });
-        expect((result.data as any)[testCommunity.plural][0].hasFeedItems).toHaveLength(3);
     });
 });

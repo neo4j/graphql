@@ -17,32 +17,24 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../CypherASTNode";
 import type { CypherEnvironment } from "../Environment";
-import type { Expr } from "../types";
+import type { Clause } from "../clauses/Clause";
+import { CypherASTNode } from "../CypherASTNode";
+import { padBlock } from "../utils";
 
-/** Represents a Map */
-export class MapExpr extends CypherASTNode {
-    private value: Record<string, Expr>;
+export class Exists extends CypherASTNode {
+    private subQuery: CypherASTNode;
 
-    constructor(value: Record<string, Expr> = {}) {
-        super();
-        this.value = value;
-    }
-
-    public set(values: Record<string, Expr>): void {
-        this.value = { ...this.value, ...values };
+    constructor(subQuery: Clause, parent?: CypherASTNode) {
+        super(parent);
+        const rootQuery = subQuery.getRoot();
+        this.addChildren(rootQuery);
+        this.subQuery = rootQuery;
     }
 
     public getCypher(env: CypherEnvironment): string {
-        return this.serializeObject(env);
-    }
-
-    private serializeObject(env: CypherEnvironment): string {
-        const valuesList = Object.entries(this.value).map(([key, value]) => {
-            return `${key}: ${value.getCypher(env)}`;
-        });
-
-        return `{ ${valuesList.join(", ")} }`;
+        const subQueryStr = this.subQuery.getCypher(env);
+        const paddedSubQuery = padBlock(subQueryStr);
+        return `EXISTS {\n${paddedSubQuery}\n}`;
     }
 }

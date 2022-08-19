@@ -21,7 +21,7 @@ import type { Node, Relationship } from "../classes";
 import type { CallbackBucket } from "../classes/CallbackBucket";
 import type { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
-import createAuthAndParams from "./create-auth-and-params";
+import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
@@ -190,6 +190,7 @@ function createCreateAndParams({
                         refNode,
                         context,
                         withVars,
+                        callbackBucket,
                     });
                     res.creates.push(cypher);
                     res.params = { ...res.params, ...params };

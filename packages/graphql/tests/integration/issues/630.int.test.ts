@@ -111,7 +111,7 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
             const gqlResult = await graphql({
                 schema,
                 source,
-                contextValue: neo4j.getContextValues(),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 variableValues: { actorId: actors[0].id },
             });
 
@@ -127,7 +127,7 @@ describe("https://github.com/neo4j/graphql/issues/630", () => {
                         ...movie,
                         actorsConnection: {
                             totalCount: 2,
-                            edges: expect.arrayContaining([
+                            edges: expect.toIncludeSameMembers([
                                 {
                                     node: actors[0],
                                 },

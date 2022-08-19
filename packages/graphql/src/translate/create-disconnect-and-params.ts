@@ -19,7 +19,7 @@
 
 import type { Node, Relationship } from "../classes";
 import type { RelationField, Context } from "../types";
-import createAuthAndParams from "./create-auth-and-params";
+import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 
@@ -91,6 +91,7 @@ function createDisconnectAndParams({
                 });
                 if (whereAndParams[0]) {
                     whereStrs.push(whereAndParams[0]);
+                    params = { ...params, ...whereAndParams[1] };
                 }
             } catch {
                 return { subquery: "", params: {} };

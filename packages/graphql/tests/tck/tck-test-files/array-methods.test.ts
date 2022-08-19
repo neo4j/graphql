@@ -181,11 +181,7 @@ describe("Arrays Methods", () => {
             "MATCH (this:\`Movie\`)
             CALL apoc.util.validate(this.filmingLocations IS NULL, \\"Property %s cannot be NULL\\", ['filmingLocations'])
             SET this.filmingLocations = this.filmingLocations + [p in $this_update_filmingLocations_PUSH | point(p)]
-            RETURN collect(DISTINCT this { .title, filmingLocations: apoc.cypher.runFirstColumn('RETURN
-            CASE
-            	WHEN this.filmingLocations IS NOT NULL THEN [p in this.filmingLocations | { point:p }]
-            	ELSE NULL
-            END AS result',{ this: this },false) }) AS data"
+            RETURN collect(DISTINCT this { .title, filmingLocations: (CASE WHEN this.filmingLocations IS NOT NULL THEN [p in this.filmingLocations | { point:p }] ELSE NULL END) }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

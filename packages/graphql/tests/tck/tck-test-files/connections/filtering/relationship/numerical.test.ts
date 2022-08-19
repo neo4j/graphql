@@ -84,7 +84,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_acted_in_relationship.screenTime < $this_actorsConnection.args.where.edge.screenTime_LT
+            WHERE this_acted_in_relationship.screenTime < $this_actorsConnection_args_where_Actorparam0
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -95,6 +95,10 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_actorsConnection_args_where_Actorparam0\\": {
+                    \\"low\\": 60,
+                    \\"high\\": 0
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -138,7 +142,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_acted_in_relationship.screenTime <= $this_actorsConnection.args.where.edge.screenTime_LTE
+            WHERE this_acted_in_relationship.screenTime <= $this_actorsConnection_args_where_Actorparam0
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -149,6 +153,10 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_actorsConnection_args_where_Actorparam0\\": {
+                    \\"low\\": 60,
+                    \\"high\\": 0
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -192,7 +200,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_acted_in_relationship.screenTime > $this_actorsConnection.args.where.edge.screenTime_GT
+            WHERE this_acted_in_relationship.screenTime > $this_actorsConnection_args_where_Actorparam0
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -203,6 +211,10 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_actorsConnection_args_where_Actorparam0\\": {
+                    \\"low\\": 60,
+                    \\"high\\": 0
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {
@@ -246,7 +258,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
             CALL {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_acted_in_relationship.screenTime >= $this_actorsConnection.args.where.edge.screenTime_GTE
+            WHERE this_acted_in_relationship.screenTime >= $this_actorsConnection_args_where_Actorparam0
             WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
@@ -257,6 +269,10 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_actorsConnection_args_where_Actorparam0\\": {
+                    \\"low\\": 60,
+                    \\"high\\": 0
+                },
                 \\"this_actorsConnection\\": {
                     \\"args\\": {
                         \\"where\\": {

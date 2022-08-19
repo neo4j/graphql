@@ -22,7 +22,7 @@ import type { Context, RelationField } from "../../../types";
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 import type { Node, Relationship } from "../../../classes";
 
-/** Translates an atomic aggregation operation (e.g. "this0 <= $param0") */
+/** Translates an atomic aggregation operation */
 export function createAggregateOperation({
     relationField,
     context,
