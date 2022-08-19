@@ -72,6 +72,7 @@ describe("Cypher Advanced Filtering", () => {
     afterAll(() => {
         unsetTestEnvVars(undefined);
     });
+
     test("IN", async () => {
         const query = gql`
             {

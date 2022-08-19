@@ -450,6 +450,7 @@ describe("sort", () => {
                                 }
                             `;
                 const gqlResultByType = gqlResultByTypeFromSource(queryWithName);
+
                 test("ASC", async () => {
                     const gqlResult = await gqlResultByType("ASC");
 
@@ -493,6 +494,7 @@ describe("sort", () => {
                                 }
                             `;
                 const gqlResultByType = gqlResultByTypeFromSource(queryWithName);
+
                 test("ASC", async () => {
                     const gqlResult = await gqlResultByType("ASC");
 
@@ -598,6 +600,7 @@ describe("sort", () => {
                     expect(gqlMovie.actors[1].id).toBe(actors[0].id);
                     expect(gqlMovie.actors[1].totalScreenTime).toBe(3);
                 });
+
                 test("DESC", async () => {
                     const gqlResult = await gqlResultByType("DESC");
 

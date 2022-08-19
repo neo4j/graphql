@@ -344,16 +344,22 @@ describe("Cypher Create", () => {
             }
             RETURN this0
             }
+            CALL {
+                WITH this0
+                MATCH (this0)-[create_this0:ACTED_IN]->(this0_movies:\`Movie\`)
+                WITH this0_movies { actorsConnection: apoc.cypher.runFirstColumnSingle(\\"CALL {
+                WITH this0_movies
+                MATCH (this0_movies)<-[this0_movies_acted_in_relationship:ACTED_IN]-(this0_movies_actor:Actor)
+                WHERE this0_movies_actor.name = $projection_movies_actorsConnection_args_where_Actorparam0
+                WITH collect({ node: { name: this0_movies_actor.name } }) AS edges
+                UNWIND edges as edge
+                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                } RETURN actorsConnection\\", { this0_movies: this0_movies, projection_movies_actorsConnection_args_where_Actorparam0: $projection_movies_actorsConnection_args_where_Actorparam0, projection_movies_actorsConnection: $projection_movies_actorsConnection, auth: $auth }) } AS this0_movies
+                RETURN collect(this0_movies) AS this0_movies
+            }
             RETURN [
-            this0 { .name, movies: [ (this0)-[:ACTED_IN]->(this0_movies:Movie)   | this0_movies { actorsConnection: apoc.cypher.runFirstColumnSingle(\\"CALL {
-            WITH this0_movies
-            MATCH (this0_movies)<-[this0_movies_acted_in_relationship:ACTED_IN]-(this0_movies_actor:Actor)
-            WHERE this0_movies_actor.name = $projection_movies_actorsConnection_args_where_Actorparam0
-            WITH collect({ node: { name: this0_movies_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
-            } RETURN actorsConnection\\", { this0_movies: this0_movies, projection_movies_actorsConnection_args_where_Actorparam0: $projection_movies_actorsConnection_args_where_Actorparam0, projection_movies_actorsConnection: $projection_movies_actorsConnection, auth: $auth }) } ] }] AS data"
+            this0 { .name, movies: this0_movies }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

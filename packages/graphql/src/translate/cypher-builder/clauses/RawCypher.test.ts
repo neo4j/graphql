@@ -21,15 +21,6 @@ import * as CypherBuilder from "../CypherBuilder";
 
 describe("RawCypher", () => {
     it("Return a simple string as a clause", () => {
-        // const node = new CypherBuilder.Node({ labels: ["Movie"] });
-
-        // const clause = new CypherBuilder.Match(node).where(
-        //     CypherBuilder.eq(new CypherBuilder.Param("aa"), new CypherBuilder.Param("bb"))
-        // );
-        // const returnClause = new CypherBuilder.Return([node, ["title"], "movie"]);
-
-        // const query = CypherBuilder.concat(clause, returnClause);
-
         const rawQuery = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
             const cypherStr = "RETURN $myParam as title";
             return [

@@ -27,6 +27,7 @@ import createInterfaceProjectionAndParams from "./create-interface-projection-an
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import { compileCypherIfExists } from "./cypher-builder/utils";
 
 export default async function translateCreate({
     context,
@@ -34,7 +35,7 @@ export default async function translateCreate({
 }: {
     context: Context;
     node: Node;
-}): Promise<CypherBuilder.CypherResult> {
+}): Promise<{ cypher: string; params: Record<string, any> }> {
     const { resolveTree } = context;
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
@@ -102,6 +103,7 @@ export default async function translateCreate({
         projectionWith.push(`${metaNames.join(" + ")} AS meta`);
     }
 
+    let projectionSubquery: CypherBuilder.Clause | undefined;
     if (nodeProjection) {
         let projAuth = "";
         const projection = createProjectionAndParams({
@@ -110,6 +112,7 @@ export default async function translateCreate({
             resolveTree: nodeProjection,
             varName: "REPLACE_ME",
         });
+        projectionSubquery = CypherBuilder.concat(...projection.subqueries);
         if (projection.meta?.authValidateStrs?.length) {
             projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
                 " AND "
@@ -221,22 +224,30 @@ export default async function translateCreate({
     const returnStatement = generateCreateReturnStatement(projectionStr, context.subscriptionsEnabled);
     const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
 
-    let cypher = filterTruthy([
-        `${createStrs.join("\n")}`,
-        projectionWithStr,
-        authCalls,
-        ...replacedConnectionStrs,
-        ...replacedInterfaceStrs,
-        returnStatement,
-    ])
-        .filter(Boolean)
-        .join("\n");
+    const createQuery = new CypherBuilder.RawCypher((env) => {
+        const projectionSubqueryStr = compileCypherIfExists(projectionSubquery, env);
+        // TODO: avoid REPLACE_ME
+        const replacedProjectionSubqueryStrs = createStrs.length
+            ? createStrs.map((_, i) => {
+                  return projectionSubqueryStr
+                      .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
+                      .replace(/\$REPLACE_ME/g, "$projection")
+                      .replace(/REPLACE_ME/g, `this${i}`);
+              })
+            : [];
 
-    let resolvedCallbacks = {};
+        const cypher = filterTruthy([
+            `${createStrs.join("\n")}`,
+            projectionWithStr,
+            authCalls,
+            ...replacedConnectionStrs,
+            ...replacedInterfaceStrs,
+            ...replacedProjectionSubqueryStrs,
+            returnStatement,
+        ])
+            .filter(Boolean)
+            .join("\n");
 
-    ({ cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({ cypher }));
-
-    const createQuery = new CypherBuilder.RawCypher(() => {
         return [
             cypher,
             {
@@ -244,12 +255,23 @@ export default async function translateCreate({
                 ...replacedProjectionParams,
                 ...replacedConnectionParams,
                 ...replacedInterfaceParams,
-                resolvedCallbacks,
             },
         ];
     });
 
-    return createQuery.build();
+    const createQueryCypher = createQuery.build("create_");
+
+    const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
+        cypher: createQueryCypher.cypher,
+    });
+
+    return {
+        cypher,
+        params: {
+            ...createQueryCypher.params,
+            resolvedCallbacks,
+        },
+    };
 }
 
 function generateCreateReturnStatement(projectionStr: string | undefined, subscriptionsEnabled: boolean): string {
