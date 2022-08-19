@@ -37,8 +37,6 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         with:
           projectBaseDir: packages/${{ matrix.package }}
-          args: >
-            -Dsonar.verbose=true
         env:
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets[env.SONAR_TOKEN_SECRET] }}
