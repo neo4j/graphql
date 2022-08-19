@@ -48,7 +48,7 @@ describe("introspection", () => {
         }
 
         await schemaEditorPage.introspect();
-        await page.waitForTimeout(2000);
+        await page.waitForTimeout(4000);
         const generatedTypeDefs = await schemaEditorPage.getTypeDefs();
 
         expect(generatedTypeDefs).toContain(`type MyMovie`);

@@ -33,7 +33,7 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
-        "@neo4j/graphql": "^3.6.2",
+        "@neo4j/graphql": "^3.6.3",
         "@types/amqplib": "0.8.2",
         "@types/debug": "4.1.7",
         "@types/jest": "28.1.7",
@@ -55,6 +55,6 @@
         "amqplib": "0.10.2"
     },
     "peerDependencies": {
-        "@neo4j/graphql": "^3.6.2"
+        "@neo4j/graphql": "^3.6.3"
     }
 }
