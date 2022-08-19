@@ -64,7 +64,13 @@ describe("https://github.com/neo4j/graphql/issues/1779", () => {
             CALL {
                 WITH this
                 MATCH (this)-[thisthis0:attends]->(this_attends:\`School\`)
-                WHERE size([(thisthis1:\`Person\`)-[:attends]->(this_attends) WHERE NOT (thisthis1.age > $thisparam0) | 1]) = 0
+                WHERE (EXISTS {
+                    MATCH (thisthis1:\`Person\`)-[:attends]->(this_attends)
+                    WHERE thisthis1.age > $thisparam0
+                } AND NOT (EXISTS {
+                    MATCH (thisthis1:\`Person\`)-[:attends]->(this_attends)
+                    WHERE NOT (thisthis1.age > $thisparam0)
+                }))
                 WITH this_attends { .name } AS this_attends
                 RETURN collect(this_attends) AS this_attends
             }
