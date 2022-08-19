@@ -26,9 +26,11 @@ import { applyMixins } from "./utils/apply-mixin";
 import { WithWhere } from "./mixins/WithWhere";
 import { WithSet } from "./mixins/WithSet";
 import { WithWith } from "./mixins/WithWith";
+import { DeleteClause, DeleteInput } from "../sub-clauses/Delete";
 
 export class Match<T extends MatchableElement = any> extends Clause {
     private pattern: Pattern<T>;
+    private deleteClause: DeleteClause | undefined;
 
     constructor(variable: T | Pattern<T>, parameters: MatchParams<T> = {}, parent?: Clause) {
         super(parent);
@@ -39,6 +41,17 @@ export class Match<T extends MatchableElement = any> extends Clause {
         }
     }
 
+    delete(...deleteInput: DeleteInput): this {
+        this.createDeleteClause(deleteInput);
+        return this;
+    }
+
+    detachDelete(...deleteInput: DeleteInput): this {
+        const deleteClause = this.createDeleteClause(deleteInput);
+        deleteClause.detach();
+        return this;
+    }
+
     public getCypher(env: CypherEnvironment): string {
         const nodeCypher = this.pattern.getCypher(env);
 
@@ -46,8 +59,14 @@ export class Match<T extends MatchableElement = any> extends Clause {
         const returnCypher = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
         const setCypher = compileCypherIfExists(this.setSubClause, env, { prefix: "\n" });
         const withCypher = compileCypherIfExists(this.withStatement, env, { prefix: "\n" });
+        const deleteCypher = compileCypherIfExists(this.deleteClause, env, { prefix: "\n" });
 
-        return `MATCH ${nodeCypher}${whereCypher}${setCypher}${withCypher}${returnCypher}`;
+        return `MATCH ${nodeCypher}${whereCypher}${setCypher}${deleteCypher}${withCypher}${returnCypher}`;
+    }
+
+    private createDeleteClause(deleteInput: DeleteInput): DeleteClause {
+        this.deleteClause = new DeleteClause(this, deleteInput);
+        return this.deleteClause;
     }
 }
 

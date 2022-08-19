@@ -311,4 +311,60 @@ describe("CypherBuilder Match", () => {
             }
         `);
     });
+
+    test("Match and delete with return", () => {
+        const idParam = new CypherBuilder.Param("my-id");
+        const nameParam = new CypherBuilder.Param("my-name");
+
+        const movieNode = new CypherBuilder.Node({
+            labels: ["Movie"],
+        });
+
+        const matchQuery = new CypherBuilder.Match(movieNode)
+            .where(movieNode, { id: idParam, name: nameParam })
+            .delete(movieNode)
+            .return(new CypherBuilder.Literal(5));
+
+        const queryResult = matchQuery.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "MATCH (this0:\`Movie\`)
+            WHERE (this0.id = $param0 AND this0.name = $param1)
+            DELETE this0
+            RETURN 5"
+        `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": "my-id",
+              "param1": "my-name",
+            }
+        `);
+    });
+
+    test("Match and detach delete", () => {
+        const idParam = new CypherBuilder.Param("my-id");
+        const nameParam = new CypherBuilder.Param("my-name");
+
+        const movieNode = new CypherBuilder.Node({
+            labels: ["Movie"],
+        });
+
+        const matchQuery = new CypherBuilder.Match(movieNode)
+            .where(movieNode, { id: idParam, name: nameParam })
+            .detachDelete(movieNode);
+
+        const queryResult = matchQuery.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "MATCH (this0:\`Movie\`)
+            WHERE (this0.id = $param0 AND this0.name = $param1)
+            DETACH DELETE this0"
+        `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": "my-id",
+              "param1": "my-name",
+            }
+        `);
+    });
 });
