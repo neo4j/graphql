@@ -367,4 +367,33 @@ describe("CypherBuilder Match", () => {
             }
         `);
     });
+
+    test("Match with remove", () => {
+        const idParam = new CypherBuilder.Param("my-id");
+        const nameParam = new CypherBuilder.Param("my-name");
+
+        const movieNode = new CypherBuilder.Node({
+            labels: ["Movie"],
+        });
+
+        const matchQuery = new CypherBuilder.Match(movieNode)
+            .where(movieNode, { id: idParam, name: nameParam })
+            .remove(movieNode.property("name"))
+            .return(movieNode.property("id"));
+
+        const queryResult = matchQuery.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "MATCH (this0:\`Movie\`)
+            WHERE (this0.id = $param0 AND this0.name = $param1)
+            REMOVE this0.name
+            RETURN this0.id"
+        `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": "my-id",
+              "param1": "my-name",
+            }
+        `);
+    });
 });
