@@ -81,3 +81,10 @@ export class Match<T extends MatchableElement = any> extends Clause {
 
 export interface Match extends WithReturn, WithWhere, WithSet, WithWith {}
 applyMixins(Match, [WithReturn, WithWhere, WithSet, WithWith]);
+
+export class OptionalMatch extends Match {
+    public getCypher(env: CypherEnvironment): string {
+        const matchStr = super.getCypher(env);
+        return `OPTIONAL ${matchStr}`;
+    }
+}

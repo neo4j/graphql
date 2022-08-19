@@ -396,4 +396,33 @@ describe("CypherBuilder Match", () => {
             }
         `);
     });
+    test("Optional Match", () => {
+        const idParam = new CypherBuilder.Param("my-id");
+        const nameParam = new CypherBuilder.Param("my-name");
+        const ageParam = new CypherBuilder.Param(5);
+
+        const movieNode = new CypherBuilder.Node({
+            labels: ["Movie"],
+        });
+
+        const matchQuery = new CypherBuilder.OptionalMatch(movieNode, { test: new CypherBuilder.Param("test-value") })
+            .where(movieNode, { id: idParam, name: nameParam, age: ageParam })
+            .return(movieNode);
+
+        const queryResult = matchQuery.build();
+        expect(queryResult.cypher).toMatchInlineSnapshot(`
+            "OPTIONAL MATCH (this0:\`Movie\` { test: $param0 })
+            WHERE ((this0.id = $param1 AND this0.name = $param2) AND this0.age = $param3)
+            RETURN this0"
+        `);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "test-value",
+                  "param1": "my-id",
+                  "param2": "my-name",
+                  "param3": 5,
+                }
+            `);
+    });
 });

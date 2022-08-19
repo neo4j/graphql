@@ -18,7 +18,7 @@
  */
 
 // Clauses
-export { Match } from "./clauses/Match";
+export { Match, OptionalMatch } from "./clauses/Match";
 export { Create } from "./clauses/Create";
 export { Merge } from "./clauses/Merge";
 export { Call } from "./clauses/Call";
