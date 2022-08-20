@@ -41,7 +41,7 @@
         "apollo-server": "3.10.1",
         "apollo-server-express": "3.10.1",
         "camelcase": "6.3.0",
-        "graphql-ws": "5.10.0",
+        "graphql-ws": "5.10.1",
         "jest": "28.1.3",
         "neo4j-driver": "4.4.7",
         "pluralize": "8.0.0",

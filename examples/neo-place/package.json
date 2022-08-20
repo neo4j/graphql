@@ -35,7 +35,7 @@
         "dotenv": "16.0.1",
         "express": "4.18.1",
         "graphql": "16.6.0",
-        "graphql-ws": "5.10.0",
+        "graphql-ws": "5.10.1",
         "neo4j-driver": "4.4.7",
         "parcel": "2.7.0",
         "urql": "2.2.3",
