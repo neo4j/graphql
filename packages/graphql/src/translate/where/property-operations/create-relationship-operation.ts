@@ -37,7 +37,7 @@ export function createRelationshipOperation({
     operator: string | undefined;
     value: GraphQLWhereArg;
     isNot: boolean;
-}): CypherBuilder.BooleanOp | CypherBuilder.Exists | CypherBuilder.ComparisonOp | undefined {
+}): CypherBuilder.Predicate | undefined {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
 
@@ -78,9 +78,6 @@ export function createRelationshipOperation({
         return undefined;
     }
 
-    const patternComprehension = new CypherBuilder.PatternComprehension(matchPattern, new CypherBuilder.Literal(1));
-    const sizeFunction = CypherBuilder.size(patternComprehension);
-
     // TODO: use EXISTS in top-level where
     switch (operator) {
         case "ALL": {
@@ -99,8 +96,8 @@ export function createRelationshipOperation({
             return CypherBuilder.not(existsPredicate);
         }
         case "SINGLE": {
-            patternComprehension.where(relationOperator);
-            return CypherBuilder.eq(sizeFunction, new CypherBuilder.Literal(1));
+            const patternComprehension = new CypherBuilder.PatternComprehension(matchPattern, childNode);
+            return CypherBuilder.single(childNode, patternComprehension, relationOperator);
         }
         case "SOME":
         default: {
