@@ -20,7 +20,7 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { asArray, removeDuplicates } from "../utils/utils";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import type { ConnectionField, Context, InterfaceWhereArg, RelationField } from "../types";
+import type { ConnectionField, Context, GraphQLOptionsArg, InterfaceWhereArg, RelationField } from "../types";
 import filterInterfaceNodes from "../utils/filter-interface-nodes";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import { createAuthAndParams } from "./create-auth-and-params";
@@ -28,6 +28,7 @@ import createProjectionAndParams from "./create-projection-and-params";
 import { getRelationshipDirectionStr } from "../utils/get-relationship-direction";
 import createElementWhereAndParams from "./where/create-element-where-and-params";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import { addSortAndLimitOptionsToClause } from "./projection/elements/add-sort-and-limit-to-clause";
 import { compileCypherIfExists } from "./cypher-builder/utils/utils";
 
 function createInterfaceProjectionAndParams({
@@ -217,10 +218,23 @@ function createInterfaceProjectionAndParams({
         });
     });
 
+    const optionsInput = resolveTree.args.options as GraphQLOptionsArg | undefined;
+    let withClause: CypherBuilder.With | undefined;
+    if (optionsInput) {
+        withClause = new CypherBuilder.With("*");
+        addSortAndLimitOptionsToClause({
+            optionsInput,
+            projectionClause: withClause,
+            target: new CypherBuilder.NamedNode(field.fieldName),
+        });
+    }
+
+    const unionClause = new CypherBuilder.Union(...subqueries);
+    const call = new CypherBuilder.Call(unionClause);
+
     return new CypherBuilder.RawCypher((env) => {
-        const unionClause = new CypherBuilder.Union(...subqueries);
-        const call = new CypherBuilder.Call(unionClause);
         const subqueryStr = call.getCypher(env);
+        const withStr = compileCypherIfExists(withClause, env, { suffix: "\n" });
 
         let interfaceProjection = [`WITH ${fullWithVars.join(", ")}`, subqueryStr];
         if (field.typeMeta.array) {
@@ -228,7 +242,7 @@ function createInterfaceProjectionAndParams({
                 `WITH ${fullWithVars.join(", ")}`,
                 "CALL {",
                 ...interfaceProjection,
-                `RETURN collect(${field.fieldName}) AS ${field.fieldName}`,
+                `${withStr}RETURN collect(${field.fieldName}) AS ${field.fieldName}`,
                 "}",
             ];
         }

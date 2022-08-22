@@ -331,39 +331,19 @@ export default function createProjectionAndParams({
             const { inStr, outStr } = getRelationshipDirectionStr(relationField, field.args);
 
             if (relationField.interface) {
-                // TODO: interfaces
                 if (!res.meta.interfaceFields) {
                     res.meta.interfaceFields = [];
                 }
 
                 res.meta.interfaceFields.push(field);
 
-                let offsetLimitStr = "";
-                if (optionsInput) {
-                    offsetLimitStr = createOffsetLimitStr({
-                        offset: optionsInput.offset,
-                        limit: optionsInput.limit,
-                    });
-
-                    if (optionsInput.sort) {
-                        const sorts = optionsInput.sort.reduce(sortReducer, []);
-
-                        res.projection.push(
-                            `${field.alias}: apoc.coll.sortMulti(${field.alias}, [${sorts.join(
-                                ", "
-                            )}])${offsetLimitStr}`
-                        );
-                        return res;
-                    }
-                }
-
-                res.projection.push(`${field.alias}: ${field.name}${offsetLimitStr}`);
+                res.projection.push(`${field.alias}: ${field.name}`);
 
                 return res;
             }
 
             if (relationField.union) {
-                // TODO: unions
+                // TODO: unions into subqueries
                 const referenceNodes = context.nodes.filter(
                     (x) =>
                         relationField.union?.nodes?.includes(x.name) &&

@@ -60,7 +60,7 @@ export function createAuthAndParams({
     escapeQuotes?: boolean;
     bind?: Bind;
     where?: { varName: string; chainStr?: string; node: Node };
-}): [string, any] {
+}): [string, Record<string, any>] {
     const authPredicate = createAuthPredicates({
         entity,
         operations,
