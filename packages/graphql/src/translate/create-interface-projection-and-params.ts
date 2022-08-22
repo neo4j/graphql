@@ -27,6 +27,8 @@ import { createAuthAndParams } from "./create-auth-and-params";
 import createProjectionAndParams from "./create-projection-and-params";
 import { getRelationshipDirectionStr } from "../utils/get-relationship-direction";
 import createElementWhereAndParams from "./where/create-element-where-and-params";
+import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import { compileCypherIfExists } from "./cypher-builder/utils";
 
 function createInterfaceProjectionAndParams({
     resolveTree,
@@ -162,6 +164,7 @@ function createInterfaceProjectionAndParams({
             projection: projectionStr,
             params: projectionParams,
             meta,
+            subqueries: projectionSubQueries,
         } = createProjectionAndParams({
             resolveTree,
             node: refNode,
@@ -170,7 +173,6 @@ function createInterfaceProjectionAndParams({
             literalElements: true,
             resolveType: true,
         });
-
         if (meta?.connectionFields?.length) {
             meta.connectionFields.forEach((connectionResolveTree) => {
                 const connectionField = refNode.connectionFields.find(
@@ -206,37 +208,43 @@ function createInterfaceProjectionAndParams({
             });
         }
 
-        subquery.push(`RETURN ${projectionStr} AS ${field.fieldName}`);
-        globalParams = {
-            ...globalParams,
-            ...projectionParams,
-        };
+        const projectionSubqueryClause = CypherBuilder.concat(...projectionSubQueries);
+        return new CypherBuilder.RawCypher((env) => {
+            const subqueryStr = compileCypherIfExists(projectionSubqueryClause, env);
+            const returnStatement = `RETURN ${projectionStr} AS ${field.fieldName}`;
 
-        return subquery.join("\n");
+            return [[...subquery, subqueryStr, returnStatement].join("\n"), {}]; // TODO: pass params here instead of globalParams
+        });
     });
-    let interfaceProjection = [`WITH ${fullWithVars.join(", ")}`, "CALL {", subqueries.join("\nUNION\n"), "}"];
 
-    if (field.typeMeta.array) {
-        interfaceProjection = [
-            `WITH ${fullWithVars.join(", ")}`,
-            "CALL {",
-            ...interfaceProjection,
-            `RETURN collect(${field.fieldName}) AS ${field.fieldName}`,
-            "}",
+    return new CypherBuilder.RawCypher((env) => {
+        const unionClause = new CypherBuilder.Union(...subqueries);
+        const call = new CypherBuilder.Call(unionClause);
+        const subqueryStr = call.getCypher(env);
+
+        let interfaceProjection = [`WITH ${fullWithVars.join(", ")}`, subqueryStr];
+        if (field.typeMeta.array) {
+            interfaceProjection = [
+                `WITH ${fullWithVars.join(", ")}`,
+                "CALL {",
+                ...interfaceProjection,
+                `RETURN collect(${field.fieldName}) AS ${field.fieldName}`,
+                "}",
+            ];
+        }
+
+        if (Object.keys(whereArgs).length) {
+            params.args = { where: whereArgs };
+        }
+
+        return [
+            interfaceProjection.join("\n"),
+            {
+                ...globalParams,
+                ...(Object.keys(params).length ? { [`${nodeVariable}_${resolveTree.alias}`]: params } : {}),
+            },
         ];
-    }
-
-    if (Object.keys(whereArgs).length) {
-        params.args = { where: whereArgs };
-    }
-
-    return {
-        cypher: interfaceProjection.join("\n"),
-        params: {
-            ...globalParams,
-            ...(Object.keys(params).length ? { [`${nodeVariable}_${resolveTree.alias}`]: params } : {}),
-        },
-    };
+    }).build(`${nodeVariable}_`);
 }
 
 export default createInterfaceProjectionAndParams;

@@ -111,10 +111,22 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
                 MERGE (this)-[this_isInPublication1_connectOrCreate_this1:isInPublication]->(this_isInPublication1_connectOrCreate_this0)
                 RETURN COUNT(*) AS _
             }
-            RETURN collect(DISTINCT this { iri: this.uri, .prefLabel, isInPublication: [ (this)-[:isInPublication]->(this_isInPublication:\`Concept\`:\`Resource\`)  WHERE this_isInPublication.uri IN $this_isInPublication_param0 | this_isInPublication { iri: this_isInPublication.uri, .prefLabel } ] }) AS data"
+            WITH *
+            CALL {
+                WITH this
+                MATCH (this)-[update_this0:isInPublication]->(this_isInPublication:\`Concept\`:\`Resource\`)
+                WHERE this_isInPublication.uri IN $update_param0
+                WITH this_isInPublication { iri: this_isInPublication.uri, .prefLabel } AS this_isInPublication
+                RETURN collect(this_isInPublication) AS this_isInPublication
+            }
+            RETURN collect(DISTINCT this { iri: this.uri, .prefLabel, isInPublication: this_isInPublication }) AS data"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"update_param0\\": [
+                    \\"new-f\\",
+                    \\"new-e\\"
+                ],
                 \\"param0\\": \\"urn:myiri2\\",
                 \\"this_update_prefLabel\\": [
                     \\"Updated Label:My BRS with Resource\\"
@@ -128,10 +140,6 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
                 \\"this_isInPublication1_connectOrCreate_param1\\": \\"new-f\\",
                 \\"this_isInPublication1_connectOrCreate_param2\\": [
                     \\"pub\\"
-                ],
-                \\"this_isInPublication_param0\\": [
-                    \\"new-f\\",
-                    \\"new-e\\"
                 ],
                 \\"resolvedCallbacks\\": {}
             }"

@@ -73,7 +73,13 @@ describe("Cypher alias directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            RETURN this { .name, city: this.cityPropInDb, actedIn: [ (this)-[:ACTED_IN]->(this_actedIn:Movie)   | this_actedIn { .title, rating: this_actedIn.ratingPropInDb } ] } as this"
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:ACTED_IN]->(this_actedIn:\`Movie\`)
+                WITH this_actedIn { .title, rating: this_actedIn.ratingPropInDb } AS this_actedIn
+                RETURN collect(this_actedIn) AS this_actedIn
+            }
+            RETURN this { .name, city: this.cityPropInDb, actedIn: this_actedIn } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -186,8 +192,14 @@ describe("Cypher alias directive", () => {
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
             RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
+            CALL {
+                WITH this0
+                MATCH (this0)-[create_this0:ACTED_IN]->(this0_actedIn:\`Movie\`)
+                WITH this0_actedIn { .title, rating: this0_actedIn.ratingPropInDb } AS this0_actedIn
+                RETURN collect(this0_actedIn) AS this0_actedIn
+            }
             RETURN [
-            this0 { .name, city: this0.cityPropInDb, actedIn: [ (this0)-[:ACTED_IN]->(this0_actedIn:Movie)   | this0_actedIn { .title, rating: this0_actedIn.ratingPropInDb } ], actedInConnection }] AS data"
+            this0 { .name, city: this0.cityPropInDb, actedIn: this0_actedIn, actedInConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

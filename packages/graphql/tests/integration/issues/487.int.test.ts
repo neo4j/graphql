@@ -38,7 +38,7 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
         await driver.close();
     });
 
-    test("should recreate test and return correct data", async () => {
+    test("related fields should resolve on custom queries", async () => {
         const session = await neo4j.getSession();
 
         const typeAuthor = generateUniqueType("Author");

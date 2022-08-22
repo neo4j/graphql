@@ -422,6 +422,7 @@ describe("Cypher Auth isAuthenticated", () => {
             	)
             	RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -473,6 +474,7 @@ describe("Cypher Auth isAuthenticated", () => {
             )
             RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
