@@ -17,29 +17,24 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "./Environment";
-import type { Variable } from "./variables/Variable";
+import type { CypherASTNode } from "../CypherASTNode";
+import type { CypherEnvironment } from "../Environment";
+import type { PropertyRef } from "../PropertyRef";
+import { SubClause } from "./SubClause";
 
-/** Reference to a Variable property */
-export class PropertyRef {
-    private _variable: Variable;
-    private _property: string;
+// TODO: Remove label
+export type RemoveInput = Array<PropertyRef>;
 
-    constructor(variable: Variable, property: string) {
-        this._variable = variable;
-        this._property = property;
-    }
+export class RemoveClause extends SubClause {
+    private removeInput: RemoveInput;
 
-    public get variable(): Variable {
-        return this._variable;
-    }
-
-    public property(path: string): PropertyRef {
-        return new PropertyRef(this.variable, `${this._property}.${path}`);
+    constructor(parent: CypherASTNode | undefined, removeInput: RemoveInput) {
+        super(parent);
+        this.removeInput = removeInput;
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const variableStr = this.variable.getCypher(env);
-        return `${variableStr}.${this._property}`;
+        const propertiesToDelete = this.removeInput.map((e) => e.getCypher(env));
+        return `REMOVE ${propertiesToDelete.join(",")}`;
     }
 }

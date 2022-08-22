@@ -178,8 +178,11 @@ describe("createRelationshipPropertyElement", () => {
 
         const element = createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable: "this" });
 
-        expect(element).toMatchInlineSnapshot(
-            `"point: (CASE WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs } ELSE NULL END)"`
-        );
+        expect(element).toMatchInlineSnapshot(`
+            "point: (CASE
+                WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
+                ELSE NULL
+            END)"
+        `);
     });
 });

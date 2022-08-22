@@ -708,7 +708,10 @@ describe("Cypher Advanced Filtering", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WHERE size([(this)-[:IN_GENRE]->(this0:\`Genre\`) WHERE this0.name = $param0 | 1]) > 0
+                WHERE EXISTS {
+                    MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                    WHERE this0.name = $param0
+                }
                 RETURN this { .actorCount } as this"
             `);
 
@@ -735,7 +738,10 @@ describe("Cypher Advanced Filtering", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
-                WHERE size([(this)-[:IN_GENRE]->(this0:\`Genre\`) WHERE this0.name = $param0 | 1]) = 0
+                WHERE NOT (EXISTS {
+                    MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                    WHERE this0.name = $param0
+                })
                 RETURN this { .actorCount } as this"
             `);
 
@@ -765,7 +771,13 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
-                    WHERE size([(this)-[:IN_GENRE]->(this0:\`Genre\`) WHERE NOT (this0.name = $param0) | 1]) = 0
+                    WHERE (EXISTS {
+                        MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                        WHERE this0.name = $param0
+                    } AND NOT (EXISTS {
+                        MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                        WHERE NOT (this0.name = $param0)
+                    }))
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -782,7 +794,10 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
-                    WHERE size([(this)-[:IN_GENRE]->(this0:\`Genre\`) WHERE this0.name = $param0 | 1]) = 0
+                    WHERE NOT (EXISTS {
+                        MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                        WHERE this0.name = $param0
+                    })
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -816,7 +831,10 @@ describe("Cypher Advanced Filtering", () => {
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Movie\`)
-                    WHERE size([(this)-[:IN_GENRE]->(this0:\`Genre\`) WHERE this0.name = $param0 | 1]) > 0
+                    WHERE EXISTS {
+                        MATCH (this)-[:IN_GENRE]->(this0:\`Genre\`)
+                        WHERE this0.name = $param0
+                    }
                     RETURN this { .actorCount } as this"
                 `);
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`

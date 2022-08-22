@@ -19,37 +19,28 @@
 
 import type { CypherASTNode } from "../CypherASTNode";
 import type { CypherEnvironment } from "../Environment";
-import type { PropertyRef } from "../PropertyRef";
-import type { Expr } from "../types";
-import { padBlock } from "../utils/utils";
+import type { NodeRef } from "../variables/NodeRef";
+import type { RelationshipRef } from "../variables/RelationshipRef";
 import { SubClause } from "./SubClause";
 
-export type SetParam = [PropertyRef, Expr];
+export type DeleteInput = Array<NodeRef | RelationshipRef>;
 
-export class SetClause extends SubClause {
-    protected params: SetParam[];
+export class DeleteClause extends SubClause {
+    private deleteInput: DeleteInput;
+    private _detach = false;
 
-    constructor(parent: CypherASTNode, params: SetParam[] = []) {
+    constructor(parent: CypherASTNode | undefined, deleteInput: DeleteInput) {
         super(parent);
-        this.params = params;
+        this.deleteInput = deleteInput;
     }
 
-    public addParams(...params: SetParam[]) {
-        this.params.push(...params);
+    public detach(): void {
+        this._detach = true;
     }
 
     public getCypher(env: CypherEnvironment): string {
-        if (this.params.length === 0) return "";
-        const paramsStr = this.params
-            .map((param) => {
-                return this.composeParam(env, param);
-            })
-            .join(",\n");
-
-        return `SET\n${padBlock(paramsStr)}`;
-    }
-
-    private composeParam(env: CypherEnvironment, [ref, param]: SetParam): string {
-        return `${ref.getCypher(env)} = ${param.getCypher(env)}`;
+        const itemsToDelete = this.deleteInput.map((e) => e.getCypher(env));
+        const detachStr = this._detach ? "DETACH " : "";
+        return `${detachStr}DELETE ${itemsToDelete.join(",")}`;
     }
 }

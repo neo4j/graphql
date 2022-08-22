@@ -69,7 +69,10 @@ describe("#190", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE size([(this)-[:HAS_DEMOGRAPHIC]->(this0:\`UserDemographics\`) WHERE (this0.type = $param0 AND this0.value = $param1) | 1]) > 0
+            WHERE EXISTS {
+                MATCH (this)-[:HAS_DEMOGRAPHIC]->(this0:\`UserDemographics\`)
+                WHERE (this0.type = $param0 AND this0.value = $param1)
+            }
             CALL {
                 WITH this
                 MATCH (this)-[thisthis0:HAS_DEMOGRAPHIC]->(this_demographics:\`UserDemographics\`)
@@ -111,7 +114,10 @@ describe("#190", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WHERE size([(this)-[:HAS_DEMOGRAPHIC]->(this0:\`UserDemographics\`) WHERE ((this0.type = $param0 AND this0.value = $param1) OR this0.type = $param2 OR this0.type = $param3) | 1]) > 0
+            WHERE EXISTS {
+                MATCH (this)-[:HAS_DEMOGRAPHIC]->(this0:\`UserDemographics\`)
+                WHERE ((this0.type = $param0 AND this0.value = $param1) OR this0.type = $param2 OR this0.type = $param3)
+            }
             CALL {
                 WITH this
                 MATCH (this)-[thisthis0:HAS_DEMOGRAPHIC]->(this_demographics:\`UserDemographics\`)

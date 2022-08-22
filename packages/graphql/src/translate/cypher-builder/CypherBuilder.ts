@@ -18,7 +18,7 @@
  */
 
 // Clauses
-export { Match } from "./clauses/Match";
+export { Match, OptionalMatch } from "./clauses/Match";
 export { Create } from "./clauses/Create";
 export { Merge } from "./clauses/Merge";
 export { Call } from "./clauses/Call";
@@ -28,9 +28,11 @@ export { With } from "./clauses/With";
 export { Unwind } from "./clauses/Unwind";
 export { Union } from "./clauses/Union";
 
-// Clauses-like things
-export { Exists } from "./sub-clauses/Exists";
 export { concat } from "./clauses/utils/concat";
+
+// Expressions
+export { Exists } from "./expressions/Exists";
+export { Case } from "./expressions/Case";
 
 // Procedures
 export * as db from "./procedures/db";

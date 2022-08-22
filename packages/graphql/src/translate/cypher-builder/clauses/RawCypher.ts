@@ -18,7 +18,7 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import { convertToCypherParams } from "../utils";
+import { convertToCypherParams } from "../utils/convert-to-cypher-params";
 import { Clause } from "./Clause";
 
 type RawCypherCallback = (env: CypherEnvironment) => [string, Record<string, any>] | string | undefined;

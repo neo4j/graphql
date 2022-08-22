@@ -21,7 +21,7 @@ import type { CypherEnvironment } from "../Environment";
 
 import { CypherASTNode } from "../CypherASTNode";
 import type { Expr } from "../types";
-import { compileCypherIfExists } from "../utils";
+import { compileCypherIfExists } from "../utils/utils";
 
 export type Order = "ASC" | "DESC";
 

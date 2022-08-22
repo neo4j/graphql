@@ -21,7 +21,7 @@ import type { CypherEnvironment } from "../Environment";
 import type { CypherASTNode } from "../CypherASTNode";
 import type { Variable } from "../variables/Variable";
 import { Clause } from "./Clause";
-import { compileCypherIfExists, padBlock } from "../utils";
+import { compileCypherIfExists, padBlock } from "../utils/utils";
 import { ImportWith } from "../sub-clauses/ImportWith";
 import { applyMixins } from "./utils/apply-mixin";
 import { WithReturn } from "./mixins/WithReturn";

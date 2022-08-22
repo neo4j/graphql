@@ -14,11 +14,11 @@ jobs:
     steps:
       - name: Create list
         run: |
-          list=$( curl --request POST --url "https://api.trello.com/1/lists?name=Done%20-%20${{ github.event.release.name }}&idBoard=${{ secrets.TEAM_GRAPHQL_BOARD }}&key=${{ secrets.TRELLO_API_KEY }}&token=${{ secrets.TRELLO_API_TOKEN }}&pos=bottom" | jq .id )
+          list=$( curl --request POST --url "https://api.trello.com/1/lists?name=Done%20-%20${{ github.event.release.name }}&idBoard=${{ secrets.TEAM_GRAPHQL_BOARD }}&key=${{ secrets.TRELLO_API_KEY }}&token=${{ secrets.TRELLO_API_TOKEN }}&pos=bottom" | jq -r .id )
           echo "LIST=$list" >> "$GITHUB_ENV"
       - name: Create changelog card
         run: |
-          card=$( curl --request POST --url "https://api.trello.com/1/cards?idList=$LIST&name=Changelog&desc=${{ github.event.release.body }}&idLabels=${{ secrets.CHANGELOG_LABEL }}&key=${{ secrets.TRELLO_API_KEY }}&token=${{ secrets.TRELLO_API_TOKEN }}" --header 'Accept: application/json' | jq .id )
+          card=$( curl --request POST --url "https://api.trello.com/1/cards?idList=$LIST&name=Changelog&desc=${{ github.event.release.body }}&idLabels=${{ secrets.CHANGELOG_LABEL }}&key=${{ secrets.TRELLO_API_KEY }}&token=${{ secrets.TRELLO_API_TOKEN }}" --header 'Accept: application/json' | jq -r .id )
           echo "CARD=$card" >> "$GITHUB_ENV"
       - name: Attach release
         run: |

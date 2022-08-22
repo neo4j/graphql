@@ -114,7 +114,10 @@ describe("Cypher Projection", () => {
                 WITH this0
                 MATCH (this0)-[create_this0:HAS_PHOTO]->(this0_photos:\`Photo\`)
                 WHERE this0_photos.url = $create_param0
-                WITH this0_photos { .url, location: (CASE WHEN this0_photos.location IS NOT NULL THEN { point: this0_photos.location } ELSE NULL END) } AS this0_photos
+                WITH this0_photos { .url, location: (CASE
+                    WHEN this0_photos.location IS NOT NULL THEN { point: this0_photos.location }
+                    ELSE NULL
+                END) } AS this0_photos
                 RETURN collect(this0_photos) AS this0_photos
             }
             CALL {
@@ -135,7 +138,10 @@ describe("Cypher Projection", () => {
                 WITH this1
                 MATCH (this1)-[create_this0:HAS_PHOTO]->(this1_photos:\`Photo\`)
                 WHERE this1_photos.url = $create_param0
-                WITH this1_photos { .url, location: (CASE WHEN this1_photos.location IS NOT NULL THEN { point: this1_photos.location } ELSE NULL END) } AS this1_photos
+                WITH this1_photos { .url, location: (CASE
+                    WHEN this1_photos.location IS NOT NULL THEN { point: this1_photos.location }
+                    ELSE NULL
+                END) } AS this1_photos
                 RETURN collect(this1_photos) AS this1_photos
             }
             CALL {

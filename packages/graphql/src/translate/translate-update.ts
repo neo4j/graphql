@@ -34,7 +34,7 @@ import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-p
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
-import { compileCypherIfExists } from "./cypher-builder/utils";
+import { compileCypherIfExists } from "./cypher-builder/utils/utils";
 
 export default async function translateUpdate({
     node,
