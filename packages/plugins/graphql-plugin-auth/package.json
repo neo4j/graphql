@@ -37,7 +37,7 @@
         "@types/debug": "4.1.7",
         "@types/jest": "28.1.7",
         "@types/jsonwebtoken": "8.5.8",
-        "@types/node": "16.11.51",
+        "@types/node": "16.11.52",
         "jest": "28.1.3",
         "ts-jest": "28.0.8",
         "typescript": "4.7.4"
