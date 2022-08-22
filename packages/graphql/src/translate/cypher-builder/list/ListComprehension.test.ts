@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { TestClause } from "../clauses/Clause";
 import * as CypherBuilder from "../CypherBuilder";
+import { TestClause } from "../utils/TestClause";
 
 describe("List comprehension", () => {
     test("comprehension without filter", () => {

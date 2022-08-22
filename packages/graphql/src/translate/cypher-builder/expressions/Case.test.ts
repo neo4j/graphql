@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { TestClause } from "../clauses/Clause";
+import { TestClause } from "../utils/TestClause";
 import * as CypherBuilder from "../CypherBuilder";
 
 describe("Case", () => {
