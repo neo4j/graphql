@@ -27,7 +27,7 @@ import createInterfaceProjectionAndParams from "./create-interface-projection-an
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
-import { compileCypherIfExists } from "./cypher-builder/utils";
+import { compileCypherIfExists } from "./cypher-builder/utils/utils";
 
 export default async function translateCreate({
     context,

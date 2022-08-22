@@ -18,7 +18,7 @@
  */
 
 import { stringifyObject } from "../utils/stringify-object";
-import { padLeft } from "./utils";
+import { padLeft } from "./utils/utils";
 import type { NodeRef } from "./variables/NodeRef";
 import type { RelationshipRef } from "./variables/RelationshipRef";
 import type { CypherEnvironment } from "./Environment";

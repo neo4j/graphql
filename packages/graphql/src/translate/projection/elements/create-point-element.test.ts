@@ -58,9 +58,12 @@ describe("createPointElement", () => {
             variable: "this",
         });
 
-        expect(element).toMatchInlineSnapshot(
-            `"point: (CASE WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs } ELSE NULL END)"`
-        );
+        expect(element).toMatchInlineSnapshot(`
+            "point: (CASE
+                WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
+                ELSE NULL
+            END)"
+        `);
     });
 
     test("returns projection element for array of point values", () => {
@@ -100,8 +103,11 @@ describe("createPointElement", () => {
             variable: "this",
         });
 
-        expect(element).toMatchInlineSnapshot(
-            `"points: (CASE WHEN this.points IS NOT NULL THEN [p in this.points | { point:p, crs: p.crs }] ELSE NULL END)"`
-        );
+        expect(element).toMatchInlineSnapshot(`
+            "points: (CASE
+                WHEN this.points IS NOT NULL THEN [p_var0 IN this.points | { point: p_var0, crs: p_var0.crs }]
+                ELSE NULL
+            END)"
+        `);
     });
 });

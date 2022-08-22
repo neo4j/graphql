@@ -17,29 +17,20 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "./Environment";
-import type { Variable } from "./variables/Variable";
+import { Clause } from "../clauses/Clause";
+import type { CypherEnvironment } from "../Environment";
+import type { CypherCompilable } from "../types";
 
-/** Reference to a Variable property */
-export class PropertyRef {
-    private _variable: Variable;
-    private _property: string;
+/** For testing purposes only */
+export class TestClause extends Clause {
+    children: CypherCompilable[];
 
-    constructor(variable: Variable, property: string) {
-        this._variable = variable;
-        this._property = property;
-    }
-
-    public get variable(): Variable {
-        return this._variable;
-    }
-
-    public property(path: string): PropertyRef {
-        return new PropertyRef(this.variable, `${this._property}.${path}`);
+    constructor(...children: CypherCompilable[]) {
+        super();
+        this.children = children;
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const variableStr = this.variable.getCypher(env);
-        return `${variableStr}.${this._property}`;
+        return this.children.map((c) => c.getCypher(env)).join("");
     }
 }

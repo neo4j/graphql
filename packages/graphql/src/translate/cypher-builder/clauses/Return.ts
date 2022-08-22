@@ -22,7 +22,7 @@ import { applyMixins } from "./utils/apply-mixin";
 import { Projection, ProjectionColumn } from "../sub-clauses/Projection";
 import type { CypherEnvironment } from "../Environment";
 import { Clause } from "./Clause";
-import { compileCypherIfExists } from "../utils";
+import { compileCypherIfExists } from "../utils/utils";
 
 export class Return extends Clause {
     private projection: Projection;

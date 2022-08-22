@@ -22,27 +22,34 @@ import { applyMixins } from "../clauses/utils/apply-mixin";
 import type { CypherEnvironment } from "../Environment";
 import { Where } from "../sub-clauses/Where";
 import type { Expr, Predicate } from "../types";
-import { compileCypherIfExists } from "../utils";
+import { compileCypherIfExists } from "../utils/utils";
 import type { Variable } from "../variables/Variable";
 import { ComprehensionExpr } from "./ComprehensionExpr";
 
 export class ListComprehension extends ComprehensionExpr {
     private variable: Variable;
-    private listExpr: Expr;
+    private listExpr: Expr | undefined;
     private mapExpr: Expr | undefined; //  Expression for list mapping
 
-    constructor(variable: Variable, listExpr: Expr, whereFilter?: Predicate | undefined, mapExpr?: Expr) {
+    constructor(variable: Variable, listExpr?: Expr) {
         super();
         this.variable = variable;
         this.listExpr = listExpr;
-        this.mapExpr = mapExpr;
-
-        if (whereFilter) {
-            this.whereSubClause = new Where(this, whereFilter);
-        }
     }
 
-    getCypher(env: CypherEnvironment): string {
+    public in(listExpr: Expr): this {
+        if (this.listExpr) throw new Error("Cannot set 2 lists in list comprehension IN");
+        this.listExpr = listExpr;
+        return this;
+    }
+
+    public map(mapExpr: Expr): this {
+        this.mapExpr = mapExpr;
+        return this;
+    }
+
+    public getCypher(env: CypherEnvironment): string {
+        if (!this.listExpr) throw new Error("List Comprehension needs a source list after IN");
         const whereStr = compileCypherIfExists(this.whereSubClause, env, { prefix: " " });
         const mapStr = compileCypherIfExists(this.mapExpr, env, { prefix: " | " });
         const listExprStr = this.listExpr.getCypher(env);
