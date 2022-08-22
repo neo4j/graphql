@@ -332,13 +332,6 @@ describe("unions", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            // expect((gqlResult.data as any).createMovies.movies[0]).toEqual({
-            //     title: movieTitle,
-            //     search: [
-            //         { __typename: "Genre", name: genreName },
-            //         { __typename: "Movie", title: nestedMovieTitle },
-            //     ],
-            // });
 
             expect((gqlResult.data as any).createMovies.movies[0].title).toEqual(movieTitle);
             expect((gqlResult.data as any).createMovies.movies[0].search).toHaveLength(2);
