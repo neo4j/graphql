@@ -6,17 +6,6 @@ on:
       - published
 
 jobs:
-  debug:
-    name: Debug
-    runs-on: ubuntu-latest
-    steps:
-      - name: Dump env
-        run: env | sort
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-        
   deploy:
     if: startsWith(github.event.release.name, '@neo4j/graphql-toolbox')
 
@@ -26,8 +15,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: refs/tags/${{ github.event.release.tag_name }}
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
