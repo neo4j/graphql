@@ -20,7 +20,7 @@
 import type { CypherEnvironment } from "../Environment";
 import { MatchableElement, MatchParams, Pattern } from "../Pattern";
 import { Clause } from "./Clause";
-import { compileCypherIfExists } from "../utils";
+import { compileCypherIfExists } from "../utils/utils";
 import { WithReturn } from "./mixins/WithReturn";
 import { applyMixins } from "./utils/apply-mixin";
 import { WithWhere } from "./mixins/WithWhere";

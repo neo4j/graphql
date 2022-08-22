@@ -26,7 +26,7 @@ import createConnectionAndParams from "./connection/create-connection-and-params
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import createAuthParam from "./create-auth-param";
-import { compileCypherIfExists } from "./cypher-builder/utils";
+import { compileCypherIfExists } from "./cypher-builder/utils/utils";
 
 export function translateTopLevelCypher({
     context,

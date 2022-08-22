@@ -5,8 +5,10 @@ In this chapter you will learn more about how to secure your GraphQL API using t
 
 - xref::auth/setup.adoc[Setup]
 - xref::auth/auth-directive.adoc[`@auth` directive]
+- xref::auth/global-authentication.adoc[Global authentication]
 - xref::auth/authentication.adoc[Authentication]
 - xref::auth/authorization/index.adoc[Authorization]
+- xref::auth/subscriptions.adoc[Subscriptions]
 
 == Quickstart examples
 

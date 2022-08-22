@@ -22,7 +22,7 @@ import type { Operation } from "./operations/Operation";
 import type { PropertyRef } from "./PropertyRef";
 import type { CypherFunction } from "./functions/CypherFunction";
 import type { Literal } from "./variables/Literal";
-import type { Exists } from "./sub-clauses/Exists";
+import type { Exists } from "./expressions/Exists";
 import type { CypherEnvironment } from "./Environment";
 import type { ComprehensionExpr } from "./list/ComprehensionExpr";
 import type { MapExpr } from "./variables/map/MapExpr";
