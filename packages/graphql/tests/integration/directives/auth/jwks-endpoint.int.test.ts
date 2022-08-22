@@ -32,7 +32,7 @@ import jwksRsa from "jwks-rsa";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 
-describe("https://github.com/neo4j/graphql/issues/564", () => {
+describe("auth/jwks-endpoint", () => {
     let jwksMock: JWKSMock;
     let server: any;
     let driver: Driver;

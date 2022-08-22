@@ -18,18 +18,18 @@
  */
 
 import Debug from "debug";
-import type { GraphQLResolveInfo, GraphQLSchema} from "graphql";
+import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
 import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
 import type { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
-import { Neo4jGraphQLAuthenticationError } from "../../classes";
 import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
 import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
-import type { Context, Neo4jGraphQLPlugins, JwtPayload, Neo4jGraphQLAuthPlugin } from "../../types";
+import type { Context, Neo4jGraphQLPlugins } from "../../types";
 import { getToken, parseBearerToken } from "../../utils/get-token";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
+import { decodeToken, verifyGlobalAuthentication } from "./wrapper-utils";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
@@ -86,6 +86,8 @@ export const wrapResolver =
             context.jwt = await decodeToken(token, context.plugins.auth);
         }
 
+        verifyGlobalAuthentication(context, context.plugins?.auth);
+
         context.auth = createAuthParam({ context });
 
         const executorConstructorParam: ExecutorConstructorParam = {
@@ -131,19 +133,7 @@ export const wrapSubscription =
             subscriptionContext.jwt = await decodeToken(token, plugins.auth);
         }
 
+        verifyGlobalAuthentication(subscriptionContext, plugins.auth);
+
         return next(root, args, { ...context, ...contextParams, ...subscriptionContext }, info);
     };
-
-async function decodeToken(
-    token: string | undefined,
-    plugin: Neo4jGraphQLAuthPlugin | undefined
-): Promise<JwtPayload | undefined> {
-    if (token && plugin) {
-        const jwt = await plugin.decode<JwtPayload>(token);
-        if (typeof jwt === "string") {
-            throw new Neo4jGraphQLAuthenticationError("JWT payload cannot be a string");
-        }
-        return jwt;
-    }
-    return undefined;
-}
