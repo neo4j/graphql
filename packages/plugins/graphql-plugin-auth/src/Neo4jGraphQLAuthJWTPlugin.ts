@@ -20,7 +20,6 @@
 import jsonwebtoken from "jsonwebtoken";
 import Debug from "debug";
 import { DEBUG_PREFIX } from "./constants";
-import { AuthPlugin } from "./AuthPlugin";
 
 const debug = Debug(DEBUG_PREFIX);
 
@@ -31,18 +30,19 @@ export interface JWTPluginInput {
     rolesPath?: string;
 }
 
-class Neo4jGraphQLAuthJWTPlugin extends AuthPlugin {
+class Neo4jGraphQLAuthJWTPlugin {
     private secret: jsonwebtoken.Secret;
     private noVerify?: boolean;
     rolesPath?: string;
+    isGlobalAuthenticationEnabled?: boolean;
 
     constructor(input: JWTPluginInput) {
-        super(input.globalAuthentication);
         this.secret = input.secret;
         this.noVerify = input.noVerify;
         this.rolesPath = input.rolesPath;
+        this.isGlobalAuthenticationEnabled = input.globalAuthentication || false;
 
-        if (this.noVerify && this.isGlobalAuthenticationEnabled()) {
+        if (this.noVerify && this.isGlobalAuthenticationEnabled) {
             throw new Error(
                 "Neo4jGraphQLAuthJWTPlugin, noVerify and globalAuthentication can not both be enabled simultaneously."
             );

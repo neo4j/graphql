@@ -43,10 +43,9 @@ If you need to create your own auth plugin then ensure it adheres to the followi
 ----
 interface Neo4jGraphQLAuthPlugin {
     rolesPath?: string;
+    isGlobalAuthenticationEnabled?: boolean;
 
     decode<T>(token: string | any): Promise<T | undefined>;
-
-    isGlobalAuthenticationEnabled(): boolean;
 }
 ----
 

@@ -39,8 +39,7 @@ export function verifyGlobalAuthentication(
     context: SubscriptionContext | Context,
     plugin: Neo4jGraphQLAuthPlugin | undefined
 ): void {
-    const isGlobalAuthenticationEnabled = plugin?.isGlobalAuthenticationEnabled();
-    if (isGlobalAuthenticationEnabled) {
+    if (plugin?.isGlobalAuthenticationEnabled) {
         if (!context.jwt) {
             throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
         }
