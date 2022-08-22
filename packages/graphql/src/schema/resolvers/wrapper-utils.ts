@@ -42,7 +42,7 @@ export function verifyGlobalAuthentication(
     const isGlobalAuthenticationEnabled = plugin?.isGlobalAuthenticationEnabled();
     if (isGlobalAuthenticationEnabled) {
         if (!context.jwt) {
-            throw new Neo4jGraphQLAuthenticationError("Enabled global authentication requires a valid JWT token");
+            throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
         }
     }
 }

@@ -105,9 +105,7 @@ describe("Subscription global authentication", () => {
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
             expect(wsClient.errors).toBeDefined();
-            expect((wsClient.errors as any)[0].message).toBe(
-                "Enabled global authentication requires a valid JWT token"
-            );
+            expect((wsClient.errors as any)[0].message).toBe("Unauthenticated");
         });
 
         test("global authentication for supertest client", async () => {
@@ -125,9 +123,7 @@ describe("Subscription global authentication", () => {
             const result = await createMovie("movie1", server, "");
 
             expect(result.body.errors).toBeDefined();
-            expect((result.body.errors as any)[0].message).toBe(
-                "Enabled global authentication requires a valid JWT token"
-            );
+            expect((result.body.errors as any)[0].message).toBe("Unauthenticated");
             expect(wsClient.events).toEqual([]);
             expect(wsClient.errors).toEqual([]);
         });
@@ -184,9 +180,7 @@ describe("Subscription global authentication", () => {
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
             expect(wsClient.errors).toBeDefined();
-            expect((wsClient.errors as any)[0].message).toBe(
-                "Enabled global authentication requires a valid JWT token"
-            );
+            expect((wsClient.errors as any)[0].message).toBe("Unauthenticated");
         });
 
         test("global authentication for supertest client", async () => {
@@ -204,9 +198,7 @@ describe("Subscription global authentication", () => {
             const result = await createMovie("movie1", server, "Bearer xxx.invalidtoken.xxx");
 
             expect(result.body.errors).toBeDefined();
-            expect((result.body.errors as any)[0].message).toBe(
-                "Enabled global authentication requires a valid JWT token"
-            );
+            expect((result.body.errors as any)[0].message).toBe("Unauthenticated");
             expect(wsClient.events).toEqual([]);
             expect(wsClient.errors).toEqual([]);
         });

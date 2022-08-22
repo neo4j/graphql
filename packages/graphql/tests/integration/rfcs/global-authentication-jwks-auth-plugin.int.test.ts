@@ -87,7 +87,7 @@ describe("Global authentication - Auth JWKS plugin", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as unknown as Neo4jGraphQLAuthenticationError[]).some((el) =>
-                el.message.includes("Enabled global authentication requires a valid JWT token")
+                el.message.includes("Unauthenticated")
             )
         ).toBeTruthy();
         expect(gqlResult.data).toBeNull();
@@ -118,7 +118,7 @@ describe("Global authentication - Auth JWKS plugin", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as unknown as Neo4jGraphQLAuthenticationError[]).some((el) =>
-                el.message.includes("Enabled global authentication requires a valid JWT token")
+                el.message.includes("Unauthenticated")
             )
         ).toBeTruthy();
         expect(gqlResult.data).toBeNull();
