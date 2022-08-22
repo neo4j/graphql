@@ -177,7 +177,14 @@ describe("Math operators", () => {
             RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_actedIn0:this_actedIn0, auth:$auth,this_update_actedIn0_viewers_INCREMENT:$this_update_actedIn0_viewers_INCREMENT})
             YIELD value AS _
-            RETURN collect(DISTINCT this { .name, actedIn: [ (this)-[:ACTED_IN]->(this_actedIn:Movie)   | this_actedIn { .viewers } ] }) AS data"
+            WITH *
+            CALL {
+                WITH this
+                MATCH (this)-[update_this0:ACTED_IN]->(this_actedIn:\`Movie\`)
+                WITH this_actedIn { .viewers } AS this_actedIn
+                RETURN collect(this_actedIn) AS this_actedIn
+            }
+            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -252,7 +259,14 @@ describe("Math operators", () => {
             RETURN count(*) AS _
             \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, resolvedCallbacks: $resolvedCallbacks})
             YIELD value AS this_acted_in0_relationship_actedIn0_edge
-            WITH this
+            WITH *
+            CALL {
+                WITH this
+                MATCH (this)-[update_this0:ACTED_IN]->(this_actedIn:\`Movie\`)
+                WITH this_actedIn { .title } AS this_actedIn
+                RETURN collect(this_actedIn) AS this_actedIn
+            }
+            WITH *
             CALL {
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
@@ -261,7 +275,7 @@ describe("Math operators", () => {
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
             RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
-            RETURN collect(DISTINCT this { .name, actedIn: [ (this)-[:ACTED_IN]->(this_actedIn:Movie)   | this_actedIn { .title } ], actedInConnection }) AS data"
+            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -335,9 +349,9 @@ describe("Math operators", () => {
             }
             WITH this
             CALL {
-            WITH this
-            MATCH (this)-[:MARRIED_WITH]->(this_Star:Star)
-            RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS marriedWith
+                WITH this
+                MATCH (this)-[:MARRIED_WITH]->(this_Star:Star)
+                RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS marriedWith
             }
             RETURN collect(DISTINCT this { .name, marriedWith: marriedWith }) AS data"
         `);
@@ -424,9 +438,9 @@ describe("Math operators", () => {
             }
             WITH this
             CALL {
-            WITH this
-            MATCH (this)-[:MARRIED_WITH]->(this_Star:Star)
-            RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS marriedWith
+                WITH this
+                MATCH (this)-[:MARRIED_WITH]->(this_Star:Star)
+                RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS marriedWith
             }
             RETURN collect(DISTINCT this { .name, marriedWith: marriedWith }) AS data"
         `);

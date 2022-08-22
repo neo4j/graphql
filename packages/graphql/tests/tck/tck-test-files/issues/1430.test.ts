@@ -86,15 +86,16 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             SET this_create_interface_ChildOne0_node_ChildOne.id = randomUUID()
             SET this_create_interface_ChildOne0_node_ChildOne.name = $this_create_interface_ChildOne0_node_ChildOne_name
             MERGE (this)-[:HAS_INTERFACE]->(this_create_interface_ChildOne0_node_ChildOne)
+            WITH *
             WITH this
             CALL {
-            WITH this
-            MATCH (this)-[:HAS_INTERFACE]->(this_ChildOne:ChildOne)
-            RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS interface
-            UNION
-            WITH this
-            MATCH (this)-[:HAS_INTERFACE]->(this_ChildTwo:ChildTwo)
-            RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS interface
+                WITH this
+                MATCH (this)-[:HAS_INTERFACE]->(this_ChildOne:ChildOne)
+                RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS interface
+                UNION
+                WITH this
+                MATCH (this)-[:HAS_INTERFACE]->(this_ChildTwo:ChildTwo)
+                RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS interface
             }
             RETURN collect(DISTINCT this { .id, interface: interface }) AS data"
         `);
@@ -156,15 +157,16 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             	)
             	RETURN count(*) AS _
             }
+            WITH *
             WITH this
             CALL {
-            WITH this
-            MATCH (this)-[:HAS_INTERFACE]->(this_ChildOne:ChildOne)
-            RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS interface
-            UNION
-            WITH this
-            MATCH (this)-[:HAS_INTERFACE]->(this_ChildTwo:ChildTwo)
-            RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS interface
+                WITH this
+                MATCH (this)-[:HAS_INTERFACE]->(this_ChildOne:ChildOne)
+                RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS interface
+                UNION
+                WITH this
+                MATCH (this)-[:HAS_INTERFACE]->(this_ChildTwo:ChildTwo)
+                RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS interface
             }
             RETURN collect(DISTINCT this { .id, interface: interface }) AS data"
         `);

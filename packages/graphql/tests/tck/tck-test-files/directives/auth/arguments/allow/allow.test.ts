@@ -165,14 +165,21 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:HAS_POST]->(this_posts:\`Post\`)
+                WHERE apoc.util.validatePredicate(NOT ((exists((this_posts)<-[:HAS_POST]-(:\`User\`)) AND any(thisthis1 IN [(this_posts)<-[:HAS_POST]-(thisthis1:\`User\`) | thisthis1] WHERE (thisthis1.id IS NOT NULL AND thisthis1.id = $thisparam0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH this_posts { .content } AS this_posts
+                RETURN collect(this_posts) AS this_posts
+            }
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .id, posts: [ (this)-[:HAS_POST]->(this_posts:Post)  WHERE apoc.util.validatePredicate(NOT ((exists((this_posts)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this_posts)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_postsauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_posts { .content } ] } as this"
+            RETURN this { .id, posts: this_posts } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_postsauth_param0\\": \\"id-01\\",
-                \\"thisauth_param0\\": \\"id-01\\"
+                \\"thisauth_param0\\": \\"id-01\\",
+                \\"thisparam0\\": \\"id-01\\"
             }"
         `);
     });
@@ -195,14 +202,22 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
+            CALL {
+                WITH this
+                MATCH (this_creator:\`User\`)-[thisthis0:HAS_POST]->(this)
+                WHERE (apoc.util.validatePredicate(NOT ((this_creator.id IS NOT NULL AND this_creator.id = $thisparam0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ((this_creator.id IS NOT NULL AND this_creator.id = $this_creatorauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WITH this_creator { .password } AS this_creator
+                RETURN head(collect(this_creator)) AS this_creator
+            }
             CALL apoc.util.validate(NOT ((exists((this)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { creator: head([ (this)<-[:HAS_POST]-(this_creator:User)  WHERE apoc.util.validatePredicate(NOT ((this_creator.id IS NOT NULL AND this_creator.id = $this_creatorauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ((this_creator.id IS NOT NULL AND this_creator.id = $this_creatorauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_creator { .password } ]) } as this"
+            RETURN this { creator: this_creator } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this_creatorauth_param0\\": \\"id-01\\",
-                \\"thisauth_param0\\": \\"id-01\\"
+                \\"thisauth_param0\\": \\"id-01\\",
+                \\"thisparam0\\": \\"id-01\\"
             }"
         `);
     });
@@ -229,18 +244,32 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE this.id = $param0
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:HAS_POST]->(this_posts:\`Post\`)
+                WHERE (this_posts.id = $thisparam0 AND apoc.util.validatePredicate(NOT ((exists((this_posts)<-[:HAS_POST]-(:\`User\`)) AND any(thisthis1 IN [(this_posts)<-[:HAS_POST]-(thisthis1:\`User\`) | thisthis1] WHERE (thisthis1.id IS NOT NULL AND thisthis1.id = $thisparam1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                CALL {
+                    WITH this_posts
+                    MATCH (this_posts)-[thisthis2:HAS_COMMENT]->(this_posts_comments:\`Comment\`)
+                    WHERE (this_posts_comments.id = $thisparam2 AND apoc.util.validatePredicate(NOT ((exists((this_posts_comments)<-[:HAS_COMMENT]-(:\`User\`)) AND any(thisthis3 IN [(this_posts_comments)<-[:HAS_COMMENT]-(thisthis3:\`User\`) | thisthis3] WHERE (thisthis3.id IS NOT NULL AND thisthis3.id = $thisparam3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                    WITH this_posts_comments { .content } AS this_posts_comments
+                    RETURN collect(this_posts_comments) AS this_posts_comments
+                }
+                WITH this_posts { comments: this_posts_comments } AS this_posts
+                RETURN collect(this_posts) AS this_posts
+            }
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .id, posts: [ (this)-[:HAS_POST]->(this_posts:Post)  WHERE this_posts.id = $this_posts_param0 AND apoc.util.validatePredicate(NOT ((exists((this_posts)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this_posts)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_postsauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_posts { comments: [ (this_posts)-[:HAS_COMMENT]->(this_posts_comments:Comment)  WHERE this_posts_comments.id = $this_posts_comments_param0 AND apoc.util.validatePredicate(NOT ((exists((this_posts_comments)<-[:HAS_COMMENT]-(:\`User\`)) AND any(auth_this0 IN [(this_posts_comments)<-[:HAS_COMMENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts_commentsauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_posts_comments { .content } ] } ] } as this"
+            RETURN this { .id, posts: this_posts } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"this_posts_comments_param0\\": \\"1\\",
-                \\"this_posts_commentsauth_param0\\": \\"id-01\\",
-                \\"this_posts_param0\\": \\"1\\",
-                \\"this_postsauth_param0\\": \\"id-01\\",
-                \\"thisauth_param0\\": \\"id-01\\"
+                \\"thisauth_param0\\": \\"id-01\\",
+                \\"thisparam0\\": \\"1\\",
+                \\"thisparam1\\": \\"id-01\\",
+                \\"thisparam2\\": \\"1\\",
+                \\"thisparam3\\": \\"id-01\\"
             }"
         `);
     });
@@ -587,6 +616,7 @@ describe("Cypher Auth Allow", () => {
             )
             RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -747,6 +777,7 @@ describe("Cypher Auth Allow", () => {
             	)
             	RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 

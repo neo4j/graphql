@@ -73,13 +73,13 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             CALL {
             WITH this
             CALL {
-            WITH this
-            MATCH (this)<-[:ACTED_IN]-(this_Person:Person)
-            RETURN { __resolveType: \\"Person\\", id: this_Person.id } AS subjects
-            UNION
-            WITH this
-            MATCH (this)<-[:ACTED_IN]-(this_Place:Place)
-            RETURN { __resolveType: \\"Place\\", id: this_Place.id } AS subjects
+                WITH this
+                MATCH (this)<-[:ACTED_IN]-(this_Person:Person)
+                RETURN { __resolveType: \\"Person\\", id: this_Person.id } AS subjects
+                UNION
+                WITH this
+                MATCH (this)<-[:ACTED_IN]-(this_Place:Place)
+                RETURN { __resolveType: \\"Place\\", id: this_Place.id } AS subjects
             }
             RETURN collect(subjects) AS subjects
             }
@@ -87,13 +87,13 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             CALL {
             WITH subjects, this
             CALL {
-            WITH subjects, this
-            MATCH (this)-[:ACTED_IN]->(this_Person:Person)
-            RETURN { __resolveType: \\"Person\\", id: this_Person.id } AS objects
-            UNION
-            WITH subjects, this
-            MATCH (this)-[:ACTED_IN]->(this_Place:Place)
-            RETURN { __resolveType: \\"Place\\", id: this_Place.id } AS objects
+                WITH subjects, this
+                MATCH (this)-[:ACTED_IN]->(this_Person:Person)
+                RETURN { __resolveType: \\"Person\\", id: this_Person.id } AS objects
+                UNION
+                WITH subjects, this
+                MATCH (this)-[:ACTED_IN]->(this_Place:Place)
+                RETURN { __resolveType: \\"Place\\", id: this_Place.id } AS objects
             }
             RETURN collect(objects) AS objects
             }

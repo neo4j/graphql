@@ -23,7 +23,7 @@ query SimpleQueryWithNestedWhere {
     }
 }
 
-query DeeplyNested {
+query DeeplyNested_skip {
     movies {
         actors {
             name
@@ -136,7 +136,7 @@ query DeeplyNestedWithRelationshipFilters {
                     name_CONTAINS: "i"
                     movies_SOME: {
                         title_NOT: "non-existant"
-                        # actors_SOME: { name_CONTAINS: "i", movies_NONE: { title: "The Matrix" } } # Commented out due to being extremely slow
+                        actors_SOME: { name_CONTAINS: "i", movies_NONE: { title: "The Matrix" } }
                     }
                 }
             }

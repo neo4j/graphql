@@ -34,8 +34,26 @@ export abstract class WithOrder extends ClauseMixin {
             return [rawExpr, DEFAULT_ORDER];
         });
 
-        this.orderByStatement = new OrderBy(normalizedExprs);
+        const orderByStatement = this.getOrCreateOrderBy();
+        orderByStatement.setOrderElements(normalizedExprs);
 
         return this;
+    }
+
+    public skip(value: number): this {
+        const orderByStatement = this.getOrCreateOrderBy();
+        orderByStatement.skip(value);
+        return this;
+    }
+
+    public limit(value: number): this {
+        const orderByStatement = this.getOrCreateOrderBy();
+        orderByStatement.limit(value);
+        return this;
+    }
+
+    private getOrCreateOrderBy(): OrderBy {
+        if (!this.orderByStatement) this.orderByStatement = new OrderBy();
+        return this.orderByStatement;
     }
 }

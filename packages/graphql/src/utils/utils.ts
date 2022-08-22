@@ -30,6 +30,11 @@ export function isNeoInt(value: unknown): value is Integer {
     return isInt(value);
 }
 
+/** Transforms a value to number, if possible */
+export function toNumber(value: Integer | number): number {
+    return isNeoInt(value) ? value.toNumber() : value;
+}
+
 /** Joins all strings with given separator, ignoring empty or undefined statements */
 export function joinStrings(statements: string | Array<string | undefined>, separator = "\n"): string {
     return filterTruthy(asArray(statements)).join(separator);

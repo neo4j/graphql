@@ -92,7 +92,8 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             )
             RETURN count(*) AS _
             }
-            WITH this
+            WITH *
+            WITH *
             CALL {
             	WITH this
             	MATCH (this)-[this_activeOrganization_Organization_unique:ACTIVELY_MANAGING]->(:Organization)

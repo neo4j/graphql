@@ -2447,7 +2447,7 @@ __metadata:
     "@neo4j/graphql": ^3.6.3
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/jest": 28.1.7
-    "@types/node": 16.11.49
+    "@types/node": 16.11.52
     camelcase: 6.3.0
     graphql-tag: 2.12.6
     jest: 28.1.3
@@ -2473,7 +2473,7 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/jest": 28.1.7
     "@types/jsonwebtoken": 8.5.8
-    "@types/node": 16.11.49
+    "@types/node": 16.11.52
     debug: 4.3.4
     jest: 28.1.3
     jsonwebtoken: 8.5.1
@@ -2491,12 +2491,12 @@ __metadata:
     "@types/amqplib": 0.8.2
     "@types/debug": 4.1.7
     "@types/jest": 28.1.7
-    "@types/node": 16.11.49
+    "@types/node": 16.11.52
     amqplib: 0.10.2
     apollo-server: 3.10.1
     apollo-server-express: 3.10.1
     camelcase: 6.3.0
-    graphql-ws: 5.10.0
+    graphql-ws: 5.10.1
     jest: 28.1.3
     neo4j-driver: 4.4.7
     pluralize: 8.0.0
@@ -2529,7 +2529,7 @@ __metadata:
     "@types/uuid": 8.3.4
     "@types/webpack": 5.28.0
     autoprefixer: 10.4.8
-    codemirror: 5.65.7
+    codemirror: 5.65.8
     codemirror-graphql: 1.3.2
     compression-webpack-plugin: 10.0.0
     copy-webpack-plugin: 11.0.0
@@ -2590,7 +2590,7 @@ __metadata:
     "@types/is-uuid": 1.0.0
     "@types/jest": 28.1.7
     "@types/jsonwebtoken": 8.5.8
-    "@types/node": 16.11.49
+    "@types/node": 16.11.52
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
     "@types/semver": 7.3.12
@@ -2608,7 +2608,7 @@ __metadata:
     graphql-parse-resolve-info: 4.12.3
     graphql-relay: 0.10.0
     graphql-tag: 2.12.6
-    graphql-ws: 5.10.0
+    graphql-ws: 5.10.1
     is-uuid: 1.0.2
     jest: 28.1.3
     jest-extended: 3.0.2
@@ -2640,7 +2640,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": ^3.5.0
     "@types/jest": 28.1.7
-    "@types/node": 16.11.49
+    "@types/node": 16.11.52
     "@types/pluralize": 0.0.29
     camelcase: 6.3.0
     debug: 4.3.4
@@ -3421,10 +3421,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:16.11.49":
-  version: 16.11.49
-  resolution: "@types/node@npm:16.11.49"
-  checksum: 05545ee49da3b783ab77cddca45db6f4d47861c2bb148a17b774688e1082f20f27177591d140923724bcd8643b32291203f6f1eadba397e394232d4a1e28e07a
+"@types/node@npm:16.11.52":
+  version: 16.11.52
+  resolution: "@types/node@npm:16.11.52"
+  checksum: eb688bff28015f1399264b7aa347d5f40e165d438306bd5884d78993671c5e43b7849b8ddc74b91bf7c7b73e15ba54fc56ea1db2118b0e3f59f9fabd2adc7fe7
   languageName: node
   linkType: hard
 
@@ -6045,10 +6045,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror@npm:5.65.7":
-  version: 5.65.7
-  resolution: "codemirror@npm:5.65.7"
-  checksum: 84e28000241fee3d605c1dd928d816f69e93b92621752d048f9273e18083ccaaa4e66783908060df13d0d566a20a1e007cd5bd0c0629cebd0e1c395d62f75795
+"codemirror@npm:5.65.8":
+  version: 5.65.8
+  resolution: "codemirror@npm:5.65.8"
+  checksum: e56a59c2251b357b3d95862f77ac8b8d2b1b0c52db58a2dcf5b8b0531fd249ad4458cbd9a469ce1513475ba48ba39ffd16bd3876eb3870a1305bcafcb157239f
   languageName: node
   linkType: hard
 
@@ -7996,9 +7996,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:26.8.3":
-  version: 26.8.3
-  resolution: "eslint-plugin-jest@npm:26.8.3"
+"eslint-plugin-jest@npm:26.8.7":
+  version: 26.8.7
+  resolution: "eslint-plugin-jest@npm:26.8.7"
   dependencies:
     "@typescript-eslint/utils": ^5.10.0
   peerDependencies:
@@ -8009,7 +8009,7 @@ __metadata:
       optional: true
     jest:
       optional: true
-  checksum: 3fd8dd06e4b293caf9a06a8767731e7f9fd0e74cae2f5f820484ab01a7435cab340bdcc41295bff71c0448fc92345830a399848acb4aec481e3abbfeebe14e2d
+  checksum: 4e5e0c781ef48ae7d757123bce3ed28c384f02f3d4cf88d616932c075b625c10f298e905bee988876f62f6688e8e11d0b8ce235fd4b3f6c7006a8725375eac58
   languageName: node
   linkType: hard
 
@@ -9402,12 +9402,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-ws@npm:5.10.0":
-  version: 5.10.0
-  resolution: "graphql-ws@npm:5.10.0"
+"graphql-ws@npm:5.10.1":
+  version: 5.10.1
+  resolution: "graphql-ws@npm:5.10.1"
   peerDependencies:
     graphql: ">=0.11 <=16"
-  checksum: 6a5ead12ecfc6a448ac2828d981349288591c82a6f8ae0552a866c05fc17eb498325522c7d20c9169e9263799f78b085ecfda2dffb84a7b4ec2fc85c10ce1a0d
+  checksum: ad8eb8a6823a32a7bd9bc6ec73a0b244f503e50318ef5db1312f1d09c5f0b0e4505ad75b08f06e4c40c6935cf5170444b19347b7b83222b4e1af01401418cb91
   languageName: node
   linkType: hard
 
@@ -13209,7 +13209,7 @@ __metadata:
     "@types/express": 4.17.9
     "@types/jest": 28.1.7
     "@types/jsonwebtoken": 8.5.1
-    "@types/node": 16.11.49
+    "@types/node": 16.11.52
     "@types/uuid": 8.3.4
     apollo-server-express: 3.10.1
     bcrypt: 5.0.1
@@ -13277,7 +13277,7 @@ __metadata:
     eslint-import-resolver-typescript: 3.4.2
     eslint-plugin-eslint-comments: 3.2.0
     eslint-plugin-import: 2.26.0
-    eslint-plugin-jest: 26.8.3
+    eslint-plugin-jest: 26.8.7
     eslint-plugin-jsx-a11y: 6.6.1
     eslint-plugin-react: 7.30.1
     graphql: 16.6.0

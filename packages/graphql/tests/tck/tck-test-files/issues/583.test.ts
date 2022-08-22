@@ -91,17 +91,17 @@ describe("#583", () => {
             CALL {
             WITH this
             CALL {
-            WITH this
-            MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
-            RETURN { __resolveType: \\"Movie\\", title: this_Movie.title, awardsGiven: this_Movie.awardsGiven } AS actedIn
-            UNION
-            WITH this
-            MATCH (this)-[:ACTED_IN]->(this_Series:Series)
-            RETURN { __resolveType: \\"Series\\", title: this_Series.title, awardsGiven: this_Series.awardsGiven } AS actedIn
-            UNION
-            WITH this
-            MATCH (this)-[:ACTED_IN]->(this_ShortFilm:ShortFilm)
-            RETURN { __resolveType: \\"ShortFilm\\", title: this_ShortFilm.title } AS actedIn
+                WITH this
+                MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
+                RETURN { __resolveType: \\"Movie\\", title: this_Movie.title, awardsGiven: this_Movie.awardsGiven } AS actedIn
+                UNION
+                WITH this
+                MATCH (this)-[:ACTED_IN]->(this_Series:Series)
+                RETURN { __resolveType: \\"Series\\", title: this_Series.title, awardsGiven: this_Series.awardsGiven } AS actedIn
+                UNION
+                WITH this
+                MATCH (this)-[:ACTED_IN]->(this_ShortFilm:ShortFilm)
+                RETURN { __resolveType: \\"ShortFilm\\", title: this_ShortFilm.title } AS actedIn
             }
             RETURN collect(actedIn) AS actedIn
             }

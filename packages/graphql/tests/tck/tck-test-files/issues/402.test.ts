@@ -64,7 +64,13 @@ describe("#402", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Event\`)
-            RETURN this { .id, area: head([ (this)-[:HAPPENS_IN]->(this_area:Area)   | this_area { .id } ]) } as this"
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:HAPPENS_IN]->(this_area:\`Area\`)
+                WITH this_area { .id } AS this_area
+                RETURN head(collect(this_area)) AS this_area
+            }
+            RETURN this { .id, area: this_area } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

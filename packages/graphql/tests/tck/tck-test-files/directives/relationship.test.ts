@@ -73,7 +73,13 @@ describe("Cypher relationship", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor)   | this_topActor { .name } ]) } as this"
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:TOP_ACTOR]->(this_topActor:\`Actor\`)
+                WITH this_topActor { .name } AS this_topActor
+                RETURN head(collect(this_topActor)) AS this_topActor
+            }
+            RETURN this { .title, topActor: this_topActor } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -98,7 +104,13 @@ describe("Cypher relationship", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:Actor)   | this_actors { .name } ] } as this"
+            CALL {
+                WITH this
+                MATCH (this_actors:\`Actor\`)-[thisthis0:ACTED_IN]->(this)
+                WITH this_actors { .name } AS this_actors
+                RETURN collect(this_actors) AS this_actors
+            }
+            RETURN this { .title, actors: this_actors } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -126,7 +138,19 @@ describe("Cypher relationship", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor)   | this_topActor { .name, movies: [ (this_topActor)-[:ACTED_IN]->(this_topActor_movies:Movie)   | this_topActor_movies { .title } ] } ]) } as this"
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:TOP_ACTOR]->(this_topActor:\`Actor\`)
+                CALL {
+                    WITH this_topActor
+                    MATCH (this_topActor)-[thisthis1:ACTED_IN]->(this_topActor_movies:\`Movie\`)
+                    WITH this_topActor_movies { .title } AS this_topActor_movies
+                    RETURN collect(this_topActor_movies) AS this_topActor_movies
+                }
+                WITH this_topActor { .name, movies: this_topActor_movies } AS this_topActor
+                RETURN head(collect(this_topActor)) AS this_topActor
+            }
+            RETURN this { .title, topActor: this_topActor } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -155,14 +179,28 @@ describe("Cypher relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
-            RETURN this { .title, topActor: head([ (this)-[:TOP_ACTOR]->(this_topActor:Actor)  WHERE this_topActor.name = $this_topActor_param0 | this_topActor { .name, movies: [ (this_topActor)-[:ACTED_IN]->(this_topActor_movies:Movie)  WHERE this_topActor_movies.title = $this_topActor_movies_param0 | this_topActor_movies { .title } ] } ]) } as this"
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:TOP_ACTOR]->(this_topActor:\`Actor\`)
+                WHERE this_topActor.name = $thisparam0
+                CALL {
+                    WITH this_topActor
+                    MATCH (this_topActor)-[thisthis1:ACTED_IN]->(this_topActor_movies:\`Movie\`)
+                    WHERE this_topActor_movies.title = $thisparam1
+                    WITH this_topActor_movies { .title } AS this_topActor_movies
+                    RETURN collect(this_topActor_movies) AS this_topActor_movies
+                }
+                WITH this_topActor { .name, movies: this_topActor_movies } AS this_topActor
+                RETURN head(collect(this_topActor)) AS this_topActor
+            }
+            RETURN this { .title, topActor: this_topActor } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some title\\",
-                \\"this_topActor_movies_param0\\": \\"top actor movie\\",
-                \\"this_topActor_param0\\": \\"top actor\\"
+                \\"thisparam0\\": \\"top actor\\",
+                \\"thisparam1\\": \\"top actor movie\\"
             }"
         `);
     });
