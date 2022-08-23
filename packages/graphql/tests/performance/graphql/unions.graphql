@@ -1,12 +1,31 @@
-query SimpleUnionQuery {
+query SimpleUnionQuery_only {
     users {
         name
-        liked {
+        likes {
             ... on Person {
                 name
             }
             ... on Movie {
                 title
+            }
+        }
+    }
+}
+
+query NestedUnion_only {
+    people {
+        name
+        likes {
+            ... on Person {
+                name
+                likes {
+                    ... on Person {
+                        name
+                    }
+                    ... on Movie {
+                        title
+                    }
+                }
             }
         }
     }
