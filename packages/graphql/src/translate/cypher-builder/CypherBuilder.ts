@@ -87,7 +87,7 @@ export {
     sum,
 } from "./functions/CypherFunction";
 export * from "./functions/ListFunctions";
-export { any, all, exists } from "./functions/PredicateFunctions";
+export { any, all, exists, single } from "./functions/PredicateFunctions";
 
 // Types
 export type { CypherResult } from "./types";
