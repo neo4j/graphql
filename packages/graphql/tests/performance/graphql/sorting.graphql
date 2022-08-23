@@ -17,3 +17,22 @@ query SortMultipleTypes {
         }
     }
 }
+
+query SortOnNestedFields {
+    movies {
+        actors(options: {sort: {name: ASC}}) {
+            name
+        }
+    }
+}
+
+query SortDeeplyNestedFields {
+    movies {
+        title
+        actors(options: {sort: {name: ASC}}) {
+            movies(options: {sort: {released: DESC}}){
+                released
+            }
+        }
+    }
+}

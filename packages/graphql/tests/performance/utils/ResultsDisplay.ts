@@ -25,6 +25,7 @@ enum TTYColors {
     cyan = "\x1b[36m",
     red = "\x1b[31m",
     green = "\x1b[32m",
+    magenta = "\x1b[45m"
 }
 
 const TTYReset = "\x1b[0m";
@@ -34,6 +35,7 @@ export class ResultsDisplay {
         results: Array<Performance.TestDisplayData>,
         oldResults: Record<string, Performance.TestDisplayData> | undefined
     ): Promise<void> {
+        const hasOldResults=Boolean(oldResults)
         // eslint-disable-next-line no-console
         console.table(
             results.reduce((acc, { name, result, file, type }) => {
@@ -54,6 +56,9 @@ export class ResultsDisplay {
                     } else if (this.moreThan(result2.dbHits, oldResult.result.dbHits, 0.1)) {
                         displayName = this.colorText(displayName, TTYColors.red);
                     }
+                }
+                else if(hasOldResults) {
+                    displayName = this.colorText(displayName, TTYColors.magenta); // For new tests added
                 }
 
                 let typeStr = "";
