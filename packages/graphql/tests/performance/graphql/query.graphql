@@ -145,3 +145,23 @@ query DeeplyNestedWithRelationshipFilters {
         name
     }
 }
+
+query DeeplyNestedWithRelationshipSingleFilters {
+    people(
+        where: {
+            name_STARTS_WITH: "T"
+            movies_SINGLE: {
+                title_CONTAINS: "i"
+                actors_SINGLE: {
+                    name_CONTAINS: "i"
+                    movies_SINGLE: {
+                        title_NOT: "non-existant"
+                        actors_SINGLE: { name_CONTAINS: "i", movies_SINGLE: { title: "The Matrix" } }
+                    }
+                }
+            }
+        }
+    ) {
+        name
+    }
+}

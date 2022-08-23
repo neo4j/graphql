@@ -83,7 +83,7 @@ describe("NodeDirective", () => {
         });
         expect(() => {
             instance.getLabelsString("label", context);
-        }).toThrow("Type value required.");
+        }).toThrow("Label value not found in context.");
     });
 
     test("should throw if context variable is missing in context", () => {
@@ -93,6 +93,6 @@ describe("NodeDirective", () => {
         });
         expect(() => {
             instance.getLabelsString("label", context);
-        }).toThrow("Type value required.");
+        }).toThrow("Label value not found in context.");
     });
 });

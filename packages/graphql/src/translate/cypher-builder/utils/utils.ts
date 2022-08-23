@@ -27,7 +27,7 @@ export function padLeft(str: string | undefined): string {
 }
 
 export function escapeLabel(label: string): string {
-    const escapedLabel = label.replace(/`/g, "``");
+    const escapedLabel = label.replace(/\\u0060/g, "`").replace(/`/g, "``");
     return `\`${escapedLabel}\``;
 }
 

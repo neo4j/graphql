@@ -60,6 +60,10 @@ export function all(variable: Variable, listExpr: Expr, whereFilter?: Predicate)
     return new ListPredicateFunction("all", variable, listExpr, whereFilter);
 }
 
+export function single(variable: Variable, listExpr: Expr, whereFilter: Predicate): PredicateFunction {
+    return new ListPredicateFunction("single", variable, listExpr, whereFilter);
+}
+
 class ExistsFunction extends PredicateFunction {
     private pattern: Pattern;
 
