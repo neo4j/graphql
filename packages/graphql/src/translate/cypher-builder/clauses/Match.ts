@@ -83,6 +83,7 @@ export interface Match extends WithReturn, WithWhere, WithSet, WithWith {}
 applyMixins(Match, [WithReturn, WithWhere, WithSet, WithWith]);
 
 export class OptionalMatch extends Match {
+    // TODO: move optional to MATCH as a method and keep this as sugar syntax
     public getCypher(env: CypherEnvironment): string {
         const matchStr = super.getCypher(env);
         return `OPTIONAL ${matchStr}`;

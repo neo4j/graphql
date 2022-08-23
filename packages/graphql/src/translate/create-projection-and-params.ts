@@ -21,7 +21,6 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { GraphQLUnionType } from "graphql";
 import { mergeDeep } from "@graphql-tools/utils";
 import type { Node } from "../classes";
-import createWhereAndParams from "./where/create-where-and-params";
 import type { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
@@ -37,7 +36,6 @@ import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjec
 import { removeDuplicates } from "../utils/utils";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { createProjectionSubquery } from "./projection/elements/create-projection-subquery";
-import { createUnionProjectionSubquery } from "./projection/unions/create-union-projection-subquery";
 
 interface Res {
     projection: string[];
@@ -378,7 +376,7 @@ export default function createProjectionAndParams({
                         nestedProjection = `{ __resolveType: "${refNode.name}" }`;
                     }
 
-                    const subquery = createUnionProjectionSubquery({
+                    const subquery = createProjectionSubquery({
                         parentNode,
                         whereInput: field.args.where ? field.args.where[refNode.name] : field.args.where,
                         node: refNode,

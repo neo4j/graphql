@@ -1,4 +1,4 @@
-query SimpleUnionQuery_only {
+query SimpleUnionQuery {
     users {
         name
         likes {
@@ -12,7 +12,7 @@ query SimpleUnionQuery_only {
     }
 }
 
-query NestedUnion_only {
+query NestedUnion {
     people {
         name
         likes {
