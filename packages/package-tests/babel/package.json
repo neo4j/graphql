@@ -13,7 +13,7 @@
         "neo4j-driver": "4.4.7"
     },
     "devDependencies": {
-        "@babel/core": "7.18.10",
+        "@babel/core": "7.18.13",
         "@babel/node": "7.18.10",
         "@babel/preset-env": "7.18.10"
     }
