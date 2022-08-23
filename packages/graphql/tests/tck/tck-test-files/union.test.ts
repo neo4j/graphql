@@ -54,7 +54,100 @@ describe("Cypher Union", () => {
         });
     });
 
-    test.only("Read Unions", async () => {
+    test("Read Unions simple", async () => {
+        const query = gql`
+            {
+                movies {
+                    search {
+                        ... on Movie {
+                            title
+                        }
+                        ... on Genre {
+                            name
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", { jwtAllowedNamesExample: ["Horror"] });
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Movie\`)
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:SEARCH]->(this_search_0:\`Genre\`)
+                WHERE apoc.util.validatePredicate(NOT ((this_search_0.name IS NOT NULL AND this_search_0.name = $thisparam0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH this_search_0  { __resolveType: \\"Genre\\",  .name } AS this_search_0
+                RETURN collect(this_search_0) AS this_search_0
+            }
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis1:SEARCH]->(this_search_1:\`Movie\`)
+                WITH this_search_1  { __resolveType: \\"Movie\\",  .title } AS this_search_1
+                RETURN collect(this_search_1) AS this_search_1
+            }
+            RETURN this { search: this_search_0 + this_search_1 } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"thisparam0\\": [
+                    \\"Horror\\"
+                ]
+            }"
+        `);
+    });
+
+    test("Read Unions with missing types", async () => {
+        const query = gql`
+            {
+                movies {
+                    search {
+                        ... on Genre {
+                            name
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", { jwtAllowedNamesExample: ["Horror"] });
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Movie\`)
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:SEARCH]->(this_search_0:\`Genre\`)
+                WHERE apoc.util.validatePredicate(NOT ((this_search_0.name IS NOT NULL AND this_search_0.name = $thisparam0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH this_search_0  { __resolveType: \\"Genre\\",  .name } AS this_search_0
+                RETURN collect(this_search_0) AS this_search_0
+            }
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis1:SEARCH]->(this_search_1:\`Movie\`)
+                WITH this_search_1 { __resolveType: \\"Movie\\" } AS this_search_1
+                RETURN collect(this_search_1) AS this_search_1
+            }
+            RETURN this { search: this_search_0 + this_search_1 } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"thisparam0\\": [
+                    \\"Horror\\"
+                ]
+            }"
+        `);
+    });
+
+    test("Read Unions with filter and limit", async () => {
         const query = gql`
             {
                 movies(where: { title: "some title" }) {
@@ -81,28 +174,35 @@ describe("Cypher Union", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
-            RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search) WHERE (\\"Genre\\" IN labels(this_search)) OR (\\"Movie\\" IN labels(this_search)) | head( [ this_search IN [this_search] WHERE (\\"Genre\\" IN labels(this_search)) AND this_search.name = $this_search_Genrethis_search_param0 AND apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $this_searchauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"Movie\\" IN labels(this_search)) AND this_search.title = $this_search_Moviethis_search_param0 | this_search { __resolveType: \\"Movie\\",  .title } ] ) ] WHERE this_search IS NOT NULL] [1..11]  } as this"
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:SEARCH]->(this_search_0:\`Genre\`)
+                WHERE (this_search_0.name = $thisparam0 AND apoc.util.validatePredicate(NOT ((this_search_0.name IS NOT NULL AND this_search_0.name = $thisparam1)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WITH this_search_0  { __resolveType: \\"Genre\\",  .name } AS this_search_0
+                LIMIT 10
+                SKIP 1
+                RETURN collect(this_search_0) AS this_search_0
+            }
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis1:SEARCH]->(this_search_1:\`Movie\`)
+                WHERE this_search_1.title = $thisparam2
+                WITH this_search_1  { __resolveType: \\"Movie\\",  .title } AS this_search_1
+                LIMIT 10
+                SKIP 1
+                RETURN collect(this_search_1) AS this_search_1
+            }
+            RETURN this { search: this_search_0 + this_search_1 } as this"
         `);
-
-        // expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-        //     "MATCH (this:\`Movie\`)
-        //     WHERE this.title = $param0
-        //     RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search)
-        // WHERE (\\"Genre\\" IN labels(this_search)) OR (\\"Movie\\" IN labels(this_search)) |
-        // head( [ this_search IN [this_search] WHERE (\\"Genre\\" IN labels(this_search))
-        // AND this_search.name = $this_search_Genrethis_search_param0
-        // AND apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $this_searchauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"Movie\\" IN labels(this_search)) AND this_search.title = $this_search_Moviethis_search_param0 | this_search { __resolveType: \\"Movie\\",  .title } ] ) ]
-        // WHERE this_search IS NOT NULL] [1..11]  } as this"
-        // `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some title\\",
-                \\"this_search_Genrethis_search_param0\\": \\"Horror\\",
-                \\"this_searchauth_param0\\": [
+                \\"thisparam0\\": \\"Horror\\",
+                \\"thisparam1\\": [
                     \\"Horror\\"
                 ],
-                \\"this_search_Moviethis_search_param0\\": \\"The Matrix\\"
+                \\"thisparam2\\": \\"The Matrix\\"
             }"
         `);
     });

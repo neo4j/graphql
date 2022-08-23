@@ -152,6 +152,7 @@ export default function createProjectionAndParams({
             }
 
             if (referenceUnion) {
+                // TODO: move to subqueries
                 const fieldFieldsKeys = Object.keys(fieldFields);
                 const hasMultipleFieldFields = fieldFieldsKeys.length > 1;
                 const hasSingleFieldField = fieldFieldsKeys.length === 1;
