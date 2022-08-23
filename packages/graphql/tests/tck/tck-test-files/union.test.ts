@@ -54,7 +54,7 @@ describe("Cypher Union", () => {
         });
     });
 
-    test("Read Unions", async () => {
+    test.only("Read Unions", async () => {
         const query = gql`
             {
                 movies(where: { title: "some title" }) {
@@ -83,6 +83,17 @@ describe("Cypher Union", () => {
             WHERE this.title = $param0
             RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search) WHERE (\\"Genre\\" IN labels(this_search)) OR (\\"Movie\\" IN labels(this_search)) | head( [ this_search IN [this_search] WHERE (\\"Genre\\" IN labels(this_search)) AND this_search.name = $this_search_Genrethis_search_param0 AND apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $this_searchauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"Movie\\" IN labels(this_search)) AND this_search.title = $this_search_Moviethis_search_param0 | this_search { __resolveType: \\"Movie\\",  .title } ] ) ] WHERE this_search IS NOT NULL] [1..11]  } as this"
         `);
+
+        // expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+        //     "MATCH (this:\`Movie\`)
+        //     WHERE this.title = $param0
+        //     RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search)
+        // WHERE (\\"Genre\\" IN labels(this_search)) OR (\\"Movie\\" IN labels(this_search)) |
+        // head( [ this_search IN [this_search] WHERE (\\"Genre\\" IN labels(this_search))
+        // AND this_search.name = $this_search_Genrethis_search_param0
+        // AND apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $this_searchauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"Movie\\" IN labels(this_search)) AND this_search.title = $this_search_Moviethis_search_param0 | this_search { __resolveType: \\"Movie\\",  .title } ] ) ]
+        // WHERE this_search IS NOT NULL] [1..11]  } as this"
+        // `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
