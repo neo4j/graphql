@@ -64,7 +64,7 @@ export class OrderBy extends CypherASTNode {
             orderStr = `ORDER BY ${exprStr}`;
         }
 
-        return `${orderStr}${limitStr}${skipStr}`;
+        return `${orderStr}${skipStr}${limitStr}`;
     }
 }
 
