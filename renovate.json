@@ -1,5 +1,5 @@
 {
-    "extends": ["config:js-lib"],
+    "extends": ["config:base"],
     "baseBranches": ["dev"],
     "rebaseWhen": "auto",
     "automerge": true,
@@ -20,31 +20,16 @@
     "packageRules": [
         {
             "matchPackageNames": ["@neo4j/graphql-toolbox"],
-            "extends": "config:js-app"
+            "extends": [":pinAllExceptPeerDependencies"]
+        },
+        {
+            "matchPackagePatterns": ["*"],
+            "excludePackageNames": ["@neo4j/graphql-toolbox"],
+            "extends": [":pinOnlyDevDependencies"]
         },
         {
             "groupName": "neo4j-ndl",
             "matchPackagePatterns": ["^@neo4j-ndl/"]
-        },
-        {
-            "matchDepTypes": ["dependencies"],
-            "matchFiles": ["packages/graphql/package.json"],
-            "labels": ["dependency upgrade", "graphql"]
-        },
-        {
-            "matchDepTypes": ["dependencies"],
-            "matchFiles": ["packages/introspector/package.json"],
-            "labels": ["dependency upgrade", "introspector"]
-        },
-        {
-            "matchDepTypes": ["dependencies"],
-            "matchFiles": ["packages/ogm/package.json"],
-            "labels": ["dependency upgrade", "ogm"]
-        },
-        {
-            "matchDepTypes": ["dependencies"],
-            "matchFiles": ["packages/graphql-plugin-auth/package.json"],
-            "labels": ["dependency upgrade", "graphql-plugin-auth"]
         },
         {
             "matchPackagePatterns": ["graphql"],
