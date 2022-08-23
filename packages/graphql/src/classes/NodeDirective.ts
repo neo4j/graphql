@@ -20,6 +20,7 @@
 import { Neo4jGraphQLError } from "./Error";
 import type { Context } from "../types";
 import ContextParser from "../utils/context-parser";
+import { escapeLabel } from "../translate/cypher-builder/utils/utils";
 
 export interface NodeDirectiveConstructor {
     label?: string;
@@ -60,7 +61,7 @@ export class NodeDirective {
 
             if (ctxPath) {
                 const mappedLabel = ContextParser.getProperty(ctxPath, context);
-                if (!mappedLabel) throw new Error(`Type value required.`);
+                if (!mappedLabel) throw new Error(`Label value not found in context.`);
                 return mappedLabel;
             }
             return label;
@@ -68,7 +69,6 @@ export class NodeDirective {
     }
 
     private escapeLabel(label: string): string {
-        const escapedLabel = label.replace(/`/g, "``");
-        return `\`${escapedLabel}\``;
+        return escapeLabel(label);
     }
 }
