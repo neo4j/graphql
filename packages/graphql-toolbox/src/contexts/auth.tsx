@@ -82,11 +82,12 @@ export function AuthProvider(props: any) {
         } else {
             const storedConnectionUsername = Storage.retrieve(LOCAL_STATE_CONNECTION_USERNAME);
             const storedConnectionUrl = Storage.retrieve(LOCAL_STATE_CONNECTION_URL);
-            if (!storedConnectionUrl || !storedConnectionUsername) return;
-            loginPayload = {
-                username: storedConnectionUsername,
-                url: storedConnectionUrl,
-            };
+            if (storedConnectionUrl && storedConnectionUsername) {
+                loginPayload = {
+                    username: storedConnectionUsername,
+                    url: storedConnectionUrl,
+                };
+            }
         }
         if (loginPayload && loginPayload.password && value && !value.driver) {
             value
