@@ -114,6 +114,7 @@ export function objectFieldsToSubscriptionsWhereInputFields(fields: BaseField[])
         const fieldType = f.typeMeta.input.update.pretty;
 
         res[f.fieldName] = fieldType;
+        res[`${f.fieldName}_NOT`] = fieldType;
 
         return res;
     }, {});

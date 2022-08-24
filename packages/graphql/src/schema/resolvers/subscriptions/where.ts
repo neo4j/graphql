@@ -25,9 +25,34 @@ export function subscriptionWhere(where: Record<string, any> | undefined, event:
         return true;
     }
 
+    // TODO: filters logic goes here
     if (event.event === "create") {
-        return compareProperties(where, event.properties.new);
+        return compare(where, event.properties.new);
     }
 
     return compareProperties(where, event.properties.old);
+}
+
+
+const operatorCheckMap = {
+    "_NOT": (received: string, filtered: string) => received !== filtered 
+}
+const getCompareFn = (operator: string | undefined) => {
+    if(!operator) {
+        return (received: string, filtered: string) => received === filtered;;
+    }
+    return operatorCheckMap[operator];
+}
+const removeOperatorFromKey = (operator: string | undefined, k: string) => k.replace(operator || "", "");
+
+function compare<T> (where:  Record<string, T>, self:  Record<string, T>): boolean {
+    for (const [k, v] of Object.entries(where)) {
+        const operator = Object.keys(operatorCheckMap).find(op => k.endsWith(op));
+        const receivedValue = self[removeOperatorFromKey(operator, k)];
+        const checkEqualityFn = getCompareFn(operator).bind(null, receivedValue, v);
+        if(!checkEqualityFn()) {
+            return false;
+        }
+    };
+    return true;
 }

@@ -136,6 +136,75 @@ describe("Create Subscription", () => {
         ]);
     });
 
+    // filters start below
+    test("subscription with where filter _NOT returns correct 1 result", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { title_NOT: "movie1" }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie("movie1");
+        await createMovie("movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                },
+            },
+        ]);
+    });
+
+    test("subscription with where filter _NOT returns correct multiple results", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { title_NOT: "movie0" }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie("movie1");
+        await createMovie("movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toContainEqual({
+            [typeMovie.operations.subscribe.created]: {
+                [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+            },
+        });
+        expect(wsClient.events).toContainEqual({
+            [typeMovie.operations.subscribe.created]: {
+                [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+            },
+        });
+    });
+
+    test("subscription with where filter _NOT returns correct no result", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { title_NOT: "movie1" }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie("movie1");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+
     async function createMovie(title: string): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
