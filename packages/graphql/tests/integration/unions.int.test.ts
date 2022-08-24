@@ -182,7 +182,7 @@ describe("unions", () => {
         }
     });
 
-    test.only("should read and return unions with sort and limit", async () => {
+    test("should read and return unions with sort and limit", async () => {
         const session = await neo4j.getSession();
         const movieType = generateUniqueType("Movie");
         const genreType = generateUniqueType("Genre");

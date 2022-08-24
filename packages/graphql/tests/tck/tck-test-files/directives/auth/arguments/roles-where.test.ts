@@ -422,14 +422,28 @@ describe("Cypher Auth Where with Roles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (this.id IS NOT NULL AND this.id = $thisauth_param1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[thisthis0:HAS_POST]->(this_content_0:\`Post\`)
+                    WHERE (((any(thisvar2 IN [\\"user\\"] WHERE any(thisvar1 IN $auth.roles WHERE thisvar1 = thisvar2)) AND (exists((this_content_0)<-[:HAS_POST]-(:\`User\`)) AND all(thisthis3 IN [(this_content_0)<-[:HAS_POST]-(thisthis3:\`User\`) | thisthis3] WHERE (thisthis3.id IS NOT NULL AND thisthis3.id = $thisparam1)))) OR any(thisvar5 IN [\\"admin\\"] WHERE any(thisvar4 IN $auth.roles WHERE thisvar4 = thisvar5))) AND apoc.util.validatePredicate(NOT ((any(thisvar7 IN [\\"user\\"] WHERE any(thisvar6 IN $auth.roles WHERE thisvar6 = thisvar7)) OR any(thisvar9 IN [\\"admin\\"] WHERE any(thisvar8 IN $auth.roles WHERE thisvar8 = thisvar9)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                    WITH this_content_0  { __resolveType: \\"Post\\",  .id } AS this_content_0
+                    RETURN collect(this_content_0) AS this_content_0
+                }
+                WITH this_content_0 AS this_content
+                UNWIND this_content AS thisvar10
+                WITH thisvar10
+                RETURN collect(thisvar10) AS this_content
+            }
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .id, content:  [this_content IN [(this)-[:HAS_POST]->(this_content) WHERE (\\"Post\\" IN labels(this_content)) | head( [ this_content IN [this_content] WHERE (\\"Post\\" IN labels(this_content)) AND ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND (exists((this_content)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this2 IN [(this_content)<-[:HAS_POST]-(auth_this2:\`User\`) | auth_this2] WHERE (auth_this2.id IS NOT NULL AND auth_this2.id = $this_contentauth_param1)))) OR any(auth_var4 IN [\\"admin\\"] WHERE any(auth_var3 IN $auth.roles WHERE auth_var3 = auth_var4))) AND apoc.util.validatePredicate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_content { __resolveType: \\"Post\\",  .id } ] ) ] WHERE this_content IS NOT NULL]  } as this"
+            RETURN this { .id, content: this_content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"thisauth_param1\\": \\"id-01\\",
-                \\"this_contentauth_param1\\": \\"id-01\\",
+                \\"thisparam1\\": \\"id-01\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [

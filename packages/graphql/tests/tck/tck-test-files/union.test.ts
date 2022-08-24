@@ -79,18 +79,25 @@ describe("Cypher Union", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:SEARCH]->(this_search_0:\`Genre\`)
-                WHERE apoc.util.validatePredicate(NOT ((this_search_0.name IS NOT NULL AND this_search_0.name = $thisparam0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH this_search_0  { __resolveType: \\"Genre\\",  .name } AS this_search_0
-                RETURN collect(this_search_0) AS this_search_0
+                CALL {
+                    WITH this
+                    MATCH (this)-[thisthis0:SEARCH]->(this_search_0:\`Genre\`)
+                    WHERE apoc.util.validatePredicate(NOT ((this_search_0.name IS NOT NULL AND this_search_0.name = $thisparam0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WITH this_search_0  { __resolveType: \\"Genre\\",  .name } AS this_search_0
+                    RETURN collect(this_search_0) AS this_search_0
+                }
+                CALL {
+                    WITH this
+                    MATCH (this)-[thisthis1:SEARCH]->(this_search_1:\`Movie\`)
+                    WITH this_search_1  { __resolveType: \\"Movie\\",  .title } AS this_search_1
+                    RETURN collect(this_search_1) AS this_search_1
+                }
+                WITH this_search_0 + this_search_1 AS this_search
+                UNWIND this_search AS thisvar2
+                WITH thisvar2
+                RETURN collect(thisvar2) AS this_search
             }
-            CALL {
-                WITH this
-                MATCH (this)-[thisthis1:SEARCH]->(this_search_1:\`Movie\`)
-                WITH this_search_1  { __resolveType: \\"Movie\\",  .title } AS this_search_1
-                RETURN collect(this_search_1) AS this_search_1
-            }
-            RETURN this { search: this_search_0 + this_search_1 } as this"
+            RETURN this { search: this_search } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -124,18 +131,25 @@ describe("Cypher Union", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:SEARCH]->(this_search_0:\`Genre\`)
-                WHERE apoc.util.validatePredicate(NOT ((this_search_0.name IS NOT NULL AND this_search_0.name = $thisparam0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH this_search_0  { __resolveType: \\"Genre\\",  .name } AS this_search_0
-                RETURN collect(this_search_0) AS this_search_0
+                CALL {
+                    WITH this
+                    MATCH (this)-[thisthis0:SEARCH]->(this_search_0:\`Genre\`)
+                    WHERE apoc.util.validatePredicate(NOT ((this_search_0.name IS NOT NULL AND this_search_0.name = $thisparam0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WITH this_search_0  { __resolveType: \\"Genre\\",  .name } AS this_search_0
+                    RETURN collect(this_search_0) AS this_search_0
+                }
+                CALL {
+                    WITH this
+                    MATCH (this)-[thisthis1:SEARCH]->(this_search_1:\`Movie\`)
+                    WITH this_search_1 { __resolveType: \\"Movie\\" } AS this_search_1
+                    RETURN collect(this_search_1) AS this_search_1
+                }
+                WITH this_search_0 + this_search_1 AS this_search
+                UNWIND this_search AS thisvar2
+                WITH thisvar2
+                RETURN collect(thisvar2) AS this_search
             }
-            CALL {
-                WITH this
-                MATCH (this)-[thisthis1:SEARCH]->(this_search_1:\`Movie\`)
-                WITH this_search_1 { __resolveType: \\"Movie\\" } AS this_search_1
-                RETURN collect(this_search_1) AS this_search_1
-            }
-            RETURN this { search: this_search_0 + this_search_1 } as this"
+            RETURN this { search: this_search } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -147,7 +161,7 @@ describe("Cypher Union", () => {
         `);
     });
 
-    test.only("Read Unions with filter and limit", async () => {
+    test("Read Unions with filter and limit", async () => {
         const query = gql`
             {
                 movies(where: { title: "some title" }) {
@@ -195,7 +209,7 @@ describe("Cypher Union", () => {
                 WITH thisvar2
                 SKIP 1
                 LIMIT 10
-                RETURN collect(thisvar2)
+                RETURN collect(thisvar2) AS this_search
             }
             RETURN this { search: this_search } as this"
         `);

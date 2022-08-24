@@ -81,14 +81,37 @@ describe("Node directive with unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
             WHERE this.title = $param0
-            RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search) WHERE (\\"Category\\" IN labels(this_search) AND \\"ExtraLabel1\\" IN labels(this_search) AND \\"ExtraLabel2\\" IN labels(this_search)) OR (\\"Film\\" IN labels(this_search)) | head( [ this_search IN [this_search] WHERE (\\"Category\\" IN labels(this_search) AND \\"ExtraLabel1\\" IN labels(this_search) AND \\"ExtraLabel2\\" IN labels(this_search)) AND this_search.name = $this_search_Genrethis_search_param0 | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"Film\\" IN labels(this_search)) AND this_search.title = $this_search_Moviethis_search_param0 | this_search { __resolveType: \\"Movie\\",  .title } ] ) ] WHERE this_search IS NOT NULL] [1..11]  } as this"
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[thisthis0:SEARCH]->(this_search_0:\`Category\`:\`ExtraLabel1\`:\`ExtraLabel2\`)
+                    WHERE this_search_0.name = $thisparam0
+                    WITH this_search_0  { __resolveType: \\"Genre\\",  .name } AS this_search_0
+                    RETURN collect(this_search_0) AS this_search_0
+                }
+                CALL {
+                    WITH this
+                    MATCH (this)-[thisthis1:SEARCH]->(this_search_1:\`Film\`)
+                    WHERE this_search_1.title = $thisparam1
+                    WITH this_search_1  { __resolveType: \\"Movie\\",  .title } AS this_search_1
+                    RETURN collect(this_search_1) AS this_search_1
+                }
+                WITH this_search_0 + this_search_1 AS this_search
+                UNWIND this_search AS thisvar2
+                WITH thisvar2
+                SKIP 1
+                LIMIT 10
+                RETURN collect(thisvar2) AS this_search
+            }
+            RETURN this { search: this_search } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some title\\",
-                \\"this_search_Genrethis_search_param0\\": \\"Horror\\",
-                \\"this_search_Moviethis_search_param0\\": \\"The Matrix\\"
+                \\"thisparam0\\": \\"Horror\\",
+                \\"thisparam1\\": \\"The Matrix\\"
             }"
         `);
     });

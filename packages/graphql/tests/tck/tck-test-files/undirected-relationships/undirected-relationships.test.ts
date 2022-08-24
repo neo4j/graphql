@@ -133,7 +133,26 @@ describe("Undirected relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            RETURN this { content:  [this_content IN [(this)-[:HAS_CONTENT]-(this_content) WHERE (\\"Blog\\" IN labels(this_content)) OR (\\"Post\\" IN labels(this_content)) | head( [ this_content IN [this_content] WHERE (\\"Blog\\" IN labels(this_content)) | this_content { __resolveType: \\"Blog\\",  .title } ] + [ this_content IN [this_content] WHERE (\\"Post\\" IN labels(this_content)) | this_content { __resolveType: \\"Post\\",  .content } ] ) ] WHERE this_content IS NOT NULL]  } as this"
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[thisthis0:HAS_CONTENT]-(this_content_0:\`Blog\`)
+                    WITH this_content_0  { __resolveType: \\"Blog\\",  .title } AS this_content_0
+                    RETURN collect(this_content_0) AS this_content_0
+                }
+                CALL {
+                    WITH this
+                    MATCH (this)-[thisthis1:HAS_CONTENT]-(this_content_1:\`Post\`)
+                    WITH this_content_1  { __resolveType: \\"Post\\",  .content } AS this_content_1
+                    RETURN collect(this_content_1) AS this_content_1
+                }
+                WITH this_content_0 + this_content_1 AS this_content
+                UNWIND this_content AS thisvar2
+                WITH thisvar2
+                RETURN collect(thisvar2) AS this_content
+            }
+            RETURN this { content: this_content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
