@@ -37,6 +37,7 @@ import { removeDuplicates } from "../utils/utils";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
+import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
 
 interface Res {
     projection: string[];
@@ -344,7 +345,7 @@ export default function createProjectionAndParams({
                 );
 
                 const parentNode = new CypherBuilder.NamedNode(chainStr || varName);
-                const aliasNames: string[] = [];
+                const aliasNames: CypherBuilder.Variable[] = [];
 
                 const unionSubqueries: CypherBuilder.Clause[] = [];
                 // TODO: Try to use a single CALL for all unions
@@ -356,7 +357,7 @@ export default function createProjectionAndParams({
                         [refNode.name, ...refNodeInterfaceNames].includes(fieldByTypeName)
                     );
                     const unionParam = `${param}_${aliasNames.length}`;
-                    aliasNames.push(unionParam);
+                    aliasNames.push(new CypherBuilder.NamedVariable(unionParam));
                     const recurse = createProjectionAndParams({
                         resolveTree: field,
                         node: refNode,
@@ -397,23 +398,17 @@ export default function createProjectionAndParams({
                     unionSubqueries.push(new CypherBuilder.Call(subquery).with(parentNode));
                 }
 
-                const paramNode = new CypherBuilder.NamedNode(param);
-                const withClause = new CypherBuilder.With([
-                    new CypherBuilder.RawCypher(aliasNames.join(" + ")),
-                    new CypherBuilder.NamedNode(param),
-                ]);
-                const unwindedVar = new CypherBuilder.Variable();
-                const unwindWithClause = new CypherBuilder.Unwind([paramNode, unwindedVar]).with(unwindedVar);
-
-                addSortAndLimitOptionsToClause({
+                const collectAndLimitStatements = collectUnionSubqueriesResults({
+                    variables: aliasNames,
+                    resultVariable: new CypherBuilder.NamedNode(param),
                     optionsInput,
-                    target: unwindedVar,
-                    projectionClause: unwindWithClause,
+                    isArray: Boolean(relationField.typeMeta.array),
                 });
-                unwindWithClause.return([CypherBuilder.collect(unwindedVar), param]);
-                const unionSubquery = CypherBuilder.concat(...unionSubqueries, withClause, unwindWithClause);
-
-                res.subqueries.push(new CypherBuilder.Call(unionSubquery).with(parentNode));
+                res.subqueries.push(
+                    new CypherBuilder.Call(CypherBuilder.concat(...unionSubqueries, collectAndLimitStatements)).with(
+                        parentNode
+                    )
+                );
                 res.projection.push(`${alias}: ${param}`);
 
                 return res;

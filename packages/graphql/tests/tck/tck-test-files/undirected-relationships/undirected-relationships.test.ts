@@ -147,10 +147,10 @@ describe("Undirected relationships", () => {
                     WITH this_content_1  { __resolveType: \\"Post\\",  .content } AS this_content_1
                     RETURN collect(this_content_1) AS this_content_1
                 }
-                WITH this_content_0 + this_content_1 AS this_content
-                UNWIND this_content AS thisvar2
-                WITH thisvar2
-                RETURN collect(thisvar2) AS this_content
+                WITH this_content_0 + this_content_1 AS thisvar2
+                UNWIND thisvar2 AS thisvar3
+                WITH thisvar3
+                RETURN collect(thisvar3) AS this_content
             }
             RETURN this { content: this_content } as this"
         `);

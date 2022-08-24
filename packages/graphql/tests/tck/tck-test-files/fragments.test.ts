@@ -132,10 +132,10 @@ describe("Cypher Fragment", () => {
                     WITH this_owns_1 { __resolveType: \\"Character\\" } AS this_owns_1
                     RETURN collect(this_owns_1) AS this_owns_1
                 }
-                WITH this_owns_0 + this_owns_1 AS this_owns
-                UNWIND this_owns AS thisvar2
-                WITH thisvar2
-                RETURN collect(thisvar2) AS this_owns
+                WITH this_owns_0 + this_owns_1 AS thisvar2
+                UNWIND thisvar2 AS thisvar3
+                WITH thisvar3
+                RETURN collect(thisvar3) AS this_owns
             }
             RETURN this { .id, owns: this_owns } as this"
         `);

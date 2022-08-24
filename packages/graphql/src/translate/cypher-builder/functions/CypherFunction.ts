@@ -21,7 +21,6 @@ import { CypherASTNode } from "../CypherASTNode";
 import type { Variable } from "../CypherBuilder";
 import type { CypherEnvironment } from "../Environment";
 import type { Expr } from "../types";
-import type { NodeRef } from "../variables/NodeRef";
 
 export class CypherFunction extends CypherASTNode {
     protected name: string;

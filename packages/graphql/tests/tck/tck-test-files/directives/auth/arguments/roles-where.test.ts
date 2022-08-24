@@ -431,10 +431,10 @@ describe("Cypher Auth Where with Roles", () => {
                     WITH this_content_0  { __resolveType: \\"Post\\",  .id } AS this_content_0
                     RETURN collect(this_content_0) AS this_content_0
                 }
-                WITH this_content_0 AS this_content
-                UNWIND this_content AS thisvar10
-                WITH thisvar10
-                RETURN collect(thisvar10) AS this_content
+                WITH this_content_0 AS thisvar10
+                UNWIND thisvar10 AS thisvar11
+                WITH thisvar11
+                RETURN collect(thisvar11) AS this_content
             }
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id, content: this_content } as this"

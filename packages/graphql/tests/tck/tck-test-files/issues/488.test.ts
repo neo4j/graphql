@@ -101,10 +101,10 @@ describe("#488", () => {
                     WITH this_keywords_2 { __resolveType: \\"Text\\" } AS this_keywords_2
                     RETURN collect(this_keywords_2) AS this_keywords_2
                 }
-                WITH this_keywords_0 + this_keywords_1 + this_keywords_2 AS this_keywords
-                UNWIND this_keywords AS thisvar3
-                WITH thisvar3
-                RETURN collect(thisvar3) AS this_keywords
+                WITH this_keywords_0 + this_keywords_1 + this_keywords_2 AS thisvar3
+                UNWIND thisvar3 AS thisvar4
+                WITH thisvar4
+                RETURN collect(thisvar4) AS this_keywords
             }
             RETURN this { .name, keywords: this_keywords } as this"
         `);
@@ -159,10 +159,10 @@ describe("#488", () => {
                     WITH this_keywords_2 { __resolveType: \\"Text\\" } AS this_keywords_2
                     RETURN collect(this_keywords_2) AS this_keywords_2
                 }
-                WITH this_keywords_0 + this_keywords_1 + this_keywords_2 AS this_keywords
-                UNWIND this_keywords AS thisvar3
-                WITH thisvar3
-                RETURN collect(thisvar3) AS this_keywords
+                WITH this_keywords_0 + this_keywords_1 + this_keywords_2 AS thisvar3
+                UNWIND thisvar3 AS thisvar4
+                WITH thisvar4
+                RETURN collect(thisvar4) AS this_keywords
             }
             RETURN this { .name, keywords: this_keywords } as this"
         `);

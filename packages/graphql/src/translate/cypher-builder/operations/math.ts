@@ -25,31 +25,30 @@ type MathOperator = "+" | "-";
 
 export class MathOp extends Operation {
     private operator: MathOperator;
-    private leftExpr: Expr;
-    private rightExpr: Expr;
+    private exprs: Expr[];
 
-    constructor(operator: MathOperator, left: Expr, right: Expr) {
+    constructor(operator: MathOperator, exprs: Expr[] = []) {
         super();
         this.operator = operator;
-        this.leftExpr = left;
-        this.rightExpr = right;
+        this.exprs = exprs;
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const leftStr = this.leftExpr ? `${this.leftExpr.getCypher(env)} ` : "";
-        const rightStr = this.rightExpr ? ` ${this.rightExpr.getCypher(env)}` : "";
+        const exprs = this.exprs.map((e) => e.getCypher(env));
 
-        return `${leftStr}${this.operator}${rightStr}`;
+        return exprs.join(` ${this.operator} `);
     }
 }
 
-function createOp(op: MathOperator, leftExpr: Expr, rightExpr: Expr): MathOp {
-    return new MathOp(op, leftExpr, rightExpr);
+function createOp(op: MathOperator, exprs: Expr[]): MathOp {
+    return new MathOp(op, exprs);
 }
 
-export function plus(leftExpr: Expr, rightExpr: Expr) {
-    return createOp("+", leftExpr, rightExpr);
+export function plus(leftExpr: Expr, rightExpr: Expr): MathOp;
+export function plus(...exprs: Expr[]): MathOp;
+export function plus(...exprs: Expr[]): MathOp {
+    return createOp("+", exprs);
 }
-export function minus(leftExpr: Expr, rightExpr: Expr) {
-    return createOp("-", leftExpr, rightExpr);
+export function minus(leftExpr: Expr, rightExpr: Expr): MathOp {
+    return createOp("-", [leftExpr, rightExpr]);
 }

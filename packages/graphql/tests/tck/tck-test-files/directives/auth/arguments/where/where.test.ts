@@ -340,10 +340,10 @@ describe("Cypher Auth Where", () => {
                     WITH this_content_0  { __resolveType: \\"Post\\",  .id } AS this_content_0
                     RETURN collect(this_content_0) AS this_content_0
                 }
-                WITH this_content_0 AS this_content
-                UNWIND this_content AS thisvar2
-                WITH thisvar2
-                RETURN collect(thisvar2) AS this_content
+                WITH this_content_0 AS thisvar2
+                UNWIND thisvar2 AS thisvar3
+                WITH thisvar3
+                RETURN collect(thisvar3) AS this_content
             }
             RETURN this { .id, content: this_content } as this"
         `);

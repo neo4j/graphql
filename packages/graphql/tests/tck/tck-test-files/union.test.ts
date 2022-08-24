@@ -92,10 +92,10 @@ describe("Cypher Union", () => {
                     WITH this_search_1  { __resolveType: \\"Movie\\",  .title } AS this_search_1
                     RETURN collect(this_search_1) AS this_search_1
                 }
-                WITH this_search_0 + this_search_1 AS this_search
-                UNWIND this_search AS thisvar2
-                WITH thisvar2
-                RETURN collect(thisvar2) AS this_search
+                WITH this_search_0 + this_search_1 AS thisvar2
+                UNWIND thisvar2 AS thisvar3
+                WITH thisvar3
+                RETURN collect(thisvar3) AS this_search
             }
             RETURN this { search: this_search } as this"
         `);
@@ -144,10 +144,10 @@ describe("Cypher Union", () => {
                     WITH this_search_1 { __resolveType: \\"Movie\\" } AS this_search_1
                     RETURN collect(this_search_1) AS this_search_1
                 }
-                WITH this_search_0 + this_search_1 AS this_search
-                UNWIND this_search AS thisvar2
-                WITH thisvar2
-                RETURN collect(thisvar2) AS this_search
+                WITH this_search_0 + this_search_1 AS thisvar2
+                UNWIND thisvar2 AS thisvar3
+                WITH thisvar3
+                RETURN collect(thisvar3) AS this_search
             }
             RETURN this { search: this_search } as this"
         `);
@@ -204,12 +204,12 @@ describe("Cypher Union", () => {
                     WITH this_search_1  { __resolveType: \\"Movie\\",  .title } AS this_search_1
                     RETURN collect(this_search_1) AS this_search_1
                 }
-                WITH this_search_0 + this_search_1 AS this_search
-                UNWIND this_search AS thisvar2
-                WITH thisvar2
+                WITH this_search_0 + this_search_1 AS thisvar2
+                UNWIND thisvar2 AS thisvar3
+                WITH thisvar3
                 SKIP 1
                 LIMIT 10
-                RETURN collect(thisvar2) AS this_search
+                RETURN collect(thisvar3) AS this_search
             }
             RETURN this { search: this_search } as this"
         `);
