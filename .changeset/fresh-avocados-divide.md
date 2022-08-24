@@ -1,6 +1,5 @@
 ---
 "@neo4j/graphql": patch
-"@neo4j/introspector": patch
 "@neo4j/graphql-ogm": patch
 ---
 
