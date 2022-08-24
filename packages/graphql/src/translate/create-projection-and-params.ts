@@ -36,7 +36,6 @@ import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjec
 import { removeDuplicates } from "../utils/utils";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
-import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
 
 interface Res {
