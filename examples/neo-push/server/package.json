@@ -33,7 +33,7 @@
         "@types/express": "4.17.9",
         "@types/jest": "28.1.7",
         "@types/jsonwebtoken": "8.5.1",
-        "@types/node": "16.11.54",
+        "@types/node": "16.11.56",
         "@types/uuid": "8.3.4",
         "cross-env": "7.0.3",
         "jest": "28.1.3",
