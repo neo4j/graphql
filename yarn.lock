@@ -2392,28 +2392,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-antora/antora-add-notes@npm:0.3.0":
+"@neo4j-antora/antora-add-notes@npm:^0.3.0":
   version: 0.3.0
   resolution: "@neo4j-antora/antora-add-notes@npm:0.3.0"
   checksum: 761d20787eabbead2160355078006797563e36437e2549d6d211efc191197f6584a739da92e04e5ad9fd2a6a3547a28e3c4f6053d49b94f39701006af2c99725
   languageName: node
   linkType: hard
 
-"@neo4j-antora/antora-modify-sitemaps@npm:0.4.3":
+"@neo4j-antora/antora-modify-sitemaps@npm:^0.4.3":
   version: 0.4.3
   resolution: "@neo4j-antora/antora-modify-sitemaps@npm:0.4.3"
   checksum: dbccdccce029f69c5b281bd2054f7906a2e31c5e03ee35a955e4ba81c8561c4400898dd570221c594c41744cb7595bc4de81769cc3360cc21fd1b4e072425260
   languageName: node
   linkType: hard
 
-"@neo4j-documentation/macros@npm:1.0.2":
+"@neo4j-documentation/macros@npm:^1.0.2":
   version: 1.0.2
   resolution: "@neo4j-documentation/macros@npm:1.0.2"
   checksum: 270f564a90623f260f56a6b377ece98a4d8fd567ffad0c6a68bb71b6ea81d1fc8fdec57e5361e64104efe9491d599de451b4d4af9f268e6658240aa96c764d60
   languageName: node
   linkType: hard
 
-"@neo4j-documentation/remote-include@npm:1.0.0":
+"@neo4j-documentation/remote-include@npm:^1.0.0":
   version: 1.0.0
   resolution: "@neo4j-documentation/remote-include@npm:1.0.0"
   checksum: ff87f95c71a0f6fd26f2071b5727f5e49c31120ab163425f526eb65308fce164a471e56e1545168d7b21ecefd8ab40718fc3889414dcdc290e3aa9678dc50f52
@@ -2483,10 +2483,10 @@ __metadata:
     "@types/jest": 28.1.7
     "@types/jsonwebtoken": 8.5.8
     "@types/node": 16.11.56
-    debug: 4.3.4
+    debug: ^4.3.4
     jest: 28.1.3
-    jsonwebtoken: 8.5.1
-    jwks-rsa: 2.1.4
+    jsonwebtoken: ^8.5.1
+    jwks-rsa: ^2.1.4
     ts-jest: 28.0.8
     typescript: 4.7.4
   languageName: unknown
@@ -2538,36 +2538,36 @@ __metadata:
     "@types/uuid": 8.3.4
     "@types/webpack": 5.28.0
     autoprefixer: 10.4.8
-    codemirror: 5.65.8
-    codemirror-graphql: 1.3.2
+    codemirror: ^5.65.8
+    codemirror-graphql: ^1.3.2
     compression-webpack-plugin: 10.0.0
     copy-webpack-plugin: 11.0.0
     cross-env: 7.0.3
-    crypto-js: 4.1.1
+    crypto-js: ^4.1.1
     css-loader: 6.7.1
     file-loader: 6.2.0
     fork-ts-checker-webpack-plugin: 7.2.13
-    graphiql-explorer: 0.9.0
+    graphiql-explorer: ^0.9.0
     graphql: 16.6.0
-    graphql-request: 4.3.0
+    graphql-request: ^4.3.0
     html-inline-script-webpack-plugin: 3.1.0
     html-webpack-inline-source-plugin: 0.0.10
     html-webpack-plugin: 5.5.0
     jest: 28.1.3
     jest-environment-jsdom: 28.1.3
-    lodash.debounce: 4.0.8
-    markdown-it: 13.0.1
+    lodash.debounce: ^4.0.8
+    markdown-it: ^13.0.1
     neo4j-driver: 4.4.7
     node-polyfill-webpack-plugin: 2.0.1
     parse5: 5.1.1
     postcss: 8.4.16
     postcss-loader: 7.0.1
-    prettier: 2.7.1
+    prettier: ^2.7.1
     process: 0.11.10
     randomstring: 1.2.2
     react: 18.2.0
     react-dom: 18.2.0
-    react-resizable: 3.0.4
+    react-resizable: ^3.0.4
     style-loader: 3.3.1
     tailwindcss: 3.1.8
     terser-webpack-plugin: 5.3.5
@@ -2577,7 +2577,7 @@ __metadata:
     tsconfig-paths-webpack-plugin: 4.0.0
     typescript: 4.7.4
     url-loader: 4.1.1
-    uuid: 8.3.2
+    uuid: ^8.3.2
     webpack: 5.74.0
     webpack-cli: 4.10.0
     webpack-dev-server: 4.10.0
@@ -2651,10 +2651,10 @@ __metadata:
     "@types/jest": 28.1.7
     "@types/node": 16.11.56
     "@types/pluralize": 0.0.29
-    camelcase: 6.3.0
-    debug: 4.3.4
+    camelcase: ^6.3.0
+    debug: ^4.3.4
     jest: 28.1.3
-    pluralize: 8.0.0
+    pluralize: ^8.0.0
     ts-jest: 28.0.8
     typescript: 4.7.4
   peerDependencies:
@@ -2668,7 +2668,7 @@ __metadata:
   dependencies:
     npm-run-all: 4.1.5
     rimraf: 3.0.2
-    upper-case-first: 2.0.2
+    upper-case-first: ^2.0.2
   languageName: unknown
   linkType: soft
 
@@ -5639,7 +5639,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"camelcase@npm:6.3.0, camelcase@npm:^6.2.0":
+"camelcase@npm:6.3.0, camelcase@npm:^6.2.0, camelcase@npm:^6.3.0":
   version: 6.3.0
   resolution: "camelcase@npm:6.3.0"
   checksum: 8c96818a9076434998511251dcb2761a94817ea17dbdc37f47ac080bd088fc62c7369429a19e2178b993497132c8cbcf5cc1f44ba963e76782ba469c0474938d
@@ -6010,7 +6010,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror-graphql@npm:1.3.2":
+"codemirror-graphql@npm:^1.3.2":
   version: 1.3.2
   resolution: "codemirror-graphql@npm:1.3.2"
   dependencies:
@@ -6023,7 +6023,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"codemirror@npm:5.65.8":
+"codemirror@npm:^5.65.8":
   version: 5.65.8
   resolution: "codemirror@npm:5.65.8"
   checksum: e56a59c2251b357b3d95862f77ac8b8d2b1b0c52db58a2dcf5b8b0531fd249ad4458cbd9a469ce1513475ba48ba39ffd16bd3876eb3870a1305bcafcb157239f
@@ -6592,7 +6592,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crypto-js@npm:4.1.1":
+"crypto-js@npm:^4.1.1":
   version: 4.1.1
   resolution: "crypto-js@npm:4.1.1"
   checksum: b3747c12ee3a7632fab3b3e171ea50f78b182545f0714f6d3e7e2858385f0f4101a15f2517e033802ce9d12ba50a391575ff4638c9de3dd9b2c4bc47768d5425
@@ -7468,7 +7468,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:*, dotenv@npm:16.0.1":
+"dotenv@npm:*, dotenv@npm:16.0.1, dotenv@npm:^16.0.1":
   version: 16.0.1
   resolution: "dotenv@npm:16.0.1"
   checksum: f459ffce07b977b7f15d8cc4ee69cdff77d4dd8c5dc8c85d2d485ee84655352c2415f9dd09d42b5b5985ced3be186130871b34e2f3e2569ebc72fbc2e8096792
@@ -9266,7 +9266,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphiql-explorer@npm:0.9.0":
+"graphiql-explorer@npm:^0.9.0":
   version: 0.9.0
   resolution: "graphiql-explorer@npm:0.9.0"
   peerDependencies:
@@ -9308,10 +9308,10 @@ __metadata:
   dependencies:
     "@antora/cli": 3.1.0
     "@antora/site-generator-default": 3.1.0
-    "@neo4j-antora/antora-add-notes": 0.3.0
-    "@neo4j-antora/antora-modify-sitemaps": 0.4.3
-    "@neo4j-documentation/macros": 1.0.2
-    "@neo4j-documentation/remote-include": 1.0.0
+    "@neo4j-antora/antora-add-notes": ^0.3.0
+    "@neo4j-antora/antora-modify-sitemaps": ^0.4.3
+    "@neo4j-documentation/macros": ^1.0.2
+    "@neo4j-documentation/remote-include": ^1.0.0
     cheerio: 1.0.0-rc.12
     express: 4.18.1
     hyperlink: 5.0.4
@@ -9352,7 +9352,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-request@npm:4.3.0":
+"graphql-request@npm:^4.3.0":
   version: 4.3.0
   resolution: "graphql-request@npm:4.3.0"
   dependencies:
@@ -11629,7 +11629,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jwks-rsa@npm:2.1.4":
+"jwks-rsa@npm:^2.1.4":
   version: 2.1.4
   resolution: "jwks-rsa@npm:2.1.4"
   dependencies:
@@ -12017,7 +12017,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.debounce@npm:4.0.8":
+"lodash.debounce@npm:^4.0.8":
   version: 4.0.8
   resolution: "lodash.debounce@npm:4.0.8"
   checksum: a3f527d22c548f43ae31c861ada88b2637eb48ac6aa3eb56e82d44917971b8aa96fbb37aa60efea674dc4ee8c42074f90f7b1f772e9db375435f6c83a19b3bc6
@@ -12333,7 +12333,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"markdown-it@npm:13.0.1":
+"markdown-it@npm:^13.0.1":
   version: 13.0.1
   resolution: "markdown-it@npm:13.0.1"
   dependencies:
@@ -13187,7 +13187,7 @@ __metadata:
     bcrypt: 5.0.1
     cross-env: 7.0.3
     debug: 4.3.4
-    dotenv: 16.0.1
+    dotenv: ^16.0.1
     express: 4.17.1
     graphql: 16.6.0
     jest: 28.1.3
@@ -14493,7 +14493,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pluralize@npm:8.0.0":
+"pluralize@npm:8.0.0, pluralize@npm:^8.0.0":
   version: 8.0.0
   resolution: "pluralize@npm:8.0.0"
   checksum: 08931d4a6a4a5561a7f94f67a31c17e6632cb21e459ab3ff4f6f629d9a822984cf8afef2311d2005fbea5d7ef26016ebb090db008e2d8bce39d0a9a9d218736e
@@ -14979,7 +14979,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:2.7.1":
+"prettier@npm:2.7.1, prettier@npm:^2.7.1":
   version: 2.7.1
   resolution: "prettier@npm:2.7.1"
   bin:
@@ -15534,7 +15534,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-resizable@npm:3.0.4":
+"react-resizable@npm:^3.0.4":
   version: 3.0.4
   resolution: "react-resizable@npm:3.0.4"
   dependencies:
@@ -18467,7 +18467,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"upper-case-first@npm:2.0.2, upper-case-first@npm:^2.0.2":
+"upper-case-first@npm:^2.0.2":
   version: 2.0.2
   resolution: "upper-case-first@npm:2.0.2"
   dependencies:
@@ -18591,21 +18591,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:8.3.2, uuid@npm:^8.0.0, uuid@npm:^8.3.0, uuid@npm:^8.3.2":
-  version: 8.3.2
-  resolution: "uuid@npm:8.3.2"
-  bin:
-    uuid: dist/bin/uuid
-  checksum: 5575a8a75c13120e2f10e6ddc801b2c7ed7d8f3c8ac22c7ed0c7b2ba6383ec0abda88c905085d630e251719e0777045ae3236f04c812184b7c765f63a70e58df
-  languageName: node
-  linkType: hard
-
 "uuid@npm:^3.3.2":
   version: 3.4.0
   resolution: "uuid@npm:3.4.0"
   bin:
     uuid: ./bin/uuid
   checksum: 58de2feed61c59060b40f8203c0e4ed7fd6f99d42534a499f1741218a1dd0c129f4aa1de797bcf822c8ea5da7e4137aa3673431a96dae729047f7aca7b27866f
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^8.0.0, uuid@npm:^8.3.0, uuid@npm:^8.3.2":
+  version: 8.3.2
+  resolution: "uuid@npm:8.3.2"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 5575a8a75c13120e2f10e6ddc801b2c7ed7d8f3c8ac22c7ed0c7b2ba6383ec0abda88c905085d630e251719e0777045ae3236f04c812184b7c765f63a70e58df
   languageName: node
   linkType: hard
 
