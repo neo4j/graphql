@@ -147,7 +147,7 @@ describe("Cypher Union", () => {
         `);
     });
 
-    test("Read Unions with filter and limit", async () => {
+    test.only("Read Unions with filter and limit", async () => {
         const query = gql`
             {
                 movies(where: { title: "some title" }) {
@@ -176,23 +176,28 @@ describe("Cypher Union", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:SEARCH]->(this_search_0:\`Genre\`)
-                WHERE (this_search_0.name = $thisparam0 AND apoc.util.validatePredicate(NOT ((this_search_0.name IS NOT NULL AND this_search_0.name = $thisparam1)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                WITH this_search_0  { __resolveType: \\"Genre\\",  .name } AS this_search_0
-                LIMIT 10
+                CALL {
+                    WITH this
+                    MATCH (this)-[thisthis0:SEARCH]->(this_search_0:\`Genre\`)
+                    WHERE (this_search_0.name = $thisparam0 AND apoc.util.validatePredicate(NOT ((this_search_0.name IS NOT NULL AND this_search_0.name = $thisparam1)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                    WITH this_search_0  { __resolveType: \\"Genre\\",  .name } AS this_search_0
+                    RETURN collect(this_search_0) AS this_search_0
+                }
+                CALL {
+                    WITH this
+                    MATCH (this)-[thisthis1:SEARCH]->(this_search_1:\`Movie\`)
+                    WHERE this_search_1.title = $thisparam2
+                    WITH this_search_1  { __resolveType: \\"Movie\\",  .title } AS this_search_1
+                    RETURN collect(this_search_1) AS this_search_1
+                }
+                WITH this_search_0 + this_search_1 AS this_search
+                UNWIND this_search AS thisvar2
+                WITH thisvar2
                 SKIP 1
-                RETURN collect(this_search_0) AS this_search_0
-            }
-            CALL {
-                WITH this
-                MATCH (this)-[thisthis1:SEARCH]->(this_search_1:\`Movie\`)
-                WHERE this_search_1.title = $thisparam2
-                WITH this_search_1  { __resolveType: \\"Movie\\",  .title } AS this_search_1
                 LIMIT 10
-                SKIP 1
-                RETURN collect(this_search_1) AS this_search_1
+                RETURN collect(thisvar2)
             }
-            RETURN this { search: this_search_0 + this_search_1 } as this"
+            RETURN this { search: this_search } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

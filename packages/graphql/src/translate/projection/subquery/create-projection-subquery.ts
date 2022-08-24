@@ -38,6 +38,7 @@ export function createProjectionSubquery({
     relationshipDirection,
     optionsInput,
     authValidateStrs,
+    addSkipAndLimit = true,
 }: {
     parentNode: CypherBuilder.Node;
     whereInput?: GraphQLWhereArg;
@@ -50,10 +51,8 @@ export function createProjectionSubquery({
     relationshipDirection: RelationshipDirection;
     optionsInput: GraphQLOptionsArg;
     authValidateStrs: string[] | undefined;
-}): {
-    subquery: CypherBuilder.Clause;
-    projectionColumn: CypherBuilder.ProjectionColumn[];
-} {
+    addSkipAndLimit?: boolean;
+}): CypherBuilder.Clause {
     const isArray = relationField.typeMeta.array;
     const targetNode = new CypherBuilder.NamedNode(alias, {
         labels: node.getLabels(context),
@@ -131,12 +130,13 @@ export function createProjectionSubquery({
 
     const returnVariable = new CypherBuilder.NamedVariable(alias);
     const withStatement: CypherBuilder.With = new CypherBuilder.With([projection, returnVariable]); // This only works if nestedProjection is a map
-
-    addSortAndLimitOptionsToClause({
-        optionsInput,
-        target: returnVariable,
-        projectionClause: withStatement,
-    });
+    if (addSkipAndLimit) {
+        addSortAndLimitOptionsToClause({
+            optionsInput,
+            target: returnVariable,
+            projectionClause: withStatement,
+        });
+    }
 
     let returnProjection = CypherBuilder.collect(targetNode);
     if (!isArray) {
@@ -147,8 +147,5 @@ export function createProjectionSubquery({
 
     const subquery = CypherBuilder.concat(subqueryMatch, ...nestedSubqueries, withStatement, returnStatement);
 
-    return {
-        subquery: new CypherBuilder.Call(subquery).with(parentNode),
-        projectionColumn: [],
-    };
+    return subquery;
 }

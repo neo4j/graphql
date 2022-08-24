@@ -22,6 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
+import { generateUniqueType } from "../utils/graphql-types";
 
 describe("unions", () => {
     let driver: Driver;
@@ -176,6 +177,72 @@ describe("unions", () => {
             expect((gqlResult.data as any).movies[0]).toEqual({
                 search: [{ __typename: "Genre", name: genreName1 }],
             });
+        } finally {
+            await session.close();
+        }
+    });
+
+    test.only("should read and return unions with sort and limit", async () => {
+        const session = await neo4j.getSession();
+        const movieType = generateUniqueType("Movie");
+        const genreType = generateUniqueType("Genre");
+
+        const typeDefs = `
+            union Search = ${movieType} | ${genreType}
+
+            type ${genreType} {
+                name: String
+            }
+
+            type ${movieType} {
+                title: String
+                search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            resolvers: {},
+        });
+
+        const query = `
+        {
+            ${movieType.plural}(where: { title:"originalMovie" }) {
+                search(
+                    options: { offset: 1, limit: 3 }
+                ) {
+                    ... on ${movieType} {
+                        title
+                    }
+                    ... on ${genreType} {
+                        name
+                    }
+                }
+            }
+        }
+        `;
+
+        try {
+            await session.run(`
+                CREATE (m:${movieType} {title: "originalMovie"})
+                CREATE (m1:${movieType} {title: "movie1"})
+                CREATE (m2:${movieType} {title: "movie2"})
+                CREATE (g1:${genreType} {name: "genre1"})
+                CREATE (g2:${genreType} {name: "genre2"})
+                MERGE (m)-[:SEARCH]->(m1)
+                MERGE (m)-[:SEARCH]->(m2)
+                MERGE (m)-[:SEARCH]->(g1)
+                MERGE (m)-[:SEARCH]->(g2)
+            `);
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect((gqlResult.data as any)[movieType.plural][0].search).toHaveLength(3);
         } finally {
             await session.close();
         }

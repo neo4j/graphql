@@ -35,7 +35,8 @@ import { getRelationshipDirection } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
-import { createProjectionSubquery } from "./projection/elements/create-projection-subquery";
+import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
+import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 
 interface Res {
     projection: string[];
@@ -345,6 +346,8 @@ export default function createProjectionAndParams({
 
                 const parentNode = new CypherBuilder.NamedNode(chainStr || varName);
                 const aliasNames: string[] = [];
+
+                const unionSubqueries: CypherBuilder.Clause[] = [];
                 // TODO: Try to use a single CALL for all unions
                 for (const refNode of referenceNodes) {
                     const refNodeInterfaceNames = node.interfaces.map(
@@ -389,11 +392,33 @@ export default function createProjectionAndParams({
                         relationshipDirection: direction,
                         optionsInput,
                         authValidateStrs: recurse.meta?.authValidateStrs,
+                        addSkipAndLimit: false,
                     });
 
-                    res.subqueries.push(subquery.subquery);
+                    unionSubqueries.push(new CypherBuilder.Call(subquery).with(parentNode));
                 }
-                res.projection.push(`${alias}: ${aliasNames.join(" + ")}`);
+                // const union = new CypherBuilder.Union(...unionSubqueries);
+
+                const paramNode = new CypherBuilder.NamedNode(param);
+                const withClause = new CypherBuilder.With([
+                    new CypherBuilder.RawCypher(aliasNames.join(" + ")),
+                    new CypherBuilder.NamedNode(param),
+                ]);
+                const unwindedVar = new CypherBuilder.Variable();
+                const unwindWithClause = new CypherBuilder.Unwind([paramNode, unwindedVar]).with(unwindedVar);
+
+                addSortAndLimitOptionsToClause({
+                    optionsInput,
+                    target: unwindedVar,
+                    projectionClause: unwindWithClause,
+                });
+                unwindWithClause.return([CypherBuilder.collect(unwindedVar), param]);
+                const unionSubquery = CypherBuilder.concat(...unionSubqueries, withClause, unwindWithClause);
+
+                res.subqueries.push(new CypherBuilder.Call(unionSubquery).with(parentNode));
+                // res.subqueries.push(new CypherBuilder.Call(subquery).with(parentNode));
+                // res.projection.push(`${alias}: ${aliasNames.join(" + ")}`);
+                res.projection.push(`${alias}: ${param}`);
 
                 return res;
             }
@@ -425,8 +450,7 @@ export default function createProjectionAndParams({
                 optionsInput,
                 authValidateStrs: recurse.meta?.authValidateStrs,
             });
-
-            res.subqueries.push(subquery.subquery);
+            res.subqueries.push(new CypherBuilder.Call(subquery).with(parentNode));
             res.projection.push(`${alias}: ${param}`);
 
             return res;
