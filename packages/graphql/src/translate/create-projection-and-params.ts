@@ -153,7 +153,6 @@ export default function createProjectionAndParams({
             }
 
             if (referenceUnion) {
-                // TODO: move to subqueries
                 const fieldFieldsKeys = Object.keys(fieldFields);
                 const hasMultipleFieldFields = fieldFieldsKeys.length > 1;
                 const hasSingleFieldField = fieldFieldsKeys.length === 1;
@@ -397,7 +396,6 @@ export default function createProjectionAndParams({
 
                     unionSubqueries.push(new CypherBuilder.Call(subquery).with(parentNode));
                 }
-                // const union = new CypherBuilder.Union(...unionSubqueries);
 
                 const paramNode = new CypherBuilder.NamedNode(param);
                 const withClause = new CypherBuilder.With([
@@ -416,8 +414,6 @@ export default function createProjectionAndParams({
                 const unionSubquery = CypherBuilder.concat(...unionSubqueries, withClause, unwindWithClause);
 
                 res.subqueries.push(new CypherBuilder.Call(unionSubquery).with(parentNode));
-                // res.subqueries.push(new CypherBuilder.Call(subquery).with(parentNode));
-                // res.projection.push(`${alias}: ${aliasNames.join(" + ")}`);
                 res.projection.push(`${alias}: ${param}`);
 
                 return res;
