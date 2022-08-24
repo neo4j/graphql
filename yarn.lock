@@ -2456,7 +2456,7 @@ __metadata:
     "@neo4j/graphql": ^3.6.3
     "@neo4j/graphql-plugin-auth": ^1.0.0
     "@types/jest": 28.1.7
-    "@types/node": 16.11.54
+    "@types/node": 16.11.56
     camelcase: 6.3.0
     graphql-tag: 2.12.6
     jest: 28.1.3
@@ -2482,7 +2482,7 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/jest": 28.1.7
     "@types/jsonwebtoken": 8.5.8
-    "@types/node": 16.11.54
+    "@types/node": 16.11.56
     debug: 4.3.4
     jest: 28.1.3
     jsonwebtoken: 8.5.1
@@ -2500,7 +2500,7 @@ __metadata:
     "@types/amqplib": 0.8.2
     "@types/debug": 4.1.7
     "@types/jest": 28.1.7
-    "@types/node": 16.11.54
+    "@types/node": 16.11.56
     amqplib: 0.10.2
     apollo-server: 3.10.1
     apollo-server-express: 3.10.1
@@ -2599,7 +2599,7 @@ __metadata:
     "@types/is-uuid": 1.0.0
     "@types/jest": 28.1.7
     "@types/jsonwebtoken": 8.5.8
-    "@types/node": 16.11.54
+    "@types/node": 16.11.56
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
     "@types/semver": 7.3.12
@@ -2649,7 +2649,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": ^3.5.0
     "@types/jest": 28.1.7
-    "@types/node": 16.11.54
+    "@types/node": 16.11.56
     "@types/pluralize": 0.0.29
     camelcase: 6.3.0
     debug: 4.3.4
@@ -3430,10 +3430,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:16.11.54":
-  version: 16.11.54
-  resolution: "@types/node@npm:16.11.54"
-  checksum: fa4d6a94498cc6ef96932a25557082587a178b5fa1da5e208bdb171b85265110a7ca6a4f296e740dca1b29d2a44b3c1e76e21d255e5eeed8be5f67ea538dcb9c
+"@types/node@npm:16.11.56":
+  version: 16.11.56
+  resolution: "@types/node@npm:16.11.56"
+  checksum: b4efade16eb08a39810921c54a1637e69c8f3184a20d87e8fe74d557d9bda73f0829ac318e2a30a32b1903e4b099812defd1dfe438be70b98dbfbea5b0d99a53
   languageName: node
   linkType: hard
 
@@ -13181,7 +13181,7 @@ __metadata:
     "@types/express": 4.17.9
     "@types/jest": 28.1.7
     "@types/jsonwebtoken": 8.5.1
-    "@types/node": 16.11.54
+    "@types/node": 16.11.56
     "@types/uuid": 8.3.4
     apollo-server-express: 3.10.1
     bcrypt: 5.0.1
