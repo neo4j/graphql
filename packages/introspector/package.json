@@ -47,6 +47,6 @@
         "pluralize": "8.0.0"
     },
     "peerDependencies": {
-        "neo4j-driver": "4.4.7"
+        "neo4j-driver": "^4.1.0"
     }
 }
