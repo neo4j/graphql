@@ -94,11 +94,10 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
             WITH this
             MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
             WHERE distance(this_acted_in_relationship.location, point($this_actorsConnection_args_where_Actorparam0.point)) = $this_actorsConnection_args_where_Actorparam0.distance
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, location: apoc.cypher.runFirstColumnSingle('RETURN
-            CASE
-            	WHEN this_acted_in_relationship.location IS NOT NULL THEN { point: this_acted_in_relationship.location }
-            	ELSE NULL
-            END AS result',{ this_acted_in_relationship: this_acted_in_relationship }), node: { name: this_actor.name } }) AS edges
+            WITH collect({ screenTime: this_acted_in_relationship.screenTime, location: (CASE
+                WHEN this_acted_in_relationship.location IS NOT NULL THEN { point: this_acted_in_relationship.location }
+                ELSE NULL
+            END), node: { name: this_actor.name } }) AS edges
             UNWIND edges as edge
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
             RETURN { edges: edges, totalCount: totalCount } AS actorsConnection

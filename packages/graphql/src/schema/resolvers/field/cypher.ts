@@ -18,17 +18,11 @@
  */
 
 import type { GraphQLResolveInfo } from "graphql";
-import { GraphQLUnionType } from "graphql";
 import { execute } from "../../../utils";
-import type { ConnectionField, Context, CypherField } from "../../../types";
+import type { Context, CypherField } from "../../../types";
 import { graphqlArgsToCompose } from "../../to-compose";
-import createAuthAndParams from "../../../translate/create-auth-and-params";
-import createAuthParam from "../../../translate/create-auth-param";
-import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
-import createProjectionAndParams from "../../../translate/create-projection-and-params";
-import createConnectionAndParams from "../../../translate/connection/create-connection-and-params";
 import { isNeoInt } from "../../../utils/utils";
-import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import { translateTopLevelCypher } from "../../../translate";
 
 export function cypherResolver({
     field,
@@ -41,176 +35,9 @@ export function cypherResolver({
 }) {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
-        context.resolveTree = getNeo4jResolveTree(info);
-        const { resolveTree } = context;
-        const cypherStrs: string[] = [];
-        const connectionProjectionStrs: string[] = [];
-        let projectionStr = "";
-        const unionWhere: string[] = [];
-        const projectionAuthStrs: string[] = [];
-        let params = { ...args, auth: createAuthParam({ context }), cypherParams: context.cypherParams };
-
-        const isArray = field.typeMeta.array;
-
-        const graphqlType = context.schema.getType(field.typeMeta.name);
-
-        const preAuth = createAuthAndParams({ entity: field, context });
-        if (preAuth[0]) {
-            params = { ...params, ...preAuth[1] };
-            cypherStrs.push(`CALL apoc.util.validate(NOT (${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-        }
-
-        const referenceNode = context.nodes.find((x) => x.name === field.typeMeta.name);
-
-        const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
-
-        if (referenceNode) {
-            const recurse = createProjectionAndParams({
-                resolveTree,
-                node: referenceNode,
-                context,
-                varName: `this`,
-            });
-
-            const { projection: str, params: p, meta } = recurse;
-            projectionStr = str;
-            params = { ...params, ...p };
-
-            if (meta?.authValidateStrs?.length) {
-                projectionAuthStrs.push(...projectionAuthStrs, meta.authValidateStrs.join(" AND "));
-            }
-
-            if (meta?.connectionFields?.length) {
-                meta.connectionFields.forEach((connectionResolveTree) => {
-                    const connectionField = referenceNode.connectionFields.find(
-                        (x) => x.fieldName === connectionResolveTree.name
-                    ) as ConnectionField;
-
-                    const nestedConnection = createConnectionAndParams({
-                        resolveTree: connectionResolveTree,
-                        field: connectionField,
-                        context,
-                        nodeVariable: "this",
-                    });
-                    const [nestedStr, nestedP] = nestedConnection;
-                    connectionProjectionStrs.push(nestedStr);
-                    params = { ...params, ...nestedP };
-                });
-            }
-        }
-
-        if (referenceUnion) {
-            const headStrs: string[] = [];
-            const referencedNodes =
-                referenceUnion?.types
-                    ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
-                    ?.filter((b) => b !== undefined)
-                    ?.filter((n) => Object.keys(resolveTree.fieldsByTypeName).includes(n?.name ?? "")) || [];
-
-            referencedNodes.forEach((node) => {
-                if (node) {
-                    const labelsStatements = node.getLabels(context).map((label) => `"${label}" IN labels(this)`);
-                    unionWhere.push(`(${labelsStatements.join("AND")})`);
-
-                    const innerHeadStr: string[] = [`[ this IN [this] WHERE (${labelsStatements.join(" AND ")})`];
-
-                    if (resolveTree.fieldsByTypeName[node.name]) {
-                        const {
-                            projection: str,
-                            params: p,
-                            meta,
-                        } = createProjectionAndParams({
-                            resolveTree,
-                            node,
-                            context,
-                            varName: "this",
-                        });
-
-                        innerHeadStr.push(
-                            [`| this { __resolveType: "${node.name}", `, ...str.replace("{", "").split("")].join("")
-                        );
-                        params = { ...params, ...p };
-
-                        if (meta?.authValidateStrs?.length) {
-                            projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
-                        }
-                    } else {
-                        innerHeadStr.push(`| this { __resolveType: "${node.name}" } `);
-                    }
-
-                    innerHeadStr.push(`]`);
-
-                    headStrs.push(innerHeadStr.join(" "));
-                }
-            });
-
-            projectionStr = `${headStrs.join(" + ")}`;
-        }
-
-        const initApocParamsStrs = ["auth: $auth", ...(context.cypherParams ? ["cypherParams: $cypherParams"] : [])];
-
-        // Null default argument values are not passed into the resolve tree therefore these are not being passed to
-        // `apocParams` below causing a runtime error when executing.
-        const nullArgumentValues = field.arguments.reduce(
-            (res, argument) => ({
-                ...res,
-                ...{ [argument.name.value]: null },
-            }),
-            {}
-        );
-
-        const apocParams = Object.entries({ ...nullArgumentValues, ...resolveTree.args }).reduce(
-            (r: { strs: string[]; params: any }, entry) => ({
-                strs: [...r.strs, `${entry[0]}: $${entry[0]}`],
-                params: { ...r.params, [entry[0]]: entry[1] },
-            }),
-            { strs: initApocParamsStrs, params }
-        ) as { strs: string[]; params: any };
-
-        params = { ...params, ...apocParams.params };
-
-        const apocParamsStr = `{${apocParams.strs.length ? `${apocParams.strs.join(", ")}` : ""}}`;
-
-        const expectMultipleValues = !field.isScalar && !field.isEnum && isArray;
-        if (type === "Query") {
-            if (expectMultipleValues) {
-                cypherStrs.push(`WITH apoc.cypher.runFirstColumnMany("${statement}", ${apocParamsStr}) as x`);
-            } else {
-                cypherStrs.push(`WITH apoc.cypher.runFirstColumnSingle("${statement}", ${apocParamsStr}) as x`);
-            }
-
-            cypherStrs.push("UNWIND x as this\nWITH this");
-        } else {
-            cypherStrs.push(`
-                CALL apoc.cypher.doIt("${statement}", ${apocParamsStr}) YIELD value
-                WITH apoc.map.values(value, [keys(value)[0]])[0] AS this
-            `);
-        }
-
-        if (unionWhere.length) {
-            cypherStrs.push(`WHERE ${unionWhere.join(" OR ")}`);
-        }
-
-        if (projectionAuthStrs.length) {
-            cypherStrs.push(
-                `WHERE apoc.util.validatePredicate(NOT (${projectionAuthStrs.join(
-                    " AND "
-                )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-            );
-        }
-
-        cypherStrs.push(connectionProjectionStrs.join("\n"));
-
-        if (field.isScalar || field.isEnum) {
-            cypherStrs.push(`RETURN this`);
-        } else if (referenceUnion) {
-            cypherStrs.push(`RETURN head( ${projectionStr} ) AS this`);
-        } else {
-            cypherStrs.push(`RETURN this ${projectionStr} AS this`);
-        }
-
+        const { cypher, params } = translateTopLevelCypher({ context, info, field, args, type, statement });
         const executeResult = await execute({
-            cypher: cypherStrs.join("\n"),
+            cypher,
             params,
             defaultAccessMode: "WRITE",
             context,

@@ -17,23 +17,33 @@
  * limitations under the License.
  */
 
+import { TestClause } from "../utils/TestClause";
 import * as CypherBuilder from "../CypherBuilder";
 
 describe("Functions", () => {
     test("coalesce", () => {
         const testParam = new CypherBuilder.Param("Hello");
-        const query = new CypherBuilder.Return(
-            CypherBuilder.coalesce(CypherBuilder.Null, testParam, new CypherBuilder.Literal(`"arthur"`))
-        );
+        const nullParam = CypherBuilder.Null;
+        const literal = new CypherBuilder.Literal(`"arthur"`);
 
-        const queryResult = query.build();
+        const coalesceFunction = CypherBuilder.coalesce(nullParam, testParam, literal);
+        const queryResult = new TestClause(coalesceFunction).build();
 
-        expect(queryResult.cypher).toMatchInlineSnapshot(`"RETURN coalesce(NULL, $param0, \\"arthur\\")"`);
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"coalesce(NULL, $param0, \\"arthur\\")"`);
 
         expect(queryResult.params).toMatchInlineSnapshot(`
             Object {
               "param0": "Hello",
             }
         `);
+    });
+
+    test("cypherDatetime", () => {
+        const datetimeFn = CypherBuilder.datetime();
+        const queryResult = new TestClause(datetimeFn).build();
+
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"datetime()"`);
+
+        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
     });
 });

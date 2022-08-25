@@ -24,6 +24,8 @@ import { whereRegEx, WhereRegexGroups } from "../utils";
 import mapToDbProperty from "../../../utils/map-to-db-property";
 import { createGlobalNodeOperation } from "./create-global-node-operation";
 import { createAggregateOperation } from "./create-aggregate-operation";
+// Recursive function
+// eslint-disable-next-line import/no-cycle
 import { createConnectionOperation } from "./create-connection-operation";
 import { createComparisonOperation } from "./create-comparison-operation";
 // Recursive function
@@ -43,7 +45,7 @@ export function createWherePropertyOperation({
     element: GraphElement;
     targetElement: CypherBuilder.Variable;
     context: Context;
-}): CypherBuilder.ComparisonOp | CypherBuilder.BooleanOp | CypherBuilder.RawCypher | CypherBuilder.Exists | undefined {
+}): CypherBuilder.Predicate | undefined {
     const match = whereRegEx.exec(key);
     if (!match) {
         throw new Error(`Failed to match key in filter: ${key}`);

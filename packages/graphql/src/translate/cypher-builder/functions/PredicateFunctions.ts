@@ -21,7 +21,7 @@ import type { CypherEnvironment } from "../Environment";
 import type { Pattern } from "../Pattern";
 import { Where } from "../sub-clauses/Where";
 import type { Expr, Predicate } from "../types";
-import { compileCypherIfExists } from "../utils";
+import { compileCypherIfExists } from "../utils/utils";
 import type { Variable } from "../variables/Variable";
 import { CypherFunction } from "./CypherFunction";
 
@@ -58,6 +58,10 @@ export function any(variable: Variable, listExpr: Expr, whereFilter?: Predicate)
 
 export function all(variable: Variable, listExpr: Expr, whereFilter?: Predicate): PredicateFunction {
     return new ListPredicateFunction("all", variable, listExpr, whereFilter);
+}
+
+export function single(variable: Variable, listExpr: Expr, whereFilter: Predicate): PredicateFunction {
+    return new ListPredicateFunction("single", variable, listExpr, whereFilter);
 }
 
 class ExistsFunction extends PredicateFunction {

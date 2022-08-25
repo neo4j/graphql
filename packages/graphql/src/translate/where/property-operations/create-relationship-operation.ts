@@ -37,7 +37,7 @@ export function createRelationshipOperation({
     operator: string | undefined;
     value: GraphQLWhereArg;
     isNot: boolean;
-}): CypherBuilder.BooleanOp | CypherBuilder.Exists | CypherBuilder.ComparisonOp | undefined {
+}): CypherBuilder.Predicate | undefined {
     const refNode = context.nodes.find((n) => n.name === relationField.typeMeta.name);
     if (!refNode) throw new Error("Relationship filters must reference nodes");
 
@@ -78,29 +78,32 @@ export function createRelationshipOperation({
         return undefined;
     }
 
-    const patternComprehension = new CypherBuilder.PatternComprehension(matchPattern, new CypherBuilder.Literal(1));
-    const sizeFunction = CypherBuilder.size(patternComprehension);
-
     // TODO: use EXISTS in top-level where
     switch (operator) {
         case "ALL": {
-            const notProperties = CypherBuilder.not(relationOperator);
-
-            patternComprehension.where(notProperties);
-            return CypherBuilder.eq(sizeFunction, new CypherBuilder.Literal(0));
+            // Testing "ALL" requires testing that at least one element exists and that no elements not matching the filter exists
+            const existsMatch = new CypherBuilder.Match(matchPattern).where(relationOperator);
+            const existsMatchNot = new CypherBuilder.Match(matchPattern).where(CypherBuilder.not(relationOperator));
+            return CypherBuilder.and(
+                new CypherBuilder.Exists(existsMatch),
+                CypherBuilder.not(new CypherBuilder.Exists(existsMatchNot))
+            );
         }
         case "NOT":
         case "NONE": {
-            patternComprehension.where(relationOperator);
-            return CypherBuilder.eq(sizeFunction, new CypherBuilder.Literal(0));
+            const relationshipMatch = new CypherBuilder.Match(matchPattern).where(relationOperator);
+            const existsPredicate = new CypherBuilder.Exists(relationshipMatch);
+            return CypherBuilder.not(existsPredicate);
         }
         case "SINGLE": {
-            patternComprehension.where(relationOperator);
-            return CypherBuilder.eq(sizeFunction, new CypherBuilder.Literal(1));
+            const patternComprehension = new CypherBuilder.PatternComprehension(matchPattern, childNode);
+            return CypherBuilder.single(childNode, patternComprehension, relationOperator);
         }
         case "SOME":
-        default:
-            patternComprehension.where(relationOperator);
-            return CypherBuilder.gt(sizeFunction, new CypherBuilder.Literal(0));
+        default: {
+            const relationshipMatch = new CypherBuilder.Match(matchPattern).where(relationOperator);
+            const existsPredicate = new CypherBuilder.Exists(relationshipMatch);
+            return existsPredicate;
+        }
     }
 }

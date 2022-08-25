@@ -21,7 +21,7 @@ import type { CypherASTNode } from "../CypherASTNode";
 import type { CypherEnvironment } from "../Environment";
 import type { PropertyRef } from "../PropertyRef";
 import type { Expr } from "../types";
-import { padBlock } from "../utils";
+import { padBlock } from "../utils/utils";
 import { SubClause } from "./SubClause";
 
 export type SetParam = [PropertyRef, Expr];

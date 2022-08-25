@@ -74,7 +74,7 @@ export function createPointComparisonOperation({
 function createPointListComprehension(param: CypherBuilder.Param): CypherBuilder.ListComprehension {
     const comprehensionVar = new CypherBuilder.Variable();
     const mapPoint = CypherBuilder.point(comprehensionVar);
-    return new CypherBuilder.ListComprehension(comprehensionVar, param, undefined, mapPoint);
+    return new CypherBuilder.ListComprehension(comprehensionVar, param).map(mapPoint);
 }
 
 function createPointDistanceExpression(

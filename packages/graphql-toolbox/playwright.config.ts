@@ -31,18 +31,25 @@ const config: PlaywrightTestConfig = {
         baseURL: "http://localhost:4242",
     },
     testDir: "tests",
-    timeout: process.env.CI ? 45 * 1000 : 30 * 1000,
+    timeout: process.env.CI ? 50 * 1000 : 30 * 1000,
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
-    workers: process.env.CI ? 8 : undefined,
+    workers: process.env.CI ? 6 : undefined,
     projects: [
         {
             name: "chromium",
-            use: { ...devices["Desktop Chrome"] },
+            use: {
+                ...devices["Desktop Chrome"],
+                viewport: { width: 1920, height: 1080 },
+            },
         },
         {
             name: "firefox",
-            use: { ...devices["Desktop Firefox"] },
+            use: { ...devices["Desktop Firefox"], viewport: { width: 1920, height: 1080 } },
+        },
+        {
+            name: "webkit",
+            use: { ...devices["Desktop Safari"], viewport: { width: 1920, height: 1080 } },
         },
     ],
     outputDir: "tests/artifacts/",

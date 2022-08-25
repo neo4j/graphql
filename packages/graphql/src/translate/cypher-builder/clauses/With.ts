@@ -19,7 +19,7 @@
 
 import type { CypherEnvironment } from "../Environment";
 import { Projection, ProjectionColumn } from "../sub-clauses/Projection";
-import { compileCypherIfExists } from "../utils";
+import { compileCypherIfExists } from "../utils/utils";
 import { Clause } from "./Clause";
 import { WithOrder } from "./mixins/WithOrder";
 import { WithReturn } from "./mixins/WithReturn";

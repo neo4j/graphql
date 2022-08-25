@@ -21,7 +21,7 @@ import { Button, HeroIcon, IconButton, Label } from "@neo4j-ndl/react";
 import { Fragment, useContext } from "react";
 import { DEFAULT_BOLT_URL } from "src/constants";
 // @ts-ignore - SVG Import
-import Neo4jLogoIcon from "../../assets/Neo4j-logo-color.svg";
+import Neo4jLogoIcon from "../../assets/neo4j-logo-color.svg";
 import { CustomSelect } from "../../components/CustomSelect";
 import { AuthContext } from "../../contexts/auth";
 import { Screen, ScreenContext } from "../../contexts/screen";
@@ -95,6 +95,7 @@ export const TopBar = () => {
                         <div className="mr-4 pr-4 border-r border-gray-700">
                             <Button
                                 data-test-topbar-disconnect-button
+                                className="w-36"
                                 color="primary"
                                 fill="text"
                                 onClick={() => auth?.logout()}

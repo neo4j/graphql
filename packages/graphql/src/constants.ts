@@ -26,7 +26,6 @@ export const REQUIRED_APOC_FUNCTIONS = [
     "apoc.util.validatePredicate",
     "apoc.cypher.runFirstColumnSingle",
     "apoc.cypher.runFirstColumnMany",
-    "apoc.coll.sortMulti",
     "apoc.coll.flatten",
     "apoc.date.convertFormat",
     "apoc.map.values",

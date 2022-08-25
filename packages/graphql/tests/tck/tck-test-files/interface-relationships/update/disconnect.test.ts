@@ -98,6 +98,7 @@ describe("Interface Relationships - Update disconnect", () => {
             )
             RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
@@ -188,6 +189,7 @@ describe("Interface Relationships - Update disconnect", () => {
             }
             RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
@@ -280,6 +282,7 @@ describe("Interface Relationships - Update disconnect", () => {
             )
             RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
 
@@ -391,6 +394,7 @@ describe("Interface Relationships - Update disconnect", () => {
             }
             RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
 

@@ -81,14 +81,14 @@ describe("Cypher Union", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
-            RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search) WHERE (\\"Genre\\" IN labels(this_search)) OR (\\"Movie\\" IN labels(this_search)) | head( [ this_search IN [this_search] WHERE (\\"Genre\\" IN labels(this_search)) AND this_search.name = $this_search_Genrethis_search_param0 AND apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $this_search_Genre_auth_allow0_name)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"Movie\\" IN labels(this_search)) AND this_search.title = $this_search_Moviethis_search_param0 | this_search { __resolveType: \\"Movie\\",  .title } ] ) ] WHERE this_search IS NOT NULL] [1..11]  } as this"
+            RETURN this { search:  [this_search IN [(this)-[:SEARCH]->(this_search) WHERE (\\"Genre\\" IN labels(this_search)) OR (\\"Movie\\" IN labels(this_search)) | head( [ this_search IN [this_search] WHERE (\\"Genre\\" IN labels(this_search)) AND this_search.name = $this_search_Genrethis_search_param0 AND apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $this_searchauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_search { __resolveType: \\"Genre\\",  .name } ] + [ this_search IN [this_search] WHERE (\\"Movie\\" IN labels(this_search)) AND this_search.title = $this_search_Moviethis_search_param0 | this_search { __resolveType: \\"Movie\\",  .title } ] ) ] WHERE this_search IS NOT NULL] [1..11]  } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some title\\",
                 \\"this_search_Genrethis_search_param0\\": \\"Horror\\",
-                \\"this_search_Genre_auth_allow0_name\\": [
+                \\"this_searchauth_param0\\": [
                     \\"Horror\\"
                 ],
                 \\"this_search_Moviethis_search_param0\\": \\"The Matrix\\"
@@ -158,6 +158,7 @@ describe("Cypher Union", () => {
             CREATE (this_create_search_Genre0_node:Genre)
             SET this_create_search_Genre0_node.name = $this_create_search_Genre0_node_name
             MERGE (this)-[:SEARCH]->(this_create_search_Genre0_node)
+            WITH *
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
@@ -399,6 +400,7 @@ describe("Cypher Union", () => {
             )
             RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
@@ -462,6 +464,7 @@ describe("Cypher Union", () => {
             	)
             	RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
@@ -501,6 +504,7 @@ describe("Cypher Union", () => {
             WHERE this_delete_search_Genre0.name = $updateMovies_args_delete_search_Genre0_where_Genreparam0
             WITH this, collect(DISTINCT this_delete_search_Genre0) as this_delete_search_Genre0_to_delete
             FOREACH(x IN this_delete_search_Genre0_to_delete | DETACH DELETE x)
+            WITH *
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
 

@@ -450,6 +450,7 @@ describe("sort", () => {
                                 }
                             `;
                 const gqlResultByType = gqlResultByTypeFromSource(queryWithName);
+
                 test("ASC", async () => {
                     const gqlResult = await gqlResultByType("ASC");
 
@@ -493,6 +494,7 @@ describe("sort", () => {
                                 }
                             `;
                 const gqlResultByType = gqlResultByTypeFromSource(queryWithName);
+
                 test("ASC", async () => {
                     const gqlResult = await gqlResultByType("ASC");
 
@@ -598,6 +600,7 @@ describe("sort", () => {
                     expect(gqlMovie.actors[1].id).toBe(actors[0].id);
                     expect(gqlMovie.actors[1].totalScreenTime).toBe(3);
                 });
+
                 test("DESC", async () => {
                     const gqlResult = await gqlResultByType("DESC");
 
@@ -708,6 +711,29 @@ describe("sort", () => {
                     expect(gqlMovie.actors[1].id).toBe(actors[1].id);
                 });
             });
+        });
+
+        it("sort with skip and limit on relationship", async () => {
+            const query = `
+                query {
+                    ${movieType.plural} {
+                        actors(options: { limit: 1, offset: 1, sort: { name: ASC } }) {
+                            name
+                        }
+                    }
+                }
+            `;
+
+            const gqlResult = await graphql({
+                schema,
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+            });
+
+            expect(gqlResult.errors).toBeUndefined();
+            expect((gqlResult.data as any)[movieType.plural]).toEqual(
+                expect.toIncludeSameMembers([{ actors: [] }, { actors: [{ name: actors[1].name }] }])
+            );
         });
     });
 

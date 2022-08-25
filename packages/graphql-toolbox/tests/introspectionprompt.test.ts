@@ -69,7 +69,7 @@ describe("Introspection prompt", () => {
         await loginPage.awaitSuccess();
 
         // wait for introspection to finish
-        await page.waitForTimeout(2000);
+        await page.waitForTimeout(4000);
 
         const generatedTypeDefs = await schemaEditorPage.getTypeDefs();
         expect(generatedTypeDefs).toContain(`type ${label}`);

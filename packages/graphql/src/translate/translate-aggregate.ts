@@ -20,7 +20,7 @@
 import type { Node } from "../classes";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import type { BaseField, Context, PrimitiveField, TemporalField } from "../types";
-import createAuthAndParams from "./create-auth-and-params";
+import { createAuthAndParams } from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 

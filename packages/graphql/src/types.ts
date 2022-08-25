@@ -353,6 +353,7 @@ export type InputField = { type: string; defaultValue?: string } | string;
 
 export interface Neo4jGraphQLAuthPlugin {
     rolesPath?: string;
+    isGlobalAuthenticationEnabled?: boolean;
 
     decode<T>(token: string): Promise<T | undefined>;
 }

@@ -23,7 +23,7 @@ import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
 import createProjectionAndParams, { ProjectionResult } from "./create-projection-and-params";
 import type { GraphQLOptionsArg, GraphQLSortArg, Context, ConnectionField, RelationField } from "../types";
-import createAuthAndParams from "./create-auth-and-params";
+import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
@@ -75,7 +75,7 @@ export function translateRead({
         )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
-    if (projection.meta?.connectionFields?.length) {
+    if (projection.meta.connectionFields?.length) {
         projection.meta.connectionFields.forEach((connectionResolveTree) => {
             const connectionField = node.connectionFields.find(
                 (x) => x.fieldName === connectionResolveTree.name
@@ -123,14 +123,20 @@ export function translateRead({
         cypherParams = { ...cypherParams, ...allowAndParams[1] };
         authStr = `CALL apoc.util.validate(NOT (${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
+
+    const projectionSubqueries = CypherBuilder.concat(...projection.subqueries);
+
     // TODO: concatenate with "translateTopLevelMatch" result to avoid param collision
-    const readQuery = new CypherBuilder.RawCypher((_env: CypherBuilder.Environment) => {
+    const readQuery = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+        const projectionSubqueriesStr = projectionSubqueries.getCypher(env);
+
         if (isRootConnectionField) {
             return translateRootConnectionField({
                 context,
                 varName,
                 projection,
                 subStr: {
+                    projectionSubqueries: projectionSubqueriesStr,
                     matchAndWhereStr,
                     authStr,
                     projAuth,
@@ -146,6 +152,7 @@ export function translateRead({
             projection,
             node,
             subStr: {
+                projectionSubqueries: projectionSubqueriesStr,
                 matchAndWhereStr,
                 authStr,
                 projAuth,
@@ -178,6 +185,7 @@ function translateRootField({
         projAuth: string;
         connectionStrs: string[];
         interfaceStrs: string[];
+        projectionSubqueries: string;
     };
 }): [string, Record<string, any>] {
     const { resolveTree } = context;
@@ -195,7 +203,7 @@ function translateRootField({
 
     const sortCypherFields = projection.meta?.cypherSortFields ?? [];
     const sortCypherProj = sortCypherFields.map(({ alias, apocStr }) => `${apocStr} AS ${alias}`);
-    const sortOffsetLimit: string[] = [[`WITH ${varName}`, ...sortCypherProj].join(", ")];
+    const sortOffsetLimit: string[] = [[`WITH *`, ...sortCypherProj].join(", ")];
 
     if (optionsInput.sort && optionsInput.sort.length) {
         const sortArr = optionsInput.sort.reduce((res: string[], sort: GraphQLSortArg) => {
@@ -229,6 +237,7 @@ function translateRootField({
 
     const cypher: string[] = [
         subStr.matchAndWhereStr,
+        subStr.projectionSubqueries,
         ...(sortOffsetLimit.length > 1 ? sortOffsetLimit : []),
         subStr.authStr,
         ...withStrs,
@@ -255,6 +264,7 @@ function translateRootConnectionField({
         projAuth: string;
         connectionStrs: string[];
         interfaceStrs: string[];
+        projectionSubqueries: string;
     };
 }): [string, Record<string, any>] {
     const { resolveTree } = context;

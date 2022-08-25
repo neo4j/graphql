@@ -95,7 +95,13 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            RETURN this { .title, actors: [ (this)<-[:ACTED_IN]-(this_actors:\`Person\`)   | this_actors { .name } ] } as this"
+            CALL {
+                WITH this
+                MATCH (this_actors:\`Person\`)-[thisthis0:ACTED_IN]->(this)
+                WITH this_actors { .name } AS this_actors
+                RETURN collect(this_actors) AS this_actors
+            }
+            RETURN this { .title, actors: this_actors } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -363,6 +369,7 @@ describe("Label in Node directive", () => {
             	)
             	RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -404,6 +411,7 @@ describe("Label in Node directive", () => {
             )
             RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -522,7 +530,10 @@ describe("Label in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
-            WHERE size([(this0:\`Person\`)-[:ACTED_IN]->(this) WHERE this0.name = $param0 | 1]) > 0
+            WHERE EXISTS {
+                MATCH (this0:\`Person\`)-[:ACTED_IN]->(this)
+                WHERE this0.name = $param0
+            }
             DETACH DELETE this"
         `);
 

@@ -23,7 +23,7 @@ import type { Param } from "../variables/Param";
 import { Pattern } from "../Pattern";
 import { SetClause } from "../sub-clauses/Set";
 import { Clause } from "./Clause";
-import { compileCypherIfExists } from "../utils";
+import { compileCypherIfExists } from "../utils/utils";
 import { WithReturn } from "./mixins/WithReturn";
 import { applyMixins } from "./utils/apply-mixin";
 import { WithSet } from "./mixins/WithSet";

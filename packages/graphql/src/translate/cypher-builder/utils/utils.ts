@@ -17,9 +17,8 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "./Environment";
-import type { CypherCompilable } from "./types";
-import { Param } from "./variables/Param";
+import type { CypherEnvironment } from "../Environment";
+import type { CypherCompilable } from "../types";
 
 /** Adds spaces to the left of the string, returns empty string is variable is undefined or empty string */
 export function padLeft(str: string | undefined): string {
@@ -28,7 +27,7 @@ export function padLeft(str: string | undefined): string {
 }
 
 export function escapeLabel(label: string): string {
-    const escapedLabel = label.replace(/`/g, "``");
+    const escapedLabel = label.replace(/\\u0060/g, "`").replace(/`/g, "``");
     return `\`${escapedLabel}\``;
 }
 
@@ -36,13 +35,6 @@ export function padBlock(block: string, spaces = 4): string {
     const paddingStr = " ".repeat(spaces);
     const paddedNewLines = block.replace(/\n/g, `\n${paddingStr}`);
     return `${paddingStr}${paddedNewLines}`;
-}
-
-export function convertToCypherParams<T>(original: Record<string, T>): Record<string, Param<T>> {
-    return Object.entries(original).reduce((acc, [key, value]) => {
-        acc[key] = new Param(value);
-        return acc;
-    }, {});
 }
 
 /** Compiles the cypher of an element, if the resulting cypher is not empty adds a prefix */
