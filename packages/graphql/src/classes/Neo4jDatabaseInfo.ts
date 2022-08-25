@@ -23,20 +23,14 @@ import { DBMS_COMPONENTS_QUERY } from "../constants";
 
 export type Neo4jEdition = "enterprise" | "community";
 
-export const VERSION_NOT_DETECTABLE = "Neo4j version not detectable";
-
 export class Neo4jDatabaseInfo {
     private rawVersion: string;
     public version: semver.SemVer;
     public edition: Neo4jEdition | undefined;
 
     constructor(version: string, edition?: Neo4jEdition) {
-        if (!version) {
-            throw new Error(VERSION_NOT_DETECTABLE);
-        } else {
-            this.version = this.toSemVer(version);
-            this.rawVersion = version;
-        }
+        this.version = this.toSemVer(version);
+        this.rawVersion = version;
         this.edition = edition;
     }
 
