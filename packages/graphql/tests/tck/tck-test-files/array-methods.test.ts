@@ -181,7 +181,10 @@ describe("Arrays Methods", () => {
             "MATCH (this:\`Movie\`)
             CALL apoc.util.validate(this.filmingLocations IS NULL, \\"Property %s cannot be NULL\\", ['filmingLocations'])
             SET this.filmingLocations = this.filmingLocations + [p in $this_update_filmingLocations_PUSH | point(p)]
-            RETURN collect(DISTINCT this { .title, filmingLocations: (CASE WHEN this.filmingLocations IS NOT NULL THEN [p in this.filmingLocations | { point:p }] ELSE NULL END) }) AS data"
+            RETURN collect(DISTINCT this { .title, filmingLocations: (CASE
+                WHEN this.filmingLocations IS NOT NULL THEN [p_var0 IN this.filmingLocations | { point: p_var0 }]
+                ELSE NULL
+            END) }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -549,7 +552,14 @@ describe("Arrays Methods", () => {
             RETURN count(*) AS _
             \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, resolvedCallbacks: $resolvedCallbacks})
             YIELD value AS this_acted_in0_relationship_actedIn0_edge
-            WITH this
+            WITH *
+            CALL {
+                WITH this
+                MATCH (this)-[update_this0:ACTED_IN]->(this_actedIn:\`Movie\`)
+                WITH this_actedIn { .title } AS this_actedIn
+                RETURN collect(this_actedIn) AS this_actedIn
+            }
+            WITH *
             CALL {
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
@@ -558,7 +568,7 @@ describe("Arrays Methods", () => {
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
             RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
-            RETURN collect(DISTINCT this { .name, actedIn: [ (this)-[:ACTED_IN]->(this_actedIn:Movie)   | this_actedIn { .title } ], actedInConnection }) AS data"
+            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -647,7 +657,14 @@ describe("Arrays Methods", () => {
             RETURN count(*) AS _
             \\", \\"\\", {this:this, this_acted_in0_relationship:this_acted_in0_relationship, updateActors: $updateActors, resolvedCallbacks: $resolvedCallbacks})
             YIELD value AS this_acted_in0_relationship_actedIn0_edge
-            WITH this
+            WITH *
+            CALL {
+                WITH this
+                MATCH (this)-[update_this0:ACTED_IN]->(this_actedIn:\`Movie\`)
+                WITH this_actedIn { .title } AS this_actedIn
+                RETURN collect(this_actedIn) AS this_actedIn
+            }
+            WITH *
             CALL {
             WITH this
             MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
@@ -656,7 +673,7 @@ describe("Arrays Methods", () => {
             WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
             RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
-            RETURN collect(DISTINCT this { .name, actedIn: [ (this)-[:ACTED_IN]->(this_actedIn:Movie)   | this_actedIn { .title } ], actedInConnection }) AS data"
+            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

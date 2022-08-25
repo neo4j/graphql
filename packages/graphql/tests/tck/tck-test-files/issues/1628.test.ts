@@ -62,15 +62,26 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`frbr__Work\`:\`Resource\`)
-            WHERE size([(this)-[:dcterms__title]->(this0:\`dcterms_title\`:\`property\`) WHERE this0.value CONTAINS $param0 | 1]) > 0
-            WITH this
+            WHERE EXISTS {
+                MATCH (this)-[:dcterms__title]->(this0:\`dcterms_title\`:\`property\`)
+                WHERE this0.value CONTAINS $param0
+            }
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:dcterms__title]->(this_dcterms__title:\`dcterms_title\`:\`property\`)
+                WHERE this_dcterms__title.value CONTAINS $thisparam0
+                WITH this_dcterms__title { .value } AS this_dcterms__title
+                RETURN collect(this_dcterms__title) AS this_dcterms__title
+            }
+            WITH *
             LIMIT $this_limit
-            RETURN this { iri: this.uri, dcterms__title: [ (this)-[:dcterms__title]->(this_dcterms__title:\`dcterms_title\`:\`property\`)  WHERE this_dcterms__title.value CONTAINS $this_dcterms__title_param0 | this_dcterms__title { .value } ] } as this"
+            RETURN this { iri: this.uri, dcterms__title: this_dcterms__title } as this"
         `);
+
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"0777\\",
-                \\"this_dcterms__title_param0\\": \\"0777\\",
+                \\"thisparam0\\": \\"0777\\",
                 \\"this_limit\\": {
                     \\"low\\": 10000,
                     \\"high\\": 0

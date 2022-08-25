@@ -158,6 +158,7 @@ describe("Cypher Union", () => {
             CREATE (this_create_search_Genre0_node:Genre)
             SET this_create_search_Genre0_node.name = $this_create_search_Genre0_node_name
             MERGE (this)-[:SEARCH]->(this_create_search_Genre0_node)
+            WITH *
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
@@ -399,6 +400,7 @@ describe("Cypher Union", () => {
             )
             RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
@@ -462,6 +464,7 @@ describe("Cypher Union", () => {
             	)
             	RETURN count(*) AS _
             }
+            WITH *
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
 
@@ -501,6 +504,7 @@ describe("Cypher Union", () => {
             WHERE this_delete_search_Genre0.name = $updateMovies_args_delete_search_Genre0_where_Genreparam0
             WITH this, collect(DISTINCT this_delete_search_Genre0) as this_delete_search_Genre0_to_delete
             FOREACH(x IN this_delete_search_Genre0_to_delete | DETACH DELETE x)
+            WITH *
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
 

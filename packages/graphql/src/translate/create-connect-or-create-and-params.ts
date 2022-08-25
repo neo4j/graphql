@@ -24,7 +24,7 @@ import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { asArray, omitFields } from "../utils/utils";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
-import { convertToCypherParams } from "./cypher-builder/utils";
+import { convertToCypherParams } from "./cypher-builder/utils/convert-to-cypher-params";
 import { addCallbackAndSetParamCypher } from "./utils/callback-utils";
 
 type CreateOrConnectInput = {

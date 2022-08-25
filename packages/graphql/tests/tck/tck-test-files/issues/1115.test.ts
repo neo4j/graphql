@@ -96,6 +96,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
                 MERGE (this_connectOrCreate_children_this2)-[this_connectOrCreate_children_this3:HAS]->(this)
                 RETURN COUNT(*) AS _
             }
+            WITH *
             RETURN 'Query cannot conclude with CALL'"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

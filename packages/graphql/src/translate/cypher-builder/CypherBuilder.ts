@@ -18,7 +18,7 @@
  */
 
 // Clauses
-export { Match } from "./clauses/Match";
+export { Match, OptionalMatch } from "./clauses/Match";
 export { Create } from "./clauses/Create";
 export { Merge } from "./clauses/Merge";
 export { Call } from "./clauses/Call";
@@ -26,10 +26,13 @@ export { Return } from "./clauses/Return";
 export { RawCypher } from "./clauses/RawCypher";
 export { With } from "./clauses/With";
 export { Unwind } from "./clauses/Unwind";
+export { Union } from "./clauses/Union";
 
-// Clauses-like things
-export { Exists } from "./sub-clauses/Exists";
 export { concat } from "./clauses/utils/concat";
+
+// Expressions
+export { Exists } from "./expressions/Exists";
+export { Case } from "./expressions/Case";
 
 // Procedures
 export * as db from "./procedures/db";
@@ -84,7 +87,7 @@ export {
     sum,
 } from "./functions/CypherFunction";
 export * from "./functions/ListFunctions";
-export { any, all, exists } from "./functions/PredicateFunctions";
+export { any, all, exists, single } from "./functions/PredicateFunctions";
 
 // Types
 export type { CypherResult } from "./types";
@@ -100,3 +103,4 @@ export type { ComprehensionExpr } from "./list/ComprehensionExpr";
 export type { ProjectionColumn } from "./sub-clauses/Projection";
 export type { SetParam } from "./sub-clauses/Set";
 export type { PredicateFunction } from "./functions/PredicateFunctions";
+export type { Order } from "./sub-clauses/OrderBy";

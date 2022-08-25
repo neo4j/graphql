@@ -22,7 +22,7 @@ import { applyMixins } from "../clauses/utils/apply-mixin";
 import type { CypherEnvironment } from "../Environment";
 import { MatchableElement, Pattern } from "../Pattern";
 import type { Expr } from "../types";
-import { compileCypherIfExists } from "../utils";
+import { compileCypherIfExists } from "../utils/utils";
 import { ComprehensionExpr } from "./ComprehensionExpr";
 
 export class PatternComprehension extends ComprehensionExpr {

@@ -55,4 +55,49 @@ describe("Neo4jGraphQLAuthJWTPlugin", () => {
 
         expect(decoded).toMatchObject(payload);
     });
+
+    test("should decode JWT token with globalAuthentication enabled", async () => {
+        const payload = {
+            sub: "my-id",
+        };
+
+        const encoded = jsonwebtoken.sign(payload, secret);
+
+        const plugin = new Neo4jGraphQLAuthJWTPlugin({
+            secret,
+            globalAuthentication: true,
+        });
+
+        const decoded = await plugin.decode(encoded);
+
+        expect(decoded).toMatchObject(payload);
+    });
+
+    test("should throw an error if both noVerify and globalAuthentication are enabled", async () => {
+        let initError: Error | null | unknown = null;
+        try {
+            const payload = {
+                sub: "my-id",
+            };
+
+            const encoded = jsonwebtoken.sign(payload, secret);
+
+            const plugin = new Neo4jGraphQLAuthJWTPlugin({
+                secret,
+                noVerify: true,
+                globalAuthentication: true,
+            });
+
+            const decoded = await plugin.decode(encoded);
+
+            expect(decoded).toMatchObject(payload);
+        } catch (error) {
+            initError = error;
+        }
+
+        expect(initError).toBeDefined();
+        expect((initError as Error).message).toBe(
+            "Neo4jGraphQLAuthJWTPlugin, noVerify and globalAuthentication can not both be enabled simultaneously."
+        );
+    });
 });
