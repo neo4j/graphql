@@ -32,9 +32,17 @@ export function escapeLabel(label: string): string {
 }
 
 export function padBlock(block: string, spaces = 4): string {
+    const wordsToIgnore = ["UNION", "UNION ALL"];
     const paddingStr = " ".repeat(spaces);
-    const paddedNewLines = block.replace(/\n/g, `\n${paddingStr}`);
-    return `${paddingStr}${paddedNewLines}`;
+
+    const paddedBlock = block.replace(/\n/g, `\n${paddingStr}`);
+    const formattedBlock = dedentWords(wordsToIgnore, paddedBlock, spaces);
+    return `${paddingStr}${formattedBlock}`;
+}
+
+function dedentWords(words: Array<string>, paddedBlock: string, spaces: number): string {
+    const regex = new RegExp(`\\s{${spaces}}(${words.join("|")})\n`);
+    return paddedBlock.replace(regex, "$1\n");
 }
 
 /** Compiles the cypher of an element, if the resulting cypher is not empty adds a prefix */
