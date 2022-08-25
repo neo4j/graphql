@@ -33,6 +33,7 @@ import {
     RELATIONSHIP_REQUIREMENT_PREFIX,
 } from "../constants";
 import type { AuthContext, CypherQueryOptions } from "../types";
+import createAuthParam from "../translate/create-auth-param";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -72,7 +73,7 @@ export type ExecutionContext = Driver | Session | Transaction;
 
 export type ExecutorConstructorParam = {
     executionContext: ExecutionContext;
-    auth: AuthContext;
+    auth?: AuthContext;
     queryOptions?: CypherQueryOptions;
     database?: string;
     bookmarks?: string | string[];
@@ -89,17 +90,15 @@ export class Executor {
     private database: string | undefined;
     private bookmarks: string | string[] | undefined;
 
-    constructor({
-        executionContext,
-        auth,
-        queryOptions,
-        database,
-        bookmarks,
-    }: ExecutorConstructorParam) {
+    constructor({ executionContext, auth, queryOptions, database, bookmarks }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.lastBookmark = null;
         this.queryOptions = queryOptions;
-        this.auth = auth;
+        if (auth) {
+            this.auth = auth;
+        } else {
+            this.auth = createAuthParam({ context: {} });
+        }
         this.database = database;
         this.bookmarks = bookmarks;
     }
@@ -116,7 +115,7 @@ export class Executor {
             if (isSessionLike(this.executionContext)) {
                 return await this.sessionRun(query, parameters, defaultAccessMode, this.executionContext);
             }
-        
+
             return await this.transactionRun(query, parameters, this.executionContext);
         } catch (error) {
             throw this.formatError(error);
