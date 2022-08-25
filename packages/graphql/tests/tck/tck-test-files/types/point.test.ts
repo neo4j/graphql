@@ -389,6 +389,208 @@ describe("Cypher Points", () => {
         `);
     });
 
+    test("Simple Point LT query (4.4)", async () => {
+        const query = gql`
+            {
+                pointContainers(where: { point_LT: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }) {
+                    point {
+                        longitude
+                        latitude
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+            neo4jVersion: "4.4",
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`PointContainer\`)
+            WHERE point.distance(this.point, point($param0.point)) < $param0.distance
+            RETURN this { point: (CASE
+                WHEN this.point IS NOT NULL THEN { point: this.point }
+                ELSE NULL
+            END) } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"point\\": {
+                        \\"longitude\\": 1.1,
+                        \\"latitude\\": 2.2
+                    },
+                    \\"distance\\": 3.3
+                }
+            }"
+        `);
+    });
+
+    test("Simple Point LTE query (4.4)", async () => {
+        const query = gql`
+            {
+                pointContainers(where: { point_LTE: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }) {
+                    point {
+                        longitude
+                        latitude
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+            neo4jVersion: "4.4",
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`PointContainer\`)
+            WHERE point.distance(this.point, point($param0.point)) <= $param0.distance
+            RETURN this { point: (CASE
+                WHEN this.point IS NOT NULL THEN { point: this.point }
+                ELSE NULL
+            END) } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"point\\": {
+                        \\"longitude\\": 1.1,
+                        \\"latitude\\": 2.2
+                    },
+                    \\"distance\\": 3.3
+                }
+            }"
+        `);
+    });
+
+    test("Simple Point GT query (4.4)", async () => {
+        const query = gql`
+            {
+                pointContainers(where: { point_GT: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }) {
+                    point {
+                        longitude
+                        latitude
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+            neo4jVersion: "4.4",
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`PointContainer\`)
+            WHERE point.distance(this.point, point($param0.point)) > $param0.distance
+            RETURN this { point: (CASE
+                WHEN this.point IS NOT NULL THEN { point: this.point }
+                ELSE NULL
+            END) } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"point\\": {
+                        \\"longitude\\": 1.1,
+                        \\"latitude\\": 2.2
+                    },
+                    \\"distance\\": 3.3
+                }
+            }"
+        `);
+    });
+
+    test("Simple Point GTE query (4.4)", async () => {
+        const query = gql`
+            {
+                pointContainers(where: { point_GTE: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }) {
+                    point {
+                        longitude
+                        latitude
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+            neo4jVersion: "4.4",
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`PointContainer\`)
+            WHERE point.distance(this.point, point($param0.point)) >= $param0.distance
+            RETURN this { point: (CASE
+                WHEN this.point IS NOT NULL THEN { point: this.point }
+                ELSE NULL
+            END) } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"point\\": {
+                        \\"longitude\\": 1.1,
+                        \\"latitude\\": 2.2
+                    },
+                    \\"distance\\": 3.3
+                }
+            }"
+        `);
+    });
+
+    test("Simple Point DISTANCE query (4.4)", async () => {
+        const query = gql`
+            {
+                pointContainers(
+                    where: { point_DISTANCE: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }
+                ) {
+                    point {
+                        longitude
+                        latitude
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+            neo4jVersion: "4.4",
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`PointContainer\`)
+            WHERE point.distance(this.point, point($param0.point)) = $param0.distance
+            RETURN this { point: (CASE
+                WHEN this.point IS NOT NULL THEN { point: this.point }
+                ELSE NULL
+            END) } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"point\\": {
+                        \\"longitude\\": 1.1,
+                        \\"latitude\\": 2.2
+                    },
+                    \\"distance\\": 3.3
+                }
+            }"
+        `);
+    });
+
     test("Simple Point create mutation", async () => {
         const query = gql`
             mutation {

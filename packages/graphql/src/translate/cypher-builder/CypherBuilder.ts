@@ -78,6 +78,7 @@ export {
     coalesce,
     point,
     distance,
+    pointDistance,
     cypherDatetime as datetime,
     labels,
     count,

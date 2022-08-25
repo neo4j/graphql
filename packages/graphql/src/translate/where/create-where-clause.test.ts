@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Neo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
 import type { PointField, PrimitiveField } from "../../types";
 import createWhereClause from "./create-where-clause";
 import type { NumericalWhereOperator, SpatialWhereOperator, WhereOperator } from "./types";
@@ -27,13 +28,23 @@ describe("createWhereClause", () => {
 
     describe("Primitive Fields", () => {
         test("Equality", () => {
-            const clause = createWhereClause({ param, property, isNot: false });
+            const clause = createWhereClause({
+                param,
+                property,
+                isNot: false,
+                neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.3"),
+            });
             const expected = `${property} = $${param}`;
             expect(clause).toBe(expected);
         });
 
         test("Inequality", () => {
-            const clause = createWhereClause({ param, property, isNot: true });
+            const clause = createWhereClause({
+                param,
+                property,
+                isNot: true,
+                neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.3"),
+            });
             const expected = `(NOT ${property} = $${param})`;
             expect(clause).toBe(expected);
         });
@@ -49,13 +60,25 @@ describe("createWhereClause", () => {
             ["MATCHES", "=~"],
             ["IN", "IN"],
         ])("%s", (operator, comparison) => {
-            const clause = createWhereClause({ param, property, operator, isNot: false });
+            const clause = createWhereClause({
+                param,
+                property,
+                operator,
+                isNot: false,
+                neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.3"),
+            });
             const expected = `${property} ${comparison} $${param}`;
             expect(clause).toBe(expected);
         });
 
         test("INCLUDES", () => {
-            const clause = createWhereClause({ param, property, operator: "INCLUDES", isNot: false });
+            const clause = createWhereClause({
+                param,
+                property,
+                operator: "INCLUDES",
+                isNot: false,
+                neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.3"),
+            });
             const expected = `$${param} IN ${property}`;
             expect(clause).toBe(expected);
         });
@@ -67,13 +90,25 @@ describe("createWhereClause", () => {
             fieldName: "durationField",
         };
         test("Equality", () => {
-            const clause = createWhereClause({ param, property, isNot: false, durationField });
+            const clause = createWhereClause({
+                param,
+                property,
+                isNot: false,
+                durationField,
+                neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.3"),
+            });
             const expected = `${property} = $${param}`;
             expect(clause).toBe(expected);
         });
 
         test("Inequality", () => {
-            const clause = createWhereClause({ param, property, isNot: true, durationField });
+            const clause = createWhereClause({
+                param,
+                property,
+                isNot: true,
+                durationField,
+                neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.3"),
+            });
             const expected = `(NOT ${property} = $${param})`;
             expect(clause).toBe(expected);
         });
@@ -84,7 +119,14 @@ describe("createWhereClause", () => {
             ["GTE", ">="],
             ["LTE", "<="],
         ])("%s", (operator, comparison) => {
-            const clause = createWhereClause({ param, property, operator, isNot: false, durationField });
+            const clause = createWhereClause({
+                param,
+                property,
+                operator,
+                isNot: false,
+                durationField,
+                neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.3"),
+            });
             const expected = `datetime() + ${property} ${comparison} datetime() + $${param}`;
             expect(clause).toBe(expected);
         });
@@ -98,13 +140,25 @@ describe("createWhereClause", () => {
                 },
             };
             test("Equality", () => {
-                const clause = createWhereClause({ param, property, isNot: false, pointField });
+                const clause = createWhereClause({
+                    param,
+                    property,
+                    isNot: false,
+                    pointField,
+                    neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.3"),
+                });
                 const expected = `${property} = point($${param})`;
                 expect(clause).toBe(expected);
             });
 
             test("Inequality", () => {
-                const clause = createWhereClause({ param, property, isNot: true, pointField });
+                const clause = createWhereClause({
+                    param,
+                    property,
+                    isNot: true,
+                    pointField,
+                    neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.3"),
+                });
                 const expected = `(NOT ${property} = point($${param}))`;
                 expect(clause).toBe(expected);
             });
@@ -116,8 +170,34 @@ describe("createWhereClause", () => {
                 ["LTE", "<="],
                 ["DISTANCE", "="],
             ])("%s", (operator, comparison) => {
-                const clause = createWhereClause({ param, property, operator, isNot: false, pointField });
+                const clause = createWhereClause({
+                    param,
+                    property,
+                    operator,
+                    isNot: false,
+                    pointField,
+                    neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.3"),
+                });
                 const expected = `distance(${property}, point($${param}.point)) ${comparison} $${param}.distance`;
+                expect(clause).toBe(expected);
+            });
+
+            test.each<[NumericalWhereOperator | SpatialWhereOperator, string]>([
+                ["LT", "<"],
+                ["GT", ">"],
+                ["GTE", ">="],
+                ["LTE", "<="],
+                ["DISTANCE", "="],
+            ])("%s (4.4)", (operator, comparison) => {
+                const clause = createWhereClause({
+                    param,
+                    property,
+                    operator,
+                    isNot: false,
+                    pointField,
+                    neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.4"),
+                });
+                const expected = `point.distance(${property}, point($${param}.point)) ${comparison} $${param}.distance`;
                 expect(clause).toBe(expected);
             });
         });
@@ -130,19 +210,38 @@ describe("createWhereClause", () => {
                 },
             };
             test("Equality", () => {
-                const clause = createWhereClause({ param, property, isNot: false, pointField });
+                const clause = createWhereClause({
+                    param,
+                    property,
+                    isNot: false,
+                    pointField,
+                    neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.3"),
+                });
                 const expected = `${property} = [p in $${param} | point(p)]`;
                 expect(clause).toBe(expected);
             });
 
             test("Inequality", () => {
-                const clause = createWhereClause({ param, property, isNot: true, pointField });
+                const clause = createWhereClause({
+                    param,
+                    property,
+                    isNot: true,
+                    pointField,
+                    neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.3"),
+                });
                 const expected = `(NOT ${property} = [p in $${param} | point(p)])`;
                 expect(clause).toBe(expected);
             });
 
             test("IN", () => {
-                const clause = createWhereClause({ param, property, operator: "IN", isNot: false, pointField });
+                const clause = createWhereClause({
+                    param,
+                    property,
+                    operator: "IN",
+                    isNot: false,
+                    pointField,
+                    neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.3"),
+                });
                 const expected = `${property} IN [p in $${param} | point(p)]`;
                 expect(clause).toBe(expected);
             });

@@ -56,6 +56,10 @@ export function distance(lexpr: Expr, rexpr: Expr): CypherFunction {
     return new CypherFunction("distance", [lexpr, rexpr]);
 }
 
+export function pointDistance(lexpr: Expr, rexpr: Expr): CypherFunction {
+    return new CypherFunction("point.distance", [lexpr, rexpr]);
+}
+
 export function labels(nodeRef: Variable): CypherFunction {
     return new CypherFunction("labels", [nodeRef]);
 }
