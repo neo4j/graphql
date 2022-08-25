@@ -43,7 +43,7 @@
         "@neo4j/graphql": "3.6.3",
         "@neo4j/introspector": "^1.0.1",
         "codemirror": "^5.65.8",
-        "codemirror-graphql": "^1.3.2",
+        "codemirror-graphql": "^2.0.0",
         "crypto-js": "^4.1.1",
         "graphiql-explorer": "^0.9.0",
         "graphql": "16.6.0",
