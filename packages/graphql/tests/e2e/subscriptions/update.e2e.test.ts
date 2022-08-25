@@ -180,6 +180,81 @@ describe("Update Subscriptions", () => {
         ]);
     });
 
+    // filters start below
+    test("update subscription with where filter _NOT returns 1 result", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { title_NOT: "movie5" }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie("movie5");
+        await createMovie("movie6");
+
+        await updateMovie("movie5", "movie7");
+        await updateMovie("movie6", "movie8");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.updated]: {
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie8" },
+                },
+            },
+        ]);
+    });
+    test("update subscription with where filter _NOT returns multiple results", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { title_NOT: "movie2" }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie("movie5");
+        await createMovie("movie6");
+
+        await updateMovie("movie5", "movie7");
+        await updateMovie("movie6", "movie8");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toContainEqual({
+            [typeMovie.operations.subscribe.updated]: {
+                [typeMovie.operations.subscribe.payload.updated]: { title: "movie7" },
+            },
+        });
+        expect(wsClient.events).toContainEqual({
+            [typeMovie.operations.subscribe.updated]: {
+                [typeMovie.operations.subscribe.payload.updated]: { title: "movie8" },
+            },
+        });
+    });
+    test("update subscription with where filter _NOT returns no result", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { title_NOT: "movie5" }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie("movie5");
+
+        await updateMovie("movie5", "movie7");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+
     async function createMovie(title: string): Promise<Response> {
         const result = await supertest(server.path)
             .post("")

@@ -142,6 +142,81 @@ describe("Delete Subscription", () => {
         ]);
     });
 
+    // filters start below
+    test("delete subscription with where _NOT 1 result", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { title_NOT: "movie3" }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie("movie3");
+        await createMovie("movie4");
+
+        await deleteMovie("movie3");
+        await deleteMovie("movie4");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie4" },
+                },
+            },
+        ]);
+    });
+    test("delete subscription with where _NOT multiple results", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { title_NOT: "movie1" }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie("movie3");
+        await createMovie("movie4");
+
+        await deleteMovie("movie3");
+        await deleteMovie("movie4");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toContainEqual({
+            [typeMovie.operations.subscribe.deleted]: {
+                [typeMovie.operations.subscribe.payload.deleted]: { title: "movie3" },
+            },
+        });
+        expect(wsClient.events).toContainEqual({
+            [typeMovie.operations.subscribe.deleted]: {
+                [typeMovie.operations.subscribe.payload.deleted]: { title: "movie4" },
+            },
+        });
+    });
+    test("delete subscription with where _NOT no result", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { title_NOT: "movie3" }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie("movie3");
+
+        await deleteMovie("movie3");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+
     async function createMovie(title: string): Promise<Response> {
         const result = await supertest(server.path)
             .post("")

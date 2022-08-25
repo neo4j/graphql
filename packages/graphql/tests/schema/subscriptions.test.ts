@@ -115,6 +115,7 @@ describe("Subscriptions", () => {
 
             input ActorSubscriptionWhere {
               name: String
+              name_NOT: String
             }
 
             input ActorUpdateInput {
@@ -383,9 +384,13 @@ describe("Subscriptions", () => {
 
             input MovieSubscriptionWhere {
               actorCount: Int
+              actorCount_NOT: Int
               averageRating: Float
+              averageRating_NOT: Float
               id: ID
+              id_NOT: ID
               isActive: Boolean
+              isActive_NOT: Boolean
             }
 
             input MovieUpdateInput {
@@ -999,9 +1004,13 @@ describe("Subscriptions", () => {
 
             input MovieSubscriptionWhere {
               actorCount: Int
+              actorCount_NOT: Int
               averageRating: Float
+              averageRating_NOT: Float
               id: ID
+              id_NOT: ID
               isActive: Boolean
+              isActive_NOT: Boolean
             }
 
             input MovieUpdateInput {
