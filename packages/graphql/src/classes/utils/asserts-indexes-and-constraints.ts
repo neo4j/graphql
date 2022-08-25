@@ -29,13 +29,13 @@ export interface AssertIndexesAndConstraintsOptions {
     create?: boolean;
 }
 
-async function createConstraints({ nodes, session }: { nodes: Node[]; session: Session }) {
+async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; session: Session }) {
     const constraintsToCreate: { constraintName: string; label: string; property: string }[] = [];
     const indexesToCreate: { indexName: string; label: string; properties: string[] }[] = [];
 
     const existingIndexes: Record<string, { labelsOrTypes: string; properties: string[] }> = {};
     const indexErrors: string[] = [];
-    const indexesCypher = "CALL db.indexes";
+    const indexesCypher = "SHOW INDEXES";
 
     debug(`About to execute Cypher: ${indexesCypher}`);
     const indexesResult = await session.run(indexesCypher);
@@ -124,11 +124,9 @@ async function createConstraints({ nodes, session }: { nodes: Node[]; session: S
 
     for (const indexToCreate of indexesToCreate) {
         const cypher = [
-            `CALL db.index.fulltext.createNodeIndex(`,
-            `"${indexToCreate.indexName}",`,
-            `["${indexToCreate.label}"],`,
-            `[${indexToCreate.properties.map((p) => `"${p}"`).join(", ")}]`,
-            `)`,
+            `CREATE FULLTEXT INDEX ${indexToCreate.indexName}`,
+            `IF NOT EXISTS FOR (n:${indexToCreate.label})`,
+            `ON EACH [${indexToCreate.properties.map((p) => `n.${p}`).join(", ")}]`,
         ].join(" ");
 
         debug(`About to execute Cypher: ${cypher}`);
@@ -140,7 +138,7 @@ async function createConstraints({ nodes, session }: { nodes: Node[]; session: S
     }
 }
 
-async function checkConstraints({ nodes, session }: { nodes: Node[]; session: Session }) {
+async function checkIndexesAndConstraints({ nodes, session }: { nodes: Node[]; session: Session }) {
     const constraintsCypher = "SHOW UNIQUE CONSTRAINTS";
 
     const existingConstraints: Record<string, string[]> = {};
@@ -181,7 +179,7 @@ async function checkConstraints({ nodes, session }: { nodes: Node[]; session: Se
 
     const existingIndexes: Record<string, { labelsOrTypes: string; properties: string[] }> = {};
     const indexErrors: string[] = [];
-    const indexesCypher = "CALL db.indexes";
+    const indexesCypher = "SHOW INDEXES";
 
     debug(`About to execute Cypher: ${indexesCypher}`);
     const indexesResult = await session.run(indexesCypher);
@@ -269,9 +267,9 @@ async function assertIndexesAndConstraints({
 
     try {
         if (options?.create) {
-            await createConstraints({ nodes, session });
+            await createIndexesAndConstraints({ nodes, session });
         } else {
-            await checkConstraints({ nodes, session });
+            await checkIndexesAndConstraints({ nodes, session });
         }
     } finally {
         await session.close();
