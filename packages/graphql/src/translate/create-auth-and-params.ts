@@ -82,6 +82,7 @@ export function createAuthAndParams({
 
     // Params must be globally unique, variables can be just slightly different, as each auth statement is scoped
     const authCypher = authPredicateExpr.build({ params: `${chainStr}auth_`, variables: `auth_` });
+
     return [authCypher.cypher, authCypher.params];
 }
 

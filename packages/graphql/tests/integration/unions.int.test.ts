@@ -818,7 +818,7 @@ describe("unions", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { jwtAllowedNamesExample: ["Horror"] });
+                const req = createJwtRequest(secret, { jwtAllowedNamesExample: "Horror" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -857,14 +857,13 @@ describe("unions", () => {
             `;
 
             try {
-                const req = createJwtRequest(secret, { jwtAllowedNamesExample: ["Romance"] });
+                const req = createJwtRequest(secret, { jwtAllowedNamesExample: "Romance" });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
-                console.log(gqlResult.data);
                 expect(gqlResult.errors).toBeFalsy();
                 expect(gqlResult.data?.[typeMovie.plural] as any).toEqual([
                     {
