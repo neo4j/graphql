@@ -18,6 +18,8 @@
  */
 
 import * as semver from "semver";
+import type { Executor } from "./Executor";
+import { DBMS_COMPONENTS_QUERY } from "../constants";
 
 export type Neo4jVersion = {
     major: number;
@@ -29,6 +31,7 @@ export type Neo4jEdition = "enterprise" | "community";
 export const VERSION_NOT_DETACTABLE = "Neo4j version not detectable";
 
 export class Neo4jDatabaseInfo {
+    private rawVersion?: string;
     public version: Neo4jVersion;
     public edition: Neo4jEdition | undefined;
 
@@ -38,6 +41,7 @@ export class Neo4jDatabaseInfo {
         } else if (typeof version === "string") {
             const neo4jVersion = this.neo4jVersionBuilder(version);
             this.version = neo4jVersion;
+            this.rawVersion = version;
         } else {
             this.version = version as Neo4jVersion;
         }
@@ -46,6 +50,10 @@ export class Neo4jDatabaseInfo {
 
     toSemVer(version: string): semver.SemVer {
         return semver.coerce(version) as semver.SemVer;
+    }
+
+    toString(): string {
+        return this.rawVersion || `${this.version.major}.${this.version.minor}`;
     }
 
     eq(version: string) {
@@ -92,4 +100,11 @@ export class Neo4jDatabaseInfo {
         const neo4jVersion = { major, minor } as Neo4jVersion;
         return neo4jVersion;
     }
+}
+
+export async function getNeo4jDatabaseInfo(executor: Executor): Promise<Neo4jDatabaseInfo> {
+    const dbmsComponentsQueryResult = await executor.execute(DBMS_COMPONENTS_QUERY as string, {}, "READ");
+    const rawRow = dbmsComponentsQueryResult?.records[0];
+    const [rawVersion, edition] = rawRow;
+    return new Neo4jDatabaseInfo(rawVersion as string, edition as Neo4jEdition);
 }

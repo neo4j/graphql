@@ -22,15 +22,14 @@ import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
 import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
 import type { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
-import { Neo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
+import { getNeo4jDatabaseInfo, Neo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
 import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
-import { DBMS_COMPONENTS_QUERY, DEBUG_GRAPHQL } from "../../constants";
+import { DEBUG_GRAPHQL } from "../../constants";
 import createAuthParam from "../../translate/create-auth-param";
 import type { Context, Neo4jGraphQLPlugins } from "../../types";
 import { getToken, parseBearerToken } from "../../utils/get-token";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
-import type { Neo4jEdition } from "../../classes/Neo4jDatabaseInfo";
 import { decodeToken, verifyGlobalAuthentication } from "./wrapper-utils";
 
 const debug = Debug(DEBUG_GRAPHQL);
@@ -42,12 +41,13 @@ type WrapResolverArguments = {
     relationships: Relationship[];
     schema: GraphQLSchema;
     plugins?: Neo4jGraphQLPlugins;
+    dbInfo?: Neo4jDatabaseInfo;
 };
 
 let neo4jDatabaseInfo: Neo4jDatabaseInfo;
 
 export const wrapResolver =
-    ({ driver, config, nodes, relationships, schema, plugins }: WrapResolverArguments) =>
+    ({ driver, config, nodes, relationships, schema, plugins, dbInfo }: WrapResolverArguments) =>
     (next) =>
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
         const { driverConfig } = config;
@@ -114,15 +114,11 @@ export const wrapResolver =
         context.executor = new Executor(executorConstructorParam);
 
         if (!context.neo4jDatabaseInfo?.version) {
+            if (dbInfo) {
+                neo4jDatabaseInfo = dbInfo;
+            }
             if (!neo4jDatabaseInfo?.version) {
-                const dbmsComponentsQueryResult = await context.executor.execute(
-                    DBMS_COMPONENTS_QUERY as string,
-                    {},
-                    "READ"
-                );
-                const rawRow = dbmsComponentsQueryResult?.records[0];
-                const [rawVersion, edition] = rawRow;
-                neo4jDatabaseInfo = new Neo4jDatabaseInfo(rawVersion as string, edition as Neo4jEdition);
+                neo4jDatabaseInfo = await getNeo4jDatabaseInfo(context.executor);
             }
             context.neo4jDatabaseInfo = neo4jDatabaseInfo;
         }

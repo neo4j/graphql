@@ -43,6 +43,8 @@ import { wrapResolver, wrapSubscription } from "../schema/resolvers/wrapper";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
 import { asArray } from "../utils/utils";
 import { DEBUG_ALL } from "../constants";
+import { getNeo4jDatabaseInfo, Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
+import { Executor, ExecutorConstructorParam } from "./Executor";
 
 export interface Neo4jGraphQLJWT {
     jwksEndpoint?: string;
@@ -77,6 +79,8 @@ class Neo4jGraphQL {
     private _relationships?: Relationship[];
     private plugins?: Neo4jGraphQLPlugins;
     private schema?: Promise<GraphQLSchema>;
+
+    private dbInfo?: Neo4jDatabaseInfo;
 
     constructor(input: Neo4jGraphQLConstructor) {
         const { config = {}, driver, plugins, features, ...schemaDefinition } = input;
@@ -123,7 +127,11 @@ class Neo4jGraphQL {
             throw new Error("neo4j-driver Driver missing");
         }
 
-        return checkNeo4jCompat({ driver, driverConfig });
+        if (!this.dbInfo) {
+            this.dbInfo = await this.getNeo4jDatabaseInfo(driver, driverConfig);
+        }
+
+        return checkNeo4jCompat({ driver, driverConfig, dbInfo: this.dbInfo });
     }
 
     public async assertIndexesAndConstraints(
@@ -142,7 +150,12 @@ class Neo4jGraphQL {
             throw new Error("neo4j-driver Driver missing");
         }
 
-        await assertIndexesAndConstraints({ driver, driverConfig, nodes: this.nodes, options: input.options });
+        await assertIndexesAndConstraints({
+            driver,
+            driverConfig,
+            nodes: this.nodes,
+            options: input.options,
+        });
     }
 
     private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
@@ -155,7 +168,7 @@ class Neo4jGraphQL {
         return schema;
     }
 
-    private checkEnableDebug = (): void => {
+    private checkEnableDebug(): void {
         if (this.config.enableDebug === true || this.config.enableDebug === false) {
             if (this.config.enableDebug) {
                 Debug.enable(DEBUG_ALL);
@@ -163,7 +176,23 @@ class Neo4jGraphQL {
                 Debug.disable();
             }
         }
-    };
+    }
+
+    private async getNeo4jDatabaseInfo(driver: Driver, driverConfig?: DriverConfig): Promise<Neo4jDatabaseInfo> {
+        const executorConstructorParam: ExecutorConstructorParam = {
+            executionContext: driver,
+        };
+
+        if (driverConfig?.database) {
+            executorConstructorParam.database = driverConfig?.database;
+        }
+
+        if (driverConfig?.bookmarks) {
+            executorConstructorParam.bookmarks = driverConfig?.bookmarks;
+        }
+
+        return getNeo4jDatabaseInfo(new Executor(executorConstructorParam));
+    }
 
     private wrapResolvers(resolvers: IResolvers, { schema }: { schema: GraphQLSchema }) {
         const wrapResolverArgs = {
