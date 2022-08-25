@@ -19,7 +19,7 @@
         "apollo-server-express": "3.10.1",
         "bcrypt": "5.0.1",
         "debug": "4.3.4",
-        "dotenv": "16.0.1",
+        "dotenv": "^16.0.1",
         "express": "4.17.1",
         "graphql": "16.6.0",
         "jsonwebtoken": "8.5.1",

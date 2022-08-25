@@ -31,16 +31,16 @@
     },
     "author": "Neo4j Inc.",
     "dependencies": {
-        "@graphql-codegen/core": "2.5.1",
-        "@graphql-codegen/plugin-helpers": "2.4.2",
-        "@graphql-codegen/typescript": "2.6.0",
-        "@graphql-tools/merge": "8.3.3",
+        "@graphql-codegen/core": "^2.5.1",
+        "@graphql-codegen/plugin-helpers": "^2.4.2",
+        "@graphql-codegen/typescript": "^2.6.0",
+        "@graphql-tools/merge": "^8.3.3",
         "@neo4j/graphql": "^3.6.3",
-        "prettier": "2.7.1"
+        "prettier": "^2.7.1"
     },
     "peerDependencies": {
-        "graphql": "16.6.0",
-        "neo4j-driver": "4.4.7"
+        "graphql": "^16.0.0",
+        "neo4j-driver": "^4.1.0"
     },
     "devDependencies": {
         "@neo4j/graphql-plugin-auth": "^1.0.0",
