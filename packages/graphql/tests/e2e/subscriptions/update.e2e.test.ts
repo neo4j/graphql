@@ -181,7 +181,11 @@ describe("Update Subscriptions", () => {
     });
 
     // filters start below
+<<<<<<< Updated upstream
     test("update subscription with where filter _NOT returns 1 result", async () => {
+=======
+    test("update subscription with where filter _NOT 1 result", async () => {
+>>>>>>> Stashed changes
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { title_NOT: "movie5" }) {
@@ -207,7 +211,11 @@ describe("Update Subscriptions", () => {
             },
         ]);
     });
+<<<<<<< Updated upstream
     test("update subscription with where filter _NOT returns multiple results", async () => {
+=======
+    test("update subscription with where filter _NOT multiple results", async () => {
+>>>>>>> Stashed changes
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { title_NOT: "movie2" }) {
@@ -225,6 +233,7 @@ describe("Update Subscriptions", () => {
         await updateMovie("movie6", "movie8");
 
         expect(wsClient.errors).toEqual([]);
+<<<<<<< Updated upstream
         expect(wsClient.events).toContainEqual({
             [typeMovie.operations.subscribe.updated]: {
                 [typeMovie.operations.subscribe.payload.updated]: { title: "movie7" },
@@ -237,6 +246,22 @@ describe("Update Subscriptions", () => {
         });
     });
     test("update subscription with where filter _NOT returns no result", async () => {
+=======
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.updated]: {
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie7" },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.updated]: {
+                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie8" },
+                },
+            },
+        ]);
+    });
+    test("update subscription with where filter _NOT empty result", async () => {
+>>>>>>> Stashed changes
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { title_NOT: "movie5" }) {

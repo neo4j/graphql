@@ -137,7 +137,7 @@ describe("Create Subscription", () => {
     });
 
     // filters start below
-    test("subscription with where filter _NOT returns correct 1 result", async () => {
+    test("subscription with where filter _NOT 1 result", async () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { title_NOT: "movie1" }) {
@@ -161,7 +161,7 @@ describe("Create Subscription", () => {
         ]);
     });
 
-    test("subscription with where filter _NOT returns correct multiple results", async () => {
+    test("subscription with where filter _NOT multiple results", async () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { title_NOT: "movie0" }) {
@@ -176,19 +176,21 @@ describe("Create Subscription", () => {
         await createMovie("movie2");
 
         expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toContainEqual({
-            [typeMovie.operations.subscribe.created]: {
-                [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+                },
             },
-        });
-        expect(wsClient.events).toContainEqual({
-            [typeMovie.operations.subscribe.created]: {
-                [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                },
             },
-        });
+        ]);
     });
 
-    test("subscription with where filter _NOT returns correct no result", async () => {
+    test("subscription with where filter _NOT empty result", async () => {
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { title_NOT: "movie1" }) {

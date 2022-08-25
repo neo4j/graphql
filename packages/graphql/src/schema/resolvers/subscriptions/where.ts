@@ -18,7 +18,11 @@
  */
 
 import type { SubscriptionsEvent } from "../../../types";
+<<<<<<< Updated upstream
 import { compare } from "./utils/compare-properties";
+=======
+import { filterByProperties } from "./utils/compare-properties";
+>>>>>>> Stashed changes
 
 export function subscriptionWhere(where: Record<string, any> | undefined, event: SubscriptionsEvent): boolean {
     if (!where) {
@@ -27,7 +31,11 @@ export function subscriptionWhere(where: Record<string, any> | undefined, event:
 
     // TODO: filters logic goes here
     if (event.event === "create") {
-        return compare(where, event.properties.new);
+        return filterByProperties(where, event.properties.new);
     }
+<<<<<<< Updated upstream
     return compare(where, event.properties.old);
+=======
+    return filterByProperties(where, event.properties.old);
+>>>>>>> Stashed changes
 }

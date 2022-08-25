@@ -17,6 +17,9 @@
  * limitations under the License.
  */
 
+import { whereRegEx } from "../../../../translate/where/utils";
+import type { WhereRegexGroups } from "../../../../translate/where/utils";
+
 /** Returns true if all properties in obj1 exists in obj2, false otherwise */
 export function compareProperties<T>(obj1: Record<string, T>, obj2: Record<string, T>): boolean {
     for (const [k, value] of Object.entries(obj1)) {
@@ -27,23 +30,40 @@ export function compareProperties<T>(obj1: Record<string, T>, obj2: Record<strin
     return true;
 }
 
+type ComparatorFn<T> = (received: T, filtered: T) => boolean;
+
 const operatorCheckMap = {
-    _NOT: (received: string, filtered: string) => received !== filtered,
+    NOT: (received: string, filtered: string) => received !== filtered,
 };
-const getCompareFn = (operator: string | undefined) => {
+function getFilteringFn<T>(operator: string | undefined): ComparatorFn<T> {
     if (!operator) {
-        return (received: string, filtered: string) => received === filtered;
+        return (received: T, filtered: T) => received === filtered;
     }
     return operatorCheckMap[operator];
-};
-const removeOperatorFromKey = (operator: string | undefined, k: string): string => k.replace(operator || "", "");
+}
 
-export function compare<T>(where: Record<string, T>, self: Record<string, T>): boolean {
-    for (const [k, v] of Object.entries(where)) {
-        const operator = Object.keys(operatorCheckMap).find((op) => k.endsWith(op));
-        const receivedValue = self[removeOperatorFromKey(operator, k)];
-        const checkEqualityFn = getCompareFn(operator).bind(null, receivedValue, v);
-        if (!checkEqualityFn()) {
+function parseFilterProperty(key: string): { fieldName: string; operator: string | undefined } {
+    const match = whereRegEx.exec(key);
+    if (!match) {
+        throw new Error(`Failed to match key in filter: ${key}`);
+    }
+    const { fieldName, operator } = match.groups as WhereRegexGroups;
+    if (!fieldName) {
+        throw new Error(`Failed to find field name in filter: ${key}`);
+    }
+    return { fieldName, operator };
+}
+
+/** Returns true if receivedProperties comply with filters specified in whereProperties, false otherwise. */
+export function filterByProperties<T>(
+    whereProperties: Record<string, T>,
+    receivedProperties: Record<string, T>
+): boolean {
+    for (const [k, v] of Object.entries(whereProperties)) {
+        const { fieldName, operator } = parseFilterProperty(k);
+        const receivedValue = receivedProperties[fieldName];
+        const checkFilterPasses = getFilteringFn(operator);
+        if (!checkFilterPasses(receivedValue, v)) {
             return false;
         }
     }
