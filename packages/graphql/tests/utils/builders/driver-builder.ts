@@ -76,26 +76,6 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
         return runMock;
     }
 
-    // Custom mock to support driver outside of jest
-/*     private createRunMock(): RunFunction {
-        const calls: Array<any> = [];
-        function mockFunc(...params) {
-            calls.push(params);
-            return {
-                records: [],
-                summary: {
-                    counters: {
-                        updates() {
-                            return "";
-                        },
-                    },
-                },
-            };
-        }
-
-        mockFunc.calls = calls;
-        return mockFunc;
-    } */
     private createRunMock(): RunFunction {
         const calls: Array<any> = [];
         function mockFunc(...params) {
@@ -110,7 +90,7 @@ export class DriverBuilder extends Builder<Driver, Partial<Driver>> {
                             },
                         },
                         server: {
-                            protocolVersion: 4
+                            protocolVersion: 4,
                         },
                     },
                 };
