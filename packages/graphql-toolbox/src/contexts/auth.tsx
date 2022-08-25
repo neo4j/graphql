@@ -19,8 +19,9 @@
 
 import React, { Dispatch, useState, SetStateAction, useEffect } from "react";
 import * as neo4j from "neo4j-driver";
-import { encrypt, decrypt } from "../utils/utils";
 import {
+    LOCAL_STATE_CONNECTION_URL,
+    LOCAL_STATE_CONNECTION_USERNAME,
     LOCAL_STATE_HIDE_INTROSPECTION_PROMPT,
     LOCAL_STATE_LOGIN,
     LOCAL_STATE_SELECTED_DATABASE_NAME,
@@ -79,13 +80,16 @@ export function AuthProvider(props: any) {
             loginPayload = loginPayloadFromDesktop;
             setValue((v) => ({ ...v, isNeo4jDesktop: true }));
         } else {
-            const storedEncryptedPayload = Storage.retrieve(LOCAL_STATE_LOGIN);
-            if (storedEncryptedPayload && typeof storedEncryptedPayload === "string") {
-                const { encryptedPayload, hashKey } = JSON.parse(storedEncryptedPayload as string);
-                loginPayload = decrypt(encryptedPayload, hashKey) as unknown as LoginPayload;
+            const storedConnectionUsername = Storage.retrieve(LOCAL_STATE_CONNECTION_USERNAME);
+            const storedConnectionUrl = Storage.retrieve(LOCAL_STATE_CONNECTION_URL);
+            if (storedConnectionUrl && storedConnectionUsername) {
+                loginPayload = {
+                    username: storedConnectionUsername,
+                    url: storedConnectionUrl,
+                };
             }
         }
-        if (loginPayload && value && !value.driver) {
+        if (loginPayload?.password && value && !value.driver) {
             value
                 .login({
                     username: loginPayload.username,
@@ -117,12 +121,8 @@ export function AuthProvider(props: any) {
                 Storage.store(LOCAL_STATE_HIDE_INTROSPECTION_PROMPT, "true");
             }
 
-            const encodedPayload = encrypt({
-                username: options.username,
-                password: options.password,
-                url: options.url,
-            } as LoginPayload);
-            Storage.storeJSON(LOCAL_STATE_LOGIN, encodedPayload);
+            Storage.store(LOCAL_STATE_CONNECTION_USERNAME, options.username);
+            Storage.store(LOCAL_STATE_CONNECTION_URL, options.url);
 
             intervalId = window.setInterval(() => {
                 checkForDatabaseUpdates(driver, setValue);
@@ -141,6 +141,8 @@ export function AuthProvider(props: any) {
         },
         logout: () => {
             Storage.remove(LOCAL_STATE_LOGIN);
+            Storage.remove(LOCAL_STATE_CONNECTION_USERNAME);
+            Storage.remove(LOCAL_STATE_CONNECTION_URL);
             Storage.remove(LOCAL_STATE_HIDE_INTROSPECTION_PROMPT);
             if (intervalId) {
                 clearInterval(intervalId);
