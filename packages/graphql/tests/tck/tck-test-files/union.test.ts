@@ -70,7 +70,7 @@ describe("Cypher Union", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { jwtAllowedNamesExample: ["Horror"] });
+        const req = createJwtRequest("secret", { jwtAllowedNamesExample: "Horror" });
         const result = await translateQuery(neoSchema, query, {
             req,
         });
@@ -99,9 +99,7 @@ describe("Cypher Union", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"thisparam0\\": [
-                    \\"Horror\\"
-                ]
+                \\"thisparam0\\": \\"Horror\\"
             }"
         `);
     });
@@ -119,7 +117,7 @@ describe("Cypher Union", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { jwtAllowedNamesExample: ["Horror"] });
+        const req = createJwtRequest("secret", { jwtAllowedNamesExample: "Horror" });
         const result = await translateQuery(neoSchema, query, {
             req,
         });
@@ -148,9 +146,7 @@ describe("Cypher Union", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"thisparam0\\": [
-                    \\"Horror\\"
-                ]
+                \\"thisparam0\\": \\"Horror\\"
             }"
         `);
     });
@@ -174,7 +170,7 @@ describe("Cypher Union", () => {
             }
         `;
 
-        const req = createJwtRequest("secret", { jwtAllowedNamesExample: ["Horror"] });
+        const req = createJwtRequest("secret", { jwtAllowedNamesExample: "Horror" });
         const result = await translateQuery(neoSchema, query, {
             req,
         });
@@ -209,9 +205,7 @@ describe("Cypher Union", () => {
             "{
                 \\"param0\\": \\"some title\\",
                 \\"thisparam0\\": \\"Horror\\",
-                \\"thisparam1\\": [
-                    \\"Horror\\"
-                ],
+                \\"thisparam1\\": \\"Horror\\",
                 \\"thisparam2\\": \\"The Matrix\\"
             }"
         `);
