@@ -35,7 +35,11 @@ export class Neo4jDatabaseInfo {
     }
 
     private toSemVer(version: string): semver.SemVer {
-        return semver.coerce(version) as semver.SemVer;
+        const coerced = semver.coerce(version) as semver.SemVer;
+        if (!semver.valid(coerced)) {
+            throw new Error(`Could not coerce provided version ${version}`);
+        }
+        return coerced;
     }
 
     toString(): string {
