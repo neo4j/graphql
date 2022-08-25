@@ -187,20 +187,6 @@ describe("Delete Subscription", () => {
         await deleteMovie("movie4");
 
         expect(wsClient.errors).toEqual([]);
-<<<<<<< Updated upstream
-        expect(wsClient.events).toContainEqual({
-            [typeMovie.operations.subscribe.deleted]: {
-                [typeMovie.operations.subscribe.payload.deleted]: { title: "movie3" },
-            },
-        });
-        expect(wsClient.events).toContainEqual({
-            [typeMovie.operations.subscribe.deleted]: {
-                [typeMovie.operations.subscribe.payload.deleted]: { title: "movie4" },
-            },
-        });
-    });
-    test("delete subscription with where _NOT no result", async () => {
-=======
         expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.deleted]: {
@@ -215,7 +201,6 @@ describe("Delete Subscription", () => {
         ]);
     });
     test("delete subscription with where _NOT empty result", async () => {
->>>>>>> Stashed changes
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.deleted}(where: { title_NOT: "movie3" }) {
