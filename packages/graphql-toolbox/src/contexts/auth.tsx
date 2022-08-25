@@ -89,7 +89,7 @@ export function AuthProvider(props: any) {
                 };
             }
         }
-        if (loginPayload && loginPayload.password && value && !value.driver) {
+        if (loginPayload?.password && value && !value.driver) {
             value
                 .login({
                     username: loginPayload.username,
