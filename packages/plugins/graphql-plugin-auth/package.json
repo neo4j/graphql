@@ -35,7 +35,7 @@
     },
     "devDependencies": {
         "@types/debug": "4.1.7",
-        "@types/jest": "28.1.7",
+        "@types/jest": "28.1.8",
         "@types/jsonwebtoken": "8.5.9",
         "@types/node": "16.11.56",
         "jest": "28.1.3",
