@@ -52,7 +52,7 @@
         "@types/deep-equal": "1.0.1",
         "@types/is-uuid": "1.0.0",
         "@types/jest": "28.1.7",
-        "@types/jsonwebtoken": "8.5.8",
+        "@types/jsonwebtoken": "8.5.9",
         "@types/node": "16.11.56",
         "@types/pluralize": "0.0.29",
         "@types/randomstring": "1.1.8",
