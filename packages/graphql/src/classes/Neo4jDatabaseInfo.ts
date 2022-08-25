@@ -40,7 +40,7 @@ export class Neo4jDatabaseInfo {
         this.edition = edition;
     }
 
-    toSemVer(version: string): semver.SemVer {
+    private toSemVer(version: string): semver.SemVer {
         return semver.coerce(version) as semver.SemVer;
     }
 
