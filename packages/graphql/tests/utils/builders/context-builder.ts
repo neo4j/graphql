@@ -20,7 +20,8 @@
 import type * as neo4j from "neo4j-driver";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { GraphQLSchema } from "graphql";
-import { Neo4jDatabaseInfo, Neo4jGraphQL } from "../../../src/classes";
+import { Neo4jGraphQL } from "../../../src/classes";
+import type { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
 import type { AuthContext, Context } from "../../../src/types";
 import { Builder } from "./builder";
 import { Executor } from "../../../src/classes/Executor";

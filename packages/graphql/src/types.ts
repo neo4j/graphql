@@ -21,7 +21,8 @@ import type { EventEmitter } from "events";
 import type { InputValueDefinitionNode, DirectiveNode, TypeNode, GraphQLSchema } from "graphql";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Driver, Integer, Session, Transaction } from "neo4j-driver";
-import type { Node, Relationship, Neo4jDatabaseInfo } from "./classes";
+import type { Node, Relationship } from "./classes";
+import type { Neo4jDatabaseInfo } from "./classes/Neo4jDatabaseInfo";
 import type { RelationshipQueryDirectionOption } from "./constants";
 import type { Executor } from "./classes/Executor";
 
@@ -37,7 +38,6 @@ export interface AuthContext {
     roles: string[];
     jwt?: JwtPayload;
 }
-
 
 export interface Context {
     driver?: Driver;

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as semver from "semver";
+
 import type { Driver } from "neo4j-driver";
 import type { GraphQLSchema } from "graphql";
 import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
@@ -58,81 +58,6 @@ export interface Neo4jGraphQLConfig {
     skipValidateTypeDefs?: boolean;
     queryOptions?: CypherQueryOptions;
     callbacks?: Neo4jGraphQLCallbacks;
-}
-
-export type Neo4jVersion = {
-    major: number;
-    minor: number;
-};
-
-export type Neo4jEdition = "enterprise" | "community";
-
-export const VERSION_NOT_DETACTABLE = "Neo4j version not detectable";
-
-export class Neo4jDatabaseInfo {
-    public version: Neo4jVersion;
-    public edition: Neo4jEdition | undefined;
-
-    constructor(version: Neo4jVersion | string, edition?: Neo4jEdition) {
-        if (!version) {
-            throw new Error(VERSION_NOT_DETACTABLE);
-        } else if (typeof version === "string") {
-            const neo4jVersion = this.neo4jVersionBuilder(version);
-            this.version = neo4jVersion;
-        } else {
-            this.version = version as Neo4jVersion;
-        }
-        this.edition = edition;
-    }
-
-    toSemVer(version: string): semver.SemVer {
-        return semver.coerce(version) as semver.SemVer;
-    }
-
-    eq(version: string) {
-        return semver.eq(
-            this.toSemVer(`${this.version.major}.${this.version.minor}`),
-            this.toSemVer(version as string)
-        );
-    }
-
-    gt(version: string) {
-        return semver.gt(
-            this.toSemVer(`${this.version.major}.${this.version.minor}`),
-            this.toSemVer(version as string)
-        );
-    }
-
-    gte(version: string) {
-        return semver.gte(
-            this.toSemVer(`${this.version.major}.${this.version.minor}`),
-            this.toSemVer(version as string)
-        );
-    }
-
-    lt(version: string) {
-        return semver.lt(
-            this.toSemVer(`${this.version.major}.${this.version.minor}`),
-            this.toSemVer(version as string)
-        );
-    }
-
-    lte(version: string) {
-        return semver.lt(
-            this.toSemVer(`${this.version.major}.${this.version.minor}`),
-            this.toSemVer(version as string)
-        );
-    }
-
-    neo4jVersionBuilder(version: string): Neo4jVersion {
-        const semVerVersion = semver.coerce(version as string);
-        if (!semver.valid(semVerVersion)) {
-            throw new Error(VERSION_NOT_DETACTABLE);
-        }
-        const { major, minor } = semVerVersion as semver.SemVer;
-        const neo4jVersion = { major, minor } as Neo4jVersion;
-        return neo4jVersion;
-    }
 }
 
 export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {

@@ -24,7 +24,7 @@ import createAuthParam from "../../../src/translate/create-auth-param";
 import type { Neo4jGraphQL } from "../../../src";
 import { DriverBuilder } from "../../utils/builders/driver-builder";
 import { getQuerySource } from "../../utils/get-query-source";
-import { Neo4jDatabaseInfo } from "../../../src/classes";
+import { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
 
 export function compareParams({
     params,
@@ -84,7 +84,7 @@ export async function translateQuery(
 ): Promise<{ cypher: string; params: Record<string, any> }> {
     const driverBuilder = new DriverBuilder();
     const neo4jDatabaseInfo = new Neo4jDatabaseInfo(options?.neo4jVersion ?? "4.3");
-    let contextValue: Record<string, any> = { driver: driverBuilder.instance(), neo4jDatabaseInfo};
+    let contextValue: Record<string, any> = { driver: driverBuilder.instance(), neo4jDatabaseInfo };
 
     if (options?.req) {
         contextValue.req = options.req;
@@ -114,7 +114,7 @@ export async function translateQuery(
         const expectedErrors = [
             "Cannot read property 'get' of undefined",
             "Cannot return null for non-nullable",
-            "Cannot read properties of undefined (reading 'get')"
+            "Cannot read properties of undefined (reading 'get')",
         ];
 
         if (!expectedErrors.some((error) => errorString.includes(error))) {

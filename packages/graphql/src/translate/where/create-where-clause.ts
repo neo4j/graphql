@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { Neo4jDatabaseInfo } from "../../classes/Neo4jGraphQL";
+import type { Neo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
 import type { PointField, PrimitiveField } from "../../types";
 import type { WhereOperator } from "./types";
 import { comparisonMap } from "./utils";
@@ -28,7 +28,7 @@ export default function createWhereClause({
     isNot,
     durationField,
     pointField,
-    neo4jDatabaseInfo
+    neo4jDatabaseInfo,
 }: {
     property: string;
     param: string;
@@ -43,7 +43,7 @@ export default function createWhereClause({
     if (pointField) {
         const paramPoint = `point($${param})`;
         const paramPointArray = `[p in $${param} | point(p)]`;
-        const distanceFn =  neo4jDatabaseInfo.gte("4.4") ? "point.distance" : "distance";
+        const distanceFn = neo4jDatabaseInfo.gte("4.4") ? "point.distance" : "distance";
         switch (operator) {
             case "LT":
             case "LTE":

@@ -21,7 +21,8 @@ import Debug from "debug";
 import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
 import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
-import { Neo4jGraphQLConfig, Node, Relationship, Neo4jDatabaseInfo } from "../../classes";
+import type { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
+import { Neo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
 import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
 import { DBMS_COMPONENTS_QUERY, DEBUG_GRAPHQL } from "../../constants";
@@ -29,7 +30,7 @@ import createAuthParam from "../../translate/create-auth-param";
 import type { Context, Neo4jGraphQLPlugins } from "../../types";
 import { getToken, parseBearerToken } from "../../utils/get-token";
 import type { SubscriptionConnectionContext, SubscriptionContext } from "./subscriptions/types";
-import type { Neo4jEdition } from "../../classes/Neo4jGraphQL";
+import type { Neo4jEdition } from "../../classes/Neo4jDatabaseInfo";
 import { decodeToken, verifyGlobalAuthentication } from "./wrapper-utils";
 
 const debug = Debug(DEBUG_GRAPHQL);

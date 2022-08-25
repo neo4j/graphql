@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Neo4jDatabaseInfo } from "../../../classes";
+import type { Neo4jDatabaseInfo } from "../../../classes/Neo4jDatabaseInfo";
 import type { PointField } from "../../../types";
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 
@@ -27,7 +27,7 @@ export function createPointComparisonOperation({
     propertyRefOrCoalesce,
     param,
     pointField,
-    neo4jDatabaseInfo
+    neo4jDatabaseInfo,
 }: {
     operator: string | undefined;
     propertyRefOrCoalesce: CypherBuilder.PropertyRef | CypherBuilder.Function;

@@ -17,21 +17,22 @@
  * limitations under the License.
  */
 
-import Neo4jGraphQL from "./Neo4jGraphQL";
+import { Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
 
-describe("Neo4jGraphQL", () => {
+describe("Neo4jDatabaseInfo", () => {
     test("should construct", () => {
-        // @ts-ignore
-        expect(new Neo4jGraphQL({ typeDefs: "type User {id: ID}" })).toBeInstanceOf(Neo4jGraphQL);
+        expect(new Neo4jDatabaseInfo("4.2.1", "enterprise")).toBeInstanceOf(Neo4jDatabaseInfo);
     });
 
-    describe("methods", () => {
-        describe("checkNeo4jCompat", () => {
-            test("should throw neo4j-driver Driver missing", async () => {
-                const neoSchema = new Neo4jGraphQL({ typeDefs: "type User {id: ID}" });
+    test("should raise if constructed with an invalid version", () => {
+        expect(() => {
+            return new Neo4jDatabaseInfo("this_seems_not_valid", "enterprise");
+        }).toThrow();
+    });
 
-                await expect(neoSchema.checkNeo4jCompat()).rejects.toThrow(`neo4j-driver Driver missing`);
-            });
-        });
+    test("should be possible to initialise it with Neo4jVersion as version", () => {
+        const neo4jDatabaseInfo = new Neo4jDatabaseInfo({ major: 4, minor: 5 }, "enterprise");
+        expect(neo4jDatabaseInfo.version).toStrictEqual({ major: 4, minor: 5 });
+        expect(neo4jDatabaseInfo.edition).toBe("enterprise");
     });
 });

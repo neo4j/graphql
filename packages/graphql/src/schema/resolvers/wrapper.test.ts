@@ -18,7 +18,7 @@
  */
 import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
 import type { Session, Driver } from "neo4j-driver";
-import { Neo4jDatabaseInfo } from "../../classes";
+import { Neo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
 import type { Context } from "../../types";
 
 describe("wrapper test", () => {
@@ -95,7 +95,7 @@ describe("wrapper test", () => {
         readTransaction.mockReturnValueOnce({
             records: [["4.5.0", "enterprise"]],
         });
-        const contextVersion = new Neo4jDatabaseInfo("1.1.0", "enterprise")
+        const contextVersion = new Neo4jDatabaseInfo("1.1.0", "enterprise");
         const resolver = jest.fn((root, args, context: Context, info) => {
             expect(context).toBeDefined();
             expect(context.neo4jDatabaseInfo).toBeDefined();
@@ -113,7 +113,6 @@ describe("wrapper test", () => {
         expect(readTransaction).toHaveBeenCalledTimes(0);
         expect(resolver).toHaveBeenCalledTimes(1);
     });
-
 
     test("should not invoke dbms.components if neo4jDatabaseInfo is already initialised", async () => {
         const resolverDecorator = wrapResolver(wrapResolverArgs);
@@ -139,5 +138,4 @@ describe("wrapper test", () => {
         expect(secondRes).toBe(resolvedResult);
         expect(readTransaction).toHaveBeenCalledTimes(1);
     });
-
 });
