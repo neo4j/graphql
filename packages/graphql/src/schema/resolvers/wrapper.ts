@@ -21,12 +21,7 @@ import Debug from "debug";
 import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
 import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
-import {
-    Neo4jGraphQLConfig,
-    Node,
-    Relationship,
-    Neo4jDatabaseInfo,
-} from "../../classes";
+import { Neo4jGraphQLConfig, Node, Relationship, Neo4jDatabaseInfo } from "../../classes";
 import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
 import { DBMS_COMPONENTS_QUERY, DEBUG_GRAPHQL } from "../../constants";
@@ -115,9 +110,11 @@ export const wrapResolver =
             executorConstructorParam.bookmarks = context.driverConfig?.bookmarks;
         }
 
+        context.executor = new Executor(executorConstructorParam);
+
         if (!context.neo4jDatabaseInfo?.version) {
             if (!neo4jDatabaseInfo?.version) {
-                const dbmsComponentsQueryResult = await new Executor(executorConstructorParam).execute(
+                const dbmsComponentsQueryResult = await context.executor.execute(
                     DBMS_COMPONENTS_QUERY as string,
                     {},
                     "READ"
@@ -128,7 +125,6 @@ export const wrapResolver =
             }
             context.neo4jDatabaseInfo = neo4jDatabaseInfo;
         }
-        context.executor = new Executor(executorConstructorParam);
 
         return next(root, args, context, info);
     };
