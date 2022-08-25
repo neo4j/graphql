@@ -134,39 +134,33 @@ describe("Nested Unions", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this_actors_0:\`LeadActor\`)-[update_this0:ACTED_IN]->(this)
+                    MATCH (this_actors:\`LeadActor\`)-[update_this0:ACTED_IN]->(this)
                     CALL {
-                        WITH this_actors_0
+                        WITH this_actors
                         CALL {
-                            WITH this_actors_0
-                            MATCH (this_actors_0)-[update_this1:ACTED_IN]->(this_actors_0_actedIn_0:\`Movie\`)
-                            WITH this_actors_0_actedIn_0 { __resolveType: \\"Movie\\" } AS this_actors_0_actedIn_0
-                            RETURN collect(this_actors_0_actedIn_0) AS this_actors_0_actedIn_0
+                            WITH this_actors
+                            MATCH (this_actors)-[update_this1:ACTED_IN]->(this_actors_actedIn:\`Movie\`)
+                            WITH this_actors_actedIn { __resolveType: \\"Movie\\" } AS this_actors_actedIn
+                            RETURN this_actors_actedIn AS this_actors_actedIn
+                            UNION
+                            WITH this_actors
+                            MATCH (this_actors)-[update_this2:ACTED_IN]->(this_actors_actedIn:\`Series\`)
+                            WITH this_actors_actedIn  { __resolveType: \\"Series\\",  .name } AS this_actors_actedIn
+                            RETURN this_actors_actedIn AS this_actors_actedIn
                         }
-                        CALL {
-                            WITH this_actors_0
-                            MATCH (this_actors_0)-[update_this2:ACTED_IN]->(this_actors_0_actedIn_1:\`Series\`)
-                            WITH this_actors_0_actedIn_1  { __resolveType: \\"Series\\",  .name } AS this_actors_0_actedIn_1
-                            RETURN collect(this_actors_0_actedIn_1) AS this_actors_0_actedIn_1
-                        }
-                        WITH this_actors_0_actedIn_0 + this_actors_0_actedIn_1 AS update_var3
-                        UNWIND update_var3 AS update_var4
-                        WITH update_var4
-                        RETURN collect(update_var4) AS this_actors_0_actedIn
+                        WITH this_actors_actedIn
+                        RETURN collect(this_actors_actedIn) AS this_actors_actedIn
                     }
-                    WITH this_actors_0  { __resolveType: \\"LeadActor\\",  .name, actedIn: this_actors_0_actedIn } AS this_actors_0
-                    RETURN collect(this_actors_0) AS this_actors_0
-                }
-                CALL {
+                    WITH this_actors  { __resolveType: \\"LeadActor\\",  .name, actedIn: this_actors_actedIn } AS this_actors
+                    RETURN this_actors AS this_actors
+                    UNION
                     WITH this
-                    MATCH (this_actors_1:\`Extra\`)-[update_this5:ACTED_IN]->(this)
-                    WITH this_actors_1 { __resolveType: \\"Extra\\" } AS this_actors_1
-                    RETURN collect(this_actors_1) AS this_actors_1
+                    MATCH (this_actors:\`Extra\`)-[update_this3:ACTED_IN]->(this)
+                    WITH this_actors { __resolveType: \\"Extra\\" } AS this_actors
+                    RETURN this_actors AS this_actors
                 }
-                WITH this_actors_0 + this_actors_1 AS update_var6
-                UNWIND update_var6 AS update_var7
-                WITH update_var7
-                RETURN collect(update_var7) AS this_actors
+                WITH this_actors
+                RETURN collect(this_actors) AS this_actors
             }
             RETURN collect(DISTINCT this { .title, actors: this_actors }) AS data"
         `);
@@ -245,39 +239,33 @@ describe("Nested Unions", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this_actors_0:\`LeadActor\`)-[update_this0:ACTED_IN]->(this)
+                    MATCH (this_actors:\`LeadActor\`)-[update_this0:ACTED_IN]->(this)
                     CALL {
-                        WITH this_actors_0
+                        WITH this_actors
                         CALL {
-                            WITH this_actors_0
-                            MATCH (this_actors_0)-[update_this1:ACTED_IN]->(this_actors_0_actedIn_0:\`Movie\`)
-                            WITH this_actors_0_actedIn_0 { __resolveType: \\"Movie\\" } AS this_actors_0_actedIn_0
-                            RETURN collect(this_actors_0_actedIn_0) AS this_actors_0_actedIn_0
+                            WITH this_actors
+                            MATCH (this_actors)-[update_this1:ACTED_IN]->(this_actors_actedIn:\`Movie\`)
+                            WITH this_actors_actedIn { __resolveType: \\"Movie\\" } AS this_actors_actedIn
+                            RETURN this_actors_actedIn AS this_actors_actedIn
+                            UNION
+                            WITH this_actors
+                            MATCH (this_actors)-[update_this2:ACTED_IN]->(this_actors_actedIn:\`Series\`)
+                            WITH this_actors_actedIn  { __resolveType: \\"Series\\",  .name } AS this_actors_actedIn
+                            RETURN this_actors_actedIn AS this_actors_actedIn
                         }
-                        CALL {
-                            WITH this_actors_0
-                            MATCH (this_actors_0)-[update_this2:ACTED_IN]->(this_actors_0_actedIn_1:\`Series\`)
-                            WITH this_actors_0_actedIn_1  { __resolveType: \\"Series\\",  .name } AS this_actors_0_actedIn_1
-                            RETURN collect(this_actors_0_actedIn_1) AS this_actors_0_actedIn_1
-                        }
-                        WITH this_actors_0_actedIn_0 + this_actors_0_actedIn_1 AS update_var3
-                        UNWIND update_var3 AS update_var4
-                        WITH update_var4
-                        RETURN collect(update_var4) AS this_actors_0_actedIn
+                        WITH this_actors_actedIn
+                        RETURN collect(this_actors_actedIn) AS this_actors_actedIn
                     }
-                    WITH this_actors_0  { __resolveType: \\"LeadActor\\",  .name, actedIn: this_actors_0_actedIn } AS this_actors_0
-                    RETURN collect(this_actors_0) AS this_actors_0
-                }
-                CALL {
+                    WITH this_actors  { __resolveType: \\"LeadActor\\",  .name, actedIn: this_actors_actedIn } AS this_actors
+                    RETURN this_actors AS this_actors
+                    UNION
                     WITH this
-                    MATCH (this_actors_1:\`Extra\`)-[update_this5:ACTED_IN]->(this)
-                    WITH this_actors_1 { __resolveType: \\"Extra\\" } AS this_actors_1
-                    RETURN collect(this_actors_1) AS this_actors_1
+                    MATCH (this_actors:\`Extra\`)-[update_this3:ACTED_IN]->(this)
+                    WITH this_actors { __resolveType: \\"Extra\\" } AS this_actors
+                    RETURN this_actors AS this_actors
                 }
-                WITH this_actors_0 + this_actors_1 AS update_var6
-                UNWIND update_var6 AS update_var7
-                WITH update_var7
-                RETURN collect(update_var7) AS this_actors
+                WITH this_actors
+                RETURN collect(this_actors) AS this_actors
             }
             RETURN collect(DISTINCT this { .title, actors: this_actors }) AS data"
         `);

@@ -426,15 +426,13 @@ describe("Cypher Auth Where with Roles", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[thisthis0:HAS_POST]->(this_content_0:\`Post\`)
-                    WHERE (((any(thisvar2 IN [\\"user\\"] WHERE any(thisvar1 IN $auth.roles WHERE thisvar1 = thisvar2)) AND (exists((this_content_0)<-[:HAS_POST]-(:\`User\`)) AND all(thisthis3 IN [(this_content_0)<-[:HAS_POST]-(thisthis3:\`User\`) | thisthis3] WHERE (thisthis3.id IS NOT NULL AND thisthis3.id = $thisparam1)))) OR any(thisvar5 IN [\\"admin\\"] WHERE any(thisvar4 IN $auth.roles WHERE thisvar4 = thisvar5))) AND apoc.util.validatePredicate(NOT ((any(thisvar7 IN [\\"user\\"] WHERE any(thisvar6 IN $auth.roles WHERE thisvar6 = thisvar7)) OR any(thisvar9 IN [\\"admin\\"] WHERE any(thisvar8 IN $auth.roles WHERE thisvar8 = thisvar9)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                    WITH this_content_0  { __resolveType: \\"Post\\",  .id } AS this_content_0
-                    RETURN collect(this_content_0) AS this_content_0
+                    MATCH (this)-[thisthis0:HAS_POST]->(this_content:\`Post\`)
+                    WHERE (((any(thisvar2 IN [\\"user\\"] WHERE any(thisvar1 IN $auth.roles WHERE thisvar1 = thisvar2)) AND (exists((this_content)<-[:HAS_POST]-(:\`User\`)) AND all(thisthis3 IN [(this_content)<-[:HAS_POST]-(thisthis3:\`User\`) | thisthis3] WHERE (thisthis3.id IS NOT NULL AND thisthis3.id = $thisparam1)))) OR any(thisvar5 IN [\\"admin\\"] WHERE any(thisvar4 IN $auth.roles WHERE thisvar4 = thisvar5))) AND apoc.util.validatePredicate(NOT ((any(thisvar7 IN [\\"user\\"] WHERE any(thisvar6 IN $auth.roles WHERE thisvar6 = thisvar7)) OR any(thisvar9 IN [\\"admin\\"] WHERE any(thisvar8 IN $auth.roles WHERE thisvar8 = thisvar9)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                    WITH this_content  { __resolveType: \\"Post\\",  .id } AS this_content
+                    RETURN this_content AS this_content
                 }
-                WITH this_content_0 AS thisvar10
-                UNWIND thisvar10 AS thisvar11
-                WITH thisvar11
-                RETURN collect(thisvar11) AS this_content
+                WITH this_content
+                RETURN collect(this_content) AS this_content
             }
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id, content: this_content } as this"

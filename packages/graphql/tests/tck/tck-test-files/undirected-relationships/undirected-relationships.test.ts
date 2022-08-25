@@ -137,20 +137,17 @@ describe("Undirected relationships", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[thisthis0:HAS_CONTENT]-(this_content_0:\`Blog\`)
-                    WITH this_content_0  { __resolveType: \\"Blog\\",  .title } AS this_content_0
-                    RETURN collect(this_content_0) AS this_content_0
-                }
-                CALL {
+                    MATCH (this)-[thisthis0:HAS_CONTENT]-(this_content:\`Blog\`)
+                    WITH this_content  { __resolveType: \\"Blog\\",  .title } AS this_content
+                    RETURN this_content AS this_content
+                    UNION
                     WITH this
-                    MATCH (this)-[thisthis1:HAS_CONTENT]-(this_content_1:\`Post\`)
-                    WITH this_content_1  { __resolveType: \\"Post\\",  .content } AS this_content_1
-                    RETURN collect(this_content_1) AS this_content_1
+                    MATCH (this)-[thisthis1:HAS_CONTENT]-(this_content:\`Post\`)
+                    WITH this_content  { __resolveType: \\"Post\\",  .content } AS this_content
+                    RETURN this_content AS this_content
                 }
-                WITH this_content_0 + this_content_1 AS thisvar2
-                UNWIND thisvar2 AS thisvar3
-                WITH thisvar3
-                RETURN collect(thisvar3) AS this_content
+                WITH this_content
+                RETURN collect(this_content) AS this_content
             }
             RETURN this { content: this_content } as this"
         `);

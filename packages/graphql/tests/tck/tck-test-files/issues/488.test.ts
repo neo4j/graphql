@@ -85,26 +85,22 @@ describe("#488", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[thisthis0:HAS_KEYWORD]->(this_keywords_0:\`Emoji\`)
-                    WITH this_keywords_0  { __resolveType: \\"Emoji\\",  .id, .type } AS this_keywords_0
-                    RETURN collect(this_keywords_0) AS this_keywords_0
-                }
-                CALL {
+                    MATCH (this)-[thisthis0:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
+                    WITH this_keywords  { __resolveType: \\"Emoji\\",  .id, .type } AS this_keywords
+                    RETURN this_keywords AS this_keywords
+                    UNION
                     WITH this
-                    MATCH (this)-[thisthis1:HAS_KEYWORD]->(this_keywords_1:\`Hashtag\`)
-                    WITH this_keywords_1 { __resolveType: \\"Hashtag\\" } AS this_keywords_1
-                    RETURN collect(this_keywords_1) AS this_keywords_1
-                }
-                CALL {
+                    MATCH (this)-[thisthis1:HAS_KEYWORD]->(this_keywords:\`Hashtag\`)
+                    WITH this_keywords { __resolveType: \\"Hashtag\\" } AS this_keywords
+                    RETURN this_keywords AS this_keywords
+                    UNION
                     WITH this
-                    MATCH (this)-[thisthis2:HAS_KEYWORD]->(this_keywords_2:\`Text\`)
-                    WITH this_keywords_2 { __resolveType: \\"Text\\" } AS this_keywords_2
-                    RETURN collect(this_keywords_2) AS this_keywords_2
+                    MATCH (this)-[thisthis2:HAS_KEYWORD]->(this_keywords:\`Text\`)
+                    WITH this_keywords { __resolveType: \\"Text\\" } AS this_keywords
+                    RETURN this_keywords AS this_keywords
                 }
-                WITH this_keywords_0 + this_keywords_1 + this_keywords_2 AS thisvar3
-                UNWIND thisvar3 AS thisvar4
-                WITH thisvar4
-                RETURN collect(thisvar4) AS this_keywords
+                WITH this_keywords
+                RETURN collect(this_keywords) AS this_keywords
             }
             RETURN this { .name, keywords: this_keywords } as this"
         `);
@@ -143,26 +139,22 @@ describe("#488", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[thisthis0:HAS_KEYWORD]->(this_keywords_0:\`Emoji\`)
-                    WITH this_keywords_0  { __resolveType: \\"Emoji\\",  .id, .type } AS this_keywords_0
-                    RETURN collect(this_keywords_0) AS this_keywords_0
-                }
-                CALL {
+                    MATCH (this)-[thisthis0:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
+                    WITH this_keywords  { __resolveType: \\"Emoji\\",  .id, .type } AS this_keywords
+                    RETURN this_keywords AS this_keywords
+                    UNION
                     WITH this
-                    MATCH (this)-[thisthis1:HAS_KEYWORD]->(this_keywords_1:\`Hashtag\`)
-                    WITH this_keywords_1 { __resolveType: \\"Hashtag\\" } AS this_keywords_1
-                    RETURN collect(this_keywords_1) AS this_keywords_1
-                }
-                CALL {
+                    MATCH (this)-[thisthis1:HAS_KEYWORD]->(this_keywords:\`Hashtag\`)
+                    WITH this_keywords { __resolveType: \\"Hashtag\\" } AS this_keywords
+                    RETURN this_keywords AS this_keywords
+                    UNION
                     WITH this
-                    MATCH (this)-[thisthis2:HAS_KEYWORD]->(this_keywords_2:\`Text\`)
-                    WITH this_keywords_2 { __resolveType: \\"Text\\" } AS this_keywords_2
-                    RETURN collect(this_keywords_2) AS this_keywords_2
+                    MATCH (this)-[thisthis2:HAS_KEYWORD]->(this_keywords:\`Text\`)
+                    WITH this_keywords { __resolveType: \\"Text\\" } AS this_keywords
+                    RETURN this_keywords AS this_keywords
                 }
-                WITH this_keywords_0 + this_keywords_1 + this_keywords_2 AS thisvar3
-                UNWIND thisvar3 AS thisvar4
-                WITH thisvar4
-                RETURN collect(thisvar4) AS this_keywords
+                WITH this_keywords
+                RETURN collect(this_keywords) AS this_keywords
             }
             RETURN this { .name, keywords: this_keywords } as this"
         `);

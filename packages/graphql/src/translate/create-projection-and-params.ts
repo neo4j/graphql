@@ -344,10 +344,9 @@ export default function createProjectionAndParams({
                 );
 
                 const parentNode = new CypherBuilder.NamedNode(chainStr || varName);
-                const aliasNames: CypherBuilder.Variable[] = [];
 
                 const unionSubqueries: CypherBuilder.Clause[] = [];
-                // TODO: Try to use a single CALL for all unions
+                const unionVariableName = `${param}`;
                 for (const refNode of referenceNodes) {
                     const refNodeInterfaceNames = node.interfaces.map(
                         (implementedInterface) => implementedInterface.name.value
@@ -355,14 +354,12 @@ export default function createProjectionAndParams({
                     const hasFields = Object.keys(field.fieldsByTypeName).some((fieldByTypeName) =>
                         [refNode.name, ...refNodeInterfaceNames].includes(fieldByTypeName)
                     );
-                    const unionParam = `${param}_${aliasNames.length}`;
-                    aliasNames.push(new CypherBuilder.NamedVariable(unionParam));
                     const recurse = createProjectionAndParams({
                         resolveTree: field,
                         node: refNode,
                         context,
                         varName: `${varName}_${alias}`,
-                        chainStr: unionParam,
+                        chainStr: unionVariableName,
                         inRelationshipProjection: true,
                         isRootConnectionField,
                     });
@@ -384,7 +381,7 @@ export default function createProjectionAndParams({
                         whereInput: field.args.where ? field.args.where[refNode.name] : field.args.where,
                         node: refNode,
                         context,
-                        alias: unionParam,
+                        alias: unionVariableName,
                         nestedProjection,
                         nestedSubqueries: recurse.subqueries,
                         relationField,
@@ -392,23 +389,27 @@ export default function createProjectionAndParams({
                         optionsInput,
                         authValidateStrs: recurse.meta?.authValidateStrs,
                         addSkipAndLimit: false,
+                        collect: false,
                     });
 
-                    unionSubqueries.push(new CypherBuilder.Call(subquery).with(parentNode));
+                    const unionWith = new CypherBuilder.With(parentNode);
+                    unionSubqueries.push(CypherBuilder.concat(unionWith, subquery));
                 }
 
+                const unionClause = new CypherBuilder.Union(...unionSubqueries);
+
                 const collectAndLimitStatements = collectUnionSubqueriesResults({
-                    variables: aliasNames,
-                    resultVariable: new CypherBuilder.NamedNode(param),
+                    resultVariable: new CypherBuilder.NamedNode(unionVariableName),
                     optionsInput,
                     isArray: Boolean(relationField.typeMeta.array),
                 });
-                res.subqueries.push(
-                    new CypherBuilder.Call(CypherBuilder.concat(...unionSubqueries, collectAndLimitStatements)).with(
-                        parentNode
-                    )
+
+                const unionAndSort = CypherBuilder.concat(
+                    new CypherBuilder.Call(unionClause),
+                    collectAndLimitStatements
                 );
-                res.projection.push(`${alias}: ${param}`);
+                res.subqueries.push(new CypherBuilder.Call(unionAndSort).with(parentNode));
+                res.projection.push(`${alias}: ${unionVariableName}`);
 
                 return res;
             }

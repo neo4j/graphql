@@ -39,6 +39,7 @@ export function createProjectionSubquery({
     optionsInput,
     authValidateStrs,
     addSkipAndLimit = true,
+    collect = true,
 }: {
     parentNode: CypherBuilder.Node;
     whereInput?: GraphQLWhereArg;
@@ -52,6 +53,7 @@ export function createProjectionSubquery({
     optionsInput: GraphQLOptionsArg;
     authValidateStrs: string[] | undefined;
     addSkipAndLimit?: boolean;
+    collect?: boolean;
 }): CypherBuilder.Clause {
     const isArray = relationField.typeMeta.array;
     const targetNode = new CypherBuilder.NamedNode(alias, {
@@ -138,9 +140,12 @@ export function createProjectionSubquery({
         });
     }
 
-    let returnProjection = CypherBuilder.collect(targetNode);
-    if (!isArray) {
-        returnProjection = CypherBuilder.head(returnProjection);
+    let returnProjection: CypherBuilder.Expr = targetNode;
+    if (collect) {
+        returnProjection = CypherBuilder.collect(targetNode);
+        if (!isArray) {
+            returnProjection = CypherBuilder.head(returnProjection);
+        }
     }
 
     const returnStatement = new CypherBuilder.Return([returnProjection, returnVariable]);

@@ -85,24 +85,21 @@ describe("Node directive with unions", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[thisthis0:SEARCH]->(this_search_0:\`Category\`:\`ExtraLabel1\`:\`ExtraLabel2\`)
-                    WHERE this_search_0.name = $thisparam0
-                    WITH this_search_0  { __resolveType: \\"Genre\\",  .name } AS this_search_0
-                    RETURN collect(this_search_0) AS this_search_0
-                }
-                CALL {
+                    MATCH (this)-[thisthis0:SEARCH]->(this_search:\`Category\`:\`ExtraLabel1\`:\`ExtraLabel2\`)
+                    WHERE this_search.name = $thisparam0
+                    WITH this_search  { __resolveType: \\"Genre\\",  .name } AS this_search
+                    RETURN this_search AS this_search
+                    UNION
                     WITH this
-                    MATCH (this)-[thisthis1:SEARCH]->(this_search_1:\`Film\`)
-                    WHERE this_search_1.title = $thisparam1
-                    WITH this_search_1  { __resolveType: \\"Movie\\",  .title } AS this_search_1
-                    RETURN collect(this_search_1) AS this_search_1
+                    MATCH (this)-[thisthis1:SEARCH]->(this_search:\`Film\`)
+                    WHERE this_search.title = $thisparam1
+                    WITH this_search  { __resolveType: \\"Movie\\",  .title } AS this_search
+                    RETURN this_search AS this_search
                 }
-                WITH this_search_0 + this_search_1 AS thisvar2
-                UNWIND thisvar2 AS thisvar3
-                WITH thisvar3
+                WITH this_search
                 SKIP 1
                 LIMIT 10
-                RETURN collect(thisvar3) AS this_search
+                RETURN collect(this_search) AS this_search
             }
             RETURN this { search: this_search } as this"
         `);

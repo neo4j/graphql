@@ -335,15 +335,13 @@ describe("Cypher Auth Where", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[thisthis0:HAS_POST]->(this_content_0:\`Post\`)
-                    WHERE (exists((this_content_0)<-[:HAS_POST]-(:\`User\`)) AND all(thisthis1 IN [(this_content_0)<-[:HAS_POST]-(thisthis1:\`User\`) | thisthis1] WHERE (thisthis1.id IS NOT NULL AND thisthis1.id = $thisparam0)))
-                    WITH this_content_0  { __resolveType: \\"Post\\",  .id } AS this_content_0
-                    RETURN collect(this_content_0) AS this_content_0
+                    MATCH (this)-[thisthis0:HAS_POST]->(this_content:\`Post\`)
+                    WHERE (exists((this_content)<-[:HAS_POST]-(:\`User\`)) AND all(thisthis1 IN [(this_content)<-[:HAS_POST]-(thisthis1:\`User\`) | thisthis1] WHERE (thisthis1.id IS NOT NULL AND thisthis1.id = $thisparam0)))
+                    WITH this_content  { __resolveType: \\"Post\\",  .id } AS this_content
+                    RETURN this_content AS this_content
                 }
-                WITH this_content_0 AS thisvar2
-                UNWIND thisvar2 AS thisvar3
-                WITH thisvar3
-                RETURN collect(thisvar3) AS this_content
+                WITH this_content
+                RETURN collect(this_content) AS this_content
             }
             RETURN this { .id, content: this_content } as this"
         `);

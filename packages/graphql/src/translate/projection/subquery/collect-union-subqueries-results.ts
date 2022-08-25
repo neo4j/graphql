@@ -22,34 +22,30 @@ import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 import { addSortAndLimitOptionsToClause } from "./add-sort-and-limit-to-clause";
 
 export function collectUnionSubqueriesResults({
-    variables,
     resultVariable,
     optionsInput,
     isArray,
 }: {
-    variables: CypherBuilder.Variable[];
     resultVariable: CypherBuilder.Variable;
     optionsInput: GraphQLOptionsArg;
     isArray: boolean;
 }): CypherBuilder.Clause {
-    const resultsArrayVar = new CypherBuilder.Variable();
-    const withCollectClause = new CypherBuilder.With([CypherBuilder.plus(...variables), resultsArrayVar]);
+    const withSortClause = createWithSortAndPaginationClauses(resultVariable, optionsInput);
 
-    const arrayItemVar = new CypherBuilder.Variable();
-    const unwindClause = new CypherBuilder.Unwind([resultsArrayVar, arrayItemVar]);
-    const withSortClause = createWithSortClause(arrayItemVar, optionsInput);
-
-    let returnProjection = CypherBuilder.collect(arrayItemVar);
+    let returnProjection = CypherBuilder.collect(resultVariable);
     if (!isArray) {
         returnProjection = CypherBuilder.head(returnProjection);
     }
 
     const returnClause = new CypherBuilder.Return([returnProjection, resultVariable]);
 
-    return CypherBuilder.concat(withCollectClause, unwindClause, withSortClause, returnClause);
+    return CypherBuilder.concat(withSortClause, returnClause);
 }
 
-function createWithSortClause(variable: CypherBuilder.Variable, optionsInput: GraphQLOptionsArg): CypherBuilder.With {
+function createWithSortAndPaginationClauses(
+    variable: CypherBuilder.Variable,
+    optionsInput: GraphQLOptionsArg
+): CypherBuilder.With {
     const withSortClause = new CypherBuilder.With(variable);
 
     addSortAndLimitOptionsToClause({

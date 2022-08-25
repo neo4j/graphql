@@ -122,20 +122,17 @@ describe("Cypher Fragment", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[thisthis0:OWNS]->(this_owns_0:\`Tile\`)
-                    WITH this_owns_0 { __resolveType: \\"Tile\\" } AS this_owns_0
-                    RETURN collect(this_owns_0) AS this_owns_0
-                }
-                CALL {
+                    MATCH (this)-[thisthis0:OWNS]->(this_owns:\`Tile\`)
+                    WITH this_owns { __resolveType: \\"Tile\\" } AS this_owns
+                    RETURN this_owns AS this_owns
+                    UNION
                     WITH this
-                    MATCH (this)-[thisthis1:OWNS]->(this_owns_1:\`Character\`)
-                    WITH this_owns_1 { __resolveType: \\"Character\\" } AS this_owns_1
-                    RETURN collect(this_owns_1) AS this_owns_1
+                    MATCH (this)-[thisthis1:OWNS]->(this_owns:\`Character\`)
+                    WITH this_owns { __resolveType: \\"Character\\" } AS this_owns
+                    RETURN this_owns AS this_owns
                 }
-                WITH this_owns_0 + this_owns_1 AS thisvar2
-                UNWIND thisvar2 AS thisvar3
-                WITH thisvar3
-                RETURN collect(thisvar3) AS this_owns
+                WITH this_owns
+                RETURN collect(this_owns) AS this_owns
             }
             RETURN this { .id, owns: this_owns } as this"
         `);
