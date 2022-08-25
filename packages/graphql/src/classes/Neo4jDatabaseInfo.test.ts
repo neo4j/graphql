@@ -29,10 +29,4 @@ describe("Neo4jDatabaseInfo", () => {
             return new Neo4jDatabaseInfo("this_seems_not_valid", "enterprise");
         }).toThrow();
     });
-
-    test("should be possible to initialise it with Neo4jVersion as version", () => {
-        const neo4jDatabaseInfo = new Neo4jDatabaseInfo({ major: 4, minor: 5 }, "enterprise");
-        expect(neo4jDatabaseInfo.version).toStrictEqual({ major: 4, minor: 5 });
-        expect(neo4jDatabaseInfo.edition).toBe("enterprise");
-    });
 });

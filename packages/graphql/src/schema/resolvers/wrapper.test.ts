@@ -16,6 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import * as semver from "semver";
 import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
 import type { Session, Driver } from "neo4j-driver";
 import { Neo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
@@ -79,7 +81,7 @@ describe("wrapper test", () => {
             expect(context).toBeDefined();
             expect(context.neo4jDatabaseInfo).toBeDefined();
             expect(context.neo4jDatabaseInfo?.edition).toBe("enterprise");
-            expect(context.neo4jDatabaseInfo?.version).toStrictEqual({ major: 4, minor: 4 });
+            expect(context.neo4jDatabaseInfo?.version).toEqual(semver.coerce("4.4.0"));
             return resolvedResult;
         });
         const wrappedResolver = resolverDecorator(resolver);
