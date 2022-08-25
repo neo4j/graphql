@@ -2481,7 +2481,7 @@ __metadata:
   dependencies:
     "@types/debug": 4.1.7
     "@types/jest": 28.1.7
-    "@types/jsonwebtoken": 8.5.8
+    "@types/jsonwebtoken": 8.5.9
     "@types/node": 16.11.56
     debug: 4.3.4
     jest: 28.1.3
@@ -2598,7 +2598,7 @@ __metadata:
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
     "@types/jest": 28.1.7
-    "@types/jsonwebtoken": 8.5.8
+    "@types/jsonwebtoken": 8.5.9
     "@types/node": 16.11.56
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
@@ -3328,16 +3328,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:8.5.1":
-  version: 8.5.1
-  resolution: "@types/jsonwebtoken@npm:8.5.1"
+"@types/jsonwebtoken@npm:8.5.9":
+  version: 8.5.9
+  resolution: "@types/jsonwebtoken@npm:8.5.9"
   dependencies:
     "@types/node": "*"
-  checksum: 740581b0d1e18f31ce9332e26702ae2704af86f0cb0bb914ee3554517e514e97392610525f9349ea8fe3742d0f816eb86d7ab864ddbd19cef55b2db4a43883a1
+  checksum: 33815ab02d1371b423118316b7706d2f2ec03eeee5e1494be72da50425d2384e5e0a09ea193f7a5ab4b4f6a9c5847147305f50e965f3d927a95bdf8adb471b2a
   languageName: node
   linkType: hard
 
-"@types/jsonwebtoken@npm:8.5.8, @types/jsonwebtoken@npm:^8.5.8":
+"@types/jsonwebtoken@npm:^8.5.8":
   version: 8.5.8
   resolution: "@types/jsonwebtoken@npm:8.5.8"
   dependencies:
@@ -13189,7 +13189,7 @@ __metadata:
     "@types/dotenv": 8.2.0
     "@types/express": 4.17.9
     "@types/jest": 28.1.7
-    "@types/jsonwebtoken": 8.5.1
+    "@types/jsonwebtoken": 8.5.9
     "@types/node": 16.11.56
     "@types/uuid": 8.3.4
     apollo-server-express: 3.10.1
