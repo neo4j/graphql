@@ -118,7 +118,23 @@ describe("Cypher Fragment", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            RETURN this { .id, owns:  [this_owns IN [(this)-[:OWNS]->(this_owns) WHERE (\\"Tile\\" IN labels(this_owns)) OR (\\"Character\\" IN labels(this_owns)) | head( [ this_owns IN [this_owns] WHERE (\\"Tile\\" IN labels(this_owns)) | this_owns { __resolveType: \\"Tile\\",  .id } ] + [ this_owns IN [this_owns] WHERE (\\"Character\\" IN labels(this_owns)) | this_owns { __resolveType: \\"Character\\",  .id } ] ) ] WHERE this_owns IS NOT NULL]  } as this"
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[thisthis0:OWNS]->(this_owns:\`Tile\`)
+                    WITH this_owns { __resolveType: \\"Tile\\" } AS this_owns
+                    RETURN this_owns AS this_owns
+                    UNION
+                    WITH this
+                    MATCH (this)-[thisthis1:OWNS]->(this_owns:\`Character\`)
+                    WITH this_owns { __resolveType: \\"Character\\" } AS this_owns
+                    RETURN this_owns AS this_owns
+                }
+                WITH this_owns
+                RETURN collect(this_owns) AS this_owns
+            }
+            RETURN this { .id, owns: this_owns } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

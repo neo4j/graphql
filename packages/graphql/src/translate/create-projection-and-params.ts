@@ -21,7 +21,6 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { GraphQLUnionType } from "graphql";
 import { mergeDeep } from "@graphql-tools/utils";
 import type { Node } from "../classes";
-import createWhereAndParams from "./where/create-where-and-params";
 import type { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
@@ -29,15 +28,15 @@ import { createDatetimeElement } from "./projection/elements/create-datetime-ele
 import createPointElement from "./projection/elements/create-point-element";
 // eslint-disable-next-line import/no-cycle
 import createConnectionAndParams from "./connection/create-connection-and-params";
-import { createOffsetLimitStr } from "../schema/pagination";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
-import { getRelationshipDirection, getRelationshipDirectionStr } from "../utils/get-relationship-direction";
+import { getRelationshipDirection } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
-import { createProjectionSubquery } from "./projection/elements/create-projection-subquery";
+import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
+import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
 
 interface Res {
     projection: string[];
@@ -319,16 +318,11 @@ export default function createProjectionAndParams({
         }
 
         if (relationField) {
-            const referenceNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
+            const referenceNode = context.nodes.find((x) => x.name === relationField.typeMeta.name);
 
             if (referenceNode?.queryOptions) {
                 optionsInput.limit = referenceNode.queryOptions.getLimit(optionsInput.limit);
             }
-
-            const relTypeStr = `[:${relationField.type}]`;
-            const isArray = relationField.typeMeta.array;
-
-            const { inStr, outStr } = getRelationshipDirectionStr(relationField, field.args);
 
             if (relationField.interface) {
                 if (!res.meta.interfaceFields) {
@@ -343,98 +337,79 @@ export default function createProjectionAndParams({
             }
 
             if (relationField.union) {
-                // TODO: unions into subqueries
                 const referenceNodes = context.nodes.filter(
                     (x) =>
                         relationField.union?.nodes?.includes(x.name) &&
                         (!field.args.where || Object.prototype.hasOwnProperty.call(field.args.where, x.name))
                 );
 
-                const unionStrs: string[] = [
-                    `${alias}: ${!isArray ? "head(" : ""} [${param} IN [(${
-                        chainStr || varName
-                    })${inStr}${relTypeStr}${outStr}(${param})`,
-                    `WHERE ${referenceNodes
-                        .map((x) => {
-                            const labelsStatements = x
-                                .getLabels(context)
-                                .map((label) => `"${label}" IN labels(${param})`);
-                            return `(${labelsStatements.join(" AND ")})`;
-                        })
-                        .join(" OR ")}`,
-                    `| head(`,
-                ];
+                const parentNode = new CypherBuilder.NamedNode(chainStr || varName);
 
-                const headStrs: string[] = referenceNodes.map((refNode) => {
-                    const labelsStatements = refNode
-                        .getLabels(context)
-                        .map((label) => `"${label}" IN labels(${param})`);
-                    const innerHeadStr: string[] = [
-                        `[ ${param} IN [${param}] WHERE (${labelsStatements.join(" AND ")})`,
-                    ];
-
-                    // Extract interface names implemented by reference node
-                    const refNodeInterfaceNames = refNode.interfaces.map(
+                const unionSubqueries: CypherBuilder.Clause[] = [];
+                const unionVariableName = `${param}`;
+                for (const refNode of referenceNodes) {
+                    const refNodeInterfaceNames = node.interfaces.map(
                         (implementedInterface) => implementedInterface.name.value
                     );
-
-                    // Determine if there are any fields to project
                     const hasFields = Object.keys(field.fieldsByTypeName).some((fieldByTypeName) =>
                         [refNode.name, ...refNodeInterfaceNames].includes(fieldByTypeName)
                     );
-
-                    if (hasFields) {
-                        const recurse = createProjectionAndParams({
-                            resolveTree: field,
-                            node: refNode,
-                            context,
-                            varName: param,
-                            isRootConnectionField,
-                        });
-
-                        const nodeWhereAndParams = createNodeWhereAndParams({
-                            whereInput: field.args.where ? field.args.where[refNode.name] : field.args.where,
-                            context,
-                            node: refNode,
-                            varName: param,
-                            chainStr: `${param}_${refNode.name}`,
-                            authValidateStrs: recurse[2]?.authValidateStrs,
-                        });
-                        if (nodeWhereAndParams[0]) {
-                            innerHeadStr.push(`AND ${nodeWhereAndParams[0]}`);
-                            res.params = { ...res.params, ...nodeWhereAndParams[1] };
-                        }
-
-                        innerHeadStr.push(
-                            [
-                                `| ${param} { __resolveType: "${refNode.name}", `,
-                                ...recurse.projection.replace("{", "").split(""),
-                            ].join("")
-                        );
-                        res.params = { ...res.params, ...recurse[1] };
-                    } else {
-                        innerHeadStr.push(`| ${param} { __resolveType: "${refNode.name}" } `);
-                    }
-
-                    innerHeadStr.push(`]`);
-
-                    return innerHeadStr.join(" ");
-                });
-                unionStrs.push(headStrs.join(" + "));
-                unionStrs.push(`) ] WHERE ${param} IS NOT NULL]`);
-
-                if (optionsInput) {
-                    const offsetLimit = createOffsetLimitStr({
-                        offset: optionsInput.offset,
-                        limit: optionsInput.limit,
+                    const recurse = createProjectionAndParams({
+                        resolveTree: field,
+                        node: refNode,
+                        context,
+                        varName: `${varName}_${alias}`,
+                        chainStr: unionVariableName,
+                        inRelationshipProjection: true,
+                        isRootConnectionField,
                     });
-                    if (offsetLimit) {
-                        unionStrs.push(offsetLimit);
+                    res.params = { ...res.params, ...recurse.params };
+
+                    const direction = getRelationshipDirection(relationField, field.args);
+
+                    let nestedProjection = [
+                        ` { __resolveType: "${refNode.name}", `,
+                        recurse.projection.replace("{", ""),
+                    ].join("");
+
+                    if (!hasFields) {
+                        nestedProjection = `{ __resolveType: "${refNode.name}" }`;
                     }
+
+                    const subquery = createProjectionSubquery({
+                        parentNode,
+                        whereInput: field.args.where ? field.args.where[refNode.name] : field.args.where,
+                        node: refNode,
+                        context,
+                        alias: unionVariableName,
+                        nestedProjection,
+                        nestedSubqueries: recurse.subqueries,
+                        relationField,
+                        relationshipDirection: direction,
+                        optionsInput,
+                        authValidateStrs: recurse.meta?.authValidateStrs,
+                        addSkipAndLimit: false,
+                        collect: false,
+                    });
+
+                    const unionWith = new CypherBuilder.With(parentNode);
+                    unionSubqueries.push(CypherBuilder.concat(unionWith, subquery));
                 }
 
-                unionStrs.push(`${!isArray ? ")" : ""}`);
-                res.projection.push(unionStrs.join(" "));
+                const unionClause = new CypherBuilder.Union(...unionSubqueries);
+
+                const collectAndLimitStatements = collectUnionSubqueriesResults({
+                    resultVariable: new CypherBuilder.NamedNode(unionVariableName),
+                    optionsInput,
+                    isArray: Boolean(relationField.typeMeta.array),
+                });
+
+                const unionAndSort = CypherBuilder.concat(
+                    new CypherBuilder.Call(unionClause),
+                    collectAndLimitStatements
+                );
+                res.subqueries.push(new CypherBuilder.Call(unionAndSort).with(parentNode));
+                res.projection.push(`${alias}: ${unionVariableName}`);
 
                 return res;
             }
@@ -456,7 +431,7 @@ export default function createProjectionAndParams({
             const subquery = createProjectionSubquery({
                 parentNode,
                 whereInput,
-                node: referenceNode,
+                node: referenceNode as Node, // TODO: improve typings
                 context,
                 alias: param,
                 nestedProjection: recurse.projection,
@@ -466,8 +441,7 @@ export default function createProjectionAndParams({
                 optionsInput,
                 authValidateStrs: recurse.meta?.authValidateStrs,
             });
-
-            res.subqueries.push(subquery.subquery);
+            res.subqueries.push(new CypherBuilder.Call(subquery).with(parentNode));
             res.projection.push(`${alias}: ${param}`);
 
             return res;
@@ -610,19 +584,6 @@ export default function createProjectionAndParams({
     };
 }
 
-function sortReducer(s: string[], sort: GraphQLSortArg) {
-    return [
-        ...s,
-        ...Object.entries(sort).map(([fieldName, direction]) => {
-            if (direction === "DESC") {
-                return `'${fieldName}'`;
-            }
-
-            return `'^${fieldName}'`;
-        }),
-    ];
-}
-
 // Generates any missing fields required for sorting
 const generateMissingOrAliasedSortFields = ({
     selection,
@@ -654,75 +615,3 @@ const generateMissingOrAliasedRequiredFields = ({
 
     return generateMissingOrAliasedFields({ fieldNames: requiredFields, selection });
 };
-
-function createNodeWhereAndParams({
-    whereInput,
-    varName,
-    context,
-    node,
-    authValidateStrs,
-    chainStr,
-}: {
-    whereInput?: any;
-    context: Context;
-    node: Node;
-    varName: string;
-    authValidateStrs?: string[];
-    chainStr?: string;
-}): [string, any] {
-    const whereStrs: string[] = [];
-    let params = {};
-
-    if (whereInput) {
-        const whereAndParams = createWhereAndParams({
-            context,
-            node,
-            varName,
-            whereInput,
-            chainStr,
-            recursing: true,
-        });
-        if (whereAndParams[0]) {
-            whereStrs.push(whereAndParams[0]);
-            params = { ...params, ...whereAndParams[1] };
-        }
-    }
-
-    const whereAuth = createAuthAndParams({
-        entity: node,
-        operations: "READ",
-        context,
-        where: {
-            varName,
-            chainStr,
-            node,
-        },
-    });
-    if (whereAuth[0]) {
-        whereStrs.push(whereAuth[0]);
-        params = { ...params, ...whereAuth[1] };
-    }
-
-    const preAuth = createAuthAndParams({
-        entity: node,
-        operations: "READ",
-        context,
-        allow: {
-            parentNode: node,
-            varName,
-            chainStr,
-        },
-    });
-    if (preAuth[0]) {
-        whereStrs.push(`apoc.util.validatePredicate(NOT (${preAuth[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-        params = { ...params, ...preAuth[1] };
-    }
-
-    if (authValidateStrs?.length) {
-        whereStrs.push(
-            `apoc.util.validatePredicate(NOT (${authValidateStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-        );
-    }
-
-    return [whereStrs.join(" AND "), params];
-}

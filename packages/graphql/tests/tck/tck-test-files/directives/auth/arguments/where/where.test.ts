@@ -331,13 +331,25 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-            RETURN this { .id, content:  [this_content IN [(this)-[:HAS_POST]->(this_content) WHERE (\\"Post\\" IN labels(this_content)) | head( [ this_content IN [this_content] WHERE (\\"Post\\" IN labels(this_content)) AND (exists((this_content)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_content)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_contentauth_param0))) | this_content { __resolveType: \\"Post\\",  .id } ] ) ] WHERE this_content IS NOT NULL]  } as this"
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[thisthis0:HAS_POST]->(this_content:\`Post\`)
+                    WHERE (exists((this_content)<-[:HAS_POST]-(:\`User\`)) AND all(thisthis1 IN [(this_content)<-[:HAS_POST]-(thisthis1:\`User\`) | thisthis1] WHERE (thisthis1.id IS NOT NULL AND thisthis1.id = $thisparam0)))
+                    WITH this_content  { __resolveType: \\"Post\\",  .id } AS this_content
+                    RETURN this_content AS this_content
+                }
+                WITH this_content
+                RETURN collect(this_content) AS this_content
+            }
+            RETURN this { .id, content: this_content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"thisauth_param0\\": \\"id-01\\",
-                \\"this_contentauth_param0\\": \\"id-01\\"
+                \\"thisparam0\\": \\"id-01\\"
             }"
         `);
     });
