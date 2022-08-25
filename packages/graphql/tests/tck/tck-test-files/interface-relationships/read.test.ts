@@ -91,7 +91,7 @@ describe("Interface Relationships", () => {
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
                 RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
-                UNION
+            UNION
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this_Series:Series)
                 RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
@@ -133,7 +133,7 @@ describe("Interface Relationships", () => {
                 WITH this
                 MATCH (this)-[:CURRENTLY_ACTING_IN]->(this_Movie:Movie)
                 RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS currentlyActingIn
-                UNION
+            UNION
                 WITH this
                 MATCH (this)-[:CURRENTLY_ACTING_IN]->(this_Series:Series)
                 RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS currentlyActingIn
@@ -175,7 +175,7 @@ describe("Interface Relationships", () => {
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
                 RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
-                UNION
+            UNION
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this_Series:Series)
                 RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
@@ -276,7 +276,7 @@ describe("Interface Relationships", () => {
                 MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
                 WHERE this_Movie.title STARTS WITH $this_actedIn.args.where._on.Movie.title_STARTS_WITH
                 RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
-                UNION
+            UNION
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this_Series:Series)
                 WHERE this_Series.title STARTS WITH $this_actedIn.args.where.title_STARTS_WITH

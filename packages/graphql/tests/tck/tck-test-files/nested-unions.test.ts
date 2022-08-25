@@ -142,7 +142,7 @@ describe("Nested Unions", () => {
                             MATCH (this_actors)-[update_this1:ACTED_IN]->(this_actors_actedIn:\`Movie\`)
                             WITH this_actors_actedIn { __resolveType: \\"Movie\\" } AS this_actors_actedIn
                             RETURN this_actors_actedIn AS this_actors_actedIn
-                            UNION
+            UNION
                             WITH this_actors
                             MATCH (this_actors)-[update_this2:ACTED_IN]->(this_actors_actedIn:\`Series\`)
                             WITH this_actors_actedIn  { __resolveType: \\"Series\\",  .name } AS this_actors_actedIn
@@ -247,7 +247,7 @@ describe("Nested Unions", () => {
                             MATCH (this_actors)-[update_this1:ACTED_IN]->(this_actors_actedIn:\`Movie\`)
                             WITH this_actors_actedIn { __resolveType: \\"Movie\\" } AS this_actors_actedIn
                             RETURN this_actors_actedIn AS this_actors_actedIn
-                            UNION
+            UNION
                             WITH this_actors
                             MATCH (this_actors)-[update_this2:ACTED_IN]->(this_actors_actedIn:\`Series\`)
                             WITH this_actors_actedIn  { __resolveType: \\"Series\\",  .name } AS this_actors_actedIn

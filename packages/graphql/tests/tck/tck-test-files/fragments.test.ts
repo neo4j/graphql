@@ -125,7 +125,7 @@ describe("Cypher Fragment", () => {
                     MATCH (this)-[thisthis0:OWNS]->(this_owns:\`Tile\`)
                     WITH this_owns { __resolveType: \\"Tile\\" } AS this_owns
                     RETURN this_owns AS this_owns
-                    UNION
+            UNION
                     WITH this
                     MATCH (this)-[thisthis1:OWNS]->(this_owns:\`Character\`)
                     WITH this_owns { __resolveType: \\"Character\\" } AS this_owns

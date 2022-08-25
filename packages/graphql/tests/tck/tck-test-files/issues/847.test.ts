@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
                 WITH this
                 MATCH (this)<-[:ACTED_IN]-(this_Person:Person)
                 RETURN { __resolveType: \\"Person\\", id: this_Person.id } AS subjects
-                UNION
+            UNION
                 WITH this
                 MATCH (this)<-[:ACTED_IN]-(this_Place:Place)
                 RETURN { __resolveType: \\"Place\\", id: this_Place.id } AS subjects
@@ -90,7 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
                 WITH subjects, this
                 MATCH (this)-[:ACTED_IN]->(this_Person:Person)
                 RETURN { __resolveType: \\"Person\\", id: this_Person.id } AS objects
-                UNION
+            UNION
                 WITH subjects, this
                 MATCH (this)-[:ACTED_IN]->(this_Place:Place)
                 RETURN { __resolveType: \\"Place\\", id: this_Place.id } AS objects

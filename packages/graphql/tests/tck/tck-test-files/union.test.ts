@@ -85,7 +85,7 @@ describe("Cypher Union", () => {
                     WHERE apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $thisparam0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH this_search  { __resolveType: \\"Genre\\",  .name } AS this_search
                     RETURN this_search AS this_search
-                    UNION
+            UNION
                     WITH this
                     MATCH (this)-[thisthis1:SEARCH]->(this_search:\`Movie\`)
                     WITH this_search  { __resolveType: \\"Movie\\",  .title } AS this_search
@@ -134,7 +134,7 @@ describe("Cypher Union", () => {
                     WHERE apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $thisparam0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH this_search  { __resolveType: \\"Genre\\",  .name } AS this_search
                     RETURN this_search AS this_search
-                    UNION
+            UNION
                     WITH this
                     MATCH (this)-[thisthis1:SEARCH]->(this_search:\`Movie\`)
                     WITH this_search { __resolveType: \\"Movie\\" } AS this_search
@@ -190,7 +190,7 @@ describe("Cypher Union", () => {
                     WHERE (this_search.name = $thisparam0 AND apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $thisparam1)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     WITH this_search  { __resolveType: \\"Genre\\",  .name } AS this_search
                     RETURN this_search AS this_search
-                    UNION
+            UNION
                     WITH this
                     MATCH (this)-[thisthis1:SEARCH]->(this_search:\`Movie\`)
                     WHERE this_search.title = $thisparam2

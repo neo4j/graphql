@@ -140,7 +140,7 @@ describe("Undirected relationships", () => {
                     MATCH (this)-[thisthis0:HAS_CONTENT]-(this_content:\`Blog\`)
                     WITH this_content  { __resolveType: \\"Blog\\",  .title } AS this_content
                     RETURN this_content AS this_content
-                    UNION
+            UNION
                     WITH this
                     MATCH (this)-[thisthis1:HAS_CONTENT]-(this_content:\`Post\`)
                     WITH this_content  { __resolveType: \\"Post\\",  .content } AS this_content
@@ -216,7 +216,7 @@ describe("Undirected relationships", () => {
                 WITH this
                 MATCH (this)-[:ACTED_IN]-(this_Movie:Movie)
                 RETURN { __resolveType: \\"Movie\\", title: this_Movie.title } AS actedIn
-                UNION
+            UNION
                 WITH this
                 MATCH (this)-[:ACTED_IN]-(this_Series:Series)
                 RETURN { __resolveType: \\"Series\\", title: this_Series.title } AS actedIn

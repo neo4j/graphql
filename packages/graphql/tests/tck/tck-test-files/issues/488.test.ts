@@ -88,7 +88,7 @@ describe("#488", () => {
                     MATCH (this)-[thisthis0:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
                     WITH this_keywords  { __resolveType: \\"Emoji\\",  .id, .type } AS this_keywords
                     RETURN this_keywords AS this_keywords
-                    UNION
+            UNION
                     WITH this
                     MATCH (this)-[thisthis1:HAS_KEYWORD]->(this_keywords:\`Hashtag\`)
                     WITH this_keywords { __resolveType: \\"Hashtag\\" } AS this_keywords
@@ -142,7 +142,7 @@ describe("#488", () => {
                     MATCH (this)-[thisthis0:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
                     WITH this_keywords  { __resolveType: \\"Emoji\\",  .id, .type } AS this_keywords
                     RETURN this_keywords AS this_keywords
-                    UNION
+            UNION
                     WITH this
                     MATCH (this)-[thisthis1:HAS_KEYWORD]->(this_keywords:\`Hashtag\`)
                     WITH this_keywords { __resolveType: \\"Hashtag\\" } AS this_keywords

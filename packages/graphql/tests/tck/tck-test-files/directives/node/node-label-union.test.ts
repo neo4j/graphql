@@ -89,7 +89,7 @@ describe("Node directive with unions", () => {
                     WHERE this_search.name = $thisparam0
                     WITH this_search  { __resolveType: \\"Genre\\",  .name } AS this_search
                     RETURN this_search AS this_search
-                    UNION
+            UNION
                     WITH this
                     MATCH (this)-[thisthis1:SEARCH]->(this_search:\`Film\`)
                     WHERE this_search.title = $thisparam1

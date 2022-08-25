@@ -89,7 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                 WITH this
                 MATCH (this)-[:RELATES_TO]-(this_Series:Series)
                 RETURN { __resolveType: \\"Series\\", productTitle: this_Series.productTitle } AS releatsTo
-                UNION
+            UNION
                 WITH this
                 MATCH (this)-[:RELATES_TO]-(this_Season:Season)
                 RETURN { __resolveType: \\"Season\\", productTitle: this_Season.productTitle } AS releatsTo

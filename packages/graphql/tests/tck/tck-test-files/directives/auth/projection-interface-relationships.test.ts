@@ -99,7 +99,7 @@ describe("Auth projections for interface relationship fields", () => {
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
                 RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
-                UNION
+            UNION
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this_Series:Series)
                 CALL apoc.util.validate(NOT ((this_Series.episodes IS NOT NULL AND this_Series.episodes = $this_Seriesauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])

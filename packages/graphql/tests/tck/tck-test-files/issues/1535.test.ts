@@ -88,7 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
                 WITH this
                 MATCH (this)<-[:HOSTED_BY]-(this_Screening:Screening)
                 RETURN { __resolveType: \\"Screening\\", id: this_Screening.id } AS events
-                UNION
+            UNION
                 WITH this
                 MATCH (this)<-[:HOSTED_BY]-(this_Booking:Booking)
                 RETURN { __resolveType: \\"Booking\\", id: this_Booking.id } AS events

@@ -104,7 +104,7 @@ describe("@auth allow on specific interface implementation", () => {
                 WITH this
                 MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
                 RETURN { __resolveType: \\"Comment\\", id: this_Comment.id, content: this_Comment.content } AS content
-                UNION
+            UNION
                 WITH this
                 MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
                 CALL apoc.util.validate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(auth_this0 IN [(this_Post)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Postauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -154,7 +154,7 @@ describe("@auth allow on specific interface implementation", () => {
                 MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
                 WHERE this_Comment.id = $this_content.args.where.id
                 RETURN { __resolveType: \\"Comment\\" } AS content
-                UNION
+            UNION
                 WITH this
                 MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
                 CALL apoc.util.validate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(auth_this0 IN [(this_Post)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Postauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -263,7 +263,7 @@ describe("@auth allow on specific interface implementation", () => {
                 WITH this
                 MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
                 RETURN { __resolveType: \\"Comment\\", id: this_Comment.id } AS content
-                UNION
+            UNION
                 WITH this
                 MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
                 CALL apoc.util.validate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(auth_this0 IN [(this_Post)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Postauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])

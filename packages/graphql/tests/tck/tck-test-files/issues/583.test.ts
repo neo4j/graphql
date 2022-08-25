@@ -94,7 +94,7 @@ describe("#583", () => {
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
                 RETURN { __resolveType: \\"Movie\\", title: this_Movie.title, awardsGiven: this_Movie.awardsGiven } AS actedIn
-                UNION
+            UNION
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this_Series:Series)
                 RETURN { __resolveType: \\"Series\\", title: this_Series.title, awardsGiven: this_Series.awardsGiven } AS actedIn
