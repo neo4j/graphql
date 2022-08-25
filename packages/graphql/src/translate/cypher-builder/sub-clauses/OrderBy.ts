@@ -33,7 +33,7 @@ export class OrderBy extends CypherASTNode {
     private skipClause: Skip | undefined;
     private limitClause: Limit | undefined;
 
-    public setOrderElements(exprs: OrderProjectionElement[]) {
+    public setOrderElements(exprs: OrderProjectionElement[]): void {
         this.exprs = exprs;
     }
 
@@ -64,7 +64,7 @@ export class OrderBy extends CypherASTNode {
             orderStr = `ORDER BY ${exprStr}`;
         }
 
-        return `${orderStr}${limitStr}${skipStr}`;
+        return `${orderStr}${skipStr}${limitStr}`;
     }
 }
 

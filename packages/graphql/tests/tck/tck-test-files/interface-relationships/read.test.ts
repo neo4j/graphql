@@ -182,8 +182,8 @@ describe("Interface Relationships", () => {
             }
             WITH *
             ORDER BY actedIn.title DESC
-            LIMIT 10
             SKIP 5
+            LIMIT 10
             RETURN collect(actedIn) AS actedIn
             }
             RETURN this { actedIn: actedIn } as this"
