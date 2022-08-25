@@ -81,7 +81,28 @@ describe("#488", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Journalist\`)
             WHERE size([(this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`) WHERE this1.type = $param0 | 1]) > 0
-            RETURN this { .name, keywords:  [this_keywords IN [(this)-[:HAS_KEYWORD]->(this_keywords) WHERE (\\"Emoji\\" IN labels(this_keywords)) OR (\\"Hashtag\\" IN labels(this_keywords)) OR (\\"Text\\" IN labels(this_keywords)) | head( [ this_keywords IN [this_keywords] WHERE (\\"Emoji\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Emoji\\",  .id, .type } ] + [ this_keywords IN [this_keywords] WHERE (\\"Hashtag\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Hashtag\\" }  ] + [ this_keywords IN [this_keywords] WHERE (\\"Text\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Text\\" }  ] ) ] WHERE this_keywords IS NOT NULL]  } as this"
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[thisthis0:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
+                    WITH this_keywords  { __resolveType: \\"Emoji\\",  .id, .type } AS this_keywords
+                    RETURN this_keywords AS this_keywords
+                    UNION
+                    WITH this
+                    MATCH (this)-[thisthis1:HAS_KEYWORD]->(this_keywords:\`Hashtag\`)
+                    WITH this_keywords { __resolveType: \\"Hashtag\\" } AS this_keywords
+                    RETURN this_keywords AS this_keywords
+                    UNION
+                    WITH this
+                    MATCH (this)-[thisthis2:HAS_KEYWORD]->(this_keywords:\`Text\`)
+                    WITH this_keywords { __resolveType: \\"Text\\" } AS this_keywords
+                    RETURN this_keywords AS this_keywords
+                }
+                WITH this_keywords
+                RETURN collect(this_keywords) AS this_keywords
+            }
+            RETURN this { .name, keywords: this_keywords } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -114,7 +135,28 @@ describe("#488", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Journalist\`)
             WHERE size([(this)-[this0:HAS_KEYWORD]->(this1:\`Emoji\`) WHERE this1.type = $param0 | 1]) = 0
-            RETURN this { .name, keywords:  [this_keywords IN [(this)-[:HAS_KEYWORD]->(this_keywords) WHERE (\\"Emoji\\" IN labels(this_keywords)) OR (\\"Hashtag\\" IN labels(this_keywords)) OR (\\"Text\\" IN labels(this_keywords)) | head( [ this_keywords IN [this_keywords] WHERE (\\"Emoji\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Emoji\\",  .id, .type } ] + [ this_keywords IN [this_keywords] WHERE (\\"Hashtag\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Hashtag\\" }  ] + [ this_keywords IN [this_keywords] WHERE (\\"Text\\" IN labels(this_keywords)) | this_keywords { __resolveType: \\"Text\\" }  ] ) ] WHERE this_keywords IS NOT NULL]  } as this"
+            CALL {
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[thisthis0:HAS_KEYWORD]->(this_keywords:\`Emoji\`)
+                    WITH this_keywords  { __resolveType: \\"Emoji\\",  .id, .type } AS this_keywords
+                    RETURN this_keywords AS this_keywords
+                    UNION
+                    WITH this
+                    MATCH (this)-[thisthis1:HAS_KEYWORD]->(this_keywords:\`Hashtag\`)
+                    WITH this_keywords { __resolveType: \\"Hashtag\\" } AS this_keywords
+                    RETURN this_keywords AS this_keywords
+                    UNION
+                    WITH this
+                    MATCH (this)-[thisthis2:HAS_KEYWORD]->(this_keywords:\`Text\`)
+                    WITH this_keywords { __resolveType: \\"Text\\" } AS this_keywords
+                    RETURN this_keywords AS this_keywords
+                }
+                WITH this_keywords
+                RETURN collect(this_keywords) AS this_keywords
+            }
+            RETURN this { .name, keywords: this_keywords } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

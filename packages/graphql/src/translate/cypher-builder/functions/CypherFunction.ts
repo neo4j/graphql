@@ -18,9 +18,9 @@
  */
 
 import { CypherASTNode } from "../CypherASTNode";
+import type { Variable } from "../CypherBuilder";
 import type { CypherEnvironment } from "../Environment";
 import type { Expr } from "../types";
-import type { NodeRef } from "../variables/NodeRef";
 
 export class CypherFunction extends CypherASTNode {
     protected name: string;
@@ -60,7 +60,7 @@ export function pointDistance(lexpr: Expr, rexpr: Expr): CypherFunction {
     return new CypherFunction("point.distance", [lexpr, rexpr]);
 }
 
-export function labels(nodeRef: NodeRef): CypherFunction {
+export function labels(nodeRef: Variable): CypherFunction {
     return new CypherFunction("labels", [nodeRef]);
 }
 

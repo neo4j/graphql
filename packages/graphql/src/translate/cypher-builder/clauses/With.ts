@@ -27,22 +27,30 @@ import { applyMixins } from "./utils/apply-mixin";
 
 export class With extends Clause {
     private projection: Projection;
+    private isDistinct = false;
 
     constructor(...columns: Array<"*" | ProjectionColumn>) {
         super();
         this.projection = new Projection(columns);
     }
 
-    public addColumns(...columns: Array<"*" | ProjectionColumn>): void {
+    public addColumns(...columns: Array<"*" | ProjectionColumn>): this {
         this.projection.addColumns(columns);
+        return this;
+    }
+
+    public distinct(): this {
+        this.isDistinct = true;
+        return this;
     }
 
     public getCypher(env: CypherEnvironment): string {
         const projectionStr = this.projection.getCypher(env);
         const orderByStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });
         const returnStr = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
+        const distinctStr = this.isDistinct ? " DISTINCT" : "";
 
-        return `WITH ${projectionStr}${orderByStr}${returnStr}`;
+        return `WITH${distinctStr} ${projectionStr}${orderByStr}${returnStr}`;
     }
 }
 

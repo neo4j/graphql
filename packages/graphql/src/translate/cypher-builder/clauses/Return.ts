@@ -26,21 +26,29 @@ import { compileCypherIfExists } from "../utils/utils";
 
 export class Return extends Clause {
     private projection: Projection;
+    private isDistinct = false;
 
     constructor(...columns: Array<"*" | ProjectionColumn>) {
         super();
         this.projection = new Projection(columns);
     }
 
-    public addColumns(...columns: Array<"*" | ProjectionColumn>): void {
+    public addColumns(...columns: Array<"*" | ProjectionColumn>): this {
         this.projection.addColumns(columns);
+        return this;
+    }
+
+    public distinct(): this {
+        this.isDistinct = true;
+        return this;
     }
 
     public getCypher(env: CypherEnvironment): string {
         const projectionStr = this.projection.getCypher(env);
         const orderStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });
+        const distinctStr = this.isDistinct ? " DISTINCT" : "";
 
-        return `RETURN ${projectionStr}${orderStr}`;
+        return `RETURN${distinctStr} ${projectionStr}${orderStr}`;
     }
 }
 

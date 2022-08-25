@@ -34,6 +34,7 @@ export class Match<T extends MatchableElement = any> extends Clause {
     private pattern: Pattern<T>;
     private deleteClause: DeleteClause | undefined;
     private removeClause: RemoveClause | undefined;
+    private _optional = false;
 
     constructor(variable: T | Pattern<T>, parameters: MatchParams<T> = {}, parent?: Clause) {
         super(parent);
@@ -44,19 +45,24 @@ export class Match<T extends MatchableElement = any> extends Clause {
         }
     }
 
-    delete(...deleteInput: DeleteInput): this {
+    public delete(...deleteInput: DeleteInput): this {
         this.createDeleteClause(deleteInput);
         return this;
     }
 
-    detachDelete(...deleteInput: DeleteInput): this {
+    public detachDelete(...deleteInput: DeleteInput): this {
         const deleteClause = this.createDeleteClause(deleteInput);
         deleteClause.detach();
         return this;
     }
 
-    remove(...properties: PropertyRef[]): this {
+    public remove(...properties: PropertyRef[]): this {
         this.removeClause = new RemoveClause(this, properties);
+        return this;
+    }
+
+    public optional(): this {
+        this._optional = true;
         return this;
     }
 
@@ -69,8 +75,9 @@ export class Match<T extends MatchableElement = any> extends Clause {
         const withCypher = compileCypherIfExists(this.withStatement, env, { prefix: "\n" });
         const deleteCypher = compileCypherIfExists(this.deleteClause, env, { prefix: "\n" });
         const removeCypher = compileCypherIfExists(this.removeClause, env, { prefix: "\n" });
+        const optionalMatch = this._optional ? "OPTIONAL " : "";
 
-        return `MATCH ${nodeCypher}${whereCypher}${setCypher}${removeCypher}${deleteCypher}${withCypher}${returnCypher}`;
+        return `${optionalMatch}MATCH ${nodeCypher}${whereCypher}${setCypher}${removeCypher}${deleteCypher}${withCypher}${returnCypher}`;
     }
 
     private createDeleteClause(deleteInput: DeleteInput): DeleteClause {
@@ -82,9 +89,9 @@ export class Match<T extends MatchableElement = any> extends Clause {
 export interface Match extends WithReturn, WithWhere, WithSet, WithWith {}
 applyMixins(Match, [WithReturn, WithWhere, WithSet, WithWith]);
 
-export class OptionalMatch extends Match {
-    public getCypher(env: CypherEnvironment): string {
-        const matchStr = super.getCypher(env);
-        return `OPTIONAL ${matchStr}`;
+export class OptionalMatch<T extends MatchableElement = any> extends Match<T> {
+    constructor(variable: T | Pattern<T>, parameters: MatchParams<T> = {}, parent?: Clause) {
+        super(variable, parameters, parent);
+        this.optional();
     }
 }

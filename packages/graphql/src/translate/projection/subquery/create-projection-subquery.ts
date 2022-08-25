@@ -38,6 +38,8 @@ export function createProjectionSubquery({
     relationshipDirection,
     optionsInput,
     authValidateStrs,
+    addSkipAndLimit = true,
+    collect = true,
 }: {
     parentNode: CypherBuilder.Node;
     whereInput?: GraphQLWhereArg;
@@ -50,10 +52,9 @@ export function createProjectionSubquery({
     relationshipDirection: RelationshipDirection;
     optionsInput: GraphQLOptionsArg;
     authValidateStrs: string[] | undefined;
-}): {
-    subquery: CypherBuilder.Clause;
-    projectionColumn: CypherBuilder.ProjectionColumn[];
-} {
+    addSkipAndLimit?: boolean;
+    collect?: boolean;
+}): CypherBuilder.Clause {
     const isArray = relationField.typeMeta.array;
     const targetNode = new CypherBuilder.NamedNode(alias, {
         labels: node.getLabels(context),
@@ -131,24 +132,25 @@ export function createProjectionSubquery({
 
     const returnVariable = new CypherBuilder.NamedVariable(alias);
     const withStatement: CypherBuilder.With = new CypherBuilder.With([projection, returnVariable]); // This only works if nestedProjection is a map
+    if (addSkipAndLimit) {
+        addSortAndLimitOptionsToClause({
+            optionsInput,
+            target: returnVariable,
+            projectionClause: withStatement,
+        });
+    }
 
-    addSortAndLimitOptionsToClause({
-        optionsInput,
-        target: returnVariable,
-        projectionClause: withStatement,
-    });
-
-    let returnProjection = CypherBuilder.collect(targetNode);
-    if (!isArray) {
-        returnProjection = CypherBuilder.head(returnProjection);
+    let returnProjection: CypherBuilder.Expr = targetNode;
+    if (collect) {
+        returnProjection = CypherBuilder.collect(targetNode);
+        if (!isArray) {
+            returnProjection = CypherBuilder.head(returnProjection);
+        }
     }
 
     const returnStatement = new CypherBuilder.Return([returnProjection, returnVariable]);
 
     const subquery = CypherBuilder.concat(subqueryMatch, ...nestedSubqueries, withStatement, returnStatement);
 
-    return {
-        subquery: new CypherBuilder.Call(subquery).with(parentNode),
-        projectionColumn: [],
-    };
+    return subquery;
 }

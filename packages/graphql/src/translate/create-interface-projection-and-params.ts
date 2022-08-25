@@ -28,7 +28,7 @@ import createProjectionAndParams from "./create-projection-and-params";
 import { getRelationshipDirectionStr } from "../utils/get-relationship-direction";
 import createElementWhereAndParams from "./where/create-element-where-and-params";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
-import { addSortAndLimitOptionsToClause } from "./projection/elements/add-sort-and-limit-to-clause";
+import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 import { compileCypherIfExists } from "./cypher-builder/utils/utils";
 
 function createInterfaceProjectionAndParams({
