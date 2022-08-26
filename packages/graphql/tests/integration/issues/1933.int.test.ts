@@ -158,9 +158,10 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
     });
 
     test("should return the correct elements based on a relationship aggregation LTE filter", async () => {
+        // INFO: The behaviour/implementation of the LTE aggregation was not changed. This is just for comparison.
         const query = `
             {
-                ${employeeType.plural}(where: { projectsAggregate: { edge: { allocation_LTE: 25 } } }) {
+                ${employeeType.plural}(where: { projectsAggregate: { edge: { allocation_LTE: 35 } } }) {
                     employeeId
                     firstName
                     lastName
