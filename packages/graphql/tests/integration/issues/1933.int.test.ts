@@ -65,7 +65,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             CREATE (e2:${employeeType} { employeeId: "3332", firstName: "Emp2", lastName: "EmpLast2" })
             CREATE (p1:${projectType} { id: "2221", name: "Test_proj" })
             CREATE (p2:${projectType} { id: "2222", name: "Test_proj2" })
-            CREATE (e1)-[:PARTICIPATES { allocation: 20.0 }]->(p1)
+            CREATE (e1)-[:PARTICIPATES { allocation: 35.0 }]->(p1)
             CREATE (e1)-[:PARTICIPATES { allocation: 40.0 }]->(p2)
             CREATE (e2)-[:PARTICIPATES { allocation: 30.0 }]->(p1)
             CREATE (e2)-[:PARTICIPATES { allocation: 20.0 }]->(p2)
@@ -161,7 +161,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
         // INFO: The behaviour/implementation of the LTE aggregation was not changed. This is just for comparison.
         const query = `
             {
-                ${employeeType.plural}(where: { projectsAggregate: { edge: { allocation_LTE: 35 } } }) {
+                ${employeeType.plural}(where: { projectsAggregate: { edge: { allocation_LTE: 30 } } }) {
                     employeeId
                     firstName
                     lastName
