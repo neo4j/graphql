@@ -27,6 +27,7 @@ import Icon from "../../assets/neo4j-color.svg";
 import { AuthContext } from "../../contexts/auth";
 import { getConnectUrlSearchParamValue } from "../../contexts/utils";
 import { ProTooltip } from "../../components/ProTooltip";
+import { getURLProtocolFromText } from "../../utils/utils";
 
 export const Login = () => {
     const auth = useContext(AuthContext);
@@ -35,7 +36,8 @@ export const Login = () => {
     const { url: searchParamUrl, username: searchParamUsername } = getConnectUrlSearchParamValue() || {};
     const [url, setUrl] = useState<string>(searchParamUrl || DEFAULT_BOLT_URL);
     const [username, setUsername] = useState<string>(searchParamUsername || DEFAULT_USERNAME);
-    const showWarningToolTip = window.location.protocol.includes("https") && !new URL(url).protocol.includes("+s");
+    const showWarningToolTip =
+        window.location.protocol.includes("https") && !getURLProtocolFromText(url).includes("+s");
 
     const onSubmit = useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {
