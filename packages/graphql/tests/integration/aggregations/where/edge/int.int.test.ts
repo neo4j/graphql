@@ -20,6 +20,7 @@
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
+import { faker } from "@faker-js/faker";
 import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
 
@@ -59,7 +60,7 @@ describe("aggregations-where-edge-int", () => {
             readable: true,
         });
 
-        const someInt = Math.floor(Math.random() * Math.random());
+        const someInt = Number(faker.datatype.number());
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -128,7 +129,7 @@ describe("aggregations-where-edge-int", () => {
             readable: true,
         });
 
-        const someInt = Math.floor(Math.random() * Math.random());
+        const someInt = Number(faker.datatype.number());
         const someIntGt = someInt - 1;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -199,7 +200,7 @@ describe("aggregations-where-edge-int", () => {
             readable: true,
         });
 
-        const someInt = Math.floor(Math.random() * Math.random());
+        const someInt = Number(faker.datatype.number());
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -269,7 +270,7 @@ describe("aggregations-where-edge-int", () => {
             readable: true,
         });
 
-        const someInt = Math.floor(Math.random() * Math.random());
+        const someInt = Number(faker.datatype.number());
         const someIntLT = someInt + 1;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -339,7 +340,7 @@ describe("aggregations-where-edge-int", () => {
             readable: true,
         });
 
-        const someInt = Math.floor(Math.random() * Math.random());
+        const someInt = Number(faker.datatype.number());
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -409,9 +410,9 @@ describe("aggregations-where-edge-int", () => {
                 readable: true,
             });
 
-            const someInt1 = Math.floor(Math.random() * Math.random());
-            const someInt2 = Math.floor(Math.random() * Math.random());
-            const someInt3 = Math.floor(Math.random() * Math.random());
+            const someInt1 = Number(faker.datatype.number());
+            const someInt2 = Number(faker.datatype.number());
+            const someInt3 = Number(faker.datatype.number());
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
 
@@ -482,12 +483,13 @@ describe("aggregations-where-edge-int", () => {
                 readable: true,
             });
 
-            const someInt1 = Math.floor(Math.random() * Math.random());
-            const someInt2 = Math.floor(Math.random() * Math.random());
-            const someInt3 = Math.floor(Math.random() * Math.random());
+            const someInt1 = Number(faker.datatype.number());
+            const someInt2 = Number(faker.datatype.number());
+            const someInt3 = Number(faker.datatype.number());
+            console.log(someInt1);
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
-            const avgGT = avg - 1;
+            const avgGT = Math.floor(avg - 2);
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -526,6 +528,7 @@ describe("aggregations-where-edge-int", () => {
                 expect(gqlResult.errors).toBeUndefined();
 
                 const [post] = (gqlResult.data as any).posts as any[];
+                console.log(gqlResult.data);
                 expect(post.testString).toEqual(testString);
                 expect(post.likes).toHaveLength(3);
             } finally {
@@ -556,11 +559,11 @@ describe("aggregations-where-edge-int", () => {
                 readable: true,
             });
 
-            const someInt1 = Math.floor(Math.random() * Math.random());
-            const someInt2 = Math.floor(Math.random() * Math.random());
-            const someInt3 = Math.floor(Math.random() * Math.random());
+            const someInt1 = Number(faker.datatype.number());
+            const someInt2 = Number(faker.datatype.number());
+            const someInt3 = Number(faker.datatype.number());
 
-            const avg = (someInt1 + someInt2 + someInt3) / 3;
+            const avg = Math.floor((someInt1 + someInt2 + someInt3) / 3);
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -629,9 +632,9 @@ describe("aggregations-where-edge-int", () => {
                 readable: true,
             });
 
-            const someInt1 = Math.floor(Math.random() * Math.random());
-            const someInt2 = Math.floor(Math.random() * Math.random());
-            const someInt3 = Math.floor(Math.random() * Math.random());
+            const someInt1 = 1;
+            const someInt2 = 2;
+            const someInt3 = 3;
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
             const avgLT = avg + 1;
@@ -703,11 +706,11 @@ describe("aggregations-where-edge-int", () => {
                 readable: true,
             });
 
-            const someInt1 = Math.floor(Math.random() * Math.random());
-            const someInt2 = Math.floor(Math.random() * Math.random());
-            const someInt3 = Math.floor(Math.random() * Math.random());
+            const someInt1 = 1;
+            const someInt2 = 2;
+            const someInt3 = 3;
 
-            const avg = (someInt1 + someInt2 + someInt3) / 3;
+            const avg = someInt1 + someInt2 + someInt3;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -778,9 +781,9 @@ describe("aggregations-where-edge-int", () => {
                 readable: true,
             });
 
-            const someInt1 = Math.floor(Math.random() * Math.random());
-            const someInt2 = Math.floor(Math.random() * Math.random());
-            const someInt3 = Math.floor(Math.random() * Math.random());
+            const someInt1 = Number(faker.datatype.number());
+            const someInt2 = Number(faker.datatype.number());
+            const someInt3 = Number(faker.datatype.number());
 
             const sum = someInt1 + someInt2 + someInt3;
 

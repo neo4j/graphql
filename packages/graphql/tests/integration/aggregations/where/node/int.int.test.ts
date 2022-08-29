@@ -22,6 +22,7 @@ import { graphql } from "graphql";
 import { generate } from "randomstring";
 import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
+import { faker } from "@faker-js/faker";
 
 describe("aggregations-where-node-int", () => {
     let driver: Driver;
@@ -56,7 +57,7 @@ describe("aggregations-where-node-int", () => {
             readable: true,
         });
 
-        const someInt = Math.floor(Math.random() * Math.random());
+        const someInt = Number(faker.datatype.number());
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -123,7 +124,7 @@ describe("aggregations-where-node-int", () => {
             readable: true,
         });
 
-        const someInt = Math.floor(Math.random() * Math.random());
+        const someInt = Number(faker.datatype.number());
         const someIntGt = someInt - 1;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -191,7 +192,7 @@ describe("aggregations-where-node-int", () => {
             readable: true,
         });
 
-        const someInt = Math.floor(Math.random() * Math.random());
+        const someInt = Number(faker.datatype.number());
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -258,7 +259,7 @@ describe("aggregations-where-node-int", () => {
             readable: true,
         });
 
-        const someInt = Math.floor(Math.random() * Math.random());
+        const someInt = Number(faker.datatype.number());
         const someIntLT = someInt + 1;
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -326,7 +327,7 @@ describe("aggregations-where-node-int", () => {
             readable: true,
         });
 
-        const someInt = Math.floor(Math.random() * Math.random());
+        const someInt = Number(faker.datatype.number());
 
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -394,9 +395,9 @@ describe("aggregations-where-node-int", () => {
                 readable: true,
             });
 
-            const someInt1 = Math.floor(Math.random() * Math.random());
-            const someInt2 = Math.floor(Math.random() * Math.random());
-            const someInt3 = Math.floor(Math.random() * Math.random());
+            const someInt1 = Number(faker.datatype.number({ precision: 0.01 }));
+            const someInt2 = Number(faker.datatype.number({ precision: 0.01 }));
+            const someInt3 = Number(faker.datatype.number({ precision: 0.01 }));
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
 
@@ -465,9 +466,9 @@ describe("aggregations-where-node-int", () => {
                 readable: true,
             });
 
-            const someInt1 = Math.floor(Math.random() * Math.random());
-            const someInt2 = Math.floor(Math.random() * Math.random());
-            const someInt3 = Math.floor(Math.random() * Math.random());
+            const someInt1 = Number(faker.datatype.number({ precision: 0.01 }));
+            const someInt2 = Number(faker.datatype.number({ precision: 0.01 }));
+            const someInt3 = Number(faker.datatype.number({ precision: 0.01 }));
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
             const avgGT = avg - 1;
@@ -537,9 +538,9 @@ describe("aggregations-where-node-int", () => {
                 readable: true,
             });
 
-            const someInt1 = Math.floor(Math.random() * Math.random());
-            const someInt2 = Math.floor(Math.random() * Math.random());
-            const someInt3 = Math.floor(Math.random() * Math.random());
+            const someInt1 = Number(faker.datatype.number({ precision: 0.01 }));
+            const someInt2 = Number(faker.datatype.number({ precision: 0.01 }));
+            const someInt3 = Number(faker.datatype.number({ precision: 0.01 }));
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
 
@@ -608,9 +609,9 @@ describe("aggregations-where-node-int", () => {
                 readable: true,
             });
 
-            const someInt1 = Math.floor(Math.random() * Math.random());
-            const someInt2 = Math.floor(Math.random() * Math.random());
-            const someInt3 = Math.floor(Math.random() * Math.random());
+            const someInt1 = Number(faker.datatype.number({ precision: 0.01 }));
+            const someInt2 = Number(faker.datatype.number({ precision: 0.01 }));
+            const someInt3 = Number(faker.datatype.number({ precision: 0.01 }));
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
             const avgLT = avg + 1;
@@ -680,9 +681,9 @@ describe("aggregations-where-node-int", () => {
                 readable: true,
             });
 
-            const someInt1 = Math.floor(Math.random() * Math.random());
-            const someInt2 = Math.floor(Math.random() * Math.random());
-            const someInt3 = Math.floor(Math.random() * Math.random());
+            const someInt1 = Number(faker.datatype.number({ precision: 0.01 }));
+            const someInt2 = Number(faker.datatype.number({ precision: 0.01 }));
+            const someInt3 = Number(faker.datatype.number({ precision: 0.01 }));
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
 
@@ -753,9 +754,9 @@ describe("aggregations-where-node-int", () => {
                 readable: true,
             });
 
-            const someInt1 = Math.floor(Math.random() * Math.random());
-            const someInt2 = Math.floor(Math.random() * Math.random());
-            const someInt3 = Math.floor(Math.random() * Math.random());
+            const someInt1 = Number(faker.datatype.number({ precision: 0.01 }));
+            const someInt2 = Number(faker.datatype.number({ precision: 0.01 }));
+            const someInt3 = Number(faker.datatype.number({ precision: 0.01 }));
 
             const sum = someInt1 + someInt2 + someInt3;
 
