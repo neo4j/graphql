@@ -1568,20 +1568,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/eslintrc@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "@eslint/eslintrc@npm:1.3.0"
+"@eslint/eslintrc@npm:^1.3.1":
+  version: 1.3.1
+  resolution: "@eslint/eslintrc@npm:1.3.1"
   dependencies:
     ajv: ^6.12.4
     debug: ^4.3.2
-    espree: ^9.3.2
+    espree: ^9.4.0
     globals: ^13.15.0
     ignore: ^5.2.0
     import-fresh: ^3.2.1
     js-yaml: ^4.1.0
     minimatch: ^3.1.2
     strip-json-comments: ^3.1.1
-  checksum: a1e734ad31a8b5328dce9f479f185fd4fc83dd7f06c538e1fa457fd8226b89602a55cc6458cd52b29573b01cdfaf42331be8cfc1fec732570086b591f4ed6515
+  checksum: 9844dcc58a44399649926d5a17a2d53d529b80d3e8c3e9d0964ae198bac77ee6bb1cf44940f30cd9c2e300f7568ec82500be42ace6cacefb08aebf9905fe208e
   languageName: node
   linkType: hard
 
@@ -1768,6 +1768,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@graphql-tools/merge@npm:8.3.4":
+  version: 8.3.4
+  resolution: "@graphql-tools/merge@npm:8.3.4"
+  dependencies:
+    "@graphql-tools/utils": 8.10.1
+    tslib: ^2.4.0
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 2d0fc2a5db2dc0eecd18e35dfaa7d016277152d3832f56bafd8fb276a90c8b96a25ad58c3670f2ed34bf04e2109933f04a8c052efa193a1eb815b2473d4ec2ff
+  languageName: node
+  linkType: hard
+
 "@graphql-tools/mock@npm:^8.1.2":
   version: 8.7.3
   resolution: "@graphql-tools/mock@npm:8.7.3"
@@ -1848,6 +1860,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@graphql-tools/schema@npm:9.0.2":
+  version: 9.0.2
+  resolution: "@graphql-tools/schema@npm:9.0.2"
+  dependencies:
+    "@graphql-tools/merge": 8.3.4
+    "@graphql-tools/utils": 8.10.1
+    tslib: ^2.4.0
+    value-or-promise: 1.0.11
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 9929eccb4f5ac871935047907df3a6b80de5bb6a650f2e0e4322e200a4a9a6953943713cca35f3bda108a76658cb0c0df62f6e9d129014a3e2417add9df58ee2
+  languageName: node
+  linkType: hard
+
 "@graphql-tools/utils@npm:8.10.0, @graphql-tools/utils@npm:^8.10.0, @graphql-tools/utils@npm:^8.8.0":
   version: 8.10.0
   resolution: "@graphql-tools/utils@npm:8.10.0"
@@ -1856,6 +1882,17 @@ __metadata:
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
   checksum: 1070959ab24c23510d70e8a557d1d2a90d2c041f2f7b1458e18158cede172b1964d50a803e3d206add73cb843998aaa434713f7c89e2e174974815385a3cad70
+  languageName: node
+  linkType: hard
+
+"@graphql-tools/utils@npm:8.10.1":
+  version: 8.10.1
+  resolution: "@graphql-tools/utils@npm:8.10.1"
+  dependencies:
+    tslib: ^2.4.0
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: db1a689cdfa7e1cbdbd8c3c1957338c018cb8b9978c747c69b7332c088af5a3af6b50eb6f14f1b369d43bff328a94a1ba68a0b4dcbf5349396747db328042d08
   languageName: node
   linkType: hard
 
@@ -1945,6 +1982,13 @@ __metadata:
   version: 1.0.2
   resolution: "@humanwhocodes/gitignore-to-minimatch@npm:1.0.2"
   checksum: aba5c40c9e3770ed73a558b0bfb53323842abfc2ce58c91d7e8b1073995598e6374456d38767be24ab6176915f0a8d8b23eaae5c85e2b488c0dccca6d795e2ad
+  languageName: node
+  linkType: hard
+
+"@humanwhocodes/module-importer@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@humanwhocodes/module-importer@npm:1.0.1"
+  checksum: 0fd22007db8034a2cdf2c764b140d37d9020bbfce8a49d3ec5c05290e77d4b0263b1b972b752df8c89e5eaa94073408f2b7d977aed131faf6cf396ebb5d7fb61
   languageName: node
   linkType: hard
 
@@ -2463,8 +2507,8 @@ __metadata:
     "@types/jest": 28.1.8
     "@types/node": 16.11.56
     amqplib: 0.10.2
-    apollo-server: 3.10.1
-    apollo-server-express: 3.10.1
+    apollo-server: 3.10.2
+    apollo-server-express: 3.10.2
     camelcase: 6.3.0
     graphql-ws: 5.10.1
     jest: 28.1.3
@@ -2507,7 +2551,7 @@ __metadata:
     fork-ts-checker-webpack-plugin: 7.2.13
     graphiql-explorer: ^0.9.0
     graphql: 16.6.0
-    graphql-request: ^4.3.0
+    graphql-request: ^5.0.0
     html-inline-script-webpack-plugin: 3.1.0
     html-webpack-inline-source-plugin: 0.0.10
     html-webpack-plugin: 5.5.0
@@ -2549,7 +2593,7 @@ __metadata:
     "@faker-js/faker": 7.4.0
     "@graphql-tools/merge": ^8.3.3
     "@graphql-tools/resolvers-composition": ^6.5.3
-    "@graphql-tools/schema": 9.0.1
+    "@graphql-tools/schema": 9.0.2
     "@graphql-tools/utils": ^8.10.0
     "@neo4j/graphql-plugin-auth": ^1.1.0
     "@types/deep-equal": 1.0.1
@@ -2562,8 +2606,8 @@ __metadata:
     "@types/semver": 7.3.12
     "@types/supertest": 2.0.12
     "@types/ws": 8.5.3
-    apollo-server: 3.10.1
-    apollo-server-express: 3.10.1
+    apollo-server: 3.10.2
+    apollo-server-express: 3.10.2
     camelcase: ^6.3.0
     debug: ^4.3.4
     dedent: 0.7.0
@@ -4309,9 +4353,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-server-core@npm:^3.10.1":
-  version: 3.10.1
-  resolution: "apollo-server-core@npm:3.10.1"
+"apollo-server-core@npm:^3.10.2":
+  version: 3.10.2
+  resolution: "apollo-server-core@npm:3.10.2"
   dependencies:
     "@apollo/utils.keyvaluecache": ^1.0.1
     "@apollo/utils.logger": ^1.0.0
@@ -4337,7 +4381,7 @@ __metadata:
     whatwg-mimetype: ^3.0.0
   peerDependencies:
     graphql: ^15.3.0 || ^16.0.0
-  checksum: 3ceb93b186719b50a8642ce0bdab3928fe6c2f92a08dd13ec625fc7c89ceaca009f0dbdd825e4845aaeb57f9fd33e5e6bb59218b54618d55ff55234520cd635d
+  checksum: 14b8ac9ef442993b5ef9354d6457cfeeaa1af09c8ece6041bfbf061e7c5d9983f20971ebf6ae2c9b8b8447ad5273943ea548a139ecf06c3559d380ed5c077bcb
   languageName: node
   linkType: hard
 
@@ -4359,9 +4403,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-server-express@npm:3.10.1, apollo-server-express@npm:^3.10.1":
-  version: 3.10.1
-  resolution: "apollo-server-express@npm:3.10.1"
+"apollo-server-express@npm:3.10.2, apollo-server-express@npm:^3.10.2":
+  version: 3.10.2
+  resolution: "apollo-server-express@npm:3.10.2"
   dependencies:
     "@types/accepts": ^1.3.5
     "@types/body-parser": 1.19.2
@@ -4369,7 +4413,7 @@ __metadata:
     "@types/express": 4.17.13
     "@types/express-serve-static-core": 4.17.30
     accepts: ^1.3.5
-    apollo-server-core: ^3.10.1
+    apollo-server-core: ^3.10.2
     apollo-server-types: ^3.6.2
     body-parser: ^1.19.0
     cors: ^2.8.5
@@ -4377,7 +4421,7 @@ __metadata:
   peerDependencies:
     express: ^4.17.1
     graphql: ^15.3.0 || ^16.0.0
-  checksum: 8449a615aa727ba81a96d346b14e358024986bbdd623914bdda1255694d82e3547bb8a5a32ef61e98d6441f37c8ea5a732de7c1af769b7e78b150b89772647bd
+  checksum: 8e0159c00b7b2dbcb043542cf37d62bcd1dfd958dc88fa4e3dd6b273632524cde01d26ded3438e04dd2f77783f29c5075ec2b5fa78df534ee2d87478bf20d602
   languageName: node
   linkType: hard
 
@@ -4406,17 +4450,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-server@npm:3.10.1":
-  version: 3.10.1
-  resolution: "apollo-server@npm:3.10.1"
+"apollo-server@npm:3.10.2":
+  version: 3.10.2
+  resolution: "apollo-server@npm:3.10.2"
   dependencies:
     "@types/express": 4.17.13
-    apollo-server-core: ^3.10.1
-    apollo-server-express: ^3.10.1
+    apollo-server-core: ^3.10.2
+    apollo-server-express: ^3.10.2
     express: ^4.17.1
   peerDependencies:
     graphql: ^15.3.0 || ^16.0.0
-  checksum: 83a4733aa1c787cb06d31c80a7dfffb3b9da6c4429e31570d7ad06a1b9c8b732dcc52f46e6a87592a7875ff41d7788f152b7b23bffca4ed53e6fb33c20b7f76e
+  checksum: 9f3c22ed1d4275a8bd5559b276dadab26758c3b4ae90b454d86aeccfa1a0da90d1201f627676e36ec84b8d581f767f24037d682a58615247b393930aca850324
   languageName: node
   linkType: hard
 
@@ -7816,9 +7860,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:26.8.7":
-  version: 26.8.7
-  resolution: "eslint-plugin-jest@npm:26.8.7"
+"eslint-plugin-jest@npm:26.9.0":
+  version: 26.9.0
+  resolution: "eslint-plugin-jest@npm:26.9.0"
   dependencies:
     "@typescript-eslint/utils": ^5.10.0
   peerDependencies:
@@ -7829,7 +7873,7 @@ __metadata:
       optional: true
     jest:
       optional: true
-  checksum: 4e5e0c781ef48ae7d757123bce3ed28c384f02f3d4cf88d616932c075b625c10f298e905bee988876f62f6688e8e11d0b8ce235fd4b3f6c7006a8725375eac58
+  checksum: 6d5fd5c95368f1ca2640389aeb7ce703d6202493c3ec6bdedb4eaca37233710508b0c75829e727765a16fd27029a466d34202bc7f2811c752038ccbbce224400
   languageName: node
   linkType: hard
 
@@ -7856,9 +7900,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:7.31.0":
-  version: 7.31.0
-  resolution: "eslint-plugin-react@npm:7.31.0"
+"eslint-plugin-react@npm:7.31.1":
+  version: 7.31.1
+  resolution: "eslint-plugin-react@npm:7.31.1"
   dependencies:
     array-includes: ^3.1.5
     array.prototype.flatmap: ^1.3.0
@@ -7876,7 +7920,7 @@ __metadata:
     string.prototype.matchall: ^4.0.7
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
-  checksum: 465829bb477f3adf0ce96294c2b9c97147414a449d14f4dde21711f38213924a4facd567f7263be67958f284edf5ea25cf9f996bc95240d74cfa2ee95b1c81a6
+  checksum: 6217d4c4e36c8fea24facd0cdcf22b2fd38a3603db94ec7c0a6f430046c8564b6c6884e0a9d4a4b8766201f66e8b18af594002210421bf9b6623b1fc32e15a3a
   languageName: node
   linkType: hard
 
@@ -7925,13 +7969,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:8.22.0":
-  version: 8.22.0
-  resolution: "eslint@npm:8.22.0"
+"eslint@npm:8.23.0":
+  version: 8.23.0
+  resolution: "eslint@npm:8.23.0"
   dependencies:
-    "@eslint/eslintrc": ^1.3.0
+    "@eslint/eslintrc": ^1.3.1
     "@humanwhocodes/config-array": ^0.10.4
     "@humanwhocodes/gitignore-to-minimatch": ^1.0.2
+    "@humanwhocodes/module-importer": ^1.0.1
     ajv: ^6.10.0
     chalk: ^4.0.0
     cross-spawn: ^7.0.2
@@ -7941,7 +7986,7 @@ __metadata:
     eslint-scope: ^7.1.1
     eslint-utils: ^3.0.0
     eslint-visitor-keys: ^3.3.0
-    espree: ^9.3.3
+    espree: ^9.4.0
     esquery: ^1.4.0
     esutils: ^2.0.2
     fast-deep-equal: ^3.1.3
@@ -7967,21 +8012,20 @@ __metadata:
     strip-ansi: ^6.0.1
     strip-json-comments: ^3.1.0
     text-table: ^0.2.0
-    v8-compile-cache: ^2.0.3
   bin:
     eslint: bin/eslint.js
-  checksum: 2d84a7a2207138cdb250759b047fdb05a57fede7f87b7a039d9370edba7f26e23a873a208becfd4b2c9e4b5499029f3fc3b9318da3290e693d25c39084119c80
+  checksum: ff6075daa28d817a7ac4508f31bc108a04d9ab5056608c8651b5bf9cfea5d708ca16dea6cdab2c3c0ae99b0bf0e726af8504eaa8e17c8e12e242cb68237ead64
   languageName: node
   linkType: hard
 
-"espree@npm:^9.3.2, espree@npm:^9.3.3":
-  version: 9.3.3
-  resolution: "espree@npm:9.3.3"
+"espree@npm:^9.4.0":
+  version: 9.4.0
+  resolution: "espree@npm:9.4.0"
   dependencies:
     acorn: ^8.8.0
     acorn-jsx: ^5.3.2
     eslint-visitor-keys: ^3.3.0
-  checksum: 33e8a36fc15d082e68672e322e22a53856b564d60aad8f291a667bfc21b2c900c42412d37dd3c7a0f18b9d0d8f8858dabe8776dbd4b4c2f72c5cf4d6afeabf65
+  checksum: 2e3020dde67892d2ba3632413b44d0dc31d92c29ce72267d7ec24216a562f0a6494d3696e2fa39a3ec8c0e0088d773947ab2925fbb716801a11eb8dd313ac89c
   languageName: node
   linkType: hard
 
@@ -9187,16 +9231,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-request@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "graphql-request@npm:4.3.0"
+"graphql-request@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "graphql-request@npm:5.0.0"
   dependencies:
+    "@graphql-typed-document-node/core": ^3.1.1
     cross-fetch: ^3.1.5
     extract-files: ^9.0.0
     form-data: ^3.0.0
   peerDependencies:
     graphql: 14 - 16
-  checksum: 3124afd01aee781cd5a2e9ac30063526b677a6754032566104fc36270b5f9be03f17a32e49f34c71ca968d533151550c37f7a0194d11c36ff59977bd73e2abc3
+  checksum: 2e8900d10cded401b253a05650719321123e3b0ad5bc57523288892e0226dccf43668ec937753420084f649fb4e3f998f2547c884b746a3e91fa0a43f93e62d4
   languageName: node
   linkType: hard
 
@@ -12593,7 +12638,7 @@ __metadata:
   resolution: "migration@workspace:examples/migration"
   dependencies:
     "@neo4j/graphql": ^3.5.0
-    apollo-server: 3.10.1
+    apollo-server: 3.10.2
     graphql: 16.6.0
     neo4j-driver: 4.4.7
   languageName: unknown
@@ -13008,7 +13053,7 @@ __metadata:
     "@types/jsonwebtoken": 8.5.9
     "@types/node": 16.11.56
     "@types/uuid": 8.3.4
-    apollo-server-express: 3.10.1
+    apollo-server-express: 3.10.2
     bcrypt: 5.0.1
     cross-env: 7.0.3
     debug: 4.3.4
@@ -13068,15 +13113,15 @@ __metadata:
     "@typescript-eslint/parser": 5.35.1
     concurrently: 7.3.0
     dotenv: 16.0.1
-    eslint: 8.22.0
+    eslint: 8.23.0
     eslint-config-airbnb-typescript: 17.0.0
     eslint-config-prettier: 8.5.0
     eslint-import-resolver-typescript: 3.5.0
     eslint-plugin-eslint-comments: 3.2.0
     eslint-plugin-import: 2.26.0
-    eslint-plugin-jest: 26.8.7
+    eslint-plugin-jest: 26.9.0
     eslint-plugin-jsx-a11y: 6.6.1
-    eslint-plugin-react: 7.31.0
+    eslint-plugin-react: 7.31.1
     graphql: 16.6.0
     husky: 8.0.1
     jest: 28.1.3
@@ -18385,13 +18430,6 @@ __metadata:
   version: 3.0.1
   resolution: "v8-compile-cache-lib@npm:3.0.1"
   checksum: 78089ad549e21bcdbfca10c08850022b22024cdcc2da9b168bcf5a73a6ed7bf01a9cebb9eac28e03cd23a684d81e0502797e88f3ccd27a32aeab1cfc44c39da0
-  languageName: node
-  linkType: hard
-
-"v8-compile-cache@npm:^2.0.3":
-  version: 2.3.0
-  resolution: "v8-compile-cache@npm:2.3.0"
-  checksum: adb0a271eaa2297f2f4c536acbfee872d0dd26ec2d76f66921aa7fc437319132773483344207bdbeee169225f4739016d8d2dbf0553913a52bb34da6d0334f8e
   languageName: node
   linkType: hard
 
