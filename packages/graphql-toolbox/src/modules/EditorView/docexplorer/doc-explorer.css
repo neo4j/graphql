@@ -17,6 +17,16 @@
     line-height: 14px;
 }
 
+ /* DocExplorer classes */
+.doc-explorer-embedded .doc-explorer-contents {
+    max-height: calc(100vh - 10rem);
+}
+
+.doc-explorer-regular .doc-explorer-contents {
+    max-height: calc(100vh - 11rem);
+}
+
+ /* Explorer component classes */
 .graphiql-container .graphiql-explorer-root {
     font-size: 15px !important;
 }
