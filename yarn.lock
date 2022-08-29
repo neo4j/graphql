@@ -2572,7 +2572,7 @@ __metadata:
     react-resizable: ^3.0.4
     style-loader: 3.3.1
     tailwindcss: 3.1.8
-    terser-webpack-plugin: 5.3.5
+    terser-webpack-plugin: 5.3.6
     ts-jest: 28.0.8
     ts-loader: 9.3.1
     ts-node: 10.9.1
@@ -17404,7 +17404,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terser-webpack-plugin@npm:5.3.5, terser-webpack-plugin@npm:^5.1.3":
+"terser-webpack-plugin@npm:5.3.6":
+  version: 5.3.6
+  resolution: "terser-webpack-plugin@npm:5.3.6"
+  dependencies:
+    "@jridgewell/trace-mapping": ^0.3.14
+    jest-worker: ^27.4.5
+    schema-utils: ^3.1.1
+    serialize-javascript: ^6.0.0
+    terser: ^5.14.1
+  peerDependencies:
+    webpack: ^5.1.0
+  peerDependenciesMeta:
+    "@swc/core":
+      optional: true
+    esbuild:
+      optional: true
+    uglify-js:
+      optional: true
+  checksum: 8f3448d7fdb0434ce6a0c09d95c462bfd2f4a5a430233d854163337f734a7f5c07c74513d16081e06d4ca33d366d5b1a36f5444219bc41a7403afd6162107bad
+  languageName: node
+  linkType: hard
+
+"terser-webpack-plugin@npm:^5.1.3":
   version: 5.3.5
   resolution: "terser-webpack-plugin@npm:5.3.5"
   dependencies:
