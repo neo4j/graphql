@@ -145,7 +145,7 @@ export const Editor = ({ schema }: Props) => {
                                             buttonStyle: {
                                                 display: "block",
                                                 fontWeight: "bold",
-                                                backgroundColor: "#E6E9EE",
+                                                backgroundColor: tokens.colors.neutral[40],
                                                 margin: "5px 5px 5px 10px",
                                             },
                                             explorerActionsStyle: {
