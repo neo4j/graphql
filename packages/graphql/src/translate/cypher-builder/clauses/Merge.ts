@@ -30,8 +30,8 @@ export class Merge<T extends NodeRef | RelationshipRef = any> extends Clause {
     private pattern: Pattern<T>;
     private onCreateClause: OnCreate;
 
-    constructor(element: T, params: MatchParams<T> = {}, parent?: Clause) {
-        super(parent);
+    constructor(element: T, params: MatchParams<T> = {}) {
+        super();
 
         const addLabels = element instanceof NodeRef;
         const addLabelsOption = { labels: addLabels };

@@ -30,8 +30,8 @@ export class Call extends Clause {
     private subQuery: CypherASTNode;
     private importWith: ImportWith | undefined;
 
-    constructor(subQuery: Clause, parent?: Clause) {
-        super(parent);
+    constructor(subQuery: Clause) {
+        super();
         const rootQuery = subQuery.getRoot();
         this.addChildren(rootQuery);
         this.subQuery = rootQuery;

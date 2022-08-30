@@ -33,8 +33,8 @@ type Params = Record<string, Param<any>>;
 export class Create extends Clause {
     private pattern: Pattern<NodeRef>;
 
-    constructor(node: NodeRef, params: Params = {}, parent?: Clause) {
-        super(parent);
+    constructor(node: NodeRef, params: Params = {}) {
+        super();
         this.pattern = new Pattern(node).withParams(params);
         this.setSubClause = new SetClause(this);
     }
