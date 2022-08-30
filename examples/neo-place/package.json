@@ -39,7 +39,7 @@
         "neo4j-driver": "^4.4.7",
         "parcel": "^2.7.0",
         "urql": "^3.0.1",
-        "wonka": "^4.0.15",
+        "wonka": "^6.0.0",
         "ws": "^8.8.1"
     },
     "devDependencies": {
