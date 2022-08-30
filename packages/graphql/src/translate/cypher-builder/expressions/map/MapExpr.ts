@@ -44,5 +44,3 @@ export class MapExpr implements CypherCompilable {
         return `{ ${valuesList.join(", ")} }`;
     }
 }
-
-// TODO class MapProjection extends MapExpr {

@@ -17,6 +17,6 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../CypherASTNode";
+import { CypherASTNode } from "../../CypherASTNode";
 
 export abstract class Operation extends CypherASTNode {}

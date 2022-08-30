@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "../Environment";
-import type { Pattern } from "../Pattern";
-import { Where } from "../clauses/sub-clauses/Where";
-import type { Expr, Predicate } from "../types";
-import { compileCypherIfExists } from "../utils/utils";
-import type { Variable } from "../variables/Variable";
+import type { CypherEnvironment } from "../../Environment";
+import type { Pattern } from "../../Pattern";
+import { Where } from "../../clauses/sub-clauses/Where";
+import type { Expr, Predicate } from "../../types";
+import { compileCypherIfExists } from "../../utils/utils";
+import type { Variable } from "../../variables/Variable";
 import { CypherFunction } from "./CypherFunction";
 
 export class PredicateFunction extends CypherFunction {}

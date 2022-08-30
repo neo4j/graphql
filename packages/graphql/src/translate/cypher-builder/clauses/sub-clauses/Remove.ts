@@ -19,7 +19,7 @@
 
 import type { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
-import type { PropertyRef } from "../../PropertyRef";
+import type { PropertyRef } from "../../expressions/PropertyRef";
 import { SubClause } from "./SubClause";
 
 // TODO: Remove label

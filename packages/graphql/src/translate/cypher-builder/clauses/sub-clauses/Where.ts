@@ -19,7 +19,7 @@
 
 import type { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
-import { and } from "../../operations/boolean";
+import { and } from "../../expressions/operations/boolean";
 import type { Predicate } from "../../types";
 import { SubClause } from "./SubClause";
 

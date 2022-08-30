@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { Expr } from "../types";
+import type { Expr } from "../../types";
 import { CypherFunction } from "./CypherFunction";
 
 export function size(expr: Expr): CypherFunction {

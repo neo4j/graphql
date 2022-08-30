@@ -20,9 +20,9 @@
 import { ClauseMixin } from "./ClauseMixin";
 import { Where } from "../sub-clauses/Where";
 import { Variable } from "../../variables/Variable";
-import { and, BooleanOp } from "../../operations/boolean";
-import { PropertyRef } from "../../PropertyRef";
-import { ComparisonOp, eq } from "../../operations/comparison";
+import { and, BooleanOp } from "../../expressions/operations/boolean";
+import { PropertyRef } from "../../expressions/PropertyRef";
+import { ComparisonOp, eq } from "../../expressions/operations/comparison";
 import type { Predicate } from "../../types";
 
 export abstract class WithWhere extends ClauseMixin {

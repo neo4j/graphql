@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { Expr } from "../types";
-import type { CypherEnvironment } from "../Environment";
+import type { Expr } from "../../types";
+import type { CypherEnvironment } from "../../Environment";
 import { Operation } from "./Operation";
 
 type MathOperator = "+" | "-";

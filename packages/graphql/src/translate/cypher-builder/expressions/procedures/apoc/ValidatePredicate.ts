@@ -17,29 +17,23 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "./Environment";
-import type { Variable } from "./variables/Variable";
+import { CypherASTNode } from "../../../CypherASTNode";
+import type { CypherEnvironment } from "../../../Environment";
+import type { Predicate } from "../../../types";
 
-/** Reference to a Variable property */
-export class PropertyRef {
-    private _variable: Variable;
-    private _property: string;
+export class ValidatePredicate extends CypherASTNode {
+    private predicate: Predicate;
+    private message: string | undefined;
 
-    constructor(variable: Variable, property: string) {
-        this._variable = variable;
-        this._property = property;
-    }
-
-    public get variable(): Variable {
-        return this._variable;
-    }
-
-    public property(path: string): PropertyRef {
-        return new PropertyRef(this.variable, `${this._property}.${path}`);
+    constructor(predicate: Predicate, message?: string) {
+        super();
+        this.predicate = predicate;
+        this.message = message;
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const variableStr = this.variable.getCypher(env);
-        return `${variableStr}.${this._property}`;
+        const predicateCypher = this.predicate.getCypher(env);
+        const messageStr = this.message ? `, "${this.message}"` : "";
+        return `apoc.util.validatePredicate(${predicateCypher}${messageStr}, [0])`;
     }
 }

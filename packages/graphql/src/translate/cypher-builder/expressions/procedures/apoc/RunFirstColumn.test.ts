@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../../CypherBuilder";
-import { CypherEnvironment } from "../../Environment";
+import * as CypherBuilder from "../../../CypherBuilder";
+import { CypherEnvironment } from "../../../Environment";
 
 describe("RunFirstColumn", () => {
     let env: CypherEnvironment;

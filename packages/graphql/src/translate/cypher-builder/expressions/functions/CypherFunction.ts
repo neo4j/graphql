@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../CypherASTNode";
-import type { Variable } from "../CypherBuilder";
-import type { CypherEnvironment } from "../Environment";
-import type { Expr } from "../types";
+import { CypherASTNode } from "../../CypherASTNode";
+import type { Variable } from "../../CypherBuilder";
+import type { CypherEnvironment } from "../../Environment";
+import type { Expr } from "../../types";
 
 export class CypherFunction extends CypherASTNode {
     protected name: string;

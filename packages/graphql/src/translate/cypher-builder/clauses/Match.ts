@@ -27,7 +27,7 @@ import { WithWhere } from "./mixins/WithWhere";
 import { WithSet } from "./mixins/WithSet";
 import { WithWith } from "./mixins/WithWith";
 import { DeleteClause, DeleteInput } from "./sub-clauses/Delete";
-import type { PropertyRef } from "../PropertyRef";
+import type { PropertyRef } from "../expressions/PropertyRef";
 import { RemoveClause } from "./sub-clauses/Remove";
 
 export class Match<T extends MatchableElement = any> extends Clause {

@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { filterTruthy } from "../../../utils/utils";
-import type { CypherEnvironment } from "../Environment";
-import type { Predicate } from "../types";
+import { filterTruthy } from "../../../../utils/utils";
+import type { CypherEnvironment } from "../../Environment";
+import type { Predicate } from "../../types";
 import { Operation } from "./Operation";
 
 type BooleanOperator = "AND" | "NOT" | "OR";
