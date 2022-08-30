@@ -70,7 +70,7 @@ export function createProjectionSubquery({
     }
 
     const isUndirected = relationshipDirection === "undirected";
-    const pattern = new CypherBuilder.Pattern(relationship, { directed: !isUndirected });
+    const pattern = relationship.pattern({ directed: !isUndirected });
 
     const subqueryMatch = new CypherBuilder.Match(pattern);
 

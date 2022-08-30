@@ -27,8 +27,8 @@ type RawCypherCallback = (env: CypherEnvironment) => [string, Record<string, any
 export class RawCypher extends Clause {
     private callback: RawCypherCallback;
 
-    constructor(callback: RawCypherCallback | string, parent?: Clause) {
-        super(parent);
+    constructor(callback: RawCypherCallback | string) {
+        super();
         if (typeof callback === "string") {
             this.callback = this.stringToCallback(callback);
         } else this.callback = callback;

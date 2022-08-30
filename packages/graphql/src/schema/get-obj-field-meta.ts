@@ -30,10 +30,9 @@ import type {
     StringValueNode,
     EnumValueNode,
     UnionTypeDefinitionNode,
-    ValueNode} from "graphql";
-import {
-    Kind
+    ValueNode,
 } from "graphql";
+import { Kind } from "graphql";
 import getAuth from "./get-auth";
 import getAliasMeta from "./get-alias-meta";
 import getCypherMeta from "./get-cypher-meta";
