@@ -89,10 +89,6 @@ describe("aggregations-where-edge-int", () => {
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
             expect(gqlResult.errors).toBeUndefined();
 
             expect((gqlResult.data as any).posts).toEqual([
@@ -159,10 +155,6 @@ describe("aggregations-where-edge-int", () => {
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
             expect(gqlResult.errors).toBeUndefined();
 
             expect((gqlResult.data as any).posts).toEqual([
@@ -228,10 +220,6 @@ describe("aggregations-where-edge-int", () => {
                 source: query,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
-
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -300,10 +288,6 @@ describe("aggregations-where-edge-int", () => {
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
             expect(gqlResult.errors).toBeUndefined();
 
             expect((gqlResult.data as any).posts).toEqual([
@@ -369,10 +353,6 @@ describe("aggregations-where-edge-int", () => {
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
             expect(gqlResult.errors).toBeUndefined();
 
             expect((gqlResult.data as any).posts).toEqual([
@@ -387,32 +367,32 @@ describe("aggregations-where-edge-int", () => {
     });
 
     describe("AVERAGE", () => {
+        const typeDefs = `
+            type User {
+                testString: String!
+            }
+
+            type Post {
+                testString: String!
+                likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
+            }
+
+            interface Likes {
+                someInt: Int
+            }
+        `;
+
+        const someInt1 = 1;
+        const someInt2 = 2;
+        const someInt3 = 3;
+
         test("should return posts where the average of a edge like Int's is EQUAL to", async () => {
             const session = await neo4j.getSession();
-
-            const typeDefs = `
-                type User {
-                    testString: String!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-                }
-
-                interface Likes {
-                    someInt: Int
-                }
-            `;
 
             const testString = generate({
                 charset: "alphabetic",
                 readable: true,
             });
-
-            const someInt1 = Number(faker.datatype.number());
-            const someInt2 = Number(faker.datatype.number());
-            const someInt3 = Number(faker.datatype.number());
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
 
@@ -446,10 +426,6 @@ describe("aggregations-where-edge-int", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
                 expect(gqlResult.errors).toBeUndefined();
 
                 const [post] = (gqlResult.data as any).posts as any[];
@@ -463,33 +439,13 @@ describe("aggregations-where-edge-int", () => {
         test("should return posts where the average of a edge like Int's is GT than", async () => {
             const session = await neo4j.getSession();
 
-            const typeDefs = `
-                type User {
-                    testString: String!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-                }
-
-                interface Likes {
-                    someInt: Int
-                }
-            `;
-
             const testString = generate({
                 charset: "alphabetic",
                 readable: true,
             });
 
-            const someInt1 = Number(faker.datatype.number());
-            const someInt2 = Number(faker.datatype.number());
-            const someInt3 = Number(faker.datatype.number());
-            console.log(someInt1);
-
             const avg = (someInt1 + someInt2 + someInt3) / 3;
-            const avgGT = Math.floor(avg - 2);
+            const avgGT = avg - 1;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -521,14 +477,9 @@ describe("aggregations-where-edge-int", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
                 expect(gqlResult.errors).toBeUndefined();
 
                 const [post] = (gqlResult.data as any).posts as any[];
-                console.log(gqlResult.data);
                 expect(post.testString).toEqual(testString);
                 expect(post.likes).toHaveLength(3);
             } finally {
@@ -539,31 +490,12 @@ describe("aggregations-where-edge-int", () => {
         test("should return posts where the average of a edge like Int's is GTE than", async () => {
             const session = await neo4j.getSession();
 
-            const typeDefs = `
-                type User {
-                    testString: String!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-                }
-
-                interface Likes {
-                    someInt: Int
-                }
-            `;
-
             const testString = generate({
                 charset: "alphabetic",
                 readable: true,
             });
 
-            const someInt1 = Number(faker.datatype.number());
-            const someInt2 = Number(faker.datatype.number());
-            const someInt3 = Number(faker.datatype.number());
-
-            const avg = Math.floor((someInt1 + someInt2 + someInt3) / 3);
+            const avg = (someInt1 + someInt2 + someInt3) / 3;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -595,12 +527,7 @@ describe("aggregations-where-edge-int", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
                 expect(gqlResult.errors).toBeUndefined();
-
                 const [post] = (gqlResult.data as any).posts as any[];
                 expect(post.testString).toEqual(testString);
                 expect(post.likes).toHaveLength(3);
@@ -612,32 +539,13 @@ describe("aggregations-where-edge-int", () => {
         test("should return posts where the average of a edge like Int's is LT than", async () => {
             const session = await neo4j.getSession();
 
-            const typeDefs = `
-                type User {
-                    testString: String!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-                }
-
-                interface Likes {
-                    someInt: Int
-                }
-            `;
-
             const testString = generate({
                 charset: "alphabetic",
                 readable: true,
             });
 
-            const someInt1 = 1;
-            const someInt2 = 2;
-            const someInt3 = 3;
-
             const avg = (someInt1 + someInt2 + someInt3) / 3;
-            const avgLT = avg + 1;
+            const avgLT = avg + 2;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -669,10 +577,6 @@ describe("aggregations-where-edge-int", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
                 expect(gqlResult.errors).toBeUndefined();
 
                 const [post] = (gqlResult.data as any).posts as any[];
@@ -686,29 +590,10 @@ describe("aggregations-where-edge-int", () => {
         test("should return posts where the average of a edge like Int's is LTE than", async () => {
             const session = await neo4j.getSession();
 
-            const typeDefs = `
-                type User {
-                    testString: String!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN, properties: "Likes")
-                }
-
-                interface Likes {
-                    someInt: Int
-                }
-            `;
-
             const testString = generate({
                 charset: "alphabetic",
                 readable: true,
             });
-
-            const someInt1 = 1;
-            const someInt2 = 2;
-            const someInt3 = 3;
 
             const avg = someInt1 + someInt2 + someInt3;
 
@@ -741,10 +626,6 @@ describe("aggregations-where-edge-int", () => {
                     source: query,
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
-
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
 
                 expect(gqlResult.errors).toBeUndefined();
 
@@ -781,11 +662,11 @@ describe("aggregations-where-edge-int", () => {
                 readable: true,
             });
 
-            const someInt1 = Number(faker.datatype.number());
-            const someInt2 = Number(faker.datatype.number());
-            const someInt3 = Number(faker.datatype.number());
+            const someInt1 = 1;
+            const someInt2 = 2;
+            const someInt3 = 3;
 
-            const sum = someInt1 + someInt2 + someInt3;
+            const sum = someInt1 + someInt2 + someInt3; // implementation wrong?
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -816,10 +697,6 @@ describe("aggregations-where-edge-int", () => {
                     source: query,
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
-
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
 
                 expect(gqlResult.errors).toBeUndefined();
 

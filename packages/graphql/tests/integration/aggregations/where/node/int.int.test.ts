@@ -20,9 +20,9 @@
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generate } from "randomstring";
+import { faker } from "@faker-js/faker";
 import Neo4j from "../../../neo4j";
 import { Neo4jGraphQL } from "../../../../../src/classes";
-import { faker } from "@faker-js/faker";
 
 describe("aggregations-where-node-int", () => {
     let driver: Driver;
@@ -86,10 +86,6 @@ describe("aggregations-where-node-int", () => {
                 source: query,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
-
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -155,10 +151,6 @@ describe("aggregations-where-node-int", () => {
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
             expect(gqlResult.errors).toBeUndefined();
 
             expect((gqlResult.data as any).posts).toEqual([
@@ -221,10 +213,6 @@ describe("aggregations-where-node-int", () => {
                 source: query,
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
-
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
 
             expect(gqlResult.errors).toBeUndefined();
 
@@ -290,10 +278,6 @@ describe("aggregations-where-node-int", () => {
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
             expect(gqlResult.errors).toBeUndefined();
 
             expect((gqlResult.data as any).posts).toEqual([
@@ -357,10 +341,6 @@ describe("aggregations-where-node-int", () => {
                 contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             });
 
-            if (gqlResult.errors) {
-                console.log(JSON.stringify(gqlResult.errors, null, 2));
-            }
-
             expect(gqlResult.errors).toBeUndefined();
 
             expect((gqlResult.data as any).posts).toEqual([
@@ -375,29 +355,29 @@ describe("aggregations-where-node-int", () => {
     });
 
     describe("AVERAGE", () => {
+        const typeDefs = `
+            type User {
+                testString: String!
+                someInt: Int!
+            }
+
+            type Post {
+                testString: String!
+                likes: [User!]! @relationship(type: "LIKES", direction: IN)
+            }
+        `;
+
+        const someInt1 = 1;
+        const someInt2 = 2;
+        const someInt3 = 3;
+
         test("should return posts where the average of like Int's is EQUAL to", async () => {
             const session = await neo4j.getSession();
-
-            const typeDefs = `
-                type User {
-                    testString: String!
-                    someInt: Int!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN)
-                }
-            `;
 
             const testString = generate({
                 charset: "alphabetic",
                 readable: true,
             });
-
-            const someInt1 = Number(faker.datatype.number({ precision: 0.01 }));
-            const someInt2 = Number(faker.datatype.number({ precision: 0.01 }));
-            const someInt3 = Number(faker.datatype.number({ precision: 0.01 }));
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
 
@@ -432,10 +412,6 @@ describe("aggregations-where-node-int", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
                 expect(gqlResult.errors).toBeUndefined();
 
                 const [post] = (gqlResult.data as any).posts as any[];
@@ -449,26 +425,10 @@ describe("aggregations-where-node-int", () => {
         test("should return posts where the average of like Int's is GT than", async () => {
             const session = await neo4j.getSession();
 
-            const typeDefs = `
-                type User {
-                    testString: String!
-                    someInt: Int!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN)
-                }
-            `;
-
             const testString = generate({
                 charset: "alphabetic",
                 readable: true,
             });
-
-            const someInt1 = Number(faker.datatype.number({ precision: 0.01 }));
-            const someInt2 = Number(faker.datatype.number({ precision: 0.01 }));
-            const someInt3 = Number(faker.datatype.number({ precision: 0.01 }));
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
             const avgGT = avg - 1;
@@ -504,10 +464,6 @@ describe("aggregations-where-node-int", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
                 expect(gqlResult.errors).toBeUndefined();
 
                 const [post] = (gqlResult.data as any).posts as any[];
@@ -521,26 +477,10 @@ describe("aggregations-where-node-int", () => {
         test("should return posts where the average of like Int's is GTE than", async () => {
             const session = await neo4j.getSession();
 
-            const typeDefs = `
-                type User {
-                    testString: String!
-                    someInt: Int!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN)
-                }
-            `;
-
             const testString = generate({
                 charset: "alphabetic",
                 readable: true,
             });
-
-            const someInt1 = Number(faker.datatype.number({ precision: 0.01 }));
-            const someInt2 = Number(faker.datatype.number({ precision: 0.01 }));
-            const someInt3 = Number(faker.datatype.number({ precision: 0.01 }));
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
 
@@ -575,10 +515,6 @@ describe("aggregations-where-node-int", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
                 expect(gqlResult.errors).toBeUndefined();
 
                 const [post] = (gqlResult.data as any).posts as any[];
@@ -592,26 +528,10 @@ describe("aggregations-where-node-int", () => {
         test("should return posts where the average of like Int's is LT than", async () => {
             const session = await neo4j.getSession();
 
-            const typeDefs = `
-                type User {
-                    testString: String!
-                    someInt: Int!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN)
-                }
-            `;
-
             const testString = generate({
                 charset: "alphabetic",
                 readable: true,
             });
-
-            const someInt1 = Number(faker.datatype.number({ precision: 0.01 }));
-            const someInt2 = Number(faker.datatype.number({ precision: 0.01 }));
-            const someInt3 = Number(faker.datatype.number({ precision: 0.01 }));
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
             const avgLT = avg + 1;
@@ -647,10 +567,6 @@ describe("aggregations-where-node-int", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
                 expect(gqlResult.errors).toBeUndefined();
 
                 const [post] = (gqlResult.data as any).posts as any[];
@@ -664,26 +580,10 @@ describe("aggregations-where-node-int", () => {
         test("should return posts where the average of like Int's is LTE than", async () => {
             const session = await neo4j.getSession();
 
-            const typeDefs = `
-                type User {
-                    testString: String!
-                    someInt: Int!
-                }
-
-                type Post {
-                  testString: String!
-                  likes: [User!]! @relationship(type: "LIKES", direction: IN)
-                }
-            `;
-
             const testString = generate({
                 charset: "alphabetic",
                 readable: true,
             });
-
-            const someInt1 = Number(faker.datatype.number({ precision: 0.01 }));
-            const someInt2 = Number(faker.datatype.number({ precision: 0.01 }));
-            const someInt3 = Number(faker.datatype.number({ precision: 0.01 }));
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
 
@@ -718,10 +618,6 @@ describe("aggregations-where-node-int", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
-
                 expect(gqlResult.errors).toBeUndefined();
 
                 const [post] = (gqlResult.data as any).posts as any[];
@@ -754,9 +650,9 @@ describe("aggregations-where-node-int", () => {
                 readable: true,
             });
 
-            const someInt1 = Number(faker.datatype.number({ precision: 0.01 }));
-            const someInt2 = Number(faker.datatype.number({ precision: 0.01 }));
-            const someInt3 = Number(faker.datatype.number({ precision: 0.01 }));
+            const someInt1 = 1;
+            const someInt2 = 2;
+            const someInt3 = 3;
 
             const sum = someInt1 + someInt2 + someInt3;
 
@@ -790,10 +686,6 @@ describe("aggregations-where-node-int", () => {
                     source: query,
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
-
-                if (gqlResult.errors) {
-                    console.log(JSON.stringify(gqlResult.errors, null, 2));
-                }
 
                 expect(gqlResult.errors).toBeUndefined();
 
