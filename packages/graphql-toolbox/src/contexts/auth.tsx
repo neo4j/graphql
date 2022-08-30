@@ -35,6 +35,7 @@ import {
 } from "./utils";
 import { LoginPayload, Neo4jDatabase } from "../types";
 import { Storage } from "../utils/storage";
+import { getURLProtocolFromText } from "../utils/utils";
 
 interface LoginOptions {
     username: string;
@@ -103,7 +104,7 @@ export function AuthProvider(props: any) {
     [value, setValue] = useState<State>({
         login: async (options: LoginOptions) => {
             const auth = neo4j.auth.basic(options.username, options.password);
-            const protocol = new URL(options.url).protocol;
+            const protocol = getURLProtocolFromText(options.url);
             // Manually set the encryption to off if it's not specified in the Connection URI to avoid implicit encryption in https domain
             const driver = protocol.includes("+s")
                 ? neo4j.driver(options.url, auth)

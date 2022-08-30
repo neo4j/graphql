@@ -16,7 +16,7 @@
         "@neo4j/graphql": "^3.5.0",
         "@neo4j/graphql-ogm": "^3.5.0",
         "@neo4j/graphql-plugin-auth": "^1.0.0",
-        "apollo-server-express": "3.10.1",
+        "apollo-server-express": "3.10.2",
         "bcrypt": "5.0.1",
         "debug": "4.3.4",
         "dotenv": "^16.0.1",
@@ -26,7 +26,7 @@
         "neo4j-driver": "4.4.7"
     },
     "devDependencies": {
-        "@faker-js/faker": "7.4.0",
+        "@faker-js/faker": "7.5.0",
         "@types/bcrypt": "5.0.0",
         "@types/debug": "4.1.7",
         "@types/dotenv": "8.2.0",

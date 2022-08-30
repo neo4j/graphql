@@ -168,7 +168,7 @@ export const Editor = ({ schema }: Props) => {
                         <div className="graphiql-explorer-docs-container h-content-docs-container w-96 bg-white shadow rounded">
                             <DocExplorerComponent
                                 schema={schema}
-                                displayBackButton={false}
+                                isEmbedded={false}
                                 onClickClose={() => setShowDocs(false)}
                             />
                         </div>
