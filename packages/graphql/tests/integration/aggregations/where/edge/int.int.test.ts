@@ -545,7 +545,7 @@ describe("aggregations-where-edge-int", () => {
             });
 
             const avg = (someInt1 + someInt2 + someInt3) / 3;
-            const avgLT = avg + 2;
+            const avgLT = avg + 1;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
@@ -553,9 +553,9 @@ describe("aggregations-where-edge-int", () => {
                 await session.run(
                     `
                         CREATE (p:Post {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES { someInt: ${someInt1} }]-(:User {testString: "${testString}"})
-                        CREATE (p)<-[:LIKES { someInt: ${someInt2} }]-(:User {testString: "${testString}"})
                         CREATE (p)<-[:LIKES { someInt: ${someInt3} }]-(:User {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES { someInt: ${someInt2} }]-(:User {testString: "${testString}"})
+                        CREATE (p)<-[:LIKES { someInt: ${someInt1} }]-(:User {testString: "${testString}"})
                         CREATE (:Post {testString: "${testString}"})
                     `
                 );
@@ -666,7 +666,7 @@ describe("aggregations-where-edge-int", () => {
             const someInt2 = 2;
             const someInt3 = 3;
 
-            const sum = someInt1 + someInt2 + someInt3; // implementation wrong?
+            const sum = someInt1 + someInt2 + someInt3;
 
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
