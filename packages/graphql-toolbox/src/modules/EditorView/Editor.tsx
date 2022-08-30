@@ -256,7 +256,7 @@ export const Editor = ({ schema }: Props) => {
             </div>
 
             {showRightPanel ? (
-                <div className="h-full flex justify-start w-96 bg-white border-l border-gray-100">
+                <div className="h-full flex justify-start w-96 bg-white border-l border-gray-100 z-50">
                     {settings.isShowHelpDrawer ? (
                         <HelpDrawer onClickClose={() => settings.setIsShowHelpDrawer(false)} schema={schema} />
                     ) : null}

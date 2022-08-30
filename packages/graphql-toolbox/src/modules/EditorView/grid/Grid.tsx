@@ -1,5 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { ResizableBox } from "react-resizable";
+import debounce from "lodash.debounce";
+import { Storage } from "../../../utils/storage";
+import { LOCAL_STATE_GRID_STATE } from "../../../constants";
 // @ts-ignore - SVG Import
 import unionHorizontal from "./union_horizontal.svg";
 // @ts-ignore - SVG Import
@@ -31,34 +34,76 @@ interface Props {
 }
 
 export const Grid = ({ queryEditor, parameterEditor, resultView, isRightPanelVisible }: Props) => {
-    const [values, setValues] = useState(initialState);
+    const [values, setValues] = useState(Storage.retrieveJSON(LOCAL_STATE_GRID_STATE) || initialState);
+
+    const debouncedEventHandler = useMemo(
+        () =>
+            debounce((nextState) => {
+                Storage.storeJSON(LOCAL_STATE_GRID_STATE, nextState);
+            }, 300),
+        []
+    );
+
+    // const debouncedWindowResize = useMemo(
+    //     () =>
+    //         debounce(() => {
+    //             console.log("RESIZE");
+    //         }, 200),
+    //     []
+    // );
+
+    const onResize = (element: string, size: { width: number; height: number }) => {
+        // console.log(event, { element, size, handle });
+        const nextState = {
+            ...values,
+            [element]: { ...size },
+        };
+        setValues(nextState);
+        debouncedEventHandler(nextState);
+    };
 
     const handleResize = () => {
-        // @ts-ignore
-        const { clientHeight, clientWidth } = window.document.getElementById("theGridId");
-        setValues({
+        const gridElement = window.document.getElementById("theGridId");
+        if (!gridElement) return;
+
+        const { clientHeight, clientWidth } = gridElement;
+        // const nextState = {
+        //     maxWidth: clientWidth * 0.6,
+        //     maxHeight: clientHeight * 0.8,
+        //     leftTop: {
+        //         width: clientWidth * 0.4,
+        //         height: clientHeight * 0.5,
+        //     },
+        //     leftBottom: {
+        //         width: clientWidth * 0.4,
+        //         height: clientHeight * 0.2,
+        //     },
+        //     right: {
+        //         width: clientWidth * 0.4,
+        //         height: clientHeight,
+        //     },
+        // };
+        const nextState = {
+            ...values,
             maxWidth: clientWidth * 0.6,
             maxHeight: clientHeight * 0.8,
-            leftTop: {
-                width: clientWidth * 0.4,
-                height: clientHeight * 0.5,
-            },
-            leftBottom: {
-                width: clientWidth * 0.4,
-                height: clientHeight * 0.2,
-            },
-            right: {
-                width: clientWidth * 0.4,
-                height: clientHeight,
-            },
-        });
+            // right: {
+            //     width: clientWidth * 0.5,
+            //     height: values.right.height,
+            // },
+        };
+        setValues(nextState);
+        Storage.storeJSON(LOCAL_STATE_GRID_STATE, nextState);
     };
 
     useEffect(() => {
         handleResize();
     }, [isRightPanelVisible]);
 
-    window.addEventListener("resize", handleResize);
+    // // window.addEventListener("resize", handleResize);
+    // window.addEventListener("resize", () => {
+    //     debouncedWindowResize();
+    // });
 
     return (
         <div className="the-grid" id="theGridId" style={{ width: isRightPanelVisible ? "100%" : "unset" }}>
@@ -70,6 +115,7 @@ export const Grid = ({ queryEditor, parameterEditor, resultView, isRightPanelVis
                     axis="y"
                     resizeHandles={["s"]}
                     maxConstraints={[Infinity, values.maxHeight]}
+                    onResize={(_, { size }) => onResize("leftTop", size)}
                     handle={
                         <div
                             className="react-resizable-handle react-resizable-handle-s"
@@ -99,6 +145,7 @@ export const Grid = ({ queryEditor, parameterEditor, resultView, isRightPanelVis
                     axis="x"
                     resizeHandles={["w"]}
                     maxConstraints={[values.maxWidth, Infinity]}
+                    onResize={(_, { size }) => onResize("right", size)}
                     handle={
                         <div
                             className="react-resizable-handle react-resizable-handle-w"
