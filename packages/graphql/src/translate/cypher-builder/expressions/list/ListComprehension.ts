@@ -19,13 +19,13 @@
 
 import { WithWhere } from "../../clauses/mixins/WithWhere";
 import { applyMixins } from "../../clauses/utils/apply-mixin";
+import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import type { Expr } from "../../types";
 import { compileCypherIfExists } from "../../utils/utils";
 import type { Variable } from "../../variables/Variable";
-import { ComprehensionExpr } from "./ComprehensionExpr";
 
-export class ListComprehension extends ComprehensionExpr {
+export class ListComprehension extends CypherASTNode {
     private variable: Variable;
     private listExpr: Expr | undefined;
     private mapExpr: Expr | undefined; //  Expression for list mapping

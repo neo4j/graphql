@@ -18,13 +18,13 @@
  */
 
 import { filterTruthy } from "../../../../utils/utils";
+import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import type { Predicate } from "../../types";
-import { Operation } from "./Operation";
 
 type BooleanOperator = "AND" | "NOT" | "OR";
 
-export abstract class BooleanOp extends Operation {
+export abstract class BooleanOp extends CypherASTNode {
     protected operator: BooleanOperator;
 
     constructor(operator: BooleanOperator) {

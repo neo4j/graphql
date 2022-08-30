@@ -19,7 +19,7 @@
 
 import type { Expr } from "../../types";
 import type { CypherEnvironment } from "../../Environment";
-import { Operation } from "./Operation";
+import { CypherASTNode } from "../../CypherASTNode";
 
 type ComparisonOperator =
     | "="
@@ -36,7 +36,7 @@ type ComparisonOperator =
     | "ENDS WITH"
     | "=~";
 
-export class ComparisonOp extends Operation {
+export class ComparisonOp extends CypherASTNode {
     private operator: ComparisonOperator;
     private leftExpr: Expr | undefined;
     private rightExpr: Expr | undefined;
