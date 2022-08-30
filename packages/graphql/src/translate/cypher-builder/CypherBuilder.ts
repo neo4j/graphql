@@ -47,8 +47,8 @@ export { CypherNull as Null } from "./variables/Null";
 export { Literal } from "./variables/Literal";
 
 // Lists
-export { ListComprehension } from "./list/ListComprehension";
-export { PatternComprehension } from "./list/PatternComprehension";
+export { ListComprehension } from "./expressions/list/ListComprehension";
+export { PatternComprehension } from "./expressions/list/PatternComprehension";
 
 // Map
 export { MapExpr as Map } from "./variables/map/MapExpr";
@@ -100,7 +100,7 @@ export type { ComparisonOp } from "./operations/comparison";
 export type { BooleanOp } from "./operations/boolean";
 export type { Expr, Predicate } from "./types";
 export type { CypherFunction as Function } from "./functions/CypherFunction";
-export type { ComprehensionExpr } from "./list/ComprehensionExpr";
+export type { ComprehensionExpr } from "./expressions/list/ComprehensionExpr";
 export type { ProjectionColumn } from "./sub-clauses/Projection";
 export type { SetParam } from "./sub-clauses/Set";
 export type { PredicateFunction } from "./functions/PredicateFunctions";

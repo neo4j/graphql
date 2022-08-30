@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../CypherASTNode";
-import type { CypherEnvironment } from "../Environment";
+import { CypherASTNode } from "../../CypherASTNode";
+import type { CypherEnvironment } from "../../Environment";
 
 /** Groups both comprehension expressions into a single type */
 export abstract class ComprehensionExpr extends CypherASTNode {

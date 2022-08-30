@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import { WithWhere } from "../clauses/mixins/WithWhere";
-import { applyMixins } from "../clauses/utils/apply-mixin";
-import type { CypherEnvironment } from "../Environment";
-import { Where } from "../sub-clauses/Where";
-import type { Expr, Predicate } from "../types";
-import { compileCypherIfExists } from "../utils/utils";
-import type { Variable } from "../variables/Variable";
+import { WithWhere } from "../../clauses/mixins/WithWhere";
+import { applyMixins } from "../../clauses/utils/apply-mixin";
+import type { CypherEnvironment } from "../../Environment";
+import type { Expr } from "../../types";
+import { compileCypherIfExists } from "../../utils/utils";
+import type { Variable } from "../../variables/Variable";
 import { ComprehensionExpr } from "./ComprehensionExpr";
 
 export class ListComprehension extends ComprehensionExpr {
