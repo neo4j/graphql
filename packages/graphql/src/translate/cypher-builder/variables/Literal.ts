@@ -38,6 +38,9 @@ export class Literal<T extends LiteralValue = any> implements CypherCompilable {
         if (typeof value === "string") {
             return `"${value}"`;
         }
+        if (value === null) {
+            return "NULL";
+        }
         if (Array.isArray(value)) {
             const serializedValues = value.map((v) => this.formatLiteralValue(v));
             return `[${serializedValues.join(", ")}]`;
@@ -45,3 +48,5 @@ export class Literal<T extends LiteralValue = any> implements CypherCompilable {
         return `${value}`;
     }
 }
+
+export const CypherNull = new Literal(null);
