@@ -33,7 +33,7 @@ export { concat } from "./clauses/utils/concat";
 // Variables and references
 export { NodeRef as Node, NamedNode } from "./variables/NodeRef";
 export { RelationshipRef as Relationship } from "./variables/RelationshipRef";
-export { Param, RawParam, NamedParam } from "./variables/Param";
+export { Param, NamedParam } from "./variables/Param";
 export { NamedVariable, Variable } from "./variables/Variable";
 export { Literal, CypherNull as Null } from "./variables/Literal";
 
