@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { useEffect, useRef } from "react";
 import CodeMirror from "codemirror";
 import "codemirror/addon/hint/show-hint";
 import "codemirror/addon/comment/comment";
@@ -54,4 +55,12 @@ export const getURLProtocolFromText = (text: string | null | undefined): string 
     } catch (_) {
         return "";
     }
+};
+
+export const usePrevious = (value) => {
+    const ref = useRef();
+    useEffect(() => {
+        ref.current = value;
+    });
+    return ref.current;
 };
