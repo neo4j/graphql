@@ -46,3 +46,12 @@ import "codemirror/addon/hint/show-hint.css";
 document.CodeMirror = CodeMirror;
 
 export { CodeMirror };
+
+export const getURLProtocolFromText = (text: string | null | undefined): string => {
+    if (!text) return "";
+    try {
+        return new URL(text)?.protocol;
+    } catch (_) {
+        return "";
+    }
+};
