@@ -18,19 +18,19 @@
  */
 
 import type { Variable } from "./variables/Variable";
-import type { Operation } from "./operations/Operation";
+import type { Operation } from "./expressions/operations/Operation";
 import type { PropertyRef } from "./expressions/PropertyRef";
-import type { CypherFunction } from "./functions/CypherFunction";
+import type { CypherFunction } from "./expressions/functions/CypherFunction";
 import type { Literal } from "./variables/Literal";
 import type { Exists } from "./expressions/Exists";
 import type { CypherEnvironment } from "./Environment";
 import type { ComprehensionExpr } from "./expressions/list/ComprehensionExpr";
 import type { MapExpr } from "./expressions/map/MapExpr";
-import type { BooleanOp } from "./operations/boolean";
-import type { ComparisonOp } from "./operations/comparison";
+import type { BooleanOp } from "./expressions/operations/boolean";
+import type { ComparisonOp } from "./expressions/operations/comparison";
 import type { RawCypher } from "./clauses/RawCypher";
-import type { PredicateFunction } from "./functions/PredicateFunctions";
-import type { ValidatePredicate } from "./procedures/apoc/apoc";
+import type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
+import type { ValidatePredicate } from "./expressions/procedures/apoc/apoc";
 
 export type Expr =
     | Operation

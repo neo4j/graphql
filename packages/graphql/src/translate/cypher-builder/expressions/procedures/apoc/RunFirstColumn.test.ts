@@ -45,7 +45,7 @@ describe("RunFirstColumn", () => {
 
         const topQuery = new CypherBuilder.Match(node).where(CypherBuilder.eq(node.property("title"), param1));
 
-        const nestedPattern = new CypherBuilder.Pattern(node, {
+        const nestedPattern = node.pattern({
             source: {
                 labels: false,
             },

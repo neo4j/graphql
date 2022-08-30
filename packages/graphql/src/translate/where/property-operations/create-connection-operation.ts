@@ -64,7 +64,7 @@ export function createConnectionOperation({
             type: relationField.type,
         });
 
-        const matchPattern = new CypherBuilder.Pattern(relationship, {
+        const matchPattern = relationship.pattern({
             source: relationField.direction === "IN" ? { variable: true } : { labels: false },
             target: relationField.direction === "IN" ? { labels: false } : { variable: true },
             relationship: { variable: true },

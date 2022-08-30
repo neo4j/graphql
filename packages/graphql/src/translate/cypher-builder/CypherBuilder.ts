@@ -30,21 +30,6 @@ export { Union } from "./clauses/Union";
 
 export { concat } from "./clauses/utils/concat";
 
-// Expressions
-export { Exists } from "./expressions/Exists";
-export { Case } from "./expressions/Case";
-
-//// Procedures
-export * as db from "./expressions/procedures/db";
-export * as apoc from "./expressions/procedures/apoc/apoc";
-
-//// Lists
-export { ListComprehension } from "./expressions/list/ListComprehension";
-export { PatternComprehension } from "./expressions/list/PatternComprehension";
-
-//// Map
-export { MapExpr as Map } from "./expressions/map/MapExpr";
-
 // Variables and references
 export { NodeRef as Node, NamedNode } from "./variables/NodeRef";
 export { RelationshipRef as Relationship } from "./variables/RelationshipRef";
@@ -53,9 +38,22 @@ export { NamedVariable, Variable } from "./variables/Variable";
 export { CypherNull as Null } from "./variables/Null";
 export { Literal } from "./variables/Literal";
 
-export { Pattern } from "./Pattern"; // TODO: Maybe this should not be exported
+// Expressions
+export { Exists } from "./expressions/Exists";
+export { Case } from "./expressions/Case";
 
-// Operations
+// --Procedures
+export * as db from "./expressions/procedures/db";
+export * as apoc from "./expressions/procedures/apoc/apoc";
+
+// --Lists
+export { ListComprehension } from "./expressions/list/ListComprehension";
+export { PatternComprehension } from "./expressions/list/PatternComprehension";
+
+// --Map
+export { MapExpr as Map } from "./expressions/map/MapExpr";
+
+// --Operations
 export { or, and, not } from "./expressions/operations/boolean";
 export {
     eq,
@@ -73,7 +71,7 @@ export {
 } from "./expressions/operations/comparison";
 export { plus, minus } from "./expressions/operations/math";
 
-// Functions
+// --Functions
 export {
     coalesce,
     point,
@@ -105,3 +103,4 @@ export type { ProjectionColumn } from "./clauses/sub-clauses/Projection";
 export type { SetParam } from "./clauses/sub-clauses/Set";
 export type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
 export type { Order } from "./clauses/sub-clauses/OrderBy";
+export type { Pattern } from "./Pattern";

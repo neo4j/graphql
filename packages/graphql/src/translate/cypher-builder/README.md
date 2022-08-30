@@ -144,11 +144,11 @@ movieNode.property("title"); // Will be translated to this0.title
 
 Expressions are a conglomeration of entities that can be used in several places, an expression can be an operation, function, variable or some clauses such as exists. Most operators and functions support expressions as their input. The Expression type can be accessed with `CypherBuilder.Expr`.
 
-Expressions can be used in `RETURN` `WITH` and `SET` statements.
+Expressions can be used in `RETURN` `WITH` and `SET` statements among other places.
 
 ### Predicates
 
-Some expressions are predicates, these expressions return a boolean value, and can be used in where filters.
+Some expressions are predicates, these expressions return a boolean value, and can be used in where filters, the type `CypherBuilder.Predicate` contains all of these.
 
 ## Operations
 
