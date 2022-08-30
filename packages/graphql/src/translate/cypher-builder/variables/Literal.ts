@@ -18,11 +18,12 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
+import type { CypherCompilable } from "../types";
 
-type LiteralValues = string | number | boolean | null;
+type LiteralValue = string | number | boolean | null | Array<LiteralValue>;
 
 /** Represents a literal value, it is not a variable */
-export class Literal<T = LiteralValues | LiteralValues[]> {
+export class Literal<T extends LiteralValue = any> implements CypherCompilable {
     public value: T;
 
     constructor(value: T) {
@@ -30,10 +31,17 @@ export class Literal<T = LiteralValues | LiteralValues[]> {
     }
 
     public getCypher(_env: CypherEnvironment): string {
-        // TODO: Literal should wrap strings in ""
-        if (Array.isArray(this.value)) {
-            return `[${this.value.map((v) => `"${v}"`).join(", ")}]`;
+        return this.formatLiteralValue(this.value);
+    }
+
+    private formatLiteralValue(value: LiteralValue): string {
+        if (typeof value === "string") {
+            return `"${value}"`;
         }
-        return `${this.value}`;
+        if (Array.isArray(value)) {
+            const serializedValues = value.map((v) => this.formatLiteralValue(v));
+            return `[${serializedValues.join(", ")}]`;
+        }
+        return `${value}`;
     }
 }
