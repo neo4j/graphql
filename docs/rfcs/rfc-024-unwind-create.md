@@ -1,11 +1,12 @@
 ## Problem
 
-Currently, running a `create` mutation with several elements cause low performance when running with a large (>500) elements. 
+Currently, running a `create` mutation with several elements cause low performance when running with a large (>500) elements.
 This is caused by the complex query with nested subqueries per item.
 
 ### Example
 
 **Schema**
+
 ```graphql
 type Movie {
     title: String!
@@ -19,19 +20,19 @@ type Person {
 ```
 
 **GraphQL**
+
 ```graphql
 mutation Mutation {
-  createMovies(
-    input: [{ title: "The Matrix" }, { title: "The Matrix Resurrection" }]
-  ) {
-    movies {
-      title
+    createMovies(input: [{ title: "The Matrix" }, { title: "The Matrix Resurrection" }]) {
+        movies {
+            title
+        }
     }
-  }
 }
 ```
 
 **Cypher**
+
 ```cypher
 CALL { // <-- Note these CALL blocks
 CREATE (this0:Movie)
@@ -47,13 +48,13 @@ WITH this0, this1
 
 
 RETURN [
-this0 { .title }, 
+this0 { .title },
 this1 { .title }] AS data, meta
 
 ```
 
-
 # Proposed solution
+
 Alternatively, `UNWIND` can be used to improve performance for batch create. This performance improvement has already been verified:
 
 ```cypher
@@ -63,32 +64,34 @@ SET this.title = batch.title
 RETURN collect(this { .title }) as data
 ```
 
-
 ## With Relationships
+
 `create` mutations allow for creating new relationships on the same query. This can add some difficulties when removing the `CALL` subqueries:
 
 **GraphQL**
+
 ```graphql
 mutation Mutation {
-  createMovies(
-    input: [
-      { title: "The Matrix", actors: { create: [{ node: { name: "Keanu" } }] } }
-      { title: "The Matrix Resurrection" }
-    ]
-  ) {
-    movies {
-      title
-      actors {
-        name
-      }
+    createMovies(
+        input: [
+            { title: "The Matrix", actors: { create: [{ node: { name: "Keanu" } }] } }
+            { title: "The Matrix Resurrection" }
+        ]
+    ) {
+        movies {
+            title
+            actors {
+                name
+            }
+        }
     }
-  }
 }
 ```
 
 Currently, the previous query will yield the following Cypher:
 
 **Cypher**
+
 ```cypher
 CALL {
 CREATE (this0:Movie)
@@ -106,11 +109,12 @@ RETURN this1
 WITH this0, this1
 
 RETURN [
-this0 { .title, actors: [ (this0)<-[:ACTED_IN]-(this0_actors:Person)   | this0_actors { .name } ] }, 
+this0 { .title, actors: [ (this0)<-[:ACTED_IN]-(this0_actors:Person)   | this0_actors { .name } ] },
 this1 { .title, actors: [ (this1)<-[:ACTED_IN]-(this1_actors:Person)   | this1_actors { .name } ] }] AS data
 ```
 
 For `UNWIND`, a subquery to generate the relationship nodes with a `collect` return can be used instead:
+
 ```cypher
 UNWIND [{title: "The Matrix", actors: [{name: "Keanu"}]}, {title: "The Matrix 2"}] as x
 CREATE(m:Movie)
@@ -126,3 +130,5 @@ CALL {
 }
 RETURN m, res
 ```
+
+## Complex example
