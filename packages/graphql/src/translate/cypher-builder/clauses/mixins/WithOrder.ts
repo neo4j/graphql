@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Order, OrderBy } from "../../sub-clauses/OrderBy";
+import { Order, OrderBy } from "../sub-clauses/OrderBy";
 import { ClauseMixin } from "./ClauseMixin";
 import type { Expr } from "../../types";
 

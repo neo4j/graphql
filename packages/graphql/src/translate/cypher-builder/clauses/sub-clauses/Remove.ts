@@ -17,30 +17,24 @@
  * limitations under the License.
  */
 
-import type { CypherASTNode } from "../CypherASTNode";
-import type { CypherEnvironment } from "../Environment";
-import type { NodeRef } from "../variables/NodeRef";
-import type { RelationshipRef } from "../variables/RelationshipRef";
+import type { CypherASTNode } from "../../CypherASTNode";
+import type { CypherEnvironment } from "../../Environment";
+import type { PropertyRef } from "../../PropertyRef";
 import { SubClause } from "./SubClause";
 
-export type DeleteInput = Array<NodeRef | RelationshipRef>;
+// TODO: Remove label
+export type RemoveInput = Array<PropertyRef>;
 
-export class DeleteClause extends SubClause {
-    private deleteInput: DeleteInput;
-    private _detach = false;
+export class RemoveClause extends SubClause {
+    private removeInput: RemoveInput;
 
-    constructor(parent: CypherASTNode | undefined, deleteInput: DeleteInput) {
+    constructor(parent: CypherASTNode | undefined, removeInput: RemoveInput) {
         super(parent);
-        this.deleteInput = deleteInput;
-    }
-
-    public detach(): void {
-        this._detach = true;
+        this.removeInput = removeInput;
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const itemsToDelete = this.deleteInput.map((e) => e.getCypher(env));
-        const detachStr = this._detach ? "DETACH " : "";
-        return `${detachStr}DELETE ${itemsToDelete.join(",")}`;
+        const propertiesToDelete = this.removeInput.map((e) => e.getCypher(env));
+        return `REMOVE ${propertiesToDelete.join(",")}`;
     }
 }

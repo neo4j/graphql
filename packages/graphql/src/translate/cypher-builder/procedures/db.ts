@@ -20,7 +20,7 @@
 import { dedent } from "graphql-compose";
 import type { Predicate, Variable } from "../CypherBuilder";
 import type { CypherEnvironment } from "../Environment";
-import { Where } from "../sub-clauses/Where";
+import { Where } from "../clauses/sub-clauses/Where";
 import type { NodeRef } from "../variables/NodeRef";
 import { Clause } from "../clauses/Clause";
 import { WithReturn } from "../clauses/mixins/WithReturn";

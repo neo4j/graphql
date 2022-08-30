@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import type { CypherASTNode } from "../CypherASTNode";
-import type { CypherEnvironment } from "../Environment";
-import { and } from "../operations/boolean";
-import type { Predicate } from "../types";
+import type { CypherASTNode } from "../../CypherASTNode";
+import type { CypherEnvironment } from "../../Environment";
+import { and } from "../../operations/boolean";
+import type { Predicate } from "../../types";
 import { SubClause } from "./SubClause";
 
 export class Where extends SubClause {

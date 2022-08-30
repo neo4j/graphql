@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../CypherASTNode";
+import { CypherASTNode } from "../../CypherASTNode";
 
 /** Represents a clause ast node */
 export abstract class SubClause extends CypherASTNode {}

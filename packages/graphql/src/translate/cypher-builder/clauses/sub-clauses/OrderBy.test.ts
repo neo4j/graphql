@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../CypherBuilder";
-import { TestClause } from "../utils/TestClause";
+import * as CypherBuilder from "../../CypherBuilder";
+import { TestClause } from "../../utils/TestClause";
 import { OrderBy } from "./OrderBy";
 
 describe("CypherBuilder OrderBy", () => {

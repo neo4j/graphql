@@ -18,7 +18,7 @@
  */
 
 import { ClauseMixin } from "./ClauseMixin";
-import { Where } from "../../sub-clauses/Where";
+import { Where } from "../sub-clauses/Where";
 import { Variable } from "../../variables/Variable";
 import { and, BooleanOp } from "../../operations/boolean";
 import { PropertyRef } from "../../PropertyRef";

@@ -18,7 +18,7 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import { Projection } from "../sub-clauses/Projection";
+import { Projection } from "./sub-clauses/Projection";
 import type { Expr } from "../types";
 import { compileCypherIfExists } from "../utils/utils";
 import type { Literal } from "../variables/Literal";

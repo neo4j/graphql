@@ -19,7 +19,7 @@
 
 import type { CypherEnvironment } from "../Environment";
 import type { Pattern } from "../Pattern";
-import { Where } from "../sub-clauses/Where";
+import { Where } from "../clauses/sub-clauses/Where";
 import type { Expr, Predicate } from "../types";
 import { compileCypherIfExists } from "../utils/utils";
 import type { Variable } from "../variables/Variable";

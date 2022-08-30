@@ -24,7 +24,7 @@ import type { CypherFunction } from "./functions/CypherFunction";
 import type { Literal } from "./variables/Literal";
 import type { Exists } from "./expressions/Exists";
 import type { CypherEnvironment } from "./Environment";
-import type { ComprehensionExpr } from "./list/ComprehensionExpr";
+import type { ComprehensionExpr } from "./expressions/list/ComprehensionExpr";
 import type { MapExpr } from "./variables/map/MapExpr";
 import type { BooleanOp } from "./operations/boolean";
 import type { ComparisonOp } from "./operations/comparison";

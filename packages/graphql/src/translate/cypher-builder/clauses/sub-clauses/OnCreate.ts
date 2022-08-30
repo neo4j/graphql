@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "../Environment";
+import type { CypherEnvironment } from "../../Environment";
 import { SetClause, SetParam } from "./Set";
 
 export type OnCreateParam = SetParam;

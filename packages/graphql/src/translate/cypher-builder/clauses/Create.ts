@@ -21,7 +21,7 @@ import type { CypherEnvironment } from "../Environment";
 import type { NodeRef } from "../variables/NodeRef";
 import type { Param } from "../variables/Param";
 import { Pattern } from "../Pattern";
-import { SetClause } from "../sub-clauses/Set";
+import { SetClause } from "./sub-clauses/Set";
 import { Clause } from "./Clause";
 import { compileCypherIfExists } from "../utils/utils";
 import { WithReturn } from "./mixins/WithReturn";

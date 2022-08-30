@@ -17,26 +17,30 @@
  * limitations under the License.
  */
 
-import type { Call } from "../clauses/Call";
-import type { CypherEnvironment } from "../Environment";
-import type { PropertyRef } from "../PropertyRef";
-import type { Param } from "../variables/Param";
-import type { Variable } from "../variables/Variable";
+import type { CypherASTNode } from "../../CypherASTNode";
+import type { CypherEnvironment } from "../../Environment";
+import type { NodeRef } from "../../variables/NodeRef";
+import type { RelationshipRef } from "../../variables/RelationshipRef";
 import { SubClause } from "./SubClause";
 
-export type SetParam = [PropertyRef, Param<any>];
+export type DeleteInput = Array<NodeRef | RelationshipRef>;
 
-/** Represents a WITH statement to import variables into a CALL subquery */
-export class ImportWith extends SubClause {
-    private params: Variable[];
+export class DeleteClause extends SubClause {
+    private deleteInput: DeleteInput;
+    private _detach = false;
 
-    constructor(parent: Call, params: Variable[] = []) {
+    constructor(parent: CypherASTNode | undefined, deleteInput: DeleteInput) {
         super(parent);
-        this.params = params;
+        this.deleteInput = deleteInput;
+    }
+
+    public detach(): void {
+        this._detach = true;
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const paramsStr = this.params.map((v) => v.getCypher(env));
-        return `WITH ${paramsStr.join(", ")}`;
+        const itemsToDelete = this.deleteInput.map((e) => e.getCypher(env));
+        const detachStr = this._detach ? "DETACH " : "";
+        return `${detachStr}DELETE ${itemsToDelete.join(",")}`;
     }
 }

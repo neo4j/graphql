@@ -17,24 +17,26 @@
  * limitations under the License.
  */
 
-import type { CypherASTNode } from "../CypherASTNode";
-import type { CypherEnvironment } from "../Environment";
-import type { PropertyRef } from "../PropertyRef";
+import type { Call } from "../Call";
+import type { CypherEnvironment } from "../../Environment";
+import type { PropertyRef } from "../../PropertyRef";
+import type { Param } from "../../variables/Param";
+import type { Variable } from "../../variables/Variable";
 import { SubClause } from "./SubClause";
 
-// TODO: Remove label
-export type RemoveInput = Array<PropertyRef>;
+export type SetParam = [PropertyRef, Param<any>];
 
-export class RemoveClause extends SubClause {
-    private removeInput: RemoveInput;
+/** Represents a WITH statement to import variables into a CALL subquery */
+export class ImportWith extends SubClause {
+    private params: Variable[];
 
-    constructor(parent: CypherASTNode | undefined, removeInput: RemoveInput) {
+    constructor(parent: Call, params: Variable[] = []) {
         super(parent);
-        this.removeInput = removeInput;
+        this.params = params;
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const propertiesToDelete = this.removeInput.map((e) => e.getCypher(env));
-        return `REMOVE ${propertiesToDelete.join(",")}`;
+        const paramsStr = this.params.map((v) => v.getCypher(env));
+        return `WITH ${paramsStr.join(", ")}`;
     }
 }
