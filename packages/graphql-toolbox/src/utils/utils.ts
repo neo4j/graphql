@@ -57,9 +57,12 @@ export const getURLProtocolFromText = (text: string | null | undefined): string 
     }
 };
 
-export const usePrevious = (value) => {
+export const usePrevious = (
+    value: string | number | boolean | null | undefined
+): string | number | boolean | null | undefined => {
     const ref = useRef();
     useEffect(() => {
+        // @ts-ignore - React.MutableRefObject has no typing
         ref.current = value;
     });
     return ref.current;

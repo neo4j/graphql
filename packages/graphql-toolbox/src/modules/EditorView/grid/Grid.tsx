@@ -79,7 +79,7 @@ export const Grid = ({ queryEditor, parameterEditor, resultView, isRightPanelVis
 
     const debouncedBoxResize = useMemo(
         () =>
-            debounce((nextState) => {
+            debounce((nextState: GridState) => {
                 Storage.storeJSON(LOCAL_STATE_GRID_STATE, nextState);
             }, DEBOUNCE_LOCAL_STORE_TIMEOUT),
         []
