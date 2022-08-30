@@ -135,10 +135,8 @@ function aggregate({
         if (logicalOperators.some((fO) => operatorString.split(`SUM_`)[1] === fO)) {
             const [, opStr] = operatorString.split("SUM_");
             const operator = createOperator(opStr);
-            const hoistedVariable = `${paramName}_SUM`;
 
-            withStrs.push(`sum(${variable}.${dbPropertyName}) AS ${hoistedVariable}`);
-            aggregations.push(`${hoistedVariable} ${operator} toFloat($${paramName})`);
+            aggregations.push(`sum(${variable}.${dbPropertyName}) ${operator} toFloat($${paramName})`);
 
             return;
         }
