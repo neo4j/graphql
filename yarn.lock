@@ -2489,7 +2489,7 @@ __metadata:
     graphql-tag: 2.12.6
     jest: 29.0.1
     jsonwebtoken: 8.5.1
-    libnpmsearch: 5.0.3
+    libnpmsearch: 5.0.4
     npm-run-all: 4.1.5
     pluralize: 8.0.0
     prettier: ^2.7.1
@@ -2648,7 +2648,7 @@ __metadata:
     koa: 2.13.4
     koa-jwt: 4.0.3
     koa-router: 12.0.0
-    libnpmsearch: 5.0.3
+    libnpmsearch: 5.0.4
     mock-jwks: 1.0.3
     nock: 13.2.9
     npm-run-all: 4.1.5
@@ -11835,12 +11835,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libnpmsearch@npm:5.0.3":
-  version: 5.0.3
-  resolution: "libnpmsearch@npm:5.0.3"
+"libnpmsearch@npm:5.0.4":
+  version: 5.0.4
+  resolution: "libnpmsearch@npm:5.0.4"
   dependencies:
     npm-registry-fetch: ^13.0.0
-  checksum: c346d1656bfa46c52e25d71d44d2127961c1dd87d1cc99eabffcd4d6593fbd59071047bb0d28323f914387e3ccf9a8ed8e249f8ca563a2e70d3c5be954707442
+  checksum: 6270ab77487c22b03236890065a1e0e954a5a7f1ca9bb50278b447671d0fa5321539185c6e5aa4c358c344b73bb17bce49488b52c940937b2036ea7180505b88
   languageName: node
   linkType: hard
 
