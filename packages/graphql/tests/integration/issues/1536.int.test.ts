@@ -19,19 +19,18 @@
 
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
-import type { Driver, Session } from "neo4j-driver";
+import type { Driver } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 
-describe("https://github.com/neo4j/graphql/issues/1535", () => {
+describe("https://github.com/neo4j/graphql/issues/1536", () => {
     const testTenant = generateUniqueType("Tenant");
     const testBooking = generateUniqueType("Booking");
 
-    let driver: Driver;
     let schema: GraphQLSchema;
     let neo4j: Neo4j;
-    let session: Session;
+    let driver: Driver;
 
     async function graphqlQuery(query: string) {
         return graphql({
@@ -46,61 +45,48 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
         driver = await neo4j.getDriver();
 
         const typeDefs = `
-            type ${testTenant} {
+            type SomeNode {
                 id: ID! @id
-                name: String!
-                events: [Event!]! @relationship(type: "HOSTED_BY", direction: IN)
-                fooBars: [FooBar!]! @relationship(type: "HAS_FOOBARS", direction: OUT)
+                other: OtherNode! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
             }
-            
-            interface Event {
-                id: ID!
-                title: String
-                beginsAt: DateTime!
-            }
-            
-            type Screening implements Event {
+
+            type OtherNode {
                 id: ID! @id
-                title: String
-                beginsAt: DateTime!
+                interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
             }
-            
-            type ${testBooking} implements Event {
-                id: ID!
-                title: String
-                beginsAt: DateTime!
-                duration: Int!
-            }
-            
-            type FooBar {
+
+            interface MyInterface {
                 id: ID! @id
-                name: String!
+            }
+
+            type MyImplementation implements MyInterface {
+                id: ID! @id
             }
         `;
 
-        session = await neo4j.getSession();
+        const session = await neo4j.getSession();
 
-        await session.run(`
-            CREATE (:${testTenant} { id: "12", name: "Tenant1" })<-[:HOSTED_BY]-(:${testBooking} { id: "212" })
-        `);
+        // await session.run(`
+        //     CREATE (:${testTenant} { id: "12", name: "Tenant1" })<-[:HOSTED_BY]-(:${testBooking} { id: "212" })
+        // `);
 
         const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
         schema = await neoGraphql.getSchema();
     });
 
     afterAll(async () => {
-        await session.close();
         await driver.close();
     });
 
-    test("should not throw error when using alias in result projection for a field using an interface", async () => {
+    test("should not throw error when querying nested interfaces", async () => {
         const query = `
-            query { 
-                ${testTenant.plural} {
+            query {
+                someNodes {
                     id
-                    name
-                    events232: events {
-                        id
+                    other {
+                        interfaceField {
+                            id
+                        }
                     }
                 }
             }
@@ -109,8 +95,8 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
         const queryResult = await graphqlQuery(query);
         expect(queryResult.errors).toBeUndefined();
 
-        expect(queryResult.data as any).toEqual({
-            [`${testTenant.plural}`]: [{ id: "12", name: "Tenant1", events232: [{ id: "212" }] }],
-        });
+        // expect(queryResult.data as any).toEqual({
+        //     [`${testTenant.plural}`]: [{ id: "12", name: "Tenant1", events232: [{ id: "212" }] }],
+        // });
     });
 });
