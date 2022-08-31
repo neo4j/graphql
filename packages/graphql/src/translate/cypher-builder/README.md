@@ -71,6 +71,8 @@ Most clauses support subclauses, these can be used after the main clause, but no
 -   **OrderBy**
     -   **Skip**
     -   **Limit**
+-   **Delete**
+-   **Remove**
 
 ### Concat
 
@@ -91,16 +93,11 @@ MATCH(this1:Movie)
 RETURN this0, this1
 ```
 
-### Exists
-
-Exists behaves similarly to a top-level clause, however it cannot be built directly and can only be used in certain subclauses or as part of some operations.
-
 ### Procedures
 
 The following procedures can be used as clauses:
 
 -   **db.FullTextQueryNodes**: Similar to Match, can be used for FullText queries.
--   **apoc.RunFirstColumn**
 
 ## RawCypher
 
@@ -142,13 +139,31 @@ movieNode.property("title"); // Will be translated to this0.title
 
 ## Expressions
 
-Expressions are a conglomeration of entities that can be used in several places, an expression can be an operation, function, variable or some clauses such as exists. Most operators and functions support expressions as their input. The Expression type can be accessed with `CypherBuilder.Expr`.
+Expressions are a conglomeration of entities that can be used in several places, an expression can be an operation, function, variable or some clauses such as exists. Most operators and functions support expressions as their input. The Expression type can be accessed with `CypherBuilder.Expr`. These include **functions**, **variables**, **comprehensions** among others.
 
-Expressions can be used in `RETURN` `WITH` and `SET` statements.
+Expressions can be used in `RETURN` `WITH` and `SET` statements among other places.
 
 ### Predicates
 
-Some expressions are predicates, these expressions return a boolean value, and can be used in where filters.
+Some expressions are predicates, these expressions return a boolean value, and can be used in where filters, the type `CypherBuilder.Predicate` contains all of these. These include:
+
+-   [predicate functions](#predicate-functions)
+-   [boolean operations](#boolean)
+-   [comparison operations](#comparison)
+-   [exists clause](#exists)
+-   Some apoc predicates and expressions
+
+### Exists
+
+Exists behaves similarly to a top-level clause, however it cannot be built directly and can only be used in certain subclauses or as part of some operations.
+
+### List
+
+Expressions can contain either a `ListComprehension` or a `PatternComprehension`
+
+### Case
+
+`CASE ... WHEN` can be used.
 
 ## Operations
 
@@ -242,9 +257,14 @@ List functions take a list as input
 -   **head(expr)**
 -   **last(expr)**
 
-## List
+### Predicate Functions
 
-Expressions can contain either a `ListComprehension` or a `PatternComprehension`
+These are functions that can be used as [predicates](#predicates):
+
+-   **any**
+-   **all**
+-   **single**
+-   **exists**
 
 # Under the hood \*cue rock riff\*
 

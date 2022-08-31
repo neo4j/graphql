@@ -18,7 +18,7 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import { Projection, ProjectionColumn } from "../sub-clauses/Projection";
+import { Projection, ProjectionColumn } from "./sub-clauses/Projection";
 import { compileCypherIfExists } from "../utils/utils";
 import { Clause } from "./Clause";
 import { WithWith } from "./mixins/WithWith";

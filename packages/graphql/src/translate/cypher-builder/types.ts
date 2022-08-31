@@ -18,19 +18,23 @@
  */
 
 import type { Variable } from "./variables/Variable";
-import type { Operation } from "./operations/Operation";
-import type { PropertyRef } from "./PropertyRef";
-import type { CypherFunction } from "./functions/CypherFunction";
+import type { PropertyRef } from "./expressions/PropertyRef";
+import type { CypherFunction } from "./expressions/functions/CypherFunction";
 import type { Literal } from "./variables/Literal";
 import type { Exists } from "./expressions/Exists";
 import type { CypherEnvironment } from "./Environment";
-import type { ComprehensionExpr } from "./list/ComprehensionExpr";
-import type { MapExpr } from "./variables/map/MapExpr";
-import type { BooleanOp } from "./operations/boolean";
-import type { ComparisonOp } from "./operations/comparison";
+import type { MapExpr } from "./expressions/map/MapExpr";
+import type { BooleanOp } from "./expressions/operations/boolean";
+import type { ComparisonOp } from "./expressions/operations/comparison";
 import type { RawCypher } from "./clauses/RawCypher";
-import type { PredicateFunction } from "./functions/PredicateFunctions";
-import type { ValidatePredicate } from "./procedures/apoc/apoc";
+import type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
+import type { RunFirstColumn, ValidatePredicate } from "./expressions/procedures/apoc/apoc";
+import type { Case } from "./expressions/Case";
+import type { MathOp } from "./expressions/operations/math";
+import type { ListComprehension } from "./expressions/list/ListComprehension";
+import type { PatternComprehension } from "./expressions/list/PatternComprehension";
+
+export type Operation = BooleanOp | ComparisonOp | MathOp;
 
 export type Expr =
     | Operation
@@ -39,8 +43,10 @@ export type Expr =
     | CypherFunction
     | Literal
     | Predicate
-    | ComprehensionExpr
-    | MapExpr;
+    | ListComprehension
+    | PatternComprehension
+    | MapExpr
+    | RunFirstColumn;
 
 /** Represents a predicate statement (i.e returns a boolean). Note that RawCypher is only added for compatibility */
 export type Predicate =
@@ -50,7 +56,8 @@ export type Predicate =
     | Exists
     | PredicateFunction
     | ValidatePredicate
-    | Literal<boolean>;
+    | Literal<boolean>
+    | Case;
 
 export type CypherResult = {
     cypher: string;
