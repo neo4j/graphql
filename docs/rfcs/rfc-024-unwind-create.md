@@ -55,7 +55,7 @@ this1 { .title }] AS data, meta
 
 # Proposed solution
 
-Alternatively, `UNWIND` can be used to improve performance for batch create. This performance improvement has already been verified:
+`UNWIND` can be used to improve performance for batch create. This performance improvement has already been verified:
 
 ```cypher
 UNWIND [{title: $this0_title}, {title: $this1_title}] as batch
@@ -88,7 +88,7 @@ mutation Mutation {
 }
 ```
 
-Currently, the previous query will yield the following Cypher:
+The query without `UNWIND` will yield the following Cypher:
 
 **Cypher**
 
