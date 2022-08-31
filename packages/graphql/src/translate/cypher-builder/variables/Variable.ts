@@ -18,7 +18,7 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import { PropertyRef } from "../PropertyRef";
+import { PropertyRef } from "../expressions/PropertyRef";
 import type { CypherCompilable } from "../types";
 
 /** Represents a variable */

@@ -25,7 +25,7 @@ describe("Case", () => {
         const testParam = new CypherBuilder.Param("Hello");
 
         const caseClause = new CypherBuilder.Case(testParam)
-            .when(new CypherBuilder.Literal(`"Hello"`))
+            .when(new CypherBuilder.Literal("Hello"))
             .then(new CypherBuilder.Literal(true));
 
         caseClause.else(new CypherBuilder.Literal(false));
@@ -50,7 +50,7 @@ describe("Case", () => {
         const testParam = new CypherBuilder.Param("Hello");
 
         const caseClause = new CypherBuilder.Case()
-            .when(CypherBuilder.eq(new CypherBuilder.Literal(`"Hello"`), testParam))
+            .when(CypherBuilder.eq(new CypherBuilder.Literal("Hello"), testParam))
             .then(new CypherBuilder.Literal(true));
 
         caseClause.else(new CypherBuilder.Literal(false));

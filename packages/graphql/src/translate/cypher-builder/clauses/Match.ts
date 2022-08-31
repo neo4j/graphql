@@ -26,9 +26,9 @@ import { applyMixins } from "./utils/apply-mixin";
 import { WithWhere } from "./mixins/WithWhere";
 import { WithSet } from "./mixins/WithSet";
 import { WithWith } from "./mixins/WithWith";
-import { DeleteClause, DeleteInput } from "../sub-clauses/Delete";
-import type { PropertyRef } from "../PropertyRef";
-import { RemoveClause } from "../sub-clauses/Remove";
+import { DeleteClause, DeleteInput } from "./sub-clauses/Delete";
+import type { PropertyRef } from "../expressions/PropertyRef";
+import { RemoveClause } from "./sub-clauses/Remove";
 
 export class Match<T extends MatchableElement = any> extends Clause {
     private pattern: Pattern<T>;
@@ -36,8 +36,8 @@ export class Match<T extends MatchableElement = any> extends Clause {
     private removeClause: RemoveClause | undefined;
     private _optional = false;
 
-    constructor(variable: T | Pattern<T>, parameters: MatchParams<T> = {}, parent?: Clause) {
-        super(parent);
+    constructor(variable: T | Pattern<T>, parameters: MatchParams<T> = {}) {
+        super();
         if (variable instanceof Pattern) {
             this.pattern = variable;
         } else {
@@ -90,8 +90,8 @@ export interface Match extends WithReturn, WithWhere, WithSet, WithWith {}
 applyMixins(Match, [WithReturn, WithWhere, WithSet, WithWith]);
 
 export class OptionalMatch<T extends MatchableElement = any> extends Match<T> {
-    constructor(variable: T | Pattern<T>, parameters: MatchParams<T> = {}, parent?: Clause) {
-        super(variable, parameters, parent);
+    constructor(variable: T | Pattern<T>, parameters: MatchParams<T> = {}) {
+        super(variable, parameters);
         this.optional();
     }
 }

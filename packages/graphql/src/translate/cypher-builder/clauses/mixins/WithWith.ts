@@ -18,14 +18,13 @@
  */
 
 import { ClauseMixin } from "./ClauseMixin";
-import { With } from "../With";
-import type { ProjectionColumn } from "../../sub-clauses/Projection";
+import { With, WithProjection } from "../With";
 
 // Sorry for this name, at least it is funny
 export abstract class WithWith extends ClauseMixin {
     protected withStatement: With | undefined;
 
-    public with(...columns: ("*" | ProjectionColumn)[]): With {
+    public with(...columns: ("*" | WithProjection)[]): With {
         if (this.withStatement) {
             this.withStatement.addColumns(...columns);
         } else {

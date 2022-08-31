@@ -22,7 +22,7 @@ import type { RelationshipRef } from "../variables/RelationshipRef";
 import { NodeRef } from "../variables/NodeRef";
 import { MatchParams, Pattern } from "../Pattern";
 import { Clause } from "./Clause";
-import { OnCreate, OnCreateParam } from "../sub-clauses/OnCreate";
+import { OnCreate, OnCreateParam } from "./sub-clauses/OnCreate";
 import { WithReturn } from "./mixins/WithReturn";
 import { applyMixins } from "./utils/apply-mixin";
 
@@ -30,8 +30,8 @@ export class Merge<T extends NodeRef | RelationshipRef = any> extends Clause {
     private pattern: Pattern<T>;
     private onCreateClause: OnCreate;
 
-    constructor(element: T, params: MatchParams<T> = {}, parent?: Clause) {
-        super(parent);
+    constructor(element: T, params: MatchParams<T> = {}) {
+        super();
 
         const addLabels = element instanceof NodeRef;
         const addLabelsOption = { labels: addLabels };

@@ -53,7 +53,7 @@ export function translateTopLevelMatch({
         matchQuery = new CypherBuilder.db.FullTextQueryNodes(matchNode, indexName, phraseParam);
 
         const labelsChecks = node.getLabels(context).map((label) => {
-            return CypherBuilder.in(new CypherBuilder.Literal(`"${label}"`), CypherBuilder.labels(matchNode));
+            return CypherBuilder.in(new CypherBuilder.Literal(label), CypherBuilder.labels(matchNode));
         });
 
         const andChecks = CypherBuilder.and(...labelsChecks);
