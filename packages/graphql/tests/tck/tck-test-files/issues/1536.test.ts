@@ -22,41 +22,28 @@ import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../../src";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
-describe("https://github.com/neo4j/graphql/issues/1535", () => {
+describe("https://github.com/neo4j/graphql/issues/1536", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = gql`
-            type Tenant {
+            type SomeNode {
                 id: ID! @id
-                name: String!
-                events: [Event!]! @relationship(type: "HOSTED_BY", direction: IN)
-                fooBars: [FooBar!]! @relationship(type: "HAS_FOOBARS", direction: OUT)
+                other: OtherNode! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
             }
 
-            interface Event {
-                id: ID!
-                title: String
-                beginsAt: DateTime!
-            }
-
-            type Screening implements Event {
+            type OtherNode {
                 id: ID! @id
-                title: String
-                beginsAt: DateTime!
+                interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
             }
 
-            type Booking implements Event {
-                id: ID!
-                title: String
-                beginsAt: DateTime!
-                duration: Int!
-            }
-
-            type FooBar {
+            interface MyInterface {
                 id: ID! @id
-                name: String!
+            }
+
+            type MyImplementation implements MyInterface {
+                id: ID! @id
             }
         `;
 
@@ -68,11 +55,12 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
     test("should use alias in result projection for a field using an interface", async () => {
         const query = gql`
             query {
-                tenants {
+                someNodes {
                     id
-                    name
-                    events232: events {
-                        id
+                    other {
+                        interfaceField {
+                            id
+                        }
                     }
                 }
             }
@@ -80,22 +68,20 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`Tenant\`)
-WITH *
-CALL {
-WITH this
+"MATCH (this:\`SomeNode\`)
 CALL {
     WITH this
-    MATCH (this)<-[:HOSTED_BY]-(this_Screening:Screening)
-    RETURN { __resolveType: \\"Screening\\", id: this_Screening.id } AS events
-    UNION
-    WITH this
-    MATCH (this)<-[:HOSTED_BY]-(this_Booking:Booking)
-    RETURN { __resolveType: \\"Booking\\", id: this_Booking.id } AS events
+    MATCH (this)-[thisthis0:HAS_OTHER_NODES]->(this_other:\`OtherNode\`)
+    WITH this_other
+    CALL {
+        WITH this_other
+        MATCH (this_other)-[:HAS_INTERFACE_NODES]->(this_other_MyImplementation:MyImplementation)
+        RETURN { __resolveType: \\"MyImplementation\\", id: this_other_MyImplementation.id } AS interfaceField
+    }
+    WITH this_other { interfaceField: interfaceField } AS this_other
+    RETURN head(collect(this_other)) AS this_other
 }
-RETURN collect(events) AS events
-}
-RETURN this { .id, .name, events232: events } as this"
+RETURN this { .id, other: this_other } as this"
 `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

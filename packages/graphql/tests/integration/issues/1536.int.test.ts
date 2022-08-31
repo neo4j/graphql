@@ -25,9 +25,6 @@ import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/1536", () => {
-    const testTenant = generateUniqueType("Tenant");
-    const testBooking = generateUniqueType("Booking");
-
     let schema: GraphQLSchema;
     let neo4j: Neo4j;
     let driver: Driver;
@@ -94,7 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
 
         const queryResult = await graphqlQuery(query);
         expect(queryResult.errors).toBeUndefined();
-
+        console.log(queryResult.data);
         // expect(queryResult.data as any).toEqual({
         //     [`${testTenant.plural}`]: [{ id: "12", name: "Tenant1", events232: [{ id: "212" }] }],
         // });

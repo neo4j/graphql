@@ -83,23 +83,23 @@ describe("Interface Relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
-            WITH this
-            CALL {
-            WITH this
-            CALL {
-                WITH this
-                MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
-                RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
-                UNION
-                WITH this
-                MATCH (this)-[:ACTED_IN]->(this_Series:Series)
-                RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
-            }
-            RETURN collect(actedIn) AS actedIn
-            }
-            RETURN this { actedIn: actedIn } as this"
-        `);
+"MATCH (this:\`Actor\`)
+WITH *
+CALL {
+WITH this
+CALL {
+    WITH this
+    MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
+    RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
+    UNION
+    WITH this
+    MATCH (this)-[:ACTED_IN]->(this_Series:Series)
+    RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
+}
+RETURN collect(actedIn) AS actedIn
+}
+RETURN this { actedIn: actedIn } as this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -167,27 +167,27 @@ describe("Interface Relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
-            WITH this
-            CALL {
-            WITH this
-            CALL {
-                WITH this
-                MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
-                RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
-                UNION
-                WITH this
-                MATCH (this)-[:ACTED_IN]->(this_Series:Series)
-                RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
-            }
-            WITH *
-            ORDER BY actedIn.title DESC
-            SKIP 5
-            LIMIT 10
-            RETURN collect(actedIn) AS actedIn
-            }
-            RETURN this { actedIn: actedIn } as this"
-        `);
+"MATCH (this:\`Actor\`)
+WITH *
+CALL {
+WITH this
+CALL {
+    WITH this
+    MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
+    RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
+    UNION
+    WITH this
+    MATCH (this)-[:ACTED_IN]->(this_Series:Series)
+    RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
+}
+WITH *
+ORDER BY actedIn.title DESC
+SKIP 5
+LIMIT 10
+RETURN collect(actedIn) AS actedIn
+}
+RETURN this { actedIn: actedIn } as this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -212,20 +212,20 @@ describe("Interface Relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
-            WITH this
-            CALL {
-            WITH this
-            CALL {
-                WITH this
-                MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
-                WHERE this_Movie.title STARTS WITH $this_actedIn.args.where._on.Movie.title_STARTS_WITH
-                RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
-            }
-            RETURN collect(actedIn) AS actedIn
-            }
-            RETURN this { actedIn: actedIn } as this"
-        `);
+"MATCH (this:\`Actor\`)
+WITH *
+CALL {
+WITH this
+CALL {
+    WITH this
+    MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
+    WHERE this_Movie.title STARTS WITH $this_actedIn.args.where._on.Movie.title_STARTS_WITH
+    RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
+}
+RETURN collect(actedIn) AS actedIn
+}
+RETURN this { actedIn: actedIn } as this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -267,25 +267,25 @@ describe("Interface Relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
-            WITH this
-            CALL {
-            WITH this
-            CALL {
-                WITH this
-                MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
-                WHERE this_Movie.title STARTS WITH $this_actedIn.args.where._on.Movie.title_STARTS_WITH
-                RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
-                UNION
-                WITH this
-                MATCH (this)-[:ACTED_IN]->(this_Series:Series)
-                WHERE this_Series.title STARTS WITH $this_actedIn.args.where.title_STARTS_WITH
-                RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
-            }
-            RETURN collect(actedIn) AS actedIn
-            }
-            RETURN this { actedIn: actedIn } as this"
-        `);
+"MATCH (this:\`Actor\`)
+WITH *
+CALL {
+WITH this
+CALL {
+    WITH this
+    MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
+    WHERE this_Movie.title STARTS WITH $this_actedIn.args.where._on.Movie.title_STARTS_WITH
+    RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
+    UNION
+    WITH this
+    MATCH (this)-[:ACTED_IN]->(this_Series:Series)
+    WHERE this_Series.title STARTS WITH $this_actedIn.args.where.title_STARTS_WITH
+    RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
+}
+RETURN collect(actedIn) AS actedIn
+}
+RETURN this { actedIn: actedIn } as this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

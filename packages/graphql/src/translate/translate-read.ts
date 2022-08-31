@@ -22,11 +22,10 @@ import { int } from "neo4j-driver";
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
 import createProjectionAndParams, { ProjectionResult } from "./create-projection-and-params";
-import type { GraphQLOptionsArg, GraphQLSortArg, Context, ConnectionField, RelationField } from "../types";
+import type { GraphQLOptionsArg, GraphQLSortArg, Context, ConnectionField } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
-import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 
@@ -88,25 +87,6 @@ export function translateRead({
             });
             connectionStrs.push(connection[0]);
             cypherParams = { ...cypherParams, ...connection[1] };
-        });
-    }
-
-    if (projection.meta?.interfaceFields?.length) {
-        const prevRelationshipFields: string[] = [];
-        projection.meta.interfaceFields.forEach((interfaceResolveTree) => {
-            const relationshipField = node.relationFields.find(
-                (x) => x.fieldName === interfaceResolveTree.name
-            ) as RelationField;
-            const interfaceProjection = createInterfaceProjectionAndParams({
-                resolveTree: interfaceResolveTree,
-                field: relationshipField,
-                context,
-                nodeVariable: varName,
-                withVars: prevRelationshipFields,
-            });
-            prevRelationshipFields.push(relationshipField.dbPropertyName || relationshipField.fieldName);
-            interfaceStrs.push(interfaceProjection.cypher);
-            cypherParams = { ...cypherParams, ...interfaceProjection.params };
         });
     }
 

@@ -347,6 +347,7 @@ describe("Math operators", () => {
             YIELD value AS _
             RETURN count(*) AS _
             }
+            WITH *
             WITH this
             CALL {
                 WITH this
@@ -436,6 +437,7 @@ describe("Math operators", () => {
             YIELD value AS _
             RETURN count(*) AS _
             }
+            WITH *
             WITH this
             CALL {
                 WITH this

@@ -21,7 +21,14 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { GraphQLUnionType } from "graphql";
 import { mergeDeep } from "@graphql-tools/utils";
 import type { Node } from "../classes";
-import type { GraphQLOptionsArg, GraphQLSortArg, GraphQLWhereArg, Context, ConnectionField } from "../types";
+import type {
+    GraphQLOptionsArg,
+    GraphQLSortArg,
+    GraphQLWhereArg,
+    Context,
+    ConnectionField,
+    RelationField,
+} from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
@@ -37,6 +44,8 @@ import { removeDuplicates } from "../utils/utils";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
+// eslint-disable-next-line import/no-cycle
+import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 
 interface Res {
     projection: string[];
@@ -48,7 +57,6 @@ interface Res {
 export interface ProjectionMeta {
     authValidateStrs?: string[];
     connectionFields?: ResolveTree[];
-    interfaceFields?: ResolveTree[];
     cypherSortFields?: { alias: string; apocStr: string }[];
 }
 
@@ -325,12 +333,23 @@ export default function createProjectionAndParams({
             }
 
             if (relationField.interface) {
-                if (!res.meta.interfaceFields) {
-                    res.meta.interfaceFields = [];
-                }
+                const interfaceSubquery = new CypherBuilder.RawCypher((_env) => {
+                    const interfaceResolveTree = field;
 
-                res.meta.interfaceFields.push(field);
-
+                    const prevRelationshipFields: string[] = [];
+                    const relationshipField = node.relationFields.find(
+                        (x) => x.fieldName === interfaceResolveTree.name
+                    ) as RelationField;
+                    const interfaceProjection = createInterfaceProjectionAndParams({
+                        resolveTree: interfaceResolveTree,
+                        field: relationshipField,
+                        context,
+                        nodeVariable: varName,
+                        withVars: prevRelationshipFields,
+                    });
+                    return [interfaceProjection.cypher, interfaceProjection.params];
+                });
+                res.subqueries.push(interfaceSubquery);
                 res.projection.push(`${field.alias}: ${field.name}`);
 
                 return res;
