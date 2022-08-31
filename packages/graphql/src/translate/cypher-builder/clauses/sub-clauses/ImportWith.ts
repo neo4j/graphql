@@ -22,12 +22,12 @@ import type { CypherEnvironment } from "../../Environment";
 import type { PropertyRef } from "../../expressions/PropertyRef";
 import type { Param } from "../../variables/Param";
 import type { Variable } from "../../variables/Variable";
-import { SubClause } from "./SubClause";
+import { CypherASTNode } from "../../CypherASTNode";
 
 export type SetParam = [PropertyRef, Param<any>];
 
 /** Represents a WITH statement to import variables into a CALL subquery */
-export class ImportWith extends SubClause {
+export class ImportWith extends CypherASTNode {
     private params: Variable[];
 
     constructor(parent: Call, params: Variable[] = []) {
