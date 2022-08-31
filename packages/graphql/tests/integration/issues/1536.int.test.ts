@@ -19,7 +19,7 @@
 
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
-import type { Driver } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
@@ -28,6 +28,11 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
     let schema: GraphQLSchema;
     let neo4j: Neo4j;
     let driver: Driver;
+    let session: Session;
+
+    const SomeNodeType = generateUniqueType("SomeNode");
+    const OtherNodeType = generateUniqueType("OtherNode");
+    const MyImplementationType = generateUniqueType("MyImplementation");
 
     async function graphqlQuery(query: string) {
         return graphql({
@@ -42,12 +47,12 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
         driver = await neo4j.getDriver();
 
         const typeDefs = `
-            type SomeNode {
+            type ${SomeNodeType} {
                 id: ID! @id
-                other: OtherNode! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
+                other: ${OtherNodeType}! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
             }
 
-            type OtherNode {
+            type ${OtherNodeType} {
                 id: ID! @id
                 interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
             }
@@ -56,29 +61,31 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
                 id: ID! @id
             }
 
-            type MyImplementation implements MyInterface {
+            type ${MyImplementationType} implements MyInterface {
                 id: ID! @id
             }
         `;
 
-        const session = await neo4j.getSession();
+        session = await neo4j.getSession();
 
-        // await session.run(`
-        //     CREATE (:${testTenant} { id: "12", name: "Tenant1" })<-[:HOSTED_BY]-(:${testBooking} { id: "212" })
-        // `);
+        await session.run(`
+            CREATE(:${SomeNodeType} {id: "1"})-[:HAS_OTHER_NODES]->(other:${OtherNodeType} {id: "2"})
+            CREATE(other)-[:HAS_INTERFACE_NODES]->(:${MyImplementationType} {id: "3"})
+        `);
 
         const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
         schema = await neoGraphql.getSchema();
     });
 
     afterAll(async () => {
+        await session.close();
         await driver.close();
     });
 
     test("should not throw error when querying nested interfaces", async () => {
         const query = `
             query {
-                someNodes {
+                ${SomeNodeType.plural} {
                     id
                     other {
                         interfaceField {
@@ -91,9 +98,17 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
 
         const queryResult = await graphqlQuery(query);
         expect(queryResult.errors).toBeUndefined();
-        console.log(queryResult.data);
-        // expect(queryResult.data as any).toEqual({
-        //     [`${testTenant.plural}`]: [{ id: "12", name: "Tenant1", events232: [{ id: "212" }] }],
-        // });
+        expect(queryResult.data).toEqual({
+            [SomeNodeType.plural]: [
+                {
+                    id: "1",
+                    other: {
+                        interfaceField: {
+                            id: "3",
+                        },
+                    },
+                },
+            ],
+        });
     });
 });

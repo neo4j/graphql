@@ -52,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
         });
     });
 
-    test("should use alias in result projection for a field using an interface", async () => {
+    test("query nested interfaces", async () => {
         const query = gql`
             query {
                 someNodes {
@@ -68,21 +68,21 @@ describe("https://github.com/neo4j/graphql/issues/1536", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`SomeNode\`)
-CALL {
-    WITH this
-    MATCH (this)-[thisthis0:HAS_OTHER_NODES]->(this_other:\`OtherNode\`)
-    WITH this_other
-    CALL {
-        WITH this_other
-        MATCH (this_other)-[:HAS_INTERFACE_NODES]->(this_other_MyImplementation:MyImplementation)
-        RETURN { __resolveType: \\"MyImplementation\\", id: this_other_MyImplementation.id } AS interfaceField
-    }
-    WITH this_other { interfaceField: interfaceField } AS this_other
-    RETURN head(collect(this_other)) AS this_other
-}
-RETURN this { .id, other: this_other } as this"
-`);
+            "MATCH (this:\`SomeNode\`)
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:HAS_OTHER_NODES]->(this_other:\`OtherNode\`)
+                WITH this_other
+                CALL {
+                    WITH this_other
+                    MATCH (this_other)-[:HAS_INTERFACE_NODES]->(this_other_MyImplementation:MyImplementation)
+                    RETURN { __resolveType: \\"MyImplementation\\", id: this_other_MyImplementation.id } AS interfaceField
+                }
+                WITH this_other { interfaceField: interfaceField } AS this_other
+                RETURN head(collect(this_other)) AS this_other
+            }
+            RETURN this { .id, other: this_other } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
