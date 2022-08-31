@@ -223,7 +223,6 @@ function createInterfaceProjectionAndParams({
         if (field.typeMeta.array) {
             interfaceProjection = [
                 `WITH *`,
-                // `WITH ${fullWithVars.join(", ")}`,
                 "CALL {",
                 ...interfaceProjection,
                 `${withStr}RETURN collect(${field.fieldName}) AS ${field.fieldName}`,
