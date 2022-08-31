@@ -97,34 +97,34 @@ describe("Interface Relationships - Create create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"CALL {
-CREATE (this0:Actor)
-SET this0.name = $this0_name
-WITH this0
-CREATE (this0_actedInMovie0_node:Movie)
-SET this0_actedInMovie0_node.title = $this0_actedInMovie0_node_title
-SET this0_actedInMovie0_node.runtime = $this0_actedInMovie0_node_runtime
-MERGE (this0)-[this0_actedInMovie0_relationship:ACTED_IN]->(this0_actedInMovie0_node)
-SET this0_actedInMovie0_relationship.screenTime = $this0_actedInMovie0_relationship_screenTime
-RETURN this0
-}
-WITH *
-CALL {
-WITH this0
-CALL {
-    WITH this0
-    MATCH (this0)-[:ACTED_IN]->(this0_Movie:Movie)
-    RETURN { __resolveType: \\"Movie\\", runtime: this0_Movie.runtime, title: this0_Movie.title } AS actedIn
-    UNION
-    WITH this0
-    MATCH (this0)-[:ACTED_IN]->(this0_Series:Series)
-    RETURN { __resolveType: \\"Series\\", episodes: this0_Series.episodes, title: this0_Series.title } AS actedIn
-}
-RETURN collect(actedIn) AS actedIn
-}
-RETURN [
-this0 { .name, actedIn: actedIn }] AS data"
-`);
+            "CALL {
+            CREATE (this0:Actor)
+            SET this0.name = $this0_name
+            WITH this0
+            CREATE (this0_actedInMovie0_node:Movie)
+            SET this0_actedInMovie0_node.title = $this0_actedInMovie0_node_title
+            SET this0_actedInMovie0_node.runtime = $this0_actedInMovie0_node_runtime
+            MERGE (this0)-[this0_actedInMovie0_relationship:ACTED_IN]->(this0_actedInMovie0_node)
+            SET this0_actedInMovie0_relationship.screenTime = $this0_actedInMovie0_relationship_screenTime
+            RETURN this0
+            }
+            WITH *
+            CALL {
+            WITH this0
+            CALL {
+                WITH this0
+                MATCH (this0)-[:ACTED_IN]->(this0_Movie:Movie)
+                RETURN { __resolveType: \\"Movie\\", runtime: this0_Movie.runtime, title: this0_Movie.title } AS actedIn
+                UNION
+                WITH this0
+                MATCH (this0)-[:ACTED_IN]->(this0_Series:Series)
+                RETURN { __resolveType: \\"Series\\", episodes: this0_Series.episodes, title: this0_Series.title } AS actedIn
+            }
+            RETURN collect(actedIn) AS actedIn
+            }
+            RETURN [
+            this0 { .name, actedIn: actedIn }] AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

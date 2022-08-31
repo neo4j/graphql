@@ -208,23 +208,23 @@ describe("Undirected relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`Actor\`)
-WITH *
-CALL {
-WITH this
-CALL {
-    WITH this
-    MATCH (this)-[:ACTED_IN]-(this_Movie:Movie)
-    RETURN { __resolveType: \\"Movie\\", title: this_Movie.title } AS actedIn
-    UNION
-    WITH this
-    MATCH (this)-[:ACTED_IN]-(this_Series:Series)
-    RETURN { __resolveType: \\"Series\\", title: this_Series.title } AS actedIn
-}
-RETURN collect(actedIn) AS actedIn
-}
-RETURN this { actedIn: actedIn } as this"
-`);
+            "MATCH (this:\`Actor\`)
+            WITH *
+            CALL {
+            WITH this
+            CALL {
+                WITH this
+                MATCH (this)-[:ACTED_IN]-(this_Movie:Movie)
+                RETURN { __resolveType: \\"Movie\\", title: this_Movie.title } AS actedIn
+                UNION
+                WITH this
+                MATCH (this)-[:ACTED_IN]-(this_Series:Series)
+                RETURN { __resolveType: \\"Series\\", title: this_Series.title } AS actedIn
+            }
+            RETURN collect(actedIn) AS actedIn
+            }
+            RETURN this { actedIn: actedIn } as this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
