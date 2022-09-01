@@ -1,7 +1,9 @@
 name: "CodeQL config"
 paths:
-  - src
+  - packages
+  - examples
 paths-ignore:
-  - src/node_modules
-  - src/**/node_modules
+  - docs
+  - config
+  - node_modules
   - src/packages/graphql/tests/**/*.test.ts
