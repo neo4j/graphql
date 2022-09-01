@@ -1,4 +1,4 @@
-import type { InterfaceWhereArg, Node } from "../types";
+import type { GraphQLWhereArg, Node } from "../types";
 
 /**
  *
@@ -8,7 +8,7 @@ import type { InterfaceWhereArg, Node } from "../types";
  *   * There is no _on filter
  *   * _on is the only filter and the current implementation can be found within it
  */
-const filterInterfaceNodes = ({ node, whereInput }: { node: Node; whereInput: InterfaceWhereArg }) =>
+const filterInterfaceNodes = ({ node, whereInput }: { node: Node; whereInput?: GraphQLWhereArg }) =>
     !whereInput ||
     Object.keys(whereInput).length > 1 ||
     !Object.prototype.hasOwnProperty.call(whereInput, "_on") ||
