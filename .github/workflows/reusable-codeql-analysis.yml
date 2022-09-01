@@ -15,6 +15,8 @@ jobs:
           cache: yarn
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
+        with:
+          config-file: ./.github/codeql/codeql-config.yml
       - name: Install dependencies
         run: yarn
       - name: Build graphql
@@ -22,4 +24,3 @@ jobs:
         working-directory: packages/graphql
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
-        # The results are visible in the repo's security tab
