@@ -29,6 +29,9 @@ jobs:
           fail_on_error: true
           eslint_flags: "."
 
+  code-scanning:
+    uses: ./.github/workflows/reusable-codeql-analysis.yml
+
   package-tests:
     uses: ./.github/workflows/reusable-package-tests.yml
 
@@ -89,6 +92,7 @@ jobs:
   quality-gate:
     needs:
       - reviewdog-eslint
+      - code-scanning
       - package-tests
       - neo-push-tests
       - license-header-check
