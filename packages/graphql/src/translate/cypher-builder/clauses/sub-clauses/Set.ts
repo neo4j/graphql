@@ -17,16 +17,15 @@
  * limitations under the License.
  */
 
-import type { CypherASTNode } from "../../CypherASTNode";
+import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import type { PropertyRef } from "../../expressions/PropertyRef";
 import type { Expr } from "../../types";
 import { padBlock } from "../../utils/utils";
-import { SubClause } from "./SubClause";
 
 export type SetParam = [PropertyRef, Expr];
 
-export class SetClause extends SubClause {
+export class SetClause extends CypherASTNode {
     protected params: SetParam[];
 
     constructor(parent: CypherASTNode, params: SetParam[] = []) {
