@@ -85,8 +85,40 @@ describe("Interfaces tests", () => {
             req,
         });
 
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot();
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`SomeNode\`)
+            CALL {
+                WITH this
+                MATCH (this)-[thisthis0:HAS_OTHER_NODES]->(this_other:\`OtherNode\`)
+                WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH this_other
+                CALL {
+                    WITH this_other
+                    MATCH (this_other)-[:HAS_INTERFACE_NODES]->(this_other_SomeNode:SomeNode)
+                    CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    RETURN { __resolveType: \\"SomeNode\\", id: this_other_SomeNode.id } AS interfaceField
+                    UNION
+                    WITH this_other
+                    MATCH (this_other)-[:HAS_INTERFACE_NODES]->(this_other_MyImplementation:MyImplementation)
+                    RETURN { __resolveType: \\"MyImplementation\\", id: this_other_MyImplementation.id } AS interfaceField
+                }
+                WITH this_other { interfaceField: interfaceField } AS this_other
+                RETURN head(collect(this_other)) AS this_other
+            }
+            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            RETURN this { .id, other: this_other } as this"
+        `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot();
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"auth\\": {
+                    \\"isAuthenticated\\": true,
+                    \\"roles\\": [],
+                    \\"jwt\\": {
+                        \\"roles\\": []
+                    }
+                }
+            }"
+        `);
     });
 });

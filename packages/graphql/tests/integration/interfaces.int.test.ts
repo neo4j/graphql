@@ -25,7 +25,7 @@ import type { IncomingMessage } from "http";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src";
 import { generateUniqueType } from "../utils/graphql-types";
-import { createJwtRequest } from "tests/utils/create-jwt-request";
+import { createJwtRequest } from "../utils/create-jwt-request";
 
 describe("Interfaces tests", () => {
     const secret = "the-secret";
