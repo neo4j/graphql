@@ -20,10 +20,9 @@
 import type { GraphQLWhereArg, Context } from "../../types";
 import type { GraphElement } from "../../classes";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
-import { filterTruthy } from "../../utils/utils";
 // Recursive function
 // eslint-disable-next-line import/no-cycle
-import { createWherePropertyOperation } from "./property-operations/create-where-property-operation";
+import { createPropertyWhereFilter } from "./property-operations/create-property-where-filter";
 
 /** Translate a target node and GraphQL input into a Cypher operation o valid where expression */
 export function createCypherWherePredicate({
@@ -37,46 +36,25 @@ export function createCypherWherePredicate({
     context: Context;
     element: GraphElement;
 }): CypherBuilder.Predicate | undefined {
-    const mappedProperties = mapPropertiesToOperators({
-        whereInput,
-        targetElement,
-        element,
-        context,
+    const whereFields = Object.entries(whereInput);
+
+    const predicates = whereFields.map(([key, value]): CypherBuilder.Predicate | undefined => {
+        if (key === "OR") {
+            const nested = mapPropertiesToPredicates({ value, element, targetElement, context });
+            return CypherBuilder.or(...nested);
+        }
+        if (key === "AND") {
+            const nested = mapPropertiesToPredicates({ value, element, targetElement, context });
+            return CypherBuilder.and(...nested);
+        }
+        return createPropertyWhereFilter({ key, value, element, targetElement, context });
     });
 
     // Implicit AND
-    return CypherBuilder.and(...mappedProperties);
+    return CypherBuilder.and(...predicates);
 }
 
-function mapPropertiesToOperators({
-    whereInput,
-    element,
-    targetElement,
-    context,
-}: {
-    whereInput: GraphQLWhereArg;
-    element: GraphElement;
-    targetElement: CypherBuilder.Variable;
-    context: Context;
-}): Array<CypherBuilder.Predicate> {
-    const whereFields = Object.entries(whereInput);
-
-    return filterTruthy(
-        whereFields.map(([key, value]): CypherBuilder.Predicate | undefined => {
-            if (key === "OR") {
-                const nested = mapBooleanPropertiesToOperators({ value, element, targetElement, context });
-                return CypherBuilder.or(...nested);
-            }
-            if (key === "AND") {
-                const nested = mapBooleanPropertiesToOperators({ value, element, targetElement, context });
-                return CypherBuilder.and(...nested);
-            }
-            return createWherePropertyOperation({ key, value, element, targetElement, context });
-        })
-    );
-}
-
-function mapBooleanPropertiesToOperators({
+function mapPropertiesToPredicates({
     value,
     element,
     targetElement,
@@ -86,10 +64,8 @@ function mapBooleanPropertiesToOperators({
     element: GraphElement;
     targetElement: CypherBuilder.Variable;
     context: Context;
-}): Array<CypherBuilder.Predicate> {
-    const nestedOperations = value.map((v) => {
+}): Array<CypherBuilder.Predicate | undefined> {
+    return value.map((v) => {
         return createCypherWherePredicate({ whereInput: v, element, targetElement, context });
     });
-
-    return filterTruthy(nestedOperations);
 }

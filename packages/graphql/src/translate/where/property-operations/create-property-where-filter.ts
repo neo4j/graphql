@@ -32,8 +32,8 @@ import { createComparisonOperation } from "./create-comparison-operation";
 // eslint-disable-next-line import/no-cycle
 import { createRelationshipOperation } from "./create-relationship-operation";
 
-/** Translates a property into its comparison operator */
-export function createWherePropertyOperation({
+/** Translates a property into its predicate filter */
+export function createPropertyWhereFilter({
     key,
     value,
     element,
@@ -58,6 +58,7 @@ export function createWherePropertyOperation({
     }
 
     const isNot = operator?.startsWith("NOT") ?? false;
+
     const coalesceValue = [...element.primitiveFields, ...element.temporalFields, ...element.enumFields].find(
         (f) => fieldName === f.fieldName
     )?.coalesceValue as string | undefined;
