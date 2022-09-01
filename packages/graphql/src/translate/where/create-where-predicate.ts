@@ -22,10 +22,10 @@ import type { GraphElement } from "../../classes";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 // Recursive function
 // eslint-disable-next-line import/no-cycle
-import { createPropertyWhereFilter } from "./property-operations/create-property-where-filter";
+import { createPropertyWhere } from "./property-operations/create-property-where";
 
 /** Translate a target node and GraphQL input into a Cypher operation o valid where expression */
-export function createCypherWherePredicate({
+export function createWherePredicate({
     targetElement,
     whereInput,
     context,
@@ -47,7 +47,7 @@ export function createCypherWherePredicate({
             const nested = mapPropertiesToPredicates({ value, element, targetElement, context });
             return CypherBuilder.and(...nested);
         }
-        return createPropertyWhereFilter({ key, value, element, targetElement, context });
+        return createPropertyWhere({ key, value, element, targetElement, context });
     });
 
     // Implicit AND
@@ -66,6 +66,6 @@ function mapPropertiesToPredicates({
     context: Context;
 }): Array<CypherBuilder.Predicate | undefined> {
     return value.map((v) => {
-        return createCypherWherePredicate({ whereInput: v, element, targetElement, context });
+        return createWherePredicate({ whereInput: v, element, targetElement, context });
     });
 }

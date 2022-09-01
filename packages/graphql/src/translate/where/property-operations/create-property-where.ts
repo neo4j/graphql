@@ -33,7 +33,7 @@ import { createComparisonOperation } from "./create-comparison-operation";
 import { createRelationshipOperation } from "./create-relationship-operation";
 
 /** Translates a property into its predicate filter */
-export function createPropertyWhereFilter({
+export function createPropertyWhere({
     key,
     value,
     element,

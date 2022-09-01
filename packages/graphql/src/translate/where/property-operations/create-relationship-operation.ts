@@ -21,7 +21,7 @@ import type { Context, GraphQLWhereArg, RelationField } from "../../../types";
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 // Recursive function
 // eslint-disable-next-line import/no-cycle
-import { createCypherWherePredicate } from "../create-cypher-where-predicate";
+import { createWherePredicate } from "../create-where-predicate";
 
 export function createRelationshipOperation({
     relationField,
@@ -66,7 +66,7 @@ export function createRelationshipOperation({
         return exists;
     }
 
-    const relationOperator = createCypherWherePredicate({
+    const relationOperator = createWherePredicate({
         // Nested properties here
         whereInput: value,
         targetElement: childNode,
