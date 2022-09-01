@@ -4,4 +4,4 @@ paths:
 paths-ignore:
   - src/node_modules
   - src/**/node_modules
-  - src/packages/graphql/tests/**.test.ts
+  - src/packages/graphql/tests/**/*.test.ts
