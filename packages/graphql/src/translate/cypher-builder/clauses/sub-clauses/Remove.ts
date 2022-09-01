@@ -17,15 +17,14 @@
  * limitations under the License.
  */
 
-import type { CypherASTNode } from "../../CypherASTNode";
+import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import type { PropertyRef } from "../../expressions/PropertyRef";
-import { SubClause } from "./SubClause";
 
 // TODO: Remove label
 export type RemoveInput = Array<PropertyRef>;
 
-export class RemoveClause extends SubClause {
+export class RemoveClause extends CypherASTNode {
     private removeInput: RemoveInput;
 
     constructor(parent: CypherASTNode | undefined, removeInput: RemoveInput) {
