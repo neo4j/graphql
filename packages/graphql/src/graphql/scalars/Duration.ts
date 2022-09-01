@@ -45,7 +45,14 @@ export const SECONDS_PER_MINUTE = 60;
 export const SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
 export const NANOSECONDS_PER_SECOND = 1000000000;
 
-export const parseDuration = (value: string) => {
+export const parseDuration = (
+    value: string
+): {
+    months: number;
+    days: number;
+    seconds: number;
+    nanoseconds: number;
+} => {
     const matchIso = DURATION_REGEX_ISO.exec(value);
     const matchDelimiter = DURATION_REGEX_WITH_DELIMITERS.exec(value);
     const matchNoDelimiter = DURATION_REGEX_NO_DELIMITERS.exec(value);

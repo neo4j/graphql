@@ -48,10 +48,8 @@ export function asArray<T>(raw: T | Array<T> | undefined | null): Array<T> {
 }
 
 /** Filter all elements in an array, only leaving truthy values */
-export function filterTruthy(arr: Array<boolean | null | undefined>): Array<true>;
-export function filterTruthy<T>(arr: Array<T | null | undefined>): Array<T>;
-export function filterTruthy<T>(arr: Array<T | null | undefined>) {
-    return arr.filter(Boolean);
+export function filterTruthy<T>(arr: Array<T | null | undefined>): Array<T> {
+    return arr.filter((v): v is T => !!v);
 }
 
 /** Check if both arrays share at least one element */

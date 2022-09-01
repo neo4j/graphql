@@ -56,7 +56,7 @@ function createInterfaceProjectionAndParams({
     const whereInput = resolveTree.args.where as InterfaceWhereArg;
 
     const referenceNodes = context.nodes.filter(
-        (x) => field.interface?.implementations?.includes(x.name) && filterInterfaceNodes({ node: x, whereInput })
+        (node) => field.interface?.implementations?.includes(node.name) && filterInterfaceNodes({ node, whereInput })
     );
 
     let whereArgs: { _on?: any; [str: string]: any } = {};

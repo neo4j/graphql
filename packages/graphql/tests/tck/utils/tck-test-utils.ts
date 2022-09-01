@@ -36,7 +36,7 @@ export function compareParams({
     expected: Record<string, any>;
     cypher: string;
     context: any;
-}) {
+}): void {
     const receivedParams = params;
 
     if (cypher.includes("$auth.") || cypher.includes("auth: $auth") || cypher.includes("auth:$auth")) {

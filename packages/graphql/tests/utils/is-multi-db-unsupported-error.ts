@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-export function isMultiDbUnsupportedError(e: Error) {
+export function isMultiDbUnsupportedError(e: Error): boolean {
     if (
         e.message.includes("This is an administration command and it should be executed against the system database") ||
         e.message.includes("Unsupported administration command") ||

@@ -33,11 +33,11 @@ export default class Relationship {
         this.type = type;
     }
 
-    addProperty(property: Property) {
+    addProperty(property: Property): void {
         this.properties.push(property);
     }
 
-    addPath(from: string, to: string) {
+    addPath(from: string, to: string): void {
         this.paths.push({ fromTypeId: from, toTypeId: to });
     }
 }
