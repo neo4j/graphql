@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "../Environment";
 import { MatchableElement, MatchParams, Pattern } from "../Pattern";
 import { Clause } from "./Clause";
 import { compileCypherIfExists } from "../utils/utils";
@@ -29,8 +28,9 @@ import { WithWith } from "./mixins/WithWith";
 import { DeleteClause, DeleteInput } from "./sub-clauses/Delete";
 import type { PropertyRef } from "../expressions/PropertyRef";
 import { RemoveClause } from "./sub-clauses/Remove";
+import type { CypherEnvironment } from "../Environment";
 
-export class Match<T extends MatchableElement = any> extends Clause {
+export class Match<T extends MatchableElement> extends Clause {
     private pattern: Pattern<T>;
     private deleteClause: DeleteClause | undefined;
     private removeClause: RemoveClause | undefined;
@@ -86,7 +86,8 @@ export class Match<T extends MatchableElement = any> extends Clause {
     }
 }
 
-export interface Match extends WithReturn, WithWhere, WithSet, WithWith {}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export interface Match<T extends MatchableElement> extends WithReturn, WithWhere, WithSet, WithWith {}
 applyMixins(Match, [WithReturn, WithWhere, WithSet, WithWith]);
 
 export class OptionalMatch<T extends MatchableElement = any> extends Match<T> {

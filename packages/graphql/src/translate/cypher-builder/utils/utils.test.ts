@@ -46,8 +46,17 @@ describe("CypherBuilder Utils", () => {
             ["Spring Data Neo4j⚡️RX", "`Spring Data Neo4j⚡️RX`"],
             ["Foo \u0060", "`Foo ```"], // This is the backtick itself in the string
             ["Foo \\u0060", "`Foo ```"], // This is the backtick unicode escaped so that without further processing `foo \u0060` would end up at Cypher
+            ["Foo``bar", "`Foo````bar`"],
+            ["Foo\\``bar", "`Foo\\````bar`"],
+            ["Foo\\\\``bar", "`Foo\\\\````bar`"],
+            ["Foo\u005cbar", "`Foo\\bar`"],
+            ["Foo\u005c\u0060bar", "`Foo\\``bar`"],
+            ["Foo\u005cu0060bar", "`Foo``bar`"],
+            ["Foo\\u005cu0060bar", "`Foo\\u005cu0060bar`"],
+            ["Foo\u005c\\u0060bar", "`Foo\\``bar`"],
+            ["\u005c\u005cu0060", "`\\```"],
+            ["\u005cu005cu0060", "`\\u005cu0060`"],
         ];
-
         test.each(cases)('Parse "%s"', (value, expected) => {
             const escapedLabel = escapeLabel(value);
             expect(escapedLabel).toBe(expected);
