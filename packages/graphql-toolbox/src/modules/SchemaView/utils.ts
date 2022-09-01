@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import type { GraphQLDirective, GraphQLScalarType} from "graphql";
+import type { GraphQLDirective, GraphQLScalarType } from "graphql";
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from "graphql";
 import { directives, scalars, objects } from "@neo4j/graphql";
 
-export const getSchemaForLintAndAutocompletion = () => {
+export const getSchemaForLintAndAutocompletion = (): GraphQLSchema => {
     return new GraphQLSchema({
         query: new GraphQLObjectType({
             name: "Query",

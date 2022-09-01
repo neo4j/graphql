@@ -96,7 +96,7 @@ describe("Interface Relationships - Update create", () => {
             MERGE (this)-[this_create_actedIn_Movie0_relationship:ACTED_IN]->(this_create_actedIn_Movie0_node_Movie)
             SET this_create_actedIn_Movie0_relationship.screenTime = $this_create_actedIn_Movie0_relationship_screenTime
             WITH *
-            WITH this
+            WITH *
             CALL {
             WITH this
             CALL {

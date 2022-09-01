@@ -32,7 +32,7 @@ async function checkNeo4jCompat({
     driver: Driver;
     driverConfig?: DriverConfig;
     dbInfo: Neo4jDatabaseInfo;
-}) {
+}): Promise<void> {
     await driver.verifyConnectivity();
 
     const sessionParams: {

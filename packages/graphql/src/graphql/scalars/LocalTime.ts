@@ -24,7 +24,14 @@ import neo4j from "neo4j-driver";
 export const LOCAL_TIME_REGEX =
     /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d):(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?$/;
 
-export const parseLocalTime = (value: any) => {
+export const parseLocalTime = (
+    value: unknown
+): {
+    hour: number;
+    minute: number;
+    second: number;
+    nanosecond: number;
+} => {
     if (typeof value !== "string") {
         throw new TypeError(`Value must be of type string: ${value}`);
     }
@@ -52,7 +59,7 @@ export const parseLocalTime = (value: any) => {
     };
 };
 
-const parse = (value: any) => {
+const parse = (value: unknown) => {
     const { hour, minute, second, nanosecond } = parseLocalTime(value);
 
     return new neo4j.types.LocalTime(hour, minute, second, nanosecond);

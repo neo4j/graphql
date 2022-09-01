@@ -34,7 +34,7 @@ export class CallbackBucket {
         this.callbacks = [];
     }
 
-    public addCallback(callback: Callback) {
+    public addCallback(callback: Callback): void {
         this.callbacks.push(callback);
     }
 

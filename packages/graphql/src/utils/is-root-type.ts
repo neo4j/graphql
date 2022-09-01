@@ -21,6 +21,6 @@ import type { ObjectTypeDefinitionNode } from "graphql";
 
 const rootTypes = ["Query", "Mutation", "Subscription"];
 
-export function isRootType(definition: ObjectTypeDefinitionNode) {
+export function isRootType(definition: ObjectTypeDefinitionNode): boolean {
     return rootTypes.includes(definition.name.value);
 }

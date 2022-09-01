@@ -97,7 +97,7 @@ describe("@auth allow on specific interface implementation", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            WITH this
+            WITH *
             CALL {
             WITH this
             CALL {
@@ -146,7 +146,7 @@ describe("@auth allow on specific interface implementation", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE this.id = $param0
-            WITH this
+            WITH *
             CALL {
             WITH this
             CALL {
@@ -256,7 +256,8 @@ describe("@auth allow on specific interface implementation", () => {
             YIELD value AS _
             RETURN count(*) AS _
             }
-            WITH this
+            WITH *
+            WITH *
             CALL {
             WITH this
             CALL {
@@ -276,6 +277,7 @@ describe("@auth allow on specific interface implementation", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_Postauth_param0\\": \\"user-id\\",
                 \\"param0\\": \\"user-id\\",
                 \\"this_update_content0_id\\": \\"new-id\\",
                 \\"auth\\": {
@@ -291,7 +293,6 @@ describe("@auth allow on specific interface implementation", () => {
                     }
                 },
                 \\"this_content0auth_param0\\": \\"user-id\\",
-                \\"this_Postauth_param0\\": \\"user-id\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
                         \\"update\\": {

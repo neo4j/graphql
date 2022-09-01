@@ -32,7 +32,7 @@ export function generateSubscriptionTypes({
 }: {
     schemaComposer: SchemaComposer;
     nodes: Node[];
-}) {
+}): void {
     const subscriptionComposer = schemaComposer.Subscription;
 
     const eventTypeEnum = schemaComposer.createEnumTC(EventType);

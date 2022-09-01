@@ -123,7 +123,7 @@ export default function createUpdateAndParams({
                 updates.forEach((update, index) => {
                     const relationshipVariable = `${varName}_${relationField.type.toLowerCase()}${index}_relationship`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
-                    const _varName = `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
+                    const variableName = `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
 
                     if (update.update) {
                         const whereStrs: string[] = [];
@@ -133,7 +133,7 @@ export default function createUpdateAndParams({
                                 const where = createConnectionWhereAndParams({
                                     whereInput: update.where,
                                     node: refNode,
-                                    nodeVariable: _varName,
+                                    nodeVariable: variableName,
                                     relationship,
                                     relationshipVariable,
                                     context,
@@ -157,7 +157,7 @@ export default function createUpdateAndParams({
 
                         const labels = refNode.getLabelString(context);
                         subquery.push(
-                            `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${_varName}${labels})`
+                            `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
                         );
 
                         if (node.auth) {
@@ -165,7 +165,7 @@ export default function createUpdateAndParams({
                                 operations: "UPDATE",
                                 entity: refNode,
                                 context,
-                                where: { varName: _varName, node: refNode },
+                                where: { varName: variableName, node: refNode },
                             });
                             if (whereAuth[0]) {
                                 whereStrs.push(whereAuth[0]);
@@ -177,8 +177,8 @@ export default function createUpdateAndParams({
                         }
 
                         if (update.update.node) {
-                            subquery.push(`CALL apoc.do.when(${_varName} IS NOT NULL, "`);
-                            const nestedWithVars = [...withVars, _varName];
+                            subquery.push(`CALL apoc.do.when(${variableName} IS NOT NULL, "`);
+                            const nestedWithVars = [...withVars, variableName];
                             const auth = createAuthParam({ context });
                             let innerApocParams = { auth };
 
@@ -206,9 +206,9 @@ export default function createUpdateAndParams({
                                 callbackBucket,
                                 node: refNode,
                                 updateInput: nestedUpdateInput,
-                                varName: _varName,
+                                varName: variableName,
                                 withVars: nestedWithVars,
-                                parentVar: _varName,
+                                parentVar: variableName,
                                 chainStr: `${param}${relationField.union ? `_${refNode.name}` : ""}${index}`,
                                 parameterPrefix: `${parameterPrefix}.${key}${
                                     relationField.union ? `.${refNode.name}` : ""
@@ -225,9 +225,9 @@ export default function createUpdateAndParams({
                                     callbackBucket,
                                     node: refNode,
                                     updateInput: update.update.node._on[refNode.name],
-                                    varName: _varName,
+                                    varName: variableName,
                                     withVars: nestedWithVars,
-                                    parentVar: _varName,
+                                    parentVar: variableName,
                                     chainStr: `${param}${relationField.union ? `_${refNode.name}` : ""}${index}_on_${
                                         refNode.name
                                     }`,
@@ -248,7 +248,7 @@ export default function createUpdateAndParams({
                             }
                             const apocArgs = `{${withVars.map((withVar) => `${withVar}:${withVar}`).join(", ")}, ${
                                 parameterPrefix?.split(".")[0]
-                            }: $${parameterPrefix?.split(".")[0]}, ${_varName}:${_varName}REPLACE_ME}`;
+                            }: $${parameterPrefix?.split(".")[0]}, ${variableName}:${variableName}REPLACE_ME}`;
 
                             updateStrs.push(
                                 `", ${
@@ -304,7 +304,7 @@ export default function createUpdateAndParams({
                             context,
                             refNodes: [refNode],
                             value: update.disconnect,
-                            varName: `${_varName}_disconnect`,
+                            varName: `${variableName}_disconnect`,
                             withVars,
                             parentVar,
                             relationField,
@@ -324,7 +324,7 @@ export default function createUpdateAndParams({
                             callbackBucket,
                             refNodes: [refNode],
                             value: update.connect,
-                            varName: `${_varName}_connect`,
+                            varName: `${variableName}_connect`,
                             withVars,
                             parentVar,
                             relationField,
@@ -338,7 +338,7 @@ export default function createUpdateAndParams({
                     if (update.connectOrCreate) {
                         const { cypher, params } = createConnectOrCreateAndParams({
                             input: update.connectOrCreate,
-                            varName: `${_varName}_connectOrCreate`,
+                            varName: `${variableName}_connectOrCreate`,
                             parentVar: varName,
                             relationField,
                             refNode,
@@ -351,7 +351,7 @@ export default function createUpdateAndParams({
                     }
 
                     if (update.delete) {
-                        const innerVarName = `${_varName}_delete`;
+                        const innerVarName = `${variableName}_delete`;
 
                         const deleteAndParams = createDeleteAndParams({
                             context,
@@ -376,7 +376,7 @@ export default function createUpdateAndParams({
                         }
                         const creates = relationField.typeMeta.array ? update.create : [update.create];
                         creates.forEach((create, i) => {
-                            const baseName = `${_varName}_create${i}`;
+                            const baseName = `${variableName}_create${i}`;
                             const nodeName = `${baseName}_node`;
                             const propertiesName = `${baseName}_relationship`;
 

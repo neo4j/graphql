@@ -24,7 +24,7 @@ type AbstractConstructorType<T> = abstract new (...args: any[]) => T;
 
 // Based on https://www.typescriptlang.org/docs/handbook/mixins.html
 /** Applies mixins into a class */
-export function applyMixins(baseClass: ConstructorType<any>, mixins: AbstractConstructorType<ClauseMixin>[]) {
+export function applyMixins(baseClass: ConstructorType<any>, mixins: AbstractConstructorType<ClauseMixin>[]): void {
     mixins.forEach((baseCtor) => {
         Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
             Object.defineProperty(
