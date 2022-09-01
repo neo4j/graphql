@@ -91,7 +91,8 @@ describe("LocalTime", () => {
                     { id }
                 );
 
-                const neo4jMovie: { id: string; time: any } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; time: { toString(): string } } =
+                    neo4jResult.records[0].toObject().movie;
                 expect(neo4jMovie).toBeDefined();
                 expect(neo4jMovie.id).toEqual(id);
                 expect(neo4jDriver.isLocalTime(neo4jMovie.time)).toBe(true);
@@ -161,7 +162,8 @@ describe("LocalTime", () => {
                     { id }
                 );
 
-                const neo4jMovie: { id: string; times: any[] } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; times: { toString(): string }[] } =
+                    neo4jResult.records[0].toObject().movie;
                 expect(neo4jMovie).toBeDefined();
                 expect(neo4jMovie.id).toEqual(id);
                 expect(neo4jMovie.times).toHaveLength(times.length);
@@ -241,7 +243,8 @@ describe("LocalTime", () => {
                     { id }
                 );
 
-                const neo4jMovie: { id: string; time: any } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; time: { toString(): string } } =
+                    neo4jResult.records[0].toObject().movie;
                 expect(neo4jMovie).toBeDefined();
                 expect(neo4jMovie.id).toEqual(id);
                 expect(neo4jDriver.isLocalTime(neo4jMovie.time)).toBe(true);

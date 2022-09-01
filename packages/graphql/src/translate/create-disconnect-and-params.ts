@@ -168,7 +168,9 @@ function createDisconnectAndParams({
         // TODO - relationship validation - Blocking, if this were to be enforced it would stop someone from 'reconnecting'
 
         if (disconnect.disconnect) {
-            const disconnects = Array.isArray(disconnect.disconnect) ? disconnect.disconnect : [disconnect.disconnect];
+            const disconnects: Array<any> = Array.isArray(disconnect.disconnect)
+                ? disconnect.disconnect
+                : [disconnect.disconnect];
 
             disconnects.forEach((c, i) => {
                 const reduced = Object.entries(c)
@@ -330,7 +332,7 @@ function createDisconnectAndParams({
         return { subquery: subquery.join("\n"), params };
     }
 
-    function reducer(res: Res, disconnect: { where: any; disconnect: any }, index): Res {
+    function reducer(res: Res, disconnect: { where: any; disconnect: any }, index: number): Res {
         if (parentNode.auth) {
             const whereAuth = createAuthAndParams({
                 operations: "DISCONNECT",

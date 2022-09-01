@@ -1,3 +1,5 @@
+import type { InterfaceWhereArg, Node } from "../types";
+
 /**
  *
  * We want to project implementation if there is either:
@@ -6,7 +8,7 @@
  *   * There is no _on filter
  *   * _on is the only filter and the current implementation can be found within it
  */
-const filterInterfaceNodes = ({ node, whereInput }) =>
+const filterInterfaceNodes = ({ node, whereInput }: { node: Node; whereInput: InterfaceWhereArg }) =>
     !whereInput ||
     Object.keys(whereInput).length > 1 ||
     !Object.prototype.hasOwnProperty.call(whereInput, "_on") ||
