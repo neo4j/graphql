@@ -22,8 +22,10 @@ import { asArray, removeDuplicates } from "../utils/utils";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import type { ConnectionField, Context, GraphQLOptionsArg, InterfaceWhereArg, RelationField } from "../types";
 import filterInterfaceNodes from "../utils/filter-interface-nodes";
+// eslint-disable-next-line import/no-cycle
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import { createAuthAndParams } from "./create-auth-and-params";
+// eslint-disable-next-line import/no-cycle
 import createProjectionAndParams from "./create-projection-and-params";
 import { getRelationshipDirectionStr } from "../utils/get-relationship-direction";
 import createElementWhereAndParams from "./where/create-element-where-and-params";
@@ -190,25 +192,6 @@ function createInterfaceProjectionAndParams({
             });
         }
 
-        if (meta?.interfaceFields?.length) {
-            const prevRelationshipFields: string[] = [];
-            meta.interfaceFields.forEach((interfaceResolveTree) => {
-                const relationshipField = refNode.relationFields.find(
-                    (x) => x.fieldName === interfaceResolveTree.name
-                ) as RelationField;
-                const interfaceProjection = createInterfaceProjectionAndParams({
-                    resolveTree: interfaceResolveTree,
-                    field: relationshipField,
-                    context,
-                    nodeVariable: param,
-                    withVars: prevRelationshipFields,
-                });
-                prevRelationshipFields.push(relationshipField.dbPropertyName || relationshipField.fieldName);
-                subquery.push(interfaceProjection.cypher);
-                params = { ...params, ...interfaceProjection.params };
-            });
-        }
-
         const projectionSubqueryClause = CypherBuilder.concat(...projectionSubQueries);
         return new CypherBuilder.RawCypher((env) => {
             const subqueryStr = compileCypherIfExists(projectionSubqueryClause, env);
@@ -239,7 +222,7 @@ function createInterfaceProjectionAndParams({
         let interfaceProjection = [`WITH ${fullWithVars.join(", ")}`, subqueryStr];
         if (field.typeMeta.array) {
             interfaceProjection = [
-                `WITH ${fullWithVars.join(", ")}`,
+                `WITH *`,
                 "CALL {",
                 ...interfaceProjection,
                 `${withStr}RETURN collect(${field.fieldName}) AS ${field.fieldName}`,

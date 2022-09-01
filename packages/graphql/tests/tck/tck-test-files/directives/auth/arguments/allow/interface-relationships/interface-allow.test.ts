@@ -104,8 +104,7 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this
+            WITH *
             CALL {
             WITH this
             CALL {
@@ -121,14 +120,15 @@ describe("@auth allow with interface relationships", () => {
             }
             RETURN collect(content) AS content
             }
+            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id, content: content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"thisauth_param0\\": \\"id-01\\",
                 \\"this_Commentauth_param0\\": \\"id-01\\",
-                \\"this_Postauth_param0\\": \\"id-01\\",
-                \\"thisauth_param0\\": \\"id-01\\"
+                \\"this_Postauth_param0\\": \\"id-01\\"
             }"
         `);
     });
@@ -157,8 +157,7 @@ describe("@auth allow with interface relationships", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE this.id = $param0
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this
+            WITH *
             CALL {
             WITH this
             CALL {
@@ -183,12 +182,14 @@ describe("@auth allow with interface relationships", () => {
             }
             RETURN collect(content) AS content
             }
+            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id, content: content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
+                \\"thisauth_param0\\": \\"id-01\\",
                 \\"this_param0\\": \\"1\\",
                 \\"this_param1\\": \\"id-01\\",
                 \\"this_Commentauth_param0\\": \\"id-01\\",
@@ -199,8 +200,7 @@ describe("@auth allow with interface relationships", () => {
                             \\"id\\": \\"1\\"
                         }
                     }
-                },
-                \\"thisauth_param0\\": \\"id-01\\"
+                }
             }"
         `);
     });
@@ -276,7 +276,8 @@ describe("@auth allow with interface relationships", () => {
             YIELD value AS _
             RETURN count(*) AS _
             }
-            WITH this
+            WITH *
+            WITH *
             CALL {
             WITH this
             CALL {
@@ -297,6 +298,8 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_Commentauth_param0\\": \\"user-id\\",
+                \\"this_Postauth_param0\\": \\"user-id\\",
                 \\"param0\\": \\"user-id\\",
                 \\"this_update_content0_id\\": \\"new-id\\",
                 \\"this_content0auth_param0\\": \\"user-id\\",
@@ -313,8 +316,6 @@ describe("@auth allow with interface relationships", () => {
                     }
                 },
                 \\"thisauth_param0\\": \\"user-id\\",
-                \\"this_Commentauth_param0\\": \\"user-id\\",
-                \\"this_Postauth_param0\\": \\"user-id\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
                         \\"update\\": {

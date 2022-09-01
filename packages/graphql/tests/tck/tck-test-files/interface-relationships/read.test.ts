@@ -84,7 +84,7 @@ describe("Interface Relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH this
+            WITH *
             CALL {
             WITH this
             CALL {
@@ -168,7 +168,7 @@ describe("Interface Relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH this
+            WITH *
             CALL {
             WITH this
             CALL {
@@ -213,7 +213,7 @@ describe("Interface Relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH this
+            WITH *
             CALL {
             WITH this
             CALL {
@@ -268,7 +268,7 @@ describe("Interface Relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH this
+            WITH *
             CALL {
             WITH this
             CALL {

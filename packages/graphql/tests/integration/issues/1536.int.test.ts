@@ -24,14 +24,15 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 
-describe("https://github.com/neo4j/graphql/issues/1535", () => {
-    const testTenant = generateUniqueType("Tenant");
-    const testBooking = generateUniqueType("Booking");
-
-    let driver: Driver;
+describe("https://github.com/neo4j/graphql/issues/1536", () => {
     let schema: GraphQLSchema;
     let neo4j: Neo4j;
+    let driver: Driver;
     let session: Session;
+
+    const SomeNodeType = generateUniqueType("SomeNode");
+    const OtherNodeType = generateUniqueType("OtherNode");
+    const MyImplementationType = generateUniqueType("MyImplementation");
 
     async function graphqlQuery(query: string) {
         return graphql({
@@ -46,42 +47,30 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
         driver = await neo4j.getDriver();
 
         const typeDefs = `
-            type ${testTenant} {
+            type ${SomeNodeType} {
                 id: ID! @id
-                name: String!
-                events: [Event!]! @relationship(type: "HOSTED_BY", direction: IN)
-                fooBars: [FooBar!]! @relationship(type: "HAS_FOOBARS", direction: OUT)
+                other: ${OtherNodeType}! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
             }
-            
-            interface Event {
-                id: ID!
-                title: String
-                beginsAt: DateTime!
-            }
-            
-            type Screening implements Event {
+
+            type ${OtherNodeType} {
                 id: ID! @id
-                title: String
-                beginsAt: DateTime!
+                interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
             }
-            
-            type ${testBooking} implements Event {
-                id: ID!
-                title: String
-                beginsAt: DateTime!
-                duration: Int!
-            }
-            
-            type FooBar {
+
+            interface MyInterface {
                 id: ID! @id
-                name: String!
+            }
+
+            type ${MyImplementationType} implements MyInterface {
+                id: ID! @id
             }
         `;
 
         session = await neo4j.getSession();
 
         await session.run(`
-            CREATE (:${testTenant} { id: "12", name: "Tenant1" })<-[:HOSTED_BY]-(:${testBooking} { id: "212" })
+            CREATE(:${SomeNodeType} {id: "1"})-[:HAS_OTHER_NODES]->(other:${OtherNodeType} {id: "2"})
+            CREATE(other)-[:HAS_INTERFACE_NODES]->(:${MyImplementationType} {id: "3"})
         `);
 
         const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
@@ -93,14 +82,15 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
         await driver.close();
     });
 
-    test("should not throw error when using alias in result projection for a field using an interface", async () => {
+    test("should not throw error when querying nested interfaces", async () => {
         const query = `
-            query { 
-                ${testTenant.plural} {
+            query {
+                ${SomeNodeType.plural} {
                     id
-                    name
-                    events232: events {
-                        id
+                    other {
+                        interfaceField {
+                            id
+                        }
                     }
                 }
             }
@@ -108,9 +98,17 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
 
         const queryResult = await graphqlQuery(query);
         expect(queryResult.errors).toBeUndefined();
-
-        expect(queryResult.data as any).toEqual({
-            [`${testTenant.plural}`]: [{ id: "12", name: "Tenant1", events232: [{ id: "212" }] }],
+        expect(queryResult.data).toEqual({
+            [SomeNodeType.plural]: [
+                {
+                    id: "1",
+                    other: {
+                        interfaceField: {
+                            id: "3",
+                        },
+                    },
+                },
+            ],
         });
     });
 });

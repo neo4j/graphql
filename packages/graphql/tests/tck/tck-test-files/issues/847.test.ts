@@ -69,7 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Interaction\`)
-            WITH this
+            WITH *
             CALL {
             WITH this
             CALL {
@@ -83,15 +83,15 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             }
             RETURN collect(subjects) AS subjects
             }
-            WITH subjects, this
+            WITH *
             CALL {
-            WITH subjects, this
+            WITH this
             CALL {
-                WITH subjects, this
+                WITH this
                 MATCH (this)-[:ACTED_IN]->(this_Person:Person)
                 RETURN { __resolveType: \\"Person\\", id: this_Person.id } AS objects
                 UNION
-                WITH subjects, this
+                WITH this
                 MATCH (this)-[:ACTED_IN]->(this_Place:Place)
                 RETURN { __resolveType: \\"Place\\", id: this_Place.id } AS objects
             }

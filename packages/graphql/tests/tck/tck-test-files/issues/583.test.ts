@@ -87,7 +87,7 @@ describe("#583", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH this
+            WITH *
             CALL {
             WITH this
             CALL {

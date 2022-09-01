@@ -108,7 +108,7 @@ describe("Interface Relationships - Create create", () => {
             SET this0_actedInMovie0_relationship.screenTime = $this0_actedInMovie0_relationship_screenTime
             RETURN this0
             }
-            WITH this0
+            WITH *
             CALL {
             WITH this0
             CALL {

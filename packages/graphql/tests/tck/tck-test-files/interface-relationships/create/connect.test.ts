@@ -123,7 +123,7 @@ describe("Interface Relationships - Create connect", () => {
             }
             RETURN this0
             }
-            WITH this0
+            WITH *
             CALL {
             WITH this0
             CALL {
