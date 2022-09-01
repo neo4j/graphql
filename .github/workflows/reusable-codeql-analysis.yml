@@ -19,8 +19,23 @@ jobs:
         #   config-file: ./.github/codeql/codeql-config.yml
       - name: Install dependencies
         run: yarn
-      - name: Build graphql
+      - name: Build packages/graphql
         run: yarn build
         working-directory: packages/graphql
+      - name: Build packages/introspector
+        run: yarn build
+        working-directory: packages/introspector
+      - name: Build packages/ogm
+        run: yarn build
+        working-directory: packages/ogm
+      - name: Build packages/graphql-toolbox
+        run: yarn build
+        working-directory: packages/graphql-toolbox
+      - name: Build packages/plugins/graphql-plugin-auth
+        run: yarn build
+        working-directory: packages/plugins/graphql-plugin-auth
+      - name: Build packages/plugins/graphql-plugin-subscriptions-amqp
+        run: yarn build
+        working-directory: packages/plugins/graphql-plugin-subscriptions-amqp
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
