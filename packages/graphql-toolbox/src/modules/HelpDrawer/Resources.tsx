@@ -85,7 +85,7 @@ const ResourceLinksBlock = ({ listBlockTitle, links }: ResourceLinksBlockProps):
                                 className="flex justify-start items-center"
                                 href={link.href}
                                 target="_blank"
-                                rel="noopener noreferrer"
+                                rel="noreferrer"
                             >
                                 {/* @ts-ignore - iconName is a string */}
                                 <HeroIcon className="h-6 w-6 mr-2 stroke-1" type="outline" iconName={link.iconName} />
