@@ -15,7 +15,8 @@
 #           cache: yarn
 #       - name: Initialize CodeQL
 #         uses: github/codeql-action/init@v2
-#         # with:
+#         with:
+#           languages: javascript
 #         #   config-file: ./.github/codeql/codeql-config.yml
 #       - name: Install dependencies
 #         run: yarn
@@ -71,8 +72,6 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           languages: javascript
-        # with:
-        #   config-file: ./.github/codeql/codeql-config.yml
       - name: Install dependencies
         run: yarn
       - name: Build packages/${{ matrix.package }}
