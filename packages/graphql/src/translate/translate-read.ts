@@ -313,6 +313,7 @@ function translateRootConnectionField({
         ...(offsetStr ? [offsetStr] : []),
         ...(limitStr ? [limitStr] : []),
         "}",
+        subStr.projectionSubqueries,
         ...subStr.connectionStrs,
         ...subStr.interfaceStrs,
         ...returnStrs,
