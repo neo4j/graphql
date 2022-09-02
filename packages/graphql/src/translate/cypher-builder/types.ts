@@ -33,6 +33,7 @@ import type { Case } from "./expressions/Case";
 import type { MathOp } from "./expressions/operations/math";
 import type { ListComprehension } from "./expressions/list/ListComprehension";
 import type { PatternComprehension } from "./expressions/list/PatternComprehension";
+import type { MapProjection } from "./CypherBuilder";
 
 export type Operation = BooleanOp | ComparisonOp | MathOp;
 
@@ -45,7 +46,8 @@ export type Expr =
     | Predicate
     | ListComprehension
     | PatternComprehension
-    | MapExpr
+    | MapExpr // NOTE this cannot be set as a property in a node
+    | MapProjection // NOTE this cannot be set as a property in a node
     | RunFirstColumn;
 
 /** Represents a predicate statement (i.e returns a boolean). Note that RawCypher is only added for compatibility */
