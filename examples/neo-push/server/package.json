@@ -5,7 +5,7 @@
     "description": "",
     "main": "./dist/src/index.js",
     "scripts": {
-        "start": "nodemon --watch './src/**/*.ts' --exec ./node_modules/.bin/ts-node -r tsconfig-paths/register --project ./src/tsconfig.json ./src/index.ts",
+        "start": "nodemon --watch './src/**/*.ts' --exec ../../../node_modules/.bin/ts-node -r tsconfig-paths/register --project ./src/tsconfig.json ./src/index.ts",
         "build": "tsc  --project src/",
         "seed": "ts-node -r tsconfig-paths/register --project ./src/tsconfig.json ./src/seeder.ts",
         "test": "jest"
@@ -21,6 +21,7 @@
         "debug": "4.3.4",
         "dotenv": "^16.0.1",
         "express": "4.17.1",
+        "express-rate-limit": "^6.5.2",
         "graphql": "16.6.0",
         "jsonwebtoken": "8.5.1",
         "neo4j-driver": "4.4.7"
