@@ -29,14 +29,20 @@ import mapToDbProperty from "../utils/map-to-db-property";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 
 interface Allow {
-    varName: string;
+    varName: string | CypherBuilder.Node;
     parentNode: Node;
     chainStr?: string;
 }
 
 interface Bind {
-    varName: string;
+    varName: string | CypherBuilder.Node;
     parentNode: Node;
+    chainStr?: string;
+}
+
+interface Where {
+    varName: string | CypherBuilder.Node;
+    node: Node;
     chainStr?: string;
 }
 
@@ -59,7 +65,7 @@ export function createAuthAndParams({
     context: Context;
     escapeQuotes?: boolean;
     bind?: Bind;
-    where?: { varName: string; chainStr?: string; node: Node };
+    where?: Where;
 }): [string, Record<string, any>] {
     const authPredicate = createAuthPredicates({
         entity,
@@ -78,12 +84,21 @@ export function createAuthAndParams({
         return authPredicate.getCypher(env);
     });
 
-    const chainStr = `${where?.varName || ""}${allow?.varName || ""}${bind?.varName || ""}`;
+    // const chainStr = `${where?.varName || ""}${allow?.varName || ""}${bind?.varName || ""}`;
+    const chainStr = generateUniqueChainStr([where?.varName, allow?.varName, bind?.varName]);
 
     // Params must be globally unique, variables can be just slightly different, as each auth statement is scoped
     const authCypher = authPredicateExpr.build({ params: `${chainStr}auth_`, variables: `auth_` });
 
     return [authCypher.cypher, authCypher.params];
+}
+
+function generateUniqueChainStr(varNames: Array<string | CypherBuilder.Node | undefined>): string {
+    return varNames
+        .map((v) => {
+            return typeof v === "string" ? v : "";
+        })
+        .join("");
 }
 
 export function createAuthPredicates({
@@ -105,7 +120,7 @@ export function createAuthPredicates({
     context: Context;
     escapeQuotes?: boolean;
     bind?: Bind;
-    where?: { varName: string; chainStr?: string; node: Node };
+    where?: Where;
 }): CypherBuilder.Predicate | undefined {
     if (!entity.auth) {
         return undefined;
@@ -162,7 +177,7 @@ function createSubPredicate({
     context: Context;
     escapeQuotes?: boolean;
     bind?: Bind;
-    where?: { varName: string; chainStr?: string; node: Node };
+    where?: Where;
 }): CypherBuilder.Predicate | undefined {
     const thisPredicates: CypherBuilder.Predicate[] = [];
     const authParam = new CypherBuilder.NamedParam("auth");
@@ -181,7 +196,7 @@ function createSubPredicate({
     }
 
     if (allow && authRule.allow) {
-        const nodeRef = new CypherBuilder.NamedNode(allow.varName);
+        const nodeRef = getOrCreateCypherNode(allow.varName);
         const allowAndParams = createAuthPredicate({
             context,
             node: allow.parentNode,
@@ -234,7 +249,7 @@ function createSubPredicate({
     });
 
     if (where && authRule.where) {
-        const nodeRef = new CypherBuilder.NamedNode(where.varName);
+        const nodeRef = getOrCreateCypherNode(where.varName);
 
         const wherePredicate = createAuthPredicate({
             context,
@@ -249,7 +264,7 @@ function createSubPredicate({
     }
 
     if (bind && authRule.bind) {
-        const nodeRef = new CypherBuilder.NamedNode(bind.varName);
+        const nodeRef = getOrCreateCypherNode(bind.varName);
 
         const allowPredicate = createAuthPredicate({
             context,
@@ -492,4 +507,8 @@ function createAuthField({
 function isValueInListCypher(value: CypherBuilder.Variable, list: CypherBuilder.Expr): CypherBuilder.PredicateFunction {
     const listItemVar = new CypherBuilder.Variable();
     return CypherBuilder.any(listItemVar, list, CypherBuilder.eq(listItemVar, value));
+}
+function getOrCreateCypherNode(nameOrNode: CypherBuilder.Node | string): CypherBuilder.Node {
+    if (typeof nameOrNode === "string") return new CypherBuilder.NamedNode(nameOrNode);
+    return nameOrNode;
 }

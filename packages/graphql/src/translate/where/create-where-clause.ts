@@ -21,6 +21,7 @@ import type { PointField, PrimitiveField } from "../../types";
 import type { WhereOperator } from "./types";
 import { comparisonMap } from "./utils";
 
+// TODO: remove after refactor
 export default function createWhereClause({
     property,
     param,

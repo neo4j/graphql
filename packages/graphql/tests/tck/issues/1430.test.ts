@@ -90,11 +90,11 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             WITH this
             CALL {
                 WITH this
-                MATCH (this)-[:HAS_INTERFACE]->(this_ChildOne:ChildOne)
+                MATCH (this)-[update_this0:HAS_INTERFACE]->(this_ChildOne:\`ChildOne\`)
                 RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS interface
                 UNION
                 WITH this
-                MATCH (this)-[:HAS_INTERFACE]->(this_ChildTwo:ChildTwo)
+                MATCH (this)-[update_this1:HAS_INTERFACE]->(this_ChildTwo:\`ChildTwo\`)
                 RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS interface
             }
             RETURN collect(DISTINCT this { .id, interface: interface }) AS data"
@@ -161,11 +161,11 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             WITH this
             CALL {
                 WITH this
-                MATCH (this)-[:HAS_INTERFACE]->(this_ChildOne:ChildOne)
+                MATCH (this)-[update_this0:HAS_INTERFACE]->(this_ChildOne:\`ChildOne\`)
                 RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS interface
                 UNION
                 WITH this
-                MATCH (this)-[:HAS_INTERFACE]->(this_ChildTwo:ChildTwo)
+                MATCH (this)-[update_this1:HAS_INTERFACE]->(this_ChildTwo:\`ChildTwo\`)
                 RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS interface
             }
             RETURN collect(DISTINCT this { .id, interface: interface }) AS data"

@@ -244,7 +244,7 @@ describe("Interface Relationships", () => {
         `);
     });
 
-    test("Filter overriding using onType", async () => {
+    test.only("Filter overriding using onType", async () => {
         const query = gql`
             query {
                 actors {
@@ -273,13 +273,13 @@ describe("Interface Relationships", () => {
             WITH this
             CALL {
                 WITH this
-                MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
-                WHERE this_Movie.title STARTS WITH $this_actedIn.args.where._on.Movie.title_STARTS_WITH
+                MATCH (this)-[thisthis0:ACTED_IN]->(this_Movie:\`Movie\`)
+                WHERE this_Movie.title STARTS WITH $thisparam0
                 RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
                 UNION
                 WITH this
-                MATCH (this)-[:ACTED_IN]->(this_Series:Series)
-                WHERE this_Series.title STARTS WITH $this_actedIn.args.where.title_STARTS_WITH
+                MATCH (this)-[thisthis1:ACTED_IN]->(this_Series:\`Series\`)
+                WHERE this_Series.title STARTS WITH $thisparam1
                 RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
             RETURN collect(actedIn) AS actedIn
@@ -289,18 +289,8 @@ describe("Interface Relationships", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actedIn\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"_on\\": {
-                                \\"Movie\\": {
-                                    \\"title_STARTS_WITH\\": \\"The \\"
-                                }
-                            },
-                            \\"title_STARTS_WITH\\": \\"A \\"
-                        }
-                    }
-                }
+                \\"thisparam0\\": \\"The \\",
+                \\"thisparam1\\": \\"A \\"
             }"
         `);
     });

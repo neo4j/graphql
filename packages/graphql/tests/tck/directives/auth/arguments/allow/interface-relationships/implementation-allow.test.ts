@@ -102,12 +102,12 @@ describe("@auth allow on specific interface implementation", () => {
             WITH this
             CALL {
                 WITH this
-                MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
+                MATCH (this)-[thisthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
                 RETURN { __resolveType: \\"Comment\\", id: this_Comment.id, content: this_Comment.content } AS content
                 UNION
                 WITH this
-                MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
-                CALL apoc.util.validate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(auth_this0 IN [(this_Post)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Postauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MATCH (this)-[thisthis1:HAS_CONTENT]->(this_Post:\`Post\`)
+                WHERE apoc.util.validatePredicate(NOT ((exists((this_Post:\`Post\`)<-[:HAS_CONTENT]-(:\`User\`)) AND any(thisthis2 IN [(this_Post:\`Post\`)<-[:HAS_CONTENT]-(thisthis2:\`User\`) | thisthis2] WHERE (thisthis2.id IS NOT NULL AND thisthis2.id = $thisparam0)))), [0])
                 RETURN { __resolveType: \\"Post\\", id: this_Post.id, content: this_Post.content } AS content
             }
             RETURN collect(content) AS content
@@ -117,7 +117,7 @@ describe("@auth allow on specific interface implementation", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_Postauth_param0\\": \\"id-01\\"
+                \\"thisparam0\\": \\"id-01\\"
             }"
         `);
     });
@@ -151,18 +151,17 @@ describe("@auth allow on specific interface implementation", () => {
             WITH this
             CALL {
                 WITH this
-                MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
-                WHERE this_Comment.id = $this_content.args.where.id
+                MATCH (this)-[thisthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
+                WHERE this_Comment.id = $thisparam0
                 RETURN { __resolveType: \\"Comment\\" } AS content
                 UNION
                 WITH this
-                MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
-                CALL apoc.util.validate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(auth_this0 IN [(this_Post)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Postauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WHERE this_Post.id = $this_content.args.where.id
+                MATCH (this)-[thisthis1:HAS_CONTENT]->(this_Post:\`Post\`)
+                WHERE (apoc.util.validatePredicate(NOT ((exists((this_Post:\`Post\`)<-[:HAS_CONTENT]-(:\`User\`)) AND any(thisthis2 IN [(this_Post:\`Post\`)<-[:HAS_CONTENT]-(thisthis2:\`User\`) | thisthis2] WHERE (thisthis2.id IS NOT NULL AND thisthis2.id = $thisparam1)))), [0]) AND this_Post.id = $thisparam2)
                 CALL {
                     WITH this_Post
-                    MATCH (this_Post)-[this_this0:HAS_COMMENT]->(this_Post_comments:\`Comment\`)
-                    WHERE this_Post_comments.id = $this_param0
+                    MATCH (this_Post)-[thisthis3:HAS_COMMENT]->(this_Post_comments:\`Comment\`)
+                    WHERE this_Post_comments.id = $thisparam3
                     WITH this_Post_comments { .content } AS this_Post_comments
                     RETURN collect(this_Post_comments) AS this_Post_comments
                 }
@@ -176,15 +175,10 @@ describe("@auth allow on specific interface implementation", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"this_param0\\": \\"1\\",
-                \\"this_Postauth_param0\\": \\"id-01\\",
-                \\"this_content\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"id\\": \\"1\\"
-                        }
-                    }
-                }
+                \\"thisparam0\\": \\"1\\",
+                \\"thisparam1\\": \\"id-01\\",
+                \\"thisparam2\\": \\"1\\",
+                \\"thisparam3\\": \\"1\\"
             }"
         `);
     });
@@ -262,12 +256,12 @@ describe("@auth allow on specific interface implementation", () => {
             WITH this
             CALL {
                 WITH this
-                MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
+                MATCH (this)-[update_this0:HAS_CONTENT]->(this_Comment:\`Comment\`)
                 RETURN { __resolveType: \\"Comment\\", id: this_Comment.id } AS content
                 UNION
                 WITH this
-                MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
-                CALL apoc.util.validate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(auth_this0 IN [(this_Post)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Postauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MATCH (this)-[update_this1:HAS_CONTENT]->(this_Post:\`Post\`)
+                WHERE apoc.util.validatePredicate(NOT ((exists((this_Post:\`Post\`)<-[:HAS_CONTENT]-(:\`User\`)) AND any(update_this2 IN [(this_Post:\`Post\`)<-[:HAS_CONTENT]-(update_this2:\`User\`) | update_this2] WHERE (update_this2.id IS NOT NULL AND update_this2.id = $update_param0)))), [0])
                 RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS content
             }
             RETURN collect(content) AS content
@@ -277,7 +271,7 @@ describe("@auth allow on specific interface implementation", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_Postauth_param0\\": \\"user-id\\",
+                \\"update_param0\\": \\"user-id\\",
                 \\"param0\\": \\"user-id\\",
                 \\"this_update_content0_id\\": \\"new-id\\",
                 \\"auth\\": {

@@ -33,7 +33,7 @@ export class RelationshipRef extends Variable {
     private _target: NodeRef;
 
     public readonly type?: string;
-    public readonly directed: boolean;
+    public directed: boolean;
 
     constructor(input: RelationshipInput) {
         super("this");
