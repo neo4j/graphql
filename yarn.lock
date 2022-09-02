@@ -5,6 +5,17 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"@acuminous/bitsyntax@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "@acuminous/bitsyntax@npm:0.1.2"
+  dependencies:
+    buffer-more-ints: ~1.0.0
+    debug: ^4.3.4
+    safe-buffer: ~5.1.2
+  checksum: d2f9f30dfc8ddb10673e4780fa997fbe43fe3b6cd996b9930803d1b3c5db42fd964f9dab225f9e1cc06a2a22832b5a04e37076f2d283365768c7bd9718642db4
+  languageName: node
+  linkType: hard
+
 "@ampproject/remapping@npm:^2.1.0":
   version: 2.2.0
   resolution: "@ampproject/remapping@npm:2.2.0"
@@ -2448,19 +2459,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:0.7.0, @neo4j-ndl/base@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@neo4j-ndl/base@npm:0.7.0"
-  checksum: 4d10987740e7be6433d6a67b70fb7aafbc1bd0ffcf3ac4f5c29a13bcee708e12d58d75e8f51f2a984b79657dabde188de8e31e401f4411a532ae844865a9d26b
+"@neo4j-ndl/base@npm:0.7.1, @neo4j-ndl/base@npm:^0.7.1":
+  version: 0.7.1
+  resolution: "@neo4j-ndl/base@npm:0.7.1"
+  checksum: 0d61c90f6132075eb31a44a2bc5e550e04ae5668276e8f7f3ec1c1bfd885f3a8e95d180bd18f9aaa7b63743b8105be6547093b29f4c4ab5687ef7742eca8ed75
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:0.7.0":
-  version: 0.7.0
-  resolution: "@neo4j-ndl/react@npm:0.7.0"
+"@neo4j-ndl/react@npm:0.7.1":
+  version: 0.7.1
+  resolution: "@neo4j-ndl/react@npm:0.7.1"
   dependencies:
     "@heroicons/react": ^1.0.5
-    "@neo4j-ndl/base": ^0.7.0
+    "@neo4j-ndl/base": ^0.7.1
     classnames: ^2.3.1
     detect-browser: ^5.3.0
     react-dropzone: ^14.0.0
@@ -2469,7 +2480,7 @@ __metadata:
     react-use: ^17.4.0
   peerDependencies:
     react: 17.x
-  checksum: 0beea0a142f054ce48e4a679a9d7a0fd34e146e529e3ce37cf08e32f202c9efdc429b801a7a96ef2c92375d6842b953b465ef63b05f186d2541540b7c7eaf3be
+  checksum: 3388a47caf524c5bba69b68bebcfdf6a0ba69a4c04c6ff20f8c9a0721e7ad5db028cd4ed785656b0f1d7e6b7af2fdfcaf9b3c1c5d9ec90d4d14bc7d911bc6056
   languageName: node
   linkType: hard
 
@@ -2529,7 +2540,7 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/jest": 29.0.0
     "@types/node": 16.11.56
-    amqplib: 0.10.2
+    amqplib: 0.10.3
     apollo-server: 3.10.2
     apollo-server-express: 3.10.2
     camelcase: 6.3.0
@@ -2551,8 +2562,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@neo4j-ndl/base": 0.7.0
-    "@neo4j-ndl/react": 0.7.0
+    "@neo4j-ndl/base": 0.7.1
+    "@neo4j-ndl/react": 0.7.1
     "@neo4j/graphql": 3.7.0
     "@neo4j/introspector": ^1.0.1
     "@playwright/test": 1.25.1
@@ -4319,15 +4330,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"amqplib@npm:0.10.2":
-  version: 0.10.2
-  resolution: "amqplib@npm:0.10.2"
+"amqplib@npm:0.10.3":
+  version: 0.10.3
+  resolution: "amqplib@npm:0.10.3"
   dependencies:
-    bitsyntax: ~0.1.0
+    "@acuminous/bitsyntax": ^0.1.2
     buffer-more-ints: ~1.0.0
     readable-stream: 1.x >=1.1.9
     url-parse: ~1.5.10
-  checksum: aa52b7f807d031d724cc59b26f8dc7ed2781932d759da0a474c07e152d9575072e3a8ba311514df3d5f623b8a97f0801d0cd38a3a30fd77cd16acbbc95f0f319
+  checksum: 999f0fae748fd29d4d4ec1067c389ecb8cb03f9c060f854a4cab757e911e9690da643419553b0291ec45693996a959b87ec87ae7e72268b818be0e284e60da7a
   languageName: node
   linkType: hard
 
@@ -5186,17 +5197,6 @@ __metadata:
   version: 2.2.0
   resolution: "binary-extensions@npm:2.2.0"
   checksum: ccd267956c58d2315f5d3ea6757cf09863c5fc703e50fbeb13a7dc849b812ef76e3cf9ca8f35a0c48498776a7478d7b4a0418e1e2b8cb9cb9731f2922aaad7f8
-  languageName: node
-  linkType: hard
-
-"bitsyntax@npm:~0.1.0":
-  version: 0.1.0
-  resolution: "bitsyntax@npm:0.1.0"
-  dependencies:
-    buffer-more-ints: ~1.0.0
-    debug: ~2.6.9
-    safe-buffer: ~5.1.2
-  checksum: b9f1548eeea950a59021b58bd2caf0bc402de94e2797fa274ed5a57dfc54240a9acbf2115b342e698c7e398949c6a13e87fb9da15388e9d007411080dd195f07
   languageName: node
   linkType: hard
 
@@ -6876,7 +6876,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:2.6.9, debug@npm:^2.6.9, debug@npm:~2.6.9":
+"debug@npm:2.6.9, debug@npm:^2.6.9":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
   dependencies:

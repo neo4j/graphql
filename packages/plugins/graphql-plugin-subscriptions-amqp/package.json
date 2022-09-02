@@ -52,7 +52,7 @@
         "ws": "8.8.1"
     },
     "dependencies": {
-        "amqplib": "0.10.2"
+        "amqplib": "0.10.3"
     },
     "peerDependencies": {
         "@neo4j/graphql": "^3.7.0"
