@@ -1,10 +1,64 @@
+# name: "Code Scanning with GitHub CodeQL"
+
+# on:
+#   workflow_call:
+
+# jobs:
+#   code-scanning:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - uses: actions/checkout@v3
+#       - uses: actions/setup-node@v3
+#         with:
+#           node-version: lts/*
+#           cache: yarn
+#       - name: Initialize CodeQL
+#         uses: github/codeql-action/init@v2
+#         # with:
+#         #   config-file: ./.github/codeql/codeql-config.yml
+#       - name: Install dependencies
+#         run: yarn
+#       - name: Build packages/graphql
+#         run: yarn build
+#         working-directory: packages/graphql
+#       - name: Build packages/introspector
+#         run: yarn build
+#         working-directory: packages/introspector
+#       - name: Build packages/ogm
+#         run: yarn build
+#         working-directory: packages/ogm
+#       - name: Build packages/graphql-toolbox
+#         run: yarn build
+#         working-directory: packages/graphql-toolbox
+#       - name: Build packages/plugins/graphql-plugin-auth
+#         run: yarn build
+#         working-directory: packages/plugins/graphql-plugin-auth
+#       - name: Build packages/plugins/graphql-plugin-subscriptions-amqp
+#         run: yarn build
+#         working-directory: packages/plugins/graphql-plugin-subscriptions-amqp
+#       - name: Perform CodeQL Analysis
+#         uses: github/codeql-action/analyze@v2
+
+#         # use matrix and category: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#configuring-a-category-for-the-analysis
+
+
 name: "Code Scanning with GitHub CodeQL"
 
 on:
   workflow_call:
 
 jobs:
-  package-tests:
+  code-scanning:
+    strategy:
+      matrix:
+        package:
+          - graphql
+          - introspector
+          - ogm
+          - plugins/graphql-plugin-auth
+          - plugins/graphql-plugin-subscriptions-amqp
+
     runs-on: ubuntu-latest
 
     steps:
@@ -15,27 +69,16 @@ jobs:
           cache: yarn
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
+        with:
+          languages: javascript
         # with:
         #   config-file: ./.github/codeql/codeql-config.yml
       - name: Install dependencies
         run: yarn
-      - name: Build packages/graphql
+      - name: Build packages/${{ matrix.package }}
         run: yarn build
-        working-directory: packages/graphql
-      - name: Build packages/introspector
-        run: yarn build
-        working-directory: packages/introspector
-      - name: Build packages/ogm
-        run: yarn build
-        working-directory: packages/ogm
-      - name: Build packages/graphql-toolbox
-        run: yarn build
-        working-directory: packages/graphql-toolbox
-      - name: Build packages/plugins/graphql-plugin-auth
-        run: yarn build
-        working-directory: packages/plugins/graphql-plugin-auth
-      - name: Build packages/plugins/graphql-plugin-subscriptions-amqp
-        run: yarn build
-        working-directory: packages/plugins/graphql-plugin-subscriptions-amqp
+        working-directory: packages/${{ matrix.package }}
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
+        with:
+          category: packages/${{ matrix.package }}
