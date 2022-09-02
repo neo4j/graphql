@@ -19,8 +19,8 @@
 
 import { gql } from "apollo-server";
 import type { DocumentNode } from "graphql";
-import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../../src";
+import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("https://github.com/neo4j/graphql/issues/2022", () => {
     let typeDefs: DocumentNode;
