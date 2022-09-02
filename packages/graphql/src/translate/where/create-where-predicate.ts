@@ -24,6 +24,12 @@ import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 // eslint-disable-next-line import/no-cycle
 import { createPropertyWhere } from "./property-operations/create-property-where";
 
+type WhereOperators = "OR" | "AND";
+
+function isWhereOperator(key: string): key is WhereOperators {
+    return ["OR", "AND"].includes(key);
+}
+
 /** Translate a target node and GraphQL input into a Cypher operation o valid where expression */
 export function createWherePredicate({
     targetElement,
@@ -39,14 +45,16 @@ export function createWherePredicate({
     const whereFields = Object.entries(whereInput);
 
     const predicates = whereFields.map(([key, value]): CypherBuilder.Predicate | undefined => {
-        if (key === "OR") {
-            const nested = mapPropertiesToPredicates({ value, element, targetElement, context });
-            return CypherBuilder.or(...nested);
+        if (isWhereOperator(key)) {
+            return createNestedPredicate({
+                key,
+                element,
+                targetElement,
+                context,
+                value,
+            });
         }
-        if (key === "AND") {
-            const nested = mapPropertiesToPredicates({ value, element, targetElement, context });
-            return CypherBuilder.and(...nested);
-        }
+
         return createPropertyWhere({ key, value, element, targetElement, context });
     });
 
@@ -54,18 +62,24 @@ export function createWherePredicate({
     return CypherBuilder.and(...predicates);
 }
 
-function mapPropertiesToPredicates({
-    value,
+function createNestedPredicate({
+    key,
     element,
     targetElement,
     context,
+    value,
 }: {
-    value: Array<any>;
+    key: WhereOperators;
+    value: Array<GraphQLWhereArg>;
     element: GraphElement;
     targetElement: CypherBuilder.Variable;
     context: Context;
-}): Array<CypherBuilder.Predicate | undefined> {
-    return value.map((v) => {
+}): CypherBuilder.Predicate | undefined {
+    const nested = value.map((v) => {
         return createWherePredicate({ whereInput: v, element, targetElement, context });
     });
+    if (key === "OR") {
+        return CypherBuilder.or(...nested);
+    }
+    return CypherBuilder.and(...nested);
 }
