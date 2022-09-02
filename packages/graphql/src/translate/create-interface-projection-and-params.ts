@@ -32,6 +32,7 @@ import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-a
 import { compileCypherIfExists } from "./cypher-builder/utils/utils";
 import type { Node } from "../classes";
 import { createWherePredicate } from "./where/create-where-predicate";
+import { AUTH_FORBIDDEN_ERROR } from "../constants";
 
 export default function createInterfaceProjectionAndParams({
     resolveTree,
@@ -152,7 +153,10 @@ function createInterfaceSubquery({
         context,
     });
     if (authAllowPredicate) {
-        const apocValidateClause = new CypherBuilder.apoc.ValidatePredicate(CypherBuilder.not(authAllowPredicate));
+        const apocValidateClause = new CypherBuilder.apoc.ValidatePredicate(
+            CypherBuilder.not(authAllowPredicate),
+            AUTH_FORBIDDEN_ERROR
+        );
         matchQuery.where(apocValidateClause);
     }
 

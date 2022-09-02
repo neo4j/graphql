@@ -107,7 +107,7 @@ describe("@auth allow on specific interface implementation", () => {
                 UNION
                 WITH this
                 MATCH (this)-[thisthis1:HAS_CONTENT]->(this_Post:\`Post\`)
-                WHERE apoc.util.validatePredicate(NOT ((exists((this_Post:\`Post\`)<-[:HAS_CONTENT]-(:\`User\`)) AND any(thisthis2 IN [(this_Post:\`Post\`)<-[:HAS_CONTENT]-(thisthis2:\`User\`) | thisthis2] WHERE (thisthis2.id IS NOT NULL AND thisthis2.id = $thisparam0)))), [0])
+                WHERE apoc.util.validatePredicate(NOT ((exists((this_Post:\`Post\`)<-[:HAS_CONTENT]-(:\`User\`)) AND any(thisthis2 IN [(this_Post:\`Post\`)<-[:HAS_CONTENT]-(thisthis2:\`User\`) | thisthis2] WHERE (thisthis2.id IS NOT NULL AND thisthis2.id = $thisparam0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN { __resolveType: \\"Post\\", id: this_Post.id, content: this_Post.content } AS content
             }
             RETURN collect(content) AS content
@@ -157,7 +157,7 @@ describe("@auth allow on specific interface implementation", () => {
                 UNION
                 WITH this
                 MATCH (this)-[thisthis1:HAS_CONTENT]->(this_Post:\`Post\`)
-                WHERE (apoc.util.validatePredicate(NOT ((exists((this_Post:\`Post\`)<-[:HAS_CONTENT]-(:\`User\`)) AND any(thisthis2 IN [(this_Post:\`Post\`)<-[:HAS_CONTENT]-(thisthis2:\`User\`) | thisthis2] WHERE (thisthis2.id IS NOT NULL AND thisthis2.id = $thisparam1)))), [0]) AND this_Post.id = $thisparam2)
+                WHERE (apoc.util.validatePredicate(NOT ((exists((this_Post:\`Post\`)<-[:HAS_CONTENT]-(:\`User\`)) AND any(thisthis2 IN [(this_Post:\`Post\`)<-[:HAS_CONTENT]-(thisthis2:\`User\`) | thisthis2] WHERE (thisthis2.id IS NOT NULL AND thisthis2.id = $thisparam1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND this_Post.id = $thisparam2)
                 CALL {
                     WITH this_Post
                     MATCH (this_Post)-[thisthis3:HAS_COMMENT]->(this_Post_comments:\`Comment\`)
@@ -261,7 +261,7 @@ describe("@auth allow on specific interface implementation", () => {
                 UNION
                 WITH this
                 MATCH (this)-[update_this1:HAS_CONTENT]->(this_Post:\`Post\`)
-                WHERE apoc.util.validatePredicate(NOT ((exists((this_Post:\`Post\`)<-[:HAS_CONTENT]-(:\`User\`)) AND any(update_this2 IN [(this_Post:\`Post\`)<-[:HAS_CONTENT]-(update_this2:\`User\`) | update_this2] WHERE (update_this2.id IS NOT NULL AND update_this2.id = $update_param0)))), [0])
+                WHERE apoc.util.validatePredicate(NOT ((exists((this_Post:\`Post\`)<-[:HAS_CONTENT]-(:\`User\`)) AND any(update_this2 IN [(this_Post:\`Post\`)<-[:HAS_CONTENT]-(update_this2:\`User\`) | update_this2] WHERE (update_this2.id IS NOT NULL AND update_this2.id = $update_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS content
             }
             RETURN collect(content) AS content

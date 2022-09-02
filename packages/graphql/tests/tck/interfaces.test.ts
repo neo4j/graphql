@@ -95,7 +95,7 @@ describe("Interfaces tests", () => {
                 CALL {
                     WITH this_other
                     MATCH (this_other)-[thisthis1:HAS_INTERFACE_NODES]->(this_other_SomeNode:\`SomeNode\`)
-                    WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), [0])
+                    WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN { __resolveType: \\"SomeNode\\", id: this_other_SomeNode.id } AS interfaceField
                     UNION
                     WITH this_other
