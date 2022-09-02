@@ -19,15 +19,14 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { asArray, removeDuplicates } from "../utils/utils";
-import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import type { ConnectionField, Context, GraphQLOptionsArg, InterfaceWhereArg, RelationField } from "../types";
 import filterInterfaceNodes from "../utils/filter-interface-nodes";
 // eslint-disable-next-line import/no-cycle
 import createConnectionAndParams from "./connection/create-connection-and-params";
-import { createAuthAndParams, createAuthPredicates } from "./create-auth-and-params";
+import { createAuthPredicates } from "./create-auth-and-params";
 // eslint-disable-next-line import/no-cycle
 import createProjectionAndParams from "./create-projection-and-params";
-import { getRelationshipDirection, getRelationshipDirectionStr } from "../utils/get-relationship-direction";
+import { getRelationshipDirection } from "../utils/get-relationship-direction";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 import { compileCypherIfExists } from "./cypher-builder/utils/utils";
@@ -39,18 +38,14 @@ export default function createInterfaceProjectionAndParams({
     field,
     context,
     nodeVariable,
-    parameterPrefix,
     withVars,
 }: {
     resolveTree: ResolveTree;
     field: RelationField;
     context: Context;
     nodeVariable: string;
-    parameterPrefix?: string;
     withVars?: string[];
 }): CypherBuilder.Clause {
-    let globalParams = {};
-    let params: { args?: any } = {};
     const fullWithVars = removeDuplicates([...asArray(withVars), nodeVariable]);
     const parentNode = new CypherBuilder.NamedNode(nodeVariable);
     const whereInput = resolveTree.args.where as InterfaceWhereArg;
@@ -58,8 +53,6 @@ export default function createInterfaceProjectionAndParams({
     const referenceNodes = context.nodes.filter(
         (node) => field.interface?.implementations?.includes(node.name) && filterInterfaceNodes({ node, whereInput })
     );
-
-    let whereArgs: { _on?: any; [str: string]: any } = {};
 
     const subqueries = referenceNodes.map((refNode) => {
         return createInterfaceSubquery({
@@ -72,145 +65,6 @@ export default function createInterfaceProjectionAndParams({
             fullWithVars,
         });
     });
-    // const subqueries = referenceNodes.map((refNode) => {
-    //     const param = `${nodeVariable}_${refNode.name}`;
-    //     const subquery = [
-    //         `WITH ${fullWithVars.join(", ")}`,
-    //         `MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}(${param}:${refNode.name})`,
-    //     ];
-
-    //     const allowAndParams = createAuthAndParams({
-    //         operations: "READ",
-    //         entity: refNode,
-    //         context,
-    //         allow: {
-    //             parentNode: refNode,
-    //             varName: param,
-    //         },
-    //     });
-    //     if (allowAndParams[0]) {
-    //         globalParams = { ...globalParams, ...allowAndParams[1] };
-    //         subquery.push(`CALL apoc.util.validate(NOT (${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-    //     }
-
-    //     const whereStrs: string[] = [];
-
-    //     if (resolveTree.args.where) {
-    //         // For root filters
-    //         const rootNodeWhereAndParams = createElementWhereAndParams({
-    //             // TODO: move to createWherePredicate
-    //             whereInput: {
-    //                 ...Object.entries(whereInput).reduce((args, [k, v]) => {
-    //                     if (k !== "_on") {
-    //                         // If this where key is also inside _on for this implementation, use the one in _on instead
-    //                         if (whereInput?._on?.[refNode.name]?.[k]) {
-    //                             return args;
-    //                         }
-    //                         return { ...args, [k]: v };
-    //                     }
-
-    //                     return args;
-    //                 }, {}),
-    //             },
-    //             context,
-    //             element: refNode,
-    //             varName: param,
-    //             parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
-    //                 resolveTree.alias
-    //             }.args.where`,
-    //         });
-    //         if (rootNodeWhereAndParams[0]) {
-    //             whereStrs.push(rootNodeWhereAndParams[0]);
-    //             whereArgs = { ...whereArgs, ...rootNodeWhereAndParams[1] };
-    //         }
-
-    //         // For _on filters
-    //         if (whereInput?._on?.[refNode.name]) {
-    //             // TODO: move to createWherePredicate
-    //             const onTypeNodeWhereAndParams = createElementWhereAndParams({
-    //                 whereInput: {
-    //                     ...Object.entries(whereInput).reduce((args, [k, v]) => {
-    //                         if (k !== "_on") {
-    //                             return { ...args, [k]: v };
-    //                         }
-
-    //                         if (Object.prototype.hasOwnProperty.call(v, refNode.name)) {
-    //                             return { ...args, ...v[refNode.name] };
-    //                         }
-
-    //                         return args;
-    //                     }, {}),
-    //                 },
-    //                 context,
-    //                 element: refNode,
-    //                 varName: param,
-    //                 parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
-    //                     resolveTree.alias
-    //                 }.args.where._on.${refNode.name}`,
-    //             });
-    //             if (onTypeNodeWhereAndParams[0]) {
-    //                 whereStrs.push(onTypeNodeWhereAndParams[0]);
-    //                 if (whereArgs._on) {
-    //                     whereArgs._on[refNode.name] = onTypeNodeWhereAndParams[1];
-    //                 } else {
-    //                     whereArgs._on = { [refNode.name]: onTypeNodeWhereAndParams[1] };
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     const whereAuth = createAuthAndParams({
-    //         operations: "READ",
-    //         entity: refNode,
-    //         context,
-    //         where: { varName: param, node: refNode },
-    //     });
-    //     if (whereAuth[0]) {
-    //         whereStrs.push(whereAuth[0]);
-    //         globalParams = { ...globalParams, ...whereAuth[1] };
-    //     }
-
-    //     if (whereStrs.length) {
-    //         subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
-    //     }
-
-    //     const {
-    //         projection: projectionStr,
-    //         params: projectionParams,
-    //         meta,
-    //         subqueries: projectionSubQueries,
-    //     } = createProjectionAndParams({
-    //         resolveTree,
-    //         node: refNode,
-    //         context,
-    //         varName: param,
-    //         literalElements: true,
-    //         resolveType: true,
-    //     });
-    //     if (meta?.connectionFields?.length) {
-    //         meta.connectionFields.forEach((connectionResolveTree) => {
-    //             const connectionField = refNode.connectionFields.find(
-    //                 (x) => x.fieldName === connectionResolveTree.name
-    //             ) as ConnectionField;
-    //             const connection = createConnectionAndParams({
-    //                 resolveTree: connectionResolveTree,
-    //                 field: connectionField,
-    //                 context,
-    //                 nodeVariable: param,
-    //             });
-    //             subquery.push(connection[0]);
-    //             params = { ...params, ...projectionParams };
-    //         });
-    //     }
-
-    //     const projectionSubqueryClause = CypherBuilder.concat(...projectionSubQueries);
-    //     return new CypherBuilder.RawCypher((env) => {
-    //         const subqueryStr = compileCypherIfExists(projectionSubqueryClause, env);
-    //         const returnStatement = `RETURN ${projectionStr} AS ${field.fieldName}`;
-
-    //         return [[...subquery, subqueryStr, returnStatement].join("\n"), {}]; // TODO: pass params here instead of globalParams
-    //     });
-    // });
 
     const optionsInput = resolveTree.args.options as GraphQLOptionsArg | undefined;
     let withClause: CypherBuilder.With | undefined;
@@ -241,17 +95,7 @@ export default function createInterfaceProjectionAndParams({
             ];
         }
 
-        if (Object.keys(whereArgs).length) {
-            params.args = { where: whereArgs };
-        }
-
-        return [
-            interfaceProjection.join("\n"),
-            {
-                ...globalParams,
-                ...(Object.keys(params).length ? { [`${nodeVariable}_${resolveTree.alias}`]: params } : {}),
-            },
-        ];
+        return interfaceProjection.join("\n");
     });
 }
 
@@ -295,17 +139,8 @@ function createInterfaceSubquery({
 
     if (direction === "IN") pattern.reverse();
 
-    // const relTypeStr = `[:${field.type}]`;
-
-    // const { inStr, outStr } = getRelationshipDirectionStr(field, resolveTree.args);
     const withClause = new CypherBuilder.With(...fullWithVars.map((f) => new CypherBuilder.NamedVariable(f)));
     const matchQuery = new CypherBuilder.Match(pattern);
-
-    // const subquery = [
-    //     // `WITH ${fullWithVars.join(", ")}`,
-    //     `WITH *`,
-    //     `MATCH (${nodeVariable})${inStr}${relTypeStr}${outStr}(${param}:${refNode.name})`,
-    // ];
 
     const authAllowPredicate = createAuthPredicates({
         entity: refNode,
@@ -321,71 +156,12 @@ function createInterfaceSubquery({
         matchQuery.where(apocValidateClause);
     }
 
-    // const allowAndParams = createAuthAndParams({
-    //     operations: "READ",
-    //     entity: refNode,
-    //     context,
-    //     allow: {
-    //         parentNode: refNode,
-    //         varName: param,
-    //     },
-    // });
-    // if (allowAndParams[0]) {
-    //     globalParams = { ...globalParams, ...allowAndParams[1] };
-    //     subquery.push(`CALL apoc.util.validate(NOT (${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`);
-    // }
-
     if (resolveTree.args.where) {
-        // if (whereInput?._on?.[refNode.name]) {
-        //     // TODO: move to createWherePredicate
-        //     const whereInputWithOn = {
-        //         ...Object.entries(whereInput).reduce((args, [k, v]) => {
-        //             if (k !== "_on") {
-        //                 return { ...args, [k]: v };
-        //             }
-
-        //             if (Object.prototype.hasOwnProperty.call(v, refNode.name)) {
-        //                 return { ...args, ...v[refNode.name] };
-        //             }
-
-        //             return args;
-        //         }, {}),
-        //     };
-        // }
-
         const whereInput2 = {
             ...Object.entries(whereInput).reduce((args, [k, v]) => {
-                // const interfaceOverrideValue = whereInput?._on?.[refNode.name]?.[k];
-                // if (interfaceOverrideValue) {
-                //     return { ...args, [k]: interfaceOverrideValue };
-                // }
-
                 if (k !== "_on") {
                     return { ...args, [k]: v };
                 }
-
-                // if (Object.prototype.hasOwnProperty.call(v, refNode.name)) {
-                //     return { ...args, ...v[refNode.name] };
-                // }
-
-                // if (k === "_on") {
-                //     if (Object.prototype.hasOwnProperty.call(v, refNode.name)) {
-                //         return { ...args, ...v[refNode.name] };
-                //     }
-                //     return args;
-                // }
-
-                // if (k !== "_on") {
-                //     // If this where key is also inside _on for this implementation, use the one in _on instead
-                //     // if (whereInput?._on?.[refNode.name]?.[k]) {
-                //     //     return args;
-                //     // }
-                //     // FROM the _on thingy
-                //     if (Object.prototype.hasOwnProperty.call(v, refNode.name)) {
-                //         return { ...args, ...v[refNode.name] };
-                //     }
-                //     return { ...args, [k]: v };
-                // }
 
                 return args;
             }, {}),
@@ -402,68 +178,6 @@ function createInterfaceSubquery({
         if (wherePredicate) {
             matchQuery.where(wherePredicate);
         }
-
-        // For root filters
-        // const rootNodeWhereAndParams = createElementWhereAndParams({
-        //     // TODO: move to createWherePredicate
-        //     whereInput: {
-        //         ...Object.entries(whereInput).reduce((args, [k, v]) => {
-        //             if (k !== "_on") {
-        //                 // If this where key is also inside _on for this implementation, use the one in _on instead
-        //                 if (whereInput?._on?.[refNode.name]?.[k]) {
-        //                     return args;
-        //                 }
-        //                 return { ...args, [k]: v };
-        //             }
-
-        //             return args;
-        //         }, {}),
-        //     },
-        //     context,
-        //     element: refNode,
-        //     varName: param,
-        //     parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
-        //         resolveTree.alias
-        //     }.args.where`,
-        // });
-        // if (rootNodeWhereAndParams[0]) {
-        //     whereStrs.push(rootNodeWhereAndParams[0]);
-        //     whereArgs = { ...whereArgs, ...rootNodeWhereAndParams[1] };
-        // }
-
-        // For _on filters
-        // if (whereInput?._on?.[refNode.name]) {
-        //     // TODO: move to createWherePredicate
-        //     const onTypeNodeWhereAndParams = createElementWhereAndParams({
-        //         whereInput: {
-        //             ...Object.entries(whereInput).reduce((args, [k, v]) => {
-        //                 if (k !== "_on") {
-        //                     return { ...args, [k]: v };
-        //                 }
-
-        //                 if (Object.prototype.hasOwnProperty.call(v, refNode.name)) {
-        //                     return { ...args, ...v[refNode.name] };
-        //                 }
-
-        //                 return args;
-        //             }, {}),
-        //         },
-        //         context,
-        //         element: refNode,
-        //         varName: param,
-        //         parameterPrefix: `${parameterPrefix ? `${parameterPrefix}.` : `${nodeVariable}_`}${
-        //             resolveTree.alias
-        //         }.args.where._on.${refNode.name}`,
-        //     });
-        //     if (onTypeNodeWhereAndParams[0]) {
-        //         whereStrs.push(onTypeNodeWhereAndParams[0]);
-        //         if (whereArgs._on) {
-        //             whereArgs._on[refNode.name] = onTypeNodeWhereAndParams[1];
-        //         } else {
-        //             whereArgs._on = { [refNode.name]: onTypeNodeWhereAndParams[1] };
-        //         }
-        //     }
-        // }
     }
 
     const whereAuthPredicate = createAuthPredicates({
@@ -478,21 +192,6 @@ function createInterfaceSubquery({
     if (whereAuthPredicate) {
         matchQuery.where(whereAuthPredicate);
     }
-
-    // const whereAuth = createAuthAndParams({
-    //     operations: "READ",
-    //     entity: refNode,
-    //     context,
-    //     where: { varName: param, node: refNode },
-    // });
-    // if (whereAuth[0]) {
-    //     whereStrs.push(whereAuth[0]);
-    //     globalParams = { ...globalParams, ...whereAuth[1] };
-    // }
-
-    // if (whereStrs.length) {
-    //     subquery.push(`WHERE ${whereStrs.join(" AND ")}`);
-    // }
 
     const {
         projection: projectionStr,
@@ -521,8 +220,6 @@ function createInterfaceSubquery({
                     context,
                     nodeVariable: param,
                 });
-                // subquery.push(connection[0]);
-                // params = { ...params, ...projectionParams };
                 return [connection[0], projectionParams];
             });
         });
@@ -533,10 +230,4 @@ function createInterfaceSubquery({
     const returnClause = new CypherBuilder.Return([new CypherBuilder.RawCypher(projectionStr), field.fieldName]);
 
     return CypherBuilder.concat(withClause, matchQuery, ...connectionClauses, projectionSubqueryClause, returnClause);
-    // return new CypherBuilder.RawCypher((env) => {
-    //     const subqueryStr = compileCypherIfExists(projectionSubqueryClause, env);
-    //     const returnStatement = `RETURN ${projectionStr} AS ${field.fieldName}`;
-
-    //     return [[...subquery, subqueryStr, returnStatement].join("\n"), {}]; // TODO: pass params here instead of globalParams
-    // });
 }

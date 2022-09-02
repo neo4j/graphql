@@ -346,7 +346,6 @@ export default function createProjectionAndParams({
                     nodeVariable: varName,
                     withVars: prevRelationshipFields,
                 });
-                // return [interfaceProjection.cypher, interfaceProjection.params];
                 res.subqueries.push(interfaceProjection);
                 res.projection.push(`${field.alias}: ${field.name}`);
 

@@ -84,7 +84,6 @@ export function createAuthAndParams({
         return authPredicate.getCypher(env);
     });
 
-    // const chainStr = `${where?.varName || ""}${allow?.varName || ""}${bind?.varName || ""}`;
     const chainStr = generateUniqueChainStr([where?.varName, allow?.varName, bind?.varName]);
 
     // Params must be globally unique, variables can be just slightly different, as each auth statement is scoped
