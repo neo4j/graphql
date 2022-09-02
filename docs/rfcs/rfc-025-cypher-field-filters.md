@@ -60,7 +60,7 @@ To make the filter available to the GraphQL users, filters for `@cypher` fields 
 
 ### Cypher Generation
 
-`@cypher` fields as to be treated differently when filtered.
+`@cypher` fields have to be treated differently when filtered.
 
 For instance, if for a not `@cypher` field a filter is applied as follow:
 
