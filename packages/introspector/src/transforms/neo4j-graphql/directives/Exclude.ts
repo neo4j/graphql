@@ -21,17 +21,17 @@ import type { Directive, ExcludeOperation } from "../types";
 
 export class ExcludeDirective implements Directive {
     operations: ExcludeOperation[] = [];
-    addOperation(operation: ExcludeOperation) {
+    addOperation(operation: ExcludeOperation): void {
         if (!this.operations.includes(operation)) {
             this.operations.push(operation);
         }
     }
 
-    removeOperation(operation: ExcludeOperation) {
+    removeOperation(operation: ExcludeOperation): void {
         this.operations = this.operations.filter((o) => o !== operation);
     }
 
-    toString() {
+    toString(): string {
         const parts: string[] = [];
         if (this.operations.length) {
             parts.push("(");

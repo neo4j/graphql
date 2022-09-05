@@ -44,7 +44,7 @@ function createRelationshipFields({
     sourceName: string;
     nodes: Node[];
     relationshipPropertyFields: Map<string, ObjectFields>;
-}) {
+}): void {
     const whereInput = schemaComposer.getITC(`${sourceName}Where`);
     const nodeCreateInput = schemaComposer.getITC(`${sourceName}CreateInput`);
     const nodeUpdateInput = schemaComposer.getITC(`${sourceName}UpdateInput`);

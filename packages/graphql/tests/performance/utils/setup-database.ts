@@ -631,11 +631,11 @@ CREATE (JohnC)-[:LIKES]->(CloudAtlas)
 
 `;
 
-export async function cleanDatabase(session: Session) {
+export async function cleanDatabase(session: Session): Promise<void> {
     await session.run("MATCH (N) DETACH DELETE N");
 }
 
-export async function setupDatabase(session: Session) {
+export async function setupDatabase(session: Session): Promise<void> {
     await cleanDatabase(session);
     await session.run(cypherQuery);
 }

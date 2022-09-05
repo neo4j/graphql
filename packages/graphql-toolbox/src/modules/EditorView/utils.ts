@@ -60,7 +60,7 @@ export const formatCode = (mirror: EditorFromTextArea, parserOption: ParserOptio
     if (cursor) mirror.setCursor(cursor);
 };
 
-export const handleEditorDisableState = (mirror: EditorFromTextArea | null, loading: boolean) => {
+export const handleEditorDisableState = (mirror: EditorFromTextArea | null, loading: boolean): void => {
     const wrapperElement = mirror?.getWrapperElement();
 
     if (loading) {

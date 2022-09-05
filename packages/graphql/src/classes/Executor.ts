@@ -103,7 +103,7 @@ export class Executor {
         this.bookmarks = bookmarks;
     }
 
-    public async execute(query: string, parameters: any, defaultAccessMode: SessionMode): Promise<QueryResult> {
+    public async execute(query: string, parameters: unknown, defaultAccessMode: SessionMode): Promise<QueryResult> {
         try {
             if (isDriverLike(this.executionContext)) {
                 const session = this.executionContext.session(this.getSessionParam(defaultAccessMode));
@@ -193,7 +193,12 @@ export class Executor {
         };
     }
 
-    private async sessionRun(query: string, parameters, defaultAccessMode, session): Promise<QueryResult> {
+    private async sessionRun(
+        query: string,
+        parameters: unknown,
+        defaultAccessMode: string,
+        session: Session
+    ): Promise<QueryResult> {
         const transactionType = `${defaultAccessMode.toLowerCase()}Transaction`;
         const result = await session[transactionType]((transaction: Transaction) => {
             return this.transactionRun(query, parameters, transaction);

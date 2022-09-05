@@ -29,7 +29,7 @@ export class RelationshipDirective implements Directive {
         this.propertiesReference = propertiesReference;
     }
 
-    toString() {
+    toString(): string {
         const args: string[] = [];
         args.push(`type: "${this.type}"`);
         args.push(`direction: ${this.direction}`);

@@ -165,7 +165,8 @@ describe("Duration", () => {
                     { id }
                 );
 
-                const neo4jMovie: { id: string; durations: any[] } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; durations: { toString(): string }[] } =
+                    neo4jResult.records[0].toObject().movie;
                 expect(neo4jMovie).toBeDefined();
                 expect(neo4jMovie.id).toEqual(id);
                 expect(neo4jMovie.durations).toHaveLength(durations.length);
@@ -246,7 +247,8 @@ describe("Duration", () => {
                     { id }
                 );
 
-                const neo4jMovie: { id: string; duration: any } = neo4jResult.records[0].toObject().movie;
+                const neo4jMovie: { id: string; duration: { toString(): string } } =
+                    neo4jResult.records[0].toObject().movie;
                 expect(neo4jMovie).toBeDefined();
                 expect(neo4jMovie.id).toEqual(id);
                 expect(neo4jDriver.isDuration(neo4jMovie.duration)).toBe(true);

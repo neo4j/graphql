@@ -42,14 +42,6 @@ type UniqueTypeOperations = {
     };
 };
 
-type UniqueTypeFieldNames = {
-    subscriptions: {
-        created: string;
-        updated: string;
-        deleted: string;
-    };
-};
-
 export class UniqueType {
     public readonly name: string;
 

@@ -33,7 +33,7 @@ export class SetClause extends CypherASTNode {
         this.params = params;
     }
 
-    public addParams(...params: SetParam[]) {
+    public addParams(...params: SetParam[]): void {
         this.params.push(...params);
     }
 
