@@ -5,7 +5,9 @@
 Currently, `@cypher` fields are evaluated in the `RETURN` statement using `apoc.cypher.runFirstColumnSingle`.
 
 For this reason, it's not possible to use these fields during filtering 
-some good reason why this is needed could be found in the issue [#1997](https://github.com/neo4j/graphql/issues/1997).
+some good reason why this is needed could be found in issues:
+- [#1997](https://github.com/neo4j/graphql/issues/1997).
+- [#554](https://github.com/neo4j/graphql/issues/554).
 
 For instance, given the following typeDefs:
 
