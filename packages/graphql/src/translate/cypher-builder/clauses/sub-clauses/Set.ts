@@ -18,12 +18,14 @@
  */
 
 import { CypherASTNode } from "../../CypherASTNode";
+import type { MapProjection } from "../../CypherBuilder";
 import type { CypherEnvironment } from "../../Environment";
+import type { MapExpr } from "../../expressions/map/MapExpr";
 import type { PropertyRef } from "../../expressions/PropertyRef";
 import type { Expr } from "../../types";
 import { padBlock } from "../../utils/utils";
 
-export type SetParam = [PropertyRef, Expr];
+export type SetParam = [PropertyRef, Exclude<Expr, MapExpr | MapProjection>];
 
 export class SetClause extends CypherASTNode {
     protected params: SetParam[];

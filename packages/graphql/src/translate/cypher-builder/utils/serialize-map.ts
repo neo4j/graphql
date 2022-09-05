@@ -17,23 +17,16 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "../../Environment";
-import type { CypherCompilable, Expr } from "../../types";
-import { serializeMap } from "../../utils/serialize-map";
+import type { Expr } from "../CypherBuilder";
+import type { CypherEnvironment } from "../Environment";
 
-/** Represents a Map */
-export class MapExpr implements CypherCompilable {
-    private value: Record<string, Expr>;
+export function serializeMap(env: CypherEnvironment, obj: Record<string, Expr>, omitCurlyBraces = false): string {
+    const valuesList = Object.entries(obj).map(([key, value]) => {
+        return `${key}: ${value.getCypher(env)}`;
+    });
 
-    constructor(value: Record<string, Expr> = {}) {
-        this.value = value;
-    }
+    const serializedContent = valuesList.join(", ");
+    if (omitCurlyBraces) return serializedContent;
 
-    public set(values: Record<string, Expr>): void {
-        this.value = { ...this.value, ...values };
-    }
-
-    public getCypher(env: CypherEnvironment): string {
-        return serializeMap(env, this.value);
-    }
+    return `{ ${serializedContent} }`;
 }
