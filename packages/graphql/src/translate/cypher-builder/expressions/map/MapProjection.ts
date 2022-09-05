@@ -19,7 +19,7 @@
 
 import type { CypherEnvironment } from "../../Environment";
 import type { CypherCompilable, Expr } from "../../types";
-import { serializeObject } from "../../utils/serialize-map";
+import { serializeMap } from "../../utils/serialize-map";
 import { Variable } from "../../variables/Variable";
 
 /** Represents a Map projection https://neo4j.com/docs/cypher-manual/current/syntax/maps/#cypher-map-projection */
@@ -44,7 +44,7 @@ export class MapProjection implements CypherCompilable {
 
     public getCypher(env: CypherEnvironment): string {
         const variableStr = this.variable.getCypher(env);
-        const extraValuesStr = serializeObject(env, this.extraValues, true);
+        const extraValuesStr = serializeMap(env, this.extraValues, true);
 
         const projectionStr = this.projection.map((v) => `.${v.getCypher(env)}`).join(", ");
 

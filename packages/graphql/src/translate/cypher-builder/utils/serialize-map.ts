@@ -20,7 +20,7 @@
 import type { Expr } from "../CypherBuilder";
 import type { CypherEnvironment } from "../Environment";
 
-export function serializeObject(env: CypherEnvironment, obj: Record<string, Expr>, omitCurlyBraces = false): string {
+export function serializeMap(env: CypherEnvironment, obj: Record<string, Expr>, omitCurlyBraces = false): string {
     const valuesList = Object.entries(obj).map(([key, value]) => {
         return `${key}: ${value.getCypher(env)}`;
     });

@@ -19,7 +19,7 @@
 
 import type { CypherEnvironment } from "../../Environment";
 import type { CypherCompilable, Expr } from "../../types";
-import { serializeObject } from "../../utils/serialize-map";
+import { serializeMap } from "../../utils/serialize-map";
 
 /** Represents a Map */
 export class MapExpr implements CypherCompilable {
@@ -34,6 +34,6 @@ export class MapExpr implements CypherCompilable {
     }
 
     public getCypher(env: CypherEnvironment): string {
-        return serializeObject(env, this.value);
+        return serializeMap(env, this.value);
     }
 }
