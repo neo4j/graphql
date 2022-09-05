@@ -210,7 +210,6 @@ function createInterfaceSubquery({
         literalElements: true,
         resolveType: true,
     });
-    // TODO
     let connectionClauses: CypherBuilder.Clause[] = [];
     if (meta?.connectionFields?.length) {
         connectionClauses = meta.connectionFields.map((connectionResolveTree) => {
