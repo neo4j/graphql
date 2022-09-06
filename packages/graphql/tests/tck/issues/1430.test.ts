@@ -91,13 +91,13 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             CALL {
                 WITH this
                 MATCH (this)-[:HAS_INTERFACE]->(this_ChildOne:ChildOne)
-                RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS interface
+                RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS this_interface
                 UNION
                 WITH this
                 MATCH (this)-[:HAS_INTERFACE]->(this_ChildTwo:ChildTwo)
-                RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS interface
+                RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS this_interface
             }
-            RETURN collect(DISTINCT this { .id, interface: interface }) AS data"
+            RETURN collect(DISTINCT this { .id, interface: this_interface }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -162,13 +162,13 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             CALL {
                 WITH this
                 MATCH (this)-[:HAS_INTERFACE]->(this_ChildOne:ChildOne)
-                RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS interface
+                RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS this_interface
                 UNION
                 WITH this
                 MATCH (this)-[:HAS_INTERFACE]->(this_ChildTwo:ChildTwo)
-                RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS interface
+                RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS this_interface
             }
-            RETURN collect(DISTINCT this { .id, interface: interface }) AS data"
+            RETURN collect(DISTINCT this { .id, interface: this_interface }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

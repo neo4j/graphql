@@ -355,13 +355,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
                 WITH this0
                 MATCH (this0)<-[:ACTED_IN]-(this0_Person:Person)
-                RETURN { __resolveType: \\"Person\\", id: this0_Person.id } AS subjects
+                RETURN { __resolveType: \\"Person\\", id: this0_Person.id } AS this0_subjects
                 UNION
                 WITH this0
                 MATCH (this0)<-[:ACTED_IN]-(this0_Place:Place)
-                RETURN { __resolveType: \\"Place\\", id: this0_Place.id } AS subjects
+                RETURN { __resolveType: \\"Place\\", id: this0_Place.id } AS this0_subjects
             }
-            RETURN collect(subjects) AS subjects
+            RETURN collect(this0_subjects) AS this0_subjects
             }
             WITH *
             CALL {
@@ -369,13 +369,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
                 WITH this0
                 MATCH (this0)-[:ACTED_IN]->(this0_Person:Person)
-                RETURN { __resolveType: \\"Person\\", id: this0_Person.id } AS objects
+                RETURN { __resolveType: \\"Person\\", id: this0_Person.id } AS this0_objects
                 UNION
                 WITH this0
                 MATCH (this0)-[:ACTED_IN]->(this0_Place:Place)
-                RETURN { __resolveType: \\"Place\\", id: this0_Place.id } AS objects
+                RETURN { __resolveType: \\"Place\\", id: this0_Place.id } AS this0_objects
             }
-            RETURN collect(objects) AS objects
+            RETURN collect(this0_objects) AS this0_objects
             }
             WITH *
             CALL {
@@ -383,13 +383,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
                 WITH this1
                 MATCH (this1)<-[:ACTED_IN]-(this1_Person:Person)
-                RETURN { __resolveType: \\"Person\\", id: this1_Person.id } AS subjects
+                RETURN { __resolveType: \\"Person\\", id: this1_Person.id } AS this1_subjects
                 UNION
                 WITH this1
                 MATCH (this1)<-[:ACTED_IN]-(this1_Place:Place)
-                RETURN { __resolveType: \\"Place\\", id: this1_Place.id } AS subjects
+                RETURN { __resolveType: \\"Place\\", id: this1_Place.id } AS this1_subjects
             }
-            RETURN collect(subjects) AS subjects
+            RETURN collect(this1_subjects) AS this1_subjects
             }
             WITH *
             CALL {
@@ -397,17 +397,17 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             CALL {
                 WITH this1
                 MATCH (this1)-[:ACTED_IN]->(this1_Person:Person)
-                RETURN { __resolveType: \\"Person\\", id: this1_Person.id } AS objects
+                RETURN { __resolveType: \\"Person\\", id: this1_Person.id } AS this1_objects
                 UNION
                 WITH this1
                 MATCH (this1)-[:ACTED_IN]->(this1_Place:Place)
-                RETURN { __resolveType: \\"Place\\", id: this1_Place.id } AS objects
+                RETURN { __resolveType: \\"Place\\", id: this1_Place.id } AS this1_objects
             }
-            RETURN collect(objects) AS objects
+            RETURN collect(this1_objects) AS this1_objects
             }
             RETURN [
-            this0 { .id, subjects: subjects, objects: objects },
-            this1 { .id, subjects: subjects, objects: objects }] AS data"
+            this0 { .id, subjects: this0_subjects, objects: this0_objects },
+            this1 { .id, subjects: this1_subjects, objects: this1_objects }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

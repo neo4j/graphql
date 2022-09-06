@@ -63,6 +63,8 @@ function createInterfaceProjectionAndParams({
 
     let whereArgs: { _on?: any; [str: string]: any } = {};
 
+    const returnVariable = `${nodeVariable}_${field.fieldName}`;
+
     const subqueries = referenceNodes.map((refNode) => {
         const param = `${nodeVariable}_${refNode.name}`;
         const subquery = [
@@ -195,7 +197,7 @@ function createInterfaceProjectionAndParams({
         const projectionSubqueryClause = CypherBuilder.concat(...projectionSubQueries);
         return new CypherBuilder.RawCypher((env) => {
             const subqueryStr = compileCypherIfExists(projectionSubqueryClause, env);
-            const returnStatement = `RETURN ${projectionStr} AS ${field.fieldName}`;
+            const returnStatement = `RETURN ${projectionStr} AS ${returnVariable}`;
 
             return [[...subquery, subqueryStr, returnStatement].join("\n"), {}]; // TODO: pass params here instead of globalParams
         });
@@ -208,7 +210,7 @@ function createInterfaceProjectionAndParams({
         addSortAndLimitOptionsToClause({
             optionsInput,
             projectionClause: withClause,
-            target: new CypherBuilder.NamedNode(field.fieldName),
+            target: new CypherBuilder.NamedNode(returnVariable),
         });
     }
 
@@ -225,7 +227,7 @@ function createInterfaceProjectionAndParams({
                 `WITH *`,
                 "CALL {",
                 ...interfaceProjection,
-                `${withStr}RETURN collect(${field.fieldName}) AS ${field.fieldName}`,
+                `${withStr}RETURN collect(${returnVariable}) AS ${returnVariable}`,
                 "}",
             ];
         }

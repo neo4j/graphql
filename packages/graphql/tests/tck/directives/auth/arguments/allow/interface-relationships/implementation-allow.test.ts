@@ -103,16 +103,16 @@ describe("@auth allow on specific interface implementation", () => {
             CALL {
                 WITH this
                 MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
-                RETURN { __resolveType: \\"Comment\\", id: this_Comment.id, content: this_Comment.content } AS content
+                RETURN { __resolveType: \\"Comment\\", id: this_Comment.id, content: this_Comment.content } AS this_content
                 UNION
                 WITH this
                 MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
                 CALL apoc.util.validate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(auth_this0 IN [(this_Post)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Postauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN { __resolveType: \\"Post\\", id: this_Post.id, content: this_Post.content } AS content
+                RETURN { __resolveType: \\"Post\\", id: this_Post.id, content: this_Post.content } AS this_content
             }
-            RETURN collect(content) AS content
+            RETURN collect(this_content) AS this_content
             }
-            RETURN this { .id, content: content } as this"
+            RETURN this { .id, content: this_content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -153,7 +153,7 @@ describe("@auth allow on specific interface implementation", () => {
                 WITH this
                 MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
                 WHERE this_Comment.id = $this_content.args.where.id
-                RETURN { __resolveType: \\"Comment\\" } AS content
+                RETURN { __resolveType: \\"Comment\\" } AS this_content
                 UNION
                 WITH this
                 MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
@@ -166,11 +166,11 @@ describe("@auth allow on specific interface implementation", () => {
                     WITH this_Post_comments { .content } AS this_Post_comments
                     RETURN collect(this_Post_comments) AS this_Post_comments
                 }
-                RETURN { __resolveType: \\"Post\\", comments: this_Post_comments } AS content
+                RETURN { __resolveType: \\"Post\\", comments: this_Post_comments } AS this_content
             }
-            RETURN collect(content) AS content
+            RETURN collect(this_content) AS this_content
             }
-            RETURN this { .id, content: content } as this"
+            RETURN this { .id, content: this_content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -263,16 +263,16 @@ describe("@auth allow on specific interface implementation", () => {
             CALL {
                 WITH this
                 MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
-                RETURN { __resolveType: \\"Comment\\", id: this_Comment.id } AS content
+                RETURN { __resolveType: \\"Comment\\", id: this_Comment.id } AS this_content
                 UNION
                 WITH this
                 MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
                 CALL apoc.util.validate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(auth_this0 IN [(this_Post)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Postauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS content
+                RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS this_content
             }
-            RETURN collect(content) AS content
+            RETURN collect(this_content) AS this_content
             }
-            RETURN collect(DISTINCT this { .id, content: content }) AS data"
+            RETURN collect(DISTINCT this { .id, content: this_content }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

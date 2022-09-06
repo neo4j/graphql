@@ -350,7 +350,7 @@ export default function createProjectionAndParams({
                     return [interfaceProjection.cypher, interfaceProjection.params];
                 });
                 res.subqueries.push(interfaceSubquery);
-                res.projection.push(`${field.alias}: ${field.name}`);
+                res.projection.push(`${field.alias}: ${varName}_${field.name}`);
 
                 return res;
             }
