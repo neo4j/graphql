@@ -17,6 +17,9 @@
  * limitations under the License.
  */
 
+import { int } from "neo4j-driver";
+import type Node from "../../../../classes/Node";
+import type { PrimitiveField } from "../../../../types";
 import { whereRegEx } from "../../../../translate/where/utils";
 import type { WhereRegexGroups } from "../../../../translate/where/utils";
 
@@ -30,16 +33,53 @@ export function compareProperties<T>(obj1: Record<string, T>, obj2: Record<strin
     return true;
 }
 
+function isFloatType(fieldMeta: PrimitiveField | undefined) {
+    return fieldMeta?.typeMeta.name === "Float";
+}
+
 type ComparatorFn<T> = (received: T, filtered: T) => boolean;
 
-const operatorCheckMap = {
+const operatorCheckMap = (fieldMeta: PrimitiveField | undefined) => ({
     NOT: (received: string, filtered: string) => received !== filtered,
-};
-function getFilteringFn<T>(operator: string | undefined): ComparatorFn<T> {
+    LT: (received: number | string, filtered: number | string) => {
+        if (isFloatType(fieldMeta)) {
+            return received < filtered;
+        }
+        return int(received).lessThan(int(filtered));
+    },
+    LTE: (received: number, filtered: number) => {
+        if (isFloatType(fieldMeta)) {
+            return received <= filtered;
+        }
+        return int(received).lessThanOrEqual(int(filtered));
+    },
+    GT: (received: number, filtered: number) => {
+        if (isFloatType(fieldMeta)) {
+            return received > filtered;
+        }
+        return int(received).greaterThan(int(filtered));
+    },
+    GTE: (received: number | string, filtered: number | string) => {
+        console.log("comparing received", received, "with where", filtered);
+        if (isFloatType(fieldMeta)) {
+            return received >= filtered;
+        }
+        // int/ bigint
+        console.log("comp", int(received), int(filtered), int(received).greaterThanOrEqual(filtered));
+        return int(received).greaterThanOrEqual(int(filtered));
+    },
+    STARTS_WITH: (received: string, filtered: string) => received.startsWith(filtered),
+    NOT_STARTS_WITH: (received: string, filtered: string) => !received.startsWith(filtered),
+    ENDS_WITH: (received: string, filtered: string) => received.endsWith(filtered),
+    NOT_ENDS_WITH: (received: string, filtered: string) => !received.endsWith(filtered),
+    CONTAINS: (received: string, filtered: string) => received.includes(filtered),
+    NOT_CONTAINS: (received: string, filtered: string) => !received.includes(filtered),
+});
+function getFilteringFn<T>(operator: string | undefined, fieldMeta: PrimitiveField | undefined): ComparatorFn<T> {
     if (!operator) {
         return (received: T, filtered: T) => received === filtered;
     }
-    return operatorCheckMap[operator];
+    return operatorCheckMap(fieldMeta)[operator];
 }
 
 function parseFilterProperty(key: string): { fieldName: string; operator: string | undefined } {
@@ -56,13 +96,15 @@ function parseFilterProperty(key: string): { fieldName: string; operator: string
 
 /** Returns true if receivedProperties comply with filters specified in whereProperties, false otherwise. */
 export function filterByProperties<T>(
+    node: Node,
     whereProperties: Record<string, T>,
     receivedProperties: Record<string, T>
 ): boolean {
     for (const [k, v] of Object.entries(whereProperties)) {
         const { fieldName, operator } = parseFilterProperty(k);
         const receivedValue = receivedProperties[fieldName];
-        const checkFilterPasses = getFilteringFn(operator);
+        const fieldMeta = node.primitiveFields.find((f) => f.fieldName === fieldName);
+        const checkFilterPasses = getFilteringFn(operator, fieldMeta);
         if (!checkFilterPasses(receivedValue, v)) {
             return false;
         }

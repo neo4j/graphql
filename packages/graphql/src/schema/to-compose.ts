@@ -116,6 +116,22 @@ export function objectFieldsToSubscriptionsWhereInputFields(fields: BaseField[])
         res[f.fieldName] = fieldType;
         res[`${f.fieldName}_NOT`] = fieldType;
 
+        if (["Int", "Float", "BigInt"].includes(f.typeMeta.name)) {
+            res[`${f.fieldName}_LT`] = fieldType;
+            res[`${f.fieldName}_LTE`] = fieldType;
+            res[`${f.fieldName}_GT`] = fieldType;
+            res[`${f.fieldName}_GTE`] = fieldType;
+        }
+
+        if (["String", "ID"].includes(f.typeMeta.name)) {
+            res[`${f.fieldName}_STARTS_WITH`] = fieldType;
+            res[`${f.fieldName}_NOT_STARTS_WITH`] = fieldType;
+            res[`${f.fieldName}_ENDS_WITH`] = fieldType;
+            res[`${f.fieldName}_NOT_ENDS_WITH`] = fieldType;
+            res[`${f.fieldName}_CONTAINS`] = fieldType;
+            res[`${f.fieldName}_NOT_CONTAINS`] = fieldType;
+        }
+
         return res;
     }, {});
 }
