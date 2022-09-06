@@ -17,8 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: reviewdog/action-actionlint@8c8d2690df01d64638691b59cb1c37d913e6264f # tag=v1.29.0
-        env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
         with:
           reporter: github-check
           fail_on_error: true
