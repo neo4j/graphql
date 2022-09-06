@@ -151,31 +151,6 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
     });
 
     test("should not create duplicate nodes when creating multiple interactions in one", async () => {
-        const createPeople = `
-            mutation {
-                ${Person.operations.create}(
-                    input: [
-                        { id: "adam", name: "Adam" }
-                        { id: "eve", name: "Eve" }
-                        { id: "cain", name: "Cain" }
-                        { id: "abel", name: "Abel" }
-                    ]
-                ) {
-                    ${Person.plural} {
-                        id
-                    }
-                }
-            }
-        `;
-
-        const createPeopleResult = await graphqlQuery(createPeople);
-        expect((createPeopleResult.data?.[Person.operations.create] as any)[Person.plural]).toIncludeSameMembers([
-            { id: "adam" },
-            { id: "eve" },
-            { id: "cain" },
-            { id: "abel" },
-        ]);
-
         const mutation = `
             mutation {
                 ${Interaction.operations.create}(
