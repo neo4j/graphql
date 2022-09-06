@@ -97,12 +97,12 @@ describe("Auth projections for interface relationship fields", () => {
             WITH this
             CALL {
                 WITH this
-                MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
+                MATCH (this)-[thisthis0:ACTED_IN]->(this_Movie:\`Movie\`)
                 RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS actedIn
                 UNION
                 WITH this
-                MATCH (this)-[:ACTED_IN]->(this_Series:Series)
-                CALL apoc.util.validate(NOT ((this_Series.episodes IS NOT NULL AND this_Series.episodes = $this_Seriesauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MATCH (this)-[thisthis1:ACTED_IN]->(this_Series:\`Series\`)
+                WHERE apoc.util.validatePredicate(NOT ((this_Series.episodes IS NOT NULL AND this_Series.episodes = $thisparam0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS actedIn
             }
             RETURN collect(actedIn) AS actedIn
@@ -112,7 +112,7 @@ describe("Auth projections for interface relationship fields", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_Seriesauth_param0\\": \\"super_admin\\"
+                \\"thisparam0\\": \\"super_admin\\"
             }"
         `);
     });

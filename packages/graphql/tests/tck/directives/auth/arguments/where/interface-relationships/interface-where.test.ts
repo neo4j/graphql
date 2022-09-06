@@ -168,13 +168,13 @@ describe("Cypher Auth Where", () => {
             WITH this
             CALL {
                 WITH this
-                MATCH (this)-[:HAS_CONTENT]->(this_Comment:Comment)
-                WHERE (exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_Comment)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Commentauth_param0)))
+                MATCH (this)-[thisthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
+                WHERE (exists((this_Comment:\`Comment\`)<-[:HAS_CONTENT]-(:\`User\`)) AND all(thisthis1 IN [(this_Comment:\`Comment\`)<-[:HAS_CONTENT]-(thisthis1:\`User\`) | thisthis1] WHERE (thisthis1.id IS NOT NULL AND thisthis1.id = $thisparam0)))
                 RETURN { __resolveType: \\"Comment\\" } AS content
                 UNION
                 WITH this
-                MATCH (this)-[:HAS_CONTENT]->(this_Post:Post)
-                WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_Post)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Postauth_param0)))
+                MATCH (this)-[thisthis2:HAS_CONTENT]->(this_Post:\`Post\`)
+                WHERE (exists((this_Post:\`Post\`)<-[:HAS_CONTENT]-(:\`User\`)) AND all(thisthis3 IN [(this_Post:\`Post\`)<-[:HAS_CONTENT]-(thisthis3:\`User\`) | thisthis3] WHERE (thisthis3.id IS NOT NULL AND thisthis3.id = $thisparam1)))
                 RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS content
             }
             RETURN collect(content) AS content
@@ -185,8 +185,8 @@ describe("Cypher Auth Where", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"thisauth_param0\\": \\"id-01\\",
-                \\"this_Commentauth_param0\\": \\"id-01\\",
-                \\"this_Postauth_param0\\": \\"id-01\\"
+                \\"thisparam0\\": \\"id-01\\",
+                \\"thisparam1\\": \\"id-01\\"
             }"
         `);
     });

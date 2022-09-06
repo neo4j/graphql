@@ -333,23 +333,20 @@ export default function createProjectionAndParams({
             }
 
             if (relationField.interface) {
-                const interfaceSubquery = new CypherBuilder.RawCypher((_env) => {
-                    const interfaceResolveTree = field;
+                const interfaceResolveTree = field;
 
-                    const prevRelationshipFields: string[] = [];
-                    const relationshipField = node.relationFields.find(
-                        (x) => x.fieldName === interfaceResolveTree.name
-                    ) as RelationField;
-                    const interfaceProjection = createInterfaceProjectionAndParams({
-                        resolveTree: interfaceResolveTree,
-                        field: relationshipField,
-                        context,
-                        nodeVariable: varName,
-                        withVars: prevRelationshipFields,
-                    });
-                    return [interfaceProjection.cypher, interfaceProjection.params];
+                const prevRelationshipFields: string[] = [];
+                const relationshipField = node.relationFields.find(
+                    (x) => x.fieldName === interfaceResolveTree.name
+                ) as RelationField;
+                const interfaceProjection = createInterfaceProjectionAndParams({
+                    resolveTree: interfaceResolveTree,
+                    field: relationshipField,
+                    context,
+                    nodeVariable: varName,
+                    withVars: prevRelationshipFields,
                 });
-                res.subqueries.push(interfaceSubquery);
+                res.subqueries.push(interfaceProjection);
                 res.projection.push(`${field.alias}: ${field.name}`);
 
                 return res;

@@ -92,15 +92,15 @@ describe("#583", () => {
             WITH this
             CALL {
                 WITH this
-                MATCH (this)-[:ACTED_IN]->(this_Movie:Movie)
+                MATCH (this)-[thisthis0:ACTED_IN]->(this_Movie:\`Movie\`)
                 RETURN { __resolveType: \\"Movie\\", title: this_Movie.title, awardsGiven: this_Movie.awardsGiven } AS actedIn
                 UNION
                 WITH this
-                MATCH (this)-[:ACTED_IN]->(this_Series:Series)
+                MATCH (this)-[thisthis1:ACTED_IN]->(this_Series:\`Series\`)
                 RETURN { __resolveType: \\"Series\\", title: this_Series.title, awardsGiven: this_Series.awardsGiven } AS actedIn
                 UNION
                 WITH this
-                MATCH (this)-[:ACTED_IN]->(this_ShortFilm:ShortFilm)
+                MATCH (this)-[thisthis2:ACTED_IN]->(this_ShortFilm:\`ShortFilm\`)
                 RETURN { __resolveType: \\"ShortFilm\\", title: this_ShortFilm.title } AS actedIn
             }
             RETURN collect(actedIn) AS actedIn
