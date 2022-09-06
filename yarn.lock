@@ -2466,9 +2466,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:0.7.1":
-  version: 0.7.1
-  resolution: "@neo4j-ndl/react@npm:0.7.1"
+"@neo4j-ndl/react@npm:0.7.2":
+  version: 0.7.2
+  resolution: "@neo4j-ndl/react@npm:0.7.2"
   dependencies:
     "@heroicons/react": ^1.0.5
     "@neo4j-ndl/base": ^0.7.1
@@ -2480,7 +2480,7 @@ __metadata:
     react-use: ^17.4.0
   peerDependencies:
     react: 17.x
-  checksum: 3388a47caf524c5bba69b68bebcfdf6a0ba69a4c04c6ff20f8c9a0721e7ad5db028cd4ed785656b0f1d7e6b7af2fdfcaf9b3c1c5d9ec90d4d14bc7d911bc6056
+  checksum: e6c1877bba7d1acd152ecbe4e315f03700ae2acea1a428f4e20c3912b64a86db05e4a6cd8daedebfe4667c8a72c58fefbf23589c6b680c18e29016eb88cb42b2
   languageName: node
   linkType: hard
 
@@ -2563,7 +2563,7 @@ __metadata:
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
     "@neo4j-ndl/base": 0.7.1
-    "@neo4j-ndl/react": 0.7.1
+    "@neo4j-ndl/react": 0.7.2
     "@neo4j/graphql": 3.7.0
     "@neo4j/introspector": ^1.0.1
     "@playwright/test": 1.25.1
