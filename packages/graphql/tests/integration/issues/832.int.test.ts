@@ -80,14 +80,12 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
 
     afterEach(async () => {
         await session.run(`
-            CALL {
-                MATCH (p:${Person.name})
-                DETACH DELETE p
-            }
-            CALL {
-                MATCH (i:${Interaction.name})
-                DETACH DELETE i
-            }
+            MATCH (p:${Person.name})
+            DETACH DELETE p
+        `);
+        await session.run(`
+            MATCH (i:${Interaction.name})
+            DETACH DELETE i
         `);
     });
 
