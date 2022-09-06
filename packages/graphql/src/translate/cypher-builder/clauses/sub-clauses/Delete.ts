@@ -17,15 +17,14 @@
  * limitations under the License.
  */
 
-import type { CypherASTNode } from "../../CypherASTNode";
+import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import type { NodeRef } from "../../variables/NodeRef";
 import type { RelationshipRef } from "../../variables/RelationshipRef";
-import { SubClause } from "./SubClause";
 
 export type DeleteInput = Array<NodeRef | RelationshipRef>;
 
-export class DeleteClause extends SubClause {
+export class DeleteClause extends CypherASTNode {
     private deleteInput: DeleteInput;
     private _detach = false;
 

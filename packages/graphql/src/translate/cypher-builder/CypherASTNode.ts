@@ -51,7 +51,7 @@ export abstract class CypherASTNode implements CypherCompilable {
         this.parent = node;
     }
 
-    protected get isRoot() {
+    protected get isRoot(): boolean {
         return this.parent === undefined;
     }
 }

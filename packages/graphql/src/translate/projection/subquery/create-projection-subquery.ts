@@ -20,7 +20,7 @@
 import type { Node } from "../../../classes";
 import type { Context, GraphQLOptionsArg, GraphQLWhereArg, RelationField } from "../../../types";
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
-import { createCypherWherePredicate } from "../../where/create-cypher-where-predicate";
+import { createWherePredicate } from "../../where/create-where-predicate";
 import type { RelationshipDirection } from "../../../utils/get-relationship-direction";
 import { createAuthPredicates } from "../../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../../constants";
@@ -80,7 +80,7 @@ export function createProjectionSubquery({
     });
 
     if (whereInput) {
-        const wherePredicate = createCypherWherePredicate({
+        const wherePredicate = createWherePredicate({
             element: node,
             context,
             whereInput,

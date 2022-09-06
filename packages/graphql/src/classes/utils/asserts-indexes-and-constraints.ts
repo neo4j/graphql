@@ -245,7 +245,7 @@ async function assertIndexesAndConstraints({
     driverConfig?: DriverConfig;
     nodes: Node[];
     options?: AssertIndexesAndConstraintsOptions;
-}) {
+}): Promise<void> {
     await driver.verifyConnectivity();
 
     const sessionParams: {

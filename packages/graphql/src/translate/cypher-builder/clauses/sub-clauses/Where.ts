@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import type { CypherASTNode } from "../../CypherASTNode";
+import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import { and } from "../../expressions/operations/boolean";
 import type { Predicate } from "../../types";
-import { SubClause } from "./SubClause";
 
-export class Where extends SubClause {
+export class Where extends CypherASTNode {
     private wherePredicate: Predicate;
     protected whereClause = "WHERE";
 

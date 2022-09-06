@@ -28,7 +28,6 @@ import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createDeleteAndParams from "./create-delete-and-params";
 import createConnectionAndParams from "./connection/create-connection-and-params";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
-import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
@@ -404,25 +403,6 @@ export default async function translateUpdate({
                 });
                 connectionStrs.push(connection[0]);
                 cypherParams = { ...cypherParams, ...connection[1] };
-            });
-        }
-
-        if (projection.meta?.interfaceFields?.length) {
-            const prevRelationshipFields: string[] = [];
-            projection.meta.interfaceFields.forEach((interfaceResolveTree) => {
-                const relationshipField = node.relationFields.find(
-                    (x) => x.fieldName === interfaceResolveTree.name
-                ) as RelationField;
-                const interfaceProjection = createInterfaceProjectionAndParams({
-                    resolveTree: interfaceResolveTree,
-                    field: relationshipField,
-                    context,
-                    nodeVariable: varName,
-                    withVars: [...withVars, ...prevRelationshipFields],
-                });
-                prevRelationshipFields.push(relationshipField.dbPropertyName || relationshipField.fieldName);
-                interfaceStrs.push(interfaceProjection.cypher);
-                cypherParams = { ...cypherParams, ...interfaceProjection.params };
             });
         }
     }

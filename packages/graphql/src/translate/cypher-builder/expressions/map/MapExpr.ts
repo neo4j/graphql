@@ -19,6 +19,7 @@
 
 import type { CypherEnvironment } from "../../Environment";
 import type { CypherCompilable, Expr } from "../../types";
+import { serializeMap } from "../../utils/serialize-map";
 
 /** Represents a Map */
 export class MapExpr implements CypherCompilable {
@@ -33,14 +34,6 @@ export class MapExpr implements CypherCompilable {
     }
 
     public getCypher(env: CypherEnvironment): string {
-        return this.serializeObject(env);
-    }
-
-    private serializeObject(env: CypherEnvironment): string {
-        const valuesList = Object.entries(this.value).map(([key, value]) => {
-            return `${key}: ${value.getCypher(env)}`;
-        });
-
-        return `{ ${valuesList.join(", ")} }`;
+        return serializeMap(env, this.value);
     }
 }
