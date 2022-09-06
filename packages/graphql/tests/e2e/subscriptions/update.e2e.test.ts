@@ -41,7 +41,11 @@ describe("Update Subscriptions", () => {
     beforeAll(async () => {
         const typeDefs = `
          type ${typeMovie} {
-             title: String
+            id: ID
+            title: String
+            releasedIn: Int
+            averageRating: Float
+            fileSize: BigInt
          }
 
          type ${typeActor} {
@@ -55,11 +59,6 @@ describe("Update Subscriptions", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            config: {
-                driverConfig: {
-                    database: neo4j.getIntegrationDatabaseName(),
-                },
-            },
             plugins: {
                 subscriptions: new TestSubscriptionsPlugin(),
             },
@@ -98,11 +97,11 @@ describe("Update Subscriptions", () => {
             }
         `);
 
-        await createMovie("movie1");
-        await createMovie("movie2");
+        await createMovie({ id: generateRandom(), title: "movie1" });
+        await createMovie({ id: generateRandom(), title: "movie2" });
 
-        await updateMovie("movie1", "movie3");
-        await updateMovie("movie2", "movie4");
+        await updateMovie("title", "movie1", "movie3");
+        await updateMovie("title", "movie2", "movie4");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -136,11 +135,11 @@ describe("Update Subscriptions", () => {
             }
         `);
 
-        await createMovie("movie5");
-        await createMovie("movie6");
+        await createMovie({ id: generateRandom(), title: "movie5" });
+        await createMovie({ id: generateRandom(), title: "movie6" });
 
-        await updateMovie("movie5", "movie7");
-        await updateMovie("movie6", "movie8");
+        await updateMovie("title", "movie5", "movie7");
+        await updateMovie("title", "movie6", "movie8");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -164,10 +163,10 @@ describe("Update Subscriptions", () => {
             }
         `);
 
-        await createMovie("movie10");
+        await createMovie({ id: generateRandom(), title: "movie10" });
 
-        await updateMovie("movie10", "movie20");
-        await updateMovie("movie20", "movie20");
+        await updateMovie("title", "movie10", "movie20");
+        await updateMovie("title", "movie20", "movie20");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -192,11 +191,11 @@ describe("Update Subscriptions", () => {
             }
         `);
 
-        await createMovie("movie5");
-        await createMovie("movie6");
+        await createMovie({ id: generateRandom(), title: "movie5" });
+        await createMovie({ id: generateRandom(), title: "movie6" });
 
-        await updateMovie("movie5", "movie7");
-        await updateMovie("movie6", "movie8");
+        await updateMovie("title", "movie5", "movie7");
+        await updateMovie("title", "movie6", "movie8");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -218,11 +217,11 @@ describe("Update Subscriptions", () => {
             }
         `);
 
-        await createMovie("movie5");
-        await createMovie("movie6");
+        await createMovie({ id: generateRandom(), title: "movie5" });
+        await createMovie({ id: generateRandom(), title: "movie6" });
 
-        await updateMovie("movie5", "movie7");
-        await updateMovie("movie6", "movie8");
+        await updateMovie("title", "movie5", "movie7");
+        await updateMovie("title", "movie6", "movie8");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -249,23 +248,38 @@ describe("Update Subscriptions", () => {
             }
         `);
 
-        await createMovie("movie5");
+        await createMovie({ id: generateRandom(), title: "movie5" });
 
-        await updateMovie("movie5", "movie7");
+        await updateMovie("title", "movie5", "movie7");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
 
-    async function createMovie(title: string): Promise<Response> {
+    const generateRandom = () => Math.floor(Math.random() * 100) + 1;
+    const makeTypedFieldValue = (value) => (typeof value === "string" ? `"${value}"` : value);
+    async function createMovie({
+        id,
+        title,
+        releasedIn = 2022,
+        averageRating = 9.5,
+        fileSize = "2147483647",
+    }): Promise<Response> {
+        const movieInput = `{ id: ${makeTypedFieldValue(
+            id
+        )}, title: "${title}", releasedIn: ${releasedIn}, averageRating: ${averageRating}, fileSize: "${fileSize}" }`;
         const result = await supertest(server.path)
             .post("")
             .send({
                 query: `
                         mutation {
-                            ${typeMovie.operations.create}(input: [{ title: "${title}" }]) {
+                            ${typeMovie.operations.create}(input: [${movieInput}]) {
                                 ${typeMovie.plural} {
+                                    id
                                     title
+                                    releasedIn
+                                    averageRating
+                                    fileSize
                                 }
                             }
                         }
@@ -275,15 +289,24 @@ describe("Update Subscriptions", () => {
         return result;
     }
 
-    async function updateMovie(oldTitle: string, newTitle: string): Promise<Response> {
+    async function updateMovie(
+        fieldName: string,
+        oldValue: number | string,
+        newValue: number | string
+    ): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
             .send({
                 query: `
                         mutation {
-                            ${typeMovie.operations.update}(where: { title: "${oldTitle}" }, update: { title: "${newTitle}" }) {
+                            ${typeMovie.operations.update}(where: { ${fieldName}: ${makeTypedFieldValue(
+                    oldValue
+                )} }, update: { ${fieldName}: ${makeTypedFieldValue(newValue)} }) {
                                 ${typeMovie.plural} {
                                     title
+                                    releasedIn
+                                    averageRating
+                                    fileSize
                                 }
                             }
                         }

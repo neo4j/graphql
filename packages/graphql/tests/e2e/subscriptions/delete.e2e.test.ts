@@ -39,10 +39,14 @@ describe("Delete Subscription", () => {
 
     beforeAll(async () => {
         const typeDefs = `
-         type ${typeMovie} {
-             title: String
-         }
-         `;
+        type ${typeMovie} {
+            id: ID
+            title: String
+            releasedIn: Int
+            averageRating: Float
+            fileSize: BigInt
+        }
+        `;
 
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
@@ -90,8 +94,8 @@ describe("Delete Subscription", () => {
             }
         `);
 
-        await createMovie("movie1");
-        await createMovie("movie2");
+        await createMovie({ id: generateRandom(), title: "movie1" });
+        await createMovie({ id: generateRandom(), title: "movie2" });
 
         await deleteMovie("movie1");
         await deleteMovie("movie2");
@@ -126,8 +130,8 @@ describe("Delete Subscription", () => {
             }
         `);
 
-        await createMovie("movie3");
-        await createMovie("movie4");
+        await createMovie({ id: generateRandom(), title: "movie3" });
+        await createMovie({ id: generateRandom(), title: "movie4" });
 
         await deleteMovie("movie3");
         await deleteMovie("movie4");
@@ -154,8 +158,8 @@ describe("Delete Subscription", () => {
             }
         `);
 
-        await createMovie("movie3");
-        await createMovie("movie4");
+        await createMovie({ id: generateRandom(), title: "movie3" });
+        await createMovie({ id: generateRandom(), title: "movie4" });
 
         await deleteMovie("movie3");
         await deleteMovie("movie4");
@@ -180,8 +184,8 @@ describe("Delete Subscription", () => {
             }
         `);
 
-        await createMovie("movie3");
-        await createMovie("movie4");
+        await createMovie({ id: generateRandom(), title: "movie3" });
+        await createMovie({ id: generateRandom(), title: "movie4" });
 
         await deleteMovie("movie3");
         await deleteMovie("movie4");
@@ -211,7 +215,7 @@ describe("Delete Subscription", () => {
             }
         `);
 
-        await createMovie("movie3");
+        await createMovie({ id: generateRandom(), title: "movie3" });
 
         await deleteMovie("movie3");
 
@@ -219,15 +223,31 @@ describe("Delete Subscription", () => {
         expect(wsClient.events).toEqual([]);
     });
 
-    async function createMovie(title: string): Promise<Response> {
+    const generateRandom = () => Math.floor(Math.random() * 100) + 1;
+    const makeTypedFieldValue = (value) => (typeof value === "string" ? `"${value}"` : value);
+    async function createMovie({
+        id,
+        title,
+        releasedIn = 2022,
+        averageRating = 9.5,
+        fileSize = "2147483647",
+    }): Promise<Response> {
+        const movieInput = `{ id: ${makeTypedFieldValue(
+            id
+        )}, title: "${title}", releasedIn: ${releasedIn}, averageRating: ${averageRating}, fileSize: "${fileSize}" }`;
+
         const result = await supertest(server.path)
             .post("")
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.create}(input: [{ title: "${title}" }]) {
+                        ${typeMovie.operations.create}(input: [${movieInput}]) {
                             ${typeMovie.plural} {
+                                id
                                 title
+                                releasedIn
+                                averageRating
+                                fileSize
                             }
                         }
                     }

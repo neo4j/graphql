@@ -28,7 +28,7 @@ import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
 
-describe("Create Subscription", () => {
+describe("Create Subscription with optional filters valid for all types", () => {
     let neo4j: Neo4j;
     let driver: Driver;
 
@@ -40,7 +40,11 @@ describe("Create Subscription", () => {
     beforeAll(async () => {
         const typeDefs = `
          type ${typeMovie} {
-             title: String
+            id: ID
+            title: String
+            releasedIn: Int
+            averageRating: Float
+            fileSize: BigInt
          }
          `;
 
@@ -90,8 +94,8 @@ describe("Create Subscription", () => {
                             }
                             `);
 
-        await createMovie("movie1");
-        await createMovie("movie2");
+        await createMovie({ id: generateRandom(), title: "movie1" });
+        await createMovie({ id: generateRandom(), title: "movie2" });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -123,8 +127,8 @@ describe("Create Subscription", () => {
             }
         `);
 
-        await createMovie("movie1");
-        await createMovie("movie2");
+        await createMovie({ id: generateRandom(), title: "movie1" });
+        await createMovie({ id: generateRandom(), title: "movie2" });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -148,8 +152,8 @@ describe("Create Subscription", () => {
             }
         `);
 
-        await createMovie("movie1");
-        await createMovie("movie2");
+        await createMovie({ id: generateRandom(), title: "movie1" });
+        await createMovie({ id: generateRandom(), title: "movie2" });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -160,7 +164,6 @@ describe("Create Subscription", () => {
             },
         ]);
     });
-
     test("subscription with where filter _NOT multiple results", async () => {
         await wsClient.subscribe(`
             subscription {
@@ -172,8 +175,8 @@ describe("Create Subscription", () => {
             }
         `);
 
-        await createMovie("movie1");
-        await createMovie("movie2");
+        await createMovie({ id: generateRandom(), title: "movie1" });
+        await createMovie({ id: generateRandom(), title: "movie2" });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
@@ -189,7 +192,6 @@ describe("Create Subscription", () => {
             },
         ]);
     });
-
     test("subscription with where filter _NOT empty result", async () => {
         await wsClient.subscribe(`
             subscription {
@@ -201,21 +203,35 @@ describe("Create Subscription", () => {
             }
         `);
 
-        await createMovie("movie1");
+        await createMovie({ id: generateRandom(), title: "movie1" });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
 
-    async function createMovie(title: string): Promise<Response> {
+    const generateRandom = () => Math.floor(Math.random() * 100) + 1;
+    const makeTypedFieldValue = (value) => (typeof value === "string" ? `"${value}"` : value);
+    async function createMovie({
+        id,
+        title,
+        releasedIn = 2022,
+        averageRating = 9.5,
+        fileSize = "2147483647",
+    }): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.create}(input: [{ title: "${title}" }]) {
+                        ${typeMovie.operations.create}(input: [{ id: ${makeTypedFieldValue(
+                    id
+                )}, title: "${title}", releasedIn: ${releasedIn}, averageRating: ${averageRating}, fileSize: "${fileSize}" }]) {
                             ${typeMovie.plural} {
+                                id
                                 title
+                                releasedIn
+                                averageRating
+                                fileSize
                             }
                         }
                     }
