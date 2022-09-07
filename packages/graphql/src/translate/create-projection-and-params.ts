@@ -143,6 +143,7 @@ export default function createProjectionAndParams({
                     projection: str,
                     params: p,
                     meta,
+                    // subqueries,
                 } = createProjectionAndParams({
                     resolveTree: field,
                     node: referenceNode || node,
@@ -491,29 +492,42 @@ export default function createProjectionAndParams({
             const matchedConnectionField = node.connectionFields.find(
                 (x) => x.fieldName === field.name
             ) as ConnectionField;
+
             const connection = createConnectionAndParams({
                 resolveTree: field,
                 field: matchedConnectionField,
                 context,
                 nodeVariable: varName,
             });
+            const stupidParams = connection[1];
+            const connectionClause = new CypherBuilder.RawCypher((_env) => {
+                // const replacedConnectionParams = Object.entries(connection[1]).reduce((acc, [key, value]) => {
+                //     const parsedKey = key.replace("REPLACE_ME", varName);
+                //     acc[parsedKey] = value;
+                //     return acc;
+                // }, {});
 
-            const connectionParamNames = Object.keys(connection[1]);
-            const runFirstColumnParams = [
-                ...[`${chainStr}: ${chainStr}`],
-                ...connectionParamNames
-                    .filter(Boolean)
-                    .map((connectionParamName) => `${connectionParamName}: $${connectionParamName}`),
-                ...(context.auth ? ["auth: $auth"] : []),
-                ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
-            ];
+                return [connection[0], {}];
+            });
 
-            res.projection.push(
-                `${field.name}: apoc.cypher.runFirstColumnSingle("${connection[0].replace(/("|')/g, "\\$1")} RETURN ${
-                    field.name
-                }", { ${runFirstColumnParams.join(", ")} })`
-            );
-            res.params = { ...res.params, ...connection[1] };
+            // const connectionParamNames = Object.keys(connection[1]);
+            // const runFirstColumnParams = [
+            //     ...[`${chainStr}: ${chainStr}`],
+            //     ...connectionParamNames
+            //         .filter(Boolean)
+            //         .map((connectionParamName) => `${connectionParamName}: $${connectionParamName}`),
+            //     ...(context.auth ? ["auth: $auth"] : []),
+            //     ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
+            // ];
+
+            // res.projection.push(
+            //     `${field.name}: apoc.cypher.runFirstColumnSingle2("${connection[0].replace(/("|')/g, "\\$1")} RETURN ${
+            //         field.name
+            //     }", { ${runFirstColumnParams.join(", ")} })`
+            // );
+            res.subqueries.push(connectionClause);
+            res.projection.push(`${field.name}: ${field.name}`);
+            res.params = { ...res.params, ...stupidParams };
             return res;
         }
 
