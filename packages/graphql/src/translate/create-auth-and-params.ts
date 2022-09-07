@@ -413,6 +413,10 @@ function createRelationshipPredicate({
         relationship: {
             variable: false,
         },
+        source: {
+            variable: true,
+            labels: false,
+        },
     });
 
     const existsPattern = relationship.pattern({
@@ -421,6 +425,7 @@ function createRelationshipPredicate({
         },
         source: {
             variable: true,
+            labels: false,
         },
         relationship: {
             variable: false,
