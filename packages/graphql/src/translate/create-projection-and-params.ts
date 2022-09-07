@@ -502,7 +502,7 @@ export default function createProjectionAndParams({
                 context,
                 nodeVariable: varName,
             });
-            const stupidParams = connection[1];
+            const paramsWithReplaceMe = connection[1];
 
             // Only for connections on a @cypher property
             if (isInCypher) {
@@ -532,7 +532,7 @@ export default function createProjectionAndParams({
                 res.projection.push(`${field.name}: ${field.name}`);
             }
 
-            res.params = { ...res.params, ...stupidParams };
+            res.params = { ...res.params, ...paramsWithReplaceMe };
             return res;
         }
 
