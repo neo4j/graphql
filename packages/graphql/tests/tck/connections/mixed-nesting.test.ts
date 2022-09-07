@@ -210,7 +210,7 @@ describe("Mixed nesting", () => {
         `);
     });
 
-    test.only("Relationship -> Connection", async () => {
+    test("Relationship -> Connection", async () => {
         const query = gql`
             query {
                 movies(where: { title: "Forrest Gump" }) {
@@ -251,37 +251,15 @@ describe("Mixed nesting", () => {
                 WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
                 }
-                WITH this_actors { .name, moviesConnection: this_actors_moviesConnection } AS this_actors
+                WITH this_actors { .name, moviesConnection: moviesConnection } AS this_actors
                 RETURN collect(this_actors) AS this_actors
             }
             RETURN this { .title, actors: this_actors } as this"
         `);
 
-        // expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-        //     "MATCH (this:\`Movie\`)
-        //     WHERE this.title = $param0
-        //     CALL {
-        //         WITH this
-        //         MATCH (this_actors:\`Actor\`)-[thisthis0:ACTED_IN]->(this)
-        //         WHERE this_actors.name = $thisparam0
-        //         WITH this_actors { .name, moviesConnection: apoc.cypher.runFirstColumnSingle(\\"CALL {
-        //         WITH this_actors
-        //         MATCH (this_actors)-[this_actors_acted_in_relationship:ACTED_IN]->(this_actors_movie:Movie)
-        //         WHERE NOT (this_actors_movie.title = $this_actors_moviesConnection_args_where_Movieparam0)
-        //         WITH collect({ screenTime: this_actors_acted_in_relationship.screenTime, node: { title: this_actors_movie.title } }) AS edges
-        //         UNWIND edges as edge
-        //         WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-        //         RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
-        //         } RETURN moviesConnection\\", { this_actors: this_actors, this_actors_moviesConnection_args_where_Movieparam0: $this_actors_moviesConnection_args_where_Movieparam0, this_actors_moviesConnection: $this_actors_moviesConnection, auth: $auth }) } AS this_actors
-        //         RETURN collect(this_actors) AS this_actors
-        //     }
-        //     RETURN this { .title, actors: this_actors } as this"
-        // `);
-
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"thisparam0\\": \\"Tom Hanks\\",
                 \\"this_actors_moviesConnection_args_where_Movieparam0\\": \\"Forrest Gump\\",
                 \\"this_actors_moviesConnection\\": {
                     \\"args\\": {
@@ -291,7 +269,8 @@ describe("Mixed nesting", () => {
                             }
                         }
                     }
-                }
+                },
+                \\"thisparam0\\": \\"Tom Hanks\\"
             }"
         `);
     });

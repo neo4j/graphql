@@ -77,6 +77,7 @@ export default function createProjectionAndParams({
     resolveType,
     inRelationshipProjection,
     isRootConnectionField,
+    isInCypher = false, // Note, only used for connection in cypher fields
 }: {
     resolveTree: ResolveTree;
     node: Node;
@@ -87,6 +88,7 @@ export default function createProjectionAndParams({
     resolveType?: boolean;
     inRelationshipProjection?: boolean;
     isRootConnectionField?: boolean;
+    isInCypher?: boolean;
 }): ProjectionResult {
     function reducer(res: Res, field: ResolveTree): Res {
         const alias = field.alias;
@@ -143,7 +145,7 @@ export default function createProjectionAndParams({
                     projection: str,
                     params: p,
                     meta,
-                    // subqueries,
+                    // subqueries, // TODO: properly take care of these subqueries
                 } = createProjectionAndParams({
                     resolveTree: field,
                     node: referenceNode || node,
@@ -152,6 +154,7 @@ export default function createProjectionAndParams({
                     chainStr: param,
                     isRootConnectionField,
                     inRelationshipProjection: true,
+                    isInCypher: true,
                 });
 
                 projectionStr = str;
@@ -500,33 +503,35 @@ export default function createProjectionAndParams({
                 nodeVariable: varName,
             });
             const stupidParams = connection[1];
-            const connectionClause = new CypherBuilder.RawCypher((_env) => {
-                // const replacedConnectionParams = Object.entries(connection[1]).reduce((acc, [key, value]) => {
-                //     const parsedKey = key.replace("REPLACE_ME", varName);
-                //     acc[parsedKey] = value;
-                //     return acc;
-                // }, {});
 
-                return [connection[0], {}];
-            });
+            // Only for connections on a @cypher property
+            if (isInCypher) {
+                const connectionParamNames = Object.keys(connection[1]);
+                const runFirstColumnParams = [
+                    ...[`${chainStr}: ${chainStr}`],
+                    ...connectionParamNames
+                        .filter(Boolean)
+                        .map((connectionParamName) => `${connectionParamName}: $${connectionParamName}`),
+                    ...(context.auth ? ["auth: $auth"] : []),
+                    ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
+                ];
 
-            // const connectionParamNames = Object.keys(connection[1]);
-            // const runFirstColumnParams = [
-            //     ...[`${chainStr}: ${chainStr}`],
-            //     ...connectionParamNames
-            //         .filter(Boolean)
-            //         .map((connectionParamName) => `${connectionParamName}: $${connectionParamName}`),
-            //     ...(context.auth ? ["auth: $auth"] : []),
-            //     ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
-            // ];
+                res.projection.push(
+                    `${field.name}: apoc.cypher.runFirstColumnSingle("${connection[0].replace(
+                        /("|')/g,
+                        "\\$1"
+                    )} RETURN ${field.name}", { ${runFirstColumnParams.join(", ")} })`
+                );
+            } else {
+                const connectionClause = new CypherBuilder.RawCypher((_env) => {
+                    // TODO: avoid REPLACE_ME in params and return them here
 
-            // res.projection.push(
-            //     `${field.name}: apoc.cypher.runFirstColumnSingle2("${connection[0].replace(/("|')/g, "\\$1")} RETURN ${
-            //         field.name
-            //     }", { ${runFirstColumnParams.join(", ")} })`
-            // );
-            res.subqueries.push(connectionClause);
-            res.projection.push(`${field.name}: ${field.name}`);
+                    return [connection[0], {}];
+                });
+                res.subqueries.push(connectionClause);
+                res.projection.push(`${field.name}: ${field.name}`);
+            }
+
             res.params = { ...res.params, ...stupidParams };
             return res;
         }
