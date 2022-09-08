@@ -40,7 +40,7 @@
     },
     "peerDependencies": {
         "graphql": "^16.0.0",
-        "neo4j-driver": "^4.1.0"
+        "neo4j-driver": "^4.1.0 || ^5.0.0"
     },
     "devDependencies": {
         "@neo4j/graphql-plugin-auth": "^1.1.0",
