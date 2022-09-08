@@ -106,7 +106,7 @@ describe("@fulltext directive", () => {
         const session = driver.session({ database: databaseName });
 
         const cypher = `
-            CALL db.indexes() yield
+            SHOW INDEXES yield
                 name AS name,
                 type AS type,
                 entityType AS entityType,
@@ -252,7 +252,7 @@ describe("@fulltext directive", () => {
         const session = driver.session({ database: databaseName });
 
         const cypher = `
-            CALL db.indexes() yield
+            SHOW INDEXES yield
                 name AS name,
                 type AS type,
                 entityType AS entityType,
@@ -348,7 +348,7 @@ describe("@fulltext directive", () => {
         const session = driver.session({ database: databaseName });
 
         const cypher = `
-            CALL db.indexes() yield
+            SHOW INDEXES yield
                 name AS name,
                 type AS type,
                 entityType AS entityType,
@@ -463,13 +463,9 @@ describe("@fulltext directive", () => {
 
         try {
             await session.run(
-                [
-                    `CALL db.index.fulltext.createNodeIndex(`,
-                    `"${indexName}",`,
-                    `["${type.name}"],`,
-                    `["title"]`,
-                    `)`,
-                ].join(" ")
+                [`CREATE FULLTEXT INDEX ${indexName}`, `IF NOT EXISTS FOR (n:${type.name})`, `ON EACH [n.title]`].join(
+                    " "
+                )
             );
         } finally {
             await session.close();
@@ -509,11 +505,9 @@ describe("@fulltext directive", () => {
         try {
             await session.run(
                 [
-                    `CALL db.index.fulltext.createNodeIndex(`,
-                    `"${indexName}",`,
-                    `["${type.name}"],`,
-                    `["title", "description"]`,
-                    `)`,
+                    `CREATE FULLTEXT INDEX ${indexName}`,
+                    `IF NOT EXISTS FOR (n:${type.name})`,
+                    `ON EACH [n.title, n.description]`,
                 ].join(" ")
             );
         } finally {
@@ -570,7 +564,7 @@ describe("@fulltext directive", () => {
         const session = driver.session({ database: databaseName });
 
         const cypher = `
-            CALL db.indexes() yield
+            SHOW INDEXES yield
                 name AS name,
                 type AS type,
                 entityType AS entityType,
@@ -635,13 +629,9 @@ describe("@fulltext directive", () => {
 
         try {
             await session.run(
-                [
-                    `CALL db.index.fulltext.createNodeIndex(`,
-                    `"${indexName}",`,
-                    `["${type.name}"],`,
-                    `["title"]`,
-                    `)`,
-                ].join(" ")
+                [`CREATE FULLTEXT INDEX ${indexName}`, `IF NOT EXISTS FOR (n:${type.name})`, `ON EACH [n.title]`].join(
+                    " "
+                )
             );
         } finally {
             await session.close();
