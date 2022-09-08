@@ -432,4 +432,65 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }"
         `);
     });
+
+    test("Cypher should be the same regardless of whether Place is in type definitions", async () => {
+        const typeDefsWithoutPlace = gql`
+            interface Entity {
+                id: String!
+            }
+
+            type Person implements Entity {
+                id: String! @unique
+                name: String!
+            }
+
+            type Interaction {
+                id: ID! @id
+                kind: String!
+                subjects: [Entity!]! @relationship(type: "ACTED_IN", direction: IN)
+                objects: [Entity!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+        `;
+
+        const neoSchemaWithoutPlace = new Neo4jGraphQL({
+            typeDefs: typeDefsWithoutPlace,
+        });
+
+        const query = gql`
+            mutation {
+                createInteractions(
+                    input: [
+                        {
+                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            kind: "PARENT_OF"
+                            objects: { connect: { where: { node: { id_IN: ["cain"] } } } }
+                        }
+                        {
+                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            kind: "PARENT_OF"
+                            objects: { connect: { where: { node: { id_IN: ["abel"] } } } }
+                        }
+                    ]
+                ) {
+                    info {
+                        nodesCreated
+                    }
+                    interactions {
+                        id
+                        subjects {
+                            id
+                        }
+                        objects {
+                            id
+                        }
+                    }
+                }
+            }
+        `;
+
+        const resultWithPlace = await translateQuery(neoSchema, query);
+        const resultWithoutPlace = await translateQuery(neoSchemaWithoutPlace, query);
+
+        expect(formatCypher(resultWithPlace.cypher)).toBe(formatCypher(resultWithoutPlace.cypher));
+    });
 });

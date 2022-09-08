@@ -31,6 +31,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
     let session: Session;
 
     const Person = generateUniqueType("Person");
+    const Place = generateUniqueType("Place");
     const Interaction = generateUniqueType("Interaction");
 
     async function graphqlQuery(query: string) {
@@ -51,6 +52,11 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
 
             type ${Person} implements Entity {
+                id: String! @unique
+                name: String!
+            }
+
+            type ${Place} implements Entity {
                 id: String! @unique
                 name: String!
             }
