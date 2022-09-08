@@ -387,16 +387,18 @@ Params:
 ### Proposed Cypher
 
 ```cypher
-UNWIND [{title: "The Matrix", website: {address: "movie.com"}, actors: [{name: "Keanu", website: {address: "keanu.com"}}]}, {title: "The Matrix 2", actors: [{name: "Keanu 2", website: {address: "movie2.com"}}]}] as x
+UNWIND [{title: "The Matrix", website: {address: "movie.com"}, actors: [{node: {name: "Keanu", website: {address: "keanu.com"}}, edge: { year: 1999}}]}, {title: "The Matrix 2", actors: [{node: {name: "Keanu 2", website: {address: "movie2.com"}}}]}] as x
 CREATE (this0:Movie)
 SET this0.title=x.title
 WITH this0,x
 CALL {
     WITH this0, x
-    UNWIND x.actors as x_actor
+    UNWIND x.actors as x_actor_connection
+    WITH x_actor_connection.node as x_actor, x_actor_connection.edge as x_actor_edge
     CREATE(this1:Person)
     SET this1.name=x_actor.name
-    MERGE (this1)-[:ACTED_IN]->(this0)
+    MERGE (this1)-[edge0:ACTED_IN]->(this0)
+    SET edge0.year=x_actor_edge.year
     WITH *
     CALL {
         WITH this1, x_actor
