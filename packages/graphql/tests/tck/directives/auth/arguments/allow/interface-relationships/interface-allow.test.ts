@@ -110,12 +110,12 @@ describe("@auth allow with interface relationships", () => {
             CALL {
                 WITH this
                 MATCH (this)-[thisthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
-                WHERE apoc.util.validatePredicate(NOT ((exists((this_Comment:\`Comment\`)<-[:HAS_CONTENT]-(:\`User\`)) AND any(thisthis1 IN [(this_Comment:\`Comment\`)<-[:HAS_CONTENT]-(thisthis1:\`User\`) | thisthis1] WHERE (thisthis1.id IS NOT NULL AND thisthis1.id = $thisparam0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ((exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND any(thisthis1 IN [(this_Comment)<-[:HAS_CONTENT]-(thisthis1:\`User\`) | thisthis1] WHERE (thisthis1.id IS NOT NULL AND thisthis1.id = $thisparam0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN { __resolveType: \\"Comment\\", id: this_Comment.id, content: this_Comment.content } AS this_content
                 UNION
                 WITH this
                 MATCH (this)-[thisthis2:HAS_CONTENT]->(this_Post:\`Post\`)
-                WHERE apoc.util.validatePredicate(NOT ((exists((this_Post:\`Post\`)<-[:HAS_CONTENT]-(:\`User\`)) AND any(thisthis3 IN [(this_Post:\`Post\`)<-[:HAS_CONTENT]-(thisthis3:\`User\`) | thisthis3] WHERE (thisthis3.id IS NOT NULL AND thisthis3.id = $thisparam1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(thisthis3 IN [(this_Post)<-[:HAS_CONTENT]-(thisthis3:\`User\`) | thisthis3] WHERE (thisthis3.id IS NOT NULL AND thisthis3.id = $thisparam1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN { __resolveType: \\"Post\\", id: this_Post.id, content: this_Post.content } AS this_content
             }
             RETURN collect(this_content) AS this_content
@@ -163,12 +163,12 @@ describe("@auth allow with interface relationships", () => {
             CALL {
                 WITH this
                 MATCH (this)-[thisthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
-                WHERE (apoc.util.validatePredicate(NOT ((exists((this_Comment:\`Comment\`)<-[:HAS_CONTENT]-(:\`User\`)) AND any(thisthis1 IN [(this_Comment:\`Comment\`)<-[:HAS_CONTENT]-(thisthis1:\`User\`) | thisthis1] WHERE (thisthis1.id IS NOT NULL AND thisthis1.id = $thisparam0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND this_Comment.id = $thisparam1)
+                WHERE (apoc.util.validatePredicate(NOT ((exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND any(thisthis1 IN [(this_Comment)<-[:HAS_CONTENT]-(thisthis1:\`User\`) | thisthis1] WHERE (thisthis1.id IS NOT NULL AND thisthis1.id = $thisparam0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND this_Comment.id = $thisparam1)
                 RETURN { __resolveType: \\"Comment\\" } AS this_content
                 UNION
                 WITH this
                 MATCH (this)-[thisthis2:HAS_CONTENT]->(this_Post:\`Post\`)
-                WHERE (apoc.util.validatePredicate(NOT ((exists((this_Post:\`Post\`)<-[:HAS_CONTENT]-(:\`User\`)) AND any(thisthis3 IN [(this_Post:\`Post\`)<-[:HAS_CONTENT]-(thisthis3:\`User\`) | thisthis3] WHERE (thisthis3.id IS NOT NULL AND thisthis3.id = $thisparam2)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND this_Post.id = $thisparam3)
+                WHERE (apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(thisthis3 IN [(this_Post)<-[:HAS_CONTENT]-(thisthis3:\`User\`) | thisthis3] WHERE (thisthis3.id IS NOT NULL AND thisthis3.id = $thisparam2)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND this_Post.id = $thisparam3)
                 CALL {
                     WITH this_Post
                     MATCH (this_Post)-[thisthis4:HAS_COMMENT]->(this_Post_comments:\`Comment\`)
@@ -276,12 +276,12 @@ describe("@auth allow with interface relationships", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:HAS_CONTENT]->(this_Comment:\`Comment\`)
-                WHERE apoc.util.validatePredicate(NOT ((exists((this_Comment:\`Comment\`)<-[:HAS_CONTENT]-(:\`User\`)) AND any(update_this1 IN [(this_Comment:\`Comment\`)<-[:HAS_CONTENT]-(update_this1:\`User\`) | update_this1] WHERE (update_this1.id IS NOT NULL AND update_this1.id = $update_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ((exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND any(update_this1 IN [(this_Comment)<-[:HAS_CONTENT]-(update_this1:\`User\`) | update_this1] WHERE (update_this1.id IS NOT NULL AND update_this1.id = $update_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN { __resolveType: \\"Comment\\", id: this_Comment.id } AS this_content
                 UNION
                 WITH this
                 MATCH (this)-[update_this2:HAS_CONTENT]->(this_Post:\`Post\`)
-                WHERE apoc.util.validatePredicate(NOT ((exists((this_Post:\`Post\`)<-[:HAS_CONTENT]-(:\`User\`)) AND any(update_this3 IN [(this_Post:\`Post\`)<-[:HAS_CONTENT]-(update_this3:\`User\`) | update_this3] WHERE (update_this3.id IS NOT NULL AND update_this3.id = $update_param1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(update_this3 IN [(this_Post)<-[:HAS_CONTENT]-(update_this3:\`User\`) | update_this3] WHERE (update_this3.id IS NOT NULL AND update_this3.id = $update_param1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS this_content
             }
             RETURN collect(this_content) AS this_content

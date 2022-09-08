@@ -169,12 +169,12 @@ describe("Cypher Auth Where", () => {
             CALL {
                 WITH this
                 MATCH (this)-[thisthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
-                WHERE (exists((this_Comment:\`Comment\`)<-[:HAS_CONTENT]-(:\`User\`)) AND all(thisthis1 IN [(this_Comment:\`Comment\`)<-[:HAS_CONTENT]-(thisthis1:\`User\`) | thisthis1] WHERE (thisthis1.id IS NOT NULL AND thisthis1.id = $thisparam0)))
+                WHERE (exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND all(thisthis1 IN [(this_Comment)<-[:HAS_CONTENT]-(thisthis1:\`User\`) | thisthis1] WHERE (thisthis1.id IS NOT NULL AND thisthis1.id = $thisparam0)))
                 RETURN { __resolveType: \\"Comment\\" } AS this_content
                 UNION
                 WITH this
                 MATCH (this)-[thisthis2:HAS_CONTENT]->(this_Post:\`Post\`)
-                WHERE (exists((this_Post:\`Post\`)<-[:HAS_CONTENT]-(:\`User\`)) AND all(thisthis3 IN [(this_Post:\`Post\`)<-[:HAS_CONTENT]-(thisthis3:\`User\`) | thisthis3] WHERE (thisthis3.id IS NOT NULL AND thisthis3.id = $thisparam1)))
+                WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(thisthis3 IN [(this_Post)<-[:HAS_CONTENT]-(thisthis3:\`User\`) | thisthis3] WHERE (thisthis3.id IS NOT NULL AND thisthis3.id = $thisparam1)))
                 RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS this_content
             }
             RETURN collect(this_content) AS this_content
