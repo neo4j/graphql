@@ -242,7 +242,7 @@ describe("Mixed nesting", () => {
                 WITH this
                 MATCH (this_actors:\`Actor\`)-[thisthis0:ACTED_IN]->(this)
                 WHERE this_actors.name = $thisparam0
-                WITH this_actors { .name, moviesConnection: apoc.cypher.runFirstColumnSingle(\\"CALL {
+                CALL {
                 WITH this_actors
                 MATCH (this_actors)-[this_actors_acted_in_relationship:ACTED_IN]->(this_actors_movie:Movie)
                 WHERE NOT (this_actors_movie.title = $this_actors_moviesConnection_args_where_Movieparam0)
@@ -250,7 +250,8 @@ describe("Mixed nesting", () => {
                 UNWIND edges as edge
                 WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
-                } RETURN moviesConnection\\", { this_actors: this_actors, this_actors_moviesConnection_args_where_Movieparam0: $this_actors_moviesConnection_args_where_Movieparam0, this_actors_moviesConnection: $this_actors_moviesConnection, auth: $auth }) } AS this_actors
+                }
+                WITH this_actors { .name, moviesConnection: moviesConnection } AS this_actors
                 RETURN collect(this_actors) AS this_actors
             }
             RETURN this { .title, actors: this_actors } as this"
@@ -269,11 +270,7 @@ describe("Mixed nesting", () => {
                         }
                     }
                 },
-                \\"thisparam0\\": \\"Tom Hanks\\",
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
+                \\"thisparam0\\": \\"Tom Hanks\\"
             }"
         `);
     });
