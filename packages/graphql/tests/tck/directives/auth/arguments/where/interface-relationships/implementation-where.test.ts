@@ -169,16 +169,16 @@ describe("Cypher Auth Where", () => {
             CALL {
                 WITH this
                 MATCH (this)-[thisthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
-                RETURN { __resolveType: \\"Comment\\" } AS content
+                RETURN { __resolveType: \\"Comment\\" } AS this_content
                 UNION
                 WITH this
                 MATCH (this)-[thisthis1:HAS_CONTENT]->(this_Post:\`Post\`)
                 WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(thisthis2 IN [(this_Post)<-[:HAS_CONTENT]-(thisthis2:\`User\`) | thisthis2] WHERE (thisthis2.id IS NOT NULL AND thisthis2.id = $thisparam0)))
-                RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS content
+                RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS this_content
             }
-            RETURN collect(content) AS content
+            RETURN collect(this_content) AS this_content
             }
-            RETURN this { .id, content: content } as this"
+            RETURN this { .id, content: this_content } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

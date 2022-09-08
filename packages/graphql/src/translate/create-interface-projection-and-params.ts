@@ -50,6 +50,7 @@ export default function createInterfaceProjectionAndParams({
     const fullWithVars = removeDuplicates([...asArray(withVars), nodeVariable]);
     const parentNode = new CypherBuilder.NamedNode(nodeVariable);
     const whereInput = resolveTree.args.where as InterfaceWhereArg;
+    const returnVariable = `${nodeVariable}_${field.fieldName}`;
 
     const referenceNodes = context.nodes.filter(
         (node) => field.interface?.implementations?.includes(node.name) && filterInterfaceNodes({ node, whereInput })
@@ -74,7 +75,7 @@ export default function createInterfaceProjectionAndParams({
         addSortAndLimitOptionsToClause({
             optionsInput,
             projectionClause: withClause,
-            target: new CypherBuilder.NamedNode(field.fieldName),
+            target: new CypherBuilder.NamedNode(returnVariable),
         });
     }
 
@@ -91,7 +92,7 @@ export default function createInterfaceProjectionAndParams({
                 `WITH *`,
                 "CALL {",
                 ...interfaceProjection,
-                `${withStr}RETURN collect(${field.fieldName}) AS ${field.fieldName}`,
+                `${withStr}RETURN collect(${returnVariable}) AS ${returnVariable}`,
                 "}",
             ];
         }
@@ -230,7 +231,10 @@ function createInterfaceSubquery({
 
     const projectionSubqueryClause = CypherBuilder.concat(...projectionSubQueries);
 
-    const returnClause = new CypherBuilder.Return([new CypherBuilder.RawCypher(projectionStr), field.fieldName]);
+    const returnClause = new CypherBuilder.Return([
+        new CypherBuilder.RawCypher(projectionStr),
+        `${nodeVariable}_${field.fieldName}`,
+    ]);
 
     return CypherBuilder.concat(withClause, matchQuery, ...connectionClauses, projectionSubqueryClause, returnClause);
 }

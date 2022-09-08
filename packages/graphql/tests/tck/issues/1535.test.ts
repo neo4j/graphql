@@ -87,15 +87,15 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[thisthis0:HOSTED_BY]-(this_Screening:\`Screening\`)
-                RETURN { __resolveType: \\"Screening\\", id: this_Screening.id } AS events
+                RETURN { __resolveType: \\"Screening\\", id: this_Screening.id } AS this_events
                 UNION
                 WITH this
                 MATCH (this)<-[thisthis1:HOSTED_BY]-(this_Booking:\`Booking\`)
-                RETURN { __resolveType: \\"Booking\\", id: this_Booking.id } AS events
+                RETURN { __resolveType: \\"Booking\\", id: this_Booking.id } AS this_events
             }
-            RETURN collect(events) AS events
+            RETURN collect(this_events) AS this_events
             }
-            RETURN this { .id, .name, events232: events } as this"
+            RETURN this { .id, .name, events232: this_events } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

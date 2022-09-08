@@ -88,19 +88,19 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
             CALL {
                 WITH this
                 MATCH (this)-[thisthis0:RELATES_TO]-(this_Series:\`Series\`)
-                RETURN { __resolveType: \\"Series\\", productTitle: this_Series.productTitle } AS releatsTo
+                RETURN { __resolveType: \\"Series\\", productTitle: this_Series.productTitle } AS this_releatsTo
                 UNION
                 WITH this
                 MATCH (this)-[thisthis1:RELATES_TO]-(this_Season:\`Season\`)
-                RETURN { __resolveType: \\"Season\\", productTitle: this_Season.productTitle } AS releatsTo
+                RETURN { __resolveType: \\"Season\\", productTitle: this_Season.productTitle } AS this_releatsTo
                 UNION
                 WITH this
                 MATCH (this)-[thisthis2:RELATES_TO]-(this_ProgrammeItem:\`ProgrammeItem\`)
-                RETURN { __resolveType: \\"ProgrammeItem\\", productTitle: this_ProgrammeItem.productTitle } AS releatsTo
+                RETURN { __resolveType: \\"ProgrammeItem\\", productTitle: this_ProgrammeItem.productTitle } AS this_releatsTo
             }
-            RETURN collect(releatsTo) AS releatsTo
+            RETURN collect(this_releatsTo) AS this_releatsTo
             }
-            RETURN this { .productTitle, .episodeNumber, releatsTo: releatsTo } as this"
+            RETURN this { .productTitle, .episodeNumber, releatsTo: this_releatsTo } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

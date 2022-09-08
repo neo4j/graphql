@@ -352,9 +352,9 @@ describe("Math operators", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:MARRIED_WITH]->(this_Star:\`Star\`)
-                RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS marriedWith
+                RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS this_marriedWith
             }
-            RETURN collect(DISTINCT this { .name, marriedWith: marriedWith }) AS data"
+            RETURN collect(DISTINCT this { .name, marriedWith: this_marriedWith }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -442,9 +442,9 @@ describe("Math operators", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:MARRIED_WITH]->(this_Star:\`Star\`)
-                RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS marriedWith
+                RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS this_marriedWith
             }
-            RETURN collect(DISTINCT this { .name, marriedWith: marriedWith }) AS data"
+            RETURN collect(DISTINCT this { .name, marriedWith: this_marriedWith }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

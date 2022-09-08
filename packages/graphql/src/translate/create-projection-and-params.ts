@@ -351,7 +351,7 @@ export default function createProjectionAndParams({
                     withVars: prevRelationshipFields,
                 });
                 res.subqueries.push(interfaceProjection);
-                res.projection.push(`${field.alias}: ${field.name}`);
+                res.projection.push(`${field.alias}: ${varName}_${field.name}`);
 
                 return res;
             }
