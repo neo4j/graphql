@@ -24,7 +24,7 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
 import { generateUniqueType } from "../../utils/graphql-types";
 
-describe("https://github.com/neo4j/graphql/issues/832", () => {
+describe("Projecting interface relationships following create of multiple nodes", () => {
     let schema: GraphQLSchema;
     let neo4j: Neo4j;
     let driver: Driver;
@@ -100,94 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         await driver.close();
     });
 
-    test("should not create duplicate nodes when creating multiple interactions in separate mutations", async () => {
-        const mutation0 = `
-            mutation {
-                ${Interaction.operations.create}(
-                    input: [
-                        {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
-                            kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["cain"] } } } }
-                        }
-                    ]
-                ) {
-                    info {
-                        nodesCreated
-                        relationshipsCreated
-                    }
-                    ${Interaction.plural} {
-                        id
-                    }
-                }
-            }
-        `;
-
-        const mutation0Result = await graphqlQuery(mutation0);
-        expect((mutation0Result.data?.[Interaction.operations.create] as any).info.nodesCreated).toBe(1);
-        expect((mutation0Result.data?.[Interaction.operations.create] as any).info.relationshipsCreated).toBe(3);
-
-        const mutation1 = `
-            mutation {
-                ${Interaction.operations.create}(
-                    input: [
-                        {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
-                            kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["abel"] } } } }
-                        }
-                    ]
-                ) {
-                    info {
-                        nodesCreated
-                        relationshipsCreated
-                    }
-                    ${Interaction.plural} {
-                        id
-                    }
-                }
-            }
-        `;
-
-        const mutation1Result = await graphqlQuery(mutation1);
-        expect((mutation1Result.data?.[Interaction.operations.create] as any).info.nodesCreated).toBe(1);
-        expect((mutation1Result.data?.[Interaction.operations.create] as any).info.relationshipsCreated).toBe(3);
-    });
-
-    test("should not create duplicate nodes when creating multiple interactions in one", async () => {
-        const mutation = `
-            mutation {
-                ${Interaction.operations.create}(
-                    input: [
-                        {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
-                            kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["cain"] } } } }
-                        }
-                        {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
-                            kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["abel"] } } } }
-                        }
-                    ]
-                ) {
-                    info {
-                        nodesCreated
-                        relationshipsCreated
-                    }
-                    ${Interaction.plural} {
-                        id
-                    }
-                }
-            }
-        `;
-
-        const mutationResult = await graphqlQuery(mutation);
-        expect((mutationResult.data?.[Interaction.operations.create] as any).info.nodesCreated).toBe(2);
-        expect((mutationResult.data?.[Interaction.operations.create] as any).info.relationshipsCreated).toBe(6);
-    });
-
-    test("should not throw error when querying nested relations under a root connection field", async () => {
+    test("should not throw error", async () => {
         const mutation = `
             mutation {
                 ${Interaction.operations.create}(
