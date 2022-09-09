@@ -7874,9 +7874,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:27.0.1":
-  version: 27.0.1
-  resolution: "eslint-plugin-jest@npm:27.0.1"
+"eslint-plugin-jest@npm:27.0.2":
+  version: 27.0.2
+  resolution: "eslint-plugin-jest@npm:27.0.2"
   dependencies:
     "@typescript-eslint/utils": ^5.10.0
   peerDependencies:
@@ -7887,7 +7887,7 @@ __metadata:
       optional: true
     jest:
       optional: true
-  checksum: 269d4dc46bb925eb4c19106fd9e03775a863f53e05716628cc47777abc15887775ee47d73c4f8bdd98bb26b7462d8d8f654610bb2a367f8c97881204a2c3f42e
+  checksum: 0545568a1ddd14138f08015f5f1a99e08c0d5ef5d2f14a8e66c28c1b8296a541c1075e9660f637fcb71be01f2a709991937878fc96abc760c00efc768f4598c8
   languageName: node
   linkType: hard
 
@@ -13248,7 +13248,7 @@ __metadata:
     eslint-import-resolver-typescript: 3.5.1
     eslint-plugin-eslint-comments: 3.2.0
     eslint-plugin-import: 2.26.0
-    eslint-plugin-jest: 27.0.1
+    eslint-plugin-jest: 27.0.2
     eslint-plugin-jsx-a11y: 6.6.1
     eslint-plugin-react: 7.31.7
     graphql: 16.6.0
