@@ -95,7 +95,7 @@ describe("https://github.com/neo4j/graphql/issues/1121", () => {
         await driver.close();
     });
 
-    test("should not throw error when querying nested relations under a root connection field", async () => {
+    test("error should not be thrown", async () => {
         const mutation = `
             mutation {
                 ${Food.operations.create}(
