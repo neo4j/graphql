@@ -35,7 +35,7 @@ describe("Pattern", () => {
             expect(pattern.getCypher(env)).toMatchInlineSnapshot(`"(this0)"`);
         });
 
-        test("Simple node with labels", () => {
+        test("Simple node with default values", () => {
             const node = new CypherBuilder.Node({ labels: ["TestLabel"] });
             const pattern = new Pattern(node);
 
@@ -79,7 +79,7 @@ describe("Pattern", () => {
             expect(pattern.getCypher(env)).toMatchInlineSnapshot(`"(this1)-[this0]->(this2)"`);
         });
 
-        test("Simple relationship with labels", () => {
+        test("Simple relationship with default values", () => {
             const node1 = new CypherBuilder.Node({ labels: ["Actor"] });
             const node2 = new CypherBuilder.Node({ labels: ["Movie"] });
             const relationship = new CypherBuilder.Relationship({ source: node1, target: node2, type: "ACTED_IN" });

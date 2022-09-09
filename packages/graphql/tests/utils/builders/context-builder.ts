@@ -21,6 +21,7 @@ import type * as neo4j from "neo4j-driver";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { GraphQLSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
+import type { Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
 import type { AuthContext, Context } from "../../../src/types";
 import { Builder } from "./builder";
 import { Executor } from "../../../src/classes/Executor";
@@ -39,6 +40,7 @@ export class ContextBuilder extends Builder<Context, Context> {
             subscriptionsEnabled: false,
             executionContext: {} as neo4j.Driver,
             executor: new Executor({ executionContext: {} as neo4j.Driver, auth: {} as AuthContext }),
+            neo4jDatabaseInfo: {} as Neo4jDatabaseInfo,
             ...newOptions,
         });
     }

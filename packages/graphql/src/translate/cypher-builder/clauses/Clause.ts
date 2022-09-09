@@ -21,8 +21,9 @@ import { CypherASTNode } from "../CypherASTNode";
 import { CypherEnvironment, EnvPrefix } from "../Environment";
 import type { CypherResult } from "../types";
 
-/** Represents a clause ast node */
+/** Represents a clause AST node */
 export abstract class Clause extends CypherASTNode {
+    /** Compiles a clause into Cypher and params */
     public build(prefix?: string | EnvPrefix): CypherResult {
         if (this.isRoot) {
             const env = this.getEnv(prefix);

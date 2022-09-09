@@ -25,7 +25,7 @@ import { listPredicateToSizeFunction } from "../list-predicate-to-size-function"
 import type { WhereOperator } from "../types";
 // Recursive function
 // eslint-disable-next-line import/no-cycle
-import { createCypherWherePredicate } from "../create-cypher-where-predicate";
+import { createWherePredicate } from "../create-where-predicate";
 import { filterTruthy } from "../../../utils/utils";
 import { compileCypherIfExists } from "../../cypher-builder/utils/utils";
 
@@ -64,7 +64,7 @@ export function createConnectionOperation({
             type: relationField.type,
         });
 
-        const matchPattern = new CypherBuilder.Pattern(relationship, {
+        const matchPattern = relationship.pattern({
             source: relationField.direction === "IN" ? { variable: true } : { labels: false },
             target: relationField.direction === "IN" ? { labels: false } : { variable: true },
             relationship: { variable: true },
@@ -137,7 +137,7 @@ export function createConnectionWherePropertyOperation({
 
         if (key.startsWith("edge")) {
             const nestedProperties: Record<string, any> = value;
-            const result = createCypherWherePredicate({
+            const result = createWherePredicate({
                 targetElement: edgeRef,
                 whereInput: nestedProperties,
                 context,
@@ -161,7 +161,7 @@ export function createConnectionWherePropertyOperation({
                 throw new Error("_on is used as the only argument and node is not present within");
             }
 
-            const result = createCypherWherePredicate({
+            const result = createWherePredicate({
                 targetElement: targetNode,
                 whereInput: nestedProperties,
                 context,

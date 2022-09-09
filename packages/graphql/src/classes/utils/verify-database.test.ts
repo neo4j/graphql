@@ -21,6 +21,7 @@ import type { Driver, Session } from "neo4j-driver";
 import checkNeo4jCompat from "./verify-database";
 import { REQUIRED_APOC_FUNCTIONS, REQUIRED_APOC_PROCEDURES, MIN_VERSIONS } from "../../constants";
 import type { DriverConfig } from "../../types";
+import { Neo4jDatabaseInfo } from "../Neo4jDatabaseInfo";
 
 describe("checkNeo4jCompat", () => {
     test("should add driver config to session", async () => {
@@ -35,7 +36,6 @@ describe("checkNeo4jCompat", () => {
                     {
                         toObject: () => ({
                             version: minVersion.neo4j,
-                            apocVersion: `${minVersion.majorMinor}.0.10`,
                             functions: REQUIRED_APOC_FUNCTIONS,
                             procedures: REQUIRED_APOC_PROCEDURES,
                         }),
@@ -62,7 +62,9 @@ describe("checkNeo4jCompat", () => {
             verifyConnectivity: () => undefined,
         };
 
-        await expect(checkNeo4jCompat({ driver: fakeDriver, driverConfig })).resolves.not.toThrow();
+        await expect(
+            checkNeo4jCompat({ driver: fakeDriver, driverConfig, dbInfo: new Neo4jDatabaseInfo(minVersion.neo4j) })
+        ).resolves.not.toThrow();
     });
 
     test("should throw expected Neo4j version", async () => {
@@ -76,7 +78,6 @@ describe("checkNeo4jCompat", () => {
                     {
                         toObject: () => ({
                             version: invalidVersion,
-                            apocVersion: "2.3.0.0",
                             functions: REQUIRED_APOC_FUNCTIONS,
                             procedures: REQUIRED_APOC_PROCEDURES,
                         }),
@@ -95,7 +96,9 @@ describe("checkNeo4jCompat", () => {
             verifyConnectivity: () => undefined,
         };
 
-        await expect(checkNeo4jCompat({ driver: fakeDriver })).rejects.toThrow(
+        await expect(
+            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo(invalidVersion) })
+        ).rejects.toThrow(
             `Encountered the following DBMS compatiblility issues:\nExpected Neo4j version '${MIN_VERSIONS[0].majorMinor}' or greater, received: '${invalidVersion}'`
         );
     });
@@ -109,7 +112,6 @@ describe("checkNeo4jCompat", () => {
                     {
                         toObject: () => ({
                             version: "4.3.10",
-                            apocVersion: "4.3.0.0",
                             functions: REQUIRED_APOC_FUNCTIONS,
                             procedures: REQUIRED_APOC_PROCEDURES,
                         }),
@@ -128,7 +130,9 @@ describe("checkNeo4jCompat", () => {
             verifyConnectivity: () => undefined,
         };
 
-        await expect(checkNeo4jCompat({ driver: fakeDriver })).resolves.not.toThrow();
+        await expect(
+            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo("4.3.10") })
+        ).resolves.not.toThrow();
     });
 
     test("should not throw Error for Aura version numbers", async () => {
@@ -140,7 +144,6 @@ describe("checkNeo4jCompat", () => {
                     {
                         toObject: () => ({
                             version: "4.0-aura",
-                            apocVersion: "We trust Aura APOC version",
                             functions: REQUIRED_APOC_FUNCTIONS,
                             procedures: REQUIRED_APOC_PROCEDURES,
                         }),
@@ -159,7 +162,9 @@ describe("checkNeo4jCompat", () => {
             verifyConnectivity: () => undefined,
         };
 
-        await expect(checkNeo4jCompat({ driver: fakeDriver })).resolves.not.toThrow();
+        await expect(
+            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo("4.0-aura") })
+        ).resolves.not.toThrow();
     });
 
     test("should throw missing APOC functions", async () => {
@@ -173,7 +178,6 @@ describe("checkNeo4jCompat", () => {
                     {
                         toObject: () => ({
                             version: minVersion.neo4j,
-                            apocVersion: `${minVersion.majorMinor}.0.10`,
                             functions: [],
                             procedures: REQUIRED_APOC_PROCEDURES,
                         }),
@@ -192,7 +196,9 @@ describe("checkNeo4jCompat", () => {
             verifyConnectivity: () => undefined,
         };
 
-        await expect(checkNeo4jCompat({ driver: fakeDriver })).rejects.toThrow(
+        await expect(
+            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo(minVersion.neo4j) })
+        ).rejects.toThrow(
             `Encountered the following DBMS compatiblility issues:\nMissing APOC functions: [ ${REQUIRED_APOC_FUNCTIONS.join(
                 ", "
             )} ]`
@@ -210,7 +216,6 @@ describe("checkNeo4jCompat", () => {
                     {
                         toObject: () => ({
                             version: minVersion.neo4j,
-                            apocVersion: `${minVersion.majorMinor}.0.10`,
                             functions: REQUIRED_APOC_FUNCTIONS,
                             procedures: [],
                         }),
@@ -229,7 +234,9 @@ describe("checkNeo4jCompat", () => {
             verifyConnectivity: () => undefined,
         };
 
-        await expect(checkNeo4jCompat({ driver: fakeDriver })).rejects.toThrow(
+        await expect(
+            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo(minVersion.neo4j) })
+        ).rejects.toThrow(
             `Encountered the following DBMS compatiblility issues:\nMissing APOC procedures: [ ${REQUIRED_APOC_PROCEDURES.join(
                 ", "
             )} ]`
@@ -247,7 +254,6 @@ describe("checkNeo4jCompat", () => {
                     {
                         toObject: () => ({
                             version: minVersion.neo4j,
-                            apocVersion: `${minVersion.majorMinor}.0.10`,
                             functions: REQUIRED_APOC_FUNCTIONS,
                             procedures: REQUIRED_APOC_PROCEDURES,
                         }),
@@ -266,7 +272,9 @@ describe("checkNeo4jCompat", () => {
             verifyConnectivity: () => undefined,
         };
 
-        await expect(checkNeo4jCompat({ driver: fakeDriver })).resolves.not.toThrow();
+        await expect(
+            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo(minVersion.neo4j) })
+        ).resolves.not.toThrow();
     });
 
     test("should throw no errors with valid DB (greater versions)", async () => {
@@ -278,7 +286,6 @@ describe("checkNeo4jCompat", () => {
                     {
                         toObject: () => ({
                             version: "20.1.1",
-                            apocVersion: "20.1.0.0",
                             functions: REQUIRED_APOC_FUNCTIONS,
                             procedures: REQUIRED_APOC_PROCEDURES,
                         }),
@@ -297,7 +304,9 @@ describe("checkNeo4jCompat", () => {
             verifyConnectivity: () => undefined,
         };
 
-        await expect(checkNeo4jCompat({ driver: fakeDriver })).resolves.not.toThrow();
+        await expect(
+            checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo("20.1.1") })
+        ).resolves.not.toThrow();
     });
 
     test("should not throw Error that 4.2 is minimum", async () => {
@@ -309,7 +318,6 @@ describe("checkNeo4jCompat", () => {
                     {
                         toObject: () => ({
                             version: "4.1.10",
-                            apocVersion: "4.1.0.0",
                             functions: REQUIRED_APOC_FUNCTIONS,
                             procedures: REQUIRED_APOC_PROCEDURES,
                         }),
@@ -328,7 +336,7 @@ describe("checkNeo4jCompat", () => {
             verifyConnectivity: () => undefined,
         };
 
-        await expect(checkNeo4jCompat({ driver: fakeDriver })).rejects.toThrow(
+        await expect(checkNeo4jCompat({ driver: fakeDriver, dbInfo: new Neo4jDatabaseInfo("4.1.10") })).rejects.toThrow(
             `Encountered the following DBMS compatiblility issues:\nExpected Neo4j version '${MIN_VERSIONS[0].majorMinor}' or greater, received: '4.1.10'`
         );
     });

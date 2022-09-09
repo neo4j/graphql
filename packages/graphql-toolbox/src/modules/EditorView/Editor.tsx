@@ -145,7 +145,7 @@ export const Editor = ({ schema }: Props) => {
                                             buttonStyle: {
                                                 display: "block",
                                                 fontWeight: "bold",
-                                                backgroundColor: "#E6E9EE",
+                                                backgroundColor: tokens.colors.neutral[40],
                                                 margin: "5px 5px 5px 10px",
                                             },
                                             explorerActionsStyle: {
@@ -168,7 +168,7 @@ export const Editor = ({ schema }: Props) => {
                         <div className="graphiql-explorer-docs-container h-content-docs-container w-96 bg-white shadow rounded">
                             <DocExplorerComponent
                                 schema={schema}
-                                displayBackButton={false}
+                                isEmbedded={false}
                                 onClickClose={() => setShowDocs(false)}
                             />
                         </div>
@@ -256,7 +256,7 @@ export const Editor = ({ schema }: Props) => {
             </div>
 
             {showRightPanel ? (
-                <div className="h-full flex justify-start w-96 bg-white border-l border-gray-100">
+                <div className="h-full flex justify-start w-96 bg-white border-l border-gray-100 z-50">
                     {settings.isShowHelpDrawer ? (
                         <HelpDrawer onClickClose={() => settings.setIsShowHelpDrawer(false)} schema={schema} />
                     ) : null}

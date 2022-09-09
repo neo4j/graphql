@@ -76,7 +76,11 @@ describe("CypherBuilder Match Examples", () => {
             type: "ACTED_IN",
         });
 
-        const matchQuery = new CypherBuilder.Match(relationship)
+        const matchQuery = new CypherBuilder.Match(
+            relationship.pattern({
+                source: { labels: false },
+            })
+        )
             .where(
                 CypherBuilder.and(
                     CypherBuilder.eq(personNode.property("name"), nameParam),
@@ -90,7 +94,7 @@ describe("CypherBuilder Match Examples", () => {
 
         const queryResult = matchQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
-            "MATCH (this1:\`Person\`)-[this0:ACTED_IN]->(this2:\`Movie\`)
+            "MATCH (this1)-[this0:ACTED_IN]->(this2:\`Movie\`)
             WHERE (this1.name = $param0 AND (this2.year = $param1 OR this2.year = $param2))
             RETURN this2.title"
         `);

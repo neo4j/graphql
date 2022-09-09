@@ -21,7 +21,7 @@ import type { CypherEnvironment } from "../Environment";
 import type { NodeRef } from "../variables/NodeRef";
 import type { Param } from "../variables/Param";
 import { Pattern } from "../Pattern";
-import { SetClause } from "../sub-clauses/Set";
+import { SetClause } from "./sub-clauses/Set";
 import { Clause } from "./Clause";
 import { compileCypherIfExists } from "../utils/utils";
 import { WithReturn } from "./mixins/WithReturn";
@@ -33,8 +33,8 @@ type Params = Record<string, Param<any>>;
 export class Create extends Clause {
     private pattern: Pattern<NodeRef>;
 
-    constructor(node: NodeRef, params: Params = {}, parent?: Clause) {
-        super(parent);
+    constructor(node: NodeRef, params: Params = {}) {
+        super();
         this.pattern = new Pattern(node).withParams(params);
         this.setSubClause = new SetClause(this);
     }

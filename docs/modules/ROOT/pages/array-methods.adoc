@@ -79,7 +79,7 @@ type Movie {
 }
 ----
 
-We can push to both the `tags` and `moreTags` property arrays.
+We can pop from both the `tags` and `moreTags` property arrays.
 
 
 Before: 

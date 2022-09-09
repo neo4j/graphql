@@ -25,9 +25,11 @@ import type { Context } from "../../../types";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 
 export function findResolver({ node }: { node: Node }) {
+
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         context.resolveTree = getNeo4jResolveTree(info, { args });
+
         const { cypher, params } = translateRead({ context, node });
         const executeResult = await execute({
             cypher,
@@ -38,7 +40,7 @@ export function findResolver({ node }: { node: Node }) {
 
         return executeResult.records.map((x) => x.this);
     }
-
+    
     return {
         type: `[${node.name}!]!`,
         resolve,

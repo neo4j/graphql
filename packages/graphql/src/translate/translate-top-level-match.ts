@@ -21,7 +21,7 @@ import type { AuthOperations, Context, GraphQLWhereArg } from "../types";
 import type { Node } from "../classes";
 import { createAuthAndParams } from "./create-auth-and-params";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
-import { createCypherWherePredicate } from "./where/create-cypher-where-predicate";
+import { createWherePredicate } from "./where/create-where-predicate";
 
 export function translateTopLevelMatch({
     node,
@@ -53,7 +53,7 @@ export function translateTopLevelMatch({
         matchQuery = new CypherBuilder.db.FullTextQueryNodes(matchNode, indexName, phraseParam);
 
         const labelsChecks = node.getLabels(context).map((label) => {
-            return CypherBuilder.in(new CypherBuilder.Literal(`"${label}"`), CypherBuilder.labels(matchNode));
+            return CypherBuilder.in(new CypherBuilder.Literal(label), CypherBuilder.labels(matchNode));
         });
 
         const andChecks = CypherBuilder.and(...labelsChecks);
@@ -63,7 +63,7 @@ export function translateTopLevelMatch({
     }
 
     if (whereInput) {
-        const whereOp = createCypherWherePredicate({
+        const whereOp = createWherePredicate({
             whereInput,
             element: node,
             context,

@@ -20,10 +20,9 @@
 import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import type { Context, ConnectionField, RelationField } from "../types";
+import type { Context, ConnectionField } from "../types";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
-import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
@@ -155,26 +154,6 @@ export default async function translateCreate({
                 connectionStrs.push(connection[0]);
                 if (!connectionParams) connectionParams = {};
                 connectionParams = { ...connectionParams, ...connection[1] };
-            });
-        }
-
-        if (projection.meta?.interfaceFields?.length) {
-            const prevRelationshipFields: string[] = [];
-            projection.meta.interfaceFields.forEach((interfaceResolveTree) => {
-                const relationshipField = node.relationFields.find(
-                    (x) => x.fieldName === interfaceResolveTree.name
-                ) as RelationField;
-                const interfaceProjection = createInterfaceProjectionAndParams({
-                    resolveTree: interfaceResolveTree,
-                    field: relationshipField,
-                    context,
-                    nodeVariable: "REPLACE_ME",
-                    withVars: [...withVars, ...prevRelationshipFields],
-                });
-                prevRelationshipFields.push(relationshipField.dbPropertyName || relationshipField.fieldName);
-                interfaceStrs.push(interfaceProjection.cypher);
-                if (!interfaceParams) interfaceParams = {};
-                interfaceParams = { ...interfaceParams, ...interfaceProjection.params };
             });
         }
     }
