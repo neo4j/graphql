@@ -9,6 +9,7 @@ jobs:
       matrix:
         package:
           - graphql
+          - graphql-toolbox
           - introspector
           - ogm
           - plugins/graphql-plugin-auth
@@ -26,11 +27,11 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           languages: javascript
-      - name: Install dependencies
-        run: yarn
-      - name: Build packages/${{ matrix.package }}
-        run: yarn build
-        working-directory: packages/${{ matrix.package }}
+      # - name: Install dependencies
+      #   run: yarn
+      # - name: Build packages/${{ matrix.package }}
+      #   run: yarn build
+        # working-directory: packages/${{ matrix.package }}
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
