@@ -327,10 +327,7 @@ function createDisconnectAndParams({
             params = { ...params, ...postAuth.params };
         }
 
-        // TODO: Remove this conditional logic when 4.3 support no longer required
-        if (context.neo4jDatabaseInfo.lt("4.4")) {
-            subquery.push("RETURN count(*) AS _");
-        }
+        subquery.push(`RETURN count(*) AS disconnect_${varName}_${relatedNode.name}`);
 
         return { subquery: subquery.join("\n"), params };
     }

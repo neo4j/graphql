@@ -404,10 +404,7 @@ function createConnectAndParams({
             params = { ...params, ...postAuth.params };
         }
 
-        // TODO: Remove this conditional logic when 4.3 support no longer required
-        if (context.neo4jDatabaseInfo.lt("4.4")) {
-            subquery.push(`\tRETURN count(*) AS connect_${nodeName}_${relatedNode.name}`);
-        }
+        subquery.push(`\tRETURN count(*) AS connect_${varName}_${relatedNode.name}`);
 
         return { subquery: subquery.join("\n"), params };
     }
