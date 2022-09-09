@@ -318,7 +318,7 @@ describe("Cypher Auth Allow", () => {
             	)
             	WITH this, this_connect_content0_node
             	CALL apoc.util.validate(NOT ((this_connect_content0_node.id IS NOT NULL AND this_connect_content0_node.id = $this_connect_content0_nodeauth_param0) AND (exists((this_connect_content0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_content0_nodeauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	RETURN count(*) AS connect_this_connect_content0_node_Comment
+            	RETURN count(*) AS connect_this_connect_content_Comment
             }
             CALL {	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
@@ -330,7 +330,7 @@ describe("Cypher Auth Allow", () => {
             	)
             	WITH this, this_connect_content0_node
             	CALL apoc.util.validate(NOT ((this_connect_content0_node.id IS NOT NULL AND this_connect_content0_node.id = $this_connect_content0_nodeauth_param0) AND (exists((this_connect_content0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_content0_nodeauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	RETURN count(*) AS connect_this_connect_content0_node_Post
+            	RETURN count(*) AS connect_this_connect_content_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -378,7 +378,7 @@ describe("Cypher Auth Allow", () => {
             )
             WITH this, this_disconnect_content0
             CALL apoc.util.validate(NOT ((this_disconnect_content0.id IS NOT NULL AND this_disconnect_content0.id = $this_disconnect_content0auth_param0) AND (exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_content0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_content_Comment
             }
             CALL {
             	WITH this
@@ -389,7 +389,7 @@ describe("Cypher Auth Allow", () => {
             )
             WITH this, this_disconnect_content0
             CALL apoc.util.validate(NOT ((this_disconnect_content0.id IS NOT NULL AND this_disconnect_content0.id = $this_disconnect_content0auth_param0) AND (exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_content0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_content_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

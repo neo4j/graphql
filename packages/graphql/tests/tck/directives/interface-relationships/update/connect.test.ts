@@ -93,7 +93,7 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS connect_this_connect_actedIn0_node_Movie
+            	RETURN count(*) AS connect_this_connect_actedIn_Movie
             }
             CALL {	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
@@ -104,7 +104,7 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS connect_this_connect_actedIn0_node_Series
+            	RETURN count(*) AS connect_this_connect_actedIn_Series
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
@@ -170,9 +170,9 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_node_actors0_relationship.screenTime = $this_connect_actedIn0_node_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS connect_this_connect_actedIn0_node_actors0_node_Actor
+            	RETURN count(*) AS connect_this_connect_actedIn0_node_actors_Actor
             }
-            	RETURN count(*) AS connect_this_connect_actedIn0_node_Movie
+            	RETURN count(*) AS connect_this_connect_actedIn_Movie
             }
             CALL {	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
@@ -194,9 +194,9 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_node_actors0_relationship.screenTime = $this_connect_actedIn0_node_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS connect_this_connect_actedIn0_node_actors0_node_Actor
+            	RETURN count(*) AS connect_this_connect_actedIn0_node_actors_Actor
             }
-            	RETURN count(*) AS connect_this_connect_actedIn0_node_Series
+            	RETURN count(*) AS connect_this_connect_actedIn_Series
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
@@ -271,9 +271,9 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_node_on_Movie0_actors0_relationship.screenTime = $this_connect_actedIn0_node_on_Movie0_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS connect_this_connect_actedIn0_node_on_Movie0_actors0_node_Actor
+            	RETURN count(*) AS connect_this_connect_actedIn0_node_on_Movie0_actors_Actor
             }
-            	RETURN count(*) AS connect_this_connect_actedIn0_node_Movie
+            	RETURN count(*) AS connect_this_connect_actedIn_Movie
             }
             CALL {	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
@@ -284,7 +284,7 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS connect_this_connect_actedIn0_node_Series
+            	RETURN count(*) AS connect_this_connect_actedIn_Series
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
@@ -365,9 +365,9 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_node_on_Movie0_actors0_relationship.screenTime = $this_connect_actedIn0_node_on_Movie0_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS connect_this_connect_actedIn0_node_on_Movie0_actors0_node_Actor
+            	RETURN count(*) AS connect_this_connect_actedIn0_node_on_Movie0_actors_Actor
             }
-            	RETURN count(*) AS connect_this_connect_actedIn0_node_Movie
+            	RETURN count(*) AS connect_this_connect_actedIn_Movie
             }
             CALL {	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
@@ -389,9 +389,9 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_node_actors0_relationship.screenTime = $this_connect_actedIn0_node_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS connect_this_connect_actedIn0_node_actors0_node_Actor
+            	RETURN count(*) AS connect_this_connect_actedIn0_node_actors_Actor
             }
-            	RETURN count(*) AS connect_this_connect_actedIn0_node_Series
+            	RETURN count(*) AS connect_this_connect_actedIn_Series
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"

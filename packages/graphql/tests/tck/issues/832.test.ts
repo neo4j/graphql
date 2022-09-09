@@ -99,7 +99,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_subjects_connect0_node_Person
+            	RETURN count(*) AS connect_this0_subjects_connect_Person
             }
             CALL {	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
@@ -109,7 +109,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_subjects_connect0_node_Place
+            	RETURN count(*) AS connect_this0_subjects_connect_Place
             }
             WITH this0
             CALL {
@@ -121,7 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_objects_connect0_node_Person
+            	RETURN count(*) AS connect_this0_objects_connect_Person
             }
             CALL {	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Place)
@@ -131,7 +131,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_objects_connect0_node_Place
+            	RETURN count(*) AS connect_this0_objects_connect_Place
             }
             RETURN this0
             }
@@ -149,7 +149,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this1_subjects_connect0_node_Person
+            	RETURN count(*) AS connect_this1_subjects_connect_Person
             }
             CALL {	WITH this1
             	OPTIONAL MATCH (this1_subjects_connect0_node:Place)
@@ -159,7 +159,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this1_subjects_connect0_node_Place
+            	RETURN count(*) AS connect_this1_subjects_connect_Place
             }
             WITH this1
             CALL {
@@ -171,7 +171,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this1_objects_connect0_node_Person
+            	RETURN count(*) AS connect_this1_objects_connect_Person
             }
             CALL {	WITH this1
             	OPTIONAL MATCH (this1_objects_connect0_node:Place)
@@ -181,7 +181,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this1_objects_connect0_node_Place
+            	RETURN count(*) AS connect_this1_objects_connect_Place
             }
             RETURN this1
             }
@@ -252,7 +252,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_subjects_connect0_node_Person
+            	RETURN count(*) AS connect_this0_subjects_connect_Person
             }
             CALL {	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
@@ -262,7 +262,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_subjects_connect0_node_Place
+            	RETURN count(*) AS connect_this0_subjects_connect_Place
             }
             WITH this0
             CALL {
@@ -274,7 +274,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_objects_connect0_node_Person
+            	RETURN count(*) AS connect_this0_objects_connect_Person
             }
             CALL {	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Place)
@@ -284,7 +284,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_objects_connect0_node_Place
+            	RETURN count(*) AS connect_this0_objects_connect_Place
             }
             RETURN this0
             }
@@ -346,7 +346,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_subjects_connect0_node_Person
+            	RETURN count(*) AS connect_this0_subjects_connect_Person
             }
             CALL {	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
@@ -356,7 +356,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_subjects_connect0_node_Place
+            	RETURN count(*) AS connect_this0_subjects_connect_Place
             }
             WITH this0
             CALL {
@@ -368,7 +368,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_objects_connect0_node_Person
+            	RETURN count(*) AS connect_this0_objects_connect_Person
             }
             CALL {	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Place)
@@ -378,7 +378,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_objects_connect0_node_Place
+            	RETURN count(*) AS connect_this0_objects_connect_Place
             }
             RETURN this0
             }
@@ -451,7 +451,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_subjects_connect0_node_Person
+            	RETURN count(*) AS connect_this0_subjects_connect_Person
             }
             CALL {	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
@@ -461,7 +461,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_subjects_connect0_node_Place
+            	RETURN count(*) AS connect_this0_subjects_connect_Place
             }
             WITH this0
             CALL {
@@ -473,7 +473,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_objects_connect0_node_Person
+            	RETURN count(*) AS connect_this0_objects_connect_Person
             }
             CALL {	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Place)
@@ -483,7 +483,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_objects_connect0_node_Place
+            	RETURN count(*) AS connect_this0_objects_connect_Place
             }
             RETURN this0
             }
@@ -501,7 +501,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this1_subjects_connect0_node_Person
+            	RETURN count(*) AS connect_this1_subjects_connect_Person
             }
             CALL {	WITH this1
             	OPTIONAL MATCH (this1_subjects_connect0_node:Place)
@@ -511,7 +511,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this1_subjects_connect0_node_Place
+            	RETURN count(*) AS connect_this1_subjects_connect_Place
             }
             WITH this1
             CALL {
@@ -523,7 +523,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this1_objects_connect0_node_Person
+            	RETURN count(*) AS connect_this1_objects_connect_Person
             }
             CALL {	WITH this1
             	OPTIONAL MATCH (this1_objects_connect0_node:Place)
@@ -533,7 +533,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this1_objects_connect0_node_Place
+            	RETURN count(*) AS connect_this1_objects_connect_Place
             }
             RETURN this1
             }
@@ -657,7 +657,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_subjects_connect0_node_Person
+            	RETURN count(*) AS connect_this0_subjects_connect_Person
             }
             CALL {	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
@@ -667,7 +667,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_subjects_connect0_node_Place
+            	RETURN count(*) AS connect_this0_subjects_connect_Place
             }
             RETURN this0
             }

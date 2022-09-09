@@ -263,7 +263,7 @@ describe("Cypher Auth isAuthenticated", () => {
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this_connect_content0_node_Comment
+            	RETURN count(*) AS connect_this_connect_content_Comment
             }
             CALL {	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
@@ -274,7 +274,7 @@ describe("Cypher Auth isAuthenticated", () => {
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this_connect_content0_node_Post
+            	RETURN count(*) AS connect_this_connect_content_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -324,7 +324,7 @@ describe("Cypher Auth isAuthenticated", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_content_Comment
             }
             CALL {
             	WITH this
@@ -334,7 +334,7 @@ describe("Cypher Auth isAuthenticated", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_content_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

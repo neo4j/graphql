@@ -145,7 +145,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this_connect_interface0_node_ChildOne
+            	RETURN count(*) AS connect_this_connect_interface_ChildOne
             }
             CALL {	WITH this
             	OPTIONAL MATCH (this_connect_interface0_node:ChildTwo)
@@ -155,7 +155,7 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this_connect_interface0_node_ChildTwo
+            	RETURN count(*) AS connect_this_connect_interface_ChildTwo
             }
             WITH *
             WITH this

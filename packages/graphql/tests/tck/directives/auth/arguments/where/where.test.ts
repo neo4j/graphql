@@ -742,7 +742,7 @@ describe("Cypher Auth Where", () => {
             			MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_posts_connect0_node_Post
+            	RETURN count(*) AS connect_this0_posts_connect_Post
             }
             RETURN this0
             }
@@ -802,7 +802,7 @@ describe("Cypher Auth Where", () => {
             			MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this0_posts_connect0_node_Post
+            	RETURN count(*) AS connect_this0_posts_connect_Post
             }
             RETURN this0
             }
@@ -853,7 +853,7 @@ describe("Cypher Auth Where", () => {
             			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this_posts0_connect0_node_Post
+            	RETURN count(*) AS connect_this_posts0_connect_Post
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -898,7 +898,7 @@ describe("Cypher Auth Where", () => {
             			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this_posts0_connect0_node_Post
+            	RETURN count(*) AS connect_this_posts0_connect_Post
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -944,7 +944,7 @@ describe("Cypher Auth Where", () => {
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this_connect_posts0_node_Post
+            	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -990,7 +990,7 @@ describe("Cypher Auth Where", () => {
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
             		)
             	)
-            	RETURN count(*) AS connect_this_connect_posts0_node_Post
+            	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -1035,7 +1035,7 @@ describe("Cypher Auth Where", () => {
             FOREACH(_ IN CASE WHEN this_posts0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_posts0_disconnect0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_posts0_disconnect_Post
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -1078,7 +1078,7 @@ describe("Cypher Auth Where", () => {
             FOREACH(_ IN CASE WHEN this_posts0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_posts0_disconnect0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_posts0_disconnect_Post
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -1141,7 +1141,7 @@ describe("Cypher Auth Where", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_posts0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_posts0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -1196,7 +1196,7 @@ describe("Cypher Auth Where", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_posts0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_posts0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
