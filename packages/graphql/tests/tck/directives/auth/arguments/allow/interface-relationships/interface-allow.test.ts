@@ -248,9 +248,10 @@ describe("@auth allow with interface relationships", () => {
             RETURN count(*) AS _
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id,this_content0auth_param0:$this_content0auth_param0})
             YIELD value AS _
-            RETURN count(*) AS _
-            UNION
-            WITH this
+            RETURN count(*) AS update_this_Comment
+            }
+            CALL {
+            	WITH this
             OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
             CALL apoc.do.when(this_content0 IS NOT NULL, \\"
             WITH this, this_content0
@@ -267,7 +268,7 @@ describe("@auth allow with interface relationships", () => {
             RETURN count(*) AS _
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id,this_content0auth_param0:$this_content0auth_param0})
             YIELD value AS _
-            RETURN count(*) AS _
+            RETURN count(*) AS update_this_Post
             }
             WITH *
             WITH *
