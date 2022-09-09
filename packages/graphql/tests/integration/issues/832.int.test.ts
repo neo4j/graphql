@@ -71,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
 
         session = await neo4j.getSession();
 
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver, config: { enableDebug: true } });
+        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
         schema = await neoGraphql.getSchema();
     });
 
