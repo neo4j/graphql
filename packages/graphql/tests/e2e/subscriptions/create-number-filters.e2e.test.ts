@@ -40,10 +40,13 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
     beforeAll(async () => {
         const typeDefs = `
          type ${typeMovie} {
+            id: ID
             title: String
+            similarTitles: [String]
             releasedIn: Int
             averageRating: Float
             fileSize: BigInt
+            isFavorite: Boolean
          }
          `;
 
@@ -443,23 +446,259 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
         ]);
     });
 
+    test("subscription with where filter _LT for String should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { title_LT: "test" }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _LTE for String should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { title_LTE: "test" }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GT for String should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { title_GT: "abc" }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GTE for String should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { title_GTE: "abc" }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+
+    test("subscription with where filter _LT for ID as Int should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { id_LT: 50 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", id: 42 });
+        await createMovie({ title: "movie2", id: 24 });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _LTE for ID as Int should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { id_LTE: 50 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", id: 40 });
+        await createMovie({ title: "movie2", id: 20 });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GT for ID as Int should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { id_GT: 2 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", id: 5 });
+        await createMovie({ title: "movie2", id: 3 });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GTE for ID as Int should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { id_GTE: 1 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", id: 4 });
+        await createMovie({ title: "movie2", id: 2 });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+
+    test("subscription with where filter _LT for Boolean should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { isFavorite_LT: true }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", id: 42 });
+        await createMovie({ title: "movie2", id: 24 });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _LTE for Boolean should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { isFavorite_LTE: false }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", id: 40 });
+        await createMovie({ title: "movie2", id: 20 });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GT for Boolean should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { isFavorite_GT: false }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", id: 5 });
+        await createMovie({ title: "movie2", id: 3 });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GTE for Boolean should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { isFavorite_GTE: false }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", id: 4 });
+        await createMovie({ title: "movie2", id: 2 });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+
+    test("subscription with where filter _GTE for Array should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { similarTitles_GTE: "test" }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "bad_type_movie25", similarTitles: ["dummy"] });
+        await createMovie({ title: "bad_type_movie26", similarTitles: ["test"] });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+
+    const generateRandom = () => Math.floor(Math.random() * 100) + 1;
+    const makeTypedFieldValue = (value) => (typeof value === "string" ? `"${value}"` : value);
     async function createMovie({
+        id = generateRandom(),
         title,
+        similarTitles = ["abc"],
         releasedIn = 2022,
         averageRating = 9.5,
         fileSize = "2147483647",
+        isFavorite = false,
     }): Promise<Response> {
+        const movieInput = `{ id: ${id}, title: "${title}", releasedIn: ${releasedIn}, averageRating: ${averageRating}, fileSize: "${fileSize}", isFavorite: ${isFavorite}, similarTitles: [${similarTitles?.map(
+            makeTypedFieldValue
+        )}] }`;
         const result = await supertest(server.path)
             .post("")
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.create}(input: [{ title: "${title}", releasedIn: ${releasedIn}, averageRating: ${averageRating}, fileSize: "${fileSize}" }]) {
+                        ${typeMovie.operations.create}(input: [${movieInput}]) {
                             ${typeMovie.plural} {
+                                id
                                 title
+                                similarTitles
                                 releasedIn
                                 averageRating
                                 fileSize
+                                isFavorite
                             }
                         }
                     }

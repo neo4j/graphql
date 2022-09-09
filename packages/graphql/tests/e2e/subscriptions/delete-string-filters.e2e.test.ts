@@ -42,6 +42,11 @@ describe("Delete Subscription", () => {
         type ${typeMovie} {
             id: ID
             title: String
+            similarTitles: [String]
+            releasedIn: Int
+            averageRating: Float
+            fileSize: BigInt
+            isFavorite: Boolean
         }
         `;
 
@@ -552,10 +557,224 @@ describe("Delete Subscription", () => {
         ]);
     });
 
+    test("subscription with where filter CONTAINS for Int should not work", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_CONTAINS: 2020 }) {
+                ${typeMovie.operations.subscribe.payload.deleted} {
+                    title
+                }
+            }
+        }
+    `);
+
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie1", releasedIn: 2020 });
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie2", releasedIn: 2021 });
+
+        await deleteMovie("bad_type_string_movie1");
+        await deleteMovie("bad_type_string_movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter CONTAINS for Float should not work", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.deleted}(where: { averageRating_CONTAINS: 5 }) {
+                ${typeMovie.operations.subscribe.payload.deleted} {
+                    id
+                }
+            }
+        }
+    `);
+
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie5", averageRating: 5.6 });
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie6", averageRating: 5.2 });
+
+        await deleteMovie("bad_type_string_movie5");
+        await deleteMovie("bad_type_string_movie6");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter CONTAINS for BigInt should not work", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.deleted}(where: { fileSize_CONTAINS: "12" }) {
+                ${typeMovie.operations.subscribe.payload.deleted} {
+                    id
+                }
+            }
+        }
+    `);
+
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie9", fileSize: "3412" });
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie10", fileSize: "1234" });
+
+        await deleteMovie("bad_type_string_movie9");
+        await deleteMovie("bad_type_string_movie10");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter CONTAINS for Boolean should not work", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_CONTAINS: false }) {
+                ${typeMovie.operations.subscribe.payload.deleted} {
+                    id
+                }
+            }
+        }
+    `);
+
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie13" });
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie14" });
+
+        await deleteMovie("bad_type_string_movie13");
+        await deleteMovie("bad_type_string_movie14");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter CONTAINS for Array should not work", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.deleted}(where: { similarTitles_CONTAINS: "test" }) {
+                ${typeMovie.operations.subscribe.payload.deleted} {
+                    id
+                }
+            }
+        }
+    `);
+
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie17", similarTitles: ["test"] });
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie8", similarTitles: ["test"] });
+
+        await deleteMovie("bad_type_string_movie17");
+        await deleteMovie("bad_type_string_movie18");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+
+    test("subscription with where filter STARTS_WITH for Int should not work", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_STARTS_WITH: 2 }) {
+                ${typeMovie.operations.subscribe.payload.deleted} {
+                    id
+                }
+            }
+        }
+    `);
+
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie21", releasedIn: 2020 });
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie22", releasedIn: 2021 });
+
+        await deleteMovie("bad_type_string_movie21");
+        await deleteMovie("bad_type_string_movie22");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter STARTS_WITH for Float should not work", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.deleted}(where: { averageRating_STARTS_WITH: 6 }) {
+                ${typeMovie.operations.subscribe.payload.deleted} {
+                    id
+                }
+            }
+        }
+    `);
+
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie25", averageRating: 6.2 });
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie26", averageRating: 6.3 });
+
+        await deleteMovie("bad_type_string_movie25");
+        await deleteMovie("bad_type_string_movie26");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter STARTS_WITH for BigInt should not work", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.deleted}(where: { fileSize_STARTS_WITH: 2 }) {
+                ${typeMovie.operations.subscribe.payload.deleted} {
+                    id
+                }
+            }
+        }
+    `);
+
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie29", fileSize: "2020" });
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie30", fileSize: "2021" });
+
+        await deleteMovie("bad_type_string_movie29");
+        await deleteMovie("bad_type_string_movie30");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter STARTS_WITH for Boolean should not work", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_STARTS_WITH: "f" }) {
+                ${typeMovie.operations.subscribe.payload.deleted} {
+                    id
+                }
+            }
+        }
+    `);
+
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie33" });
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie34" });
+
+        await deleteMovie("bad_type_string_movie33");
+        await deleteMovie("bad_type_string_movie34");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter STARTS_WITH for Array should not work", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.deleted}(where: { similarTitles_STARTS_WITH: "test" }) {
+                ${typeMovie.operations.subscribe.payload.deleted} {
+                    id
+                }
+            }
+        }
+    `);
+
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie37", similarTitles: ["test"] });
+        await createMovie({ id: generateRandom(), title: "bad_type_string_movie38", similarTitles: ["test"] });
+
+        await deleteMovie("bad_type_string_movie37");
+        await deleteMovie("bad_type_string_movie38");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+
     const generateRandom = () => Math.floor(Math.random() * 100) + 1;
     const makeTypedFieldValue = (value) => (typeof value === "string" ? `"${value}"` : value);
-    async function createMovie({ id, title }): Promise<Response> {
-        const movieInput = `{ id: ${makeTypedFieldValue(id)}, title: "${title}" }`;
+    async function createMovie({
+        id,
+        title,
+        similarTitles = ["abc"],
+        releasedIn = 2019,
+        averageRating = 5.5,
+        fileSize = "12345",
+        isFavorite = false,
+    }): Promise<Response> {
+        const movieInput = `{ id: ${makeTypedFieldValue(
+            id
+        )}, title: "${title}", releasedIn: ${releasedIn}, isFavorite: ${isFavorite}, averageRating: ${averageRating}, fileSize: "${fileSize}", similarTitles: [${similarTitles?.map(
+            makeTypedFieldValue
+        )}] }`;
 
         const result = await supertest(server.path)
             .post("")
@@ -566,6 +785,11 @@ describe("Delete Subscription", () => {
                             ${typeMovie.plural} {
                                 id
                                 title
+                                similarTitles
+                                releasedIn
+                                averageRating
+                                fileSize
+                                isFavorite
                             }
                         }
                     }

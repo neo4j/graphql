@@ -41,12 +41,16 @@ describe("Create Subscription with optional filters valid for all types", () => 
         const typeDefs = `
          type ${typeMovie} {
             id: ID
+            similarIds: [ID]
             title: String
-            releasedIn: Int
-            averageRating: Float
-            fileSize: BigInt
-            isFavorite: Boolean
             similarTitles: [String]
+            releasedIn: Int
+            allDates: [Int]
+            averageRating: Float
+            allRatings: [Float]
+            fileSize: BigInt
+            allSizes: [BigInt]
+            isFavorite: Boolean
          }
          `;
 
@@ -83,44 +87,10 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await driver.close();
     });
 
-    test("create subscription", async () => {
-        await wsClient.subscribe(`
-                            subscription {
-                                ${typeMovie.operations.subscribe.created} {
-                                    ${typeMovie.operations.subscribe.payload.created} {
-                                        title
-                                    }
-                                    event
-                                    timestamp
-                                }
-                            }
-                            `);
-
-        await createMovie({ id: generateRandom(), title: "movie1" });
-        await createMovie({ id: generateRandom(), title: "movie2" });
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
-                    event: "CREATE",
-                    timestamp: expect.any(Number),
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
-                    event: "CREATE",
-                    timestamp: expect.any(Number),
-                },
-            },
-        ]);
-    });
-    test("create subscription with where", async () => {
+    test("subscription with INCLUDES on String", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title: "movie1" }) {
+                ${typeMovie.operations.subscribe.created}(where: { similarTitles_INCLUDES: "movie" }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -128,8 +98,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "movie1" });
-        await createMovie({ id: generateRandom(), title: "movie2" });
+        await createMovie({ id: generateRandom(), title: "movie1", similarTitles: ["dummy", "movie"] });
+        await createMovie({ id: generateRandom(), title: "movie2", similarTitles: ["mock"] });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -140,11 +110,10 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-
-    test("subscription with where filter _NOT 1 result", async () => {
+    test("subscription with INCLUDES on ID as String", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title_NOT: "movie1" }) {
+                ${typeMovie.operations.subscribe.created}(where: { similarIds_INCLUDES: "1" }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -152,22 +121,22 @@ describe("Create Subscription with optional filters valid for all types", () => 
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "movie1" });
-        await createMovie({ id: generateRandom(), title: "movie2" });
+        await createMovie({ id: generateRandom(), title: "movie1", similarIds: ["1", "12"] });
+        await createMovie({ id: generateRandom(), title: "movie2", similarIds: ["11"] });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
                 },
             },
         ]);
     });
-    test("subscription with where filter _NOT multiple results", async () => {
+    test("subscription with INCLUDES on ID as number", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title_NOT: "movie0" }) {
+                ${typeMovie.operations.subscribe.created}(where: { similarIds_INCLUDES: 42 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -175,11 +144,34 @@ describe("Create Subscription with optional filters valid for all types", () => 
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "movie1" });
-        await createMovie({ id: generateRandom(), title: "movie2" });
+        await createMovie({ id: generateRandom(), title: "movie1", similarIds: [42] });
+        await createMovie({ id: generateRandom(), title: "movie2", similarIds: [4, 2] });
 
         expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toIncludeSameMembers([
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+                },
+            },
+        ]);
+    });
+    test("subscription with INCLUDES on Int", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { allDates_INCLUDES: 2019 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ id: generateRandom(), title: "movie1", allDates: [2020, 2019] });
+        await createMovie({ id: generateRandom(), title: "movie2", allDates: [2019] });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {
                     [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
@@ -192,10 +184,10 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-    test("subscription with where filter _NOT empty result", async () => {
+    test("subscription with INCLUDES on Float", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title_NOT: "movie1" }) {
+                ${typeMovie.operations.subscribe.created}(where: { allRatings_INCLUDES: 5.4 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -203,17 +195,164 @@ describe("Create Subscription with optional filters valid for all types", () => 
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "movie1" });
+        await createMovie({ id: generateRandom(), title: "movie1", allRatings: [6, 5.4] });
+        await createMovie({ id: generateRandom(), title: "movie2", allRatings: [5.0] });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+                },
+            },
+        ]);
+    });
+    test("subscription with INCLUDES on BigInt", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { allSizes_INCLUDES: "9223372036854775608" }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({
+            id: generateRandom(),
+            title: "movie1",
+            allSizes: ["9223372036854775608", "922372036854775608"],
+        });
+        await createMovie({ id: generateRandom(), title: "movie2", allSizes: ["123"] });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+                },
+            },
+        ]);
+    });
+
+    test("subscription with NOT_INCLUDES on String", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { similarTitles_NOT_INCLUDES: "movie" }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ id: generateRandom(), title: "movie1", similarTitles: ["movie", "movie"] });
+        await createMovie({ id: generateRandom(), title: "movie2", similarTitles: ["mock"] });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                },
+            },
+        ]);
+    });
+    test("subscription with NOT_INCLUDES on ID as String", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { similarIds_NOT_INCLUDES: "1" }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ id: generateRandom(), title: "movie1", similarIds: ["1", "12"] });
+        await createMovie({ id: generateRandom(), title: "movie2", similarIds: ["11"] });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                },
+            },
+        ]);
+    });
+    test("subscription with NOT_INCLUDES on ID as number", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { similarIds_NOT_INCLUDES: 42 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ id: generateRandom(), title: "movie1", similarIds: [2, 4, 42] });
+        await createMovie({ id: generateRandom(), title: "movie2", similarIds: [4, 2] });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                },
+            },
+        ]);
+    });
+    test("subscription with NOT_INCLUDES on Int", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { allDates_NOT_INCLUDES: 2019 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ id: generateRandom(), title: "movie1", allDates: [2020, 2018] });
+        await createMovie({ id: generateRandom(), title: "movie2", allDates: [] });
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                },
+            },
+        ]);
+    });
+    test("subscription with NOT_INCLUDES on Float", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { allRatings_NOT_INCLUDES: 5.4 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ id: generateRandom(), title: "movie1", allRatings: [6, 5.4] });
+        await createMovie({ id: generateRandom(), title: "movie2", allRatings: [5.4] });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
-
-    // all but boolean types
-    test("subscription with IN on String", async () => {
+    test("subscription with NOT_INCLUDES on BigInt", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title_IN: ["movie", "movie1"] }) {
+                ${typeMovie.operations.subscribe.created}(where: { allSizes_NOT_INCLUDES: "9223372036854775608" }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -221,31 +360,12 @@ describe("Create Subscription with optional filters valid for all types", () => 
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "movie1" });
-        await createMovie({ id: generateRandom(), title: "movie2" });
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
-                },
-            },
-        ]);
-    });
-    test("subscription with NOT_IN on String", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.created}(where: { title_NOT_IN: ["movie", "movie1"] }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
-                        title
-                    }
-                }
-            }
-        `);
-
-        await createMovie({ id: generateRandom(), title: "movie1" });
-        await createMovie({ id: generateRandom(), title: "movie2" });
+        await createMovie({
+            id: generateRandom(),
+            title: "movie1",
+            allSizes: ["9223372036854775608", "922372036854775608"],
+        });
+        await createMovie({ id: generateRandom(), title: "movie2", allSizes: ["123"] });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -256,10 +376,11 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-    test("subscription with IN on ID as String", async () => {
+
+    test("subscription with INCLUDES on String should not work", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { id_IN: ["1", "12"] }) {
+                ${typeMovie.operations.subscribe.created}(where: { similarTitles_INCLUDES: ["movie"] }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -267,141 +388,17 @@ describe("Create Subscription with optional filters valid for all types", () => 
             }
         `);
 
-        await createMovie({ id: "1", title: "movie1" });
-        await createMovie({ id: "12", title: "movie2" });
+        await createMovie({ id: generateRandom(), title: "movie1", similarTitles: ["dummy", "movie"] });
+        await createMovie({ id: generateRandom(), title: "movie2", similarTitles: ["mock"] });
 
         expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
-                },
-            },
-        ]);
-    });
-    test("subscription with IN on ID as int", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.created}(where: { id_IN: [42, 4, 2] }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
-                        title
-                    }
-                }
-            }
-        `);
 
-        await createMovie({ id: 42, title: "movie1" });
-        await createMovie({ id: 2, title: "movie2" });
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
-                },
-            },
-        ]);
-    });
-    test("subscription with IN on Int", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.created}(where: { releasedIn_IN: [2019, 2020] }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
-                        title
-                    }
-                }
-            }
-        `);
-
-        await createMovie({ id: generateRandom(), title: "movie1", releasedIn: 2019 });
-        await createMovie({ id: generateRandom(), title: "movie2", releasedIn: 2000 });
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
-                },
-            },
-        ]);
-    });
-    test("subscription with NOT_IN on Int", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.created}(where: { releasedIn_NOT_IN: [2019, 2020] }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
-                        title
-                    }
-                }
-            }
-        `);
-
-        await createMovie({ id: generateRandom(), title: "movie1", releasedIn: 2019 });
-        await createMovie({ id: generateRandom(), title: "movie2", releasedIn: 2000 });
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
-                },
-            },
-        ]);
-    });
-    test("subscription with IN on Float", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.created}(where: { averageRating_IN: [5.9, 7] }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
-                        title
-                    }
-                }
-            }
-        `);
-
-        await createMovie({ id: generateRandom(), title: "movie1", averageRating: 5.9 });
-        await createMovie({ id: generateRandom(), title: "movie2", averageRating: 7.1 });
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
-                },
-            },
-        ]);
-    });
-    test("subscription with NOT_IN on Float", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.created}(where: { averageRating_NOT_IN: [5.9, 7] }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
-                        title
-                    }
-                }
-            }
-        `);
-
-        await createMovie({ id: generateRandom(), title: "movie1", averageRating: 5.9 });
-        await createMovie({ id: generateRandom(), title: "movie2", averageRating: 7 });
-
-        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with IN on BigInt", async () => {
+    test("subscription with INCLUDES on Boolean should not work", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { fileSize_IN: [9223372036854775608, 9223372036854775508] }) {
+                ${typeMovie.operations.subscribe.created}(where: { isFavorite_INCLUDES: true }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -409,22 +406,17 @@ describe("Create Subscription with optional filters valid for all types", () => 
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "movie1", fileSize: "9223372036854775508" });
-        await createMovie({ id: generateRandom(), title: "movie2", fileSize: "1234" });
+        await createMovie({ id: generateRandom(), title: "movie1", isFavorite: true });
+        await createMovie({ id: generateRandom(), title: "movie2", isFavorite: false });
 
         expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
-                },
-            },
-        ]);
+
+        expect(wsClient.events).toEqual([]);
     });
-    test("subscription with NOT_IN on BigInt", async () => {
+    test("subscription with NOT_INCLUDES on String should not work", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { fileSize_NOT_IN: [9223372036854775608, 9223372036854775508] }) {
+                ${typeMovie.operations.subscribe.created}(where: { similarTitles_NOT_INCLUDES: ["movie"] }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
@@ -432,85 +424,29 @@ describe("Create Subscription with optional filters valid for all types", () => 
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "movie1", fileSize: "9223372036854775508" });
-        await createMovie({ id: generateRandom(), title: "movie2", fileSize: "1234" });
+        await createMovie({ id: generateRandom(), title: "movie1", similarTitles: ["dummy", "movie"] });
+        await createMovie({ id: generateRandom(), title: "movie2", similarTitles: ["mock"] });
 
         expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
-                },
-            },
-        ]);
-    });
 
-    test("subscription with IN on Boolean should not work", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_IN: [true] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        title
-                    }
-                }
-            }
-        `);
-
-        await createMovie({ id: generateRandom(), title: "some_movie_wrong1", isFavorite: true });
-        await createMovie({ id: generateRandom(), title: "some_movie_wrong2", isFavorite: true });
-
-        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with NOT_IN on Boolean should not work", async () => {
+    test("subscription with NOT_INCLUDES on Boolean should not work", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_NOT_IN: [true] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { isFavorite_NOT_INCLUDES: true }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
                 }
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "some_movie_wrong3", isFavorite: true });
-        await createMovie({ id: generateRandom(), title: "some_movie_wrong4", isFavorite: true });
+        await createMovie({ id: generateRandom(), title: "movie1", isFavorite: true });
+        await createMovie({ id: generateRandom(), title: "movie2", isFavorite: false });
 
         expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([]);
-    });
-    test("subscription with IN on Array should not work", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { similarTitles_IN: ["fight club"] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        title
-                    }
-                }
-            }
-        `);
 
-        await createMovie({ id: generateRandom(), title: "some_movie_wrong5", similarTitles: ["fight club"] });
-        await createMovie({ id: generateRandom(), title: "some_movie_wrong6" });
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient.events).toEqual([]);
-    });
-    test("subscription with NOT_IN on Array should not work", async () => {
-        await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { similarTitles_NOT_IN: ["blue"] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        title
-                    }
-                }
-            }
-        `);
-
-        await createMovie({ id: generateRandom(), title: "some_movie_wrong7", similarTitles: ["blue bus"] });
-        await createMovie({ id: generateRandom(), title: "some_movie_wrong8" });
-
-        expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
 
@@ -518,12 +454,16 @@ describe("Create Subscription with optional filters valid for all types", () => 
     const makeTypedFieldValue = (value) => (typeof value === "string" ? `"${value}"` : value);
     async function createMovie({
         id,
+        similarIds = ["a", 2],
         title,
+        similarTitles = ["test"],
         releasedIn = 2022,
+        allDates = [2042],
         averageRating = 9.5,
+        allRatings = [9.9],
         fileSize = "2147483647",
+        allSizes = ["42147483647"],
         isFavorite = false,
-        similarTitles = ["the matrix"],
     }): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
@@ -532,17 +472,29 @@ describe("Create Subscription with optional filters valid for all types", () => 
                     mutation {
                         ${typeMovie.operations.create}(input: [{ id: ${makeTypedFieldValue(
                     id
-                )}, title: "${title}", releasedIn: ${releasedIn}, averageRating: ${averageRating}, fileSize: "${fileSize}", isFavorite: ${isFavorite}, similarTitles: [${similarTitles.map(
+                )}, similarIds: [${similarIds.map(
                     makeTypedFieldValue
-                )}] }]) {
+                )}], title: "${title}", similarTitles: [${similarTitles.map(
+                    makeTypedFieldValue
+                )}], releasedIn: ${releasedIn}, allDates: [${allDates.map(
+                    makeTypedFieldValue
+                )}], averageRating: ${averageRating}, allRatings: [${allRatings.map(
+                    makeTypedFieldValue
+                )}], fileSize: "${fileSize}", allSizes: [${allSizes.map(
+                    makeTypedFieldValue
+                )}], isFavorite: ${isFavorite} }]) {
                             ${typeMovie.plural} {
                                 id
+                                similarIds
                                 title
-                                releasedIn
-                                averageRating
-                                fileSize
-                                isFavorite
                                 similarTitles
+                                releasedIn
+                                allDates
+                                averageRating
+                                allRatings
+                                fileSize
+                                allSizes
+                                isFavorite
                             }
                         }
                     }

@@ -23,10 +23,37 @@ import type { PrimitiveField } from "../../../../types";
 import { whereRegEx } from "../../../../translate/where/utils";
 import type { WhereRegexGroups } from "../../../../translate/where/utils";
 
+const isObject = (x) => typeof x === "object" && !Array.isArray(x) && x !== null;
 /** Returns true if all properties in obj1 exists in obj2, false otherwise */
-export function compareProperties<T>(obj1: Record<string, T>, obj2: Record<string, T>): boolean {
+export function compareProperties<T>(obj1: Record<string, T> | T, obj2: Record<string, T> | T): boolean {
+    if (!isObject(obj1) && !Array.isArray(obj1)) {
+        // coming from: array of strings
+        return obj1 === obj2;
+    }
     for (const [k, value] of Object.entries(obj1)) {
-        if (obj2[k] !== value) {
+        if (Array.isArray(value)) {
+            if (obj2[k].length !== value.length) {
+                return false;
+            }
+            const compare = (other: T): boolean => {
+                // OR bc. when comparing arrays of arity > 1 for sure there will be non-matches.
+                // However, in the case of all non-matches, false will be returned.
+                return value.reduce((acc, v) => acc || compareProperties(v, other), false);
+            };
+            const valuesToCompareWith = Object.values(obj2[k] as ArrayLike<T>);
+            const noExpectingResults = Math.max(valuesToCompareWith.length, Object.values(value).length);
+            const noMatchingResults = valuesToCompareWith.map(compare).filter((x) => x).length;
+            if (noMatchingResults !== noExpectingResults) {
+                return false;
+            }
+        }
+        if (isObject(value)) {
+            const areObjectPropertiesEqual = compareProperties(value, obj2[k]);
+            if (!areObjectPropertiesEqual) {
+                return false;
+            }
+        }
+        if (!Array.isArray(value) && !isObject(value) && obj2[k] !== value) {
             return false;
         }
     }
@@ -35,6 +62,15 @@ export function compareProperties<T>(obj1: Record<string, T>, obj2: Record<strin
 
 function isFloatType(fieldMeta: PrimitiveField | undefined) {
     return fieldMeta?.typeMeta.name === "Float";
+}
+function isStringType(fieldMeta: PrimitiveField | undefined) {
+    return fieldMeta?.typeMeta.name === "String";
+}
+function isIDType(fieldMeta: PrimitiveField | undefined) {
+    return fieldMeta?.typeMeta.name === "ID";
+}
+function isIDAsString(fieldMeta: PrimitiveField | undefined, value: string | number) {
+    return isIDType(fieldMeta) && int(value).toString() !== value;
 }
 
 type ComparatorFn<T> = (received: T, filtered: T) => boolean;
@@ -60,12 +96,10 @@ const operatorCheckMap = (fieldMeta: PrimitiveField | undefined) => ({
         return int(received).greaterThan(int(filtered));
     },
     GTE: (received: number | string, filtered: number | string) => {
-        console.log("comparing received", received, "with where", filtered);
         if (isFloatType(fieldMeta)) {
             return received >= filtered;
         }
         // int/ bigint
-        console.log("comp", int(received), int(filtered), int(received).greaterThanOrEqual(filtered));
         return int(received).greaterThanOrEqual(int(filtered));
     },
     STARTS_WITH: (received: string, filtered: string) => received.startsWith(filtered),
@@ -74,6 +108,38 @@ const operatorCheckMap = (fieldMeta: PrimitiveField | undefined) => ({
     NOT_ENDS_WITH: (received: string, filtered: string) => !received.endsWith(filtered),
     CONTAINS: (received: string, filtered: string) => received.includes(filtered),
     NOT_CONTAINS: (received: string, filtered: string) => !received.includes(filtered),
+    INCLUDES: (received: [string | number], filtered: string | number) => {
+        if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, filtered)) {
+            return received.findIndex((v) => v === filtered) !== -1;
+        }
+        // int/ bigint
+        const filteredAsNeo4jInteger = int(filtered);
+        return received.findIndex((r) => int(r).equals(filteredAsNeo4jInteger)) !== -1;
+    },
+    NOT_INCLUDES: (received: [string | number], filtered: string | number) => {
+        if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, filtered)) {
+            return received.findIndex((v) => v === filtered) === -1;
+        }
+        // int/ bigint
+        const filteredAsNeo4jInteger = int(filtered);
+        return received.findIndex((r) => int(r).equals(filteredAsNeo4jInteger)) === -1;
+    },
+    IN: (received: string | number, filtered: [string | number]) => {
+        if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, received)) {
+            return filtered.findIndex((v) => v === received) !== -1;
+        }
+        // int/ bigint
+        const receivedAsNeo4jInteger = int(received);
+        return filtered.findIndex((r) => int(r).equals(receivedAsNeo4jInteger)) !== -1;
+    },
+    NOT_IN: (received: string | number, filtered: [string | number]) => {
+        if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, received)) {
+            return filtered.findIndex((v) => v === received) === -1;
+        }
+        // int/ bigint
+        const receivedAsNeo4jInteger = int(received);
+        return filtered.findIndex((r) => int(r).equals(receivedAsNeo4jInteger)) === -1;
+    },
 });
 function getFilteringFn<T>(operator: string | undefined, fieldMeta: PrimitiveField | undefined): ComparatorFn<T> {
     if (!operator) {

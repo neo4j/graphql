@@ -40,10 +40,13 @@ describe("Delete Subscription", () => {
     beforeAll(async () => {
         const typeDefs = `
         type ${typeMovie} {
+            id: ID
             title: String
+            similarTitles: [String]
             releasedIn: Int
             averageRating: Float
             fileSize: BigInt
+            isFavorite: Boolean
         }
         `;
 
@@ -489,13 +492,284 @@ describe("Delete Subscription", () => {
         ]);
     });
 
+    test("subscription with where filter _LT for String should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { title_LT: "test" }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
+
+        await deleteMovie("movie1");
+        await deleteMovie("movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _LTE for String should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { title_LTE: "test" }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
+
+        await deleteMovie("movie1");
+        await deleteMovie("movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GT for String should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { title_GT: "abc" }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
+
+        await deleteMovie("movie1");
+        await deleteMovie("movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GTE for String should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { title_GTE: "abc" }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
+
+        await deleteMovie("movie1");
+        await deleteMovie("movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+
+    test("subscription with where filter _LT for ID as Int should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { id_LT: 50 }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", id: 42 });
+        await createMovie({ title: "movie2", id: 24 });
+
+        await deleteMovie("movie1");
+        await deleteMovie("movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _LTE for ID as Int should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { id_LTE: 50 }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", id: 40 });
+        await createMovie({ title: "movie2", id: 20 });
+
+        await deleteMovie("movie1");
+        await deleteMovie("movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GT for ID as Int should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { id_GT: 2 }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", id: 5 });
+        await createMovie({ title: "movie2", id: 3 });
+
+        await deleteMovie("movie1");
+        await deleteMovie("movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GTE for ID as Int should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { id_GTE: 1 }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", id: 4 });
+        await createMovie({ title: "movie2", id: 2 });
+
+        await deleteMovie("movie1");
+        await deleteMovie("movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+
+    test("subscription with where filter _LT for Boolean should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_LT: true }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
+
+        await deleteMovie("movie1");
+        await deleteMovie("movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _LTE for Boolean should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_LTE: false }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
+
+        await deleteMovie("movie1");
+        await deleteMovie("movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GT for Boolean should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_GT: false }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
+
+        await deleteMovie("movie1");
+        await deleteMovie("movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GTE for Boolean should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_GTE: false }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
+
+        await deleteMovie("movie1");
+        await deleteMovie("movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+
+    test("subscription with where filter _GT for Array should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { similarTitles_GT: "dummy" }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "bad_type_movie25", similarTitles: ["test"] });
+        await createMovie({ title: "bad_type_movie26", similarTitles: ["test"] });
+
+        await deleteMovie("bad_type_movie25");
+        await deleteMovie("bad_type_movie26");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+
+    const generateRandom = () => Math.floor(Math.random() * 100) + 1;
+    const makeTypedFieldValue = (value) => (typeof value === "string" ? `"${value}"` : value);
     async function createMovie({
+        id = generateRandom(),
         title,
+        similarTitles = ["abc"],
         releasedIn = 2022,
         averageRating = 9.5,
         fileSize = "2147483647",
+        isFavorite = false,
     }): Promise<Response> {
-        const movieInput = `{ title: "${title}", releasedIn: ${releasedIn}, averageRating: ${averageRating}, fileSize: "${fileSize}" }`;
+        const movieInput = `{ id: ${id}, title: "${title}", releasedIn: ${releasedIn}, averageRating: ${averageRating}, fileSize: "${fileSize}", isFavorite: ${isFavorite}, similarTitles: [${similarTitles?.map(
+            makeTypedFieldValue
+        )}] }`;
 
         const result = await supertest(server.path)
             .post("")
@@ -504,10 +778,13 @@ describe("Delete Subscription", () => {
                     mutation {
                         ${typeMovie.operations.create}(input: [${movieInput}]) {
                             ${typeMovie.plural} {
+                                id
                                 title
+                                similarTitles
                                 releasedIn
                                 averageRating
                                 fileSize
+                                isFavorite
                             }
                         }
                     }

@@ -40,10 +40,13 @@ describe("Update Subscriptions", () => {
     beforeAll(async () => {
         const typeDefs = `
          type ${typeMovie} {
+            id: ID
             title: String
+            similarTitles: [String]
             releasedIn: Int
             averageRating: Float
             fileSize: BigInt
+            isFavorite: Boolean
          }
          `;
 
@@ -80,7 +83,7 @@ describe("Update Subscriptions", () => {
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { releasedIn_LT: 2000 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        releasedIn
                     }
                 }
             }
@@ -96,7 +99,7 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.updated]: { releasedIn: 1998 },
                 },
             },
         ]);
@@ -106,7 +109,7 @@ describe("Update Subscriptions", () => {
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { releasedIn_LTE: 2000 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        releasedIn
                     }
                 }
             }
@@ -124,12 +127,12 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.updated]: { releasedIn: 1920 },
                 },
             },
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.updated]: { releasedIn: 1997 },
                 },
             },
         ]);
@@ -139,7 +142,7 @@ describe("Update Subscriptions", () => {
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { releasedIn_GT: 2000 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        releasedIn
                     }
                 }
             }
@@ -155,7 +158,7 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.updated]: { releasedIn: 2021 },
                 },
             },
         ]);
@@ -165,7 +168,7 @@ describe("Update Subscriptions", () => {
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { releasedIn_GTE: 2000 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        releasedIn
                     }
                 }
             }
@@ -183,12 +186,12 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.updated]: { releasedIn: 2021 },
                 },
             },
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie3" },
+                    [typeMovie.operations.subscribe.payload.updated]: { releasedIn: 1999 },
                 },
             },
         ]);
@@ -199,7 +202,7 @@ describe("Update Subscriptions", () => {
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { averageRating_LT: 8 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        averageRating
                     }
                 }
             }
@@ -215,7 +218,7 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.updated]: { averageRating: 9 },
                 },
             },
         ]);
@@ -225,7 +228,7 @@ describe("Update Subscriptions", () => {
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { averageRating_LTE: 7 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        averageRating
                     }
                 }
             }
@@ -243,12 +246,12 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.updated]: { averageRating: 7.2 },
                 },
             },
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.updated]: { averageRating: 7.9 },
                 },
             },
         ]);
@@ -258,7 +261,7 @@ describe("Update Subscriptions", () => {
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { averageRating_GT: 7.9 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        averageRating
                     }
                 }
             }
@@ -274,7 +277,7 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.updated]: { averageRating: 7.9 },
                 },
             },
         ]);
@@ -284,7 +287,7 @@ describe("Update Subscriptions", () => {
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { averageRating_GTE: 5 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        averageRating
                     }
                 }
             }
@@ -302,12 +305,12 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.updated]: { averageRating: 7.7 },
                 },
             },
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie3" },
+                    [typeMovie.operations.subscribe.payload.updated]: { averageRating: 7.2 },
                 },
             },
         ]);
@@ -317,7 +320,7 @@ describe("Update Subscriptions", () => {
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { averageRating_GTE: 4.2 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        averageRating
                     }
                 }
             }
@@ -335,12 +338,12 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.updated]: { averageRating: 5.9 },
                 },
             },
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie3" },
+                    [typeMovie.operations.subscribe.payload.updated]: { averageRating: 6.7 },
                 },
             },
         ]);
@@ -359,7 +362,7 @@ describe("Update Subscriptions", () => {
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { fileSize_LT: ${bigInts.m} }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        fileSize
                     }
                 }
             }
@@ -375,7 +378,7 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.updated]: { fileSize: bigInts.m },
                 },
             },
         ]);
@@ -393,7 +396,7 @@ describe("Update Subscriptions", () => {
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { fileSize_LTE: ${bigInts.dummyM} }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        fileSize
                     }
                 }
             }
@@ -411,12 +414,12 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.updated]: { fileSize: bigInts.s },
                 },
             },
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.updated]: { fileSize: bigInts.dummyS },
                 },
             },
         ]);
@@ -434,7 +437,7 @@ describe("Update Subscriptions", () => {
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { fileSize_GT: ${bigInts.m} }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        fileSize
                     }
                 }
             }
@@ -450,7 +453,7 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.updated]: { fileSize: bigInts.s },
                 },
             },
         ]);
@@ -468,7 +471,7 @@ describe("Update Subscriptions", () => {
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { fileSize_GTE: ${bigInts.m} }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        fileSize
                     }
                 }
             }
@@ -486,18 +489,281 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.updated]: { fileSize: bigInts.s },
                 },
             },
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie3" },
+                    [typeMovie.operations.subscribe.payload.updated]: { fileSize: bigInts.dummyM },
                 },
             },
         ]);
     });
 
-    // ======================================
+    test("subscription with where filter _LT for String should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { title_LT: "bad_type_movie1" }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "bad_type_movie1" });
+        await createMovie({ title: "bad_type_movie2" });
+
+        await updateMovie("title", "bad_type_movie1", "bad_type_movie3");
+        await updateMovie("title", "bad_type_movie2", "bad_type_movie4");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _LTE for String should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { title_LTE: "bad_type_movie" }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "bad_type_movie5" });
+        await createMovie({ title: "bad_type_movie6" });
+
+        await updateMovie("title", "bad_type_movie5", "bad_type_movie7");
+        await updateMovie("title", "bad_type_movie6", "bad_type_movie8");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GT for String should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { title_GT: "a_bad_type_movie1" }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "bad_type_movie9" });
+        await createMovie({ title: "bad_type_movie10" });
+
+        await updateMovie("title", "bad_type_movie9", "bad_type_movie11");
+        await updateMovie("title", "bad_type_movie10", "bad_type_movie12");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GTE for String should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { title_GTE: "a_bad_type_movie1" }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "bad_type_movie13" });
+        await createMovie({ title: "bad_type_movie14" });
+
+        await updateMovie("title", "bad_type_movie13", "bad_type_movie15");
+        await updateMovie("title", "bad_type_movie14", "bad_type_movie16");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+
+    test("subscription with where filter _LT for ID as Int should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { id_LT: 50 }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "bad_type_movie17", id: 42 });
+        await createMovie({ title: "bad_type_movie18", id: 24 });
+
+        await updateMovie("id", 42, 420);
+        await updateMovie("id", 24, 240);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _LTE for ID as Int should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { id_LTE: 50 }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "bad_type_movie19", id: 40 });
+        await createMovie({ title: "bad_type_movie20", id: 20 });
+
+        await updateMovie("id", 40, 400);
+        await updateMovie("id", 20, 200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GT for ID as Int should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { id_GT: 2 }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "bad_type_movie21", id: 5 });
+        await createMovie({ title: "bad_type_movie22", id: 3 });
+
+        await updateMovie("id", 5, 50);
+        await updateMovie("id", 3, 30);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GTE for ID as Int should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { id_GTE: 1 }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "bad_type_movie23", id: 4 });
+        await createMovie({ title: "bad_type_movie24", id: 2 });
+
+        await updateMovie("id", 4, 40);
+        await updateMovie("id", 2, 20);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+
+    test("subscription with where filter _LT for Boolean should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { isFavorite_LT: true }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "bad_type_movie25" });
+        await createMovie({ title: "bad_type_movie26" });
+
+        await updateMovie("title", "bad_type_movie25", "bad_type_movie255");
+        await updateMovie("title", "bad_type_movie26", "bad_type_movie266");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _LTE for Boolean should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { isFavorite_LTE: false }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "bad_type_movie27", id: 40 });
+        await createMovie({ title: "bad_type_movie28", id: 20 });
+
+        await updateMovie("title", "bad_type_movie27", "bad_type_movie277");
+        await updateMovie("title", "bad_type_movie28", "bad_type_movie288");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GT for Boolean should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { isFavorite_GT: false }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "bad_type_movie29", id: 5 });
+        await createMovie({ title: "bad_type_movie30", id: 3 });
+
+        await updateMovie("title", "bad_type_movie29", "bad_type_movie299");
+        await updateMovie("title", "bad_type_movie30", "bad_type_movie300");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GTE for Boolean should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { isFavorite_GTE: false }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "bad_type_movie31", id: 4 });
+        await createMovie({ title: "bad_type_movie32", id: 2 });
+
+        await updateMovie("title", "bad_type_movie31", "bad_type_movie311");
+        await updateMovie("title", "bad_type_movie32", "bad_type_movie322");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+
+    test("subscription with where filter _LT for Array should not work", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { similarTitles_LT: "test" }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "bad_type_movie25", similarTitles: ["dummy"] });
+        await createMovie({ title: "bad_type_movie26", similarTitles: ["dummy"] });
+
+        await updateMovie("title", "bad_type_movie25", "bad_type_movie255");
+        await updateMovie("title", "bad_type_movie26", "bad_type_movie266");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+
     test.skip("bad data in db", async () => {
         // IMPORTANT: skipping this test for now bc. `session.run` seems to be using another db than the one that the lib uses.
 
@@ -567,14 +833,20 @@ describe("Update Subscriptions", () => {
         ]);
     });
 
+    const generateRandom = () => Math.floor(Math.random() * 100) + 1;
     const makeTypedFieldValue = (value) => (typeof value === "string" ? `"${value}"` : value);
     async function createMovie({
+        id = generateRandom(),
         title,
+        similarTitles = ["abc"],
         releasedIn = 2022,
         averageRating = 9.5,
         fileSize = "2147483647",
+        isFavorite = false,
     }): Promise<Response> {
-        const movieInput = `{ title: "${title}", releasedIn: ${releasedIn}, averageRating: ${averageRating}, fileSize: "${fileSize}" }`;
+        const movieInput = `{ id: ${id}, title: "${title}", releasedIn: ${releasedIn}, averageRating: ${averageRating}, fileSize: "${fileSize}", isFavorite: ${isFavorite}, similarTitles: [${similarTitles?.map(
+            makeTypedFieldValue
+        )}] }`;
         const result = await supertest(server.path)
             .post("")
             .send({
@@ -583,6 +855,7 @@ describe("Update Subscriptions", () => {
                             ${typeMovie.operations.create}(input: [${movieInput}]) {
                                 ${typeMovie.plural} {
                                     title
+                                    similarTitles
                                     releasedIn
                                     averageRating
                                     fileSize

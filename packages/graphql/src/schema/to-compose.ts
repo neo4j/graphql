@@ -116,6 +116,19 @@ export function objectFieldsToSubscriptionsWhereInputFields(fields: BaseField[])
         res[f.fieldName] = fieldType;
         res[`${f.fieldName}_NOT`] = fieldType;
 
+        if (f.typeMeta.array && f.typeMeta.name !== "Boolean") {
+            // expecting single value, not array
+            res[`${f.fieldName}_INCLUDES`] = f.typeMeta.name;
+            res[`${f.fieldName}_NOT_INCLUDES`] = f.typeMeta.name;
+            return res;
+        }
+
+        if (f.typeMeta.name !== "Boolean") {
+            // expecting array of values, not single
+            res[`${f.fieldName}_IN`] = `[${f.typeMeta.name}]`;
+            res[`${f.fieldName}_NOT_IN`] = `[${f.typeMeta.name}]`;
+        }
+
         if (["Int", "Float", "BigInt"].includes(f.typeMeta.name)) {
             res[`${f.fieldName}_LT`] = fieldType;
             res[`${f.fieldName}_LTE`] = fieldType;
