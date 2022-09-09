@@ -392,8 +392,9 @@ describe("@auth allow on specific interface implementation", () => {
             DELETE this_disconnect_content0_rel
             )
             RETURN count(*) AS _
-            UNION
-            WITH this
+            }
+            CALL {
+            	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Postparam0
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
@@ -469,8 +470,9 @@ describe("@auth allow on specific interface implementation", () => {
             DELETE this_disconnect_content0_rel
             )
             RETURN count(*) AS _
-            UNION
-            WITH this
+            }
+            CALL {
+            	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Postparam0
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
@@ -569,9 +571,9 @@ describe("@auth allow on specific interface implementation", () => {
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
             		)
             	)
-            	RETURN count(*) AS _
-            UNION
-            	WITH this
+            	RETURN count(*) AS connect_this_connect_content0_node_Comment
+            }
+            CALL {	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
             	WHERE this_connect_content0_node.id = $this_connect_content0_node_param0
             	WITH this, this_connect_content0_node
@@ -581,7 +583,7 @@ describe("@auth allow on specific interface implementation", () => {
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_content0_node_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

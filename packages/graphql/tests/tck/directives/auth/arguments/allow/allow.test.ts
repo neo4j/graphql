@@ -775,7 +775,7 @@ describe("Cypher Auth Allow", () => {
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_posts0_node_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

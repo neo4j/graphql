@@ -99,9 +99,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
-            UNION
-            	WITH this0
+            	RETURN count(*) AS connect_this0_subjects_connect0_node_Person
+            }
+            CALL {	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
@@ -109,7 +109,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_subjects_connect0_node_Place
             }
             WITH this0
             CALL {
@@ -121,9 +121,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
-            UNION
-            	WITH this0
+            	RETURN count(*) AS connect_this0_objects_connect0_node_Person
+            }
+            CALL {	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Place)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
@@ -131,7 +131,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_objects_connect0_node_Place
             }
             RETURN this0
             }
@@ -149,9 +149,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
-            UNION
-            	WITH this1
+            	RETURN count(*) AS connect_this1_subjects_connect0_node_Person
+            }
+            CALL {	WITH this1
             	OPTIONAL MATCH (this1_subjects_connect0_node:Place)
             	WHERE this1_subjects_connect0_node.id IN $this1_subjects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this1 IS NULL THEN [] ELSE [1] END |
@@ -159,7 +159,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this1_subjects_connect0_node_Place
             }
             WITH this1
             CALL {
@@ -171,9 +171,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
-            UNION
-            	WITH this1
+            	RETURN count(*) AS connect_this1_objects_connect0_node_Person
+            }
+            CALL {	WITH this1
             	OPTIONAL MATCH (this1_objects_connect0_node:Place)
             	WHERE this1_objects_connect0_node.id IN $this1_objects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this1 IS NULL THEN [] ELSE [1] END |
@@ -181,7 +181,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this1_objects_connect0_node_Place
             }
             RETURN this1
             }
@@ -206,6 +206,194 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                     \\"eve\\"
                 ],
                 \\"this1_objects_connect0_node_param0\\": [
+                    \\"abel\\"
+                ],
+                \\"resolvedCallbacks\\": {}
+            }"
+        `);
+    });
+
+    test("should produce Cypher correctly creates one interaction", async () => {
+        const query = gql`
+            mutation {
+                createInteractions(
+                    input: [
+                        {
+                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            kind: "PARENT_OF"
+                            objects: { connect: { where: { node: { id_IN: ["cain"] } } } }
+                        }
+                    ]
+                ) {
+                    info {
+                        nodesCreated
+                    }
+                    interactions {
+                        id
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            CREATE (this0:Interaction)
+            SET this0.id = randomUUID()
+            SET this0.kind = $this0_kind
+            WITH this0
+            CALL {
+            	WITH this0
+            	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
+            	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
+            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            		)
+            	)
+            	RETURN count(*) AS connect_this0_subjects_connect0_node_Person
+            }
+            CALL {	WITH this0
+            	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
+            	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
+            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            		)
+            	)
+            	RETURN count(*) AS connect_this0_subjects_connect0_node_Place
+            }
+            WITH this0
+            CALL {
+            	WITH this0
+            	OPTIONAL MATCH (this0_objects_connect0_node:Person)
+            	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_objects_connect0_node IS NULL THEN [] ELSE [1] END |
+            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
+            		)
+            	)
+            	RETURN count(*) AS connect_this0_objects_connect0_node_Person
+            }
+            CALL {	WITH this0
+            	OPTIONAL MATCH (this0_objects_connect0_node:Place)
+            	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_objects_connect0_node IS NULL THEN [] ELSE [1] END |
+            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
+            		)
+            	)
+            	RETURN count(*) AS connect_this0_objects_connect0_node_Place
+            }
+            RETURN this0
+            }
+            RETURN [
+            this0 { .id }] AS data"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this0_kind\\": \\"PARENT_OF\\",
+                \\"this0_subjects_connect0_node_param0\\": [
+                    \\"adam\\",
+                    \\"eve\\"
+                ],
+                \\"this0_objects_connect0_node_param0\\": [
+                    \\"cain\\"
+                ],
+                \\"resolvedCallbacks\\": {}
+            }"
+        `);
+    });
+
+    test("should produce Cypher correctly creates second interaction", async () => {
+        const query = gql`
+            mutation {
+                createInteractions(
+                    input: [
+                        {
+                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            kind: "PARENT_OF"
+                            objects: { connect: { where: { node: { id_IN: ["abel"] } } } }
+                        }
+                    ]
+                ) {
+                    info {
+                        nodesCreated
+                    }
+                    interactions {
+                        id
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            CREATE (this0:Interaction)
+            SET this0.id = randomUUID()
+            SET this0.kind = $this0_kind
+            WITH this0
+            CALL {
+            	WITH this0
+            	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
+            	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
+            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            		)
+            	)
+            	RETURN count(*) AS connect_this0_subjects_connect0_node_Person
+            }
+            CALL {	WITH this0
+            	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
+            	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
+            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            		)
+            	)
+            	RETURN count(*) AS connect_this0_subjects_connect0_node_Place
+            }
+            WITH this0
+            CALL {
+            	WITH this0
+            	OPTIONAL MATCH (this0_objects_connect0_node:Person)
+            	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_objects_connect0_node IS NULL THEN [] ELSE [1] END |
+            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
+            		)
+            	)
+            	RETURN count(*) AS connect_this0_objects_connect0_node_Person
+            }
+            CALL {	WITH this0
+            	OPTIONAL MATCH (this0_objects_connect0_node:Place)
+            	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_objects_connect0_node IS NULL THEN [] ELSE [1] END |
+            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
+            		)
+            	)
+            	RETURN count(*) AS connect_this0_objects_connect0_node_Place
+            }
+            RETURN this0
+            }
+            RETURN [
+            this0 { .id }] AS data"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this0_kind\\": \\"PARENT_OF\\",
+                \\"this0_subjects_connect0_node_param0\\": [
+                    \\"adam\\",
+                    \\"eve\\"
+                ],
+                \\"this0_objects_connect0_node_param0\\": [
                     \\"abel\\"
                 ],
                 \\"resolvedCallbacks\\": {}
@@ -263,9 +451,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
-            UNION
-            	WITH this0
+            	RETURN count(*) AS connect_this0_subjects_connect0_node_Person
+            }
+            CALL {	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
@@ -273,7 +461,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_subjects_connect0_node_Place
             }
             WITH this0
             CALL {
@@ -285,9 +473,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
-            UNION
-            	WITH this0
+            	RETURN count(*) AS connect_this0_objects_connect0_node_Person
+            }
+            CALL {	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Place)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
@@ -295,7 +483,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_objects_connect0_node_Place
             }
             RETURN this0
             }
@@ -313,9 +501,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
-            UNION
-            	WITH this1
+            	RETURN count(*) AS connect_this1_subjects_connect0_node_Person
+            }
+            CALL {	WITH this1
             	OPTIONAL MATCH (this1_subjects_connect0_node:Place)
             	WHERE this1_subjects_connect0_node.id IN $this1_subjects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this1 IS NULL THEN [] ELSE [1] END |
@@ -323,7 +511,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this1_subjects_connect0_node_Place
             }
             WITH this1
             CALL {
@@ -335,9 +523,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
-            UNION
-            	WITH this1
+            	RETURN count(*) AS connect_this1_objects_connect0_node_Person
+            }
+            CALL {	WITH this1
             	OPTIONAL MATCH (this1_objects_connect0_node:Place)
             	WHERE this1_objects_connect0_node.id IN $this1_objects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this1 IS NULL THEN [] ELSE [1] END |
@@ -345,7 +533,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this1_objects_connect0_node_Place
             }
             RETURN this1
             }
@@ -433,43 +621,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         `);
     });
 
-    test("Cypher should be the same regardless of whether Place is in type definitions", async () => {
-        const typeDefsWithoutPlace = gql`
-            interface Entity {
-                id: String!
-            }
-
-            type Person implements Entity {
-                id: String! @unique
-                name: String!
-            }
-
-            type Interaction {
-                id: ID! @id
-                kind: String!
-                subjects: [Entity!]! @relationship(type: "ACTED_IN", direction: IN)
-                objects: [Entity!]! @relationship(type: "ACTED_IN", direction: OUT)
-            }
-        `;
-
-        const neoSchemaWithoutPlace = new Neo4jGraphQL({
-            typeDefs: typeDefsWithoutPlace,
-        });
-
+    test("simplest reproduction", async () => {
         const query = gql`
             mutation {
                 createInteractions(
                     input: [
-                        {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
-                            kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["cain"] } } } }
-                        }
-                        {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
-                            kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["abel"] } } } }
-                        }
+                        { subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }, kind: "PARENT_OF" }
+                        { kind: "PARENT_OF" }
                     ]
                 ) {
                     info {
@@ -477,20 +635,63 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                     }
                     interactions {
                         id
-                        subjects {
-                            id
-                        }
-                        objects {
-                            id
-                        }
                     }
                 }
             }
         `;
 
-        const resultWithPlace = await translateQuery(neoSchema, query);
-        const resultWithoutPlace = await translateQuery(neoSchemaWithoutPlace, query);
+        const result = await translateQuery(neoSchema, query);
 
-        expect(formatCypher(resultWithPlace.cypher)).toBe(formatCypher(resultWithoutPlace.cypher));
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            CREATE (this0:Interaction)
+            SET this0.id = randomUUID()
+            SET this0.kind = $this0_kind
+            WITH this0
+            CALL {
+            	WITH this0
+            	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
+            	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
+            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            		)
+            	)
+            	RETURN count(*) AS connect_this0_subjects_connect0_node_Person
+            }
+            CALL {	WITH this0
+            	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
+            	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
+            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            		)
+            	)
+            	RETURN count(*) AS connect_this0_subjects_connect0_node_Place
+            }
+            RETURN this0
+            }
+            CALL {
+            CREATE (this1:Interaction)
+            SET this1.id = randomUUID()
+            SET this1.kind = $this1_kind
+            RETURN this1
+            }
+            RETURN [
+            this0 { .id },
+            this1 { .id }] AS data"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this0_kind\\": \\"PARENT_OF\\",
+                \\"this0_subjects_connect0_node_param0\\": [
+                    \\"adam\\",
+                    \\"eve\\"
+                ],
+                \\"this1_kind\\": \\"PARENT_OF\\",
+                \\"resolvedCallbacks\\": {}
+            }"
+        `);
     });
 });

@@ -23,6 +23,7 @@ import { CallbackBucket } from "../classes/CallbackBucket";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { RelationshipQueryDirectionOption } from "../constants";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
+import { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
 
 describe("createConnectAndParams", () => {
     test("should return the correct connection", () => {
@@ -69,7 +70,10 @@ describe("createConnectAndParams", () => {
             objectFields: [],
         }).instance();
 
-        const context = new ContextBuilder({ nodes: [node] }).instance();
+        const context = new ContextBuilder({
+            nodes: [node],
+            neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.4.0"),
+        }).instance();
 
         const result = createConnectAndParams({
             withVars: ["this"],
@@ -111,10 +115,7 @@ describe("createConnectAndParams", () => {
                                 MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node)
                             )
                         )
-                        RETURN count(*) AS _
                     }
-
-                    RETURN count(*) AS _
                 }
             `)
         );

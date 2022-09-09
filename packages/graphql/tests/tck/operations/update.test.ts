@@ -289,7 +289,7 @@ describe("Cypher Update", () => {
             			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actors0_node_Actor
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -338,7 +338,7 @@ describe("Cypher Update", () => {
             			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actors0_node_Actor
             }
             WITH this
             CALL {
@@ -350,7 +350,7 @@ describe("Cypher Update", () => {
             			MERGE (this)<-[this_connect_actors1_relationship:ACTED_IN]-(this_connect_actors1_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actors1_node_Actor
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

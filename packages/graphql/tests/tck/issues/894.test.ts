@@ -80,7 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             			MERGE (this)-[:ACTIVELY_MANAGING]->(this_connect_activeOrganization0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_activeOrganization0_node_Organization
             }
             WITH this
             CALL {

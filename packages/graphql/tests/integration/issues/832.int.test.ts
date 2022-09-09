@@ -186,4 +186,219 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         expect((mutationResult.data?.[Interaction.operations.create] as any).info.nodesCreated).toBe(2);
         expect((mutationResult.data?.[Interaction.operations.create] as any).info.relationshipsCreated).toBe(6);
     });
+
+    test("1", async () => {
+        const mutation = `
+            mutation {
+                ${Interaction.operations.create}(
+                    input: [
+                        {
+                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            kind: "PARENT_OF"
+                        }
+                        {
+                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            kind: "PARENT_OF"
+                        }
+                    ]
+                ) {
+                    info {
+                        nodesCreated
+                        relationshipsCreated
+                    }
+                    ${Interaction.plural} {
+                        id
+                    }
+                }
+            }
+        `;
+
+        const mutationResult = await graphqlQuery(mutation);
+        expect((mutationResult.data?.[Interaction.operations.create] as any).info.nodesCreated).toBe(2);
+        expect((mutationResult.data?.[Interaction.operations.create] as any).info.relationshipsCreated).toBe(4);
+    });
+
+    test("2", async () => {
+        const mutation = `
+            mutation {
+                ${Interaction.operations.create}(
+                    input: [
+                        {
+                            kind: "PARENT_OF"
+                            objects: { connect: { where: { node: { id_IN: ["cain"] } } } }
+                        }
+                        {
+                            kind: "PARENT_OF"
+                            objects: { connect: { where: { node: { id_IN: ["abel"] } } } }
+                        }
+                    ]
+                ) {
+                    info {
+                        nodesCreated
+                        relationshipsCreated
+                    }
+                    ${Interaction.plural} {
+                        id
+                    }
+                }
+            }
+        `;
+
+        const mutationResult = await graphqlQuery(mutation);
+        expect((mutationResult.data?.[Interaction.operations.create] as any).info.nodesCreated).toBe(2);
+        expect((mutationResult.data?.[Interaction.operations.create] as any).info.relationshipsCreated).toBe(2);
+    });
+
+    test("3", async () => {
+        const mutation = `
+            mutation {
+                ${Interaction.operations.create}(
+                    input: [
+                        {
+                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            kind: "PARENT_OF"
+                            objects: { connect: { where: { node: { id_IN: ["cain"] } } } }
+                        }
+                        {
+                            kind: "PARENT_OF"
+                        }
+                    ]
+                ) {
+                    info {
+                        nodesCreated
+                        relationshipsCreated
+                    }
+                    ${Interaction.plural} {
+                        id
+                    }
+                }
+            }
+        `;
+
+        const mutationResult = await graphqlQuery(mutation);
+        expect((mutationResult.data?.[Interaction.operations.create] as any).info.nodesCreated).toBe(2);
+        expect((mutationResult.data?.[Interaction.operations.create] as any).info.relationshipsCreated).toBe(3);
+    });
+
+    test("4", async () => {
+        const mutation = `
+            mutation {
+                ${Interaction.operations.create}(
+                    input: [
+                        {
+                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            kind: "PARENT_OF"
+                            objects: { connect: { where: { node: { id_IN: ["cain"] } } } }
+                        }
+                        {
+                            kind: "PARENT_OF"
+                            objects: { connect: { where: { node: { id_IN: ["abel"] } } } }
+                        }
+                    ]
+                ) {
+                    info {
+                        nodesCreated
+                        relationshipsCreated
+                    }
+                    ${Interaction.plural} {
+                        id
+                    }
+                }
+            }
+        `;
+
+        const mutationResult = await graphqlQuery(mutation);
+        expect((mutationResult.data?.[Interaction.operations.create] as any).info.nodesCreated).toBe(2);
+        expect((mutationResult.data?.[Interaction.operations.create] as any).info.relationshipsCreated).toBe(4);
+    });
+
+    test("simplest reproduction", async () => {
+        const mutation = `
+            mutation {
+                ${Interaction.operations.create}(
+                    input: [
+                        {
+                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            kind: "PARENT_OF"
+                        }
+                        {
+                            kind: "PARENT_OF"
+                        }
+                    ]
+                ) {
+                    info {
+                        nodesCreated
+                        relationshipsCreated
+                    }
+                    ${Interaction.plural} {
+                        id
+                    }
+                }
+            }
+        `;
+
+        const mutationResult = await graphqlQuery(mutation);
+        expect((mutationResult.data?.[Interaction.operations.create] as any).info.nodesCreated).toBe(2);
+        expect((mutationResult.data?.[Interaction.operations.create] as any).info.relationshipsCreated).toBe(2);
+    });
+
+    test("6", async () => {
+        const mutation = `
+            mutation {
+                ${Interaction.operations.create}(
+                    input: [
+                        {
+                            subjects: { connect: { where: { node: { id_IN: ["adam"] } } } }
+                            kind: "PARENT_OF"
+                        }
+                        {
+                            kind: "PARENT_OF"
+                        }
+                    ]
+                ) {
+                    info {
+                        nodesCreated
+                        relationshipsCreated
+                    }
+                    ${Interaction.plural} {
+                        id
+                    }
+                }
+            }
+        `;
+
+        const mutationResult = await graphqlQuery(mutation);
+        expect((mutationResult.data?.[Interaction.operations.create] as any).info.nodesCreated).toBe(2);
+        expect((mutationResult.data?.[Interaction.operations.create] as any).info.relationshipsCreated).toBe(1);
+    });
+
+    test("7", async () => {
+        const mutation = `
+            mutation {
+                ${Interaction.operations.create}(
+                    input: [
+                        {
+                            kind: "PARENT_OF"
+                        }
+                        {
+                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            kind: "PARENT_OF"
+                        }
+                    ]
+                ) {
+                    info {
+                        nodesCreated
+                        relationshipsCreated
+                    }
+                    ${Interaction.plural} {
+                        id
+                    }
+                }
+            }
+        `;
+
+        const mutationResult = await graphqlQuery(mutation);
+        expect((mutationResult.data?.[Interaction.operations.create] as any).info.nodesCreated).toBe(2);
+        expect((mutationResult.data?.[Interaction.operations.create] as any).info.relationshipsCreated).toBe(2);
+    });
 });

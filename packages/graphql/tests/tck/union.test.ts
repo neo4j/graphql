@@ -322,7 +322,7 @@ describe("Cypher Union", () => {
             			MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_search_Genre_connect0_node_Genre
             }
             RETURN this0
             }
@@ -577,7 +577,7 @@ describe("Cypher Union", () => {
             			MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_search_Genre0_node_Genre
             }
             WITH *
             RETURN collect(DISTINCT this { .title }) AS data"

@@ -263,9 +263,9 @@ describe("Cypher Auth isAuthenticated", () => {
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
             		)
             	)
-            	RETURN count(*) AS _
-            UNION
-            	WITH this
+            	RETURN count(*) AS connect_this_connect_content0_node_Comment
+            }
+            CALL {	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
             	WITH this, this_connect_content0_node
             	CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -274,7 +274,7 @@ describe("Cypher Auth isAuthenticated", () => {
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_content0_node_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -325,8 +325,9 @@ describe("Cypher Auth isAuthenticated", () => {
             DELETE this_disconnect_content0_rel
             )
             RETURN count(*) AS _
-            UNION
-            WITH this
+            }
+            CALL {
+            	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])

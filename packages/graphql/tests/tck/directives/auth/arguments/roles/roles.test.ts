@@ -426,7 +426,7 @@ describe("Cypher Auth Roles", () => {
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_posts0_node_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -488,7 +488,7 @@ describe("Cypher Auth Roles", () => {
             			MERGE (this_post0)-[:HAS_POST]->(this_post0_creator0_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_post0_creator0_connect0_node_User
             }
             WITH this, this_post0
             CALL {

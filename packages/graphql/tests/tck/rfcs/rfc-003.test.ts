@@ -935,7 +935,7 @@ describe("tck/rfs/003", () => {
                         			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
                         		)
                         	)
-                        	RETURN count(*) AS _
+                        	RETURN count(*) AS connect_this0_director_connect0_node_Director
                         }
                         WITH this0
                         CALL {
@@ -1004,7 +1004,7 @@ describe("tck/rfs/003", () => {
                         			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
                         		)
                         	)
-                        	RETURN count(*) AS _
+                        	RETURN count(*) AS connect_this0_director_connect0_node_Director
                         }
                         WITH this0
                         CALL {
@@ -1109,9 +1109,9 @@ describe("tck/rfs/003", () => {
                             	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDDirector.address required', [0])
                             	RETURN c AS this0_director_connect0_node_address_Address_unique_ignored
                             }
-                            	RETURN count(*) AS _
+                            	RETURN count(*) AS connect_this0_director_connect0_node_address0_node_Address
                             }
-                            	RETURN count(*) AS _
+                            	RETURN count(*) AS connect_this0_director_connect0_node_Director
                             }
                             WITH this0
                             CALL {
@@ -1275,7 +1275,7 @@ describe("tck/rfs/003", () => {
                         			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
                         		)
                         	)
-                        	RETURN count(*) AS _
+                        	RETURN count(*) AS connect_this_connect_director0_node_Director
                         }
                         WITH this
                         CALL {
@@ -1384,7 +1384,7 @@ describe("tck/rfs/003", () => {
                         			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
                         		)
                         	)
-                        	RETURN count(*) AS _
+                        	RETURN count(*) AS connect_this_connect_director0_node_Director
                         }
                         WITH this
                         CALL {

@@ -89,8 +89,9 @@ describe("Interface Relationships - Update disconnect", () => {
             DELETE this_disconnect_actedIn0_rel
             )
             RETURN count(*) AS _
-            UNION
-            WITH this
+            }
+            CALL {
+            	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
             WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Seriesparam0
             FOREACH(_ IN CASE WHEN this_disconnect_actedIn0 IS NULL THEN [] ELSE [1] END |
@@ -170,8 +171,9 @@ describe("Interface Relationships - Update disconnect", () => {
             RETURN count(*) AS _
             }
             RETURN count(*) AS _
-            UNION
-            WITH this
+            }
+            CALL {
+            	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
             WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Seriesparam0
             FOREACH(_ IN CASE WHEN this_disconnect_actedIn0 IS NULL THEN [] ELSE [1] END |
@@ -273,8 +275,9 @@ describe("Interface Relationships - Update disconnect", () => {
             RETURN count(*) AS _
             }
             RETURN count(*) AS _
-            UNION
-            WITH this
+            }
+            CALL {
+            	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
             WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Seriesparam0
             FOREACH(_ IN CASE WHEN this_disconnect_actedIn0 IS NULL THEN [] ELSE [1] END |
@@ -375,8 +378,9 @@ describe("Interface Relationships - Update disconnect", () => {
             RETURN count(*) AS _
             }
             RETURN count(*) AS _
-            UNION
-            WITH this
+            }
+            CALL {
+            	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
             WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Seriesparam0
             FOREACH(_ IN CASE WHEN this_disconnect_actedIn0 IS NULL THEN [] ELSE [1] END |

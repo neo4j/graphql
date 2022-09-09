@@ -327,7 +327,10 @@ function createDisconnectAndParams({
             params = { ...params, ...postAuth.params };
         }
 
-        subquery.push("RETURN count(*) AS _");
+        // TODO: Remove this conditional logic when 4.3 support no longer required
+        if (context.neo4jDatabaseInfo.lt("4.4")) {
+            subquery.push("RETURN count(*) AS _");
+        }
 
         return { subquery: subquery.join("\n"), params };
     }
@@ -359,7 +362,7 @@ function createDisconnectAndParams({
                     res.params = { ...res.params, ...subquery.params };
                 }
             });
-            res.disconnects.push(subqueries.join("\nUNION\n"));
+            res.disconnects.push(subqueries.join("\n}\nCALL {\n\t"));
         } else {
             const subquery = createSubqueryContents(refNodes[0], disconnect, index);
             res.disconnects.push(subquery.subquery);
