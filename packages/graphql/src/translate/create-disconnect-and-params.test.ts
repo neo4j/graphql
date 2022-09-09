@@ -120,7 +120,9 @@ describe("createDisconnectAndParams", () => {
             FOREACH(_ IN CASE WHEN this0_similarMovies0 IS NULL THEN [] ELSE [1] END | 
             DELETE this0_similarMovies0_rel
             )
+            RETURN count(*) AS disconnect_this0_similarMovies_Movie
             }
+            RETURN count(*) AS disconnect_this_Movie
             }"
         `);
 

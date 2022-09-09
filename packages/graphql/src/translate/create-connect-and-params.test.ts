@@ -92,33 +92,32 @@ describe("createConnectAndParams", () => {
             callbackBucket: new CallbackBucket(context),
         });
 
-        expect(trimmer(result[0])).toEqual(
-            trimmer(`
-                WITH this
-                CALL {
-                    WITH this
-                    OPTIONAL MATCH (this0_node:Movie)
-                    WHERE this0_node.title = $this0_node_param0
-                    FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-                        FOREACH(_ IN CASE WHEN this0_node IS NULL THEN [] ELSE [1] END |
-                            MERGE (this)-[:SIMILAR]->(this0_node)
-                        )
-                    )
-
-                    WITH this, this0_node
-                    CALL {
-                        WITH this, this0_node
-                        OPTIONAL MATCH (this0_node_similarMovies0_node:Movie)
-                        WHERE this0_node_similarMovies0_node.title = $this0_node_similarMovies0_node_param0
-                        FOREACH(_ IN CASE WHEN this0_node IS NULL THEN [] ELSE [1] END |
-                            FOREACH(_ IN CASE WHEN this0_node_similarMovies0_node IS NULL THEN [] ELSE [1] END |
-                                MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node)
-                            )
-                        )
-                    }
-                }
-            `)
-        );
+        expect(result[0]).toMatchInlineSnapshot(`
+            "WITH this
+            CALL {
+            	WITH this
+            	OPTIONAL MATCH (this0_node:Movie)
+            	WHERE this0_node.title = $this0_node_param0
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END | 
+            		FOREACH(_ IN CASE WHEN this0_node IS NULL THEN [] ELSE [1] END | 
+            			MERGE (this)-[:SIMILAR]->(this0_node)
+            		)
+            	)
+            WITH this, this0_node
+            CALL {
+            	WITH this, this0_node
+            	OPTIONAL MATCH (this0_node_similarMovies0_node:Movie)
+            	WHERE this0_node_similarMovies0_node.title = $this0_node_similarMovies0_node_param0
+            	FOREACH(_ IN CASE WHEN this0_node IS NULL THEN [] ELSE [1] END | 
+            		FOREACH(_ IN CASE WHEN this0_node_similarMovies0_node IS NULL THEN [] ELSE [1] END | 
+            			MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node)
+            		)
+            	)
+            	RETURN count(*) AS connect_this0_node_similarMovies_Movie
+            }
+            	RETURN count(*) AS connect_this_Movie
+            }"
+        `);
 
         expect(result[1]).toMatchObject({
             this0_node_param0: "abc",
