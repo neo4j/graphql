@@ -37,7 +37,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         const typeDefs = `
          type ${typeMovie} {
             id: ID
@@ -68,17 +68,13 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
 
         server = new ApolloTestServer(neoSchema);
         await server.start();
-    });
 
-    beforeEach(() => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
     afterEach(async () => {
         await wsClient.close();
-    });
 
-    afterAll(async () => {
         await server.close();
         await driver.close();
     });
@@ -88,20 +84,20 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { releasedIn_LT: 2000 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
-                        title
+                        releasedIn
                     }
                 }
             }
         `);
 
-        await createMovie({ title: "movie1", releasedIn: 2000 });
-        await createMovie({ title: "movie2", releasedIn: 1999 });
+        await createMovie({ releasedIn: 2000 });
+        await createMovie({ releasedIn: 1999 });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.created]: { releasedIn: 1999 },
                 },
             },
         ]);
@@ -111,26 +107,26 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { releasedIn_LTE: 2000 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
-                        title
+                        releasedIn
                     }
                 }
             }
         `);
 
-        await createMovie({ title: "movie1", releasedIn: 2000 });
-        await createMovie({ title: "movie2", releasedIn: 1999 });
-        await createMovie({ title: "movie3", releasedIn: 2999 });
+        await createMovie({ releasedIn: 2000 });
+        await createMovie({ releasedIn: 1999 });
+        await createMovie({ releasedIn: 2999 });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.created]: { releasedIn: 2000 },
                 },
             },
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.created]: { releasedIn: 1999 },
                 },
             },
         ]);
@@ -140,20 +136,20 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { releasedIn_GT: 2000 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
-                        title
+                        releasedIn
                     }
                 }
             }
         `);
 
-        await createMovie({ title: "movie1", releasedIn: 2020 });
-        await createMovie({ title: "movie2", releasedIn: 2000 });
+        await createMovie({ releasedIn: 2020 });
+        await createMovie({ releasedIn: 2000 });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.created]: { releasedIn: 2020 },
                 },
             },
         ]);
@@ -163,26 +159,26 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { releasedIn_GTE: 2000 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
-                        title
+                        releasedIn
                     }
                 }
             }
         `);
 
-        await createMovie({ title: "movie1", releasedIn: 1920 });
-        await createMovie({ title: "movie2", releasedIn: 2000 });
-        await createMovie({ title: "movie3", releasedIn: 2030 });
+        await createMovie({ releasedIn: 1920 });
+        await createMovie({ releasedIn: 2000 });
+        await createMovie({ releasedIn: 2030 });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.created]: { releasedIn: 2000 },
                 },
             },
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie3" },
+                    [typeMovie.operations.subscribe.payload.created]: { releasedIn: 2030 },
                 },
             },
         ]);
@@ -193,20 +189,20 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { averageRating_LT: 8 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
-                        title
+                        averageRating
                     }
                 }
             }
         `);
 
-        await createMovie({ title: "movie1", averageRating: 8.0 });
-        await createMovie({ title: "movie2", averageRating: 5 });
+        await createMovie({ averageRating: 8.0 });
+        await createMovie({ averageRating: 5 });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.created]: { averageRating: 5 },
                 },
             },
         ]);
@@ -216,26 +212,26 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { averageRating_LTE: 7 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
-                        title
+                        averageRating
                     }
                 }
             }
         `);
 
-        await createMovie({ title: "movie1", averageRating: 6.7 });
-        await createMovie({ title: "movie2", averageRating: 7.0 });
-        await createMovie({ title: "movie3", averageRating: 7.1 });
+        await createMovie({ averageRating: 6.7 });
+        await createMovie({ averageRating: 7.0 });
+        await createMovie({ averageRating: 7.1 });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.created]: { averageRating: 6.7 },
                 },
             },
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.created]: { averageRating: 7 },
                 },
             },
         ]);
@@ -245,20 +241,20 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { averageRating_GT: 7.9 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
-                        title
+                        averageRating
                     }
                 }
             }
         `);
 
-        await createMovie({ title: "movie1", averageRating: 8 });
-        await createMovie({ title: "movie2", averageRating: 7.9 });
+        await createMovie({ averageRating: 8 });
+        await createMovie({ averageRating: 7.9 });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.created]: { averageRating: 8 },
                 },
             },
         ]);
@@ -268,26 +264,26 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { averageRating_GTE: 5 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
-                        title
+                        averageRating
                     }
                 }
             }
         `);
 
-        await createMovie({ title: "movie1", averageRating: 4.1 });
-        await createMovie({ title: "movie2", averageRating: 5.3 });
-        await createMovie({ title: "movie3", averageRating: 6.2 });
+        await createMovie({ averageRating: 4.1 });
+        await createMovie({ averageRating: 5.3 });
+        await createMovie({ averageRating: 6.2 });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.created]: { averageRating: 5.3 },
                 },
             },
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie3" },
+                    [typeMovie.operations.subscribe.payload.created]: { averageRating: 6.2 },
                 },
             },
         ]);
@@ -297,26 +293,26 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { averageRating_GTE: 4.2 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
-                        title
+                        averageRating
                     }
                 }
             }
         `);
 
-        await createMovie({ title: "movie1", averageRating: 4.1 });
-        await createMovie({ title: "movie2", averageRating: 5 });
-        await createMovie({ title: "movie3", averageRating: 6.2 });
+        await createMovie({ averageRating: 4.1 });
+        await createMovie({ averageRating: 5 });
+        await createMovie({ averageRating: 6.2 });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.created]: { averageRating: 5 },
                 },
             },
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie3" },
+                    [typeMovie.operations.subscribe.payload.created]: { averageRating: 6.2 },
                 },
             },
         ]);
@@ -332,20 +328,20 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { fileSize_LT: ${bigInts.m} }) {
                     ${typeMovie.operations.subscribe.payload.created} {
-                        title
+                        fileSize
                     }
                 }
             }
         `);
 
-        await createMovie({ title: "movie1", fileSize: bigInts.m });
-        await createMovie({ title: "movie2", fileSize: bigInts.s });
+        await createMovie({ fileSize: bigInts.m });
+        await createMovie({ fileSize: bigInts.s });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.created]: { fileSize: bigInts.s },
                 },
             },
         ]);
@@ -360,26 +356,26 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { fileSize_LTE: ${bigInts.m} }) {
                     ${typeMovie.operations.subscribe.payload.created} {
-                        title
+                        fileSize
                     }
                 }
             }
         `);
 
-        await createMovie({ title: "movie1", fileSize: bigInts.s });
-        await createMovie({ title: "movie2", fileSize: bigInts.m });
-        await createMovie({ title: "movie3", fileSize: bigInts.l });
+        await createMovie({ fileSize: bigInts.s });
+        await createMovie({ fileSize: bigInts.m });
+        await createMovie({ fileSize: bigInts.l });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.created]: { fileSize: bigInts.s },
                 },
             },
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.created]: { fileSize: bigInts.m },
                 },
             },
         ]);
@@ -393,20 +389,20 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { fileSize_GT: ${bigInts.m} }) {
                     ${typeMovie.operations.subscribe.payload.created} {
-                        title
+                        fileSize
                     }
                 }
             }
         `);
 
-        await createMovie({ title: "movie1", fileSize: bigInts.l });
-        await createMovie({ title: "movie2", fileSize: bigInts.m });
+        await createMovie({ fileSize: bigInts.l });
+        await createMovie({ fileSize: bigInts.m });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.created]: { fileSize: bigInts.l },
                 },
             },
         ]);
@@ -421,26 +417,26 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { fileSize_GTE: ${bigInts.m} }) {
                     ${typeMovie.operations.subscribe.payload.created} {
-                        title
+                        fileSize
                     }
                 }
             }
         `);
 
-        await createMovie({ title: "movie1", fileSize: bigInts.s });
-        await createMovie({ title: "movie2", fileSize: bigInts.m });
-        await createMovie({ title: "movie3", fileSize: bigInts.l });
+        await createMovie({ fileSize: bigInts.s });
+        await createMovie({ fileSize: bigInts.m });
+        await createMovie({ fileSize: bigInts.l });
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.created]: { fileSize: bigInts.m },
                 },
             },
             {
                 [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { title: "movie3" },
+                    [typeMovie.operations.subscribe.payload.created]: { fileSize: bigInts.l },
                 },
             },
         ]);
@@ -538,7 +534,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { id_LT: 50 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
-                        title
+                        id
                     }
                 }
             }
@@ -546,8 +542,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             onReturnError
         );
 
-        await createMovie({ title: "movie1", id: 42 });
-        await createMovie({ title: "movie2", id: 24 });
+        await createMovie({ id: 42 });
+        await createMovie({ id: 24 });
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -559,7 +555,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { id_LTE: 50 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
-                        title
+                        id
                     }
                 }
             }
@@ -567,8 +563,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             onReturnError
         );
 
-        await createMovie({ title: "movie1", id: 40 });
-        await createMovie({ title: "movie2", id: 20 });
+        await createMovie({ id: 40 });
+        await createMovie({ id: 20 });
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -580,7 +576,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { id_GT: 2 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
-                        title
+                        id
                     }
                 }
             }
@@ -588,8 +584,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             onReturnError
         );
 
-        await createMovie({ title: "movie1", id: 5 });
-        await createMovie({ title: "movie2", id: 3 });
+        await createMovie({ id: 5 });
+        await createMovie({ id: 3 });
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -601,7 +597,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { id_GTE: 1 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
-                        title
+                        id
                     }
                 }
             }
@@ -609,8 +605,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             onReturnError
         );
 
-        await createMovie({ title: "movie1", id: 4 });
-        await createMovie({ title: "movie2", id: 2 });
+        await createMovie({ id: 4 });
+        await createMovie({ id: 2 });
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -631,8 +627,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             onReturnError
         );
 
-        await createMovie({ title: "movie1", id: 42 });
-        await createMovie({ title: "movie2", id: 24 });
+        await createMovie({});
+        await createMovie({});
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -652,8 +648,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             onReturnError
         );
 
-        await createMovie({ title: "movie1", id: 40 });
-        await createMovie({ title: "movie2", id: 20 });
+        await createMovie({});
+        await createMovie({});
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -673,8 +669,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             onReturnError
         );
 
-        await createMovie({ title: "movie1", id: 5 });
-        await createMovie({ title: "movie2", id: 3 });
+        await createMovie({});
+        await createMovie({});
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -694,8 +690,8 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             onReturnError
         );
 
-        await createMovie({ title: "movie1", id: 4 });
-        await createMovie({ title: "movie2", id: 2 });
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -708,7 +704,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { similarTitles_GTE: "test" }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        similarTitles
                     }
                 }
             }
@@ -716,33 +712,43 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
             onReturnError
         );
 
-        await createMovie({ title: "bad_type_movie25", similarTitles: ["dummy"] });
-        await createMovie({ title: "bad_type_movie26", similarTitles: ["test"] });
+        await createMovie({ similarTitles: ["dummy"] });
+        await createMovie({ similarTitles: ["test"] });
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
 
-    const generateRandom = () => Math.floor(Math.random() * 100) + 1;
-    const makeTypedFieldValue = (value) => (typeof value === "string" ? `"${value}"` : value);
-    async function createMovie({
-        id = generateRandom(),
-        title,
-        similarTitles = ["abc"],
-        releasedIn = 2022,
-        averageRating = 9.5,
-        fileSize = "2147483647",
-        isFavorite = false,
+    const makeTypedFieldValue = (value) => {
+        if (typeof value === "string") {
+            return `"${value}"`;
+        }
+        if (Array.isArray(value)) {
+            return `[${value.map(makeTypedFieldValue)}]`;
+        }
+        return value;
+    };
+    async function createMovie(all: {
+        id?: string | number;
+        title?: string;
+        releasedIn?: number;
+        averageRating?: number;
+        fileSize?: string;
+        isFavorite?: boolean;
+        similarTitles?: string[];
     }): Promise<Response> {
-        const movieInput = `{ id: ${id}, title: "${title}", releasedIn: ${releasedIn}, averageRating: ${averageRating}, fileSize: "${fileSize}", isFavorite: ${isFavorite}, similarTitles: [${similarTitles?.map(
-            makeTypedFieldValue
-        )}] }`;
+        const movieInput = Object.entries(all)
+            .filter(([_, v]) => v)
+            .map(([k, v]) => {
+                return `${k}: ${makeTypedFieldValue(v)}`;
+            })
+            .join(", ");
         const result = await supertest(server.path)
             .post("")
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.create}(input: [${movieInput}]) {
+                        ${typeMovie.operations.create}(input: [{ ${movieInput} }]) {
                             ${typeMovie.plural} {
                                 id
                                 title

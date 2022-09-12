@@ -28,7 +28,7 @@ import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
 
-describe("Create Subscription with optional filters valid for all types", () => {
+describe("Create Subscription", () => {
     let neo4j: Neo4j;
     let driver: Driver;
 
@@ -37,7 +37,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         const typeDefs = `
          type ${typeMovie} {
             title: String
@@ -59,20 +59,15 @@ describe("Create Subscription with optional filters valid for all types", () => 
                 subscriptions: new TestSubscriptionsPlugin(),
             },
         });
-
         server = new ApolloTestServer(neoSchema);
         await server.start();
-    });
 
-    beforeEach(() => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
     afterEach(async () => {
         await wsClient.close();
-    });
 
-    afterAll(async () => {
         await server.close();
         await driver.close();
     });
@@ -90,8 +85,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
                             }
                             `);
 
-        await createMovie({ title: "movie1" });
-        await createMovie({ title: "movie2" });
+        await createMovie("movie1");
+        await createMovie("movie2");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -122,8 +117,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
             }
         `);
 
-        await createMovie({ title: "movie1" });
-        await createMovie({ title: "movie2" });
+        await createMovie("movie1");
+        await createMovie("movie2");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -135,7 +130,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
         ]);
     });
 
-    async function createMovie({ title }): Promise<Response> {
+    async function createMovie(title: string): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
             .send({

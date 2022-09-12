@@ -37,7 +37,7 @@ describe("Delete Subscription", () => {
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         const typeDefs = `
         type ${typeMovie} {
             id: ID
@@ -68,17 +68,13 @@ describe("Delete Subscription", () => {
 
         server = new ApolloTestServer(neoSchema);
         await server.start();
-    });
 
-    beforeEach(() => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
     afterEach(async () => {
         await wsClient.close();
-    });
 
-    afterAll(async () => {
         await server.close();
         await driver.close();
     });
@@ -94,11 +90,11 @@ describe("Delete Subscription", () => {
     }
 `);
 
-        await createMovie({ id: generateRandom(), title: "movie_starts_with1" });
-        await createMovie({ id: generateRandom(), title: "mvie2" });
+        await createMovie({ title: "movie_starts_with1" });
+        await createMovie({ title: "mvie2" });
 
-        await deleteMovie("mvie2");
-        await deleteMovie("movie_starts_with1");
+        await deleteMovie("title", "mvie2");
+        await deleteMovie("title", "movie_starts_with1");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -114,7 +110,7 @@ describe("Delete Subscription", () => {
     subscription {
         ${typeMovie.operations.subscribe.deleted}(where: { id_STARTS_WITH: "dummy" }) {
             ${typeMovie.operations.subscribe.payload.deleted} {
-                title
+                id
             }
         }
     }
@@ -123,14 +119,14 @@ describe("Delete Subscription", () => {
         await createMovie({ id: "dummy1", title: "movie1" });
         await createMovie({ id: "not-dummy1", title: "movie2" });
 
-        await deleteMovie("movie2");
-        await deleteMovie("movie1");
+        await deleteMovie("id", "dummy1");
+        await deleteMovie("id", "not-dummy1");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { id: "dummy1" },
                 },
             },
         ]);
@@ -140,23 +136,23 @@ describe("Delete Subscription", () => {
     subscription {
         ${typeMovie.operations.subscribe.deleted}(where: { id_STARTS_WITH: 1 }) {
             ${typeMovie.operations.subscribe.payload.deleted} {
-                title
+                id
             }
         }
     }
 `);
 
-        await createMovie({ id: 1, title: "movie1" });
-        await createMovie({ id: 2, title: "movie2" });
+        await createMovie({ id: 1 });
+        await createMovie({ id: 2 });
 
-        await deleteMovie("movie2");
-        await deleteMovie("movie1");
+        await deleteMovie("id", 1);
+        await deleteMovie("id", 2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { id: "1" },
                 },
             },
         ]);
@@ -173,11 +169,11 @@ describe("Delete Subscription", () => {
     }
 `);
 
-        await createMovie({ id: generateRandom(), title: "mvie1" });
-        await createMovie({ id: generateRandom(), title: "movie2" });
+        await createMovie({ title: "mvie1" });
+        await createMovie({ title: "movie2" });
 
-        await deleteMovie("movie2");
-        await deleteMovie("mvie1");
+        await deleteMovie("title", "movie2");
+        await deleteMovie("title", "mvie1");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -193,23 +189,23 @@ describe("Delete Subscription", () => {
     subscription {
         ${typeMovie.operations.subscribe.deleted}(where: { id_NOT_STARTS_WITH: "dummy" }) {
             ${typeMovie.operations.subscribe.payload.deleted} {
-                title
+                id
             }
         }
     }
 `);
 
-        await createMovie({ id: "not-dummy1", title: "movie1" });
-        await createMovie({ id: "dummy2", title: "movie2" });
+        await createMovie({ id: "not-dummy1" });
+        await createMovie({ id: "dummy2" });
 
-        await deleteMovie("movie2");
-        await deleteMovie("movie1");
+        await deleteMovie("id", "not-dummy1");
+        await deleteMovie("id", "dummy2");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { id: "not-dummy1" },
                 },
             },
         ]);
@@ -219,23 +215,23 @@ describe("Delete Subscription", () => {
     subscription {
         ${typeMovie.operations.subscribe.deleted}(where: { id_NOT_STARTS_WITH: 3 }) {
             ${typeMovie.operations.subscribe.payload.deleted} {
-                title
+                id
             }
         }
     }
 `);
 
-        await createMovie({ id: 2, title: "movie1" });
-        await createMovie({ id: 3, title: "movie2" });
+        await createMovie({ id: 2 });
+        await createMovie({ id: 3 });
 
-        await deleteMovie("movie2");
-        await deleteMovie("movie1");
+        await deleteMovie("id", 2);
+        await deleteMovie("id", 3);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { id: "2" },
                 },
             },
         ]);
@@ -252,11 +248,11 @@ describe("Delete Subscription", () => {
     }
 `);
 
-        await createMovie({ id: generateRandom(), title: "test-movie_ends_with" });
-        await createMovie({ id: generateRandom(), title: "test-movie2" });
+        await createMovie({ title: "test-movie_ends_with" });
+        await createMovie({ title: "test-movie2" });
 
-        await deleteMovie("test-movie2");
-        await deleteMovie("test-movie_ends_with");
+        await deleteMovie("title", "test-movie2");
+        await deleteMovie("title", "test-movie_ends_with");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -272,23 +268,23 @@ describe("Delete Subscription", () => {
     subscription {
         ${typeMovie.operations.subscribe.deleted}(where: { id_ENDS_WITH: "id_ends_with" }) {
             ${typeMovie.operations.subscribe.payload.deleted} {
-                title
+                id
             }
         }
     }
 `);
 
-        await createMovie({ id: "id_ends_with", title: "movie1" });
-        await createMovie({ id: "dummy2", title: "movie-id_ends_with" });
+        await createMovie({ id: "id_ends_with" });
+        await createMovie({ id: "dummy2" });
 
-        await deleteMovie("movie2");
-        await deleteMovie("movie1");
+        await deleteMovie("id", "id_ends_with");
+        await deleteMovie("id", "dummy2");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { id: "id_ends_with" },
                 },
             },
         ]);
@@ -298,23 +294,23 @@ describe("Delete Subscription", () => {
     subscription {
         ${typeMovie.operations.subscribe.deleted}(where: { id_ENDS_WITH: 3 }) {
             ${typeMovie.operations.subscribe.payload.deleted} {
-                title
+                id
             }
         }
     }
 `);
 
-        await createMovie({ id: 13, title: "movie1" });
-        await createMovie({ id: 31, title: "movie2" });
+        await createMovie({ id: 13 });
+        await createMovie({ id: 31 });
 
-        await deleteMovie("movie2");
-        await deleteMovie("movie1");
+        await deleteMovie("id", 13);
+        await deleteMovie("id", 31);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { id: "13" },
                 },
             },
         ]);
@@ -331,11 +327,11 @@ describe("Delete Subscription", () => {
     }
 `);
 
-        await createMovie({ id: generateRandom(), title: "test-movie_not_ends_with" });
-        await createMovie({ id: generateRandom(), title: "test-not_ends_with" });
+        await createMovie({ title: "test-movie_not_ends_with" });
+        await createMovie({ title: "test-not_ends_with" });
 
-        await deleteMovie("test-movie_not_ends_with");
-        await deleteMovie("test-not_ends_with");
+        await deleteMovie("title", "test-movie_not_ends_with");
+        await deleteMovie("title", "test-not_ends_with");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -351,7 +347,7 @@ describe("Delete Subscription", () => {
     subscription {
         ${typeMovie.operations.subscribe.deleted}(where: { id_NOT_ENDS_WITH: "dummy" }) {
             ${typeMovie.operations.subscribe.payload.deleted} {
-                title
+                id
             }
         }
     }
@@ -360,14 +356,14 @@ describe("Delete Subscription", () => {
         await createMovie({ id: "dummy-not", title: "movie1" });
         await createMovie({ id: "2dummy", title: "movie2" });
 
-        await deleteMovie("movie2");
-        await deleteMovie("movie1");
+        await deleteMovie("id", "dummy-not");
+        await deleteMovie("id", "2dummy");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { id: "dummy-not" },
                 },
             },
         ]);
@@ -377,23 +373,23 @@ describe("Delete Subscription", () => {
     subscription {
         ${typeMovie.operations.subscribe.deleted}(where: { id_NOT_ENDS_WITH: 3 }) {
             ${typeMovie.operations.subscribe.payload.deleted} {
-                title
+                id
             }
         }
     }
 `);
 
-        await createMovie({ id: 31, title: "movie1" });
-        await createMovie({ id: 13, title: "movie2" });
+        await createMovie({ id: 31 });
+        await createMovie({ id: 13 });
 
-        await deleteMovie("movie2");
-        await deleteMovie("movie1");
+        await deleteMovie("id", 31);
+        await deleteMovie("id", 13);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { id: "31" },
                 },
             },
         ]);
@@ -410,11 +406,11 @@ describe("Delete Subscription", () => {
     }
 `);
 
-        await createMovie({ id: generateRandom(), title: "test-movie2" });
-        await createMovie({ id: generateRandom(), title: "test2-movie1" });
+        await createMovie({ title: "test-movie2" });
+        await createMovie({ title: "test2-movie1" });
 
-        await deleteMovie("test-movie2");
-        await deleteMovie("test2-movie1");
+        await deleteMovie("title", "test-movie2");
+        await deleteMovie("title", "test2-movie1");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -430,23 +426,23 @@ describe("Delete Subscription", () => {
     subscription {
         ${typeMovie.operations.subscribe.deleted}(where: { id_CONTAINS: "dummy" }) {
             ${typeMovie.operations.subscribe.payload.deleted} {
-                title
+                id
             }
         }
     }
 `);
 
-        await createMovie({ id: "dummy-not", title: "movie1" });
-        await createMovie({ id: 2, title: "movie2" });
+        await createMovie({ id: "dummy-not" });
+        await createMovie({ id: 2 });
 
-        await deleteMovie("movie2");
-        await deleteMovie("movie1");
+        await deleteMovie("id", "dummy-not");
+        await deleteMovie("id", 2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { id: "dummy-not" },
                 },
             },
         ]);
@@ -456,23 +452,23 @@ describe("Delete Subscription", () => {
     subscription {
         ${typeMovie.operations.subscribe.deleted}(where: { id_CONTAINS: 3 }) {
             ${typeMovie.operations.subscribe.payload.deleted} {
-                title
+                id
             }
         }
     }
 `);
 
-        await createMovie({ id: 31, title: "movie1" });
-        await createMovie({ id: 1, title: "movie2" });
+        await createMovie({ id: 31 });
+        await createMovie({ id: 1 });
 
-        await deleteMovie("movie2");
-        await deleteMovie("movie1");
+        await deleteMovie("id", 31);
+        await deleteMovie("id", 1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { id: "31" },
                 },
             },
         ]);
@@ -489,11 +485,11 @@ describe("Delete Subscription", () => {
         }
     `);
 
-        await createMovie({ id: generateRandom(), title: "test2-movie2" });
-        await createMovie({ id: generateRandom(), title: "test2-movie1" });
+        await createMovie({ title: "test2-movie2" });
+        await createMovie({ title: "test2-movie1" });
 
-        await deleteMovie("test2-movie2");
-        await deleteMovie("test2-movie1");
+        await deleteMovie("title", "test2-movie2");
+        await deleteMovie("title", "test2-movie1");
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -509,23 +505,23 @@ describe("Delete Subscription", () => {
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { id_NOT_CONTAINS: "dummy" }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
-                    title
+                    id
                 }
             }
         }
     `);
 
-        await createMovie({ id: "dummy-not", title: "movie1" });
-        await createMovie({ id: 2, title: "movie2" });
+        await createMovie({ id: "dummy-not" });
+        await createMovie({ id: 2 });
 
-        await deleteMovie("movie2");
-        await deleteMovie("movie1");
+        await deleteMovie("id", "dummy-not");
+        await deleteMovie("id", 2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { id: "2" },
                 },
             },
         ]);
@@ -535,23 +531,23 @@ describe("Delete Subscription", () => {
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { id_NOT_CONTAINS: 3 }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
-                    title
+                    id
                 }
             }
         }
     `);
 
-        await createMovie({ id: 31, title: "movie1" });
-        await createMovie({ id: 1, title: "movie2" });
+        await createMovie({ id: 31 });
+        await createMovie({ id: 1 });
 
-        await deleteMovie("movie2");
-        await deleteMovie("movie1");
+        await deleteMovie("id", 31);
+        await deleteMovie("id", 1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie2" },
+                    [typeMovie.operations.subscribe.payload.deleted]: { id: "1" },
                 },
             },
         ]);
@@ -564,7 +560,7 @@ describe("Delete Subscription", () => {
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_CONTAINS: 2020 }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
-                    title
+                    releasedIn
                 }
             }
         }
@@ -572,11 +568,11 @@ describe("Delete Subscription", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie1", releasedIn: 2020 });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie2", releasedIn: 2021 });
+        await createMovie({ releasedIn: 2020 });
+        await createMovie({ releasedIn: 2021 });
 
-        await deleteMovie("bad_type_string_movie1");
-        await deleteMovie("bad_type_string_movie2");
+        await deleteMovie("releasedIn", 2020);
+        await deleteMovie("releasedIn", 2021);
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -588,7 +584,7 @@ describe("Delete Subscription", () => {
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { averageRating_CONTAINS: 5 }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
-                    id
+                    averageRating
                 }
             }
         }
@@ -596,11 +592,11 @@ describe("Delete Subscription", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie5", averageRating: 5.6 });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie6", averageRating: 5.2 });
+        await createMovie({ averageRating: 5.6 });
+        await createMovie({ averageRating: 5.2 });
 
-        await deleteMovie("bad_type_string_movie5");
-        await deleteMovie("bad_type_string_movie6");
+        await deleteMovie("averageRating", 5.6);
+        await deleteMovie("averageRating", 5.2);
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -612,7 +608,7 @@ describe("Delete Subscription", () => {
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { fileSize_CONTAINS: "12" }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
-                    id
+                    fileSize
                 }
             }
         }
@@ -620,11 +616,11 @@ describe("Delete Subscription", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie9", fileSize: "3412" });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie10", fileSize: "1234" });
+        await createMovie({ fileSize: "3412" });
+        await createMovie({ fileSize: "1234" });
 
-        await deleteMovie("bad_type_string_movie9");
-        await deleteMovie("bad_type_string_movie10");
+        await deleteMovie("fileSize", "3412");
+        await deleteMovie("fileSize", "1234");
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -636,7 +632,7 @@ describe("Delete Subscription", () => {
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_CONTAINS: false }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
-                    id
+                    isFavorite
                 }
             }
         }
@@ -644,11 +640,11 @@ describe("Delete Subscription", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie13" });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie14" });
+        await createMovie({ isFavorite: false, title: "bad_type_string_movie13" });
+        await createMovie({ isFavorite: false, title: "bad_type_string_movie14" });
 
-        await deleteMovie("bad_type_string_movie13");
-        await deleteMovie("bad_type_string_movie14");
+        await deleteMovie("title", "bad_type_string_movie13");
+        await deleteMovie("title", "bad_type_string_movie14");
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -660,7 +656,7 @@ describe("Delete Subscription", () => {
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { similarTitles_CONTAINS: "test" }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
-                    id
+                    similarTitles
                 }
             }
         }
@@ -668,11 +664,11 @@ describe("Delete Subscription", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie17", similarTitles: ["test"] });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie8", similarTitles: ["test"] });
+        await createMovie({ title: "bad_type_string_movie17", similarTitles: ["test"] });
+        await createMovie({ title: "bad_type_string_movie8", similarTitles: ["test"] });
 
-        await deleteMovie("bad_type_string_movie17");
-        await deleteMovie("bad_type_string_movie18");
+        await deleteMovie("title", "bad_type_string_movie17");
+        await deleteMovie("title", "bad_type_string_movie18");
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -685,7 +681,7 @@ describe("Delete Subscription", () => {
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_STARTS_WITH: 2 }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
-                    id
+                    releasedIn
                 }
             }
         }
@@ -693,11 +689,11 @@ describe("Delete Subscription", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie21", releasedIn: 2020 });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie22", releasedIn: 2021 });
+        await createMovie({ releasedIn: 2020 });
+        await createMovie({ releasedIn: 2021 });
 
-        await deleteMovie("bad_type_string_movie21");
-        await deleteMovie("bad_type_string_movie22");
+        await deleteMovie("releasedIn", 2020);
+        await deleteMovie("releasedIn", 2021);
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -709,7 +705,7 @@ describe("Delete Subscription", () => {
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { averageRating_STARTS_WITH: 6 }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
-                    id
+                    averageRating
                 }
             }
         }
@@ -717,11 +713,11 @@ describe("Delete Subscription", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie25", averageRating: 6.2 });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie26", averageRating: 6.3 });
+        await createMovie({ averageRating: 6.2 });
+        await createMovie({ averageRating: 6.3 });
 
-        await deleteMovie("bad_type_string_movie25");
-        await deleteMovie("bad_type_string_movie26");
+        await deleteMovie("averageRating", 6.2);
+        await deleteMovie("averageRating", 6.3);
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -733,7 +729,7 @@ describe("Delete Subscription", () => {
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { fileSize_STARTS_WITH: 2 }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
-                    id
+                    fileSize
                 }
             }
         }
@@ -741,11 +737,11 @@ describe("Delete Subscription", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie29", fileSize: "2020" });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie30", fileSize: "2021" });
+        await createMovie({ fileSize: "2020" });
+        await createMovie({ fileSize: "2021" });
 
-        await deleteMovie("bad_type_string_movie29");
-        await deleteMovie("bad_type_string_movie30");
+        await deleteMovie("fileSize", "2020");
+        await deleteMovie("fileSize", "2021");
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -757,7 +753,7 @@ describe("Delete Subscription", () => {
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_STARTS_WITH: "f" }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
-                    id
+                    isFavorite
                 }
             }
         }
@@ -765,11 +761,11 @@ describe("Delete Subscription", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie33" });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie34" });
+        await createMovie({ isFavorite: false, title: "bad_type_string_movie33" });
+        await createMovie({ isFavorite: false, title: "bad_type_string_movie34" });
 
-        await deleteMovie("bad_type_string_movie33");
-        await deleteMovie("bad_type_string_movie34");
+        await deleteMovie("title", "bad_type_string_movie33");
+        await deleteMovie("title", "bad_type_string_movie34");
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -781,7 +777,7 @@ describe("Delete Subscription", () => {
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { similarTitles_STARTS_WITH: "test" }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
-                    id
+                    similarTitles
                 }
             }
         }
@@ -789,39 +785,47 @@ describe("Delete Subscription", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie37", similarTitles: ["test"] });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie38", similarTitles: ["test"] });
+        await createMovie({ title: "bad_type_string_movie37", similarTitles: ["test"] });
+        await createMovie({ title: "bad_type_string_movie38", similarTitles: ["test"] });
 
-        await deleteMovie("bad_type_string_movie37");
-        await deleteMovie("bad_type_string_movie38");
+        await deleteMovie("title", "bad_type_string_movie37");
+        await deleteMovie("title", "bad_type_string_movie38");
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
 
-    const generateRandom = () => Math.floor(Math.random() * 100) + 1;
-    const makeTypedFieldValue = (value) => (typeof value === "string" ? `"${value}"` : value);
-    async function createMovie({
-        id,
-        title,
-        similarTitles = ["abc"],
-        releasedIn = 2019,
-        averageRating = 5.5,
-        fileSize = "12345",
-        isFavorite = false,
+    const makeTypedFieldValue = (value) => {
+        if (typeof value === "string") {
+            return `"${value}"`;
+        }
+        if (Array.isArray(value)) {
+            return `[${value.map(makeTypedFieldValue)}]`;
+        }
+        return value;
+    };
+    async function createMovie(all: {
+        id?: string | number;
+        title?: string;
+        releasedIn?: number;
+        averageRating?: number;
+        fileSize?: string;
+        isFavorite?: boolean;
+        similarTitles?: string[];
     }): Promise<Response> {
-        const movieInput = `{ id: ${makeTypedFieldValue(
-            id
-        )}, title: "${title}", releasedIn: ${releasedIn}, isFavorite: ${isFavorite}, averageRating: ${averageRating}, fileSize: "${fileSize}", similarTitles: [${similarTitles?.map(
-            makeTypedFieldValue
-        )}] }`;
+        const movieInput = Object.entries(all)
+            .filter(([_, v]) => v)
+            .map(([k, v]) => {
+                return `${k}: ${makeTypedFieldValue(v)}`;
+            })
+            .join(", ");
 
         const result = await supertest(server.path)
             .post("")
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.create}(input: [${movieInput}]) {
+                        ${typeMovie.operations.create}(input: [{ ${movieInput} }]) {
                             ${typeMovie.plural} {
                                 id
                                 title
@@ -839,13 +843,13 @@ describe("Delete Subscription", () => {
         return result;
     }
 
-    async function deleteMovie(title: string): Promise<Response> {
+    async function deleteMovie(fieldName: string, value: number | string): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.delete}(where: { title: "${title}" }) {
+                        ${typeMovie.operations.delete}(where: { ${fieldName}: ${makeTypedFieldValue(value)} }) {
                             nodesDeleted
                         }
                     }

@@ -38,7 +38,7 @@ describe("Update Subscriptions", () => {
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         const typeDefs = `
          type ${typeMovie} {
             title: String
@@ -61,17 +61,13 @@ describe("Update Subscriptions", () => {
         });
         server = new ApolloTestServer(neoSchema);
         await server.start();
-    });
 
-    beforeEach(() => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
     afterEach(async () => {
         await wsClient.close();
-    });
 
-    afterAll(async () => {
         await server.close();
         await driver.close();
     });
@@ -92,8 +88,8 @@ describe("Update Subscriptions", () => {
             }
         `);
 
-        await createMovie({ title: "movie1" });
-        await createMovie({ title: "movie2" });
+        await createMovie("movie1");
+        await createMovie("movie2");
 
         await updateMovie("movie1", "movie3");
         await updateMovie("movie2", "movie4");
@@ -129,8 +125,8 @@ describe("Update Subscriptions", () => {
             }
         `);
 
-        await createMovie({ title: "movie5" });
-        await createMovie({ title: "movie6" });
+        await createMovie("movie5");
+        await createMovie("movie6");
 
         await updateMovie("movie5", "movie7");
         await updateMovie("movie6", "movie8");
@@ -157,7 +153,7 @@ describe("Update Subscriptions", () => {
             }
         `);
 
-        await createMovie({ title: "movie10" });
+        await createMovie("movie10");
 
         await updateMovie("movie10", "movie20");
         await updateMovie("movie20", "movie20");
@@ -173,14 +169,13 @@ describe("Update Subscriptions", () => {
         ]);
     });
 
-    async function createMovie({ title }): Promise<Response> {
-        const movieInput = `{ title: "${title}" }`;
+    async function createMovie(title): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
             .send({
                 query: `
                         mutation {
-                            ${typeMovie.operations.create}(input: [${movieInput}]) {
+                            ${typeMovie.operations.create}(input: [{ title: "${title}" }]) {
                                 ${typeMovie.plural} {
                                     title
                                 }

@@ -37,7 +37,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         const typeDefs = `
          type ${typeMovie} {
             id: ID
@@ -72,17 +72,13 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
         server = new ApolloTestServer(neoSchema);
         await server.start();
-    });
 
-    beforeEach(() => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
     afterEach(async () => {
         await wsClient.close();
-    });
 
-    afterAll(async () => {
         await server.close();
         await driver.close();
     });
@@ -92,23 +88,23 @@ describe("Create Subscription with optional filters valid for all types", () => 
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { similarTitles_INCLUDES: "movie" }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        similarTitles
                     }
                 }
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "movie1", similarTitles: ["dummy", "movie"] });
-        await createMovie({ id: generateRandom(), title: "movie2", similarTitles: ["mock"] });
+        await createMovie({ similarTitles: ["dummy", "movie"] });
+        await createMovie({ similarTitles: ["mock"] });
 
-        await updateMovie("title", "movie1", "movie1.1");
-        await updateMovie("title", "movie2", "movie2.2");
+        await updateMovie("similarTitles", ["dummy", "movie"], ["dummy", "movie", "a"]);
+        await updateMovie("similarTitles", ["mock"], ["mock", "a"]);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie1.1" },
+                    [typeMovie.operations.subscribe.payload.updated]: { similarTitles: ["dummy", "movie", "a"] },
                 },
             },
         ]);
@@ -118,23 +114,23 @@ describe("Create Subscription with optional filters valid for all types", () => 
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { similarIds_INCLUDES: "1" }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        similarIds
                     }
                 }
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "movie5", similarIds: ["1", "12"] });
-        await createMovie({ id: generateRandom(), title: "movie6", similarIds: ["11"] });
+        await createMovie({ similarIds: ["1", "12"] });
+        await createMovie({ similarIds: ["11"] });
 
-        await updateMovie("title", "movie5", "movie5.5");
-        await updateMovie("title", "movie6", "movie6.6");
+        await updateMovie("similarIds", ["1", "12"], ["1", "122"]);
+        await updateMovie("similarIds", ["11"], ["1"]);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie5.5" },
+                    [typeMovie.operations.subscribe.payload.updated]: { similarIds: ["1", "122"] },
                 },
             },
         ]);
@@ -144,23 +140,23 @@ describe("Create Subscription with optional filters valid for all types", () => 
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { similarIds_INCLUDES: 42 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        similarIds
                     }
                 }
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "movie9", similarIds: [42] });
-        await createMovie({ id: generateRandom(), title: "movie10", similarIds: [4, 2] });
+        await createMovie({ similarIds: [42] });
+        await createMovie({ similarIds: [4, 2] });
 
-        await updateMovie("title", "movie9", "movie9.9");
-        await updateMovie("title", "movie10", "movie10.0");
+        await updateMovie("similarIds", [42], [420]);
+        await updateMovie("similarIds", [4, 2], [42]);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie9.9" },
+                    [typeMovie.operations.subscribe.payload.updated]: { similarIds: ["420"] },
                 },
             },
         ]);
@@ -170,28 +166,28 @@ describe("Create Subscription with optional filters valid for all types", () => 
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { allDates_INCLUDES: 2019 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        allDates
                     }
                 }
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "movie13", allDates: [2020, 2019] });
-        await createMovie({ id: generateRandom(), title: "movie14", allDates: [2019] });
+        await createMovie({ allDates: [2020, 2019] });
+        await createMovie({ allDates: [2019] });
 
-        await updateMovie("title", "movie13", "movie13.3");
-        await updateMovie("title", "movie14", "movie14.4");
+        await updateMovie("allDates", [2020, 2019], [2020]);
+        await updateMovie("allDates", [2019], [2020, 2018]);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie13.3" },
+                    [typeMovie.operations.subscribe.payload.updated]: { allDates: [2020] },
                 },
             },
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie14.4" },
+                    [typeMovie.operations.subscribe.payload.updated]: { allDates: [2020, 2018] },
                 },
             },
         ]);
@@ -201,23 +197,23 @@ describe("Create Subscription with optional filters valid for all types", () => 
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { allRatings_INCLUDES: 5.4 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        allRatings
                     }
                 }
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "movie17", allRatings: [6, 5.4] });
-        await createMovie({ id: generateRandom(), title: "movie18", allRatings: [5.0] });
+        await createMovie({ allRatings: [6, 5.4] });
+        await createMovie({ allRatings: [5.0] });
 
-        await updateMovie("title", "movie17", "movie17.7");
-        await updateMovie("title", "movie18", "movie18.8");
+        await updateMovie("allRatings", [6, 5.4], [6, 54]);
+        await updateMovie("allRatings", [5.0], [6, 5.4]);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie17.7" },
+                    [typeMovie.operations.subscribe.payload.updated]: { allRatings: [6, 54] },
                 },
             },
         ]);
@@ -227,27 +223,25 @@ describe("Create Subscription with optional filters valid for all types", () => 
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { allSizes_INCLUDES: "9223372036854775608" }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        allSizes
                     }
                 }
             }
         `);
 
         await createMovie({
-            id: generateRandom(),
-            title: "movie21",
             allSizes: ["9223372036854775608", "922372036854775608"],
         });
-        await createMovie({ id: generateRandom(), title: "movie22", allSizes: ["123"] });
+        await createMovie({ allSizes: ["123"] });
 
-        await updateMovie("title", "movie21", "movie21.1");
-        await updateMovie("title", "movie22", "movie22.2");
+        await updateMovie("allSizes", ["9223372036854775608", "922372036854775608"], ["1234"]);
+        await updateMovie("allSizes", ["123"], ["9223372036854775608", "922372036854775608"]);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie21.1" },
+                    [typeMovie.operations.subscribe.payload.updated]: { allSizes: ["1234"] },
                 },
             },
         ]);
@@ -258,23 +252,23 @@ describe("Create Subscription with optional filters valid for all types", () => 
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { similarTitles_NOT_INCLUDES: "movie" }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        similarTitles
                     }
                 }
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "movie3", similarTitles: ["movie", "movie"] });
-        await createMovie({ id: generateRandom(), title: "movie4", similarTitles: ["mock"] });
+        await createMovie({ similarTitles: ["movie", "movie"] });
+        await createMovie({ similarTitles: ["mock"] });
 
-        await updateMovie("title", "movie3", "movie3.3");
-        await updateMovie("title", "movie4", "movie4.4");
+        await updateMovie("similarTitles", ["movie", "movie"], ["some movie"]);
+        await updateMovie("similarTitles", ["mock"], ["movie", "movie"]);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie4.4" },
+                    [typeMovie.operations.subscribe.payload.updated]: { similarTitles: ["movie", "movie"] },
                 },
             },
         ]);
@@ -284,23 +278,23 @@ describe("Create Subscription with optional filters valid for all types", () => 
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { similarIds_NOT_INCLUDES: "1" }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        similarIds
                     }
                 }
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "movie7", similarIds: ["1", "12"] });
-        await createMovie({ id: generateRandom(), title: "movie8", similarIds: ["11"] });
+        await createMovie({ similarIds: ["1", "12"] });
+        await createMovie({ similarIds: ["11"] });
 
-        await updateMovie("title", "movie7", "movie7.7");
-        await updateMovie("title", "movie8", "movie8.8");
+        await updateMovie("similarIds", ["1", "12"], ["112"]);
+        await updateMovie("similarIds", ["11"], ["1", "12"]);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie8.8" },
+                    [typeMovie.operations.subscribe.payload.updated]: { similarIds: ["1", "12"] },
                 },
             },
         ]);
@@ -310,23 +304,23 @@ describe("Create Subscription with optional filters valid for all types", () => 
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { similarIds_NOT_INCLUDES: 42 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        similarIds
                     }
                 }
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "movie11", similarIds: [2, 4, 42] });
-        await createMovie({ id: generateRandom(), title: "movie12", similarIds: [4, 2] });
+        await createMovie({ similarIds: [2, 4, 42] });
+        await createMovie({ similarIds: [4, 2] });
 
-        await updateMovie("title", "movie11", "movie11.1");
-        await updateMovie("title", "movie12", "movie12.2");
+        await updateMovie("similarIds", [2, 4, 42], [442]);
+        await updateMovie("similarIds", [4, 2], [42]);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie12.2" },
+                    [typeMovie.operations.subscribe.payload.updated]: { similarIds: ["42"] },
                 },
             },
         ]);
@@ -336,28 +330,28 @@ describe("Create Subscription with optional filters valid for all types", () => 
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { allDates_NOT_INCLUDES: 2019 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        allDates
                     }
                 }
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "movie15", allDates: [2020, 2018] });
-        await createMovie({ id: generateRandom(), title: "movie16", allDates: [] });
+        await createMovie({ allDates: [2021, 2018] });
+        await createMovie({ allDates: [1111] });
 
-        await updateMovie("title", "movie15", "movie15.5");
-        await updateMovie("title", "movie16", "movie16.6");
+        await updateMovie("allDates", [2021, 2018], [2020]);
+        await updateMovie("allDates", [1111], [1999]);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie15.5" },
+                    [typeMovie.operations.subscribe.payload.updated]: { allDates: [2020] },
                 },
             },
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie16.6" },
+                    [typeMovie.operations.subscribe.payload.updated]: { allDates: [1999] },
                 },
             },
         ]);
@@ -367,17 +361,17 @@ describe("Create Subscription with optional filters valid for all types", () => 
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { allRatings_NOT_INCLUDES: 5.4 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        allRatings
                     }
                 }
             }
         `);
 
-        await createMovie({ id: generateRandom(), title: "movie19", allRatings: [6, 5.4] });
-        await createMovie({ id: generateRandom(), title: "movie20", allRatings: [5.4] });
+        await createMovie({ allRatings: [6, 5.4] });
+        await createMovie({ allRatings: [5.4] });
 
-        await updateMovie("title", "movie19", "movie19.9");
-        await updateMovie("title", "movie20", "movie20.0");
+        await updateMovie("allRatings", [6, 5.4], [6, 54]);
+        await updateMovie("allRatings", [5.4], [5]);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
@@ -387,27 +381,25 @@ describe("Create Subscription with optional filters valid for all types", () => 
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { allSizes_NOT_INCLUDES: "9223372036854775608" }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        allSizes
                     }
                 }
             }
         `);
 
         await createMovie({
-            id: generateRandom(),
-            title: "movie22",
             allSizes: ["9223372036854775608", "922372036854775608"],
         });
-        await createMovie({ id: generateRandom(), title: "movie23", allSizes: ["123"] });
+        await createMovie({ allSizes: ["123"] });
 
-        await updateMovie("title", "movie22", "movie22.2");
-        await updateMovie("title", "movie23", "movie23.3");
+        await updateMovie("allSizes", ["9223372036854775608", "922372036854775608"], ["9223372036854775608"]);
+        await updateMovie("allSizes", ["123"], ["1234"]);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
                 [typeMovie.operations.subscribe.updated]: {
-                    [typeMovie.operations.subscribe.payload.updated]: { title: "movie23.3" },
+                    [typeMovie.operations.subscribe.payload.updated]: { allSizes: ["1234"] },
                 },
             },
         ]);
@@ -420,7 +412,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { similarTitles_INCLUDES: ["movie"] }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        similarTitles
                     }
                 }
             }
@@ -428,11 +420,11 @@ describe("Create Subscription with optional filters valid for all types", () => 
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "movie24", similarTitles: ["dummy", "movie"] });
-        await createMovie({ id: generateRandom(), title: "movie25", similarTitles: ["mock"] });
+        await createMovie({ title: "movie24", similarTitles: ["dummy", "movie"] });
+        await createMovie({ title: "movie25", similarTitles: ["mock"] });
 
-        await updateMovie("title", "movie24", "movie24.4");
-        await updateMovie("title", "movie25", "movie25.5");
+        await updateMovie("similarTitles", ["dummy", "movie"], ["dummy"]);
+        await updateMovie("similarTitles", ["mock"], ["mockmv"]);
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -444,7 +436,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { isFavorite_INCLUDES: true }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        isFavorite
                     }
                 }
             }
@@ -452,8 +444,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "movie26", isFavorite: true });
-        await createMovie({ id: generateRandom(), title: "movie27", isFavorite: false });
+        await createMovie({ title: "movie26", isFavorite: true });
+        await createMovie({ title: "movie27", isFavorite: false });
 
         await updateMovie("title", "movie26", "movie26.6");
         await updateMovie("title", "movie27", "movie27.7");
@@ -468,7 +460,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { similarTitles_NOT_INCLUDES: ["movie"] }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        similarTitles
                     }
                 }
             }
@@ -476,8 +468,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "movie28", similarTitles: ["dummy", "movie"] });
-        await createMovie({ id: generateRandom(), title: "movie29", similarTitles: ["mock"] });
+        await createMovie({ title: "movie28", similarTitles: ["dummy", "movie"] });
+        await createMovie({ title: "movie29", similarTitles: ["mock"] });
 
         await updateMovie("title", "movie28", "movie28.8");
         await updateMovie("title", "movie29", "movie29.9");
@@ -492,7 +484,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { isFavorite_NOT_INCLUDES: true }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
-                        title
+                        isFavorite
                     }
                 }
             }
@@ -500,8 +492,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "movie30", isFavorite: true });
-        await createMovie({ id: generateRandom(), title: "movie31", isFavorite: false });
+        await createMovie({ title: "movie30", isFavorite: true });
+        await createMovie({ title: "movie31", isFavorite: false });
 
         await updateMovie("title", "movie30", "movie30.0");
         await updateMovie("title", "movie31", "movie31.1");
@@ -510,39 +502,40 @@ describe("Create Subscription with optional filters valid for all types", () => 
         expect(wsClient.events).toEqual([]);
     });
 
-    const generateRandom = () => Math.floor(Math.random() * 100) + 1;
-    const makeTypedFieldValue = (value) => (typeof value === "string" ? `"${value}"` : value);
-    async function createMovie({
-        id,
-        similarIds = ["a", 2],
-        title,
-        similarTitles = ["test"],
-        releasedIn = 2022,
-        allDates = [2042],
-        averageRating = 9.5,
-        allRatings = [9.9],
-        fileSize = "2147483647",
-        allSizes = ["42147483647"],
-        isFavorite = false,
+    const makeTypedFieldValue = (value) => {
+        if (typeof value === "string") {
+            return `"${value}"`;
+        }
+        if (Array.isArray(value)) {
+            return `[${value.map(makeTypedFieldValue)}]`;
+        }
+        return value;
+    };
+    async function createMovie(all: {
+        id?: string | number;
+        title?: string;
+        releasedIn?: number;
+        averageRating?: number;
+        fileSize?: string;
+        isFavorite?: boolean;
+        similarTitles?: string[];
+        similarIds?: number[] | string[];
+        allDates?: number[];
+        allRatings?: number[];
+        allSizes?: string[];
     }): Promise<Response> {
+        const input = Object.entries(all)
+            .filter(([_, v]) => v)
+            .map(([k, v]) => {
+                return `${k}: ${makeTypedFieldValue(v)}`;
+            })
+            .join(", ");
         const result = await supertest(server.path)
             .post("")
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.create}(input: [{ id: ${makeTypedFieldValue(
-                    id
-                )}, similarIds: [${similarIds.map(
-                    makeTypedFieldValue
-                )}], title: "${title}", similarTitles: [${similarTitles.map(
-                    makeTypedFieldValue
-                )}], releasedIn: ${releasedIn}, allDates: [${allDates.map(
-                    makeTypedFieldValue
-                )}], averageRating: ${averageRating}, allRatings: [${allRatings.map(
-                    makeTypedFieldValue
-                )}], fileSize: "${fileSize}", allSizes: [${allSizes.map(
-                    makeTypedFieldValue
-                )}], isFavorite: ${isFavorite} }]) {
+                        ${typeMovie.operations.create}(input: [{ ${input} }]) {
                             ${typeMovie.plural} {
                                 id
                                 similarIds
@@ -566,8 +559,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
 
     async function updateMovie(
         fieldName: string,
-        oldValue: number | string,
-        newValue: number | string
+        oldValue: number | string | number[] | string[],
+        newValue: number | string | number[] | string[]
     ): Promise<Response> {
         const result = await supertest(server.path)
             .post("")

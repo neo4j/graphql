@@ -37,7 +37,7 @@ describe("Delete Subscription", () => {
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         const typeDefs = `
         type ${typeMovie} {
             title: String
@@ -62,17 +62,13 @@ describe("Delete Subscription", () => {
 
         server = new ApolloTestServer(neoSchema);
         await server.start();
-    });
 
-    beforeEach(() => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
     afterEach(async () => {
         await wsClient.close();
-    });
 
-    afterAll(async () => {
         await server.close();
         await driver.close();
     });
@@ -90,8 +86,8 @@ describe("Delete Subscription", () => {
             }
         `);
 
-        await createMovie({ title: "movie1" });
-        await createMovie({ title: "movie2" });
+        await createMovie("movie1");
+        await createMovie("movie2");
 
         await deleteMovie("movie1");
         await deleteMovie("movie2");
@@ -125,8 +121,8 @@ describe("Delete Subscription", () => {
             }
         `);
 
-        await createMovie({ title: "movie3" });
-        await createMovie({ title: "movie4" });
+        await createMovie("movie3");
+        await createMovie("movie4");
 
         await deleteMovie("movie3");
         await deleteMovie("movie4");
@@ -141,15 +137,13 @@ describe("Delete Subscription", () => {
         ]);
     });
 
-    async function createMovie({ title }): Promise<Response> {
-        const movieInput = `{ title: "${title}" }`;
-
+    async function createMovie(title: string): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
             .send({
                 query: `
                     mutation {
-                        ${typeMovie.operations.create}(input: [${movieInput}]) {
+                        ${typeMovie.operations.create}(input: [{ title: "${title}" }]) {
                             ${typeMovie.plural} {
                                 title
                             }

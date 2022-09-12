@@ -37,7 +37,7 @@ describe("Update Subscriptions", () => {
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         const typeDefs = `
          type ${typeMovie} {
             id: ID
@@ -63,17 +63,13 @@ describe("Update Subscriptions", () => {
 
         server = new ApolloTestServer(neoSchema);
         await server.start();
-    });
 
-    beforeEach(() => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
     afterEach(async () => {
         await wsClient.close();
-    });
 
-    afterAll(async () => {
         await server.close();
         await driver.close();
     });
@@ -89,8 +85,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: generateRandom(), title: "movie_starts_with1" });
-        await createMovie({ id: generateRandom(), title: "mvie2" });
+        await createMovie({ title: "movie_starts_with1" });
+        await createMovie({ title: "mvie2" });
 
         await updateMovie("title", "movie_starts_with1", "movie_starts_with2");
         await updateMovie("title", "mvie2", "movie8");
@@ -115,8 +111,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: "dummy1", title: "movie1" });
-        await createMovie({ id: "not-dummy1", title: "movie2" });
+        await createMovie({ id: "dummy1" });
+        await createMovie({ id: "not-dummy1" });
 
         await updateMovie("id", "dummy1", "dummy2");
         await updateMovie("id", "not-dummy1", "not-dummy2");
@@ -141,8 +137,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: 1, title: "movie1" });
-        await createMovie({ id: 2, title: "movie2" });
+        await createMovie({ id: 1 });
+        await createMovie({ id: 2 });
 
         await updateMovie("id", 1, 11);
         await updateMovie("id", 2, 121);
@@ -168,8 +164,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: generateRandom(), title: "mvie1" });
-        await createMovie({ id: generateRandom(), title: "movie2" });
+        await createMovie({ title: "mvie1" });
+        await createMovie({ title: "movie2" });
 
         await updateMovie("title", "mvie1", "movie");
         await updateMovie("title", "movie2", "dummy3");
@@ -194,8 +190,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: "not-dummy1", title: "movie1" });
-        await createMovie({ id: "dummy2", title: "movie2" });
+        await createMovie({ id: "not-dummy1" });
+        await createMovie({ id: "dummy2" });
 
         await updateMovie("id", "dummy2", "not-dummy2");
         await updateMovie("id", "not-dummy1", "dummy2");
@@ -220,8 +216,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: 2, title: "movie1" });
-        await createMovie({ id: 32, title: "movie2" });
+        await createMovie({ id: 2 });
+        await createMovie({ id: 32 });
 
         await updateMovie("id", 2, 32);
         await updateMovie("id", 32, 31);
@@ -247,8 +243,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: generateRandom(), title: "test-movie_ends_with" });
-        await createMovie({ id: generateRandom(), title: "test-movie2" });
+        await createMovie({ title: "test-movie_ends_with" });
+        await createMovie({ title: "test-movie2" });
 
         await updateMovie("title", "test-movie_ends_with", "test-movie_ends_with2");
         await updateMovie("title", "test-movie2", "test-movie_ends_with");
@@ -273,8 +269,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: "id_ends_with", title: "movie1" });
-        await createMovie({ id: "dummy2", title: "movie2" });
+        await createMovie({ id: "id_ends_with" });
+        await createMovie({ id: "dummy2" });
 
         await updateMovie("id", "dummy2", "2id_ends_with");
         await updateMovie("id", "id_ends_with", "dummy_id");
@@ -299,8 +295,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: 13, title: "movie1" });
-        await createMovie({ id: 31, title: "movie2" });
+        await createMovie({ id: 13 });
+        await createMovie({ id: 31 });
 
         await updateMovie("id", 13, 22);
         await updateMovie("id", 31, 133);
@@ -326,8 +322,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: generateRandom(), title: "test-movie_not_ends_with" });
-        await createMovie({ id: generateRandom(), title: "test-not_ends_with" });
+        await createMovie({ title: "test-movie_not_ends_with" });
+        await createMovie({ title: "test-not_ends_with" });
 
         await updateMovie("title", "test-movie_not_ends_with", "test-movie1");
         await updateMovie("title", "test-not_ends_with", "test-dummy3");
@@ -352,8 +348,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: "dummy-not", title: "movie1" });
-        await createMovie({ id: "2dummy", title: "movie2" });
+        await createMovie({ id: "dummy-not" });
+        await createMovie({ id: "2dummy" });
 
         await updateMovie("id", "2dummy", "not-2dummy");
         await updateMovie("id", "dummy-not", "dummy2");
@@ -378,8 +374,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: 31, title: "movie1" });
-        await createMovie({ id: 13, title: "movie2" });
+        await createMovie({ id: 31 });
+        await createMovie({ id: 13 });
 
         await updateMovie("id", 31, 33);
         await updateMovie("id", 13, 23);
@@ -405,8 +401,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: generateRandom(), title: "test-movie2" });
-        await createMovie({ id: generateRandom(), title: "test2-movie1" });
+        await createMovie({ title: "test-movie2" });
+        await createMovie({ title: "test2-movie1" });
 
         await updateMovie("title", "test-movie2", "test-dmovie1");
         await updateMovie("title", "test2-movie1", "test-dummy6");
@@ -431,8 +427,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: "dummy-not", title: "movie1" });
-        await createMovie({ id: 2, title: "movie2" });
+        await createMovie({ id: "dummy-not" });
+        await createMovie({ id: 2 });
 
         await updateMovie("id", "dummy-not", "not-dummy2");
         await updateMovie("id", 2, "dummy22");
@@ -457,8 +453,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: 31, title: "movie1" });
-        await createMovie({ id: 1, title: "movie2" });
+        await createMovie({ id: 31 });
+        await createMovie({ id: 1 });
 
         await updateMovie("id", 31, 90);
         await updateMovie("id", 1, 30);
@@ -484,8 +480,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: generateRandom(), title: "test2-movie2" });
-        await createMovie({ id: generateRandom(), title: "test2-movie1" });
+        await createMovie({ title: "test2-movie2" });
+        await createMovie({ title: "test2-movie1" });
 
         await updateMovie("title", "test2-movie1", "test-dummy7");
         await updateMovie("title", "test2-movie2", "test-dummy8");
@@ -510,8 +506,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: "dummy-not", title: "movie1" });
-        await createMovie({ id: 2, title: "movie2" });
+        await createMovie({ id: "dummy-not" });
+        await createMovie({ id: 2 });
 
         await updateMovie("id", "dummy-not", 11);
         await updateMovie("id", 2, "dummy2");
@@ -536,8 +532,8 @@ describe("Update Subscriptions", () => {
         }
     `);
 
-        await createMovie({ id: 31, title: "movie1" });
-        await createMovie({ id: 1, title: "movie2" });
+        await createMovie({ id: 31 });
+        await createMovie({ id: 1 });
 
         await updateMovie("id", 31, 9);
         await updateMovie("id", 1, 3);
@@ -559,7 +555,7 @@ describe("Update Subscriptions", () => {
         subscription {
             ${typeMovie.operations.subscribe.updated}(where: { releasedIn_CONTAINS: 2020 }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
-                    title
+                    releasedIn
                 }
             }
         }
@@ -567,8 +563,8 @@ describe("Update Subscriptions", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie1", releasedIn: 2020 });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie2", releasedIn: 2021 });
+        await createMovie({ title: "bad_type_string_movie1", releasedIn: 2020 });
+        await createMovie({ title: "bad_type_string_movie2", releasedIn: 2021 });
 
         await updateMovie("title", "bad_type_string_movie1", "bad_type_string_movie3");
         await updateMovie("title", "bad_type_string_movie2", "bad_type_string_movie4");
@@ -583,7 +579,7 @@ describe("Update Subscriptions", () => {
         subscription {
             ${typeMovie.operations.subscribe.updated}(where: { averageRating_CONTAINS: 5 }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
-                    id
+                    averageRating
                 }
             }
         }
@@ -591,8 +587,8 @@ describe("Update Subscriptions", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie5", averageRating: 5.6 });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie6", averageRating: 5.2 });
+        await createMovie({ title: "bad_type_string_movie5", averageRating: 5.6 });
+        await createMovie({ title: "bad_type_string_movie6", averageRating: 5.2 });
 
         await updateMovie("title", "bad_type_string_movie5", "bad_type_string_movie7");
         await updateMovie("title", "bad_type_string_movie6", "bad_type_string_movie8");
@@ -607,7 +603,7 @@ describe("Update Subscriptions", () => {
         subscription {
             ${typeMovie.operations.subscribe.updated}(where: { fileSize_CONTAINS: "12" }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
-                    id
+                    fileSize
                 }
             }
         }
@@ -615,8 +611,8 @@ describe("Update Subscriptions", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie9", fileSize: "3412" });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie10", fileSize: "1234" });
+        await createMovie({ title: "bad_type_string_movie9", fileSize: "3412" });
+        await createMovie({ title: "bad_type_string_movie10", fileSize: "1234" });
 
         await updateMovie("title", "bad_type_string_movie9", "bad_type_string_movie11");
         await updateMovie("title", "bad_type_string_movie10", "bad_type_string_movie12");
@@ -631,7 +627,7 @@ describe("Update Subscriptions", () => {
         subscription {
             ${typeMovie.operations.subscribe.updated}(where: { isFavorite_CONTAINS: false }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
-                    id
+                    isFavorite
                 }
             }
         }
@@ -639,8 +635,8 @@ describe("Update Subscriptions", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie13" });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie14" });
+        await createMovie({ title: "bad_type_string_movie13" });
+        await createMovie({ title: "bad_type_string_movie14" });
 
         await updateMovie("title", "bad_type_string_movie13", "bad_type_string_movie15");
         await updateMovie("title", "bad_type_string_movie14", "bad_type_string_movie16");
@@ -655,7 +651,7 @@ describe("Update Subscriptions", () => {
         subscription {
             ${typeMovie.operations.subscribe.updated}(where: { similarTitles_CONTAINS: "test" }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
-                    id
+                    similarTitles
                 }
             }
         }
@@ -663,8 +659,8 @@ describe("Update Subscriptions", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie17", similarTitles: ["test"] });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie8", similarTitles: ["test"] });
+        await createMovie({ title: "bad_type_string_movie17", similarTitles: ["test"] });
+        await createMovie({ title: "bad_type_string_movie8", similarTitles: ["test"] });
 
         await updateMovie("title", "bad_type_string_movie17", "bad_type_string_movie19");
         await updateMovie("title", "bad_type_string_movie18", "bad_type_string_movie20");
@@ -680,7 +676,7 @@ describe("Update Subscriptions", () => {
         subscription {
             ${typeMovie.operations.subscribe.updated}(where: { releasedIn_STARTS_WITH: 2 }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
-                    id
+                    releasedIn
                 }
             }
         }
@@ -688,8 +684,8 @@ describe("Update Subscriptions", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie21", releasedIn: 2020 });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie22", releasedIn: 2021 });
+        await createMovie({ title: "bad_type_string_movie21", releasedIn: 2020 });
+        await createMovie({ title: "bad_type_string_movie22", releasedIn: 2021 });
 
         await updateMovie("title", "bad_type_string_movie21", "bad_type_string_movie23");
         await updateMovie("title", "bad_type_string_movie22", "bad_type_string_movie24");
@@ -704,7 +700,7 @@ describe("Update Subscriptions", () => {
         subscription {
             ${typeMovie.operations.subscribe.updated}(where: { averageRating_STARTS_WITH: 6 }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
-                    id
+                    averageRating
                 }
             }
         }
@@ -712,8 +708,8 @@ describe("Update Subscriptions", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie25", averageRating: 6.2 });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie26", averageRating: 6.3 });
+        await createMovie({ title: "bad_type_string_movie25", averageRating: 6.2 });
+        await createMovie({ title: "bad_type_string_movie26", averageRating: 6.3 });
 
         await updateMovie("title", "bad_type_string_movie25", "bad_type_string_movie27");
         await updateMovie("title", "bad_type_string_movie26", "bad_type_string_movie28");
@@ -728,7 +724,7 @@ describe("Update Subscriptions", () => {
         subscription {
             ${typeMovie.operations.subscribe.updated}(where: { fileSize_STARTS_WITH: 2 }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
-                    id
+                    fileSize
                 }
             }
         }
@@ -736,11 +732,11 @@ describe("Update Subscriptions", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie29", fileSize: "2020" });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie30", fileSize: "2021" });
+        await createMovie({ title: "bad_type_string_movie29", fileSize: "2020" });
+        await createMovie({ title: "bad_type_string_movie30", fileSize: "2021" });
 
-        await updateMovie("title", "bad_type_string_movie29", "bad_type_string_movie31");
-        await updateMovie("title", "bad_type_string_movie30", "bad_type_string_movie32");
+        await updateMovie("fileSize", "2020", "20201");
+        await updateMovie("fileSize", "2021", "20211");
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -752,7 +748,7 @@ describe("Update Subscriptions", () => {
         subscription {
             ${typeMovie.operations.subscribe.updated}(where: { isFavorite_STARTS_WITH: "f" }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
-                    id
+                    isFavorite
                 }
             }
         }
@@ -760,8 +756,8 @@ describe("Update Subscriptions", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie33" });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie34" });
+        await createMovie({ title: "bad_type_string_movie33" });
+        await createMovie({ title: "bad_type_string_movie34" });
 
         await updateMovie("title", "bad_type_string_movie33", "bad_type_string_movie35");
         await updateMovie("title", "bad_type_string_movie34", "bad_type_string_movie36");
@@ -776,7 +772,7 @@ describe("Update Subscriptions", () => {
         subscription {
             ${typeMovie.operations.subscribe.updated}(where: { similarTitles_STARTS_WITH: "test" }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
-                    id
+                    similarTitles
                 }
             }
         }
@@ -784,8 +780,8 @@ describe("Update Subscriptions", () => {
             onReturnError
         );
 
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie37", similarTitles: ["test"] });
-        await createMovie({ id: generateRandom(), title: "bad_type_string_movie38", similarTitles: ["test"] });
+        await createMovie({ title: "bad_type_string_movie37", similarTitles: ["test"] });
+        await createMovie({ title: "bad_type_string_movie38", similarTitles: ["test"] });
 
         await updateMovie("title", "bad_type_string_movie37", "bad_type_string_movie39");
         await updateMovie("title", "bad_type_string_movie38", "bad_type_string_movie40");
@@ -794,28 +790,36 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toEqual([]);
     });
 
-    const generateRandom = () => Math.floor(Math.random() * 100) + 1;
-    const makeTypedFieldValue = (value) => (typeof value === "string" ? `"${value}"` : value);
-    async function createMovie({
-        id,
-        title,
-        similarTitles = ["abc"],
-        releasedIn = 2019,
-        averageRating = 5.5,
-        fileSize = "12345",
-        isFavorite = false,
+    const makeTypedFieldValue = (value) => {
+        if (typeof value === "string") {
+            return `"${value}"`;
+        }
+        if (Array.isArray(value)) {
+            return `[${value.map(makeTypedFieldValue)}]`;
+        }
+        return value;
+    };
+    async function createMovie(all: {
+        id?: string | number;
+        title?: string;
+        releasedIn?: number;
+        averageRating?: number;
+        fileSize?: string;
+        isFavorite?: boolean;
+        similarTitles?: string[];
     }): Promise<Response> {
-        const movieInput = `{ id: ${makeTypedFieldValue(
-            id
-        )}, title: "${title}", releasedIn: ${releasedIn}, isFavorite: ${isFavorite}, averageRating: ${averageRating}, fileSize: "${fileSize}", similarTitles: [${similarTitles?.map(
-            makeTypedFieldValue
-        )}] }`;
+        const movieInput = Object.entries(all)
+            .filter(([_, v]) => v)
+            .map(([k, v]) => {
+                return `${k}: ${makeTypedFieldValue(v)}`;
+            })
+            .join(", ");
         const result = await supertest(server.path)
             .post("")
             .send({
                 query: `
                         mutation {
-                            ${typeMovie.operations.create}(input: [${movieInput}]) {
+                            ${typeMovie.operations.create}(input: [{ ${movieInput} }]) {
                                 ${typeMovie.plural} {
                                     id
                                     title
