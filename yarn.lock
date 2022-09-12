@@ -2595,7 +2595,7 @@ __metadata:
     "@types/prettier": 2.7.0
     "@types/react-dom": 18.0.6
     "@types/webpack": 5.28.0
-    autoprefixer: 10.4.8
+    autoprefixer: 10.4.9
     codemirror: ^5.65.8
     codemirror-graphql: ^2.0.0
     compression-webpack-plugin: 10.0.0
@@ -4852,12 +4852,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"autoprefixer@npm:10.4.8":
-  version: 10.4.8
-  resolution: "autoprefixer@npm:10.4.8"
+"autoprefixer@npm:10.4.9":
+  version: 10.4.9
+  resolution: "autoprefixer@npm:10.4.9"
   dependencies:
     browserslist: ^4.21.3
-    caniuse-lite: ^1.0.30001373
+    caniuse-lite: ^1.0.30001394
     fraction.js: ^4.2.0
     normalize-range: ^0.1.2
     picocolors: ^1.0.0
@@ -4866,7 +4866,7 @@ __metadata:
     postcss: ^8.1.0
   bin:
     autoprefixer: bin/autoprefixer
-  checksum: 06cb4c497bb948714d5b1b4f7e7465fd88c50f90788fc2020b3d97d7661fb4dd0d9918c1b09dd3e909acd4485cbb27ad99085487d8ed5d75915e646d2b535770
+  checksum: ea5e2067d36ff170af97c68c286ad29cc56640532100a63ebe1464cff2fcb7d7685a1926774141a78faf8bb09f1746edf4918fa1decfd25761e5ccf9ebc0531d
   languageName: node
   linkType: hard
 
@@ -5623,10 +5623,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001370, caniuse-lite@npm:^1.0.30001373":
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001370":
   version: 1.0.30001393
   resolution: "caniuse-lite@npm:1.0.30001393"
   checksum: 72b7cd81c51f41965f2fbdbb20729d71f2bd5e376d9b4effa22616dd2707640b8676862e8db3db83b76c3bcf2aaefc9ebd5991a10eeb483b460322de5548b98e
+  languageName: node
+  linkType: hard
+
+"caniuse-lite@npm:^1.0.30001394":
+  version: 1.0.30001397
+  resolution: "caniuse-lite@npm:1.0.30001397"
+  checksum: 29b31780397221303b8fadda535e71f20319216df75028c60527f10f1aba1237ec81fa9c1d6b8fb3a0a83c201c01af8090e9cbb292da08c2538f367b1148a7ba
   languageName: node
   linkType: hard
 
