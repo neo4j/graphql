@@ -19,6 +19,7 @@
 
 import { Fragment, useContext } from "react";
 import { ViewSelector, ViewSelectorItem } from "@neo4j-ndl/react";
+import tokens from "@neo4j-ndl/base/lib/tokens/js/tokens";
 import { Screen, ScreenContext } from "../contexts/screen";
 
 interface Props {
@@ -42,7 +43,7 @@ export const ViewSelectorComponent = ({ isEditorDisabled = true, elementKey, onC
         <ViewSelector
             key={`${elementKey}-selector-main`}
             style={{
-                backgroundColor: "#FFF",
+                backgroundColor: tokens.colors.neutral[10],
             }}
             onChange={handleOnScreenChange}
             selected={screen.view.toString()}

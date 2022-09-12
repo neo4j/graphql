@@ -22,7 +22,7 @@ import type { CypherASTNode } from "../CypherASTNode";
 import type { Variable } from "../variables/Variable";
 import { Clause } from "./Clause";
 import { compileCypherIfExists, padBlock } from "../utils/utils";
-import { ImportWith } from "../sub-clauses/ImportWith";
+import { ImportWith } from "./sub-clauses/ImportWith";
 import { applyMixins } from "./utils/apply-mixin";
 import { WithReturn } from "./mixins/WithReturn";
 
@@ -30,8 +30,8 @@ export class Call extends Clause {
     private subQuery: CypherASTNode;
     private importWith: ImportWith | undefined;
 
-    constructor(subQuery: Clause, parent?: Clause) {
-        super(parent);
+    constructor(subQuery: Clause) {
+        super();
         const rootQuery = subQuery.getRoot();
         this.addChildren(rootQuery);
         this.subQuery = rootQuery;

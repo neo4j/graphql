@@ -19,7 +19,7 @@
 
 import type { DirectiveNode } from "graphql";
 
-function checkDirectiveCombinations(directives: readonly DirectiveNode[] = []) {
+function checkDirectiveCombinations(directives: readonly DirectiveNode[] = []): void {
     const invalidCombinations = {
         // FIELD_DEFINITION
         alias: ["cypher", "computed", "relationship"],

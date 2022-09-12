@@ -108,7 +108,9 @@ async function introspectRelationships(sessionFactory: () => Session): Promise<R
         // Run in parallel
         async function sessionClosure() {
             const conSession = sessionFactory();
-            await new Promise((r) => setTimeout(r, 3000));
+            await new Promise((r) => {
+                setTimeout(r, 3000);
+            });
             const relationshipsRes = await conSession.readTransaction((tx) =>
                 tx.run(`
             MATCH (n)-[r${relType}]->(m)

@@ -28,6 +28,7 @@ jobs:
         with:
           fail_on_error: true
           eslint_flags: "."
+          node_options: "--max_old_space_size=4096"
 
   package-tests:
     uses: ./.github/workflows/reusable-package-tests.yml

@@ -19,8 +19,6 @@
 
 import { Driver, Neo4jError, QueryResult, Result, Session, SessionMode, Transaction } from "neo4j-driver";
 import Debug from "debug";
-
-import type { AuthContext, CypherQueryOptions } from "../types";
 import environment from "../environment";
 import {
     Neo4jGraphQLAuthenticationError,
@@ -34,6 +32,8 @@ import {
     DEBUG_EXECUTE,
     RELATIONSHIP_REQUIREMENT_PREFIX,
 } from "../constants";
+import type { AuthContext, CypherQueryOptions } from "../types";
+import createAuthParam from "../translate/create-auth-param";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -73,7 +73,7 @@ export type ExecutionContext = Driver | Session | Transaction;
 
 export type ExecutorConstructorParam = {
     executionContext: ExecutionContext;
-    auth: AuthContext;
+    auth?: AuthContext;
     queryOptions?: CypherQueryOptions;
     database?: string;
     bookmarks?: string | string[];
@@ -93,14 +93,17 @@ export class Executor {
     constructor({ executionContext, auth, queryOptions, database, bookmarks }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.lastBookmark = null;
-
         this.queryOptions = queryOptions;
-        this.auth = auth;
+        if (auth) {
+            this.auth = auth;
+        } else {
+            this.auth = createAuthParam({ context: {} });
+        }
         this.database = database;
         this.bookmarks = bookmarks;
     }
 
-    public async execute(query: string, parameters: any, defaultAccessMode: SessionMode): Promise<QueryResult> {
+    public async execute(query: string, parameters: unknown, defaultAccessMode: SessionMode): Promise<QueryResult> {
         try {
             if (isDriverLike(this.executionContext)) {
                 const session = this.executionContext.session(this.getSessionParam(defaultAccessMode));
@@ -190,12 +193,16 @@ export class Executor {
         };
     }
 
-    private async sessionRun(query: string, parameters, defaultAccessMode, session): Promise<QueryResult> {
+    private async sessionRun(
+        query: string,
+        parameters: unknown,
+        defaultAccessMode: string,
+        session: Session
+    ): Promise<QueryResult> {
         const transactionType = `${defaultAccessMode.toLowerCase()}Transaction`;
-        const result = await session[transactionType](
-            (transaction: Transaction) => this.transactionRun(query, parameters, transaction),
-            this.getTransactionConfig()
-        );
+        const result = await session[transactionType]((transaction: Transaction) => {
+            return this.transactionRun(query, parameters, transaction);
+        }, this.getTransactionConfig());
         const lastBookmark = session.lastBookmark();
         if (Array.isArray(lastBookmark) && lastBookmark[0]) {
             this.lastBookmark = lastBookmark[0];

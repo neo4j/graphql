@@ -16,12 +16,12 @@
     font-size: 1rem;
     font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono,
         Courier New;
-    color: #282a36;
+    color: rgb(var(--colors-neutral-90));
 }
 
 li.CodeMirror-hint-active {
-    background-color: #282a36;
-    color: #ffffff;
+    background-color: rgb(var(--colors-neutral-90));
+    color: rgb(var(--colors-neutral-10));
 }
 
 .code-mirror-disabled-state {
@@ -45,7 +45,7 @@ li.CodeMirror-hint-active {
 }
 
 .graphiql-container .graphiql-explorer-actions select {
-    border: 1px solid #C4C8CD;
+    border: 1px solid rgb(var(--colors-neutral-50));
     margin-left: 5px;
     border-radius: 5px;
     padding: 3px;

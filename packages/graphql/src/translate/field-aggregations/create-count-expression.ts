@@ -23,7 +23,7 @@ import type { Context, RelationField, GraphQLWhereArg } from "../../types";
 
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
-import { createCypherWherePredicate } from "../where/create-cypher-where-predicate";
+import { createWherePredicate } from "../where/create-where-predicate";
 
 export function createCountExpression({
     sourceNode,
@@ -56,7 +56,7 @@ export function createCountExpression({
     const relationshipPattern = relationship.pattern({
         directed: !(direction === "undirected"),
     });
-    const wherePredicate = createCypherWherePredicate({
+    const wherePredicate = createWherePredicate({
         element: referenceNode,
         context,
         whereInput: (field.args.where as GraphQLWhereArg) || {},

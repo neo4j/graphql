@@ -19,11 +19,20 @@
 
 import type { Driver } from "neo4j-driver";
 import type { DriverConfig } from "../../types";
+import type { Neo4jDatabaseInfo } from "../Neo4jDatabaseInfo";
 import { verifyFunctions } from "./verify-functions";
 import { verifyProcedures } from "./verify-procedures";
 import { verifyVersion } from "./verify-version";
 
-async function checkNeo4jCompat({ driver, driverConfig }: { driver: Driver; driverConfig?: DriverConfig }) {
+async function checkNeo4jCompat({
+    driver,
+    driverConfig,
+    dbInfo,
+}: {
+    driver: Driver;
+    driverConfig?: DriverConfig;
+    dbInfo: Neo4jDatabaseInfo;
+}): Promise<void> {
     await driver.verifyConnectivity();
 
     const sessionParams: {
@@ -45,8 +54,13 @@ async function checkNeo4jCompat({ driver, driverConfig }: { driver: Driver; driv
 
     const errors: string[] = [];
 
+    try {
+        verifyVersion(dbInfo);
+    } catch (e) {
+        errors.push((e as Error).message);
+    }
+
     const verificationResults = await Promise.allSettled([
-        verifyVersion(sessionFactory),
         verifyFunctions(sessionFactory),
         verifyProcedures(sessionFactory),
     ]);

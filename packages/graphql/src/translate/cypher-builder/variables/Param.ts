@@ -59,11 +59,3 @@ export class NamedParam extends Param<any> {
         return super.getCypher(env);
     }
 }
-
-// Careful, can lead to cypher injection
-// TODO: this should be RawVariable
-export class RawParam<T> extends Param<T> {
-    public getCypher(_env: CypherEnvironment): string {
-        return `${this.value}`;
-    }
-}

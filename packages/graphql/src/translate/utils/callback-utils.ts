@@ -28,7 +28,7 @@ export const addCallbackAndSetParam = (
     callbackBucket: CallbackBucket,
     strs: string[],
     operation: "CREATE" | "UPDATE"
-) => {
+): void => {
     if (!field.callback || !field.callback.operations.includes(operation)) {
         return;
     }

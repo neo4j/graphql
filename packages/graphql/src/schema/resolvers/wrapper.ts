@@ -22,6 +22,7 @@ import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
 import { print } from "graphql";
 import type { Driver } from "neo4j-driver";
 import type { Neo4jGraphQLConfig, Node, Relationship } from "../../classes";
+import { getNeo4jDatabaseInfo, Neo4jDatabaseInfo } from "../../classes/Neo4jDatabaseInfo";
 import { Executor } from "../../classes/Executor";
 import type { ExecutorConstructorParam } from "../../classes/Executor";
 import { DEBUG_GRAPHQL } from "../../constants";
@@ -40,10 +41,13 @@ type WrapResolverArguments = {
     relationships: Relationship[];
     schema: GraphQLSchema;
     plugins?: Neo4jGraphQLPlugins;
+    dbInfo?: Neo4jDatabaseInfo;
 };
 
+let neo4jDatabaseInfo: Neo4jDatabaseInfo;
+
 export const wrapResolver =
-    ({ driver, config, nodes, relationships, schema, plugins }: WrapResolverArguments) =>
+    ({ driver, config, nodes, relationships, schema, plugins, dbInfo }: WrapResolverArguments) =>
     (next) =>
     async (root, args, context: Context, info: GraphQLResolveInfo) => {
         const { driverConfig } = config;
@@ -108,6 +112,16 @@ export const wrapResolver =
         }
 
         context.executor = new Executor(executorConstructorParam);
+
+        if (!context.neo4jDatabaseInfo?.version) {
+            if (dbInfo) {
+                neo4jDatabaseInfo = dbInfo;
+            }
+            if (!neo4jDatabaseInfo?.version) {
+                neo4jDatabaseInfo = await getNeo4jDatabaseInfo(context.executor);
+            }
+            context.neo4jDatabaseInfo = neo4jDatabaseInfo;
+        }
 
         return next(root, args, context, info);
     };

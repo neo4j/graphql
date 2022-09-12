@@ -14,12 +14,29 @@ jobs:
     steps:
       - name: Create list
         run: |
-          list=$( curl --request POST --url "https://api.trello.com/1/lists?name=Done%20-%20${{ github.event.release.name }}&idBoard=${{ secrets.TEAM_GRAPHQL_BOARD }}&key=${{ secrets.TRELLO_API_KEY }}&token=${{ secrets.TRELLO_API_TOKEN }}&pos=bottom" | jq -r .id )
+          list=$( curl --request POST \
+            --data-urlencode "name=Done - ${{ github.event.release.name }}" \
+            --data-urlencode "idBoard=${{ secrets.TEAM_GRAPHQL_BOARD }}" \
+            --data-urlencode "pos=bottom" \
+            --data-urlencode "key=${{ secrets.TRELLO_API_KEY }}" \
+            --data-urlencode "token=${{ secrets.TRELLO_API_TOKEN }}" \
+            --url "https://api.trello.com/1/lists" | jq -r .id )
           echo "LIST=$list" >> "$GITHUB_ENV"
       - name: Create changelog card
         run: |
-          card=$( curl --request POST --url "https://api.trello.com/1/cards?idList=$LIST&name=Changelog&desc=${{ github.event.release.body }}&idLabels=${{ secrets.CHANGELOG_LABEL }}&key=${{ secrets.TRELLO_API_KEY }}&token=${{ secrets.TRELLO_API_TOKEN }}" --header 'Accept: application/json' | jq -r .id )
+          card=$( curl --request POST \
+            --data-urlencode "idList=${LIST}" \
+            --data-urlencode "name=Changelog" \
+            --data-urlencode "desc=${{ github.event.release.body }}" \
+            --data-urlencode "idLabels=${{ secrets.CHANGELOG_LABEL }}" \
+            --data-urlencode "key=${{ secrets.TRELLO_API_KEY }}" \
+            --data-urlencode "token=${{ secrets.TRELLO_API_TOKEN }}" \
+            --url "https://api.trello.com/1/cards" | jq -r .id )
           echo "CARD=$card" >> "$GITHUB_ENV"
       - name: Attach release
         run: |
-          curl --request POST --url "https://api.trello.com/1/cards/${CARD}/attachments?url=${{ github.event.release.html_url }}&key=${{ secrets.TRELLO_API_KEY }}&token=${{ secrets.TRELLO_API_TOKEN }}" --header 'Accept: application/json'
+          curl --request POST \
+            --data-urlencode "url=${{ github.event.release.html_url }}" \
+            --data-urlencode "key=${{ secrets.TRELLO_API_KEY }}" \
+            --data-urlencode "token=${{ secrets.TRELLO_API_TOKEN }}" \
+            --url "https://api.trello.com/1/cards/${CARD}/attachments"

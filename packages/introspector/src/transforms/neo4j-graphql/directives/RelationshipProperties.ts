@@ -20,7 +20,7 @@
 import type { Directive } from "../types";
 
 export class RelationshipPropertiesDirective implements Directive {
-    toString() {
+    toString(): string {
         return `@relationshipProperties`;
     }
 }

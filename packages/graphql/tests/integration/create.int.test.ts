@@ -398,20 +398,20 @@ describe("create", () => {
         `;
 
         const neo4jResult = await session.run(cypher, { id: product.id });
-        const neo4jProduct = (neo4jResult.records[0].toObject() as any).product;
+        const neo4jProduct = neo4jResult.records[0].toObject().product;
 
         expect(neo4jProduct.id).toMatch(product.id);
         expect(neo4jProduct.name).toMatch(product.name);
-        neo4jProduct.sizes.forEach((size) => {
+        neo4jProduct.sizes.forEach((size: string) => {
             expect(sizes.map((x) => x.id).includes(size)).toBeTruthy();
         });
-        neo4jProduct.colors.forEach((color) => {
+        neo4jProduct.colors.forEach((color: string) => {
             expect(colors.map((x) => x.id).includes(color)).toBeTruthy();
         });
-        neo4jProduct.photos.ids.forEach((photo) => {
+        neo4jProduct.photos.ids.forEach((photo: string) => {
             expect(photos.map((x) => x.id).includes(photo)).toBeTruthy();
         });
-        neo4jProduct.photos.colors.forEach((photoColor) => {
+        neo4jProduct.photos.colors.forEach((photoColor: string) => {
             expect(colors.map((x) => x.id).includes(photoColor)).toBeTruthy();
         });
     });

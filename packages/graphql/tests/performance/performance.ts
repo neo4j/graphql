@@ -41,6 +41,7 @@ const typeDefs = gql`
         directed: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
         reviewed: [Movie!]! @relationship(type: "REVIEWED", direction: OUT)
         produced: [Movie!]! @relationship(type: "PRODUCED", direction: OUT)
+        likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
     }
 
     type Movie {
@@ -52,11 +53,12 @@ const typeDefs = gql`
         directors: [Person!]! @relationship(type: "DIRECTED", direction: IN)
         reviewers: [Person!]! @relationship(type: "REVIEWED", direction: IN)
         producers: [Person!]! @relationship(type: "PRODUCED", direction: IN)
+        likedBy: [User!]! @relationship(type: "LIKES", direction: IN)
     }
 
     type User {
         name: String!
-        liked: [Likable!]! @relationship(type: "LIKES", direction: OUT)
+        likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
     }
 `;
 

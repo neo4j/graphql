@@ -23,18 +23,18 @@ export class NodeDirective implements Directive {
     label?: string;
     additionalLabels: string[] = [];
 
-    addLabel(label: string) {
+    addLabel(label: string): void {
         this.label = label;
     }
 
-    addAdditionalLabels(labels: string[] | string) {
+    addAdditionalLabels(labels: string[] | string): void {
         if (!labels.length) {
             return;
         }
         this.additionalLabels = this.additionalLabels.concat(labels);
     }
 
-    toString() {
+    toString(): string {
         const directiveArguments: string[] = [];
         if (this.label) {
             directiveArguments.push(`label: "${this.label}"`);
