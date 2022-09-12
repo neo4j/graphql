@@ -74,8 +74,6 @@ export function formatParams(params: Record<string, any>): string {
     return JSON.stringify(params, null, 4);
 }
 
-let neo4j: Neo4j;
-
 export async function translateQuery(
     neoSchema: Neo4jGraphQL,
     query: DocumentNode,
@@ -129,9 +127,7 @@ export async function translateQuery(
     const [cypher, params] = driverBuilder.runFunction.calls[0];
 
     if (process.env.VERIFY_TCK) {
-        if (!neo4j) {
-            neo4j = new Neo4j();
-        }
+        const neo4j = new Neo4j();
         const session = await neo4j.getSession();
         try {
             await session.run(`EXPLAIN ${cypher}`, params);
@@ -145,6 +141,8 @@ export async function translateQuery(
             throw e;
         } finally {
             await session.close();
+            const driver = await neo4j.getDriver();
+            await driver.close();
         }
     }
 
