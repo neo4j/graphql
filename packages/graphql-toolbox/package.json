@@ -39,8 +39,8 @@
     },
     "author": "Neo4j",
     "dependencies": {
-        "@neo4j-ndl/base": "0.7.1",
-        "@neo4j-ndl/react": "0.7.2",
+        "@neo4j-ndl/base": "0.8.0",
+        "@neo4j-ndl/react": "0.8.0",
         "@neo4j/graphql": "3.7.0",
         "@neo4j/introspector": "^1.0.1",
         "codemirror": "^5.65.8",
@@ -66,7 +66,7 @@
         "@types/prettier": "2.7.0",
         "@types/react-dom": "18.0.6",
         "@types/webpack": "5.28.0",
-        "autoprefixer": "10.4.8",
+        "autoprefixer": "10.4.9",
         "compression-webpack-plugin": "10.0.0",
         "copy-webpack-plugin": "11.0.0",
         "cross-env": "7.0.3",
@@ -94,7 +94,7 @@
         "url-loader": "4.1.1",
         "webpack": "5.74.0",
         "webpack-cli": "4.10.0",
-        "webpack-dev-server": "4.10.1",
+        "webpack-dev-server": "4.11.0",
         "webpack-notifier": "1.15.0"
     }
 }

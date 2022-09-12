@@ -71,7 +71,7 @@ describe("Projecting interface relationships following create of multiple nodes"
 
         session = await neo4j.getSession();
 
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver, config: { enableDebug: true } });
+        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
         schema = await neoGraphql.getSchema();
     });
 
