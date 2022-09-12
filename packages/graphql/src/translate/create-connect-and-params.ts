@@ -436,7 +436,7 @@ function createConnectAndParams({
                     res.params = { ...res.params, ...subquery.params };
                 }
             });
-            res.connects.push(subqueries.join("\n}\nCALL {"));
+            res.connects.push(subqueries.join("\n}\nCALL {\n\t"));
         } else {
             const subquery = createSubqueryContents(refNodes[0], connect, index);
             res.connects.push(subquery.subquery);

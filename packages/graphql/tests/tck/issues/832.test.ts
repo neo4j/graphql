@@ -101,7 +101,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	)
             	RETURN count(*) AS connect_this0_subjects_connect_Person
             }
-            CALL {	WITH this0
+            CALL {
+            		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
@@ -123,7 +124,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	)
             	RETURN count(*) AS connect_this0_objects_connect_Person
             }
-            CALL {	WITH this0
+            CALL {
+            		WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Place)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
@@ -151,7 +153,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	)
             	RETURN count(*) AS connect_this1_subjects_connect_Person
             }
-            CALL {	WITH this1
+            CALL {
+            		WITH this1
             	OPTIONAL MATCH (this1_subjects_connect0_node:Place)
             	WHERE this1_subjects_connect0_node.id IN $this1_subjects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this1 IS NULL THEN [] ELSE [1] END |
@@ -173,7 +176,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	)
             	RETURN count(*) AS connect_this1_objects_connect_Person
             }
-            CALL {	WITH this1
+            CALL {
+            		WITH this1
             	OPTIONAL MATCH (this1_objects_connect0_node:Place)
             	WHERE this1_objects_connect0_node.id IN $this1_objects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this1 IS NULL THEN [] ELSE [1] END |
@@ -254,7 +258,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	)
             	RETURN count(*) AS connect_this0_subjects_connect_Person
             }
-            CALL {	WITH this0
+            CALL {
+            		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
@@ -276,7 +281,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	)
             	RETURN count(*) AS connect_this0_objects_connect_Person
             }
-            CALL {	WITH this0
+            CALL {
+            		WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Place)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
@@ -348,7 +354,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	)
             	RETURN count(*) AS connect_this0_subjects_connect_Person
             }
-            CALL {	WITH this0
+            CALL {
+            		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
@@ -370,7 +377,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	)
             	RETURN count(*) AS connect_this0_objects_connect_Person
             }
-            CALL {	WITH this0
+            CALL {
+            		WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Place)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
@@ -453,7 +461,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	)
             	RETURN count(*) AS connect_this0_subjects_connect_Person
             }
-            CALL {	WITH this0
+            CALL {
+            		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
@@ -475,7 +484,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	)
             	RETURN count(*) AS connect_this0_objects_connect_Person
             }
-            CALL {	WITH this0
+            CALL {
+            		WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Place)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
@@ -503,7 +513,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	)
             	RETURN count(*) AS connect_this1_subjects_connect_Person
             }
-            CALL {	WITH this1
+            CALL {
+            		WITH this1
             	OPTIONAL MATCH (this1_subjects_connect0_node:Place)
             	WHERE this1_subjects_connect0_node.id IN $this1_subjects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this1 IS NULL THEN [] ELSE [1] END |
@@ -525,7 +536,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	)
             	RETURN count(*) AS connect_this1_objects_connect_Person
             }
-            CALL {	WITH this1
+            CALL {
+            		WITH this1
             	OPTIONAL MATCH (this1_objects_connect0_node:Place)
             	WHERE this1_objects_connect0_node.id IN $this1_objects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this1 IS NULL THEN [] ELSE [1] END |
@@ -659,7 +671,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	)
             	RETURN count(*) AS connect_this0_subjects_connect_Person
             }
-            CALL {	WITH this0
+            CALL {
+            		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |

@@ -147,7 +147,8 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             	)
             	RETURN count(*) AS connect_this_connect_interface_ChildOne
             }
-            CALL {	WITH this
+            CALL {
+            		WITH this
             	OPTIONAL MATCH (this_connect_interface0_node:ChildTwo)
             	WHERE this_connect_interface0_node.name = $this_connect_interface0_node_param0
             	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |

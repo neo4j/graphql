@@ -574,7 +574,8 @@ describe("@auth allow on specific interface implementation", () => {
             	)
             	RETURN count(*) AS connect_this_connect_content_Comment
             }
-            CALL {	WITH this
+            CALL {
+            		WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
             	WHERE this_connect_content0_node.id = $this_connect_content0_node_param0
             	WITH this, this_connect_content0_node

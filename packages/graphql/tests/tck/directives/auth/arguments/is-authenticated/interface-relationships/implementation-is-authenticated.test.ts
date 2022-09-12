@@ -265,7 +265,8 @@ describe("Cypher Auth isAuthenticated", () => {
             	)
             	RETURN count(*) AS connect_this_connect_content_Comment
             }
-            CALL {	WITH this
+            CALL {
+            		WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
             	WITH this, this_connect_content0_node
             	CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])

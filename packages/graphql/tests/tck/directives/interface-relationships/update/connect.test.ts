@@ -95,7 +95,8 @@ describe("Interface Relationships - Update connect", () => {
             	)
             	RETURN count(*) AS connect_this_connect_actedIn_Movie
             }
-            CALL {	WITH this
+            CALL {
+            		WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
             	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
             	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
@@ -174,7 +175,8 @@ describe("Interface Relationships - Update connect", () => {
             }
             	RETURN count(*) AS connect_this_connect_actedIn_Movie
             }
-            CALL {	WITH this
+            CALL {
+            		WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
             	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
             	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
@@ -275,7 +277,8 @@ describe("Interface Relationships - Update connect", () => {
             }
             	RETURN count(*) AS connect_this_connect_actedIn_Movie
             }
-            CALL {	WITH this
+            CALL {
+            		WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
             	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
             	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
@@ -369,7 +372,8 @@ describe("Interface Relationships - Update connect", () => {
             }
             	RETURN count(*) AS connect_this_connect_actedIn_Movie
             }
-            CALL {	WITH this
+            CALL {
+            		WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
             	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
             	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
