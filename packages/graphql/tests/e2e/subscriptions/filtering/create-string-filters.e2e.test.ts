@@ -735,7 +735,6 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
                 return `${k}: ${makeTypedFieldValue(v)}`;
             })
             .join(", ");
-        console.log(movieInput);
         const result = await supertest(server.path)
             .post("")
             .send({

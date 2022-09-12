@@ -22,10 +22,9 @@ import type Node from "../../../../classes/Node";
 import type { PrimitiveField } from "../../../../types";
 import { whereRegEx } from "../../../../translate/where/utils";
 import type { WhereRegexGroups } from "../../../../translate/where/utils";
-import { isObject, isPrimitive, isDifferentType } from "../../../../utils/utils";
+import { isObject, isNotPrimitive, isDifferentType } from "../../../../utils/utils";
 
-type NestableValue<T> = Record<string, T> | T;
-function isDifferentNumberOfItems<T>(o1: NestableValue<T>, o2: NestableValue<T>) {
+function isDifferentNumberOfItems(o1: Record<string, any>, o2: Record<string, any>) {
     return Object.keys(o1).length !== Object.keys(o2).length;
 }
 function compareArraysProperties<T>(arr1: Array<T>, arr2: Array<T>): boolean {
@@ -48,13 +47,13 @@ function compareArraysProperties<T>(arr1: Array<T>, arr2: Array<T>): boolean {
 }
 
 /** Returns true if all properties in obj1 exists in obj2, false otherwise */
-export function compareProperties<T>(obj1: NestableValue<T>, obj2: NestableValue<T>): boolean {
+export function compareProperties(obj1: unknown, obj2: unknown): boolean {
     // check types match
     if (isDifferentType(obj1, obj2)) {
         return false;
     }
     // primitive types
-    if (isPrimitive(obj1)) {
+    if (!isNotPrimitive(obj1)) {
         // coming from: array of strings
         return obj1 === obj2;
     }
@@ -71,7 +70,7 @@ export function compareProperties<T>(obj1: NestableValue<T>, obj2: NestableValue
             return false;
         }
         if (Array.isArray(value)) {
-            const areArraysMatching = compareArraysProperties(value, otherValue as Array<T>);
+            const areArraysMatching = compareArraysProperties(value, otherValue);
             if (!areArraysMatching) {
                 return false;
             }
@@ -82,7 +81,7 @@ export function compareProperties<T>(obj1: NestableValue<T>, obj2: NestableValue
                 return false;
             }
         }
-        if (isPrimitive(value) && otherValue !== value) {
+        if (!isNotPrimitive(value) && otherValue !== value) {
             return false;
         }
     }

@@ -31,12 +31,12 @@ export function isObject(value: unknown): value is object {
 }
 
 /** Checks if value is a primitive */
-export function isPrimitive(value: unknown): boolean {
-    return !isObject(value) && !Array.isArray(value);
+export function isNotPrimitive(value: unknown): value is Record<string, any> | Array<any> {
+    return isObject(value) || Array.isArray(value);
 }
 
 /** Checks if two value have the same type */
-export function isDifferentType(a: unknown, b: unknown): boolean {
+export function isDifferentType<T>(a: T, b: unknown): b is T {
     return typeof a !== typeof b || isObject(a) !== isObject(b) || Array.isArray(a) !== Array.isArray(b);
 }
 
