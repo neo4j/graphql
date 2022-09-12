@@ -29,11 +29,6 @@ export function subscriptionWhere(
     if (!where) {
         return true;
     }
-
-    // TODO: filters logic goes here
-    // console.log("event", event);
-    // console.log("===============");
-
     if (event.event === "create") {
         return filterByProperties(node, where, event.properties.new);
     }

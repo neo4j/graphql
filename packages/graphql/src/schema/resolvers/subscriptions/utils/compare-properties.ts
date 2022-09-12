@@ -22,38 +22,67 @@ import type Node from "../../../../classes/Node";
 import type { PrimitiveField } from "../../../../types";
 import { whereRegEx } from "../../../../translate/where/utils";
 import type { WhereRegexGroups } from "../../../../translate/where/utils";
+import { isObject, isPrimitive, isDifferentType } from "../../../../utils/utils";
 
-const isObject = (x) => typeof x === "object" && !Array.isArray(x) && x !== null;
+type NestableValue<T> = Record<string, T> | T;
+function isDifferentNumberOfItems<T>(o1: NestableValue<T>, o2: NestableValue<T>) {
+    return Object.keys(o1).length !== Object.keys(o2).length;
+}
+function compareArraysProperties<T>(arr1: Array<T>, arr2: Array<T>): boolean {
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+    const findInSecondArray = (value: T): boolean => {
+        // OR bc. when comparing arrays of len > 1 for sure there will be non-matches.
+        // However, in the case of all non-matches, false will be returned.
+        return arr2.reduce((acc, v) => {
+            return acc || compareProperties(v, value);
+        }, false);
+    };
+    for (const v of arr1) {
+        if (!findInSecondArray(v)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 /** Returns true if all properties in obj1 exists in obj2, false otherwise */
-export function compareProperties<T>(obj1: Record<string, T> | T, obj2: Record<string, T> | T): boolean {
-    if (!isObject(obj1) && !Array.isArray(obj1)) {
+export function compareProperties<T>(obj1: NestableValue<T>, obj2: NestableValue<T>): boolean {
+    // check types match
+    if (isDifferentType(obj1, obj2)) {
+        return false;
+    }
+    // primitive types
+    if (isPrimitive(obj1)) {
         // coming from: array of strings
         return obj1 === obj2;
     }
+    // not primitive types
+    if (isDifferentNumberOfItems(obj1, obj2)) {
+        return false;
+    }
     for (const [k, value] of Object.entries(obj1)) {
+        const otherValue = obj2[k];
+        if (otherValue === null || otherValue === undefined) {
+            return false;
+        }
+        if (isDifferentType(value, otherValue)) {
+            return false;
+        }
         if (Array.isArray(value)) {
-            if (obj2[k].length !== value.length) {
-                return false;
-            }
-            const compare = (other: T): boolean => {
-                // OR bc. when comparing arrays of arity > 1 for sure there will be non-matches.
-                // However, in the case of all non-matches, false will be returned.
-                return value.reduce((acc, v) => acc || compareProperties(v, other), false);
-            };
-            const valuesToCompareWith = Object.values(obj2[k] as ArrayLike<T>);
-            const noExpectingResults = Math.max(valuesToCompareWith.length, Object.values(value).length);
-            const noMatchingResults = valuesToCompareWith.map(compare).filter((x) => x).length;
-            if (noMatchingResults !== noExpectingResults) {
+            const areArraysMatching = compareArraysProperties(value, otherValue as Array<T>);
+            if (!areArraysMatching) {
                 return false;
             }
         }
         if (isObject(value)) {
-            const areObjectPropertiesEqual = compareProperties(value, obj2[k]);
+            const areObjectPropertiesEqual = compareProperties(value, otherValue);
             if (!areObjectPropertiesEqual) {
                 return false;
             }
         }
-        if (!Array.isArray(value) && !isObject(value) && obj2[k] !== value) {
+        if (isPrimitive(value) && otherValue !== value) {
             return false;
         }
     }
@@ -73,29 +102,29 @@ function isIDAsString(fieldMeta: PrimitiveField | undefined, value: string | num
     return isIDType(fieldMeta) && int(value).toString() !== value;
 }
 
-type ComparatorFn<T> = (received: T, filtered: T) => boolean;
+type ComparatorFn<T> = (received: T, filtered: T, fieldMeta?: PrimitiveField | undefined) => boolean;
 
-const operatorCheckMap = (fieldMeta: PrimitiveField | undefined) => ({
+const operatorCheckMap = {
     NOT: (received: string, filtered: string) => received !== filtered,
-    LT: (received: number | string, filtered: number | string) => {
+    LT: (received: number | string, filtered: number | string, fieldMeta: PrimitiveField | undefined) => {
         if (isFloatType(fieldMeta)) {
             return received < filtered;
         }
         return int(received).lessThan(int(filtered));
     },
-    LTE: (received: number, filtered: number) => {
+    LTE: (received: number, filtered: number, fieldMeta: PrimitiveField | undefined) => {
         if (isFloatType(fieldMeta)) {
             return received <= filtered;
         }
         return int(received).lessThanOrEqual(int(filtered));
     },
-    GT: (received: number, filtered: number) => {
+    GT: (received: number, filtered: number, fieldMeta: PrimitiveField | undefined) => {
         if (isFloatType(fieldMeta)) {
             return received > filtered;
         }
         return int(received).greaterThan(int(filtered));
     },
-    GTE: (received: number | string, filtered: number | string) => {
+    GTE: (received: number | string, filtered: number | string, fieldMeta: PrimitiveField | undefined) => {
         if (isFloatType(fieldMeta)) {
             return received >= filtered;
         }
@@ -108,7 +137,7 @@ const operatorCheckMap = (fieldMeta: PrimitiveField | undefined) => ({
     NOT_ENDS_WITH: (received: string, filtered: string) => !received.endsWith(filtered),
     CONTAINS: (received: string, filtered: string) => received.includes(filtered),
     NOT_CONTAINS: (received: string, filtered: string) => !received.includes(filtered),
-    INCLUDES: (received: [string | number], filtered: string | number) => {
+    INCLUDES: (received: [string | number], filtered: string | number, fieldMeta: PrimitiveField | undefined) => {
         if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, filtered)) {
             return received.findIndex((v) => v === filtered) !== -1;
         }
@@ -116,7 +145,7 @@ const operatorCheckMap = (fieldMeta: PrimitiveField | undefined) => ({
         const filteredAsNeo4jInteger = int(filtered);
         return received.findIndex((r) => int(r).equals(filteredAsNeo4jInteger)) !== -1;
     },
-    NOT_INCLUDES: (received: [string | number], filtered: string | number) => {
+    NOT_INCLUDES: (received: [string | number], filtered: string | number, fieldMeta: PrimitiveField | undefined) => {
         if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, filtered)) {
             return received.findIndex((v) => v === filtered) === -1;
         }
@@ -124,7 +153,7 @@ const operatorCheckMap = (fieldMeta: PrimitiveField | undefined) => ({
         const filteredAsNeo4jInteger = int(filtered);
         return received.findIndex((r) => int(r).equals(filteredAsNeo4jInteger)) === -1;
     },
-    IN: (received: string | number, filtered: [string | number]) => {
+    IN: (received: string | number, filtered: [string | number], fieldMeta: PrimitiveField | undefined) => {
         if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, received)) {
             return filtered.findIndex((v) => v === received) !== -1;
         }
@@ -132,7 +161,7 @@ const operatorCheckMap = (fieldMeta: PrimitiveField | undefined) => ({
         const receivedAsNeo4jInteger = int(received);
         return filtered.findIndex((r) => int(r).equals(receivedAsNeo4jInteger)) !== -1;
     },
-    NOT_IN: (received: string | number, filtered: [string | number]) => {
+    NOT_IN: (received: string | number, filtered: [string | number], fieldMeta: PrimitiveField | undefined) => {
         if (isFloatType(fieldMeta) || isStringType(fieldMeta) || isIDAsString(fieldMeta, received)) {
             return filtered.findIndex((v) => v === received) === -1;
         }
@@ -140,12 +169,12 @@ const operatorCheckMap = (fieldMeta: PrimitiveField | undefined) => ({
         const receivedAsNeo4jInteger = int(received);
         return filtered.findIndex((r) => int(r).equals(receivedAsNeo4jInteger)) === -1;
     },
-});
-function getFilteringFn<T>(operator: string | undefined, fieldMeta: PrimitiveField | undefined): ComparatorFn<T> {
+};
+function getFilteringFn<T>(operator: string | undefined): ComparatorFn<T> {
     if (!operator) {
         return (received: T, filtered: T) => received === filtered;
     }
-    return operatorCheckMap(fieldMeta)[operator];
+    return operatorCheckMap[operator];
 }
 
 function parseFilterProperty(key: string): { fieldName: string; operator: string | undefined } {
@@ -170,8 +199,8 @@ export function filterByProperties<T>(
         const { fieldName, operator } = parseFilterProperty(k);
         const receivedValue = receivedProperties[fieldName];
         const fieldMeta = node.primitiveFields.find((f) => f.fieldName === fieldName);
-        const checkFilterPasses = getFilteringFn(operator, fieldMeta);
-        if (!checkFilterPasses(receivedValue, v)) {
+        const checkFilterPasses = getFilteringFn(operator);
+        if (!checkFilterPasses(receivedValue, v, fieldMeta)) {
             return false;
         }
     }
