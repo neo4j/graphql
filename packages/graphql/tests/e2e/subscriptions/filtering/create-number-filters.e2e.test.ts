@@ -20,13 +20,13 @@
 import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
-import type { TestGraphQLServer } from "../setup/apollo-server";
-import { ApolloTestServer } from "../setup/apollo-server";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
-import { WebSocketTestClient } from "../setup/ws-client";
-import Neo4j from "../setup/neo4j";
+import { Neo4jGraphQL } from "../../../../src/classes";
+import { generateUniqueType } from "../../../utils/graphql-types";
+import type { TestGraphQLServer } from "../../setup/apollo-server";
+import { ApolloTestServer } from "../../setup/apollo-server";
+import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { WebSocketTestClient } from "../../setup/ws-client";
+import Neo4j from "../../setup/neo4j";
 
 describe("Create Subscription with filters valid of number types (Int, Float, BigInt)", () => {
     let neo4j: Neo4j;
@@ -446,8 +446,10 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
         ]);
     });
 
-    test("subscription with where filter _LT for String should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _LT for String should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { title_LT: "test" }) {
                     ${typeMovie.operations.subscribe.payload.created} {
@@ -455,16 +457,20 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "movie1" });
         await createMovie({ title: "movie2" });
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _LTE for String should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _LTE for String should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { title_LTE: "test" }) {
                     ${typeMovie.operations.subscribe.payload.created} {
@@ -472,16 +478,20 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "movie1" });
         await createMovie({ title: "movie2" });
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _GT for String should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _GT for String should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { title_GT: "abc" }) {
                     ${typeMovie.operations.subscribe.payload.created} {
@@ -489,16 +499,20 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "movie1" });
         await createMovie({ title: "movie2" });
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _GTE for String should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _GTE for String should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { title_GTE: "abc" }) {
                     ${typeMovie.operations.subscribe.payload.created} {
@@ -506,17 +520,21 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "movie1" });
         await createMovie({ title: "movie2" });
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
 
-    test("subscription with where filter _LT for ID as Int should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _LT for ID as Int should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { id_LT: 50 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
@@ -524,16 +542,20 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "movie1", id: 42 });
         await createMovie({ title: "movie2", id: 24 });
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _LTE for ID as Int should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _LTE for ID as Int should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { id_LTE: 50 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
@@ -541,16 +563,20 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "movie1", id: 40 });
         await createMovie({ title: "movie2", id: 20 });
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _GT for ID as Int should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _GT for ID as Int should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { id_GT: 2 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
@@ -558,16 +584,20 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "movie1", id: 5 });
         await createMovie({ title: "movie2", id: 3 });
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _GTE for ID as Int should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _GTE for ID as Int should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { id_GTE: 1 }) {
                     ${typeMovie.operations.subscribe.payload.created} {
@@ -575,17 +605,21 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "movie1", id: 4 });
         await createMovie({ title: "movie2", id: 2 });
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
 
-    test("subscription with where filter _LT for Boolean should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _LT for Boolean should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { isFavorite_LT: true }) {
                     ${typeMovie.operations.subscribe.payload.created} {
@@ -593,16 +627,20 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "movie1", id: 42 });
         await createMovie({ title: "movie2", id: 24 });
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _LTE for Boolean should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _LTE for Boolean should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { isFavorite_LTE: false }) {
                     ${typeMovie.operations.subscribe.payload.created} {
@@ -610,16 +648,20 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "movie1", id: 40 });
         await createMovie({ title: "movie2", id: 20 });
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _GT for Boolean should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _GT for Boolean should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { isFavorite_GT: false }) {
                     ${typeMovie.operations.subscribe.payload.created} {
@@ -627,16 +669,20 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "movie1", id: 5 });
         await createMovie({ title: "movie2", id: 3 });
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _GTE for Boolean should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _GTE for Boolean should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { isFavorite_GTE: false }) {
                     ${typeMovie.operations.subscribe.payload.created} {
@@ -644,17 +690,21 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "movie1", id: 4 });
         await createMovie({ title: "movie2", id: 2 });
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
 
-    test("subscription with where filter _GTE for Array should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _GTE for Array should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { similarTitles_GTE: "test" }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -662,12 +712,14 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "bad_type_movie25", similarTitles: ["dummy"] });
         await createMovie({ title: "bad_type_movie26", similarTitles: ["test"] });
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
 

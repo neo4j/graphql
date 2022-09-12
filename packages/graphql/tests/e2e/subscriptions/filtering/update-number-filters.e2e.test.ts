@@ -20,13 +20,13 @@
 import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
-import type { TestGraphQLServer } from "../setup/apollo-server";
-import { ApolloTestServer } from "../setup/apollo-server";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
-import { WebSocketTestClient } from "../setup/ws-client";
-import Neo4j from "../setup/neo4j";
+import { Neo4jGraphQL } from "../../../../src/classes";
+import { generateUniqueType } from "../../../utils/graphql-types";
+import type { TestGraphQLServer } from "../../setup/apollo-server";
+import { ApolloTestServer } from "../../setup/apollo-server";
+import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { WebSocketTestClient } from "../../setup/ws-client";
+import Neo4j from "../../setup/neo4j";
 
 describe("Update Subscriptions", () => {
     let neo4j: Neo4j;
@@ -500,8 +500,10 @@ describe("Update Subscriptions", () => {
         ]);
     });
 
-    test("subscription with where filter _LT for String should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _LT for String should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { title_LT: "bad_type_movie1" }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -509,7 +511,9 @@ describe("Update Subscriptions", () => {
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "bad_type_movie1" });
         await createMovie({ title: "bad_type_movie2" });
@@ -517,11 +521,13 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "bad_type_movie1", "bad_type_movie3");
         await updateMovie("title", "bad_type_movie2", "bad_type_movie4");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _LTE for String should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _LTE for String should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { title_LTE: "bad_type_movie" }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -529,7 +535,9 @@ describe("Update Subscriptions", () => {
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "bad_type_movie5" });
         await createMovie({ title: "bad_type_movie6" });
@@ -537,11 +545,13 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "bad_type_movie5", "bad_type_movie7");
         await updateMovie("title", "bad_type_movie6", "bad_type_movie8");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _GT for String should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _GT for String should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { title_GT: "a_bad_type_movie1" }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -549,7 +559,9 @@ describe("Update Subscriptions", () => {
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "bad_type_movie9" });
         await createMovie({ title: "bad_type_movie10" });
@@ -557,11 +569,13 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "bad_type_movie9", "bad_type_movie11");
         await updateMovie("title", "bad_type_movie10", "bad_type_movie12");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _GTE for String should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _GTE for String should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { title_GTE: "a_bad_type_movie1" }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -569,7 +583,9 @@ describe("Update Subscriptions", () => {
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "bad_type_movie13" });
         await createMovie({ title: "bad_type_movie14" });
@@ -577,12 +593,14 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "bad_type_movie13", "bad_type_movie15");
         await updateMovie("title", "bad_type_movie14", "bad_type_movie16");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
 
-    test("subscription with where filter _LT for ID as Int should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _LT for ID as Int should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { id_LT: 50 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -590,7 +608,9 @@ describe("Update Subscriptions", () => {
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "bad_type_movie17", id: 42 });
         await createMovie({ title: "bad_type_movie18", id: 24 });
@@ -598,11 +618,13 @@ describe("Update Subscriptions", () => {
         await updateMovie("id", 42, 420);
         await updateMovie("id", 24, 240);
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _LTE for ID as Int should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _LTE for ID as Int should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { id_LTE: 50 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -610,7 +632,9 @@ describe("Update Subscriptions", () => {
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "bad_type_movie19", id: 40 });
         await createMovie({ title: "bad_type_movie20", id: 20 });
@@ -618,11 +642,13 @@ describe("Update Subscriptions", () => {
         await updateMovie("id", 40, 400);
         await updateMovie("id", 20, 200);
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _GT for ID as Int should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _GT for ID as Int should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { id_GT: 2 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -630,7 +656,9 @@ describe("Update Subscriptions", () => {
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "bad_type_movie21", id: 5 });
         await createMovie({ title: "bad_type_movie22", id: 3 });
@@ -638,11 +666,13 @@ describe("Update Subscriptions", () => {
         await updateMovie("id", 5, 50);
         await updateMovie("id", 3, 30);
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _GTE for ID as Int should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _GTE for ID as Int should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { id_GTE: 1 }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -650,7 +680,9 @@ describe("Update Subscriptions", () => {
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "bad_type_movie23", id: 4 });
         await createMovie({ title: "bad_type_movie24", id: 2 });
@@ -658,12 +690,14 @@ describe("Update Subscriptions", () => {
         await updateMovie("id", 4, 40);
         await updateMovie("id", 2, 20);
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
 
-    test("subscription with where filter _LT for Boolean should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _LT for Boolean should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { isFavorite_LT: true }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -671,7 +705,9 @@ describe("Update Subscriptions", () => {
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "bad_type_movie25" });
         await createMovie({ title: "bad_type_movie26" });
@@ -679,11 +715,13 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "bad_type_movie25", "bad_type_movie255");
         await updateMovie("title", "bad_type_movie26", "bad_type_movie266");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _LTE for Boolean should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _LTE for Boolean should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { isFavorite_LTE: false }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -691,7 +729,9 @@ describe("Update Subscriptions", () => {
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "bad_type_movie27", id: 40 });
         await createMovie({ title: "bad_type_movie28", id: 20 });
@@ -699,11 +739,13 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "bad_type_movie27", "bad_type_movie277");
         await updateMovie("title", "bad_type_movie28", "bad_type_movie288");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _GT for Boolean should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _GT for Boolean should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { isFavorite_GT: false }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -711,7 +753,9 @@ describe("Update Subscriptions", () => {
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "bad_type_movie29", id: 5 });
         await createMovie({ title: "bad_type_movie30", id: 3 });
@@ -719,11 +763,13 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "bad_type_movie29", "bad_type_movie299");
         await updateMovie("title", "bad_type_movie30", "bad_type_movie300");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _GTE for Boolean should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _GTE for Boolean should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { isFavorite_GTE: false }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -731,7 +777,9 @@ describe("Update Subscriptions", () => {
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "bad_type_movie31", id: 4 });
         await createMovie({ title: "bad_type_movie32", id: 2 });
@@ -739,12 +787,14 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "bad_type_movie31", "bad_type_movie311");
         await updateMovie("title", "bad_type_movie32", "bad_type_movie322");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
 
-    test("subscription with where filter _LT for Array should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter _LT for Array should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { similarTitles_LT: "test" }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -752,7 +802,9 @@ describe("Update Subscriptions", () => {
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ title: "bad_type_movie25", similarTitles: ["dummy"] });
         await createMovie({ title: "bad_type_movie26", similarTitles: ["dummy"] });
@@ -760,7 +812,7 @@ describe("Update Subscriptions", () => {
         await updateMovie("title", "bad_type_movie25", "bad_type_movie255");
         await updateMovie("title", "bad_type_movie26", "bad_type_movie266");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
 

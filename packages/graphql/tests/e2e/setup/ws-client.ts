@@ -18,7 +18,7 @@
  */
 /* eslint-disable import/no-extraneous-dependencies */
 import ws from "ws";
-import type { Client} from "graphql-ws";
+import type { Client } from "graphql-ws";
 import { createClient } from "graphql-ws";
 
 export class WebSocketTestClient {
@@ -50,7 +50,7 @@ export class WebSocketTestClient {
         });
     }
 
-    public async subscribe(query: string): Promise<void> {
+    public async subscribe(query: string, callback?: jest.Mock): Promise<void> {
         await new Promise<void>((resolve, reject) => {
             this.client.subscribe(
                 { query },
@@ -64,6 +64,11 @@ export class WebSocketTestClient {
                         }
                     },
                     error(err) {
+                        if (callback) {
+                            // hack to be able to expect errors on bad subscriptions
+                            // bc. resolve() happens before below reject()
+                            callback();
+                        }
                         reject(err);
                     },
                     complete() {},

@@ -20,13 +20,13 @@
 import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
-import type { TestGraphQLServer } from "../setup/apollo-server";
-import { ApolloTestServer } from "../setup/apollo-server";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
-import { WebSocketTestClient } from "../setup/ws-client";
-import Neo4j from "../setup/neo4j";
+import { Neo4jGraphQL } from "../../../../src/classes";
+import { generateUniqueType } from "../../../utils/graphql-types";
+import type { TestGraphQLServer } from "../../setup/apollo-server";
+import { ApolloTestServer } from "../../setup/apollo-server";
+import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { WebSocketTestClient } from "../../setup/ws-client";
+import Neo4j from "../../setup/neo4j";
 
 describe("Delete Subscription", () => {
     let neo4j: Neo4j;
@@ -557,8 +557,10 @@ describe("Delete Subscription", () => {
         ]);
     });
 
-    test("subscription with where filter CONTAINS for Int should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter CONTAINS for Int should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_CONTAINS: 2020 }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
@@ -566,7 +568,9 @@ describe("Delete Subscription", () => {
                 }
             }
         }
-    `);
+    `,
+            onReturnError
+        );
 
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie1", releasedIn: 2020 });
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie2", releasedIn: 2021 });
@@ -574,11 +578,13 @@ describe("Delete Subscription", () => {
         await deleteMovie("bad_type_string_movie1");
         await deleteMovie("bad_type_string_movie2");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter CONTAINS for Float should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter CONTAINS for Float should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { averageRating_CONTAINS: 5 }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
@@ -586,7 +592,9 @@ describe("Delete Subscription", () => {
                 }
             }
         }
-    `);
+    `,
+            onReturnError
+        );
 
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie5", averageRating: 5.6 });
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie6", averageRating: 5.2 });
@@ -594,11 +602,13 @@ describe("Delete Subscription", () => {
         await deleteMovie("bad_type_string_movie5");
         await deleteMovie("bad_type_string_movie6");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter CONTAINS for BigInt should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter CONTAINS for BigInt should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { fileSize_CONTAINS: "12" }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
@@ -606,7 +616,9 @@ describe("Delete Subscription", () => {
                 }
             }
         }
-    `);
+    `,
+            onReturnError
+        );
 
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie9", fileSize: "3412" });
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie10", fileSize: "1234" });
@@ -614,11 +626,13 @@ describe("Delete Subscription", () => {
         await deleteMovie("bad_type_string_movie9");
         await deleteMovie("bad_type_string_movie10");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter CONTAINS for Boolean should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter CONTAINS for Boolean should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_CONTAINS: false }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
@@ -626,7 +640,9 @@ describe("Delete Subscription", () => {
                 }
             }
         }
-    `);
+    `,
+            onReturnError
+        );
 
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie13" });
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie14" });
@@ -634,11 +650,13 @@ describe("Delete Subscription", () => {
         await deleteMovie("bad_type_string_movie13");
         await deleteMovie("bad_type_string_movie14");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter CONTAINS for Array should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter CONTAINS for Array should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { similarTitles_CONTAINS: "test" }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
@@ -646,7 +664,9 @@ describe("Delete Subscription", () => {
                 }
             }
         }
-    `);
+    `,
+            onReturnError
+        );
 
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie17", similarTitles: ["test"] });
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie8", similarTitles: ["test"] });
@@ -654,12 +674,14 @@ describe("Delete Subscription", () => {
         await deleteMovie("bad_type_string_movie17");
         await deleteMovie("bad_type_string_movie18");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
 
-    test("subscription with where filter STARTS_WITH for Int should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter STARTS_WITH for Int should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_STARTS_WITH: 2 }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
@@ -667,7 +689,9 @@ describe("Delete Subscription", () => {
                 }
             }
         }
-    `);
+    `,
+            onReturnError
+        );
 
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie21", releasedIn: 2020 });
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie22", releasedIn: 2021 });
@@ -675,11 +699,13 @@ describe("Delete Subscription", () => {
         await deleteMovie("bad_type_string_movie21");
         await deleteMovie("bad_type_string_movie22");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter STARTS_WITH for Float should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter STARTS_WITH for Float should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { averageRating_STARTS_WITH: 6 }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
@@ -687,7 +713,9 @@ describe("Delete Subscription", () => {
                 }
             }
         }
-    `);
+    `,
+            onReturnError
+        );
 
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie25", averageRating: 6.2 });
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie26", averageRating: 6.3 });
@@ -695,11 +723,13 @@ describe("Delete Subscription", () => {
         await deleteMovie("bad_type_string_movie25");
         await deleteMovie("bad_type_string_movie26");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter STARTS_WITH for BigInt should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter STARTS_WITH for BigInt should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { fileSize_STARTS_WITH: 2 }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
@@ -707,7 +737,9 @@ describe("Delete Subscription", () => {
                 }
             }
         }
-    `);
+    `,
+            onReturnError
+        );
 
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie29", fileSize: "2020" });
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie30", fileSize: "2021" });
@@ -715,11 +747,13 @@ describe("Delete Subscription", () => {
         await deleteMovie("bad_type_string_movie29");
         await deleteMovie("bad_type_string_movie30");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter STARTS_WITH for Boolean should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter STARTS_WITH for Boolean should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_STARTS_WITH: "f" }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
@@ -727,7 +761,9 @@ describe("Delete Subscription", () => {
                 }
             }
         }
-    `);
+    `,
+            onReturnError
+        );
 
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie33" });
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie34" });
@@ -735,11 +771,13 @@ describe("Delete Subscription", () => {
         await deleteMovie("bad_type_string_movie33");
         await deleteMovie("bad_type_string_movie34");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter STARTS_WITH for Array should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with where filter STARTS_WITH for Array should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
         subscription {
             ${typeMovie.operations.subscribe.deleted}(where: { similarTitles_STARTS_WITH: "test" }) {
                 ${typeMovie.operations.subscribe.payload.deleted} {
@@ -747,7 +785,9 @@ describe("Delete Subscription", () => {
                 }
             }
         }
-    `);
+    `,
+            onReturnError
+        );
 
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie37", similarTitles: ["test"] });
         await createMovie({ id: generateRandom(), title: "bad_type_string_movie38", similarTitles: ["test"] });
@@ -755,7 +795,7 @@ describe("Delete Subscription", () => {
         await deleteMovie("bad_type_string_movie37");
         await deleteMovie("bad_type_string_movie38");
 
-        expect(wsClient.errors).toEqual([]);
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
 

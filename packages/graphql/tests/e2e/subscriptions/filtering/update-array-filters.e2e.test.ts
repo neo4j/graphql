@@ -20,13 +20,13 @@
 import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
-import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
-import type { TestGraphQLServer } from "../setup/apollo-server";
-import { ApolloTestServer } from "../setup/apollo-server";
-import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
-import { WebSocketTestClient } from "../setup/ws-client";
-import Neo4j from "../setup/neo4j";
+import { Neo4jGraphQL } from "../../../../src/classes";
+import { generateUniqueType } from "../../../utils/graphql-types";
+import type { TestGraphQLServer } from "../../setup/apollo-server";
+import { ApolloTestServer } from "../../setup/apollo-server";
+import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
+import { WebSocketTestClient } from "../../setup/ws-client";
+import Neo4j from "../../setup/neo4j";
 
 describe("Create Subscription with optional filters valid for all types", () => {
     let neo4j: Neo4j;
@@ -413,8 +413,10 @@ describe("Create Subscription with optional filters valid for all types", () => 
         ]);
     });
 
-    test("subscription with INCLUDES on String should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with INCLUDES on String should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { similarTitles_INCLUDES: ["movie"] }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -422,7 +424,9 @@ describe("Create Subscription with optional filters valid for all types", () => 
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ id: generateRandom(), title: "movie24", similarTitles: ["dummy", "movie"] });
         await createMovie({ id: generateRandom(), title: "movie25", similarTitles: ["mock"] });
@@ -430,13 +434,13 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await updateMovie("title", "movie24", "movie24.4");
         await updateMovie("title", "movie25", "movie25.5");
 
-        expect(wsClient.errors).toEqual([]);
-
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with INCLUDES on Boolean should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with INCLUDES on Boolean should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { isFavorite_INCLUDES: true }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -444,7 +448,9 @@ describe("Create Subscription with optional filters valid for all types", () => 
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ id: generateRandom(), title: "movie26", isFavorite: true });
         await createMovie({ id: generateRandom(), title: "movie27", isFavorite: false });
@@ -452,13 +458,13 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await updateMovie("title", "movie26", "movie26.6");
         await updateMovie("title", "movie27", "movie27.7");
 
-        expect(wsClient.errors).toEqual([]);
-
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with NOT_INCLUDES on String should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with NOT_INCLUDES on String should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { similarTitles_NOT_INCLUDES: ["movie"] }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -466,7 +472,9 @@ describe("Create Subscription with optional filters valid for all types", () => 
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ id: generateRandom(), title: "movie28", similarTitles: ["dummy", "movie"] });
         await createMovie({ id: generateRandom(), title: "movie29", similarTitles: ["mock"] });
@@ -474,13 +482,13 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await updateMovie("title", "movie28", "movie28.8");
         await updateMovie("title", "movie29", "movie29.9");
 
-        expect(wsClient.errors).toEqual([]);
-
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with NOT_INCLUDES on Boolean should not work", async () => {
-        await wsClient.subscribe(`
+    test("subscription with NOT_INCLUDES on Boolean should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
             subscription {
                 ${typeMovie.operations.subscribe.updated}(where: { isFavorite_NOT_INCLUDES: true }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
@@ -488,7 +496,9 @@ describe("Create Subscription with optional filters valid for all types", () => 
                     }
                 }
             }
-        `);
+        `,
+            onReturnError
+        );
 
         await createMovie({ id: generateRandom(), title: "movie30", isFavorite: true });
         await createMovie({ id: generateRandom(), title: "movie31", isFavorite: false });
@@ -496,8 +506,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await updateMovie("title", "movie30", "movie30.0");
         await updateMovie("title", "movie31", "movie31.1");
 
-        expect(wsClient.errors).toEqual([]);
-
+        expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
 
