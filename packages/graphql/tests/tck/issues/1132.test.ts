@@ -71,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             			MERGE (this)-[:HAS_TARGET]->(this_connect_targets0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_targets_Target
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -131,7 +131,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_targets0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_targets0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_targets_Target
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
