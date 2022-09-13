@@ -58,7 +58,7 @@ describe("Compare Properties", () => {
         expect(res).toBeTrue();
     });
 
-    test("with number array - different ", () => {
+    test("with number array - different", () => {
         const test = {
             old: {
                 releasedIn: 2022,

@@ -54,51 +54,6 @@ export function compareProperties(obj1: Record<string, any>, obj2: Record<string
     return true;
 }
 
-/*
-export function compareProperties(obj1: unknown, obj2: unknown): boolean {
-    // check types match
-    if (!isSameType(obj1, obj2)) {
-        return false;
-    }
-    // primitive types
-    if (!isNotPrimitive(obj1)) {
-        // coming from: array of strings
-        return obj1 === obj2;
-    }
-    if (isSameType(obj1, obj2)) {
-        // not primitive types
-        if (isDifferentNumberOfItems(obj1, obj2)) {
-            return false;
-        }
-        for (const [k, value] of Object.entries(obj1)) {
-            const otherValue = obj2[k];
-            if (otherValue === null || otherValue === undefined) {
-                return false;
-            }
-            if (!isSameType(value, otherValue)) {
-                return false;
-            }
-            if (Array.isArray(value)) {
-                const areArraysMatching = compareArraysProperties(value, otherValue);
-                if (!areArraysMatching) {
-                    return false;
-                }
-            }
-            if (isObject(value)) {
-                const areObjectPropertiesEqual = compareProperties(value, otherValue);
-                if (!areObjectPropertiesEqual) {
-                    return false;
-                }
-            }
-            if (!isNotPrimitive(value) && otherValue !== value) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-*/
-
 function isFloatType(fieldMeta: PrimitiveField | undefined) {
     return fieldMeta?.typeMeta.name === "Float";
 }
