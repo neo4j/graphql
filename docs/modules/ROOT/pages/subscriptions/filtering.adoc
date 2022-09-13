@@ -96,6 +96,8 @@ movieUpdate(where: {averageRating_GT: 8}) {
 
 This way, we will only receive events triggered by movies with the average rating bigger than 8 being modified.
 
+NOTE: `Where` will only filter by existing properties before the update.
+
 [source, graphql, indent=0]
 ----
 mutation {
