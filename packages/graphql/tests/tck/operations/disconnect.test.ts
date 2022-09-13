@@ -138,11 +138,11 @@ describe("Cypher Disconnect", () => {
             FOREACH(_ IN CASE WHEN this_colors0_disconnect0_photos0_color0 IS NULL THEN [] ELSE [1] END |
             DELETE this_colors0_disconnect0_photos0_color0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_colors0_disconnect0_photos0_color_Color
             }
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_colors0_disconnect0_photos_Photo
             }
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_colors0_disconnect_Color
             }
             WITH this
             CALL {
@@ -160,9 +160,9 @@ describe("Cypher Disconnect", () => {
             FOREACH(_ IN CASE WHEN this_photos0_disconnect0_color0 IS NULL THEN [] ELSE [1] END |
             DELETE this_photos0_disconnect0_color0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_photos0_disconnect0_color_Color
             }
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_photos0_disconnect_Photo
             }
             WITH this
             CALL {
@@ -180,9 +180,9 @@ describe("Cypher Disconnect", () => {
             FOREACH(_ IN CASE WHEN this_photos0_disconnect1_color0 IS NULL THEN [] ELSE [1] END |
             DELETE this_photos0_disconnect1_color0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_photos0_disconnect1_color_Color
             }
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_photos0_disconnect_Photo
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
