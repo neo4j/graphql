@@ -30,14 +30,9 @@ export function isObject(value: unknown): value is object {
     return typeof value === "object" && !Array.isArray(value) && value !== null;
 }
 
-/** Checks if value is a primitive */
-export function isNotPrimitive(value: unknown): value is Record<string, any> | Array<any> {
-    return isObject(value) || Array.isArray(value);
-}
-
 /** Checks if two value have the same type */
-export function isDifferentType<T>(a: T, b: unknown): b is T {
-    return typeof a !== typeof b || isObject(a) !== isObject(b) || Array.isArray(a) !== Array.isArray(b);
+export function isSameType<T>(a: T, b: unknown): b is T {
+    return typeof a === typeof b && isObject(a) === isObject(b) && Array.isArray(a) === Array.isArray(b);
 }
 
 /** Checks if value is a Neo4j int object */

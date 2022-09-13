@@ -22,43 +22,17 @@ import type Node from "../../../../classes/Node";
 import type { PrimitiveField } from "../../../../types";
 import { whereRegEx } from "../../../../translate/where/utils";
 import type { WhereRegexGroups } from "../../../../translate/where/utils";
-import { isObject, isNotPrimitive, isDifferentType } from "../../../../utils/utils";
+import { isSameType } from "../../../../utils/utils";
 
 function isDifferentNumberOfItems(o1: Record<string, any>, o2: Record<string, any>) {
     return Object.keys(o1).length !== Object.keys(o2).length;
 }
-function compareArraysProperties<T>(arr1: Array<T>, arr2: Array<T>): boolean {
-    if (arr1.length !== arr2.length) {
-        return false;
-    }
-    const findInSecondArray = (value: T): boolean => {
-        // OR bc. when comparing arrays of len > 1 for sure there will be non-matches.
-        // However, in the case of all non-matches, false will be returned.
-        return arr2.reduce((acc, v) => {
-            return acc || compareProperties(v, value);
-        }, false);
-    };
-    for (const v of arr1) {
-        if (!findInSecondArray(v)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-/** Returns true if all properties in obj1 exists in obj2, false otherwise */
-export function compareProperties(obj1: unknown, obj2: unknown): boolean {
-    // check types match
-    if (isDifferentType(obj1, obj2)) {
-        return false;
-    }
-    // primitive types
-    if (!isNotPrimitive(obj1)) {
-        // coming from: array of strings
-        return obj1 === obj2;
-    }
-    // not primitive types
-    if (isDifferentNumberOfItems(obj1, obj2)) {
+/**
+ * Returns true if all properties in obj1 exists in obj2, false otherwise.
+ * Properties can only be primitives or Array<primitive>
+ */
+export function compareProperties(obj1: Record<string, any>, obj2: Record<string, any>): boolean {
+    if (!isSameType(obj1, obj2) || isDifferentNumberOfItems(obj1, obj2)) {
         return false;
     }
     for (const [k, value] of Object.entries(obj1)) {
@@ -66,27 +40,64 @@ export function compareProperties(obj1: unknown, obj2: unknown): boolean {
         if (otherValue === null || otherValue === undefined) {
             return false;
         }
-        if (isDifferentType(value, otherValue)) {
-            return false;
-        }
-        if (Array.isArray(value)) {
-            const areArraysMatching = compareArraysProperties(value, otherValue);
+        if (Array.isArray(value) && isSameType(value, otherValue)) {
+            const areArraysMatching = compareProperties(value, otherValue);
             if (!areArraysMatching) {
                 return false;
             }
         }
-        if (isObject(value)) {
-            const areObjectPropertiesEqual = compareProperties(value, otherValue);
-            if (!areObjectPropertiesEqual) {
+        if (!Array.isArray(value) && isSameType(value, otherValue) && otherValue !== value) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/*
+export function compareProperties(obj1: unknown, obj2: unknown): boolean {
+    // check types match
+    if (!isSameType(obj1, obj2)) {
+        return false;
+    }
+    // primitive types
+    if (!isNotPrimitive(obj1)) {
+        // coming from: array of strings
+        return obj1 === obj2;
+    }
+    if (isSameType(obj1, obj2)) {
+        // not primitive types
+        if (isDifferentNumberOfItems(obj1, obj2)) {
+            return false;
+        }
+        for (const [k, value] of Object.entries(obj1)) {
+            const otherValue = obj2[k];
+            if (otherValue === null || otherValue === undefined) {
                 return false;
             }
-        }
-        if (!isNotPrimitive(value) && otherValue !== value) {
-            return false;
+            if (!isSameType(value, otherValue)) {
+                return false;
+            }
+            if (Array.isArray(value)) {
+                const areArraysMatching = compareArraysProperties(value, otherValue);
+                if (!areArraysMatching) {
+                    return false;
+                }
+            }
+            if (isObject(value)) {
+                const areObjectPropertiesEqual = compareProperties(value, otherValue);
+                if (!areObjectPropertiesEqual) {
+                    return false;
+                }
+            }
+            if (!isNotPrimitive(value) && otherValue !== value) {
+                return false;
+            }
         }
     }
     return true;
 }
+*/
 
 function isFloatType(fieldMeta: PrimitiveField | undefined) {
     return fieldMeta?.typeMeta.name === "Float";

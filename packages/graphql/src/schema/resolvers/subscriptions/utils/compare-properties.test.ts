@@ -43,351 +43,169 @@ describe("Compare Properties", () => {
         expect(res).toBeTrue();
     });
 
-    test("with object and string array - equal", () => {
+    test("with number array - equal", () => {
         const test = {
             old: {
                 releasedIn: 2022,
-                similarTitles: ["the matrix"],
-                actors: {
-                    name: "Neo",
-                },
-                fileSize: 100,
-                averageRating: 9.5,
-                title: "some_small_movie",
-                isFavorite: false,
+                otherReleases: [2000],
             },
             current: {
                 releasedIn: 2022,
-                similarTitles: ["the matrix"],
-                actors: {
-                    name: "Neo",
-                },
-                fileSize: 100,
-                averageRating: 9.5,
-                title: "some_small_movie",
-                isFavorite: false,
+                otherReleases: [2000],
             },
         };
         const res = compareProperties(test.old, test.current);
         expect(res).toBeTrue();
     });
 
-    test("with object and object array - equal", () => {
+    test("with number array - different ", () => {
         const test = {
             old: {
                 releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "the matrix",
-                        releasedIn: 2000,
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                },
+                otherReleases: [2000],
             },
             current: {
                 releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "the matrix",
-                        releasedIn: 2000,
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                },
+                otherReleases: [200],
+            },
+        };
+        const res = compareProperties(test.old, test.current);
+        expect(res).toBeFalse();
+    });
+
+    test("with number array len>1 - different bc order", () => {
+        const test = {
+            old: {
+                releasedIn: 2022,
+                otherReleases: [2000, 2020],
+            },
+            current: {
+                releasedIn: 2022,
+                otherReleases: [2020, 2000],
+            },
+        };
+        const res = compareProperties(test.old, test.current);
+        expect(res).toBeFalse();
+    });
+
+    test("with number array len>1 - equal", () => {
+        const test = {
+            old: {
+                releasedIn: 2022,
+                otherReleases: [2000, 2020],
+            },
+            current: {
+                releasedIn: 2022,
+                otherReleases: [2000, 2020],
             },
         };
         const res = compareProperties(test.old, test.current);
         expect(res).toBeTrue();
     });
 
-    test("with object and object array len>1 - equal", () => {
+    test("with string array len>1 - equal", () => {
         const test = {
             old: {
                 releasedIn: 2022,
-                similarTitles: [
-                    { title: "the matrix", releasedIn: 2000 },
-                    { title: "the godfather", releasedIn: 1990 },
-                ],
-                actors: {
-                    name: "Neo",
-                },
+                similarTitles: ["the matrix", "the godfather"],
             },
             current: {
                 releasedIn: 2022,
-                similarTitles: [
-                    { title: "the matrix", releasedIn: 2000 },
-                    { title: "the godfather", releasedIn: 1990 },
-                ],
-                actors: {
-                    name: "Neo",
-                },
+                similarTitles: ["the matrix", "the godfather"],
             },
         };
         const res = compareProperties(test.old, test.current);
         expect(res).toBeTrue();
     });
 
-    test("with object and object array len>1 - equal in different order", () => {
+    test("with string array len>1 - different bc order", () => {
         const test = {
             old: {
                 releasedIn: 2022,
-                similarTitles: [
-                    { title: "the matrix", releasedIn: 2000 },
-                    { title: "the godfather", releasedIn: 1999 },
-                ],
-                actors: {
-                    name: "Neo",
-                },
+                similarTitles: ["the matrix", "the godfather"],
             },
             current: {
                 releasedIn: 2022,
-                similarTitles: [
-                    { title: "the godfather", releasedIn: 1999 },
-                    { title: "the matrix", releasedIn: 2000 },
-                ],
-                actors: {
-                    name: "Neo",
-                },
+                similarTitles: ["the godfather", "the matrix"],
+            },
+        };
+        const res = compareProperties(test.old, test.current);
+        expect(res).toBeFalse();
+    });
+
+    test("with string array len>1 - different bc props order", () => {
+        const test = {
+            old: {
+                similarTitles: ["the matrix", "the godfather"],
+                releasedIn: 2022,
+            },
+            current: {
+                releasedIn: 2022,
+                similarTitles: ["the godfather", "the matrix"],
+            },
+        };
+        const res = compareProperties(test.old, test.current);
+        expect(res).toBeFalse();
+    });
+
+    test("with string array len>1 - different bc number prop", () => {
+        const test = {
+            old: {
+                releasedIn: 2002,
+                similarTitles: ["the matrix", "the godfather"],
+            },
+            current: {
+                releasedIn: 2022,
+                similarTitles: ["the godfather", "the matrix"],
+            },
+        };
+        const res = compareProperties(test.old, test.current);
+        expect(res).toBeFalse();
+    });
+
+    test("with string array len>1 - different bc one empty", () => {
+        const test = {
+            old: {
+                releasedIn: 2002,
+                similarTitles: [],
+            },
+            current: {
+                releasedIn: 2022,
+                similarTitles: ["the godfather", "the matrix"],
+            },
+        };
+        const res = compareProperties(test.old, test.current);
+        expect(res).toBeFalse();
+    });
+
+    test("with empty array - equal", () => {
+        const test = {
+            old: {
+                releasedIn: 2022,
+                similarTitles: [],
+            },
+            current: {
+                releasedIn: 2022,
+                similarTitles: [],
             },
         };
         const res = compareProperties(test.old, test.current);
         expect(res).toBeTrue();
     });
 
-    test("with object and nested object array - equal", () => {
+    test("with empty array - different number", () => {
         const test = {
             old: {
                 releasedIn: 2022,
-                similarTitles: [{ title: "pulp fiction", releasedIn: 1999, actors: [{ name: "Travolta", age: 30 }] }],
-                actors: {
-                    name: "Neo",
-                },
+                similarTitles: [],
             },
             current: {
-                releasedIn: 2022,
-                similarTitles: [{ title: "pulp fiction", releasedIn: 1999, actors: [{ name: "Travolta", age: 30 }] }],
-                actors: {
-                    name: "Neo",
-                },
-            },
-        };
-
-        const res = compareProperties(test.old, test.current);
-        expect(res).toBeTrue();
-    });
-
-    test("with object and nested object array - equal in different order", () => {
-        const test = {
-            old: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                },
-            },
-            current: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        actors: [{ name: "Travolta", age: 30 }],
-                        director: { name: "Tarantino", age: 35 },
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                },
+                releasedIn: 2020,
+                similarTitles: [],
             },
         };
         const res = compareProperties(test.old, test.current);
-        expect(res).toBeTrue();
-    });
-
-    test("with nested object with array of strings len>1 and nested object array len>1 - equal object in different order", () => {
-        const test = {
-            old: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                    {
-                        title: "the matrix",
-                        releasedIn: 2000,
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                    titles: ["Movie1", "Movie2"],
-                },
-            },
-            current: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "the matrix",
-                        releasedIn: 2000,
-                    },
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        actors: [{ name: "Travolta", age: 30 }],
-                        director: { name: "Tarantino", age: 35 },
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                    titles: ["Movie1", "Movie2"],
-                },
-            },
-        };
-        const res = compareProperties(test.old, test.current);
-        expect(res).toBeTrue();
-    });
-
-    test("with nested object with array of strings len>1 and nested object array len>1  - equal array in different order", () => {
-        const test = {
-            old: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                    titles: ["Movie1", "Movie2"],
-                },
-            },
-            current: {
-                releasedIn: 2022,
-                actors: {
-                    name: "Neo",
-                    titles: ["Movie2", "Movie1"],
-                },
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                ],
-            },
-        };
-        const res = compareProperties(test.old, test.current);
-        expect(res).toBeTrue();
-    });
-
-    test("with nested object with array of objects len>1 and nested object array len>1  - equal", () => {
-        const test = {
-            old: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                    {
-                        title: "the matrix",
-                        releasedIn: 2000,
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                    titles: [
-                        { title: "Movie1", releasedIn: 2020 },
-                        { title: "Movie2", releasedIn: 2000 },
-                    ],
-                },
-            },
-            current: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "the matrix",
-                        releasedIn: 2000,
-                    },
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                    titles: [
-                        { title: "Movie2", releasedIn: 2000 },
-                        { title: "Movie1", releasedIn: 2020 },
-                    ],
-                },
-            },
-        };
-        const res = compareProperties(test.old, test.current);
-        expect(res).toBeTrue();
-    });
-
-    test("with nested object with array of objects len>1 and nested object array len>1  - equal in different order", () => {
-        const test = {
-            old: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                    titles: [
-                        { title: "Movie2", releasedIn: 2000 },
-                        { title: "Movie1", releasedIn: 2020 },
-                    ],
-                },
-            },
-            current: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { age: 35, name: "Tarantino" },
-                        actors: [{ age: 30, name: "Travolta" }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                    titles: [
-                        { releasedIn: 2020, title: "Movie1" },
-                        { releasedIn: 2000, title: "Movie2" },
-                    ],
-                },
-            },
-        };
-        const res = compareProperties(test.old, test.current);
-        expect(res).toBeTrue();
+        expect(res).toBeFalse();
     });
 
     test("with string array - diferent strings", () => {
@@ -413,14 +231,11 @@ describe("Compare Properties", () => {
         expect(res).toBeFalse();
     });
 
-    test("with object and string array - different object", () => {
+    test("with all prop types - different int", () => {
         const test = {
             old: {
                 releasedIn: 2022,
                 similarTitles: ["the matrix"],
-                actors: {
-                    name: "Neo",
-                },
                 fileSize: 100,
                 averageRating: 9.5,
                 title: "some_small_movie",
@@ -429,9 +244,6 @@ describe("Compare Properties", () => {
             current: {
                 releasedIn: 2022,
                 similarTitles: ["the matrix"],
-                actors: {
-                    name: "Cypher",
-                },
                 fileSize: 101,
                 averageRating: 9.5,
                 title: "some_small_movie",
@@ -442,26 +254,19 @@ describe("Compare Properties", () => {
         expect(res).toBeFalse();
     });
 
-    test("with object and string array - different int", () => {
+    test("with all prop types - different bool", () => {
         const test = {
             old: {
                 releasedIn: 2022,
                 similarTitles: ["the matrix"],
-                actors: {
-                    name: "Neo",
-                },
                 fileSize: 100,
                 averageRating: 9.5,
                 title: "some_small_movie",
-                isFavorite: false,
+                isFavorite: true,
             },
             current: {
                 releasedIn: 2022,
                 similarTitles: ["the matrix"],
-                actors: {
-                    name: "Cypher",
-                    age: 20,
-                },
                 fileSize: 101,
                 averageRating: 9.5,
                 title: "some_small_movie",
@@ -472,365 +277,55 @@ describe("Compare Properties", () => {
         expect(res).toBeFalse();
     });
 
-    test("with object and object array - different lengths", () => {
+    test("with all prop types - equal in different order", () => {
         const test = {
             old: {
                 releasedIn: 2022,
-                similarTitles: [
-                    { title: "the matrix", releasedIn: 2000 },
-                    { title: "the godfather", releasedIn: 1999 },
-                ],
-                actors: {
-                    name: "Neo",
-                },
+                similarTitles: ["the matrix"],
+                isFavorite: false,
+                fileSize: 101,
+                averageRating: 9.5,
+                title: "some_small_movie",
             },
             current: {
                 releasedIn: 2022,
-                similarTitles: [{ title: "the matrix", releasedIn: 2000 }],
-                actors: {
-                    name: "Neo",
-                },
+                similarTitles: ["the matrix"],
+                fileSize: 101,
+                averageRating: 9.5,
+                title: "some_small_movie",
+                isFavorite: false,
+            },
+        };
+        const res = compareProperties(test.old, test.current);
+        expect(res).toBeTrue();
+    });
+
+    test("with string array - different len", () => {
+        const test = {
+            old: {
+                releasedIn: 2022,
+                similarTitles: ["the matrix", "fight club"],
+            },
+            current: {
+                releasedIn: 2022,
+                similarTitles: ["the matrix"],
             },
         };
         const res = compareProperties(test.old, test.current);
         expect(res).toBeFalse();
     });
 
-    test("with object and object array - different lengths inverse", () => {
+    test("with string array - different len inverse", () => {
         const test = {
             old: {
                 releasedIn: 2022,
-                similarTitles: [{ title: "pulp fiction", releasedIn: 1999, actors: [{ name: "Travolta", age: 30 }] }],
-                actors: {
-                    name: "Neo",
-                },
+                similarTitles: ["the matrix"],
             },
             current: {
                 releasedIn: 2022,
-                similarTitles: [
-                    { title: "the matrix", releasedIn: 2000 },
-                    { title: "pulp fiction", releasedIn: 1990, actors: [{ name: "Travolta", age: 30 }] },
-                ],
-                actors: {
-                    name: "Neo",
-                },
+                similarTitles: ["the matrix", "fight club"],
             },
         };
-        const res = compareProperties(test.old, test.current);
-        expect(res).toBeFalse();
-    });
-
-    test("with object and object array - different object int field", () => {
-        const test = {
-            old: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                },
-            },
-            current: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1990,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                },
-            },
-        };
-        const res = compareProperties(test.old, test.current);
-        expect(res).toBeFalse();
-    });
-
-    test("with object and object array - different object fields", () => {
-        const test = {
-            old: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino" },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                },
-            },
-            current: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                },
-            },
-        };
-        const res = compareProperties(test.old, test.current);
-        expect(res).toBeFalse();
-    });
-
-    test("with object and nested object array - different lengths", () => {
-        const test = {
-            old: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                },
-            },
-            current: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "the matrix",
-                        releasedIn: 2000,
-                    },
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantin", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                },
-            },
-        };
-        const res = compareProperties(test.old, test.current);
-        expect(res).toBeFalse();
-    });
-
-    test("with object and nested object array - different", () => {
-        const test = {
-            old: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }, { name: "x" }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                },
-            },
-            current: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }, { name: "y" }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                },
-            },
-        };
-
-        const res = compareProperties(test.old, test.current);
-        expect(res).toBeFalse();
-    });
-
-    test("with nested object with array of strings len>1 and nested object array - different obj.array len", () => {
-        const test = {
-            old: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                    titles: ["Movie1", "Movie2", "Movie3"],
-                },
-            },
-            current: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                    titles: ["Movie1", "Movie2"],
-                },
-            },
-        };
-        const res = compareProperties(test.old, test.current);
-        expect(res).toBeFalse();
-    });
-
-    test("with nested object with array of strings len>1 and nested object array - different obj.array fields", () => {
-        const test = {
-            old: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                    titles: [
-                        { title: "Movie1", releasedIn: 2020 },
-                        { title: "Movie2", releasedIn: 2000 },
-                    ],
-                },
-            },
-            current: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                    titles: [
-                        { title: "Movie1", releasedIn: 2020 },
-                        { title: "Movie3", releasedIn: 2000 },
-                    ],
-                },
-            },
-        };
-        const res = compareProperties(test.old, test.current);
-        expect(res).toBeFalse();
-    });
-
-    test("with nested object with array of strings len>1 and nested object array - different obj fields of same type", () => {
-        const test = {
-            old: {
-                releasedIn: 2022,
-                similarTitles: [
-                    {
-                        title: "pulp fiction",
-                        releasedIn: 1999,
-                        director: { name: "Tarantino", age: 35 },
-                        actors: [{ name: "Travolta", age: 30 }],
-                    },
-                ],
-                actors: {
-                    name: "Neo",
-                    titles: [
-                        { title: "Movie1", releasedIn: 2020 },
-                        { title: "Movie2", releasedIn: 2000 },
-                    ],
-                },
-            },
-            current: {
-                releasedIn: 2022,
-                actors: {
-                    name: "Neo",
-                    titles: [
-                        { title: "Movie1", releasedIn: 2020 },
-                        { title: "Movie3", releasedIn: 2000 },
-                    ],
-                },
-                ratings: [
-                    {
-                        site: "imdb",
-                        rating: 9,
-                    },
-                    {
-                        site: "rotten tomatos",
-                        rating: 9.9,
-                    },
-                ],
-            },
-        };
-
-        // @ts-ignore
-        const res = compareProperties(test.old, test.current);
-        expect(res).toBeFalse();
-    });
-
-    test("with nested object with array of strings len>1 and nested object array - different obj types of same field", () => {
-        const test = {
-            old: {
-                releasedIn: 2022,
-                ratings: {
-                    imdb: 9,
-                    rottenTomatoes: 9.9,
-                },
-                actors: {
-                    name: "Neo",
-                    titles: [
-                        { title: "Movie1", releasedIn: 2020 },
-                        { title: "Movie2", releasedIn: 2000 },
-                    ],
-                },
-            },
-            current: {
-                releasedIn: 2022,
-                actors: {
-                    name: "Neo",
-                    titles: [
-                        { title: "Movie1", releasedIn: 2020 },
-                        { title: "Movie3", releasedIn: 2000 },
-                    ],
-                },
-                ratings: [
-                    {
-                        site: "imdb",
-                        rating: 9,
-                    },
-                    {
-                        site: "rotten tomatos",
-                        rating: 9.9,
-                    },
-                ],
-            },
-        };
-
-        // @ts-ignore
         const res = compareProperties(test.old, test.current);
         expect(res).toBeFalse();
     });
