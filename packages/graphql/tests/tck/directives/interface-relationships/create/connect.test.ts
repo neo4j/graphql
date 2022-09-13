@@ -108,9 +108,10 @@ describe("Interface Relationships - Create connect", () => {
             SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS _
-            UNION
-            	WITH this0
+            	RETURN count(*) AS connect_this0_actedIn_connect_Movie
+            }
+            CALL {
+            		WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect0_node:Series)
             	WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
@@ -119,7 +120,7 @@ describe("Interface Relationships - Create connect", () => {
             SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_actedIn_connect_Series
             }
             RETURN this0
             }

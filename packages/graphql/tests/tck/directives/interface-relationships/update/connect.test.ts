@@ -93,9 +93,10 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS _
-            UNION
-            	WITH this
+            	RETURN count(*) AS connect_this_connect_actedIn_Movie
+            }
+            CALL {
+            		WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
             	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
             	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
@@ -104,7 +105,7 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actedIn_Series
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
@@ -170,11 +171,12 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_node_actors0_relationship.screenTime = $this_connect_actedIn0_node_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actedIn0_node_actors_Actor
             }
-            	RETURN count(*) AS _
-            UNION
-            	WITH this
+            	RETURN count(*) AS connect_this_connect_actedIn_Movie
+            }
+            CALL {
+            		WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
             	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
             	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
@@ -194,9 +196,9 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_node_actors0_relationship.screenTime = $this_connect_actedIn0_node_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actedIn0_node_actors_Actor
             }
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actedIn_Series
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
@@ -271,11 +273,12 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_node_on_Movie0_actors0_relationship.screenTime = $this_connect_actedIn0_node_on_Movie0_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actedIn0_node_on_Movie0_actors_Actor
             }
-            	RETURN count(*) AS _
-            UNION
-            	WITH this
+            	RETURN count(*) AS connect_this_connect_actedIn_Movie
+            }
+            CALL {
+            		WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
             	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
             	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
@@ -284,7 +287,7 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actedIn_Series
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
@@ -365,11 +368,12 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_node_on_Movie0_actors0_relationship.screenTime = $this_connect_actedIn0_node_on_Movie0_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actedIn0_node_on_Movie0_actors_Actor
             }
-            	RETURN count(*) AS _
-            UNION
-            	WITH this
+            	RETURN count(*) AS connect_this_connect_actedIn_Movie
+            }
+            CALL {
+            		WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
             	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
             	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
@@ -389,9 +393,9 @@ describe("Interface Relationships - Update connect", () => {
             SET this_connect_actedIn0_node_actors0_relationship.screenTime = $this_connect_actedIn0_node_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actedIn0_node_actors_Actor
             }
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actedIn_Series
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"

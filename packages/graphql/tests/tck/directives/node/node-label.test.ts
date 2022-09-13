@@ -367,7 +367,7 @@ describe("Label in Node directive", () => {
             			MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actors_Actor
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -409,7 +409,7 @@ describe("Label in Node directive", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_actors0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actors0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_actors_Actor
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

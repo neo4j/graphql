@@ -229,9 +229,10 @@ describe("@auth allow on specific interface implementation", () => {
             RETURN count(*) AS _
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id})
             YIELD value AS _
-            RETURN count(*) AS _
-            UNION
-            WITH this
+            RETURN count(*) AS update_this_Comment
+            }
+            CALL {
+            	WITH this
             OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
             CALL apoc.do.when(this_content0 IS NOT NULL, \\"
             WITH this, this_content0
@@ -248,7 +249,7 @@ describe("@auth allow on specific interface implementation", () => {
             RETURN count(*) AS _
             \\", \\"\\", {this:this, updateUsers: $updateUsers, this_content0:this_content0, auth:$auth,this_update_content0_id:$this_update_content0_id,this_content0auth_param0:$this_content0auth_param0})
             YIELD value AS _
-            RETURN count(*) AS _
+            RETURN count(*) AS update_this_Post
             }
             WITH *
             WITH *
@@ -391,9 +392,10 @@ describe("@auth allow on specific interface implementation", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
-            RETURN count(*) AS _
-            UNION
-            WITH this
+            RETURN count(*) AS disconnect_this_disconnect_content_Comment
+            }
+            CALL {
+            	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Postparam0
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
@@ -401,7 +403,7 @@ describe("@auth allow on specific interface implementation", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_content_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -468,9 +470,10 @@ describe("@auth allow on specific interface implementation", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_rel
             )
-            RETURN count(*) AS _
-            UNION
-            WITH this
+            RETURN count(*) AS disconnect_this_disconnect_content_Comment
+            }
+            CALL {
+            	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Postparam0
             WITH this, this_disconnect_content0, this_disconnect_content0_rel
@@ -488,9 +491,9 @@ describe("@auth allow on specific interface implementation", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_content0_comments0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_content0_comments0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_content0_comments_Comment
             }
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_content_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -569,9 +572,10 @@ describe("@auth allow on specific interface implementation", () => {
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
             		)
             	)
-            	RETURN count(*) AS _
-            UNION
-            	WITH this
+            	RETURN count(*) AS connect_this_connect_content_Comment
+            }
+            CALL {
+            		WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
             	WHERE this_connect_content0_node.id = $this_connect_content0_node_param0
             	WITH this, this_connect_content0_node
@@ -581,7 +585,7 @@ describe("@auth allow on specific interface implementation", () => {
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_content_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

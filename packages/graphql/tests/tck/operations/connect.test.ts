@@ -163,11 +163,11 @@ describe("Cypher Connect", () => {
             	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
             	RETURN c AS this0_colors_connect0_node_photos0_node_color_Color_unique_ignored
             }
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_colors_connect0_node_photos0_node_color_Color
             }
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_colors_connect0_node_photos_Photo
             }
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_colors_connect_Color
             }
             WITH this0
             CALL {
@@ -197,9 +197,9 @@ describe("Cypher Connect", () => {
             	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
             	RETURN c AS this0_photos_connect0_node_color_Color_unique_ignored
             }
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_photos_connect0_node_color_Color
             }
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_photos_connect_Photo
             }
             WITH this0
             CALL {
@@ -229,9 +229,9 @@ describe("Cypher Connect", () => {
             	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required', [0])
             	RETURN c AS this0_photos_connect1_node_color_Color_unique_ignored
             }
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_photos_connect1_node_color_Color
             }
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_photos_connect_Photo
             }
             RETURN this0
             }
