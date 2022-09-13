@@ -345,7 +345,7 @@ describe("Math operators", () => {
             RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_marriedWith0:this_marriedWith0, auth:$auth,this_update_marriedWith0_marriageLength_INCREMENT:$this_update_marriedWith0_marriageLength_INCREMENT})
             YIELD value AS _
-            RETURN count(*) AS _
+            RETURN count(*) AS update_this_Star
             }
             WITH *
             WITH this
@@ -435,7 +435,7 @@ describe("Math operators", () => {
             RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_marriedWith0:this_marriedWith0, auth:$auth,this_update_marriedWith0_on_Star_marriageLength_INCREMENT:$this_update_marriedWith0_on_Star_marriageLength_INCREMENT})
             YIELD value AS _
-            RETURN count(*) AS _
+            RETURN count(*) AS update_this_Star
             }
             WITH *
             WITH this

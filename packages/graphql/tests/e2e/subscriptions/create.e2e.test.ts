@@ -37,10 +37,10 @@ describe("Create Subscription", () => {
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         const typeDefs = `
          type ${typeMovie} {
-             title: String
+            title: String
          }
          `;
 
@@ -59,20 +59,15 @@ describe("Create Subscription", () => {
                 subscriptions: new TestSubscriptionsPlugin(),
             },
         });
-
         server = new ApolloTestServer(neoSchema);
         await server.start();
-    });
 
-    beforeEach(() => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
     afterEach(async () => {
         await wsClient.close();
-    });
 
-    afterAll(async () => {
         await server.close();
         await driver.close();
     });
@@ -111,7 +106,6 @@ describe("Create Subscription", () => {
             },
         ]);
     });
-
     test("create subscription with where", async () => {
         await wsClient.subscribe(`
             subscription {
