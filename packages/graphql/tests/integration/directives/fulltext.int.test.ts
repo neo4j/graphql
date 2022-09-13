@@ -648,7 +648,7 @@ describe("@fulltext directive", () => {
         );
     });
 
-    test.only("should create index for ID field if it doesn't exist and then query using the index", async () => {
+    test("should create index for ID field if it doesn't exist and then query using the index", async () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
             console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
