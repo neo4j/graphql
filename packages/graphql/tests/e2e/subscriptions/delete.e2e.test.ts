@@ -37,12 +37,12 @@ describe("Delete Subscription", () => {
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         const typeDefs = `
-         type ${typeMovie} {
-             title: String
-         }
-         `;
+        type ${typeMovie} {
+            title: String
+        }
+        `;
 
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
@@ -62,17 +62,13 @@ describe("Delete Subscription", () => {
 
         server = new ApolloTestServer(neoSchema);
         await server.start();
-    });
 
-    beforeEach(() => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
     afterEach(async () => {
         await wsClient.close();
-    });
 
-    afterAll(async () => {
         await server.close();
         await driver.close();
     });
@@ -114,7 +110,6 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
-
     test("delete subscription with where", async () => {
         await wsClient.subscribe(`
             subscription {
