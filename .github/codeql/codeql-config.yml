@@ -6,4 +6,4 @@ paths-ignore:
   - examples
   - config
   - node_modules
-  - src/packages/**/tests/**/*.test.ts
+  - packages/**/tests/**/*.test.ts
