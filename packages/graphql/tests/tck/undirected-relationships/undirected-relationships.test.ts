@@ -214,16 +214,16 @@ describe("Undirected relationships", () => {
             WITH this
             CALL {
                 WITH this
-                MATCH (this)-[:ACTED_IN]-(this_Movie:Movie)
-                RETURN { __resolveType: \\"Movie\\", title: this_Movie.title } AS actedIn
+                MATCH (this)-[thisthis0:ACTED_IN]-(this_Movie:\`Movie\`)
+                RETURN { __resolveType: \\"Movie\\", title: this_Movie.title } AS this_actedIn
                 UNION
                 WITH this
-                MATCH (this)-[:ACTED_IN]-(this_Series:Series)
-                RETURN { __resolveType: \\"Series\\", title: this_Series.title } AS actedIn
+                MATCH (this)-[thisthis1:ACTED_IN]-(this_Series:\`Series\`)
+                RETURN { __resolveType: \\"Series\\", title: this_Series.title } AS this_actedIn
             }
-            RETURN collect(actedIn) AS actedIn
+            RETURN collect(this_actedIn) AS this_actedIn
             }
-            RETURN this { actedIn: actedIn } as this"
+            RETURN this { actedIn: this_actedIn } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

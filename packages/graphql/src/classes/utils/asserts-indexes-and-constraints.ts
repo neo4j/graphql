@@ -22,6 +22,7 @@ import Debug from "debug";
 import type Node from "../Node";
 import type { DriverConfig } from "../..";
 import { DEBUG_EXECUTE } from "../../constants";
+import type { Neo4jDatabaseInfo } from "../Neo4jDatabaseInfo";
 
 const debug = Debug(DEBUG_EXECUTE);
 
@@ -29,7 +30,15 @@ export interface AssertIndexesAndConstraintsOptions {
     create?: boolean;
 }
 
-async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; session: Session }) {
+async function createIndexesAndConstraints({
+    nodes,
+    session,
+    dbInfo,
+}: {
+    nodes: Node[];
+    session: Session;
+    dbInfo: Neo4jDatabaseInfo;
+}) {
     const constraintsToCreate: { constraintName: string; label: string; property: string }[] = [];
     const indexesToCreate: { indexName: string; label: string; properties: string[] }[] = [];
 
@@ -108,8 +117,8 @@ async function createIndexesAndConstraints({ nodes, session }: { nodes: Node[]; 
     for (const constraintToCreate of constraintsToCreate) {
         const cypher = [
             `CREATE CONSTRAINT ${constraintToCreate.constraintName}`,
-            `IF NOT EXISTS ON (n:${constraintToCreate.label})`,
-            `ASSERT n.${constraintToCreate.property} IS UNIQUE`,
+            `IF NOT EXISTS ${dbInfo.gte("4.4") ? "FOR" : "ON"} (n:${constraintToCreate.label})`,
+            `${dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"} n.${constraintToCreate.property} IS UNIQUE`,
         ].join(" ");
 
         debug(`About to execute Cypher: ${cypher}`);
@@ -240,11 +249,13 @@ async function assertIndexesAndConstraints({
     driverConfig,
     nodes,
     options,
+    dbInfo,
 }: {
     driver: Driver;
     driverConfig?: DriverConfig;
     nodes: Node[];
     options?: AssertIndexesAndConstraintsOptions;
+    dbInfo: Neo4jDatabaseInfo;
 }): Promise<void> {
     await driver.verifyConnectivity();
 
@@ -267,7 +278,7 @@ async function assertIndexesAndConstraints({
 
     try {
         if (options?.create) {
-            await createIndexesAndConstraints({ nodes, session });
+            await createIndexesAndConstraints({ nodes, session, dbInfo });
         } else {
             await checkIndexesAndConstraints({ nodes, session });
         }

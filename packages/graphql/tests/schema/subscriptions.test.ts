@@ -115,6 +115,15 @@ describe("Subscriptions", () => {
 
             input ActorSubscriptionWhere {
               name: String
+              name_CONTAINS: String
+              name_ENDS_WITH: String
+              name_IN: [String]
+              name_NOT: String
+              name_NOT_CONTAINS: String
+              name_NOT_ENDS_WITH: String
+              name_NOT_IN: [String]
+              name_NOT_STARTS_WITH: String
+              name_STARTS_WITH: String
             }
 
             input ActorUpdateInput {
@@ -383,9 +392,33 @@ describe("Subscriptions", () => {
 
             input MovieSubscriptionWhere {
               actorCount: Int
+              actorCount_GT: Int
+              actorCount_GTE: Int
+              actorCount_IN: [Int]
+              actorCount_LT: Int
+              actorCount_LTE: Int
+              actorCount_NOT: Int
+              actorCount_NOT_IN: [Int]
               averageRating: Float
+              averageRating_GT: Float
+              averageRating_GTE: Float
+              averageRating_IN: [Float]
+              averageRating_LT: Float
+              averageRating_LTE: Float
+              averageRating_NOT: Float
+              averageRating_NOT_IN: [Float]
               id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
               isActive: Boolean
+              isActive_NOT: Boolean
             }
 
             input MovieUpdateInput {
@@ -999,9 +1032,33 @@ describe("Subscriptions", () => {
 
             input MovieSubscriptionWhere {
               actorCount: Int
+              actorCount_GT: Int
+              actorCount_GTE: Int
+              actorCount_IN: [Int]
+              actorCount_LT: Int
+              actorCount_LTE: Int
+              actorCount_NOT: Int
+              actorCount_NOT_IN: [Int]
               averageRating: Float
+              averageRating_GT: Float
+              averageRating_GTE: Float
+              averageRating_IN: [Float]
+              averageRating_LT: Float
+              averageRating_LTE: Float
+              averageRating_NOT: Float
+              averageRating_NOT_IN: [Float]
               id: ID
+              id_CONTAINS: ID
+              id_ENDS_WITH: ID
+              id_IN: [ID]
+              id_NOT: ID
+              id_NOT_CONTAINS: ID
+              id_NOT_ENDS_WITH: ID
+              id_NOT_IN: [ID]
+              id_NOT_STARTS_WITH: ID
+              id_STARTS_WITH: ID
               isActive: Boolean
+              isActive_NOT: Boolean
             }
 
             input MovieUpdateInput {

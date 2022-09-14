@@ -95,7 +95,7 @@ describe("Relationship Properties Connect Cypher", () => {
             SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_actors_connect_Actor
             }
             RETURN this0
             }
@@ -169,7 +169,7 @@ describe("Relationship Properties Connect Cypher", () => {
             SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_actors_connect_Actor
             }
             RETURN this0
             }
@@ -235,7 +235,7 @@ describe("Relationship Properties Connect Cypher", () => {
             SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actors_Actor
             }
             WITH *
             WITH *
@@ -303,7 +303,7 @@ describe("Relationship Properties Connect Cypher", () => {
             SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actors_Actor
             }
             WITH *
             WITH *

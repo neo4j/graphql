@@ -38,10 +38,10 @@ describe("Update Subscriptions", () => {
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         const typeDefs = `
          type ${typeMovie} {
-             title: String
+            title: String
          }
 
          type ${typeActor} {
@@ -55,29 +55,19 @@ describe("Update Subscriptions", () => {
         const neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            config: {
-                driverConfig: {
-                    database: neo4j.getIntegrationDatabaseName(),
-                },
-            },
             plugins: {
                 subscriptions: new TestSubscriptionsPlugin(),
             },
         });
-
         server = new ApolloTestServer(neoSchema);
         await server.start();
-    });
 
-    beforeEach(() => {
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
     afterEach(async () => {
         await wsClient.close();
-    });
 
-    afterAll(async () => {
         await server.close();
         await driver.close();
     });
@@ -124,7 +114,6 @@ describe("Update Subscriptions", () => {
             },
         ]);
     });
-
     test("update subscription with where", async () => {
         await wsClient.subscribe(`
             subscription {
@@ -180,7 +169,7 @@ describe("Update Subscriptions", () => {
         ]);
     });
 
-    async function createMovie(title: string): Promise<Response> {
+    async function createMovie(title): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
             .send({
@@ -197,7 +186,6 @@ describe("Update Subscriptions", () => {
             .expect(200);
         return result;
     }
-
     async function updateMovie(oldTitle: string, newTitle: string): Promise<Response> {
         const result = await supertest(server.path)
             .post("")

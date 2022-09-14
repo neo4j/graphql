@@ -283,7 +283,7 @@ describe("Cypher Create", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_actors_connect_Actor
             }
             RETURN this0
             }
@@ -340,14 +340,14 @@ describe("Cypher Create", () => {
             			MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_movies_connect_Movie
             }
             RETURN this0
             }
             CALL {
                 WITH this0
                 MATCH (this0)-[create_this0:ACTED_IN]->(this0_movies:\`Movie\`)
-                WITH this0_movies { actorsConnection: apoc.cypher.runFirstColumnSingle(\\"CALL {
+                CALL {
                 WITH this0_movies
                 MATCH (this0_movies)<-[this0_movies_acted_in_relationship:ACTED_IN]-(this0_movies_actor:Actor)
                 WHERE this0_movies_actor.name = $projection_movies_actorsConnection_args_where_Actorparam0
@@ -355,7 +355,8 @@ describe("Cypher Create", () => {
                 UNWIND edges as edge
                 WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
-                } RETURN actorsConnection\\", { this0_movies: this0_movies, projection_movies_actorsConnection_args_where_Actorparam0: $projection_movies_actorsConnection_args_where_Actorparam0, projection_movies_actorsConnection: $projection_movies_actorsConnection, auth: $auth }) } AS this0_movies
+                }
+                WITH this0_movies { actorsConnection: actorsConnection } AS this0_movies
                 RETURN collect(this0_movies) AS this0_movies
             }
             RETURN [
@@ -376,11 +377,7 @@ describe("Cypher Create", () => {
                         }
                     }
                 },
-                \\"resolvedCallbacks\\": {},
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

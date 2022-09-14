@@ -74,30 +74,30 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             WITH this
             CALL {
                 WITH this
-                MATCH (this)<-[:ACTED_IN]-(this_Person:Person)
-                RETURN { __resolveType: \\"Person\\", id: this_Person.id } AS subjects
+                MATCH (this)<-[thisthis0:ACTED_IN]-(this_Person:\`Person\`)
+                RETURN { __resolveType: \\"Person\\", id: this_Person.id } AS this_subjects
                 UNION
                 WITH this
-                MATCH (this)<-[:ACTED_IN]-(this_Place:Place)
-                RETURN { __resolveType: \\"Place\\", id: this_Place.id } AS subjects
+                MATCH (this)<-[thisthis1:ACTED_IN]-(this_Place:\`Place\`)
+                RETURN { __resolveType: \\"Place\\", id: this_Place.id } AS this_subjects
             }
-            RETURN collect(subjects) AS subjects
+            RETURN collect(this_subjects) AS this_subjects
             }
             WITH *
             CALL {
             WITH this
             CALL {
                 WITH this
-                MATCH (this)-[:ACTED_IN]->(this_Person:Person)
-                RETURN { __resolveType: \\"Person\\", id: this_Person.id } AS objects
+                MATCH (this)-[thisthis2:ACTED_IN]->(this_Person:\`Person\`)
+                RETURN { __resolveType: \\"Person\\", id: this_Person.id } AS this_objects
                 UNION
                 WITH this
-                MATCH (this)-[:ACTED_IN]->(this_Place:Place)
-                RETURN { __resolveType: \\"Place\\", id: this_Place.id } AS objects
+                MATCH (this)-[thisthis3:ACTED_IN]->(this_Place:\`Place\`)
+                RETURN { __resolveType: \\"Place\\", id: this_Place.id } AS this_objects
             }
-            RETURN collect(objects) AS objects
+            RETURN collect(this_objects) AS this_objects
             }
-            RETURN this { .id, subjects: subjects, objects: objects } as this"
+            RETURN this { .id, subjects: this_subjects, objects: this_objects } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
