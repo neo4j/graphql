@@ -77,34 +77,23 @@ describe("Cypher -> Connections -> Filtering -> Node -> Relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE EXISTS {
-                MATCH (this_actor)-[:ACTED_IN]->(this_actorsConnection_args_where_Actorthis0:\`Movie\`)
-                WHERE this_actorsConnection_args_where_Actorthis0.title = $this_actorsConnection_args_where_Actorparam0
-            }
-            WITH collect({ node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
+                WHERE EXISTS {
+                    MATCH (thisthis1)-[:ACTED_IN]->(thisthis2:\`Movie\`)
+                    WHERE thisthis2.title = $thisparam0
+                }
+                WITH collect({ node: { name: thisthis1.name } }) AS edges
+                UNWIND edges AS edge
+                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Forrest Gump\\",
-                \\"this_actorsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"movies\\": {
-                                    \\"title\\": \\"Forrest Gump\\"
-                                }
-                            }
-                        }
-                    }
-                }
+                \\"thisparam0\\": \\"Forrest Gump\\"
             }"
         `);
     });

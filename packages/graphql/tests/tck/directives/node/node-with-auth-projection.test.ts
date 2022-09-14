@@ -95,8 +95,8 @@ describe("Cypher Auth Projection On Connections", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_postauth_param0\\": \\"super_admin\\",
-                \\"thisauth_param0\\": \\"super_admin\\"
+                \\"thisauth_param0\\": \\"super_admin\\",
+                \\"this_postauth_param0\\": \\"super_admin\\"
             }"
         `);
     });

@@ -25,9 +25,9 @@ import createProjectionAndParams, { ProjectionResult } from "./create-projection
 import type { GraphQLOptionsArg, GraphQLSortArg, Context, ConnectionField } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import createConnectionAndParams from "./connection/create-connection-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import { createConnectionClause } from "./connection/create-connection-clause";
 
 export function translateRead({
     node,
@@ -46,7 +46,7 @@ export function translateRead({
     let projAuth = "";
 
     let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
-    const connectionStrs: string[] = [];
+    const connectionClauses: CypherBuilder.Clause[] = [];
     const interfaceStrs: string[] = [];
 
     const topLevelMatch = translateTopLevelMatch({
@@ -79,14 +79,16 @@ export function translateRead({
             const connectionField = node.connectionFields.find(
                 (x) => x.fieldName === connectionResolveTree.name
             ) as ConnectionField;
-            const connection = createConnectionAndParams({
+            const connection = createConnectionClause({
                 resolveTree: connectionResolveTree,
                 field: connectionField,
                 context,
                 nodeVariable: varName,
             });
-            connectionStrs.push(connection[0]);
-            cypherParams = { ...cypherParams, ...connection[1] };
+
+            const callClause = new CypherBuilder.Call(connection).with(new CypherBuilder.NamedNode(varName));
+            connectionClauses.push(callClause);
+            // cypherParams = { ...cypherParams, ...connection[1] };
         });
     }
 
@@ -105,10 +107,12 @@ export function translateRead({
     }
 
     const projectionSubqueries = CypherBuilder.concat(...projection.subqueries);
+    const connectionSubqueries = CypherBuilder.concat(...connectionClauses);
 
     // TODO: concatenate with "translateTopLevelMatch" result to avoid param collision
     const readQuery = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
         const projectionSubqueriesStr = projectionSubqueries.getCypher(env);
+        const connectionSubqueriesStr = connectionSubqueries.getCypher(env);
 
         if (isRootConnectionField) {
             return translateRootConnectionField({
@@ -120,7 +124,7 @@ export function translateRead({
                     matchAndWhereStr,
                     authStr,
                     projAuth,
-                    connectionStrs,
+                    connectionStrs: [connectionSubqueriesStr],
                     interfaceStrs,
                 },
             });
@@ -136,7 +140,7 @@ export function translateRead({
                 matchAndWhereStr,
                 authStr,
                 projAuth,
-                connectionStrs,
+                connectionStrs: [connectionSubqueriesStr],
                 interfaceStrs,
             },
         });

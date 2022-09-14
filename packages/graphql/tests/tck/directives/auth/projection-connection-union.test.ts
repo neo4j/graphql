@@ -118,9 +118,9 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"thisauth_param0\\": \\"super_admin\\",
                 \\"this_Post_userauth_param0\\": \\"super_admin\\",
-                \\"this_Postauth_param0\\": \\"super_admin\\",
-                \\"thisauth_param0\\": \\"super_admin\\"
+                \\"this_Postauth_param0\\": \\"super_admin\\"
             }"
         `);
     });

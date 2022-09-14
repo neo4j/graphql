@@ -29,8 +29,14 @@ export class MapExpr implements CypherCompilable {
         this.value = value;
     }
 
-    public set(values: Record<string, Expr>): void {
-        this.value = { ...this.value, ...values };
+    public set(key: string, value: Expr): void;
+    public set(values: Record<string, Expr>): void;
+    public set(keyOrValues: Record<string, Expr> | string, value?: Expr): void {
+        if (typeof keyOrValues === "string") {
+            this.value[keyOrValues] = value as Expr;
+        } else {
+            this.value = { ...this.value, ...keyOrValues };
+        }
     }
 
     public getCypher(env: CypherEnvironment): string {

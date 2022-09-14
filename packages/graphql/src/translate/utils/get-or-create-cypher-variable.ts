@@ -17,22 +17,14 @@
  * limitations under the License.
  */
 
-import { CypherASTNode } from "../../../CypherASTNode";
-import type { CypherEnvironment } from "../../../Environment";
-import type { Predicate } from "../../../types";
+import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 
-export class ValidatePredicate extends CypherASTNode {
-    private predicate: Predicate;
-    private message: string;
+export function getOrCreateCypherNode(nameOrNode: CypherBuilder.Node | string): CypherBuilder.Node {
+    if (typeof nameOrNode === "string") return new CypherBuilder.NamedNode(nameOrNode);
+    return nameOrNode;
+}
 
-    constructor(predicate: Predicate, message: string) {
-        super();
-        this.predicate = predicate;
-        this.message = message;
-    }
-
-    public getCypher(env: CypherEnvironment): string {
-        const predicateCypher = this.predicate.getCypher(env);
-        return `apoc.util.validatePredicate(${predicateCypher}, "${this.message}", [0])`;
-    }
+export function getOrCreateCypherVariable(nameOrVariable: CypherBuilder.Variable | string): CypherBuilder.Variable {
+    if (typeof nameOrVariable === "string") return new CypherBuilder.NamedVariable(nameOrVariable);
+    return nameOrVariable;
 }

@@ -19,6 +19,7 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { TemporalField } from "../../../types";
+import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 
 export function createDatetimeElement({
     resolveTree,
@@ -39,4 +40,22 @@ export function createDatetimeElement({
 
 export function wrapApocConvertDate(value: string): string {
     return `apoc.date.convertFormat(toString(${value}), "iso_zoned_date_time", "iso_offset_date_time")`;
+}
+
+export function createDatetimeExpression({
+    resolveTree,
+    field,
+    variable,
+}: {
+    resolveTree: ResolveTree;
+    field: TemporalField;
+    variable: CypherBuilder.Variable;
+}): CypherBuilder.Expr {
+    const dbFieldName = field.dbPropertyName || resolveTree.name;
+    return new CypherBuilder.RawCypher((env) => {
+        const variableStr = variable.getCypher(env);
+        return field.typeMeta.array
+            ? `[ dt in ${variableStr}.${dbFieldName} | ${wrapApocConvertDate("dt")} ]`
+            : `${wrapApocConvertDate(`${variableStr}.${dbFieldName}`)}`;
+    });
 }

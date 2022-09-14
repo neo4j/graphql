@@ -27,6 +27,7 @@ import { NodeAuth } from "../classes/NodeAuth";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
+import { getOrCreateCypherNode } from "./utils/get-or-create-cypher-variable";
 
 interface Allow {
     varName: string | CypherBuilder.Node;
@@ -511,8 +512,4 @@ function createAuthField({
 function isValueInListCypher(value: CypherBuilder.Variable, list: CypherBuilder.Expr): CypherBuilder.PredicateFunction {
     const listItemVar = new CypherBuilder.Variable();
     return CypherBuilder.any(listItemVar, list, CypherBuilder.eq(listItemVar, value));
-}
-function getOrCreateCypherNode(nameOrNode: CypherBuilder.Node | string): CypherBuilder.Node {
-    if (typeof nameOrNode === "string") return new CypherBuilder.NamedNode(nameOrNode);
-    return nameOrNode;
 }

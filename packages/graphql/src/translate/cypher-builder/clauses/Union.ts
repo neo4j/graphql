@@ -17,16 +17,17 @@
  * limitations under the License.
  */
 
+import type { CypherASTNode } from "../CypherASTNode";
 import type { CypherEnvironment } from "../Environment";
 import { Clause } from "./Clause";
 
 export class Union extends Clause {
-    private subqueries: Clause[] = [];
+    private subqueries: CypherASTNode[] = [];
     private includeAll = false;
 
     constructor(...subqueries: Clause[]) {
         super();
-        this.subqueries = subqueries;
+        this.subqueries = subqueries.map((s) => s.getRoot());
         this.addChildren(...subqueries);
     }
 

@@ -84,37 +84,21 @@ describe("Cypher -> Connections -> Filtering -> Node -> OR", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE (this_actor.firstName = $this_actorsConnection_args_where_Actorparam0 OR this_actor.lastName = $this_actorsConnection_args_where_Actorparam1)
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { firstName: this_actor.firstName, lastName: this_actor.lastName } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
+                WHERE (thisthis1.firstName = $thisparam0 OR thisthis1.lastName = $thisparam1)
+                WITH collect({ screenTime: thisthis0.screenTime, node: { firstName: thisthis1.firstName, lastName: thisthis1.lastName } }) AS edges
+                UNWIND edges AS edge
+                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Tom\\",
-                \\"this_actorsConnection_args_where_Actorparam1\\": \\"Hanks\\",
-                \\"this_actorsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"OR\\": [
-                                    {
-                                        \\"firstName\\": \\"Tom\\"
-                                    },
-                                    {
-                                        \\"lastName\\": \\"Hanks\\"
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                }
+                \\"thisparam0\\": \\"Tom\\",
+                \\"thisparam1\\": \\"Hanks\\"
             }"
         `);
     });

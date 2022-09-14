@@ -25,7 +25,6 @@ export type RelationshipInput = {
     source: NodeRef;
     target: NodeRef;
     type?: string;
-    directed?: boolean;
 };
 
 export class RelationshipRef extends Variable {
@@ -33,14 +32,12 @@ export class RelationshipRef extends Variable {
     private _target: NodeRef;
 
     public readonly type?: string;
-    public directed: boolean;
 
     constructor(input: RelationshipInput) {
         super("this");
         this.type = input.type || undefined;
         this._source = input.source;
         this._target = input.target;
-        this.directed = input.directed === undefined ? true : input.directed;
     }
 
     public get source(): NodeRef {

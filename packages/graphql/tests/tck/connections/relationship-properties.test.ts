@@ -76,12 +76,12 @@ describe("Relationship Properties Cypher", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
+                WITH collect({ screenTime: thisthis0.screenTime, node: { name: thisthis1.name } }) AS edges
+                UNWIND edges AS edge
+                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
@@ -119,13 +119,13 @@ describe("Relationship Properties Cypher", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name = $this_actorsConnection_args_where_Actorparam0
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
+                WHERE thisthis1.name = $thisparam0
+                WITH collect({ screenTime: thisthis0.screenTime, node: { name: thisthis1.name } }) AS edges
+                UNWIND edges AS edge
+                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             RETURN this { .title, actorsConnection } as this"
         `);
@@ -133,16 +133,7 @@ describe("Relationship Properties Cypher", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Tom Hanks\\",
-                \\"this_actorsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"name\\": \\"Tom Hanks\\"
-                            }
-                        }
-                    }
-                }
+                \\"thisparam0\\": \\"Tom Hanks\\"
             }"
         `);
     });
