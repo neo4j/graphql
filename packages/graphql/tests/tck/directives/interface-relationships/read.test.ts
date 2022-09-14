@@ -435,11 +435,6 @@ describe("Interface Relationships", () => {
                     MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
                     WHERE (this_connection_actedInConnectionthis0.screenTime > $this_connection_actedInConnectionparam0 AND this_Movie.title STARTS WITH $this_connection_actedInConnectionparam1)
                     RETURN { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
-                    UNION
-                    WITH this
-                    MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                    WHERE this_connection_actedInConnectionthis1.screenTime > $this_connection_actedInConnectionparam2
-                    RETURN { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", title: this_Series.title } } AS edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -454,11 +449,7 @@ describe("Interface Relationships", () => {
                     \\"low\\": 60,
                     \\"high\\": 0
                 },
-                \\"this_connection_actedInConnectionparam1\\": \\"The \\",
-                \\"this_connection_actedInConnectionparam2\\": {
-                    \\"low\\": 60,
-                    \\"high\\": 0
-                }
+                \\"this_connection_actedInConnectionparam1\\": \\"The \\"
             }"
         `);
     });

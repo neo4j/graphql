@@ -541,8 +541,6 @@ describe("interface relationships", () => {
     });
 
     test("should read and return all relationships with type specific where", async () => {
-        const movieRuntime = faker.datatype.number();
-
         const query = `
             query {
                 ${typeActor.plural} {
@@ -578,7 +576,6 @@ describe("interface relationships", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-        console.log(gqlResult.data);
         expect(gqlResult.data).toEqual({
             [typeActor.plural]: [
                 {
@@ -588,12 +585,6 @@ describe("interface relationships", () => {
                                 node: {
                                     runtime: 100,
                                     title: "The Movie1",
-                                },
-                            },
-                            {
-                                // Should this be returned?
-                                node: {
-                                    title: "Apple",
                                 },
                             },
                         ],

@@ -298,7 +298,7 @@ describe("interface relationships", () => {
         }
     });
 
-    test("should nested delete through interface relationship fields using _on to only delete certain type", async () => {
+    test.only("should nested delete through interface relationship fields using _on to only delete certain type", async () => {
         const session = await neo4j.getSession();
 
         const actorName1 = generate({

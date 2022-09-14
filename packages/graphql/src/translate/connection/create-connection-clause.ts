@@ -116,16 +116,21 @@ export function createConnectionClause({
                     (r) => r.name === field.relationshipTypeName
                 ) as Relationship;
 
-                const wherePredicate = createConnectionWherePropertyOperation({
-                    context,
-                    whereInput: unionInterfaceWhere,
-                    edgeRef: relationshipRef,
-                    targetNode: relatedNodeVariable,
-                    node: relatedNode,
-                    edge: relationship,
-                });
+                try {
+                    const wherePredicate = createConnectionWherePropertyOperation({
+                        context,
+                        whereInput: unionInterfaceWhere,
+                        edgeRef: relationshipRef,
+                        targetNode: relatedNodeVariable,
+                        node: relatedNode,
+                        edge: relationship,
+                    });
 
-                if (wherePredicate) matchClause.where(wherePredicate);
+                    if (wherePredicate) matchClause.where(wherePredicate);
+                } catch (err) {
+                    // TODO: remove throw for control flow please
+                    return undefined;
+                }
             }
             const authPredicate = createAuthPredicates({
                 operations: "READ",
