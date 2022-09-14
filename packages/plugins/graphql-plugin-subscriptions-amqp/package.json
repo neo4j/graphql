@@ -43,7 +43,7 @@
         "camelcase": "6.3.0",
         "graphql-ws": "5.10.2",
         "jest": ">=28.0.0 <29.0.0-0",
-        "neo4j-driver": "5.0.0",
+        "neo4j-driver": "5.0.1",
         "pluralize": "8.0.0",
         "randomstring": "1.1.5",
         "supertest": "6.2.4",
