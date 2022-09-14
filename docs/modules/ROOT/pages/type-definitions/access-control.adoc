@@ -8,7 +8,7 @@ For fine-grained and role-based access control, see xref::auth/index.adoc[Auth].
 [[type-definitions-access-control-exclude]]
 == `@exclude`
 
-This directive skips the generation of queries and/or particular/all mutations for the specified type.
+This directive skips the generation of queries and/or subscriptions and/or particular/all mutations for the specified type.
 
 === Definition
 
@@ -19,11 +19,12 @@ enum ExcludeOperation {
     READ
     UPDATE
     DELETE
+    SUBSCRIBE
 }
 
-"""Instructs @neo4j/graphql to exclude the specified operations from query and mutation generation. If used without an argument, no queries or mutations will be generated for this type."""
+"""Instructs @neo4j/graphql to exclude the specified operations from query, mutation and subscription generation. If used without an argument, no queries, mutations or subscriptions will be generated for this type."""
 directive @exclude(
-    operations: [ExcludeOperation!]! = [CREATE, READ, UPDATE, DELETE]
+    operations: [ExcludeOperation!]! = [CREATE, READ, UPDATE, DELETE, SUBSCRIBE]
 ) on OBJECT
 ----
 
@@ -56,9 +57,18 @@ type User @exclude(operations: [CREATE, DELETE]) {
 }
 ----
 
-==== Disable all Query and Mutation field generation
+==== Disable Subscription field generation
 
-The following two type definitions are equivalent in the fact that no queries or mutations will be generated for either of them:
+[source, graphql, indent=0]
+----
+type User @exclude(operations: [SUBSCRIBE]) {
+    name: String
+}
+----
+
+==== Disable all Query, Mutation and Subscription field generation
+
+The following two type definitions are equivalent in the fact that no queries, mutations or subscriptions will be generated for either of them:
 
 [source, graphql, indent=0]
 ----
@@ -69,7 +79,7 @@ type User @exclude {
 
 [source, graphql, indent=0]
 ----
-type User @exclude(operations: [CREATE, READ, UPDATE, DELETE]) {
+type User @exclude(operations: [CREATE, READ, UPDATE, DELETE, SUBSCRIBE]) {
     name: String
 }
 ----
