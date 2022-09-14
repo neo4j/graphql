@@ -55,7 +55,6 @@ export function createConnectionClause({
             ? context.nodes.filter((n) => field.relationship.union?.nodes?.includes(n.name))
             : context.nodes.filter(
                   (x) => field.relationship?.interface?.implementations?.includes(x.name)
-
                   // &&   filterInterfaceNodes({ node: x, whereInput: whereInput?.node })
               );
 
@@ -146,17 +145,8 @@ export function createConnectionClause({
                 matchClause.where(authPredicate);
             }
 
-            // console.log("Allow and params", allowAndParams);
-            // if (allowAndParams[0]) {
-            //     globalParams = { ...globalParams, ...allowAndParams[1] };
-            //     unionInterfaceSubquery.push(
-            //         `CALL apoc.util.validate(NOT (${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-            //     );
-            // }
-
             matchClause.return([projection.projection, collectUnionVariable]);
 
-            // TODO: where in union
             return CypherBuilder.concat(withClause, matchClause);
         });
 
@@ -219,7 +209,6 @@ export function createConnectionClause({
     if (direction === "IN") relPattern.reverse();
 
     const matchClause = new CypherBuilder.Match(relPattern);
-    // const limit = relatedNode?.queryOptions?.getLimit();
     const withSortClause = getSortAndLimitProjection({
         resolveTree,
         relationshipRef,
@@ -241,18 +230,6 @@ export function createConnectionClause({
 
         if (wherePredicate) matchClause.where(wherePredicate);
     }
-
-    // const allowAndParams = createAuthAndParams({
-    //     operations: "READ",
-    //     entity: relatedNode,
-    //     context,
-    //     allow: {
-    //         parentNode: relatedNode,
-    //         varName: relatedNodeVariable,
-    //     },
-    // });
-
-    // console.log(allowAndParams);
 
     const authAllowPredicate = createAuthPredicates({
         operations: "READ",
@@ -280,31 +257,6 @@ export function createConnectionClause({
     if (whereAuthPredicate) {
         matchClause.where(whereAuthPredicate);
     }
-
-    // const whereAuth = createAuthAndParams({
-    //     operations: "READ",
-    //     entity: n,
-    //     context,
-    //     where: { varName: relatedNodeVariable, node: n },
-    // });
-    // if (whereAuth[0]) {
-    //     whereStrs.push(whereAuth[0]);
-    //     globalParams = { ...globalParams, ...whereAuth[1] };
-    // }
-
-    // if (whereStrs.length) {
-    //     unionInterfaceSubquery.push(`WHERE ${whereStrs.join(" AND ")}`);
-    // }
-
-    // const allowAndParams = createAuthAndParams({
-    //     operations: "READ",
-    //     entity: n,
-    //     context,
-    //     allow: {
-    //         parentNode: n,
-    //         varName: relatedNodeVariable,
-    //     },
-    // });
 
     const edgeProjection = getEdgeProjection({
         resolveTree,
@@ -339,11 +291,7 @@ export function createConnectionClause({
     if (withSortAfterUnwindClause) {
         const unwind = new CypherBuilder.Unwind([edgesList, edgeItem]);
 
-        const collectEdges = new CypherBuilder.With(
-            [CypherBuilder.collect(edgeItem), edgesList],
-            totalCountItem
-            // [CypherBuilder.size(CypherBuilder.collect(edgeItem)), totalCount]
-        );
+        const collectEdges = new CypherBuilder.With([CypherBuilder.collect(edgeItem), edgesList], totalCountItem);
 
         unwindSortClause = CypherBuilder.concat(unwind, withSortAfterUnwindClause, collectEdges);
     }
@@ -431,14 +379,6 @@ function getEdgeProjection({
             const alias = nodeField.alias;
             edgeProjectionProperties.set(alias, nodeProjection.projection);
             subqueries.push(...nodeProjection.subqueries);
-            // const nodeProjectionAndParams = createProjectionAndParams({
-            //     resolveTree: mergedResolveTree,
-            //     node: n,
-            //     context,
-            //     varName: relatedNodeVariable,
-            //     literalElements: true,
-            //     resolveType: true,
-            // });
         }
     } else {
         // This ensures that totalCount calculation is accurate if edges not asked for
@@ -471,8 +411,6 @@ function getConnectionNodeProjection({
     resolveType?: boolean;
     resolveTree: ResolveTree; // Global resolve tree
 }): { projection: CypherBuilder.Expr; subqueries: CypherBuilder.Clause[] } {
-    // const varName = nodeRef.getCypher(env);
-
     const selectedFields: Record<string, ResolveTree> = mergeDeep([
         nodeResolveTree.fieldsByTypeName[node.name],
         ...node.interfaces.map((i) => nodeResolveTree?.fieldsByTypeName[i.name.value]),
@@ -540,9 +478,7 @@ function getSortAndLimitProjection({
     if (Object.keys(edgeSortFields).length === 0 && Object.keys(nodeSortFields).length === 0 && !limit)
         return undefined;
 
-    // const withStatement = new CypherBuilder.With(relationshipRef, new CypherBuilder.NamedVariable("totalCount"));
     const withStatement = new CypherBuilder.With(relationshipRef, ...extraFields);
-    // if (addNodeToWith) withStatement.addColumns(nodeRef);
 
     let firstArg = resolveTree.args.first as Integer | number | undefined;
     const afterArg = resolveTree.args.after as string | undefined;
