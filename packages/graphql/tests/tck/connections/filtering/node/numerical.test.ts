@@ -85,19 +85,18 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
-                WHERE thisthis1.age < $thisparam0
-                WITH collect({ screenTime: thisthis0.screenTime, node: { name: thisthis1.name, age: thisthis1.age } }) AS edges
-                UNWIND edges AS edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE this_Actor.age < $this_connection_actorsConnectionparam0
+                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, age: this_Actor.age } }) AS edges
+                WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"thisparam0\\": {
+                \\"this_connection_actorsConnectionparam0\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 }
@@ -132,19 +131,18 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
-                WHERE thisthis1.age <= $thisparam0
-                WITH collect({ screenTime: thisthis0.screenTime, node: { name: thisthis1.name, age: thisthis1.age } }) AS edges
-                UNWIND edges AS edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE this_Actor.age <= $this_connection_actorsConnectionparam0
+                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, age: this_Actor.age } }) AS edges
+                WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"thisparam0\\": {
+                \\"this_connection_actorsConnectionparam0\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 }
@@ -179,19 +177,18 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
-                WHERE thisthis1.age > $thisparam0
-                WITH collect({ screenTime: thisthis0.screenTime, node: { name: thisthis1.name, age: thisthis1.age } }) AS edges
-                UNWIND edges AS edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE this_Actor.age > $this_connection_actorsConnectionparam0
+                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, age: this_Actor.age } }) AS edges
+                WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"thisparam0\\": {
+                \\"this_connection_actorsConnectionparam0\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 }
@@ -226,19 +223,18 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
-                WHERE thisthis1.age >= $thisparam0
-                WITH collect({ screenTime: thisthis0.screenTime, node: { name: thisthis1.name, age: thisthis1.age } }) AS edges
-                UNWIND edges AS edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE this_Actor.age >= $this_connection_actorsConnectionparam0
+                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, age: this_Actor.age } }) AS edges
+                WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"thisparam0\\": {
+                \\"this_connection_actorsConnectionparam0\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 }

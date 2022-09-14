@@ -90,24 +90,21 @@ describe("Cypher -> Connections -> Interfaces", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
             CALL {
-            WITH this
-            CALL {
-            WITH this
-            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-            WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
-            RETURN edge
-            UNION
-            WITH this
-            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
-            WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
-            RETURN edge
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
+                    RETURN { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
+                    RETURN { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                }
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
-            WITH collect(edge) as edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
-            }
-            RETURN this { .name, actedInConnection } as this"
+            RETURN this { .name, actedInConnection: actedInConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -144,41 +141,29 @@ describe("Cypher -> Connections -> Interfaces", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
             CALL {
-            WITH this
-            CALL {
-            WITH this
-            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-            WHERE this_Movie.title STARTS WITH $this_actedInConnection_args_where_Movieparam0
-            WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
-            RETURN edge
-            UNION
-            WITH this
-            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
-            WHERE this_Series.title STARTS WITH $this_actedInConnection_args_where_Seriesparam0
-            WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
-            RETURN edge
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
+                    WHERE this_Movie.title STARTS WITH $this_connection_actedInConnectionparam0
+                    RETURN { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
+                    WHERE this_Series.title STARTS WITH $this_connection_actedInConnectionparam1
+                    RETURN { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                }
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
-            WITH collect(edge) as edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
-            }
-            RETURN this { .name, actedInConnection } as this"
+            RETURN this { .name, actedInConnection: actedInConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actedInConnection_args_where_Movieparam0\\": \\"The \\",
-                \\"this_actedInConnection_args_where_Seriesparam0\\": \\"The \\",
-                \\"this_actedInConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"title_STARTS_WITH\\": \\"The \\"
-                            }
-                        }
-                    }
-                }
+                \\"this_connection_actedInConnectionparam0\\": \\"The \\",
+                \\"this_connection_actedInConnectionparam1\\": \\"The \\"
             }"
         `);
     });
@@ -216,59 +201,34 @@ describe("Cypher -> Connections -> Interfaces", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
             CALL {
-            WITH this
-            CALL {
-            WITH this
-            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-            WHERE this_Movie.runtime > $this_actedInConnection_args_where_Movieparam0
-            WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
-            RETURN edge
-            UNION
-            WITH this
-            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
-            WHERE this_Series.episodes > $this_actedInConnection_args_where_Seriesparam0
-            WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
-            RETURN edge
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
+                    WHERE this_Movie.runtime > $this_connection_actedInConnectionparam0
+                    RETURN { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
+                    WHERE this_Series.episodes > $this_connection_actedInConnectionparam1
+                    RETURN { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                }
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
-            WITH collect(edge) as edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
-            }
-            RETURN this { .name, actedInConnection } as this"
+            RETURN this { .name, actedInConnection: actedInConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actedInConnection_args_where_Movieparam0\\": {
+                \\"this_connection_actedInConnectionparam0\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
-                \\"this_actedInConnection_args_where_Seriesparam0\\": {
+                \\"this_connection_actedInConnectionparam1\\": {
                     \\"low\\": 50,
                     \\"high\\": 0
-                },
-                \\"this_actedInConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"_on\\": {
-                                    \\"Movie\\": {
-                                        \\"runtime_GT\\": {
-                                            \\"low\\": 90,
-                                            \\"high\\": 0
-                                        }
-                                    },
-                                    \\"Series\\": {
-                                        \\"episodes_GT\\": {
-                                            \\"low\\": 50,
-                                            \\"high\\": 0
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }"
         `);
@@ -305,49 +265,34 @@ describe("Cypher -> Connections -> Interfaces", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
             CALL {
-            WITH this
-            CALL {
-            WITH this
-            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-            WHERE this_acted_in_relationship.screenTime > $this_actedInConnection_args_where_Movieparam0
-            WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
-            RETURN edge
-            UNION
-            WITH this
-            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
-            WHERE this_acted_in_relationship.screenTime > $this_actedInConnection_args_where_Seriesparam0
-            WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
-            RETURN edge
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
+                    WHERE this_connection_actedInConnectionthis0.screenTime > $this_connection_actedInConnectionparam0
+                    RETURN { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
+                    WHERE this_connection_actedInConnectionthis1.screenTime > $this_connection_actedInConnectionparam1
+                    RETURN { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                }
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
-            WITH collect(edge) as edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
-            }
-            RETURN this { .name, actedInConnection } as this"
+            RETURN this { .name, actedInConnection: actedInConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actedInConnection_args_where_Movieparam0\\": {
+                \\"this_connection_actedInConnectionparam0\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 },
-                \\"this_actedInConnection_args_where_Seriesparam0\\": {
+                \\"this_connection_actedInConnectionparam1\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                },
-                \\"this_actedInConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"edge\\": {
-                                \\"screenTime_GT\\": {
-                                    \\"low\\": 60,
-                                    \\"high\\": 0
-                                }
-                            }
-                        }
-                    }
                 }
             }"
         `);
@@ -386,27 +331,25 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Actor\`)
                     CALL {
-                    WITH this
-                    CALL {
-                    WITH this
-                    MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-                    WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
-                    RETURN edge
-                    UNION
-                    WITH this
-                    MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
-                    WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
-                    RETURN edge
+                        WITH this
+                        CALL {
+                            WITH this
+                            MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
+                            RETURN { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                            UNION
+                            WITH this
+                            MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
+                            RETURN { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                        }
+                        WITH collect(edge) AS edges
+                        WITH edges, size(edges) AS totalCount
+                        UNWIND edges AS edge
+                        WITH edge, totalCount
+                        ORDER BY edge.screenTime ASC
+                        WITH collect(edge) AS edges, totalCount
+                        RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
                     }
-                    WITH edge ORDER BY edge.screenTime ASC
-                    WITH collect(edge) as edges
-                    UNWIND edges as edge
-                    WITH edges, edge
-                    ORDER BY edge.screenTime ASC
-                    WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
-                    }
-                    RETURN this { .name, actedInConnection } as this"
+                    RETURN this { .name, actedInConnection: actedInConnection } as this"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -443,27 +386,25 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Actor\`)
                     CALL {
-                    WITH this
-                    CALL {
-                    WITH this
-                    MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-                    WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
-                    RETURN edge
-                    UNION
-                    WITH this
-                    MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
-                    WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
-                    RETURN edge
+                        WITH this
+                        CALL {
+                            WITH this
+                            MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
+                            RETURN { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                            UNION
+                            WITH this
+                            MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
+                            RETURN { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                        }
+                        WITH collect(edge) AS edges
+                        WITH edges, size(edges) AS totalCount
+                        UNWIND edges AS edge
+                        WITH edge, totalCount
+                        ORDER BY edge.node.title ASC
+                        WITH collect(edge) AS edges, totalCount
+                        RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
                     }
-                    WITH edge ORDER BY edge.node.title ASC
-                    WITH collect(edge) as edges
-                    UNWIND edges as edge
-                    WITH edges, edge
-                    ORDER BY edge.node.title ASC
-                    WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
-                    }
-                    RETURN this { .name, actedInConnection } as this"
+                    RETURN this { .name, actedInConnection: actedInConnection } as this"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -501,27 +442,25 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Actor\`)
                     CALL {
-                    WITH this
-                    CALL {
-                    WITH this
-                    MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-                    WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
-                    RETURN edge
-                    UNION
-                    WITH this
-                    MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
-                    WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
-                    RETURN edge
+                        WITH this
+                        CALL {
+                            WITH this
+                            MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
+                            RETURN { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                            UNION
+                            WITH this
+                            MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
+                            RETURN { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                        }
+                        WITH collect(edge) AS edges
+                        WITH edges, size(edges) AS totalCount
+                        UNWIND edges AS edge
+                        WITH edge, totalCount
+                        ORDER BY edge.screenTime ASC
+                        WITH collect(edge) AS edges, totalCount
+                        RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
                     }
-                    WITH edge ORDER BY edge.screenTime ASC
-                    WITH collect(edge) as edges
-                    UNWIND edges as edge
-                    WITH edges, edge
-                    ORDER BY edge.screenTime ASC
-                    WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
-                    }
-                    RETURN this { .name, actedInConnection } as this"
+                    RETURN this { .name, actedInConnection: actedInConnection } as this"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -557,27 +496,25 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "MATCH (this:\`Actor\`)
                     CALL {
-                    WITH this
-                    CALL {
-                    WITH this
-                    MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Movie:Movie)
-                    WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
-                    RETURN edge
-                    UNION
-                    WITH this
-                    MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_Series:Series)
-                    WITH { screenTime: this_acted_in_relationship.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
-                    RETURN edge
+                        WITH this
+                        CALL {
+                            WITH this
+                            MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
+                            RETURN { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                            UNION
+                            WITH this
+                            MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
+                            RETURN { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                        }
+                        WITH collect(edge) AS edges
+                        WITH edges, size(edges) AS totalCount
+                        UNWIND edges AS edge
+                        WITH edge, totalCount
+                        ORDER BY edge.node.title ASC
+                        WITH collect(edge) AS edges, totalCount
+                        RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
                     }
-                    WITH edge ORDER BY edge.node.title ASC
-                    WITH collect(edge) as edges
-                    UNWIND edges as edge
-                    WITH edges, edge
-                    ORDER BY edge.node.title ASC
-                    WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
-                    }
-                    RETURN this { .name, actedInConnection } as this"
+                    RETURN this { .name, actedInConnection: actedInConnection } as this"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

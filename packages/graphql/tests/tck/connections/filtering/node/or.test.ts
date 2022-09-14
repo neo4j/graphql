@@ -85,20 +85,19 @@ describe("Cypher -> Connections -> Filtering -> Node -> OR", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
-                WHERE (thisthis1.firstName = $thisparam0 OR thisthis1.lastName = $thisparam1)
-                WITH collect({ screenTime: thisthis0.screenTime, node: { firstName: thisthis1.firstName, lastName: thisthis1.lastName } }) AS edges
-                UNWIND edges AS edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE (this_Actor.firstName = $this_connection_actorsConnectionparam0 OR this_Actor.lastName = $this_connection_actorsConnectionparam1)
+                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { firstName: this_Actor.firstName, lastName: this_Actor.lastName } }) AS edges
+                WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"thisparam0\\": \\"Tom\\",
-                \\"thisparam1\\": \\"Hanks\\"
+                \\"this_connection_actorsConnectionparam0\\": \\"Tom\\",
+                \\"this_connection_actorsConnectionparam1\\": \\"Hanks\\"
             }"
         `);
     });

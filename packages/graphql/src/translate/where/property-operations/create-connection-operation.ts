@@ -158,7 +158,9 @@ export function createConnectionWherePropertyOperation({
                 value._on &&
                 !Object.prototype.hasOwnProperty.call(value._on, node.name)
             ) {
-                throw new Error("_on is used as the only argument and node is not present within");
+                // console.log(value, node.name);
+                return undefined;
+                // throw new Error("_on is used as the only argument and node is not present within");
             }
 
             const result = createWherePredicate({

@@ -77,13 +77,12 @@ describe("Relationship Properties Cypher", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
-                WITH collect({ screenTime: thisthis0.screenTime, node: { name: thisthis1.name } }) AS edges
-                UNWIND edges AS edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } }) AS edges
+                WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -120,20 +119,19 @@ describe("Relationship Properties Cypher", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
-                WHERE thisthis1.name = $thisparam0
-                WITH collect({ screenTime: thisthis0.screenTime, node: { name: thisthis1.name } }) AS edges
-                UNWIND edges AS edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE this_Actor.name = $this_connection_actorsConnectionparam0
+                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } }) AS edges
+                WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"thisparam0\\": \\"Tom Hanks\\"
+                \\"this_connection_actorsConnectionparam0\\": \\"Tom Hanks\\"
             }"
         `);
     });
@@ -164,18 +162,19 @@ describe("Relationship Properties Cypher", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WITH this_acted_in_relationship, this_actor
-            ORDER BY this_acted_in_relationship.screenTime DESC
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH edges, edge
-            ORDER BY edge.screenTime DESC
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WITH this_connection_actorsConnectionthis0, this_Actor
+                ORDER BY this_connection_actorsConnectionthis0.screenTime DESC
+                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } }) AS edges
+                WITH edges, size(edges) AS totalCount
+                UNWIND edges AS edge
+                WITH edge, totalCount
+                ORDER BY edge.screenTime DESC
+                WITH collect(edge) AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -219,22 +218,20 @@ describe("Relationship Properties Cypher", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            CALL {
-            WITH this_actor
-            MATCH (this_actor)-[this_actor_acted_in_relationship:ACTED_IN]->(this_actor_movie:Movie)
-            WITH collect({ screenTime: this_actor_acted_in_relationship.screenTime, node: { title: this_actor_movie.title } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                CALL {
+                    WITH this_Actor
+                    MATCH (this_Actor)-[this_Actor_connection_moviesConnectionthis0:ACTED_IN]->(this_Actor_Movie:\`Movie\`)
+                    WITH collect({ screenTime: this_Actor_connection_moviesConnectionthis0.screenTime, node: { title: this_Actor_Movie.title } }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
+                }
+                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, moviesConnection: moviesConnection } }) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, moviesConnection: moviesConnection } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
-            }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -286,30 +283,27 @@ describe("Relationship Properties Cypher", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            CALL {
-            WITH this_actor
-            MATCH (this_actor)-[this_actor_acted_in_relationship:ACTED_IN]->(this_actor_movie:Movie)
-            CALL {
-            WITH this_actor_movie
-            MATCH (this_actor_movie)<-[this_actor_movie_acted_in_relationship:ACTED_IN]-(this_actor_movie_actor:Actor)
-            WITH collect({ screenTime: this_actor_movie_acted_in_relationship.screenTime, node: { name: this_actor_movie_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                CALL {
+                    WITH this_Actor
+                    MATCH (this_Actor)-[this_Actor_connection_moviesConnectionthis0:ACTED_IN]->(this_Actor_Movie:\`Movie\`)
+                    CALL {
+                        WITH this_Actor_Movie
+                        MATCH (this_Actor_Movie)<-[this_Actor_Movie_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor_Movie_Actor:\`Actor\`)
+                        WITH collect({ screenTime: this_Actor_Movie_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor_Movie_Actor.name } }) AS edges
+                        WITH edges, size(edges) AS totalCount
+                        RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                    }
+                    WITH collect({ screenTime: this_Actor_connection_moviesConnectionthis0.screenTime, node: { title: this_Actor_Movie.title, actorsConnection: actorsConnection } }) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
+                }
+                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, moviesConnection: moviesConnection } }) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            WITH collect({ screenTime: this_actor_acted_in_relationship.screenTime, node: { title: this_actor_movie.title, actorsConnection: actorsConnection } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
-            }
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, moviesConnection: moviesConnection } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
-            }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

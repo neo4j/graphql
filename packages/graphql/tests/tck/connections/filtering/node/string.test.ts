@@ -93,19 +93,18 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
-                WHERE thisthis1.name CONTAINS $thisparam0
-                WITH collect({ screenTime: thisthis0.screenTime, node: { name: thisthis1.name } }) AS edges
-                UNWIND edges AS edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE this_Actor.name CONTAINS $this_connection_actorsConnectionparam0
+                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } }) AS edges
+                WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"thisparam0\\": \\"Tom\\"
+                \\"this_connection_actorsConnectionparam0\\": \\"Tom\\"
             }"
         `);
     });
@@ -136,19 +135,18 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
-                WHERE NOT (thisthis1.name CONTAINS $thisparam0)
-                WITH collect({ screenTime: thisthis0.screenTime, node: { name: thisthis1.name } }) AS edges
-                UNWIND edges AS edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE NOT (this_Actor.name CONTAINS $this_connection_actorsConnectionparam0)
+                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } }) AS edges
+                WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"thisparam0\\": \\"Tom\\"
+                \\"this_connection_actorsConnectionparam0\\": \\"Tom\\"
             }"
         `);
     });
@@ -179,19 +177,18 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
-                WHERE thisthis1.name STARTS WITH $thisparam0
-                WITH collect({ screenTime: thisthis0.screenTime, node: { name: thisthis1.name } }) AS edges
-                UNWIND edges AS edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE this_Actor.name STARTS WITH $this_connection_actorsConnectionparam0
+                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } }) AS edges
+                WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"thisparam0\\": \\"Tom\\"
+                \\"this_connection_actorsConnectionparam0\\": \\"Tom\\"
             }"
         `);
     });
@@ -222,19 +219,18 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
-                WHERE NOT (thisthis1.name STARTS WITH $thisparam0)
-                WITH collect({ screenTime: thisthis0.screenTime, node: { name: thisthis1.name } }) AS edges
-                UNWIND edges AS edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE NOT (this_Actor.name STARTS WITH $this_connection_actorsConnectionparam0)
+                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } }) AS edges
+                WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"thisparam0\\": \\"Tom\\"
+                \\"this_connection_actorsConnectionparam0\\": \\"Tom\\"
             }"
         `);
     });
@@ -265,19 +261,18 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
-                WHERE thisthis1.name ENDS WITH $thisparam0
-                WITH collect({ screenTime: thisthis0.screenTime, node: { name: thisthis1.name } }) AS edges
-                UNWIND edges AS edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE this_Actor.name ENDS WITH $this_connection_actorsConnectionparam0
+                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } }) AS edges
+                WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"thisparam0\\": \\"Hanks\\"
+                \\"this_connection_actorsConnectionparam0\\": \\"Hanks\\"
             }"
         `);
     });
@@ -308,19 +303,18 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
-                WHERE NOT (thisthis1.name ENDS WITH $thisparam0)
-                WITH collect({ screenTime: thisthis0.screenTime, node: { name: thisthis1.name } }) AS edges
-                UNWIND edges AS edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE NOT (this_Actor.name ENDS WITH $this_connection_actorsConnectionparam0)
+                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } }) AS edges
+                WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"thisparam0\\": \\"Hanks\\"
+                \\"this_connection_actorsConnectionparam0\\": \\"Hanks\\"
             }"
         `);
     });
@@ -351,19 +345,18 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)<-[thisthis0:ACTED_IN]-(thisthis1:\`Actor\`)
-                WHERE thisthis1.name =~ $thisparam0
-                WITH collect({ screenTime: thisthis0.screenTime, node: { name: thisthis1.name } }) AS edges
-                UNWIND edges AS edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE this_Actor.name =~ $this_connection_actorsConnectionparam0
+                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } }) AS edges
+                WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"thisparam0\\": \\"Tom.+\\"
+                \\"this_connection_actorsConnectionparam0\\": \\"Tom.+\\"
             }"
         `);
     });
