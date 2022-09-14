@@ -18,16 +18,19 @@
  */
 
 import type { SubscriptionsEvent } from "../../../types";
-import { compareProperties } from "./utils/compare-properties";
+import type Node from "../../../classes/Node";
+import { filterByProperties } from "./utils/compare-properties";
 
-export function subscriptionWhere(where: Record<string, any> | undefined, event: SubscriptionsEvent): boolean {
+export function subscriptionWhere(
+    where: Record<string, any> | undefined,
+    event: SubscriptionsEvent,
+    node: Node
+): boolean {
     if (!where) {
         return true;
     }
-
     if (event.event === "create") {
-        return compareProperties(where, event.properties.new);
+        return filterByProperties(node, where, event.properties.new);
     }
-
-    return compareProperties(where, event.properties.old);
+    return filterByProperties(node, where, event.properties.old);
 }

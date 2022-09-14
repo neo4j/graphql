@@ -18,7 +18,7 @@ ifdef::backend-pdf[]
 Documentation license: <<license, Creative Commons 4.0>>
 endif::[]
 
-> This is the documentation for the Neo4j GraphQL Library version 3.0, authored by the Neo4j GraphQL Team.
+> This is the documentation for the Neo4j GraphQL Library, authored by the Neo4j GraphQL Team.
 
 TIP: Are you a GRANDstack user? We have deprecated the GRANDstack starter app, find more information xref::deprecations.adoc[here].
 

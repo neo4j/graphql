@@ -88,15 +88,16 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_actedIn0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_rel
             )
-            RETURN count(*) AS _
-            UNION
-            WITH this
+            RETURN count(*) AS disconnect_this_disconnect_actedIn_Movie
+            }
+            CALL {
+            	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
             WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Seriesparam0
             FOREACH(_ IN CASE WHEN this_disconnect_actedIn0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_actedIn_Series
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
@@ -167,11 +168,12 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_actedIn0_actors0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
             }
-            RETURN count(*) AS _
-            UNION
-            WITH this
+            RETURN count(*) AS disconnect_this_disconnect_actedIn_Movie
+            }
+            CALL {
+            	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
             WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Seriesparam0
             FOREACH(_ IN CASE WHEN this_disconnect_actedIn0 IS NULL THEN [] ELSE [1] END |
@@ -185,9 +187,9 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_actedIn0_actors0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
             }
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_actedIn_Series
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
@@ -270,17 +272,18 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_actedIn0_actors0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
             }
-            RETURN count(*) AS _
-            UNION
-            WITH this
+            RETURN count(*) AS disconnect_this_disconnect_actedIn_Movie
+            }
+            CALL {
+            	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
             WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Seriesparam0
             FOREACH(_ IN CASE WHEN this_disconnect_actedIn0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_actedIn_Series
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
@@ -372,11 +375,12 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_actedIn0_actors0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
             }
-            RETURN count(*) AS _
-            UNION
-            WITH this
+            RETURN count(*) AS disconnect_this_disconnect_actedIn_Movie
+            }
+            CALL {
+            	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
             WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Seriesparam0
             FOREACH(_ IN CASE WHEN this_disconnect_actedIn0 IS NULL THEN [] ELSE [1] END |
@@ -390,9 +394,9 @@ describe("Interface Relationships - Update disconnect", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_actedIn0_actors0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actedIn0_actors0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
             }
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_actedIn_Series
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
