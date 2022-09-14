@@ -28,11 +28,6 @@ jobs:
         with:
           config-file: ./.github/codeql/codeql-config.yml
           languages: javascript
-      # - name: Install dependencies
-      #   run: yarn
-      # - name: Build packages/${{ matrix.package }}
-      #   run: yarn build
-        # working-directory: packages/${{ matrix.package }}
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
         with:
