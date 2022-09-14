@@ -81,7 +81,12 @@ const ResourceLinksBlock = ({ listBlockTitle, links }: ResourceLinksBlockProps):
                 {links.map((link) => {
                     return (
                         <li key={link.href} className="mt-6 cursor-pointer">
-                            <a className="flex justify-start items-center" href={link.href} target="_blank">
+                            <a
+                                className="flex justify-start items-center"
+                                href={link.href}
+                                target="_blank"
+                                rel="noreferrer"
+                            >
                                 {/* @ts-ignore - iconName is a string */}
                                 <HeroIcon className="h-6 w-6 mr-2 stroke-1" type="outline" iconName={link.iconName} />
                                 <p className="p-0 m-0">{link.label}</p>

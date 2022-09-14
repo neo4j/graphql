@@ -20,12 +20,14 @@
 import { useCallback } from "react";
 import { useContext, useState } from "react";
 import { FormInput } from "./FormInput";
-import { Button } from "@neo4j-ndl/react";
+import { Button, HeroIcon } from "@neo4j-ndl/react";
 import { DEFAULT_BOLT_URL, DEFAULT_USERNAME } from "../../constants";
 // @ts-ignore - SVG Import
 import Icon from "../../assets/neo4j-color.svg";
 import { AuthContext } from "../../contexts/auth";
 import { getConnectUrlSearchParamValue } from "../../contexts/utils";
+import { ProTooltip } from "../../components/ProTooltip";
+import { getURLProtocolFromText } from "../../utils/utils";
 
 export const Login = () => {
     const auth = useContext(AuthContext);
@@ -34,6 +36,8 @@ export const Login = () => {
     const { url: searchParamUrl, username: searchParamUsername } = getConnectUrlSearchParamValue() || {};
     const [url, setUrl] = useState<string>(searchParamUrl || DEFAULT_BOLT_URL);
     const [username, setUsername] = useState<string>(searchParamUsername || DEFAULT_USERNAME);
+    const showWarningToolTip =
+        window.location.protocol.includes("https") && !getURLProtocolFromText(url).includes("+s");
 
     const onSubmit = useCallback(
         async (event: React.FormEvent<HTMLFormElement>) => {
@@ -57,6 +61,21 @@ export const Login = () => {
         },
         [url, username]
     );
+
+    const WarningToolTip = ({ text }: { text: React.ReactNode }): JSX.Element => {
+        return (
+            <ProTooltip
+                tooltipText={text}
+                arrowPositionOverride="left"
+                blockVisibility={false}
+                width={320}
+                left={36}
+                top={-58}
+            >
+                <HeroIcon className="n-text-warning-50" iconName="ExclamationIcon" type="outline" />
+            </ProTooltip>
+        );
+    };
 
     return (
         <div data-test-login-form className="grid place-items-center h-screen n-bg-neutral-90">
@@ -102,7 +121,7 @@ export const Login = () => {
                         disabled={loading}
                     />
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center">
                         <Button
                             data-test-login-button
                             color="neutral"
@@ -114,6 +133,28 @@ export const Login = () => {
                         >
                             Connect
                         </Button>
+
+                        {showWarningToolTip ? (
+                            <div className="ml-3 h-7 w-7">
+                                <WarningToolTip
+                                    text={
+                                        <span>
+                                            With the current Connection URI value the Neo4j driver will be configured to
+                                            use insecure WebSocket on a HTTPS web page. WebSockets might not work in a
+                                            mixed content environment. Please consider accessing the Neo4j database
+                                            using either the bolt+s or neo4j+s protocol. More information:{" "}
+                                            <a
+                                                className="underline"
+                                                href="https://neo4j.com/developer/javascript/#driver-configuration"
+                                                target="_blank"
+                                            >
+                                                here
+                                            </a>
+                                        </span>
+                                    }
+                                />
+                            </div>
+                        ) : null}
                     </div>
 
                     {error && (

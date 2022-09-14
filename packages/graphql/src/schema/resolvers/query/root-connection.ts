@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { GraphQLResolveInfo } from "graphql";
+import type { GraphQLResolveInfo, SelectionSetNode } from "graphql";
 import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { upperFirst } from "graphql-compose";
 import type { PageInfo } from "graphql-relay";
@@ -64,7 +64,7 @@ export function rootConnectionResolver({ node, composer }: { node: Node; compose
             totalCount = isNeoInt(record.totalCount) ? record.totalCount.toNumber() : record.totalCount;
 
             const connection = createConnectionWithEdgeProperties({
-                selectionSet: resolveTree,
+                selectionSet: resolveTree as unknown as SelectionSetNode,
                 source: { edges: record.edges },
                 args: { first: args.first, after: args.after },
                 totalCount,

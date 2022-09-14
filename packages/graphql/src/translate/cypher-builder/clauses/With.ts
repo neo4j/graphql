@@ -18,31 +18,45 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import { Projection, ProjectionColumn } from "../sub-clauses/Projection";
+import { Projection } from "./sub-clauses/Projection";
+import type { Expr } from "../types";
 import { compileCypherIfExists } from "../utils/utils";
+import type { Literal } from "../variables/Literal";
+import type { Variable } from "../variables/Variable";
 import { Clause } from "./Clause";
 import { WithOrder } from "./mixins/WithOrder";
 import { WithReturn } from "./mixins/WithReturn";
 import { applyMixins } from "./utils/apply-mixin";
 
+// With requires an alias for expressions that are not variables
+export type WithProjection = Variable | [Expr, string | Variable | Literal];
+
 export class With extends Clause {
     private projection: Projection;
+    private isDistinct = false;
 
-    constructor(...columns: Array<"*" | ProjectionColumn>) {
+    constructor(...columns: Array<"*" | WithProjection>) {
         super();
         this.projection = new Projection(columns);
     }
 
-    public addColumns(...columns: Array<"*" | ProjectionColumn>): void {
+    public addColumns(...columns: Array<"*" | WithProjection>): this {
         this.projection.addColumns(columns);
+        return this;
+    }
+
+    public distinct(): this {
+        this.isDistinct = true;
+        return this;
     }
 
     public getCypher(env: CypherEnvironment): string {
         const projectionStr = this.projection.getCypher(env);
         const orderByStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });
         const returnStr = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
+        const distinctStr = this.isDistinct ? " DISTINCT" : "";
 
-        return `WITH ${projectionStr}${orderByStr}${returnStr}`;
+        return `WITH${distinctStr} ${projectionStr}${orderByStr}${returnStr}`;
     }
 }
 

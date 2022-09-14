@@ -586,13 +586,56 @@ CREATE (m2:Movie {name: "Sharknado "+x, released: 2013})
 CREATE (p)-[:ACTED_IN]->(m)
 CREATE (p)-[:ACTED_IN]->(m2)
 
+
+CREATE (keanu)-[:LIKES]->(TheMatrix)
+CREATE (keanu)-[:LIKES]->(Keanu)
+
+CREATE (Carrie)-[:LIKES]->(TheMatrix)
+CREATE (Carrie)-[:LIKES]->(JessicaThompson)
+
+CREATE (TomC)-[:LIKES]->(TheMatrix)
+CREATE (TomC)-[:LIKES]->(RobertZ)
+CREATE (TomC)-[:LIKES]->(JessicaThompson)
+CREATE (TomC)-[:LIKES]->(Unforgiven)
+
+CREATE (ReneeZ)-[:LIKES]->(ThatThingYouDo)
+CREATE (ReneeZ)-[:LIKES]->(CloudAtlas)
+CREATE (ReneeZ)-[:LIKES]->(HalleB)
+CREATE (ReneeZ)-[:LIKES]->(TheDaVinciCode)
+CREATE (ReneeZ)-[:LIKES]->(AudreyT)
+CREATE (ReneeZ)-[:LIKES]->(StephenR)
+CREATE (ReneeZ)-[:LIKES]->(JohnH)
+CREATE (ReneeZ)-[:LIKES]->(VforVendetta)
+CREATE (ReneeZ)-[:LIKES]->(NaomieH)
+CREATE (ReneeZ)-[:LIKES]->(FrostNixon)
+
+
+CREATE (JerryO)-[:LIKES]->(VictorG)
+CREATE (JerryO)-[:LIKES]->(JackN)
+CREATE (JerryO)-[:LIKES]->(CubaG)
+CREATE (JerryO)-[:LIKES]->(KevinP)
+CREATE (JerryO)-[:LIKES]->(JTW)
+
+CREATE (JohnC)-[:LIKES]->(VictorG)
+CREATE (JohnC)-[:LIKES]->(TheMatrixReloaded)
+CREATE (JohnC)-[:LIKES]->(JoelS)
+CREATE (JohnC)-[:LIKES]->(JackN)
+CREATE (JohnC)-[:LIKES]->(CubaG)
+CREATE (JohnC)-[:LIKES]->(KevinP)
+CREATE (JohnC)-[:LIKES]->(JTW)
+CREATE (JohnC)-[:LIKES]->(TheReplacements)
+CREATE (JohnC)-[:LIKES]->(AFewGoodMen)
+CREATE (JohnC)-[:LIKES]->(Brooke)
+CREATE (JohnC)-[:LIKES]->(JohnnyMnemonic)
+CREATE (JohnC)-[:LIKES]->(CloudAtlas)
+
 `;
 
-export async function cleanDatabase(session: Session) {
+export async function cleanDatabase(session: Session): Promise<void> {
     await session.run("MATCH (N) DETACH DELETE N");
 }
 
-export async function setupDatabase(session: Session) {
+export async function setupDatabase(session: Session): Promise<void> {
     await cleanDatabase(session);
     await session.run(cypherQuery);
 }

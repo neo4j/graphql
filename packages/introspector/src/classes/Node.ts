@@ -31,11 +31,11 @@ export default class Node {
         this.labels = labels;
     }
 
-    addProperty(property: Property) {
+    addProperty(property: Property): void {
         this.properties.push(property);
     }
 
-    addRelationship(relationship: Relationship) {
+    addRelationship(relationship: Relationship): void {
         this.relationships.push(relationship);
     }
 }

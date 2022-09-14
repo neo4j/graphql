@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { useEffect, useRef } from "react";
 import CodeMirror from "codemirror";
 import "codemirror/addon/hint/show-hint";
 import "codemirror/addon/comment/comment";
@@ -46,3 +47,23 @@ import "codemirror/addon/hint/show-hint.css";
 document.CodeMirror = CodeMirror;
 
 export { CodeMirror };
+
+export const getURLProtocolFromText = (text: string | null | undefined): string => {
+    if (!text) return "";
+    try {
+        return new URL(text)?.protocol;
+    } catch (_) {
+        return "";
+    }
+};
+
+export const usePrevious = (
+    value: string | number | boolean | null | undefined
+): string | number | boolean | null | undefined => {
+    const ref = useRef();
+    useEffect(() => {
+        // @ts-ignore - React.MutableRefObject has no typing
+        ref.current = value;
+    });
+    return ref.current;
+};

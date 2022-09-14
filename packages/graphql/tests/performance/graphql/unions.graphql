@@ -1,12 +1,65 @@
 query SimpleUnionQuery {
     users {
         name
-        liked {
+        likes {
             ... on Person {
                 name
             }
             ... on Movie {
                 title
+            }
+        }
+    }
+}
+
+query SimpleUnionQueryWithMissingFields {
+    users {
+        name
+        likes {
+            ... on Person {
+                name
+            }
+        }
+    }
+}
+
+query NestedUnion {
+    people {
+        name
+        likes {
+            ... on Person {
+                name
+                likes {
+                    ... on Person {
+                        name
+                    }
+                    ... on Movie {
+                        title
+                    }
+                }
+            }
+
+            ... on Movie {
+                title
+            }
+        }
+    }
+}
+
+query NestedUnionWithMissingFields {
+    people {
+        name
+        likes {
+            ... on Person {
+                name
+                likes {
+                    ... on Person {
+                        name
+                    }
+                    ... on Movie {
+                        title
+                    }
+                }
             }
         }
     }

@@ -18,6 +18,7 @@
  */
 
 import { Button, HeroIcon } from "@neo4j-ndl/react";
+import tokens from "@neo4j-ndl/base/lib/tokens/js/tokens";
 import { ProTooltip } from "../../components/ProTooltip";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
 
@@ -49,7 +50,7 @@ export const ActionElementsBar = ({ hasSchema, loading, onSubmit }: Props) => {
             <div className="flex-1 flex justify-end">
                 <Button
                     data-test-schema-editor-build-button
-                    style={{ backgroundColor: "#006FD6" }}
+                    style={{ backgroundColor: tokens.colors.primary[50] }}
                     fill="filled"
                     onClick={onSubmit}
                     disabled={loading}

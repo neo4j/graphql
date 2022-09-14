@@ -106,7 +106,7 @@ describe("@fulltext directive", () => {
         const session = driver.session({ database: databaseName });
 
         const cypher = `
-            CALL db.indexes() yield
+            SHOW INDEXES yield
                 name AS name,
                 type AS type,
                 entityType AS entityType,
@@ -252,7 +252,7 @@ describe("@fulltext directive", () => {
         const session = driver.session({ database: databaseName });
 
         const cypher = `
-            CALL db.indexes() yield
+            SHOW INDEXES yield
                 name AS name,
                 type AS type,
                 entityType AS entityType,
@@ -348,7 +348,7 @@ describe("@fulltext directive", () => {
         const session = driver.session({ database: databaseName });
 
         const cypher = `
-            CALL db.indexes() yield
+            SHOW INDEXES yield
                 name AS name,
                 type AS type,
                 entityType AS entityType,
@@ -463,13 +463,9 @@ describe("@fulltext directive", () => {
 
         try {
             await session.run(
-                [
-                    `CALL db.index.fulltext.createNodeIndex(`,
-                    `"${indexName}",`,
-                    `["${type.name}"],`,
-                    `["title"]`,
-                    `)`,
-                ].join(" ")
+                [`CREATE FULLTEXT INDEX ${indexName}`, `IF NOT EXISTS FOR (n:${type.name})`, `ON EACH [n.title]`].join(
+                    " "
+                )
             );
         } finally {
             await session.close();
@@ -509,11 +505,9 @@ describe("@fulltext directive", () => {
         try {
             await session.run(
                 [
-                    `CALL db.index.fulltext.createNodeIndex(`,
-                    `"${indexName}",`,
-                    `["${type.name}"],`,
-                    `["title", "description"]`,
-                    `)`,
+                    `CREATE FULLTEXT INDEX ${indexName}`,
+                    `IF NOT EXISTS FOR (n:${type.name})`,
+                    `ON EACH [n.title, n.description]`,
                 ].join(" ")
             );
         } finally {
@@ -570,7 +564,7 @@ describe("@fulltext directive", () => {
         const session = driver.session({ database: databaseName });
 
         const cypher = `
-            CALL db.indexes() yield
+            SHOW INDEXES yield
                 name AS name,
                 type AS type,
                 entityType AS entityType,
@@ -635,13 +629,9 @@ describe("@fulltext directive", () => {
 
         try {
             await session.run(
-                [
-                    `CALL db.index.fulltext.createNodeIndex(`,
-                    `"${indexName}",`,
-                    `["${type.name}"],`,
-                    `["title"]`,
-                    `)`,
-                ].join(" ")
+                [`CREATE FULLTEXT INDEX ${indexName}`, `IF NOT EXISTS FOR (n:${type.name})`, `ON EACH [n.title]`].join(
+                    " "
+                )
             );
         } finally {
             await session.close();
@@ -656,5 +646,100 @@ describe("@fulltext directive", () => {
         ).rejects.toThrow(
             `@fulltext index '${indexName}' on Node '${type.name}' already exists, but is missing field 'description'`
         );
+    });
+
+    test("should create index for ID field if it doesn't exist and then query using the index", async () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
+        const id = generate({ readable: true, charset: "alphabetic" });
+        const indexName = generate({ readable: true, charset: "alphabetic" });
+        const type = generateUniqueType("Movie");
+
+        const typeDefs = gql`
+            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["id"] }]) {
+                id: ID!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const schema = await neoSchema.getSchema();
+
+        await expect(
+            neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            })
+        ).resolves.not.toThrow();
+
+        const session = driver.session({ database: databaseName });
+
+        const cypher = `
+            SHOW INDEXES yield
+                name AS name,
+                type AS type,
+                entityType AS entityType,
+                labelsOrTypes AS labelsOrTypes,
+                properties AS properties
+            WHERE name = "${indexName}"
+            RETURN {
+                 name: name,
+                 type: type,
+                 entityType: entityType,
+                 labelsOrTypes: labelsOrTypes,
+                 properties: properties
+            } as result
+        `;
+
+        try {
+            const result = await session.run(cypher);
+
+            const record = result.records[0].get("result") as {
+                name: string;
+                type: string;
+                entityType: string;
+                labelsOrTypes: string[];
+                properties: string[];
+            };
+
+            expect(record.name).toEqual(indexName);
+            expect(record.type).toBe("FULLTEXT");
+            expect(record.entityType).toBe("NODE");
+            expect(record.labelsOrTypes).toEqual([type.name]);
+            expect(record.properties).toEqual(["id"]);
+
+            await session.run(`
+                CREATE (:${type.name} { id: "${id}" })
+            `);
+        } finally {
+            await session.close();
+        }
+
+        const query = `
+            query {
+                ${type.plural}(fulltext: { ${indexName}: { phrase: "${id}" } }) {
+                    id
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect(gqlResult.data).toEqual({
+            [type.plural]: [{ id }],
+        });
     });
 });

@@ -28,11 +28,11 @@ export class NodeField {
         this.type = type;
     }
 
-    addDirective(d: Directive) {
+    addDirective(d: Directive): void {
         this.directives.push(d);
     }
 
-    toString() {
+    toString(): string {
         const directiveString = this.directives?.map((d) => d.toString()).join(" ") || "";
         return `${this.name}: ${this.type}${directiveString ? ` ${directiveString}` : ""}`;
     }

@@ -23,4 +23,8 @@ module.exports = {
             "<rootDir>/packages/plugins/graphql-plugin-subscriptions-amqp/src/$1",
         "@neo4j/graphql(.*)$": "<rootDir>/packages/graphql/src/$1",
     },
+    snapshotFormat: {
+        escapeString: true,
+        printBasicPrototype: true,
+    },
 };

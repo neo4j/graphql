@@ -27,6 +27,7 @@ export class Union extends Clause {
     constructor(...subqueries: Clause[]) {
         super();
         this.subqueries = subqueries;
+        this.addChildren(...subqueries);
     }
 
     public all(): this {
