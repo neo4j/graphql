@@ -37,9 +37,9 @@ export function generateSubscriptionTypes({
 
     const eventTypeEnum = schemaComposer.createEnumTC(EventType);
 
-    const shouldInclude = (node: Node) => !node.exclude?.operations.includes("subscribe");
+    const shouldIncludeSubscriptionOperation = (node: Node) => !node.exclude?.operations.includes("subscribe");
 
-    nodes.filter(shouldInclude).forEach((node) => {
+    nodes.filter(shouldIncludeSubscriptionOperation).forEach((node) => {
         const eventPayload = generateEventPayloadType(node, schemaComposer);
         const where = generateSubscriptionWhereType(node, schemaComposer);
         const { subscriptionEventTypeNames, subscriptionEventPayloadFieldNames, rootTypeFieldNames } = node;
