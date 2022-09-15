@@ -20,7 +20,7 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { asArray, removeDuplicates } from "../utils/utils";
 import type { Context, GraphQLOptionsArg, InterfaceWhereArg, RelationField } from "../types";
-import filterInterfaceNodes from "../utils/filter-interface-nodes";
+import { filterInterfaceNodes } from "../utils/filter-interface-nodes";
 import { createAuthPredicates } from "./create-auth-and-params";
 // eslint-disable-next-line import/no-cycle
 import createProjectionAndParams from "./create-projection-and-params";

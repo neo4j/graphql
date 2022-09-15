@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode} from "graphql";
+import type { DirectiveNode } from "graphql";
 import { parse } from "graphql";
 import parseExcludeDirective from "./parse-exclude-directive";
 import { Exclude } from "../classes";
@@ -60,7 +60,7 @@ describe("parseExcludeDirective", () => {
 
         const directive = (parse(typeDefs) as any).definitions[0].directives[0] as DirectiveNode | undefined;
 
-        const expected = new Exclude({ operations: ["create", "read", "update", "delete"] });
+        const expected = new Exclude({ operations: ["create", "read", "update", "delete", "subscribe"] });
 
         expect(parseExcludeDirective(directive)).toMatchObject(expected);
     });

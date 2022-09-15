@@ -33,6 +33,7 @@ describe("Delete Subscription", () => {
     let driver: Driver;
 
     const typeMovie = generateUniqueType("Movie");
+    const typeActor = generateUniqueType("Actor");
 
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
@@ -41,8 +42,11 @@ describe("Delete Subscription", () => {
         const typeDefs = `
         type ${typeMovie} {
             title: String
+            actors: [${typeActor}]
         }
-        `;
+        type ${typeActor} @exclude(operations: [SUBSCRIBE]) {
+           name: String
+        }`;
 
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
@@ -137,6 +141,26 @@ describe("Delete Subscription", () => {
         ]);
     });
 
+    test("delete subscription on excluded type", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
+            subscription {
+                ${typeActor.operations.subscribe.deleted}(where: { name: "Keanu" }) {
+                    ${typeActor.operations.subscribe.payload.deleted} {
+                        name
+                    }
+                }
+            }
+        `,
+            onReturnError
+        );
+        await createActor("Keanu");
+        await deleteActor("Keanu");
+        expect(onReturnError).toHaveBeenCalled();
+        expect(wsClient.events).toEqual([]);
+    });
+
     async function createMovie(title: string): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
@@ -154,7 +178,23 @@ describe("Delete Subscription", () => {
             .expect(200);
         return result;
     }
-
+    async function createActor(name: string): Promise<Response> {
+        const result = await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeActor.operations.create}(input: [{ name: "${name}" }]) {
+                            ${typeActor.plural} {
+                                name
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+        return result;
+    }
     async function deleteMovie(title: string): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
@@ -166,6 +206,23 @@ describe("Delete Subscription", () => {
                         }
                     }
                 `,
+            })
+            .expect(200);
+        return result;
+    }
+    async function deleteActor(name: string): Promise<Response> {
+        const result = await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                        mutation {
+                            ${typeActor.operations.update}(where: { name: "${name}" }) {
+                                ${typeActor.plural} {
+                                    name
+                                }
+                            }
+                        }
+                    `,
             })
             .expect(200);
         return result;

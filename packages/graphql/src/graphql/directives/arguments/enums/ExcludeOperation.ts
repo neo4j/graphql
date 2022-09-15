@@ -27,5 +27,6 @@ export const ExcludeOperationEnum = new GraphQLEnumType({
         READ: {},
         UPDATE: {},
         DELETE: {},
+        SUBSCRIBE: {},
     },
 });

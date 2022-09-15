@@ -67,12 +67,8 @@ export function createRelationshipPropertyValue({
 
     if (pointField) {
         return createPointExpression({ resolveTree, field: pointField, variable: relationshipVariable });
-        // return createPointElement({ resolveTree, field: pointField, variable: relationshipVariable });
     }
 
     const dbFieldName = mapToDbProperty(relationship, resolveTree.name);
     return relationshipVariable.property(dbFieldName);
-    // return `${resolveTree.alias}: ${relationshipVariable}.${dbFieldName}`;
-
-    // return createRelationshipPropertyElement({ resolveTree, relationship, relationshipVariable }).split(": ")[1];
 }

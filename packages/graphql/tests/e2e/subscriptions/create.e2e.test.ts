@@ -33,6 +33,7 @@ describe("Create Subscription", () => {
     let driver: Driver;
 
     const typeMovie = generateUniqueType("Movie");
+    const typeActor = generateUniqueType("Actor");
 
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
@@ -40,7 +41,11 @@ describe("Create Subscription", () => {
     beforeEach(async () => {
         const typeDefs = `
          type ${typeMovie} {
-            title: String
+             title: String
+             actors: [${typeActor}]
+         }
+         type ${typeActor} @exclude(operations: [SUBSCRIBE]) {
+            name: String
          }
          `;
 
@@ -130,6 +135,25 @@ describe("Create Subscription", () => {
         ]);
     });
 
+    test("create subscription on excluded type", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
+            subscription {
+                ${typeActor.operations.subscribe.created}(where: { name: "Keanu" }) {
+                    ${typeActor.operations.subscribe.payload.created} {
+                        name
+                    }
+                }
+            }
+        `,
+            onReturnError
+        );
+        await createActor("Keanu");
+        expect(onReturnError).toHaveBeenCalled();
+        expect(wsClient.events).toEqual([]);
+    });
+
     async function createMovie(title: string): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
@@ -139,6 +163,24 @@ describe("Create Subscription", () => {
                         ${typeMovie.operations.create}(input: [{ title: "${title}" }]) {
                             ${typeMovie.plural} {
                                 title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+        return result;
+    }
+
+    async function createActor(name: string): Promise<Response> {
+        const result = await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeActor.operations.create}(input: [{ name: "${name}" }]) {
+                            ${typeActor.plural} {
+                                name
                             }
                         }
                     }
