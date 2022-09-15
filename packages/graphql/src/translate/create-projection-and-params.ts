@@ -476,33 +476,10 @@ export default function createProjectionAndParams({
         }
 
         if (connectionField) {
-            // if (!inRelationshipProjection) {
-            //     if (!res.meta.connectionFields) {
-            //         res.meta.connectionFields = [];
-            //     }
-
-            //     res.meta.connectionFields.push(field);
-            //     // const connectionClause=createConnectionClause({
-            //     //     resolveTree
-            //     //     field
-            //     //     context
-            //     //     nodeVariable
-            //     // })
-            //     res.projection.push(literalElements ? `${alias}: ${alias}` : `${alias}`);
-
-            //     return res;
-            // }
-
             const matchedConnectionField = node.connectionFields.find(
                 (x) => x.fieldName === field.name
             ) as ConnectionField;
 
-            // const connection = createConnectionAndParams({
-            //     resolveTree: field,
-            //     field: matchedConnectionField,
-            //     context,
-            //     nodeVariable: varName,
-            // });
             const connectionClause = new CypherBuilder.Call(
                 createConnectionClause({
                     resolveTree: field,

@@ -149,6 +149,18 @@ export function createConnectionClause({
 
         const collectUnionVariable = new CypherBuilder.NamedNode("edge");
         const subqueries = relatedNodes.map((subqueryRelatedNode) => {
+            if (
+                whereInput &&
+                !Object.prototype.hasOwnProperty.call(whereInput, subqueryRelatedNode.name) && // Filter interfaces when a "where" does not match
+                !(
+                    field.relationship.interface &&
+                    !field.relationship.interface?.implementations?.some((i) =>
+                        Object.prototype.hasOwnProperty.call(whereInput, i)
+                    )
+                )
+            ) {
+                return undefined;
+            }
             return createConnectionSubquery({
                 resolveTree,
                 field,
