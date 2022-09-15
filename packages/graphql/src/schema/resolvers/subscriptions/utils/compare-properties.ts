@@ -179,9 +179,6 @@ export function filterByProperties<T>(
     for (const [k, v] of Object.entries(whereProperties)) {
         if (Object.keys(multipleConditionsAggregationMap).includes(k)) {
             const comparisonResultsAggregationFn = multipleConditionsAggregationMap[k];
-            if (!comparisonResultsAggregationFn) {
-                return false;
-            }
             const comparisonResults = (v as Array<Record<string, T>>).map((whereCl) => {
                 return filterByProperties(node, whereCl, receivedProperties);
             });

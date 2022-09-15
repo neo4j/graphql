@@ -421,6 +421,171 @@ describe("Delete Subscription", () => {
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([]);
     });
+    test("create subscription with where OR single element match", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.deleted}(where: { OR: [{ title: "movie1"}] }) {
+                ${typeMovie.operations.subscribe.payload.deleted} {
+                    title
+                }
+            }
+        }
+    `);
+
+        await createMovie({ title: "movie1", releasedIn: 2020 });
+        await createMovie({ title: "movie2", releasedIn: 2000 });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
+                },
+            },
+        ]);
+    });
+    test("create subscription with where OR single element no match", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.deleted}(where: { OR: [{ title: "movie1"}] }) {
+                ${typeMovie.operations.subscribe.payload.deleted} {
+                    title
+                }
+            }
+        }
+    `);
+
+        await createMovie({ title: "movie3", releasedIn: 2020 });
+        await createMovie({ title: "movie2", releasedIn: 2000 });
+
+        await deleteMovie("title", "movie3");
+        await deleteMovie("title", "movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([]);
+    });
+    test("create subscription with where OR nested match 1", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.deleted}(where: { 
+                OR: [
+                    { title: "movie1" }, 
+                    { AND: [
+                        { title: "movie2" },  
+                        { title: "movie3" }
+                    ]}
+                ] 
+            }) {
+                ${typeMovie.operations.subscribe.payload.deleted} {
+                    title
+                }
+            }
+        }
+    `);
+
+        await createMovie({ title: "movie1", releasedIn: 2020 });
+        await createMovie({ title: "movie2", releasedIn: 2000 });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
+                },
+            },
+        ]);
+    });
+    test("create subscription with where OR nested match some", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.deleted}(where: { 
+                OR: [
+                    { title: "movie1" }, 
+                    { AND: [
+                        { title: "movie2" },  
+                        { releasedIn: 2000 }
+                    ]}
+                ] 
+            }) {
+                ${typeMovie.operations.subscribe.payload.deleted} {
+                    title
+                }
+            }
+        }
+    `);
+
+        await createMovie({ title: "movie1", releasedIn: 2020 });
+        await createMovie({ title: "movie2", releasedIn: 2000 });
+        await createMovie({ title: "movie2", releasedIn: 2002 });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie2" },
+                },
+            },
+        ]);
+    });
+    test("create subscription with where OR nested match all", async () => {
+        await wsClient.subscribe(`
+        subscription {
+            ${typeMovie.operations.subscribe.deleted}(where: { 
+                OR: [
+                    { title: "movie1" }, 
+                    { AND: [
+                        { title: "movie2" },  
+                        { releasedIn_GTE: 2000 }
+                    ]}
+                ] 
+            }) {
+                ${typeMovie.operations.subscribe.payload.deleted} {
+                    title
+                }
+            }
+        }
+    `);
+
+        await createMovie({ title: "movie1", releasedIn: 2020 });
+        await createMovie({ title: "movie2", releasedIn: 2000 });
+        await createMovie({ title: "movie2", releasedIn: 2002 });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie2" },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie2" },
+                },
+            },
+        ]);
+    });
 
     // all but boolean types
     test("subscription with IN on String", async () => {
