@@ -56,7 +56,6 @@ interface Res {
 
 export interface ProjectionMeta {
     authValidateStrs?: string[];
-    connectionFields?: ResolveTree[];
     cypherSortFields?: { alias: string; apocStr: string }[];
 }
 

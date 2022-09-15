@@ -61,7 +61,7 @@ export class With extends Clause {
         return `WITH${distinctStr} ${projectionStr}${orderByStr}${withStr}${returnStr}`;
     }
 
-    // Cannot be part of WithWith due to cycles
+    // Cannot be part of WithWith due to dependency cycles
     public with(...columns: ("*" | WithProjection)[]): With {
         if (this.withStatement) {
             this.withStatement.addColumns(...columns);
