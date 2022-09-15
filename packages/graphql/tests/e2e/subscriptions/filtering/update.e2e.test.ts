@@ -21,7 +21,7 @@ import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
@@ -31,14 +31,14 @@ import Neo4j from "../../setup/neo4j";
 describe("Update Subscriptions", () => {
     let neo4j: Neo4j;
     let driver: Driver;
-
-    const typeMovie = generateUniqueType("Movie");
-    const typeActor = generateUniqueType("Actor");
-
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
+    let typeMovie: UniqueType;
+    let typeActor: UniqueType;
 
     beforeEach(async () => {
+        typeMovie = generateUniqueType("Movie");
+        typeActor = generateUniqueType("Actor");
         const typeDefs = `
          type ${typeMovie} {
             id: ID
@@ -675,7 +675,7 @@ describe("Update Subscriptions", () => {
     test("subscription with IN on Int", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.updated}(where: { releasedIn_IN: [2023, 2021] }) {
+                ${typeMovie.operations.subscribe.updated}(where: { releasedIn_IN: [2020, 2021] }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
                         releasedIn
                     }
@@ -683,11 +683,11 @@ describe("Update Subscriptions", () => {
             }
         `);
 
-        await createMovie({ releasedIn: 2023 });
+        await createMovie({ releasedIn: 2020 });
         await createMovie({ releasedIn: 2022 });
 
-        await updateMovie("releasedIn", 2023, 2022);
-        await updateMovie("releasedIn", 2022, 2023);
+        await updateMovie("releasedIn", 2020, 2022);
+        await updateMovie("releasedIn", 2022, 2020);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
@@ -840,10 +840,10 @@ describe("Update Subscriptions", () => {
             }
         `);
 
-        await createMovie({ releasedIn: 2033 });
+        await createMovie({ releasedIn: 2001 });
         await createMovie({ releasedIn: 2000 });
 
-        await updateMovie("releasedIn", 2033, 2000);
+        await updateMovie("releasedIn", 2001, 2000);
         await updateMovie("releasedIn", 2000, 2021);
 
         expect(wsClient.errors).toEqual([]);

@@ -21,7 +21,7 @@ import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../../src/classes";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
 import type { TestGraphQLServer } from "../../setup/apollo-server";
 import { ApolloTestServer } from "../../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
@@ -31,13 +31,12 @@ import Neo4j from "../../setup/neo4j";
 describe("Delete Subscription", () => {
     let neo4j: Neo4j;
     let driver: Driver;
-
-    const typeMovie = generateUniqueType("Movie");
-
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
+    let typeMovie: UniqueType;
 
     beforeEach(async () => {
+        typeMovie = generateUniqueType("Movie");
         const typeDefs = `
         type ${typeMovie} {
             id: ID
