@@ -155,6 +155,273 @@ describe("Delete Subscription", () => {
         expect(wsClient.events).toEqual([]);
     });
 
+    test("create subscription with where OR", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { OR: [{ title: "movie1"}, {title: "movie2"}] }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", releasedIn: 2020 });
+        await createMovie({ title: "movie2", releasedIn: 2000 });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
+                },
+            },
+
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie2" },
+                },
+            },
+        ]);
+    });
+    test("create subscription with where AND match 1", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { AND: [{ title: "movie2"}, {releasedIn: 2000}] }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", releasedIn: 2020 });
+        await createMovie({ title: "movie2", releasedIn: 2000 });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie2" },
+                },
+            },
+        ]);
+    });
+    test("create subscription with where OR match 1", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { OR: [{ title: "movie2", releasedIn: 2020}, {releasedIn: 2000}] }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", releasedIn: 2020 });
+        await createMovie({ title: "movie2", releasedIn: 2000 });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie2" },
+                },
+            },
+        ]);
+    });
+    test("create subscription with where OR match 2", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { OR: [{ title: "movie2", releasedIn: 2000}, {title: "movie1", releasedIn: 2020}] }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", releasedIn: 2020 });
+        await createMovie({ title: "movie2", releasedIn: 2000 });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "movie2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie1" },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie2" },
+                },
+            },
+        ]);
+    });
+    test("create subscription with where property + OR match 1", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { title: "movie3", OR: [{ releasedIn: 2001}, {title: "movie2", releasedIn: 2020}] }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", releasedIn: 2020 });
+        await createMovie({ title: "movie2", releasedIn: 2000 });
+        await createMovie({ title: "movie3", releasedIn: 2001 });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "movie2");
+        await deleteMovie("title", "movie3");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "movie3" },
+                },
+            },
+        ]);
+    });
+    test("create subscription with where property + OR match nothing", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { title: "movie2", OR: [{ releasedIn: 2001}, {title: "movie2", releasedIn: 2020}] }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", releasedIn: 2020 });
+        await createMovie({ title: "movie2", releasedIn: 2000 });
+        await createMovie({ title: "movie3", releasedIn: 2001 });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "movie2");
+        await deleteMovie("title", "movie3");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toEqual([]);
+    });
+    test("create subscription with where property + OR with filters match 1", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_GTE: 2000, OR: [{ title_NOT_STARTS_WITH: "movie", releasedIn: 2001}, {title: "movie4", releasedIn: 1000}] }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", releasedIn: 2000 });
+        await createMovie({ title: "movie2", releasedIn: 2020 });
+        await createMovie({ title: "movie3", releasedIn: 2000 });
+        await createMovie({ title: "movie4", releasedIn: 1000 });
+        await createMovie({ title: "dummy-movie", releasedIn: 2001 });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "movie2");
+        await deleteMovie("title", "movie3");
+        await deleteMovie("title", "movie4");
+        await deleteMovie("title", "dummy-movie");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "dummy-movie" },
+                },
+            },
+        ]);
+    });
+    test("create subscription with where property + OR with filters match 2", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_GTE: 2000, OR: [{ title_STARTS_WITH: "moviee", releasedIn: 2001}, {title: "amovie"}] }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", releasedIn: 2000 });
+        await createMovie({ title: "amovie", releasedIn: 2020 });
+        await createMovie({ title: "movie3", releasedIn: 2000 });
+        await createMovie({ title: "movie4", releasedIn: 1000 });
+        await createMovie({ title: "movie5", releasedIn: 2001 });
+        await createMovie({ title: "moviee1", releasedIn: 2001 });
+        await createMovie({ title: "moviee2", releasedIn: 2021 });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "amovie");
+        await deleteMovie("title", "movie3");
+        await deleteMovie("title", "movie4");
+        await deleteMovie("title", "movie5");
+        await deleteMovie("title", "moviee1");
+        await deleteMovie("title", "moviee2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "moviee1" },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { title: "amovie" },
+                },
+            },
+        ]);
+    });
+    test("create subscription with where property + OR with filters match none", async () => {
+        await wsClient.subscribe(`
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_GTE: 2000, OR: [{ title_STARTS_WITH: "moviee", releasedIn: 2001}, {title: "amovie", releasedIn_GT: 2020}] }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+        `);
+
+        await createMovie({ title: "movie1", releasedIn: 2000 });
+        await createMovie({ title: "amovie", releasedIn: 2019 });
+        await createMovie({ title: "movie3", releasedIn: 2000 });
+        await createMovie({ title: "movie4", releasedIn: 1000 });
+        await createMovie({ title: "movie5", releasedIn: 2001 });
+        await createMovie({ title: "moviee2", releasedIn: 2021 });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "amovie");
+        await deleteMovie("title", "movie3");
+        await deleteMovie("title", "movie4");
+        await deleteMovie("title", "movie5");
+        await deleteMovie("title", "moviee2");
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient.events).toIncludeSameMembers([]);
+    });
+
     // all but boolean types
     test("subscription with IN on String", async () => {
         await wsClient.subscribe(`
