@@ -33,8 +33,6 @@ import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import createPointElement from "./projection/elements/create-point-element";
-// eslint-disable-next-line import/no-cycle
-import createConnectionAndParams from "./connection/create-connection-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
@@ -46,6 +44,7 @@ import { createProjectionSubquery } from "./projection/subquery/create-projectio
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
 // eslint-disable-next-line import/no-cycle
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
+// eslint-disable-next-line import/no-cycle
 import { createConnectionClause } from "./connection/create-connection-clause";
 
 interface Res {
@@ -76,7 +75,6 @@ export default function createProjectionAndParams({
     varName,
     literalElements,
     resolveType,
-    inRelationshipProjection,
     isRootConnectionField,
     isInCypher = false, // Note, only used for connection in cypher fields
 }: {
@@ -87,7 +85,6 @@ export default function createProjectionAndParams({
     varName: string;
     literalElements?: boolean;
     resolveType?: boolean;
-    inRelationshipProjection?: boolean;
     isRootConnectionField?: boolean;
     isInCypher?: boolean;
 }): ProjectionResult {
@@ -154,7 +151,6 @@ export default function createProjectionAndParams({
                     varName: `${varName}_${alias}`,
                     chainStr: param,
                     isRootConnectionField,
-                    inRelationshipProjection: true,
                     isInCypher: true,
                 });
 
@@ -381,7 +377,6 @@ export default function createProjectionAndParams({
                         context,
                         varName: `${varName}_${alias}`,
                         chainStr: unionVariableName,
-                        inRelationshipProjection: true,
                         isRootConnectionField,
                     });
                     res.params = { ...res.params, ...recurse.params };
@@ -441,7 +436,6 @@ export default function createProjectionAndParams({
                 context,
                 varName: `${varName}_${alias}`,
                 chainStr: param,
-                inRelationshipProjection: true,
                 isRootConnectionField,
             });
             res.params = { ...res.params, ...recurse.params };

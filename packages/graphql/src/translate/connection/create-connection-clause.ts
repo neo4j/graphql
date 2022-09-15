@@ -33,9 +33,100 @@ import { filterTruthy, isNeoInt, isString, toNumber } from "../../utils/utils";
 import { generateMissingOrAliasedFields } from "../utils/resolveTree";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
-import { createConnectionWherePropertyOperation } from "../where/property-operations/create-connection-operation";
+import {
+    createConnectionWherePropertyOperation,
+    hasExplicitNodeInInterfaceWhere,
+} from "../where/property-operations/create-connection-operation";
 import { addSortAndLimitOptionsToClause } from "../projection/subquery/add-sort-and-limit-to-clause";
 import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
+import { getPattern } from "../utils/get-pattern";
+
+function createConnectionSubquery({
+    resolveTree,
+    field,
+    context,
+    parentNode,
+    relatedNode,
+    returnVariable,
+}: {
+    resolveTree: ResolveTree;
+    field: ConnectionField;
+    context: Context;
+    parentNode: string;
+    relatedNode: Node;
+    returnVariable: CypherBuilder.Variable;
+}): CypherBuilder.Clause | undefined {
+    const nodeRef = getOrCreateCypherNode(parentNode);
+    const whereInput = resolveTree.args.where as ConnectionWhereArg;
+
+    const relatedNodeVarName = `${parentNode}_${relatedNode.name}`;
+    const relatedNodeVariable = new CypherBuilder.NamedNode(relatedNodeVarName, {
+        labels: relatedNode.getLabels(context),
+    });
+
+    const relationshipRef = new CypherBuilder.Relationship({
+        source: nodeRef,
+        target: relatedNodeVariable,
+        type: field.relationship.type,
+    });
+
+    const relPattern = getPattern({
+        relationship: relationshipRef,
+        field: field.relationship,
+        resolveTree,
+    });
+
+    const withClause = new CypherBuilder.With(nodeRef);
+    const matchClause = new CypherBuilder.Match(relPattern);
+    const unionInterfaceWhere = field.relationship.union ? (whereInput || {})[relatedNode.name] : whereInput || {};
+    if (unionInterfaceWhere) {
+        const relationship = context.relationships.find((r) => r.name === field.relationshipTypeName) as Relationship;
+
+        if (
+            !hasExplicitNodeInInterfaceWhere({
+                whereInput: unionInterfaceWhere,
+                node: relatedNode,
+            })
+        ) {
+            return undefined;
+        }
+        const wherePredicate = createConnectionWherePropertyOperation({
+            context,
+            whereInput: unionInterfaceWhere,
+            edgeRef: relationshipRef,
+            targetNode: relatedNodeVariable,
+            node: relatedNode,
+            edge: relationship,
+        });
+
+        if (wherePredicate) matchClause.where(wherePredicate);
+    }
+    const authPredicate = createAuthPredicates({
+        operations: "READ",
+        entity: relatedNode,
+        context,
+        where: { varName: relatedNodeVariable, node: relatedNode },
+    });
+    if (authPredicate) {
+        matchClause.where(authPredicate);
+    }
+
+    // TODO: Handle projection.subqueries
+    const projection = getEdgeProjection({
+        resolveTree,
+        field,
+        relationshipRef,
+        relatedNode,
+        relatedNodeVariableName: relatedNodeVarName,
+        context,
+        resolveType: true,
+        extraFields: Object.keys(getSortFields(resolveTree).edge),
+    });
+
+    matchClause.return([projection.projection, returnVariable]);
+
+    return CypherBuilder.concat(withClause, matchClause);
+}
 
 export function createConnectionClause({
     resolveTree,
@@ -50,104 +141,22 @@ export function createConnectionClause({
 }): CypherBuilder.Clause {
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
 
+    const relatedNode = context.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
     if (field.relationship.union || field.relationship.interface) {
         const relatedNodes = field.relationship.union
             ? context.nodes.filter((n) => field.relationship.union?.nodes?.includes(n.name))
-            : context.nodes.filter(
-                  (x) => field.relationship?.interface?.implementations?.includes(x.name)
-                  // &&   filterInterfaceNodes({ node: x, whereInput: whereInput?.node })
-              );
+            : context.nodes.filter((x) => field.relationship?.interface?.implementations?.includes(x.name));
 
         const collectUnionVariable = new CypherBuilder.NamedNode("edge");
-        const subqueries = relatedNodes.map((relatedNode) => {
-            if (
-                whereInput &&
-                !Object.prototype.hasOwnProperty.call(whereInput, relatedNode.name) && // Filter interfaces when a "where" does not match
-                !(
-                    field.relationship.interface &&
-                    !field.relationship.interface?.implementations?.some((i) =>
-                        Object.prototype.hasOwnProperty.call(resolveTree.args.where, i)
-                    )
-                )
-            ) {
-                return undefined;
-            }
-
-            const relatedNodeVarName = `${nodeVariable}_${relatedNode.name}`;
-            const relatedNodeVariable = new CypherBuilder.NamedNode(relatedNodeVarName, {
-                labels: relatedNode.getLabels(context),
-            });
-
-            const nodeRef = getOrCreateCypherNode(nodeVariable);
-            const relationshipRef = new CypherBuilder.Relationship({
-                source: nodeRef,
-                target: relatedNodeVariable,
-                type: field.relationship.type,
-            });
-
-            const direction = getRelationshipDirection(field.relationship, resolveTree.args);
-
-            const relPattern = relationshipRef.pattern({
-                directed: direction !== "undirected",
-            });
-            if (direction === "IN") relPattern.reverse();
-
-            const projection = getEdgeProjection({
+        const subqueries = relatedNodes.map((subqueryRelatedNode) => {
+            return createConnectionSubquery({
                 resolveTree,
                 field,
-                relationshipRef,
-                relatedNode,
-                relatedNodeVariable,
-                relatedNodeVariableName: relatedNodeVarName,
                 context,
-                resolveType: true,
-                extraFields: Object.keys(getSortFields(resolveTree).edge),
+                parentNode: nodeVariable,
+                returnVariable: collectUnionVariable,
+                relatedNode: subqueryRelatedNode,
             });
-            const withClause = new CypherBuilder.With(nodeRef);
-            // TODO: Handle projection.subqueries
-            const matchClause = new CypherBuilder.Match(relPattern);
-
-            const unionInterfaceWhere = field.relationship.union
-                ? (whereInput || {})[relatedNode.name]
-                : whereInput || {};
-            if (whereInput && unionInterfaceWhere) {
-                const relationship = context.relationships.find(
-                    (r) => r.name === field.relationshipTypeName
-                ) as Relationship;
-
-                try {
-                    const wherePredicate = createConnectionWherePropertyOperation({
-                        context,
-                        whereInput: unionInterfaceWhere,
-                        edgeRef: relationshipRef,
-                        targetNode: relatedNodeVariable,
-                        node: relatedNode,
-                        edge: relationship,
-                    });
-
-                    if (wherePredicate) matchClause.where(wherePredicate);
-                } catch (err) {
-                    // TODO: remove throw for control flow please
-                    return undefined;
-                }
-            }
-            const authPredicate = createAuthPredicates({
-                operations: "READ",
-                entity: relatedNode,
-                context,
-                where: { varName: relatedNodeVariable, node: relatedNode },
-                allow: {
-                    parentNode: relatedNode,
-                    varName: relatedNodeVariable,
-                },
-            });
-            if (authPredicate) {
-                matchClause.where(authPredicate);
-            }
-
-            matchClause.return([projection.projection, collectUnionVariable]);
-
-            return CypherBuilder.concat(withClause, matchClause);
         });
 
         const unionClauses = new CypherBuilder.Call(new CypherBuilder.Union(...filterTruthy(subqueries)));
@@ -155,20 +164,13 @@ export function createConnectionClause({
         const edgesList = new CypherBuilder.NamedVariable("edges");
         const edgeItem = new CypherBuilder.NamedVariable("edge");
         const totalCount = new CypherBuilder.NamedVariable("totalCount");
-        const withClause = new CypherBuilder.With([CypherBuilder.collect(collectUnionVariable), edgesList]).with(
+
+        const withEdgesAndTotalCount = new CypherBuilder.With([
+            CypherBuilder.collect(collectUnionVariable),
             edgesList,
-            [CypherBuilder.size(edgesList), totalCount]
-        );
-        const returnClause = new CypherBuilder.Return([
-            new CypherBuilder.Map({
-                edges: edgesList,
-                totalCount,
-            }),
-            resolveTree.alias,
-        ]);
+        ]).with(edgesList, [CypherBuilder.size(edgesList), totalCount]);
 
         let withOrderClause: CypherBuilder.Clause | undefined;
-        const relatedNode = context.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node; // TODO: avoid duplicate
         const limit = relatedNode?.queryOptions?.getLimit();
         const withOrder = getSortAndLimitProjectionAfterUnion({
             resolveTree,
@@ -185,10 +187,17 @@ export function createConnectionClause({
             withOrderClause = CypherBuilder.concat(unwind, withOrder, withAndCollectEdges);
         }
 
-        return CypherBuilder.concat(unionClauses, withClause, withOrderClause, returnClause);
+        const returnClause = new CypherBuilder.Return([
+            new CypherBuilder.Map({
+                edges: edgesList,
+                totalCount,
+            }),
+            resolveTree.alias,
+        ]);
+
+        return CypherBuilder.concat(unionClauses, withEdgesAndTotalCount, withOrderClause, returnClause);
     }
 
-    const relatedNode = context.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
     const relatedNodeVariableName = `${nodeVariable}_${relatedNode.name}`;
     const relatedNodeVariable = new CypherBuilder.NamedNode(relatedNodeVariableName, {
         labels: relatedNode.getLabels(context),
@@ -263,7 +272,6 @@ export function createConnectionClause({
         field,
         relationshipRef,
         relatedNode,
-        relatedNodeVariable,
         relatedNodeVariableName,
         context,
     });
@@ -317,7 +325,6 @@ function getEdgeProjection({
     resolveTree,
     field,
     relationshipRef,
-    relatedNodeVariable,
     relatedNodeVariableName,
     context,
     relatedNode,
@@ -327,7 +334,6 @@ function getEdgeProjection({
     resolveTree: ResolveTree;
     field: ConnectionField;
     relationshipRef: CypherBuilder.Relationship;
-    relatedNodeVariable: CypherBuilder.Node;
     relatedNodeVariableName: string;
     context: Context;
     relatedNode: Node;
@@ -344,8 +350,6 @@ function getEdgeProjection({
         const relationshipProperties = Object.values(relationshipFieldsByTypeName).filter((v) => v.name !== "node");
         if (relationshipProperties.length || extraFields.length) {
             const relationshipPropertyEntries = relationshipProperties.filter((p) => p.name !== "cursor");
-            // .map((v) => createRelationshipPropertyElement({ resolveTree: v, relationship, relationshipVariable }));
-            // elementsToCollect.push(relationshipPropertyEntries.join(", "));
 
             for (const property of relationshipPropertyEntries) {
                 const prop = createRelationshipPropertyValue({
@@ -358,18 +362,15 @@ function getEdgeProjection({
             }
 
             for (const extraField of extraFields) {
-                // TODO: use createRelationshipPropertyValue here?
                 const prop = relationshipRef.property(extraField);
                 edgeProjectionProperties.set(extraField, prop);
             }
-            // TODO: return these for projection
         }
 
         const nodeField = Object.values(relationshipFieldsByTypeName).find((v) => v.name === "node");
         if (nodeField) {
             const nodeProjection = getConnectionNodeProjection({
                 nodeResolveTree: nodeField as ResolveTree,
-                nodeRef: relatedNodeVariable,
                 context,
                 node: relatedNode,
                 resolveTree,
@@ -381,7 +382,7 @@ function getEdgeProjection({
             subqueries.push(...nodeProjection.subqueries);
         }
     } else {
-        // This ensures that totalCount calculation is accurate if edges not asked for
+        // This ensures that totalCount calculation is accurate if edges are not asked for
 
         return {
             projection: new CypherBuilder.Map({
@@ -396,7 +397,6 @@ function getEdgeProjection({
 
 function getConnectionNodeProjection({
     nodeResolveTree,
-    nodeRef,
     nodeRefVarName,
     context,
     node,
@@ -405,7 +405,6 @@ function getConnectionNodeProjection({
 }: {
     nodeResolveTree: ResolveTree;
     context;
-    nodeRef: CypherBuilder.Node;
     nodeRefVarName: string;
     node: Node;
     resolveType?: boolean;
@@ -494,7 +493,6 @@ function getSortAndLimitProjection({
         offset = undefined;
         firstArg = undefined;
     }
-    // const optionsInput = (field.args.options || {}) as GraphQLOptionsArg;
     addSortAndLimitOptionsToClause({
         optionsInput: { sort: [edgeSortFields], limit: firstArg, offset },
         target: relationshipRef,
