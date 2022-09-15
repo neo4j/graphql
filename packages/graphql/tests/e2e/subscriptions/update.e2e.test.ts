@@ -42,10 +42,10 @@ describe("Update Subscriptions", () => {
         const typeDefs = `
          type ${typeMovie} {
             title: String
+            actors: [${typeActor}]
          }
-
-         type ${typeActor} {
-             name: String
+         type ${typeActor} @exclude(operations: [SUBSCRIBE]) {
+            name: String
          }
          `;
 
@@ -169,6 +169,26 @@ describe("Update Subscriptions", () => {
         ]);
     });
 
+    test("delete subscription on excluded type", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
+            subscription {
+                ${typeActor.operations.subscribe.updated}(where: { name: "Keanu" }) {
+                    ${typeActor.operations.subscribe.payload.updated} {
+                        name
+                    }
+                }
+            }
+        `,
+            onReturnError
+        );
+        await createActor("Keanu");
+        await updateActor("Keanu", "Keanoo");
+        expect(onReturnError).toHaveBeenCalled();
+        expect(wsClient.events).toEqual([]);
+    });
+
     async function createMovie(title): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
@@ -186,6 +206,23 @@ describe("Update Subscriptions", () => {
             .expect(200);
         return result;
     }
+    async function createActor(name: string): Promise<Response> {
+        const result = await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeActor.operations.create}(input: [{ name: "${name}" }]) {
+                            ${typeActor.plural} {
+                                name
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+        return result;
+    }
     async function updateMovie(oldTitle: string, newTitle: string): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
@@ -195,6 +232,23 @@ describe("Update Subscriptions", () => {
                             ${typeMovie.operations.update}(where: { title: "${oldTitle}" }, update: { title: "${newTitle}" }) {
                                 ${typeMovie.plural} {
                                     title
+                                }
+                            }
+                        }
+                    `,
+            })
+            .expect(200);
+        return result;
+    }
+    async function updateActor(oldName: string, newName: string): Promise<Response> {
+        const result = await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                        mutation {
+                            ${typeActor.operations.update}(where: { name: "${oldName}" }, update: { name: "${newName}" }) {
+                                ${typeActor.plural} {
+                                    name
                                 }
                             }
                         }
