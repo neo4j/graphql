@@ -18,25 +18,24 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import { cursorToOffset } from "graphql-relay";
-import type { Integer } from "neo4j-driver";
-import type { ConnectionField, ConnectionSortArg, ConnectionWhereArg, Context, GraphQLSortArg } from "../../types";
+import type { ConnectionField, ConnectionWhereArg, Context } from "../../types";
 import type { Node } from "../../classes";
 import type Relationship from "../../classes/Relationship";
 import { createAuthPredicates } from "../create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
-import { filterTruthy, isNeoInt, isString, toNumber } from "../../utils/utils";
+import { filterTruthy } from "../../utils/utils";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import {
     createConnectionWherePropertyOperation,
     hasExplicitNodeInInterfaceWhere,
 } from "../where/property-operations/create-connection-operation";
-import { addSortAndLimitOptionsToClause } from "../projection/subquery/add-sort-and-limit-to-clause";
 import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
 import { getPattern } from "../utils/get-pattern";
 // eslint-disable-next-line import/no-cycle
 import { createEdgeProjection } from "./connection-projection";
+import { createSortAndLimitProjection } from "./create-sort-and-limit";
+import { getSortFields } from "./get-sort-fields";
 
 export function createConnectionClause({
     resolveTree,
@@ -50,8 +49,8 @@ export function createConnectionClause({
     nodeVariable: string;
 }): CypherBuilder.Clause {
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
-
     const relatedNode = context.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
+
     if (field.relationship.union || field.relationship.interface) {
         const relatedNodes = field.relationship.union
             ? context.nodes.filter((n) => field.relationship.union?.nodes?.includes(n.name))
@@ -95,7 +94,7 @@ export function createConnectionClause({
         let withOrderClause: CypherBuilder.Clause | undefined;
         const limit = relatedNode?.queryOptions?.getLimit();
 
-        const withOrder = getSortAndLimitProjection({
+        const withOrder = createSortAndLimitProjection({
             resolveTree,
             relationshipRef: edgeItem,
             nodeRef: edgeItem.property("node"),
@@ -143,7 +142,7 @@ export function createConnectionClause({
     if (direction === "IN") relPattern.reverse();
 
     const matchClause = new CypherBuilder.Match(relPattern);
-    const withSortClause = getSortAndLimitProjection({
+    const withSortClause = createSortAndLimitProjection({
         resolveTree,
         relationshipRef,
         nodeRef: relatedNodeVariable,
@@ -212,7 +211,7 @@ export function createConnectionClause({
 
     const totalCount = new CypherBuilder.NamedVariable("totalCount");
 
-    const withSortAfterUnwindClause = getSortAndLimitProjection({
+    const withSortAfterUnwindClause = createSortAndLimitProjection({
         resolveTree,
         relationshipRef: new CypherBuilder.NamedVariable("edge"),
         nodeRef: new CypherBuilder.NamedNode("edge.node"),
@@ -331,72 +330,4 @@ function createConnectionSubquery({
     matchClause.return([projection.projection, returnVariable]);
 
     return CypherBuilder.concat(withClause, matchClause);
-}
-
-function getSortAndLimitProjection({
-    resolveTree,
-    relationshipRef,
-    nodeRef,
-    limit,
-    extraFields = [],
-    ignoreSkipLimit = false,
-}: {
-    resolveTree: ResolveTree;
-    relationshipRef: CypherBuilder.Relationship | CypherBuilder.Variable;
-    nodeRef: CypherBuilder.Node | CypherBuilder.Variable | CypherBuilder.PropertyRef;
-    limit: Integer | number | undefined;
-    extraFields?: CypherBuilder.Variable[];
-    ignoreSkipLimit?: boolean;
-}): CypherBuilder.With | undefined {
-    const { node: nodeSortFields, edge: edgeSortFields } = getSortFields(resolveTree);
-
-    if (Object.keys(edgeSortFields).length === 0 && Object.keys(nodeSortFields).length === 0 && !limit)
-        return undefined;
-
-    const withStatement = new CypherBuilder.With(relationshipRef, ...extraFields);
-
-    let firstArg = resolveTree.args.first as Integer | number | undefined;
-    const afterArg = resolveTree.args.after as string | undefined;
-    let offset = isString(afterArg) ? cursorToOffset(afterArg) + 1 : undefined;
-
-    if (limit) {
-        const limitValue = isNeoInt(limit) ? limit.toNumber() : limit;
-        if (!firstArg || limitValue < toNumber(firstArg)) {
-            firstArg = limitValue;
-        }
-    }
-    if (ignoreSkipLimit) {
-        offset = undefined;
-        firstArg = undefined;
-    }
-    addSortAndLimitOptionsToClause({
-        optionsInput: { sort: [edgeSortFields], limit: firstArg, offset },
-        target: relationshipRef,
-        projectionClause: withStatement,
-    });
-
-    addSortAndLimitOptionsToClause({
-        optionsInput: { sort: [nodeSortFields] },
-        target: nodeRef,
-        projectionClause: withStatement,
-    });
-
-    return withStatement;
-}
-
-function getSortFields(resolveTree: ResolveTree) {
-    const sortInput = (resolveTree.args.sort ?? []) as ConnectionSortArg[];
-    // Fields of {edge, node} to sort on. A simple resolve tree will be added if not in selection set
-    // Since nodes of abstract types and edges are constructed sort will not work if field is not in selection set
-    // const edgeSortFields = sortInput.map(({ edge = {} }) => Object.keys(edge)).flat();
-    return {
-        edge: getSortFieldsByElement(sortInput, "edge"),
-        node: getSortFieldsByElement(sortInput, "node"),
-    };
-}
-
-function getSortFieldsByElement(sortInput: ConnectionSortArg[], element: "node" | "edge"): GraphQLSortArg {
-    return sortInput.reduce((acc, f) => {
-        return { ...acc, ...(f[element] || {}) };
-    }, {} as GraphQLSortArg);
 }

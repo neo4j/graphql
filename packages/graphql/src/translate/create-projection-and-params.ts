@@ -45,7 +45,7 @@ import { collectUnionSubqueriesResults } from "./projection/subquery/collect-uni
 // eslint-disable-next-line import/no-cycle
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 // eslint-disable-next-line import/no-cycle
-import { createConnectionClause } from "./connection/create-connection-clause";
+import { createConnectionClause } from "./connection-clause/create-connection-clause";
 
 interface Res {
     projection: string[];
