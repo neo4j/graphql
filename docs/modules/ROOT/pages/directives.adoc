@@ -46,7 +46,7 @@ Reference: xref::type-definitions/default-values.adoc#type-definitions-default-v
 
 == `@exclude`
 
-The `@exclude` directive is used on object types to instruct them to be skipped during Query and Mutation generation.
+The `@exclude` directive is used on object types to instruct them to be skipped during Query, Mutation and Subscription generation.
 
 Reference: xref::type-definitions/access-control.adoc#type-definitions-access-control-exclude[`@exclude`]
 
