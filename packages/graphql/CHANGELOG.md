@@ -1,5 +1,33 @@
 # @neo4j/graphql
 
+## 3.8.0
+
+### Minor Changes
+
+-   [#2081](https://github.com/neo4j/graphql/pull/2081) [`e978b185f`](https://github.com/neo4j/graphql/commit/e978b185f1d0fe4ec7bd75ecbaa03a5216105a14) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Allow `@fulltext` directive to specify `ID` fields
+
+-   [#1972](https://github.com/neo4j/graphql/pull/1972) [`a965bd861`](https://github.com/neo4j/graphql/commit/a965bd861bef0fab93480705ac4f011f1f6c534f) Thanks [@a-alle](https://github.com/a-alle)! - Add more filtering options on subscriptions
+
+-   [#1822](https://github.com/neo4j/graphql/pull/1822) [`1d90a5252`](https://github.com/neo4j/graphql/commit/1d90a5252abf724fc91b92fe3a86ee69c0ab26bb) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Adds database version detection so that Cypher can be generated in a dynamic manner. Uses this new logic to switch between `point.distance()` and `distance()` as needed. This PR also switches over to use the Cypher index management API.
+
+### Patch Changes
+
+-   [#1986](https://github.com/neo4j/graphql/pull/1986) [`f958503e0`](https://github.com/neo4j/graphql/commit/f958503e059fcfabc46628fd651914e08d29b998) Thanks [@tbwiss](https://github.com/tbwiss)! - fix: Sum aggregate on where unexpected behaviour (#1933)
+
+-   [#2053](https://github.com/neo4j/graphql/pull/2053) [`2abb6036f`](https://github.com/neo4j/graphql/commit/2abb6036f267ba0c1310f36e3a7882948800ae05) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove apoc.cypher.runFirstColumnSingle from connections projections
+
+-   [#2023](https://github.com/neo4j/graphql/pull/2023) [`a037e34a9`](https://github.com/neo4j/graphql/commit/a037e34a9bb1f8eff07992e0d08b9c0fbf5f5a11) Thanks [@litewarp](https://github.com/litewarp)! - fix: nested relation error with interface query
+
+-   [#2009](https://github.com/neo4j/graphql/pull/2009) [`8260fb845`](https://github.com/neo4j/graphql/commit/8260fb845aced51dbf90425870b766210c96a22c) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix nested interface projections
+
+-   [#2065](https://github.com/neo4j/graphql/pull/2065) [`99a7f707a`](https://github.com/neo4j/graphql/commit/99a7f707ad4afd2ef1613e8218de713836d165f3) Thanks [@darrellwarde](https://github.com/darrellwarde)! - fix: multiple nodes created if following connection of multiple interface relationships
+
+-   [#2014](https://github.com/neo4j/graphql/pull/2014) [`66c040179`](https://github.com/neo4j/graphql/commit/66c0401791e9fc0182a2e5c271bff11bd05f5fef) Thanks [@mjfwebb](https://github.com/mjfwebb)! - refactor: fix linting errors and add types
+
+-   [#2002](https://github.com/neo4j/graphql/pull/2002) [`1ceb09860`](https://github.com/neo4j/graphql/commit/1ceb09860e256ea5f7bebe4797c31045d3ca9ece) Thanks [@tbwiss](https://github.com/tbwiss)! - fix: Remove "Math.floor(Math.random() \* Math.random())" from integration tests
+
+-   [#2062](https://github.com/neo4j/graphql/pull/2062) [`972a06c83`](https://github.com/neo4j/graphql/commit/972a06c83db82bbef49c56f861d07ff688b99cb5) Thanks [@darrellwarde](https://github.com/darrellwarde)! - fix: there will no longer be a Cypher syntax error when selecting interface relationship fields following the creation of multiple nodes
+
 ## 3.7.0
 
 ### Minor Changes
