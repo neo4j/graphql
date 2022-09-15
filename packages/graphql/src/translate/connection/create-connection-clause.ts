@@ -94,10 +94,13 @@ export function createConnectionClause({
 
         let withOrderClause: CypherBuilder.Clause | undefined;
         const limit = relatedNode?.queryOptions?.getLimit();
-        const withOrder = getSortAndLimitProjectionAfterUnion({
+
+        const withOrder = getSortAndLimitProjection({
             resolveTree,
             relationshipRef: edgeItem,
+            nodeRef: edgeItem.property("node"),
             limit,
+            extraFields: [totalCount],
         });
         if (withOrder) {
             const unwind = new CypherBuilder.Unwind([edgesList, edgeItem]);
@@ -340,7 +343,7 @@ function getSortAndLimitProjection({
 }: {
     resolveTree: ResolveTree;
     relationshipRef: CypherBuilder.Relationship | CypherBuilder.Variable;
-    nodeRef: CypherBuilder.Node | CypherBuilder.Variable;
+    nodeRef: CypherBuilder.Node | CypherBuilder.Variable | CypherBuilder.PropertyRef;
     limit: Integer | number | undefined;
     extraFields?: CypherBuilder.Variable[];
     ignoreSkipLimit?: boolean;
@@ -375,49 +378,6 @@ function getSortAndLimitProjection({
     addSortAndLimitOptionsToClause({
         optionsInput: { sort: [nodeSortFields] },
         target: nodeRef,
-        projectionClause: withStatement,
-    });
-
-    return withStatement;
-}
-
-// TODO: avoid duplicate code here
-function getSortAndLimitProjectionAfterUnion({
-    resolveTree,
-    relationshipRef,
-    limit,
-}: {
-    resolveTree: ResolveTree;
-    relationshipRef: CypherBuilder.Relationship | CypherBuilder.Variable;
-    limit: number | Integer | undefined;
-}): CypherBuilder.With | undefined {
-    const { node: nodeSortFields, edge: edgeSortFields } = getSortFields(resolveTree);
-
-    if (Object.keys(edgeSortFields).length === 0 && Object.keys(nodeSortFields).length === 0 && !limit)
-        return undefined;
-
-    const withStatement = new CypherBuilder.With(relationshipRef, new CypherBuilder.NamedVariable("totalCount"));
-
-    let firstArg = resolveTree.args.first as Integer | number | undefined;
-    const afterArg = resolveTree.args.after as string | undefined;
-    const offset = isString(afterArg) ? cursorToOffset(afterArg) + 1 : undefined;
-
-    if (limit) {
-        const limitValue = isNeoInt(limit) ? limit.toNumber() : limit;
-        if (!firstArg || limitValue < toNumber(firstArg)) {
-            firstArg = limitValue;
-        }
-    }
-
-    addSortAndLimitOptionsToClause({
-        optionsInput: { sort: [edgeSortFields], limit: firstArg, offset },
-        target: relationshipRef,
-        projectionClause: withStatement,
-    });
-
-    addSortAndLimitOptionsToClause({
-        optionsInput: { sort: [nodeSortFields] },
-        target: relationshipRef.property("node"),
         projectionClause: withStatement,
     });
 
