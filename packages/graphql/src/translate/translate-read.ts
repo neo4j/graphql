@@ -45,7 +45,6 @@ export function translateRead({
     let projAuth = "";
 
     let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
-    const connectionClauses: CypherBuilder.Clause[] = [];
     const interfaceStrs: string[] = [];
 
     const topLevelMatch = translateTopLevelMatch({
@@ -88,12 +87,10 @@ export function translateRead({
     }
 
     const projectionSubqueries = CypherBuilder.concat(...projection.subqueries);
-    const connectionSubqueries = CypherBuilder.concat(...connectionClauses);
 
     // TODO: concatenate with "translateTopLevelMatch" result to avoid param collision
     const readQuery = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
         const projectionSubqueriesStr = projectionSubqueries.getCypher(env);
-        const connectionSubqueriesStr = connectionSubqueries.getCypher(env);
 
         if (isRootConnectionField) {
             return translateRootConnectionField({
@@ -105,7 +102,6 @@ export function translateRead({
                     matchAndWhereStr,
                     authStr,
                     projAuth,
-                    connectionStrs: [connectionSubqueriesStr],
                     interfaceStrs,
                 },
             });
@@ -121,7 +117,6 @@ export function translateRead({
                 matchAndWhereStr,
                 authStr,
                 projAuth,
-                connectionStrs: [connectionSubqueriesStr],
                 interfaceStrs,
             },
         });
@@ -148,7 +143,6 @@ function translateRootField({
         matchAndWhereStr: string;
         authStr: string;
         projAuth: string;
-        connectionStrs: string[];
         interfaceStrs: string[];
         projectionSubqueries: string;
     };
@@ -206,7 +200,6 @@ function translateRootField({
         ...(sortOffsetLimit.length > 1 ? sortOffsetLimit : []),
         subStr.authStr,
         ...withStrs,
-        ...subStr.connectionStrs,
         ...subStr.interfaceStrs,
         ...returnStrs,
     ];
@@ -227,7 +220,6 @@ function translateRootConnectionField({
         matchAndWhereStr: string;
         authStr: string;
         projAuth: string;
-        connectionStrs: string[];
         interfaceStrs: string[];
         projectionSubqueries: string;
     };
@@ -299,7 +291,6 @@ function translateRootConnectionField({
         ...(limitStr ? [limitStr] : []),
         "}",
         subStr.projectionSubqueries,
-        ...subStr.connectionStrs,
         ...subStr.interfaceStrs,
         ...returnStrs,
     ];

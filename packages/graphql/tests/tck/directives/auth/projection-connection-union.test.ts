@@ -95,6 +95,7 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis0:PUBLISHED]->(this_Post:\`Post\`)
+                    WHERE apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND any(this_connection_contentConnectionthis1 IN [(this_Post)<-[:HAS_POST]-(this_connection_contentConnectionthis1:\`User\`) | this_connection_contentConnectionthis1] WHERE (this_connection_contentConnectionthis1.id IS NOT NULL AND this_connection_contentConnectionthis1.id = $this_connection_contentConnectionparam0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN { node: { __resolveType: \\"Post\\", content: this_Post.content, creatorConnection: creatorConnection } } AS edge
                 }
                 WITH collect(edge) AS edges
@@ -107,6 +108,7 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"this_connection_contentConnectionparam0\\": \\"super_admin\\",
                 \\"this_Post_connection_creatorConnectionparam0\\": \\"super_admin\\",
                 \\"thisauth_param0\\": \\"super_admin\\"
             }"
