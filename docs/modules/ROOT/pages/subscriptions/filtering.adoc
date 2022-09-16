@@ -50,6 +50,11 @@ Conversely, the following operators are available on array fields, and accept a 
 
 These four operators are available for all types apart from `Boolean`.
 
+=== AND, OR operators
+
+Complex combinations of operators are possible using the `AND`/ `OR` operators. 
+These are stand-alone operators - that is, they are used as such and not appended to field names, and they accept an array argument with items of the same format as the `where` argument. 
+
 == Usage
 
 Basic filtering of events can be done with the `where` parameter. This lets you filter on top-level properties of the created nodes.
@@ -144,3 +149,32 @@ movieDeleted(where: {genre_NOT: "Comedy"}) {
 This way, only deleted movies of all genres except for `"Comedy"` will trigger events to this subscription.
 
 NOTE: `Where` will only filter by existing properties right before deletion.
+
+=== Combining operators
+
+All above-mentioned operators can be combined using the `AND`/`OR` operators. 
+They accept an array argument with items of the same format as the `where` argument, which means they can also be nested to form complex combinations.
+
+Say we are picky fans of comedy movies and we only accept ratings below 7 for movies released before the 2000's. 
+As an exception we also like the movie "The Matrix". However, we do not like any of its sequels. 
+We could subscribe to any updates that we are interested in as follows:
+
+[source, graphql, indent=0]
+----
+movieUpdate(where: {
+    OR: [
+        {title_ENDS_WITH: "The Matrix"},
+        {AND: [
+            {genre: "comedy"},
+            {OR: [
+                {releasedIn_LTE: 2000},
+                {releasedIn_GT: 2000, averageRating_GT: 7}
+            ]}
+        ]}
+    ]
+}) {
+    updatedMovie {
+        title
+    }
+}
+----
