@@ -63,6 +63,9 @@ export type Predicate =
     | Literal<boolean>
     | Case;
 
+/** Represents a procedure invocable with the CALL statement */
+export type Procedure = ValidatePredicate;
+
 export type CypherResult = {
     cypher: string;
     params: Record<string, string>;

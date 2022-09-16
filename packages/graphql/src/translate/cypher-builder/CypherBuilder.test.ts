@@ -18,9 +18,9 @@
  */
 
 import * as CypherBuilder from "./CypherBuilder";
+import { CypherEnvironment } from "./Environment";
 
 describe("CypherBuilder", () => {
-
     describe("Batch UNWIND Create", () => {
         test("batch create", () => {
             const movies = [
@@ -33,9 +33,10 @@ describe("CypherBuilder", () => {
             const movieNode = new CypherBuilder.Node({
                 labels: ["Movie"],
             });
+            const setParam = [movieNode.property("title"), unwindedMovie.property("title")] as CypherBuilder.SetParam;
 
             const createQuery = new CypherBuilder.Create(movieNode)
-                .set([movieNode.property("title"), unwindedMovie.property("title")])
+                .set(setParam)
                 .return(movieNode);
 
             const simpleBatchCreateQuery = CypherBuilder.concat(unwindQuery, createQuery);
@@ -151,6 +152,44 @@ describe("CypherBuilder", () => {
                     RETURN collect(var7) AS var7
                 }
                 RETURN collect(this1 { .title, actors: var7 })"
+            `);
+            expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
+        });
+
+        test("validate 1..1 relationship", () => {
+            const movieNode = new CypherBuilder.Node({
+                labels: ["Movie"],
+            });
+
+            const websiteNode = new CypherBuilder.Node({
+                labels: ["Website"],
+            });
+            const relPath = new CypherBuilder.Relationship({
+                source: movieNode,
+                target: websiteNode,
+                type: "HAS_WEBSITE",
+            });
+            const movieWebsiteRel = new CypherBuilder.Match(relPath);
+            const countVar = new CypherBuilder.Variable();
+            const withCount = new CypherBuilder.With([CypherBuilder.count(relPath), countVar]);
+            const validate = new CypherBuilder.apoc.ValidatePredicate(
+                CypherBuilder.not(CypherBuilder.lte(countVar, new CypherBuilder.Literal(1))),
+                "@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.web must be less than or equal to one"
+            );
+            const validateInvocation = new CypherBuilder.ProcedureCall(validate);
+            const queryResult = CypherBuilder.concat(movieWebsiteRel, withCount, validateInvocation).build();
+            /*         
+                WITH this0
+                MATCH (this0)-[r:HAS_WEBSITE]->(:Website)
+                WITH count(r) as c
+                CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.web must be less than or equal to one', [0])
+                RETURN null AS var4 
+            */
+
+            expect(queryResult.cypher).toMatchInlineSnapshot(`
+                "MATCH (this1:\`Movie\`)-[this0:HAS_WEBSITE]->(this2:\`Website\`)
+                WITH count(this0) AS var3
+                CALL apoc.util.validatePredicate(NOT (var3 <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.web must be less than or equal to one\\", [0])"
             `);
             expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
         });
