@@ -114,6 +114,8 @@ describe("Subscriptions", () => {
             }
 
             input ActorSubscriptionWhere {
+              AND: [ActorSubscriptionWhere!]
+              OR: [ActorSubscriptionWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String
@@ -391,6 +393,8 @@ describe("Subscriptions", () => {
             }
 
             input MovieSubscriptionWhere {
+              AND: [MovieSubscriptionWhere!]
+              OR: [MovieSubscriptionWhere!]
               actorCount: Int
               actorCount_GT: Int
               actorCount_GTE: Int
@@ -1031,6 +1035,8 @@ describe("Subscriptions", () => {
             }
 
             input MovieSubscriptionWhere {
+              AND: [MovieSubscriptionWhere!]
+              OR: [MovieSubscriptionWhere!]
               actorCount: Int
               actorCount_GT: Int
               actorCount_GTE: Int
@@ -1284,6 +1290,8 @@ describe("Subscriptions", () => {
             }
 
             input ActorSubscriptionWhere {
+              AND: [ActorSubscriptionWhere!]
+              OR: [ActorSubscriptionWhere!]
               name: String
               name_CONTAINS: String
               name_ENDS_WITH: String

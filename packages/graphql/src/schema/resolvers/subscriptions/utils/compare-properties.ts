@@ -22,17 +22,14 @@ import type Node from "../../../../classes/Node";
 import type { PrimitiveField } from "../../../../types";
 import { whereRegEx } from "../../../../translate/where/utils";
 import type { WhereRegexGroups } from "../../../../translate/where/utils";
-import { isSameType } from "../../../../utils/utils";
+import { isSameType, haveSameLength } from "../../../../utils/utils";
 
-function isDifferentNumberOfItems(o1: Record<string, any>, o2: Record<string, any>) {
-    return Object.keys(o1).length !== Object.keys(o2).length;
-}
 /**
  * Returns true if all properties in obj1 exists in obj2, false otherwise.
  * Properties can only be primitives or Array<primitive>
  */
 export function compareProperties(obj1: Record<string, any>, obj2: Record<string, any>): boolean {
-    if (!isSameType(obj1, obj2) || isDifferentNumberOfItems(obj1, obj2)) {
+    if (!isSameType(obj1, obj2) || !haveSameLength(obj1, obj2)) {
         return false;
     }
     for (const [k, value] of Object.entries(obj1)) {
@@ -154,19 +151,48 @@ function parseFilterProperty(key: string): { fieldName: string; operator: string
     return { fieldName, operator };
 }
 
+const multipleConditionsAggregationMap = {
+    AND: (results: boolean[]): boolean => {
+        for (const res of results) {
+            if (!res) {
+                return false;
+            }
+        }
+        return true;
+    },
+    OR: (results: boolean[]): boolean => {
+        for (const res of results) {
+            if (res) {
+                return true;
+            }
+        }
+        return false;
+    },
+};
+
 /** Returns true if receivedProperties comply with filters specified in whereProperties, false otherwise. */
 export function filterByProperties<T>(
     node: Node,
-    whereProperties: Record<string, T>,
+    whereProperties: Record<string, T | Array<Record<string, T>>>,
     receivedProperties: Record<string, T>
 ): boolean {
     for (const [k, v] of Object.entries(whereProperties)) {
-        const { fieldName, operator } = parseFilterProperty(k);
-        const receivedValue = receivedProperties[fieldName];
-        const fieldMeta = node.primitiveFields.find((f) => f.fieldName === fieldName);
-        const checkFilterPasses = getFilteringFn(operator);
-        if (!checkFilterPasses(receivedValue, v, fieldMeta)) {
-            return false;
+        if (Object.keys(multipleConditionsAggregationMap).includes(k)) {
+            const comparisonResultsAggregationFn = multipleConditionsAggregationMap[k];
+            const comparisonResults = (v as Array<Record<string, T>>).map((whereCl) => {
+                return filterByProperties(node, whereCl, receivedProperties);
+            });
+            if (!comparisonResultsAggregationFn(comparisonResults)) {
+                return false;
+            }
+        } else {
+            const { fieldName, operator } = parseFilterProperty(k);
+            const receivedValue = receivedProperties[fieldName];
+            const fieldMeta = node.primitiveFields.find((f) => f.fieldName === fieldName);
+            const checkFilterPasses = getFilteringFn(operator);
+            if (!checkFilterPasses(receivedValue, v, fieldMeta)) {
+                return false;
+            }
         }
     }
     return true;
