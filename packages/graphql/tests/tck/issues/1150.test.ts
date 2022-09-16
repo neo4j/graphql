@@ -121,18 +121,21 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                         WITH this_DriveComposition
                         MATCH (this_DriveComposition)-[this_DriveComposition_connection_driveComponentConnectionthis0:HAS]->(this_DriveComposition_Battery:\`Battery\`)
                         WHERE (this_DriveComposition_connection_driveComponentConnectionthis0.current = $this_DriveComposition_connection_driveComponentConnectionparam0 AND apoc.util.validatePredicate(NOT ((any(this_DriveComposition_connection_driveComponentConnectionvar2 IN [\\"admin\\"] WHERE any(this_DriveComposition_connection_driveComponentConnectionvar1 IN $auth.roles WHERE this_DriveComposition_connection_driveComponentConnectionvar1 = this_DriveComposition_connection_driveComponentConnectionvar2)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                        RETURN { current: this_DriveComposition_connection_driveComponentConnectionthis0.current, node: { __resolveType: \\"Battery\\", id: this_DriveComposition_Battery.id } } AS edge
+                        WITH { current: this_DriveComposition_connection_driveComponentConnectionthis0.current, node: { __resolveType: \\"Battery\\", id: this_DriveComposition_Battery.id } } AS edge
+                        RETURN edge
                         UNION
                         WITH this_DriveComposition
                         MATCH (this_DriveComposition)-[this_DriveComposition_connection_driveComponentConnectionthis2:HAS]->(this_DriveComposition_CombustionEngine:\`CombustionEngine\`)
                         WHERE this_DriveComposition_connection_driveComponentConnectionthis2.current = $this_DriveComposition_connection_driveComponentConnectionparam3
-                        RETURN { current: this_DriveComposition_connection_driveComponentConnectionthis2.current, node: { __resolveType: \\"CombustionEngine\\", id: this_DriveComposition_CombustionEngine.id } } AS edge
+                        WITH { current: this_DriveComposition_connection_driveComponentConnectionthis2.current, node: { __resolveType: \\"CombustionEngine\\", id: this_DriveComposition_CombustionEngine.id } } AS edge
+                        RETURN edge
                     }
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS driveComponentConnection
                 }
-                WITH collect({ node: { driveComponentConnection: driveComponentConnection } }) AS edges
+                WITH { node: { driveComponentConnection: driveComponentConnection } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS driveCompositionsConnection
             }

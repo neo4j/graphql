@@ -89,7 +89,8 @@ describe("Mixed nesting", () => {
                     WITH this_Actor_movies { .title } AS this_Actor_movies
                     RETURN collect(this_Actor_movies) AS this_Actor_movies
                 }
-                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, movies: this_Actor_movies } }) AS edges
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, movies: this_Actor_movies } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
@@ -155,11 +156,13 @@ describe("Mixed nesting", () => {
                         WITH this_Actor_Movie_actors { .name } AS this_Actor_Movie_actors
                         RETURN collect(this_Actor_Movie_actors) AS this_Actor_Movie_actors
                     }
-                    WITH collect({ node: { title: this_Actor_Movie.title, actors: this_Actor_Movie_actors } }) AS edges
+                    WITH { node: { title: this_Actor_Movie.title, actors: this_Actor_Movie_actors } } AS edge
+                    WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
                 }
-                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, moviesConnection: moviesConnection } }) AS edges
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, moviesConnection: moviesConnection } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
@@ -212,7 +215,8 @@ describe("Mixed nesting", () => {
                     WITH this_actors
                     MATCH (this_actors)-[this_actors_connection_moviesConnectionthis0:ACTED_IN]->(this_actors_Movie:\`Movie\`)
                     WHERE NOT (this_actors_Movie.title = $this_actors_connection_moviesConnectionparam0)
-                    WITH collect({ screenTime: this_actors_connection_moviesConnectionthis0.screenTime, node: { title: this_actors_Movie.title } }) AS edges
+                    WITH { screenTime: this_actors_connection_moviesConnectionthis0.screenTime, node: { title: this_actors_Movie.title } } AS edge
+                    WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
                 }

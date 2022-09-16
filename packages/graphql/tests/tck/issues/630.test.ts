@@ -77,7 +77,8 @@ describe("Cypher directive", () => {
             RETURN m\\", {this: this, auth: $auth, title: $this_movies_title}) | this_movies { actorsConnection: apoc.cypher.runFirstColumnSingle(\\"CALL {
                 WITH this_movies
                 MATCH (this_movies)<-[this_movies_connection_actorsConnectionthis0:ACTED_IN]-(this_movies_Actor:\`Actor\`)
-                WITH collect({ node: { __resolveType: \\\\\\"Actor\\\\\\" } }) AS edges
+                WITH { node: { __resolveType: \\\\\\"Actor\\\\\\" } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             } RETURN actorsConnection\\", { this_movies: this_movies, auth: $auth }) }] } as this"

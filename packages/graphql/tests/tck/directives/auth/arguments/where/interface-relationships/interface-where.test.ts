@@ -223,12 +223,14 @@ describe("Cypher Auth Where", () => {
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
                     WHERE (exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis1 IN [(this_Comment)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis1:\`User\`) | this_connection_contentConnectionthis1] WHERE (this_connection_contentConnectionthis1.id IS NOT NULL AND this_connection_contentConnectionthis1.id = $this_connection_contentConnectionparam0)))
-                    RETURN { node: { __resolveType: \\"Comment\\" } } AS edge
+                    WITH { node: { __resolveType: \\"Comment\\" } } AS edge
+                    RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis2:HAS_CONTENT]->(this_Post:\`Post\`)
                     WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis3 IN [(this_Post)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis3:\`User\`) | this_connection_contentConnectionthis3] WHERE (this_connection_contentConnectionthis3.id IS NOT NULL AND this_connection_contentConnectionthis3.id = $this_connection_contentConnectionparam1)))
-                    RETURN { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -278,12 +280,14 @@ describe("Cypher Auth Where", () => {
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
                     WHERE (this_Comment.id = $this_connection_contentConnectionparam0 AND (exists((this_Comment)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis1 IN [(this_Comment)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis1:\`User\`) | this_connection_contentConnectionthis1] WHERE (this_connection_contentConnectionthis1.id IS NOT NULL AND this_connection_contentConnectionthis1.id = $this_connection_contentConnectionparam1))))
-                    RETURN { node: { __resolveType: \\"Comment\\" } } AS edge
+                    WITH { node: { __resolveType: \\"Comment\\" } } AS edge
+                    RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis2:HAS_CONTENT]->(this_Post:\`Post\`)
                     WHERE (this_Post.id = $this_connection_contentConnectionparam2 AND (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis3 IN [(this_Post)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis3:\`User\`) | this_connection_contentConnectionthis3] WHERE (this_connection_contentConnectionthis3.id IS NOT NULL AND this_connection_contentConnectionthis3.id = $this_connection_contentConnectionparam3))))
-                    RETURN { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount

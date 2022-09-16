@@ -212,7 +212,8 @@ describe("tck/rfcs/query-limits", () => {
                 CALL {
                     WITH this
                     MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Person:\`Person\`)
-                    WITH collect({ node: { id: this_Person.id } }) AS edges
+                    WITH { node: { id: this_Person.id } } AS edge
+                    WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     UNWIND edges AS edge
                     WITH edge, totalCount

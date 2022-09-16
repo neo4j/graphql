@@ -75,7 +75,8 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
                     WITH this
                     MATCH (this)<-[this_connection_moviesConnectionthis0:HAS_GENRE]-(this_Movie:\`Movie\`)
                     WHERE size([(this_Movie)-[this_connection_moviesConnectionthis1:HAS_GENRE]->(this_connection_moviesConnectionthis2:\`Genre\`) WHERE this_connection_moviesConnectionthis2.name = $this_connection_moviesConnectionparam0 | 1]) > 0
-                    RETURN { node: { __resolveType: \\"Movie\\" } } AS edge
+                    WITH { node: { __resolveType: \\"Movie\\" } } AS edge
+                    RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount

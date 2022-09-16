@@ -84,7 +84,8 @@ describe("Cypher Auth Projection On Connections", () => {
                 WITH this
                 MATCH (this)-[this_connection_postsConnectionthis0:HAS_POST]->(this_Post:\`Comment\`)
                 WHERE apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_POST]-(:\`Person\`)) AND any(this_connection_postsConnectionthis1 IN [(this_Post)<-[:HAS_POST]-(this_connection_postsConnectionthis1:\`Person\`) | this_connection_postsConnectionthis1] WHERE (this_connection_postsConnectionthis1.id IS NOT NULL AND this_connection_postsConnectionthis1.id = $this_connection_postsConnectionparam0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH collect({ node: { content: this_Post.content } }) AS edges
+                WITH { node: { content: this_Post.content } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS postsConnection
             }

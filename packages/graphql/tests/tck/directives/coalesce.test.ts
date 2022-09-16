@@ -215,7 +215,8 @@ describe("Cypher coalesce()", () => {
                 WITH this
                 MATCH (this)-[this_connection_moviesConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
                 WHERE coalesce(this_Movie.status, \\"ACTIVE\\") = $this_connection_moviesConnectionparam0
-                WITH collect({ node: { id: this_Movie.id, status: this_Movie.status } }) AS edges
+                WITH { node: { id: this_Movie.id, status: this_Movie.status } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
             }

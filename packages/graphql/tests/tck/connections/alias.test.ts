@@ -71,7 +71,8 @@ describe("Connections Alias", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this_connection_actorsthis0:ACTED_IN]-(this_Actor:\`Actor\`)
-                WITH collect({ node: { __resolveType: \\"Actor\\" } }) AS edges
+                WITH { node: { __resolveType: \\"Actor\\" } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actors
             }
@@ -118,7 +119,8 @@ describe("Connections Alias", () => {
                 WITH this
                 MATCH (this)<-[this_connection_hanksthis0:ACTED_IN]-(this_Actor:\`Actor\`)
                 WHERE this_Actor.name = $this_connection_hanksparam0
-                WITH collect({ screenTime: this_connection_hanksthis0.screenTime, node: { name: this_Actor.name } }) AS edges
+                WITH { screenTime: this_connection_hanksthis0.screenTime, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS hanks
             }
@@ -126,7 +128,8 @@ describe("Connections Alias", () => {
                 WITH this
                 MATCH (this)<-[this_connection_jennythis0:ACTED_IN]-(this_Actor:\`Actor\`)
                 WHERE this_Actor.name = $this_connection_jennyparam0
-                WITH collect({ screenTime: this_connection_jennythis0.screenTime, node: { name: this_Actor.name } }) AS edges
+                WITH { screenTime: this_connection_jennythis0.screenTime, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS jenny
             }

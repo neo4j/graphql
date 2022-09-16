@@ -96,10 +96,11 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
                 WHERE distance(this_Actor.currentLocation, point($this_connection_actorsConnectionparam0.point)) = $this_connection_actorsConnectionparam0.distance
-                WITH collect({ screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, currentLocation: (CASE
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, currentLocation: (CASE
                     WHEN this_Actor.currentLocation IS NOT NULL THEN { point: this_Actor.currentLocation }
                     ELSE NULL
-                END) } }) AS edges
+                END) } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }

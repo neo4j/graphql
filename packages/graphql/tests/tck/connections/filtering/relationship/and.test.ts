@@ -87,7 +87,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> AND", () => {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
                 WHERE (this_connection_actorsConnectionthis0.role ENDS WITH $this_connection_actorsConnectionparam0 AND this_connection_actorsConnectionthis0.screenTime < $this_connection_actorsConnectionparam1)
-                WITH collect({ role: this_connection_actorsConnectionthis0.role, screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } }) AS edges
+                WITH { role: this_connection_actorsConnectionthis0.role, screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }

@@ -249,8 +249,9 @@ describe("Cypher Auth Where with Roles", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_postsConnectionthis0:HAS_POST]->(this_Post:\`Post\`)
-                WHERE (apoc.util.validatePredicate(NOT ((any(this_connection_postsConnectionvar2 IN [\\"user\\"] WHERE any(this_connection_postsConnectionvar1 IN $auth.roles WHERE this_connection_postsConnectionvar1 = this_connection_postsConnectionvar2)) OR any(this_connection_postsConnectionvar4 IN [\\"admin\\"] WHERE any(this_connection_postsConnectionvar3 IN $auth.roles WHERE this_connection_postsConnectionvar3 = this_connection_postsConnectionvar4)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND ((any(this_connection_postsConnectionvar6 IN [\\"user\\"] WHERE any(this_connection_postsConnectionvar5 IN $auth.roles WHERE this_connection_postsConnectionvar5 = this_connection_postsConnectionvar6)) AND (exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND all(this_connection_postsConnectionthis7 IN [(this_Post)<-[:HAS_POST]-(this_connection_postsConnectionthis7:\`User\`) | this_connection_postsConnectionthis7] WHERE (this_connection_postsConnectionthis7.id IS NOT NULL AND this_connection_postsConnectionthis7.id = $this_connection_postsConnectionparam3)))) OR any(this_connection_postsConnectionvar9 IN [\\"admin\\"] WHERE any(this_connection_postsConnectionvar8 IN $auth.roles WHERE this_connection_postsConnectionvar8 = this_connection_postsConnectionvar9))))
-                WITH collect({ node: { content: this_Post.content } }) AS edges
+                WHERE (((any(this_connection_postsConnectionvar2 IN [\\"user\\"] WHERE any(this_connection_postsConnectionvar1 IN $auth.roles WHERE this_connection_postsConnectionvar1 = this_connection_postsConnectionvar2)) AND (exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND all(this_connection_postsConnectionthis3 IN [(this_Post)<-[:HAS_POST]-(this_connection_postsConnectionthis3:\`User\`) | this_connection_postsConnectionthis3] WHERE (this_connection_postsConnectionthis3.id IS NOT NULL AND this_connection_postsConnectionthis3.id = $this_connection_postsConnectionparam1)))) OR any(this_connection_postsConnectionvar5 IN [\\"admin\\"] WHERE any(this_connection_postsConnectionvar4 IN $auth.roles WHERE this_connection_postsConnectionvar4 = this_connection_postsConnectionvar5))) AND apoc.util.validatePredicate(NOT ((any(this_connection_postsConnectionvar7 IN [\\"user\\"] WHERE any(this_connection_postsConnectionvar6 IN $auth.roles WHERE this_connection_postsConnectionvar6 = this_connection_postsConnectionvar7)) OR any(this_connection_postsConnectionvar9 IN [\\"admin\\"] WHERE any(this_connection_postsConnectionvar8 IN $auth.roles WHERE this_connection_postsConnectionvar8 = this_connection_postsConnectionvar9)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WITH { node: { content: this_Post.content } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS postsConnection
             }
@@ -261,7 +262,7 @@ describe("Cypher Auth Where with Roles", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"thisauth_param1\\": \\"id-01\\",
-                \\"this_connection_postsConnectionparam3\\": \\"id-01\\",
+                \\"this_connection_postsConnectionparam1\\": \\"id-01\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -305,8 +306,9 @@ describe("Cypher Auth Where with Roles", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_postsConnectionthis0:HAS_POST]->(this_Post:\`Post\`)
-                WHERE ((this_Post.id = $this_connection_postsConnectionparam0 AND apoc.util.validatePredicate(NOT ((any(this_connection_postsConnectionvar2 IN [\\"user\\"] WHERE any(this_connection_postsConnectionvar1 IN $auth.roles WHERE this_connection_postsConnectionvar1 = this_connection_postsConnectionvar2)) OR any(this_connection_postsConnectionvar4 IN [\\"admin\\"] WHERE any(this_connection_postsConnectionvar3 IN $auth.roles WHERE this_connection_postsConnectionvar3 = this_connection_postsConnectionvar4)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])) AND ((any(this_connection_postsConnectionvar6 IN [\\"user\\"] WHERE any(this_connection_postsConnectionvar5 IN $auth.roles WHERE this_connection_postsConnectionvar5 = this_connection_postsConnectionvar6)) AND (exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND all(this_connection_postsConnectionthis7 IN [(this_Post)<-[:HAS_POST]-(this_connection_postsConnectionthis7:\`User\`) | this_connection_postsConnectionthis7] WHERE (this_connection_postsConnectionthis7.id IS NOT NULL AND this_connection_postsConnectionthis7.id = $this_connection_postsConnectionparam4)))) OR any(this_connection_postsConnectionvar9 IN [\\"admin\\"] WHERE any(this_connection_postsConnectionvar8 IN $auth.roles WHERE this_connection_postsConnectionvar8 = this_connection_postsConnectionvar9))))
-                WITH collect({ node: { content: this_Post.content } }) AS edges
+                WHERE ((this_Post.id = $this_connection_postsConnectionparam0 AND ((any(this_connection_postsConnectionvar2 IN [\\"user\\"] WHERE any(this_connection_postsConnectionvar1 IN $auth.roles WHERE this_connection_postsConnectionvar1 = this_connection_postsConnectionvar2)) AND (exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND all(this_connection_postsConnectionthis3 IN [(this_Post)<-[:HAS_POST]-(this_connection_postsConnectionthis3:\`User\`) | this_connection_postsConnectionthis3] WHERE (this_connection_postsConnectionthis3.id IS NOT NULL AND this_connection_postsConnectionthis3.id = $this_connection_postsConnectionparam2)))) OR any(this_connection_postsConnectionvar5 IN [\\"admin\\"] WHERE any(this_connection_postsConnectionvar4 IN $auth.roles WHERE this_connection_postsConnectionvar4 = this_connection_postsConnectionvar5)))) AND apoc.util.validatePredicate(NOT ((any(this_connection_postsConnectionvar7 IN [\\"user\\"] WHERE any(this_connection_postsConnectionvar6 IN $auth.roles WHERE this_connection_postsConnectionvar6 = this_connection_postsConnectionvar7)) OR any(this_connection_postsConnectionvar9 IN [\\"admin\\"] WHERE any(this_connection_postsConnectionvar8 IN $auth.roles WHERE this_connection_postsConnectionvar8 = this_connection_postsConnectionvar9)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WITH { node: { content: this_Post.content } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS postsConnection
             }
@@ -318,7 +320,7 @@ describe("Cypher Auth Where with Roles", () => {
             "{
                 \\"thisauth_param1\\": \\"id-01\\",
                 \\"this_connection_postsConnectionparam0\\": \\"some-id\\",
-                \\"this_connection_postsConnectionparam4\\": \\"id-01\\",
+                \\"this_connection_postsConnectionparam2\\": \\"id-01\\",
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [
@@ -477,7 +479,8 @@ describe("Cypher Auth Where with Roles", () => {
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis0:HAS_POST]->(this_Post:\`Post\`)
                     WHERE (((any(this_connection_contentConnectionvar2 IN [\\"user\\"] WHERE any(this_connection_contentConnectionvar1 IN $auth.roles WHERE this_connection_contentConnectionvar1 = this_connection_contentConnectionvar2)) AND (exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND all(this_connection_contentConnectionthis3 IN [(this_Post)<-[:HAS_POST]-(this_connection_contentConnectionthis3:\`User\`) | this_connection_contentConnectionthis3] WHERE (this_connection_contentConnectionthis3.id IS NOT NULL AND this_connection_contentConnectionthis3.id = $this_connection_contentConnectionparam1)))) OR any(this_connection_contentConnectionvar5 IN [\\"admin\\"] WHERE any(this_connection_contentConnectionvar4 IN $auth.roles WHERE this_connection_contentConnectionvar4 = this_connection_contentConnectionvar5))) AND apoc.util.validatePredicate(NOT ((any(this_connection_contentConnectionvar7 IN [\\"user\\"] WHERE any(this_connection_contentConnectionvar6 IN $auth.roles WHERE this_connection_contentConnectionvar6 = this_connection_contentConnectionvar7)) OR any(this_connection_contentConnectionvar9 IN [\\"admin\\"] WHERE any(this_connection_contentConnectionvar8 IN $auth.roles WHERE this_connection_contentConnectionvar8 = this_connection_contentConnectionvar9)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                    RETURN { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -539,7 +542,8 @@ describe("Cypher Auth Where with Roles", () => {
                     WITH this
                     MATCH (this)-[this_connection_contentConnectionthis0:HAS_POST]->(this_Post:\`Post\`)
                     WHERE ((this_Post.id = $this_connection_contentConnectionparam0 AND ((any(this_connection_contentConnectionvar2 IN [\\"user\\"] WHERE any(this_connection_contentConnectionvar1 IN $auth.roles WHERE this_connection_contentConnectionvar1 = this_connection_contentConnectionvar2)) AND (exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND all(this_connection_contentConnectionthis3 IN [(this_Post)<-[:HAS_POST]-(this_connection_contentConnectionthis3:\`User\`) | this_connection_contentConnectionthis3] WHERE (this_connection_contentConnectionthis3.id IS NOT NULL AND this_connection_contentConnectionthis3.id = $this_connection_contentConnectionparam2)))) OR any(this_connection_contentConnectionvar5 IN [\\"admin\\"] WHERE any(this_connection_contentConnectionvar4 IN $auth.roles WHERE this_connection_contentConnectionvar4 = this_connection_contentConnectionvar5)))) AND apoc.util.validatePredicate(NOT ((any(this_connection_contentConnectionvar7 IN [\\"user\\"] WHERE any(this_connection_contentConnectionvar6 IN $auth.roles WHERE this_connection_contentConnectionvar6 = this_connection_contentConnectionvar7)) OR any(this_connection_contentConnectionvar9 IN [\\"admin\\"] WHERE any(this_connection_contentConnectionvar8 IN $auth.roles WHERE this_connection_contentConnectionvar8 = this_connection_contentConnectionvar9)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                    RETURN { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount

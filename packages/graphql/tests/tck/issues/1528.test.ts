@@ -82,8 +82,9 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
                 MATCH (this)<-[this_connection_moviesConnectionthis0:IS_GENRE]-(this_Movie:\`Movie\`)
                 WITH this_connection_moviesConnectionthis0, this_Movie
                 ORDER BY this_Movie.actorsCount DESC
-                WITH collect({ node: { title: this_Movie.title, actorsCount:  apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:ACTED_IN]-(ac:Person)
-                RETURN count(ac)\\", {this: this_Movie, auth: $auth}) } }) AS edges
+                WITH { node: { title: this_Movie.title, actorsCount:  apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:ACTED_IN]-(ac:Person)
+                RETURN count(ac)\\", {this: this_Movie, auth: $auth}) } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 UNWIND edges AS edge
                 WITH edge, totalCount

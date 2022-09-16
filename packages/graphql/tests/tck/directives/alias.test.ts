@@ -115,7 +115,8 @@ describe("Cypher alias directive", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                WITH collect({ character: this_connection_actedInConnectionthis0.characterPropInDb, screenTime: this_connection_actedInConnectionthis0.screenTime, node: { title: this_Movie.title, rating: this_Movie.ratingPropInDb } }) AS edges
+                WITH { character: this_connection_actedInConnectionthis0.characterPropInDb, screenTime: this_connection_actedInConnectionthis0.screenTime, node: { title: this_Movie.title, rating: this_Movie.ratingPropInDb } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
@@ -192,7 +193,8 @@ describe("Cypher alias directive", () => {
             CALL {
                 WITH this0
                 MATCH (this0)-[this0_connection_actedInConnectionthis0:ACTED_IN]->(this0_Movie:\`Movie\`)
-                WITH collect({ character: this0_connection_actedInConnectionthis0.characterPropInDb, screenTime: this0_connection_actedInConnectionthis0.screenTime, node: { title: this0_Movie.title, rating: this0_Movie.ratingPropInDb } }) AS edges
+                WITH { character: this0_connection_actedInConnectionthis0.characterPropInDb, screenTime: this0_connection_actedInConnectionthis0.screenTime, node: { title: this0_Movie.title, rating: this0_Movie.ratingPropInDb } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }

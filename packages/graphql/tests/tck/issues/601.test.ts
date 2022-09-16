@@ -99,7 +99,8 @@ describe("#601", () => {
                     WITH this_documents
                     MATCH (this_documents)<-[this_documents_connection_customerContactConnectionthis0:UPLOADED]-(this_documents_CustomerContact:\`CustomerContact\`)
                     WHERE apoc.util.validatePredicate(NOT (any(this_documents_connection_customerContactConnectionvar2 IN [\\"view\\"] WHERE any(this_documents_connection_customerContactConnectionvar1 IN $auth.roles WHERE this_documents_connection_customerContactConnectionvar1 = this_documents_connection_customerContactConnectionvar2))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH collect({ fileId: this_documents_connection_customerContactConnectionthis0.fileId, uploadedAt: apoc.date.convertFormat(toString(this_documents_connection_customerContactConnectionthis0.uploadedAt), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") }) AS edges
+                    WITH { fileId: this_documents_connection_customerContactConnectionthis0.fileId, uploadedAt: apoc.date.convertFormat(toString(this_documents_connection_customerContactConnectionthis0.uploadedAt), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS edge
+                    WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS customerContactConnection
                 }

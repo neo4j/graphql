@@ -84,7 +84,8 @@ describe("Cypher Auth Projection On Connections", () => {
                 WITH this
                 MATCH (this)-[this_connection_postsConnectionthis0:HAS_POST]->(this_Post:\`Post\`)
                 WHERE apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_POST]-(:\`User\`)) AND any(this_connection_postsConnectionthis1 IN [(this_Post)<-[:HAS_POST]-(this_connection_postsConnectionthis1:\`User\`) | this_connection_postsConnectionthis1] WHERE (this_connection_postsConnectionthis1.id IS NOT NULL AND this_connection_postsConnectionthis1.id = $this_connection_postsConnectionparam0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH collect({ node: { content: this_Post.content } }) AS edges
+                WITH { node: { content: this_Post.content } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS postsConnection
             }
@@ -138,11 +139,13 @@ describe("Cypher Auth Projection On Connections", () => {
                     WITH this_Post
                     MATCH (this_Post)<-[this_Post_connection_creatorConnectionthis0:HAS_POST]-(this_Post_User:\`User\`)
                     WHERE apoc.util.validatePredicate(NOT ((this_Post_User.id IS NOT NULL AND this_Post_User.id = $this_Post_connection_creatorConnectionparam0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH collect({ node: { name: this_Post_User.name } }) AS edges
+                    WITH { node: { name: this_Post_User.name } } AS edge
+                    WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS creatorConnection
                 }
-                WITH collect({ node: { content: this_Post.content, creatorConnection: creatorConnection } }) AS edges
+                WITH { node: { content: this_Post.content, creatorConnection: creatorConnection } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS postsConnection
             }

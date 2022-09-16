@@ -140,14 +140,16 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_manufacturerConnectionthis0:MANUFACTURER]->(this_Manufacturer:\`Manufacturer\`)
-                WITH collect({ current: this_connection_manufacturerConnectionthis0.current, node: { name: this_Manufacturer.name } }) AS edges
+                WITH { current: this_connection_manufacturerConnectionthis0.current, node: { name: this_Manufacturer.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS manufacturerConnection
             }
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_brandConnectionthis0:BRAND]->(this_Brand:\`Brand\`)
-                WITH collect({ current: this_connection_brandConnectionthis0.current, node: { name: this_Brand.name } }) AS edges
+                WITH { current: this_connection_brandConnectionthis0.current, node: { name: this_Brand.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS brandConnection
             }

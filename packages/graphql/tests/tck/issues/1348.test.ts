@@ -140,15 +140,18 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this_connection_releatsToConnectionthis0:RELATES_TO]-(this_Series:\`Series\`)
-                    RETURN { node: { __resolveType: \\"Series\\", productTitle: this_Series.productTitle } } AS edge
+                    WITH { node: { __resolveType: \\"Series\\", productTitle: this_Series.productTitle } } AS edge
+                    RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this_connection_releatsToConnectionthis1:RELATES_TO]-(this_Season:\`Season\`)
-                    RETURN { node: { __resolveType: \\"Season\\", productTitle: this_Season.productTitle } } AS edge
+                    WITH { node: { __resolveType: \\"Season\\", productTitle: this_Season.productTitle } } AS edge
+                    RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this_connection_releatsToConnectionthis2:RELATES_TO]-(this_ProgrammeItem:\`ProgrammeItem\`)
-                    RETURN { node: { __resolveType: \\"ProgrammeItem\\", productTitle: this_ProgrammeItem.productTitle } } AS edge
+                    WITH { node: { __resolveType: \\"ProgrammeItem\\", productTitle: this_ProgrammeItem.productTitle } } AS edge
+                    RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount

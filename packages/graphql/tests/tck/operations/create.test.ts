@@ -351,7 +351,8 @@ describe("Cypher Create", () => {
                     WITH this0_movies
                     MATCH (this0_movies)<-[this0_movies_connection_actorsConnectionthis0:ACTED_IN]-(this0_movies_Actor:\`Actor\`)
                     WHERE this0_movies_Actor.name = $projection_movies_connection_actorsConnectionparam0
-                    WITH collect({ node: { name: this0_movies_Actor.name } }) AS edges
+                    WITH { node: { name: this0_movies_Actor.name } } AS edge
+                    WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
                 }

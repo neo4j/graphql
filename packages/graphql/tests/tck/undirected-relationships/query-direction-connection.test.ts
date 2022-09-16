@@ -66,7 +66,8 @@ describe("QueryDirection in relationships connection", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_friendsConnectionthis0:FRIENDS_WITH]-(this_User:\`User\`)
-                WITH collect({ node: { __resolveType: \\"User\\" } }) AS edges
+                WITH { node: { __resolveType: \\"User\\" } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS friendsConnection
             }
@@ -112,7 +113,8 @@ describe("QueryDirection in relationships connection", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_friendsConnectionthis0:FRIENDS_WITH]->(this_User:\`User\`)
-                WITH collect({ node: { __resolveType: \\"User\\" } }) AS edges
+                WITH { node: { __resolveType: \\"User\\" } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS friendsConnection
             }
@@ -157,7 +159,8 @@ describe("QueryDirection in relationships connection", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_friendsConnectionthis0:FRIENDS_WITH]-(this_User:\`User\`)
-                WITH collect({ node: { __resolveType: \\"User\\" } }) AS edges
+                WITH { node: { __resolveType: \\"User\\" } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS friendsConnection
             }

@@ -83,7 +83,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Relationship", () => {
                     MATCH (this_Actor)-[:ACTED_IN]->(this_connection_actorsConnectionthis1:\`Movie\`)
                     WHERE this_connection_actorsConnectionthis1.title = $this_connection_actorsConnectionparam0
                 }
-                WITH collect({ node: { name: this_Actor.name } }) AS edges
+                WITH { node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }

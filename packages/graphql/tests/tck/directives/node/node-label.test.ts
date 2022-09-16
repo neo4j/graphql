@@ -133,7 +133,8 @@ describe("Label in Node directive", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Person\`)
-                WITH collect({ node: { name: this_Actor.name } }) AS edges
+                WITH { node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }

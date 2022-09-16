@@ -96,7 +96,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
                 WHERE this_connection_actorsConnectionthis0.role CONTAINS $this_connection_actorsConnectionparam0
-                WITH collect({ role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } }) AS edges
+                WITH { role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
@@ -138,7 +139,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
                 WHERE NOT (this_connection_actorsConnectionthis0.role CONTAINS $this_connection_actorsConnectionparam0)
-                WITH collect({ role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } }) AS edges
+                WITH { role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
@@ -180,7 +182,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
                 WHERE this_connection_actorsConnectionthis0.role STARTS WITH $this_connection_actorsConnectionparam0
-                WITH collect({ role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } }) AS edges
+                WITH { role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
@@ -222,7 +225,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
                 WHERE NOT (this_connection_actorsConnectionthis0.role STARTS WITH $this_connection_actorsConnectionparam0)
-                WITH collect({ role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } }) AS edges
+                WITH { role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
@@ -264,7 +268,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
                 WHERE this_connection_actorsConnectionthis0.role ENDS WITH $this_connection_actorsConnectionparam0
-                WITH collect({ role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } }) AS edges
+                WITH { role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
@@ -306,7 +311,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
                 WHERE NOT (this_connection_actorsConnectionthis0.role ENDS WITH $this_connection_actorsConnectionparam0)
-                WITH collect({ role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } }) AS edges
+                WITH { role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
@@ -348,7 +354,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
                 WITH this
                 MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
                 WHERE this_connection_actorsConnectionthis0.role =~ $this_connection_actorsConnectionparam0
-                WITH collect({ role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } }) AS edges
+                WITH { role: this_connection_actorsConnectionthis0.role, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }

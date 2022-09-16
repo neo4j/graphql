@@ -30,6 +30,7 @@ import { getPattern } from "../utils/get-pattern";
 import { createEdgeProjection } from "./connection-projection";
 import { getSortFields } from "./get-sort-fields";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
+import { createSortAndLimitProjection } from "./create-sort-and-limit";
 
 /** Create the match, filtering and projection of the edge and the nested node */
 export function createEdgeSubquery({
@@ -40,6 +41,8 @@ export function createEdgeSubquery({
     relatedNode,
     returnVariable,
     whereInput,
+    resolveType = false,
+    ignoreSort = false,
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
@@ -48,9 +51,10 @@ export function createEdgeSubquery({
     relatedNode: Node;
     returnVariable: CypherBuilder.Variable;
     whereInput: ConnectionWhereArg;
+    resolveType?: boolean;
+    ignoreSort?: boolean;
 }): CypherBuilder.Clause | undefined {
     const parentNodeRef = getOrCreateCypherNode(parentNode);
-    // const whereInput = resolveTree.args.where as ConnectionWhereArg;
 
     const relatedNodeRef = new CypherBuilder.NamedNode(`${parentNode}_${relatedNode.name}`, {
         labels: relatedNode.getLabels(context),
@@ -69,18 +73,8 @@ export function createEdgeSubquery({
     });
 
     const matchClause = new CypherBuilder.Match(relPattern);
-    // const unionInterfaceWhere = field.relationship.union ? (whereInput || {})[relatedNode.name] : whereInput || {};
     if (whereInput) {
         const relationship = context.relationships.find((r) => r.name === field.relationshipTypeName) as Relationship;
-
-        // if (
-        //     !hasExplicitNodeInInterfaceWhere({
-        //         whereInput: unionInterfaceWhere,
-        //         node: relatedNode,
-        //     })
-        // ) {
-        //     return undefined;
-        // }
         const wherePredicate = createConnectionWherePropertyOperation({
             context,
             whereInput,
@@ -118,7 +112,6 @@ export function createEdgeSubquery({
         );
     }
 
-    // TODO: Handle projection.subqueries
     const projection = createEdgeProjection({
         resolveTree,
         field,
@@ -126,12 +119,23 @@ export function createEdgeSubquery({
         relatedNode,
         relatedNodeVariableName: relatedNodeRef.name,
         context,
-        resolveType: true,
+        resolveType,
         extraFields: Object.keys(getSortFields(resolveTree).edge),
     });
 
-    matchClause.return([projection.projection, returnVariable]);
+    const withReturn = new CypherBuilder.With([projection.projection, returnVariable]);
 
-    // return CypherBuilder.concat(withClause, matchClause);
-    return matchClause;
+    let withSortClause: CypherBuilder.Clause | undefined;
+    if (!ignoreSort) {
+        withSortClause = createSortAndLimitProjection({
+            resolveTree,
+            relationshipRef,
+            nodeRef: relatedNodeRef,
+            limit: undefined, // we ignore limit here to avoid breaking totalCount
+            ignoreSkipLimit: true,
+            extraFields: [relatedNodeRef],
+        });
+    }
+
+    return CypherBuilder.concat(matchClause, ...projection.subqueries, withSortClause, withReturn);
 }

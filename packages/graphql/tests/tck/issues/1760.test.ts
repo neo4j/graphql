@@ -129,7 +129,8 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 WITH this
                 MATCH (this)-[this_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_NameDetails:\`NameDetails\`)
                 WHERE apoc.util.validatePredicate(NOT ((any(this_connection_nameDetailsConnectionvar2 IN [\\"ALL\\"] WHERE any(this_connection_nameDetailsConnectionvar1 IN $auth.roles WHERE this_connection_nameDetailsConnectionvar1 = this_connection_nameDetailsConnectionvar2)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH collect({ node: { fullName: this_NameDetails.fullName } }) AS edges
+                WITH { node: { fullName: this_NameDetails.fullName } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
             }
@@ -141,11 +142,13 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                     WITH this_Market
                     MATCH (this_Market)-[this_Market_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_Market_NameDetails:\`NameDetails\`)
                     WHERE apoc.util.validatePredicate(NOT ((any(this_Market_connection_nameDetailsConnectionvar2 IN [\\"ALL\\"] WHERE any(this_Market_connection_nameDetailsConnectionvar1 IN $auth.roles WHERE this_Market_connection_nameDetailsConnectionvar1 = this_Market_connection_nameDetailsConnectionvar2)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH collect({ node: { fullName: this_Market_NameDetails.fullName } }) AS edges
+                    WITH { node: { fullName: this_Market_NameDetails.fullName } } AS edge
+                    WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
                 }
-                WITH collect({ node: { nameDetailsConnection: nameDetailsConnection } }) AS edges
+                WITH { node: { nameDetailsConnection: nameDetailsConnection } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS marketsConnection
             }
@@ -153,7 +156,8 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 WITH this
                 MATCH (this)<-[this_connection_baseObjectConnectionthis0:HAS_BASE]-(this_BaseObject:\`BaseObject\`)
                 WHERE apoc.util.validatePredicate(NOT ((any(this_connection_baseObjectConnectionvar2 IN [\\"ALL\\"] WHERE any(this_connection_baseObjectConnectionvar1 IN $auth.roles WHERE this_connection_baseObjectConnectionvar1 = this_connection_baseObjectConnectionvar2)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH collect({ node: { id: this_BaseObject.id } }) AS edges
+                WITH { node: { id: this_BaseObject.id } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS baseObjectConnection
             }

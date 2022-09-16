@@ -90,7 +90,8 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             CALL {
                 WITH this0
                 MATCH (this0)<-[this0_connection_actorsConnectionthis0:ACTED_IN]-(this0_Actor:\`Actor\`)
-                WITH collect({ screenTime: this0_connection_actorsConnectionthis0.screenTime, node: { name: this0_Actor.name } }) AS edges
+                WITH { screenTime: this0_connection_actorsConnectionthis0.screenTime, node: { name: this0_Actor.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
@@ -144,14 +145,16 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
             CALL {
                 WITH this0
                 MATCH (this0)<-[this0_connection_actorsConnectionthis0:ACTED_IN]-(this0_Actor:\`Actor\`)
-                WITH collect({ screenTime: this0_connection_actorsConnectionthis0.screenTime, node: { name: this0_Actor.name } }) AS edges
+                WITH { screenTime: this0_connection_actorsConnectionthis0.screenTime, node: { name: this0_Actor.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
             CALL {
                 WITH this1
                 MATCH (this1)<-[this1_connection_actorsConnectionthis0:ACTED_IN]-(this1_Actor:\`Actor\`)
-                WITH collect({ screenTime: this1_connection_actorsConnectionthis0.screenTime, node: { name: this1_Actor.name } }) AS edges
+                WITH { screenTime: this1_connection_actorsConnectionthis0.screenTime, node: { name: this1_Actor.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
@@ -208,7 +211,8 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                 WITH this0
                 MATCH (this0)<-[this0_connection_actorsConnectionthis0:ACTED_IN]-(this0_Actor:\`Actor\`)
                 WHERE this0_Actor.name = $projection_connection_actorsConnectionparam0
-                WITH collect({ screenTime: this0_connection_actorsConnectionthis0.screenTime, node: { name: this0_Actor.name } }) AS edges
+                WITH { screenTime: this0_connection_actorsConnectionthis0.screenTime, node: { name: this0_Actor.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
@@ -216,7 +220,8 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                 WITH this1
                 MATCH (this1)<-[this1_connection_actorsConnectionthis0:ACTED_IN]-(this1_Actor:\`Actor\`)
                 WHERE this1_Actor.name = $projection_connection_actorsConnectionparam0
-                WITH collect({ screenTime: this1_connection_actorsConnectionthis0.screenTime, node: { name: this1_Actor.name } }) AS edges
+                WITH { screenTime: this1_connection_actorsConnectionthis0.screenTime, node: { name: this1_Actor.name } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }

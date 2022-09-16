@@ -90,7 +90,8 @@ describe("https://github.com/neo4j/graphql/issues/1429", () => {
                 CALL {
                     WITH this_material
                     MATCH (this_material)-[this_material_connection_suppliersConnectionthis0:MATERIAL_SUPPLIER]->(this_material_Supplier:\`Supplier\`)
-                    WITH collect({ supplierMaterialNumber: this_material_connection_suppliersConnectionthis0.supplierMaterialNumber, node: { supplierId: this_material_Supplier.supplierId } }) AS edges
+                    WITH { supplierMaterialNumber: this_material_connection_suppliersConnectionthis0.supplierMaterialNumber, node: { supplierId: this_material_Supplier.supplierId } } AS edge
+                    WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS suppliersConnection
                 }

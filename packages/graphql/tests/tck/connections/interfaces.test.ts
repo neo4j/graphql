@@ -94,11 +94,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 CALL {
                     WITH this
                     MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                    RETURN { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    WITH { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                    RETURN { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                    WITH { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                    RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -146,12 +148,14 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     WITH this
                     MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
                     WHERE this_Movie.title STARTS WITH $this_connection_actedInConnectionparam0
-                    RETURN { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    WITH { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
                     WHERE this_Series.title STARTS WITH $this_connection_actedInConnectionparam1
-                    RETURN { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                    WITH { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                    RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -206,12 +210,14 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     WITH this
                     MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
                     WHERE this_Movie.runtime > $this_connection_actedInConnectionparam0
-                    RETURN { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    WITH { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
                     WHERE this_Series.episodes > $this_connection_actedInConnectionparam1
-                    RETURN { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                    WITH { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                    RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -270,12 +276,14 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     WITH this
                     MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
                     WHERE this_connection_actedInConnectionthis0.screenTime > $this_connection_actedInConnectionparam0
-                    RETURN { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    WITH { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                    RETURN edge
                     UNION
                     WITH this
                     MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
                     WHERE this_connection_actedInConnectionthis1.screenTime > $this_connection_actedInConnectionparam1
-                    RETURN { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                    WITH { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                    RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
@@ -335,11 +343,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         CALL {
                             WITH this
                             MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                            RETURN { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                            WITH { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                            RETURN edge
                             UNION
                             WITH this
                             MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                            RETURN { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                            WITH { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                            RETURN edge
                         }
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount
@@ -390,11 +400,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         CALL {
                             WITH this
                             MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                            RETURN { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                            WITH { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                            RETURN edge
                             UNION
                             WITH this
                             MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                            RETURN { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                            WITH { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                            RETURN edge
                         }
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount
@@ -446,11 +458,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         CALL {
                             WITH this
                             MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                            RETURN { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                            WITH { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                            RETURN edge
                             UNION
                             WITH this
                             MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                            RETURN { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                            WITH { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                            RETURN edge
                         }
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount
@@ -500,11 +514,13 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         CALL {
                             WITH this
                             MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                            RETURN { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                            WITH { screenTime: this_connection_actedInConnectionthis0.screenTime, node: { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } } AS edge
+                            RETURN edge
                             UNION
                             WITH this
                             MATCH (this)-[this_connection_actedInConnectionthis1:ACTED_IN]->(this_Series:\`Series\`)
-                            RETURN { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                            WITH { screenTime: this_connection_actedInConnectionthis1.screenTime, node: { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } } AS edge
+                            RETURN edge
                         }
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount

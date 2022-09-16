@@ -126,7 +126,8 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 WITH this
                 MATCH (this)-[this_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_NameDetails:\`NameDetails\`)
                 WHERE this_connection_nameDetailsConnectionthis0.current = $this_connection_nameDetailsConnectionparam0
-                WITH collect({ node: { fullName: this_NameDetails.fullName } }) AS edges
+                WITH { node: { fullName: this_NameDetails.fullName } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
             }
@@ -138,11 +139,13 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                     WITH this_MasterData
                     MATCH (this_MasterData)-[this_MasterData_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_MasterData_NameDetails:\`NameDetails\`)
                     WHERE this_MasterData_connection_nameDetailsConnectionthis0.current = $this_MasterData_connection_nameDetailsConnectionparam0
-                    WITH collect({ node: { fullName: this_MasterData_NameDetails.fullName } }) AS edges
+                    WITH { node: { fullName: this_MasterData_NameDetails.fullName } } AS edge
+                    WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
                 }
-                WITH collect({ node: { nameDetailsConnection: nameDetailsConnection } }) AS edges
+                WITH { node: { nameDetailsConnection: nameDetailsConnection } } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS architectureConnection
             }

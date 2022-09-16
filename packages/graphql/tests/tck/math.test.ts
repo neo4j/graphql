@@ -269,7 +269,8 @@ describe("Math operators", () => {
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                WITH collect({ pay: this_connection_actedInConnectionthis0.pay }) AS edges
+                WITH { pay: this_connection_actedInConnectionthis0.pay } AS edge
+                WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
