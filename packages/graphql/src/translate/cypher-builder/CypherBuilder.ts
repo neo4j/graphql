@@ -86,6 +86,7 @@ export {
     max,
     avg,
     sum,
+    randomUUID
 } from "./expressions/functions/CypherFunction";
 export * from "./expressions/functions/ListFunctions";
 export { any, all, exists, single } from "./expressions/functions/PredicateFunctions";

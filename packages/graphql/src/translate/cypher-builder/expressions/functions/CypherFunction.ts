@@ -87,3 +87,9 @@ export function avg(expr: Expr): CypherFunction {
 export function sum(expr: Expr): CypherFunction {
     return new CypherFunction("sum", [expr]);
 }
+
+export function randomUUID(): CypherFunction {
+    return new CypherFunction("randomUUID");
+}
+
+

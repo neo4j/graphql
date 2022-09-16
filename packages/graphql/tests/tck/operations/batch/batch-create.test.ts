@@ -115,7 +115,70 @@ describe("Batch Create", () => {
         `);
     });
 
-    test.only("Simple Nested", async () => {
+    test.only("website", async () => {
+        const query = gql`
+            mutation {
+                createMovies(
+                    input: [
+                        { id: "1", actors: { create: [{ node: { name: "actor 1", website: { create: { node: { address: "Actor1.com" } } } }, edge: { year: 2022 } }] } }
+                        { id: "2", website: { create: { node: { address: "The Matrix2.com" } } } }
+                    ]
+                ) {
+                    movies {
+                        id
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            CREATE (this0:Movie)
+            SET this0.id = $this0_id
+            WITH this0
+            CALL {
+            	WITH this0
+            	MATCH (this0)-[this0_website_Website_unique:HAS_WEBSITE]->(:Website)
+            	WITH count(this0_website_Website_unique) as c
+            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
+            	RETURN c AS this0_website_Website_unique_ignored
+            }
+            RETURN this0
+            }
+            CALL {
+            CREATE (this1:Movie)
+            SET this1.id = $this1_id
+            WITH this1
+            CALL {
+            	WITH this1
+            	MATCH (this1)-[this1_website_Website_unique:HAS_WEBSITE]->(:Website)
+            	WITH count(this1_website_Website_unique) as c
+            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
+            	RETURN c AS this1_website_Website_unique_ignored
+            }
+            RETURN this1
+            }
+            RETURN [
+            this0 { .id },
+            this1 { .id }] AS data"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this0_id\\": \\"1\\",
+                \\"this1_id\\": \\"2\\",
+                \\"resolvedCallbacks\\": {}
+            }"
+        `);
+    });
+
+    test("Simple Nested", async () => {
         const query = gql`
             mutation {
                 createMovies(
