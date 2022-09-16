@@ -22,7 +22,8 @@ import type { Node } from "../../classes";
 import { objectFieldsToSubscriptionsWhereInputFields } from "../to-compose";
 
 export function generateSubscriptionWhereType(node: Node, schemaComposer: SchemaComposer): InputTypeComposer {
-    const whereFields = objectFieldsToSubscriptionsWhereInputFields([
+    const typeName = node.name;
+    const whereFields = objectFieldsToSubscriptionsWhereInputFields(typeName, [
         ...node.primitiveFields,
         ...node.enumFields,
         ...node.scalarFields,
