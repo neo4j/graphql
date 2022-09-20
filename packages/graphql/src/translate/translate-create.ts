@@ -27,9 +27,6 @@ import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { compileCypherIfExists } from "./cypher-builder/utils/utils";
-import { SetClause } from "./cypher-builder/clauses/sub-clauses/Set";
-import { addCallbackAndSetParam, addCallbackAndSetParamCypher } from "./utils/callback-utils";
-import createRelationshipValidationString from "./create-relationship-validation-string";
 
 type CreateInput = Record<string, any>;
 
