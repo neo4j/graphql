@@ -164,7 +164,7 @@ export class Pattern<T extends MatchableElement = any> implements CypherCompilab
         return `:${escapedLabels.join(":")}`;
     }
 
-    private getRelationshipLabelsString(relationship: RelationshipRef): string {
+    private getRelationshipTypesString(relationship: RelationshipRef): string {
         // TODO: escapeLabel
         return relationship.type ? `:${relationship.type}` : "";
     }

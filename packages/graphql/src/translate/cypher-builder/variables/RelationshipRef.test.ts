@@ -21,7 +21,7 @@ import * as CypherBuilder from "../CypherBuilder";
 import { TestClause } from "../utils/TestClause";
 
 describe("RelationshipRef", () => {
-    it("Create Relationshipt from node", () => {
+    it("Create relationship from node", () => {
         const node1 = new CypherBuilder.Node({
             labels: ["Actor"],
         });
