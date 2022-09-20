@@ -30,12 +30,11 @@ export type RelationshipInput = {
 export class RelationshipRef extends Variable {
     private _source: NodeRef;
     private _target: NodeRef;
-
-    public readonly type?: string;
+    private _type: string | undefined;
 
     constructor(input: RelationshipInput) {
         super("this");
-        this.type = input.type || undefined;
+        this._type = input.type || undefined;
         this._source = input.source;
         this._target = input.target;
     }
@@ -48,6 +47,16 @@ export class RelationshipRef extends Variable {
         return this._target;
     }
 
+    public get type(): string | undefined {
+        return this._type;
+    }
+
+    /** Sets the type of the relationship */
+    public withType(type: string): this {
+        this._type = type;
+        return this;
+    }
+
     /** Reverses the direction of the relationship */
     public reverse(): void {
         const oldTarget = this._target;
@@ -58,9 +67,5 @@ export class RelationshipRef extends Variable {
     /** Creates a new Pattern from this relationship */
     public pattern(options: MatchPatternOptions = {}): Pattern<RelationshipRef> {
         return new Pattern(this, options);
-    }
-
-    public getTypeString(): string {
-        return this.type ? `:${this.type}` : "";
     }
 }
