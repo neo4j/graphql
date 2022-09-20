@@ -18,7 +18,7 @@
  */
 
 import { stringifyObject } from "../utils/stringify-object";
-import { padLeft } from "./utils/utils";
+import { escapeLabel, padLeft } from "./utils/utils";
 import type { NodeRef } from "./variables/NodeRef";
 import type { RelationshipRef } from "./variables/RelationshipRef";
 import type { CypherEnvironment } from "./Environment";
@@ -111,7 +111,7 @@ export class Pattern<T extends MatchableElement = any> implements CypherCompilab
         const parameterOptions = this.parameters as MatchParams<RelationshipRef>;
         const relationshipParamsStr = this.serializeParameters(parameterOptions.relationship || {}, env);
 
-        const relationshipType = this.options.relationship?.type ? relationship.getTypeString() : "";
+        const relationshipType = this.options.relationship?.type ? this.getRelationshipTypesString(relationship) : "";
 
         const sourceStr = this.getNodeCypher(env, relationship.source, parameterOptions.source, "source");
         const targetStr = this.getNodeCypher(env, relationship.target, parameterOptions.target, "target");
@@ -143,7 +143,7 @@ export class Pattern<T extends MatchableElement = any> implements CypherCompilab
 
         const referenceId = nodeOptions.variable ? env.getVariableId(node) : "";
         const parametersStr = this.serializeParameters(parameters || {}, env);
-        const nodeLabelString = nodeOptions.labels ? node.getLabelsString() : "";
+        const nodeLabelString = nodeOptions.labels ? this.getNodeLabelsString(node) : "";
 
         return `(${referenceId}${nodeLabelString}${parametersStr})`;
     }
@@ -156,5 +156,16 @@ export class Pattern<T extends MatchableElement = any> implements CypherCompilab
         }, {} as Record<string, string>);
 
         return padLeft(stringifyObject(paramValues));
+    }
+
+    private getNodeLabelsString(node: NodeRef): string {
+        const escapedLabels = node.labels.map(escapeLabel);
+        if (escapedLabels.length === 0) return "";
+        return `:${escapedLabels.join(":")}`;
+    }
+
+    private getRelationshipTypesString(relationship: RelationshipRef): string {
+        // TODO: escapeLabel
+        return relationship.type ? `:${relationship.type}` : "";
     }
 }
