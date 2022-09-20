@@ -405,7 +405,7 @@ export default async function translateCreate({
     const projectionWith: string[] = [];
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
 
-    let connectionParams: any;
+    let connectionParams: any = {};
     let interfaceParams: any;
 
     const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
@@ -421,13 +421,11 @@ export default async function translateCreate({
     const createPhase = createVisitor(node, context, unwindVar);
     dispatch(treeDescriptor.childrens.root, createPhase);
     const createPhaseCypher = createPhase.done();
-    const query = CypherBuilder.concat(unwindQuery, createPhaseCypher);
-    const { cypher: cy, params: pa } = query.build();
-    console.log(cy);
-    console.log(pa);
+    const createUnwind = CypherBuilder.concat(unwindQuery, createPhaseCypher);
+   
 
     let clauses: CypherBuilder.Clause[];
-
+/* 
     const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res, input, index) => {
             const varName = `this${index}`;
@@ -471,8 +469,8 @@ export default async function translateCreate({
     ) as {
         createStrs: string[];
         params: any;
-    };
-
+    }; */
+    const createStrs: string[] = [];
     let replacedProjectionParams: Record<string, unknown> = {};
     let projectionStr: string | undefined;
     let authCalls: string | undefined;
@@ -578,7 +576,8 @@ export default async function translateCreate({
               };
           }, {})
         : {};
-
+    
+    projectionStr = "*";
     const returnStatement = generateCreateReturnStatement(projectionStr, context.subscriptionsEnabled);
     const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
 
@@ -609,242 +608,14 @@ export default async function translateCreate({
         return [
             cypher,
             {
-                ...params,
                 ...replacedProjectionParams,
                 ...replacedConnectionParams,
                 ...replacedInterfaceParams,
             },
         ];
     });
-
-    const createQueryCypher = createQuery.build("create_");
-
-    const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
-        cypher: createQueryCypher.cypher,
-    });
-
-    return {
-        cypher,
-        params: {
-            ...createQueryCypher.params,
-            resolvedCallbacks,
-        },
-    };
-}
-
-export async function translateCreateOld({
-    context,
-    node,
-}: {
-    context: Context;
-    node: Node;
-}): Promise<{ cypher: string; params: Record<string, any> }> {
-    const { resolveTree } = context;
-    const connectionStrs: string[] = [];
-    const interfaceStrs: string[] = [];
-
-    const projectionWith: string[] = [];
-    const callbackBucket: CallbackBucket = new CallbackBucket(context);
-
-    let connectionParams: any;
-    let interfaceParams: any;
-
-    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
-
-    const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
-    const metaNames: string[] = [];
-
-    const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
-        (res, input, index) => {
-            const varName = `this${index}`;
-            const create = [`CALL {`];
-
-            const withVars = [varName];
-            projectionWith.push(varName);
-            if (context.subscriptionsEnabled) {
-                create.push(`WITH [] AS ${META_CYPHER_VARIABLE}`);
-                withVars.push(META_CYPHER_VARIABLE);
-            }
-
-            const createAndParams = createCreateAndParams({
-                input,
-                node,
-                context,
-                varName,
-                withVars,
-                includeRelationshipValidation: true,
-                topLevelNodeVariable: varName,
-                callbackBucket,
-            });
-
-            create.push(`${createAndParams[0]}`);
-            if (context.subscriptionsEnabled) {
-                const metaVariable = `${varName}_${META_CYPHER_VARIABLE}`;
-                create.push(`RETURN ${varName}, ${META_CYPHER_VARIABLE} AS ${metaVariable}`);
-                metaNames.push(metaVariable);
-            } else {
-                create.push(`RETURN ${varName}`);
-            }
-
-            create.push(`}`);
-
-            res.createStrs.push(create.join("\n"));
-            res.params = { ...res.params, ...createAndParams[1] };
-
-            return res;
-        },
-        { createStrs: [], params: {}, withVars: [] }
-    ) as {
-        createStrs: string[];
-        params: any;
-    };
-
-    let replacedProjectionParams: Record<string, unknown> = {};
-    let projectionStr: string | undefined;
-    let authCalls: string | undefined;
-
-    if (metaNames.length > 0) {
-        projectionWith.push(`${metaNames.join(" + ")} AS meta`);
-    }
-
-    let projectionSubquery: CypherBuilder.Clause | undefined;
-    if (nodeProjection) {
-        let projAuth = "";
-        const projection = createProjectionAndParams({
-            node,
-            context,
-            resolveTree: nodeProjection,
-            varName: "REPLACE_ME",
-        });
-        projectionSubquery = CypherBuilder.concat(...projection.subqueries);
-        if (projection.meta?.authValidateStrs?.length) {
-            projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
-                " AND "
-            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-        }
-
-        replacedProjectionParams = Object.entries(projection.params).reduce((res, [key, value]) => {
-            return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
-        }, {});
-
-        projectionStr = createStrs
-            .map(
-                (_, i) =>
-                    `\nthis${i} ${projection.projection
-                        // First look to see if projection param is being reassigned
-                        // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
-                        .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
-                        .replace(/\$REPLACE_ME/g, "$projection")
-                        .replace(/REPLACE_ME/g, `this${i}`)}`
-            )
-            .join(", ");
-
-        authCalls = createStrs
-            .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
-            .join("\n");
-
-        const withVars = context.subscriptionsEnabled ? [META_CYPHER_VARIABLE] : [];
-        if (projection.meta?.connectionFields?.length) {
-            projection.meta.connectionFields.forEach((connectionResolveTree) => {
-                const connectionField = node.connectionFields.find(
-                    (x) => x.fieldName === connectionResolveTree.name
-                ) as ConnectionField;
-                const connection = createConnectionAndParams({
-                    resolveTree: connectionResolveTree,
-                    field: connectionField,
-                    context,
-                    nodeVariable: "REPLACE_ME",
-                    withVars,
-                });
-                connectionStrs.push(connection[0]);
-                if (!connectionParams) connectionParams = {};
-                connectionParams = { ...connectionParams, ...connection[1] };
-            });
-        }
-    }
-
-    const replacedConnectionStrs = connectionStrs.length
-        ? createStrs.map((_, i) => {
-              return connectionStrs
-                  .map((connectionStr) => {
-                      return connectionStr.replace(/REPLACE_ME/g, `this${i}`);
-                  })
-                  .join("\n");
-          })
-        : [];
-
-    const replacedInterfaceStrs = interfaceStrs.length
-        ? createStrs.map((_, i) => {
-              return interfaceStrs
-                  .map((interfaceStr) => {
-                      return interfaceStr.replace(/REPLACE_ME/g, `this${i}`);
-                  })
-                  .join("\n");
-          })
-        : [];
-
-    const replacedConnectionParams = connectionParams
-        ? createStrs.reduce((res1, _, i) => {
-              return {
-                  ...res1,
-                  ...Object.entries(connectionParams).reduce((res2, [key, value]) => {
-                      return { ...res2, [key.replace("REPLACE_ME", `this${i}`)]: value };
-                  }, {}),
-              };
-          }, {})
-        : {};
-
-    const replacedInterfaceParams = interfaceParams
-        ? createStrs.reduce((res1, _, i) => {
-              return {
-                  ...res1,
-                  ...Object.entries(interfaceParams).reduce((res2, [key, value]) => {
-                      return { ...res2, [key.replace("REPLACE_ME", `this${i}`)]: value };
-                  }, {}),
-              };
-          }, {})
-        : {};
-
-    const returnStatement = generateCreateReturnStatement(projectionStr, context.subscriptionsEnabled);
-    const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
-
-    const createQuery = new CypherBuilder.RawCypher((env) => {
-        const projectionSubqueryStr = compileCypherIfExists(projectionSubquery, env);
-        // TODO: avoid REPLACE_ME
-        const replacedProjectionSubqueryStrs = createStrs.length
-            ? createStrs.map((_, i) => {
-                  return projectionSubqueryStr
-                      .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
-                      .replace(/\$REPLACE_ME/g, "$projection")
-                      .replace(/REPLACE_ME/g, `this${i}`);
-              })
-            : [];
-
-        const cypher = filterTruthy([
-            `${createStrs.join("\n")}`,
-            projectionWithStr,
-            authCalls,
-            ...replacedConnectionStrs,
-            ...replacedInterfaceStrs,
-            ...replacedProjectionSubqueryStrs,
-            returnStatement,
-        ])
-            .filter(Boolean)
-            .join("\n");
-
-        return [
-            cypher,
-            {
-                ...params,
-                ...replacedProjectionParams,
-                ...replacedConnectionParams,
-                ...replacedInterfaceParams,
-            },
-        ];
-    });
-
-    const createQueryCypher = createQuery.build("create_");
-
+ 
+    const createQueryCypher = CypherBuilder.concat(createUnwind, createQuery).build("create_");
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
         cypher: createQueryCypher.cypher,
     });
