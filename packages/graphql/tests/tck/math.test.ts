@@ -345,16 +345,16 @@ describe("Math operators", () => {
             RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_marriedWith0:this_marriedWith0, auth:$auth,this_update_marriedWith0_marriageLength_INCREMENT:$this_update_marriedWith0_marriageLength_INCREMENT})
             YIELD value AS _
-            RETURN count(*) AS _
+            RETURN count(*) AS update_this_Star
             }
             WITH *
             WITH this
             CALL {
                 WITH this
-                MATCH (this)-[:MARRIED_WITH]->(this_Star:Star)
-                RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS marriedWith
+                MATCH (this)-[update_this0:MARRIED_WITH]->(this_Star:\`Star\`)
+                RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS this_marriedWith
             }
-            RETURN collect(DISTINCT this { .name, marriedWith: marriedWith }) AS data"
+            RETURN collect(DISTINCT this { .name, marriedWith: this_marriedWith }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -435,16 +435,16 @@ describe("Math operators", () => {
             RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_marriedWith0:this_marriedWith0, auth:$auth,this_update_marriedWith0_on_Star_marriageLength_INCREMENT:$this_update_marriedWith0_on_Star_marriageLength_INCREMENT})
             YIELD value AS _
-            RETURN count(*) AS _
+            RETURN count(*) AS update_this_Star
             }
             WITH *
             WITH this
             CALL {
                 WITH this
-                MATCH (this)-[:MARRIED_WITH]->(this_Star:Star)
-                RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS marriedWith
+                MATCH (this)-[update_this0:MARRIED_WITH]->(this_Star:\`Star\`)
+                RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS this_marriedWith
             }
-            RETURN collect(DISTINCT this { .name, marriedWith: marriedWith }) AS data"
+            RETURN collect(DISTINCT this { .name, marriedWith: this_marriedWith }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

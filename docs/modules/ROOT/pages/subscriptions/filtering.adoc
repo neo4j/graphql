@@ -1,0 +1,180 @@
+[[create]]
+= Filtering
+
+Filtering can only be applied at the root of the Subscription operation.
+
+NOTE: As relationships and aggregations are not supported on subscription types, there is currently no way to apply filter on these fields.
+
+== Operators
+
+When creating a Subscription, a number of operators are available for different types in the `where` argument.
+
+=== Equality operators
+
+All types can be tested for either equality or non-equality. For the `Boolean` type, these are the only available comparison operators.
+
+[[filtering-numerical-operators]]
+=== Numerical operators
+
+The following comparison operators are available for numeric types (`Int`, `Float`, xref::type-definitions/types.adoc#type-definitions-types-bigint[`BigInt`])
+
+* `_LT`
+* `_LTE`
+* `_GTE`
+* `_GT`
+
+NOTE: Filtering on xref::type-definitions/types.adoc#type-definitions-types-temporal[Temporal Types] and xref::type-definitions/types.adoc#type-definitions-types-spatial[Spatial Types]: is not yet supported.
+
+=== String comparison
+
+The following case-sensitive comparison operators are only available for use on `String` and `ID` types:
+
+* `_STARTS_WITH`
+* `_NOT_STARTS_WITH`
+* `_ENDS_WITH`
+* `_NOT_ENDS_WITH`
+* `_CONTAINS`
+* `_NOT_CONTAINS`
+
+=== Array comparison
+
+The following two comparison operators are available on non-array fields, and accept an array argument:
+
+* `_IN`
+* `_NOT_IN`
+
+Conversely, the following operators are available on array fields, and accept a single argument:
+
+* `_INCLUDES`
+* `_NOT_INCLUDES`
+
+These four operators are available for all types apart from `Boolean`.
+
+=== AND, OR operators
+
+Complex combinations of operators are possible using the `AND`/ `OR` operators. 
+These are stand-alone operators - that is, they are used as such and not appended to field names, and they accept an array argument with items of the same format as the `where` argument. 
+
+== Usage
+
+Basic filtering of events can be done with the `where` parameter. This lets you filter on top-level properties of the created nodes.
+Only events matching these properties and type will be returned to this subscription.
+
+Considering the following type definitions:
+[source, graphql, indent=0]
+----
+type Movie {
+    title: String
+    genre: String
+    averageRating: Float
+}
+----
+below are some example of how filtering can be applied when creating a subscription.
+
+=== Create
+We can filter our movies by their genre:
+
+[source, graphql, indent=0]
+----
+movieCreated(where: {genre: "Drama"}) {
+    createdMovie {
+        title
+    }
+}
+----
+
+This way, only newly created movies with the genre `"Drama"` will trigger events to this subscription.
+
+NOTE: `Where` will only filter by properties set at the moment of creation.
+
+=== Update
+We can filter our movies with the average rating bigger than 8:
+
+[source, graphql, indent=0]
+----
+movieUpdate(where: {averageRating_GT: 8}) {
+    updatedMovie {
+        title
+    }
+}
+----
+
+This way, we will only receive events triggered by movies with the average rating bigger than 8 being modified.
+
+NOTE: `Where` will only filter by existing properties before the update.
+
+[source, graphql, indent=0]
+----
+mutation {
+    makeTheMatrix: createMovies(input: {title: "The Matrix", averageRating: 8.7}) {
+        title
+        averageRating
+    },
+    makeResurrections: createMovies(input: {title: "The Matrix Resurrections", averageRating: 5.7}) {
+        title
+        averageRating
+    },
+}
+
+mutation {
+    updateTheMatrix: updateMovie(
+        where: {title: "The Matrix"}
+        update: {averageRating: 7.9}
+    ) {
+        title
+    },
+    updateResurrections: updateMovie(
+        where: {title: "The Matrix Resurrections"}
+        update: {averageRating: 8.9}
+    ) {
+        title
+    }
+}
+----
+
+Therefore, given the above subscription, these GraphQL operations will only be triggered for `"The Matrix"` movie.
+
+=== Delete
+we can filter our movies by their genre with the `NOT` filter:
+
+[source, graphql, indent=0]
+----
+movieDeleted(where: {genre_NOT: "Comedy"}) {
+    deletedMovie {
+        title
+    }
+}
+----
+
+This way, only deleted movies of all genres except for `"Comedy"` will trigger events to this subscription.
+
+NOTE: `Where` will only filter by existing properties right before deletion.
+
+=== Combining operators
+
+All above-mentioned operators can be combined using the `AND`/`OR` operators. 
+They accept an array argument with items of the same format as the `where` argument, which means they can also be nested to form complex combinations.
+
+Say we are picky fans of comedy movies and we only accept ratings below 7 for movies released before the 2000's. 
+As an exception we also like the movie "The Matrix". However, we do not like any of its sequels. 
+We could subscribe to any updates that we are interested in as follows:
+
+[source, graphql, indent=0]
+----
+movieUpdate(where: {
+    OR: [
+        {title_ENDS_WITH: "The Matrix"},
+        {AND: [
+            {genre: "comedy"},
+            {OR: [
+                {releasedIn_LTE: 2000},
+                {releasedIn_GT: 2000, averageRating_GT: 7}
+            ]}
+        ]}
+    ]
+}) {
+    updatedMovie {
+        title
+    }
+}
+----

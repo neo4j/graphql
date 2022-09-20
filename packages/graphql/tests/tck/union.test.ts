@@ -322,7 +322,7 @@ describe("Cypher Union", () => {
             			MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_search_Genre_connect_Genre
             }
             RETURN this0
             }
@@ -448,7 +448,7 @@ describe("Cypher Union", () => {
             FOREACH(_ IN CASE WHEN this_search_Genre0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_search_Genre0_disconnect0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_search_Genre0_disconnect_Genre
             }
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
@@ -513,7 +513,7 @@ describe("Cypher Union", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_search_Genre0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_search_Genre0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_search_Genre_Genre
             }
             WITH *
             RETURN collect(DISTINCT this { .title }) AS data"
@@ -577,7 +577,7 @@ describe("Cypher Union", () => {
             			MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_search_Genre_Genre
             }
             WITH *
             RETURN collect(DISTINCT this { .title }) AS data"

@@ -150,11 +150,16 @@ class Neo4jGraphQL {
             throw new Error("neo4j-driver Driver missing");
         }
 
+        if (!this.dbInfo) {
+            this.dbInfo = await this.getNeo4jDatabaseInfo(driver, driverConfig);
+        }
+
         await assertIndexesAndConstraints({
             driver,
             driverConfig,
             nodes: this.nodes,
             options: input.options,
+            dbInfo: this.dbInfo,
         });
     }
 
