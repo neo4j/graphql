@@ -111,7 +111,7 @@ export class Pattern<T extends MatchableElement = any> implements CypherCompilab
         const parameterOptions = this.parameters as MatchParams<RelationshipRef>;
         const relationshipParamsStr = this.serializeParameters(parameterOptions.relationship || {}, env);
 
-        const relationshipType = this.options.relationship?.type ? this.getRelationshipLabelsString(relationship) : "";
+        const relationshipType = this.options.relationship?.type ? this.getRelationshipTypesString(relationship) : "";
 
         const sourceStr = this.getNodeCypher(env, relationship.source, parameterOptions.source, "source");
         const targetStr = this.getNodeCypher(env, relationship.target, parameterOptions.target, "target");
