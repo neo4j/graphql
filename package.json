@@ -27,7 +27,7 @@
         "release": "yarn build && changeset publish"
     },
     "devDependencies": {
-        "@tsconfig/node14": "1.0.3",
+        "@tsconfig/node16": "^1.0.3",
         "@typescript-eslint/eslint-plugin": "5.38.0",
         "@typescript-eslint/parser": "5.38.0",
         "concurrently": "7.4.0",

@@ -18,7 +18,6 @@
  */
 
 import createConnectAndParams from "./create-connect-and-params";
-import { trimmer } from "../utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { RelationshipQueryDirectionOption } from "../constants";
@@ -98,8 +97,8 @@ describe("createConnectAndParams", () => {
             	WITH this
             	OPTIONAL MATCH (this0_node:Movie)
             	WHERE this0_node.title = $this0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END | 
-            		FOREACH(_ IN CASE WHEN this0_node IS NULL THEN [] ELSE [1] END | 
+            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this)-[:SIMILAR]->(this0_node)
             		)
             	)
@@ -108,8 +107,8 @@ describe("createConnectAndParams", () => {
             	WITH this, this0_node
             	OPTIONAL MATCH (this0_node_similarMovies0_node:Movie)
             	WHERE this0_node_similarMovies0_node.title = $this0_node_similarMovies0_node_param0
-            	FOREACH(_ IN CASE WHEN this0_node IS NULL THEN [] ELSE [1] END | 
-            		FOREACH(_ IN CASE WHEN this0_node_similarMovies0_node IS NULL THEN [] ELSE [1] END | 
+            	FOREACH(_ IN CASE WHEN this0_node IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_node_similarMovies0_node IS NULL THEN [] ELSE [1] END |
             			MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node)
             		)
             	)
