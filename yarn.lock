@@ -37,17 +37,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@antora/cli@npm:3.1.0":
-  version: 3.1.0
-  resolution: "@antora/cli@npm:3.1.0"
+"@antora/cli@npm:3.1.1":
+  version: 3.1.1
+  resolution: "@antora/cli@npm:3.1.1"
   dependencies:
-    "@antora/logger": 3.1.0
-    "@antora/playbook-builder": 3.1.0
+    "@antora/logger": 3.1.1
+    "@antora/playbook-builder": 3.1.1
     "@antora/user-require-helper": ~2.0
     commander: ~9.4
   bin:
     antora: bin/antora
-  checksum: 2b0aa9ff1e356a9b1ec5ab4d0bdb56417cad9ecdae14ecadef3ca1c8dac9e68a5bafffbea14003e36880fcbdf75343460b3da29f3dfbc2600e484a271af237ca
+  checksum: b25259d6956f2230546516173c72564ce41f97d76dabb3513ea365fd0befc6c0a0f38ede05c6730bf81d5452b2224f730969fc43a8f02046d0ce92de382d319d
   languageName: node
   linkType: hard
 
@@ -127,6 +127,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@antora/logger@npm:3.1.1":
+  version: 3.1.1
+  resolution: "@antora/logger@npm:3.1.1"
+  dependencies:
+    "@antora/expand-path-helper": ~2.0
+    pino: ~8.4
+    pino-pretty: ~9.0
+    sonic-boom: ~3.2
+  checksum: 1d5878e0cede3cb96f80a0d986344d89b5d2e57cd25a1f39286bba71f5b2f755a4289eb9b8b13152b1dfa9aa89fdef0ecd47ff0a2989b5d5e55ed098df26fa71
+  languageName: node
+  linkType: hard
+
 "@antora/navigation-builder@npm:3.1.0":
   version: 3.1.0
   resolution: "@antora/navigation-builder@npm:3.1.0"
@@ -156,6 +168,18 @@ __metadata:
     js-yaml: ~4.1
     json5: ~2.2
   checksum: de382c519dddf423641ddc4d58886fdccb77099d6f9412b2ebf94e01c635369986589229383cd654a60e6956ca740cd31766423baaef0b961542794152ab749f
+  languageName: node
+  linkType: hard
+
+"@antora/playbook-builder@npm:3.1.1":
+  version: 3.1.1
+  resolution: "@antora/playbook-builder@npm:3.1.1"
+  dependencies:
+    "@iarna/toml": ~2.2
+    convict: ~6.2
+    js-yaml: ~4.1
+    json5: ~2.2
+  checksum: 3bc50bd45d9224774a1cadf48a4ff59076a260b000b9fb3d9b25357977a78a44a5ca566e6249a2669e12d47c561979099035676952313393b46642a220af9b3a
   languageName: node
   linkType: hard
 
@@ -9371,7 +9395,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "graphql-manual@workspace:docs"
   dependencies:
-    "@antora/cli": 3.1.0
+    "@antora/cli": 3.1.1
     "@antora/site-generator-default": 3.1.0
     "@neo4j-antora/antora-add-notes": ^0.3.0
     "@neo4j-antora/antora-modify-sitemaps": ^0.4.3
