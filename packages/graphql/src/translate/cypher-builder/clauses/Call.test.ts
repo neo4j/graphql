@@ -82,7 +82,7 @@ describe("CypherBuilder Call", () => {
             .where(CypherBuilder.eq(new CypherBuilder.Param("aa"), new CypherBuilder.Param("bb")))
             .return([node.property("title"), "movie"]);
 
-        const clause = new CypherBuilder.Call(matchClause).with(node);
+        const clause = new CypherBuilder.Call(matchClause).innerWith(node);
         const queryResult = clause.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "CALL {

@@ -62,7 +62,7 @@ describe("CypherBuilder Call Examples", () => {
             .return(movieNode.property("title"));
 
         const callQuery = new CypherBuilder.Call(innerMatch)
-            .with(titleVar) // Note that this with is an import with, different to top level WITH
+            .innerWith(titleVar) // Note that this with is an import with, different to top level WITH
             .return(movieNode.property("title"));
 
         const queryResult = CypherBuilder.concat(initialWith, callQuery).build();

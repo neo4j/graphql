@@ -77,7 +77,7 @@ export function createConnectOrCreateAndParams({
         const countResult = new CypherBuilder.RawCypher(() => "COUNT(*) AS _");
         const returnStatement = new CypherBuilder.Return(countResult);
         const withStatement = new CypherBuilder.With(...withVarsVariables);
-        const callStatement = new CypherBuilder.Call(CypherBuilder.concat(statement, returnStatement)).with(
+        const callStatement = new CypherBuilder.Call(CypherBuilder.concat(statement, returnStatement)).innerWith(
             ...withVarsVariables
         );
 
