@@ -1,16 +1,20 @@
 # Description
 
-Please provide a description of the work completed in this branch.
+> **Note**
+> 
+> Please provide a description of the work completed in this PR below
+
+
 
 # Issue
 
-Please provide a link to the GitHub issue in which the proposal for this work was discussed below. 
+> **Note**
+>
+>  Please link to the GitHub issue(s) in which the proposal for this work was discussed
+>  
+>  To link to multiple issues, use full syntax for each, for example `Closes #1, closes #2, closes #3`
 
-It's important that changes are discussed in advance to make sure we choose the right solution and to avoid duplication of effort.
-
-Closes:
-
-- 
+Closes 
 
 # Checklist
 
