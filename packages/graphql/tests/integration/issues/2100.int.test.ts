@@ -25,9 +25,8 @@ import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createJwtRequest } from "../../utils/create-jwt-request";
-import { translateQuery, formatCypher } from "../../tck/utils/tck-test-utils";
 
-describe("https://github.com/neo4j/graphql/issues/190", () => {
+describe("https://github.com/neo4j/graphql/issues/2100", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let bookmarks: string[];
@@ -164,7 +163,6 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
             expect(result.errors).toBeFalsy();
             expect((result?.data as any)?.bussingRecords[0].id).toBe("3");
             expect((result?.data as any)?.bussingRecords[0].__typename).toBe("BussingRecord");
-            expect((result?.data as any)?.bussingRecords[0].serviceDate.date).toBe("2022-09-16");
             expect((result?.data as any)?.bussingRecords[0].markedAttendance).toBe(false);
         } finally {
             await session.close();
@@ -216,31 +214,7 @@ describe("https://github.com/neo4j/graphql/issues/190", () => {
                 contextValue: neo4j.getContextValuesWithBookmarks(bookmarks, { req }),
             });
 
-            const cypherRes = await translateQuery(neoSchema, gql(query), {
-                req,
-                variableValues: {
-                    id: 1,
-                },
-            });
-            console.log("CYPHER:", formatCypher(cypherRes.cypher));
-
-            // console.log("ERR", result.errors?.[0]);
             expect(result.errors).toBeFalsy();
-
-            console.log(JSON.stringify(result.data));
-            /*
-            expect((result?.data as any)?.bacentas[0].id).toBe("1");
-            expect((result?.data as any)?.bacentas[0].name).toBe("test");
-            expect((result?.data as any)?.bacentas[0].bussing).toIncludeSameMembers([
-                {
-                    id: "3",
-                    attendance: null,
-                    markedAttendance: false,
-                    serviceDate: { date: "2022-09-16", __typename: "TimeGraph" },
-                    __typename: "BussingRecord",
-                },
-            ]);
-            */
         } finally {
             await session.close();
         }

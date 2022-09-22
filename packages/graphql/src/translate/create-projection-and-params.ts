@@ -140,12 +140,13 @@ export default function createProjectionAndParams({
 
             const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
 
+            const subqueries: CypherBuilder.Clause[] = [];
             if (referenceNode) {
                 const {
                     projection: str,
                     params: p,
                     meta,
-                    // subqueries, // TODO: properly take care of these subqueries
+                    subqueries: nestedSubqueries, // TODO: properly take care of these subqueries
                 } = createProjectionAndParams({
                     resolveTree: field,
                     node: referenceNode || node,
@@ -157,8 +158,11 @@ export default function createProjectionAndParams({
                     isInCypher: true,
                 });
 
-                projectionStr = str;
+                projectionStr = `${param} ${str}`;
+                // console.log("STR", projectionStr);
                 res.params = { ...res.params, ...p };
+                // TODO added following line
+                subqueries.push(...nestedSubqueries);
                 if (meta?.authValidateStrs?.length) {
                     projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
                 }
@@ -169,7 +173,7 @@ export default function createProjectionAndParams({
                 const hasMultipleFieldFields = fieldFieldsKeys.length > 1;
                 const hasSingleFieldField = fieldFieldsKeys.length === 1;
 
-                const headStrs: string[] = [];
+                // const headStrs: string[] = [];
                 let referencedNodes =
                     referenceUnion?.types
                         ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
@@ -178,6 +182,7 @@ export default function createProjectionAndParams({
                     referencedNodes = referencedNodes?.filter((n) => fieldFieldsKeys.includes(n?.name ?? "")) || [];
                 }
 
+                const unionProjections: Array<{ predicate: string; projection: string }> = [];
                 referencedNodes.forEach((refNode) => {
                     if (refNode) {
                         const labelsStatements = refNode
@@ -185,9 +190,9 @@ export default function createProjectionAndParams({
                             .map((label) => `${varName}_${alias}:\`${label}\``);
                         unionWheres.push(`(${labelsStatements.join(" AND ")})`);
 
-                        const innerHeadStr: string[] = [
-                            `[ ${varName}_${alias} IN [${varName}_${alias}] WHERE (${labelsStatements.join(" AND ")})`,
-                        ];
+                        // const innerHeadStr: string[] = [
+                        //     `[ ${varName}_${alias} IN [${varName}_${alias}] WHERE (${labelsStatements.join(" AND ")})`,
+                        // ];
 
                         if (fieldFields[refNode.name]) {
                             const {
@@ -201,31 +206,46 @@ export default function createProjectionAndParams({
                                 varName: `${varName}_${alias}`,
                             });
 
-                            innerHeadStr.push(
-                                [
-                                    `| ${varName}_${alias} { __resolveType: "${refNode.name}", `,
-                                    ...str.replace("{", "").split(""),
-                                ].join("")
-                            );
+                            // TODO add these to projection for abstract types __Resolvetype
+                            // replaces innerHeadStr
+                            unionProjections.push({
+                                projection: `{ __resolveType: "${refNode.name}", ${str.replace("{", "")}`,
+                                predicate: labelsStatements.join(" AND "),
+                            });
+
+                            // innerHeadStr.push(
+                            //     [
+                            //         `| ${varName}_${alias} { __resolveType: "${refNode.name}", `,
+                            //         ...str.replace("{", "").split(""),
+                            //     ].join("")
+                            // );
                             res.params = { ...res.params, ...p };
 
                             if (meta?.authValidateStrs?.length) {
                                 projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
                             }
                         } else {
-                            innerHeadStr.push(`| ${varName}_${alias} { __resolveType: "${refNode.name}" } `);
+                            unionProjections.push({
+                                projection: `{ __resolveType: "${refNode.name}" }`,
+                                predicate: labelsStatements.join(" AND "),
+                            });
+
+                            // innerHeadStr.push(`| ${varName}_${alias} { __resolveType: "${refNode.name}" } `);
                         }
-
-                        innerHeadStr.push(`]`);
-
-                        headStrs.push(innerHeadStr.join(" "));
+                        // innerHeadStr.push(`]`);
+                        // TODO: removed this bc took unwind approach
+                        // headStrs.push(innerHeadStr.join(" "));
                     }
                 });
 
                 const isTakeFirstElement: boolean = !isArray || hasSingleFieldField;
-                projectionStr = `${isTakeFirstElement ? "head(" : ""} ${headStrs.join(" + ")} ${
-                    isTakeFirstElement ? ")" : ""
-                }`;
+                // projectionStr = `${isTakeFirstElement ? "head(" : ""} ${headStrs.join(" + ")} ${
+                //     isTakeFirstElement ? ")" : ""
+                // }`;
+                // TODO: re-take on projectionStr above
+                projectionStr = `CASE ${unionProjections
+                    .map(({ predicate, projection }) => `WHEN ${predicate} THEN ${param} ${projection}`)
+                    .join("\n")} END`;
             }
 
             const initApocParamsStrs = [
@@ -273,13 +293,31 @@ export default function createProjectionAndParams({
 
             const isProjectionStrEmpty = projectionStr.trim().length === 0;
 
-            const apocStr = `${
-                !cypherField.isScalar && !cypherField.isEnum ? `${param} IN` : ""
-            } apoc.cypher.runFirstColumn${expectMultipleValues ? "Many" : "Single"}("${
+            const apocStr = `apoc.cypher.runFirstColumn${expectMultipleValues ? "Many" : "Single"}("${
                 cypherField.statement
-            }", ${apocParamsStr})${apocWhere ? ` ${apocWhere}` : ""}${unionWhere ? ` ${unionWhere} ` : ""}${
-                !isProjectionStrEmpty ? ` | ${!referenceUnion ? param : ""} ${projectionStr}` : ""
-            }`;
+            }", ${apocParamsStr})${apocWhere ? ` ${apocWhere}` : ""}`;
+
+            // console.log({ apocStr });
+
+            const apocClause = new CypherBuilder.RawCypher(apocStr);
+
+            const unionExpression = unionWhere
+                ? CypherBuilder.concat(new CypherBuilder.With("*"), new CypherBuilder.RawCypher(`${unionWhere} `))
+                : new CypherBuilder.RawCypher("");
+
+            const unwindClause = new CypherBuilder.Unwind([apocClause, param]);
+            const projectionExpression = new CypherBuilder.RawCypher(`${projectionStr}`);
+            let returnData: CypherBuilder.Expr = !isProjectionStrEmpty
+                ? projectionExpression
+                : new CypherBuilder.NamedVariable(param);
+            if (isArray) {
+                returnData = CypherBuilder.collect(returnData);
+            }
+            const retClause = new CypherBuilder.Return([returnData, param]);
+            const callSt = new CypherBuilder.Call(
+                CypherBuilder.concat(unwindClause, unionExpression, ...subqueries, retClause)
+            ).with(new CypherBuilder.NamedVariable(chainStr || varName));
+            res.subqueries.push(callSt);
 
             const sortInput = (context.resolveTree.args.sort ??
                 (context.resolveTree.args.options as any)?.sort ??
@@ -296,36 +334,31 @@ export default function createProjectionAndParams({
                 });
                 if (isRootConnectionField) {
                     res.projection.push(`${alias}: edges.${alias}`);
-
                     return res;
                 }
                 if (cypherField.isScalar || cypherField.isEnum) {
                     res.projection.push(`${alias}: ${alias}`);
-
                     return res;
                 }
             }
 
-            if (cypherField.isScalar || cypherField.isEnum) {
-                res.projection.push(`${alias}: ${apocStr}`);
+            // if (cypherField.isScalar || cypherField.isEnum) {
+            //     res.projection.push(`${alias}: ${apocStr}`);
+            //     console.log("returning cypher scalar", param);
+            //     return res;
+            // }
+            // if (referenceUnion && cypherField.typeMeta.array) {
+            //     res.projection.push(`${alias}: apoc.coll.flatten([${apocStr}])`);
+            //     console.log("returning cypher array reference union", param);
+            //     return res;
+            // }
+            // if (cypherField.typeMeta.array) {
+            //     res.projection.push(`${alias}: [${apocStr}]`);
+            //     console.log("returning cypher array", param, res.subqueries);
+            //     return res;
+            // }
 
-                return res;
-            }
-
-            if (referenceUnion && cypherField.typeMeta.array) {
-                res.projection.push(`${alias}: apoc.coll.flatten([${apocStr}])`);
-
-                return res;
-            }
-
-            if (cypherField.typeMeta.array) {
-                res.projection.push(`${alias}: [${apocStr}]`);
-
-                return res;
-            }
-
-            res.projection.push(`${alias}: head([${apocStr}])`);
-
+            res.projection.push(`${alias}: ${`${varName}_${alias}`}`);
             return res;
         }
 
