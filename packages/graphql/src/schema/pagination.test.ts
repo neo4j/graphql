@@ -17,59 +17,9 @@
  * limitations under the License.
  */
 import { offsetToCursor } from "graphql-relay";
-import neo4j from "neo4j-driver";
-import { createOffsetLimitStr, createConnectionWithEdgeProperties } from "./pagination";
+import { createConnectionWithEdgeProperties } from "./pagination";
 
 describe("cursor-pagination", () => {
-    describe("createOffsetLimitStr", () => {
-        test("it returns an empty string when no offset or limit is provided", () => {
-            const args = {};
-            const result = createOffsetLimitStr(args);
-
-            expect(result).toBe("");
-        });
-
-        test("it returns a string with only the sliceStart when offset is provided but limit isn't", () => {
-            const args = { offset: 10 };
-            const result = createOffsetLimitStr(args);
-            expect(result).toBe("[10..]");
-        });
-
-        test("it returns a string with only the sliceStart when offset is provided and the limit is zero", () => {
-            const args = { offset: 10, limit: 0 };
-            const result = createOffsetLimitStr(args);
-            expect(result).toBe("[10..]");
-        });
-
-        test("it returns a string with only the sliceEnd when limit is provided but offset isn't", () => {
-            const args = { limit: 10 };
-            const result = createOffsetLimitStr(args);
-            expect(result).toBe("[..10]");
-        });
-
-        test("it returns a string with only the sliceEnd when limit is provided and the offset provided is zero", () => {
-            const args = { limit: 10, offset: 0 };
-            const result = createOffsetLimitStr(args);
-            expect(result).toBe("[..10]");
-        });
-
-        test("it returns a string with the full range of the slice when both offset and limit are provided", () => {
-            const args = { limit: 10, offset: 30 };
-            const result = createOffsetLimitStr(args);
-            expect(result).toBe("[30..40]");
-        });
-
-        test("it returns a string with the full range of the slice when Integers are passed for both ski and limit", () => {
-            const args = { limit: neo4j.int(10), offset: neo4j.int(30) };
-            const result = createOffsetLimitStr(args);
-            expect(result).toBe("[30..40]");
-
-            const mixedArgs = { limit: neo4j.int(30), offset: 20 };
-            const result2 = createOffsetLimitStr(mixedArgs);
-            expect(result2).toBe("[20..50]");
-        });
-    });
-
     describe("createConnectionWithEdgeProperties", () => {
         test("it should throw an error if first is less than 0", () => {
             const arraySlice = [...Array(20).keys()].map((key) => ({ node: { id: key } }));

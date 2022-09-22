@@ -175,3 +175,27 @@ export function createConnectionWherePropertyOperation({
     });
     return CypherBuilder.and(...filterTruthy(params));
 }
+
+/** Checks if a where property has an explicit interface inside _on */
+export function hasExplicitNodeInInterfaceWhere({
+    whereInput,
+    node,
+}: {
+    whereInput: ConnectionWhereArg;
+    node: Node;
+}): boolean {
+    for (const [key, value] of Object.entries(whereInput)) {
+        if (key.startsWith("node") || key.startsWith(node.name)) {
+            if (
+                Object.keys(value as Record<string, any>).length === 1 &&
+                value._on &&
+                !Object.prototype.hasOwnProperty.call(value._on, node.name)
+            ) {
+                return false;
+            }
+
+            return true;
+        }
+    }
+    return true;
+}

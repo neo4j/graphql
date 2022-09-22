@@ -113,14 +113,14 @@ describe("Cypher alias directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
             CALL {
-            WITH this
-            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
-            WITH collect({ character: this_acted_in_relationship.characterPropInDb, screenTime: this_acted_in_relationship.screenTime, node: { title: this_movie.title, rating: this_movie.ratingPropInDb } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                WITH this
+                MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
+                WITH { character: this_connection_actedInConnectionthis0.characterPropInDb, screenTime: this_connection_actedInConnectionthis0.screenTime, node: { title: this_Movie.title, rating: this_Movie.ratingPropInDb } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
-            RETURN this { .name, city: this.cityPropInDb, actedInConnection } as this"
+            RETURN this { .name, city: this.cityPropInDb, actedInConnection: actedInConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -185,21 +185,21 @@ describe("Cypher alias directive", () => {
             RETURN this0
             }
             CALL {
-            WITH this0
-            MATCH (this0)-[this0_acted_in_relationship:ACTED_IN]->(this0_movie:Movie)
-            WITH collect({ character: this0_acted_in_relationship.characterPropInDb, screenTime: this0_acted_in_relationship.screenTime, node: { title: this0_movie.title, rating: this0_movie.ratingPropInDb } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
-            }
-            CALL {
                 WITH this0
                 MATCH (this0)-[create_this0:ACTED_IN]->(this0_actedIn:\`Movie\`)
                 WITH this0_actedIn { .title, rating: this0_actedIn.ratingPropInDb } AS this0_actedIn
                 RETURN collect(this0_actedIn) AS this0_actedIn
             }
+            CALL {
+                WITH this0
+                MATCH (this0)-[this0_connection_actedInConnectionthis0:ACTED_IN]->(this0_Movie:\`Movie\`)
+                WITH { character: this0_connection_actedInConnectionthis0.characterPropInDb, screenTime: this0_connection_actedInConnectionthis0.screenTime, node: { title: this0_Movie.title, rating: this0_Movie.ratingPropInDb } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+            }
             RETURN [
-            this0 { .name, city: this0.cityPropInDb, actedIn: this0_actedIn, actedInConnection }] AS data"
+            this0 { .name, city: this0.cityPropInDb, actedIn: this0_actedIn, actedInConnection: actedInConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

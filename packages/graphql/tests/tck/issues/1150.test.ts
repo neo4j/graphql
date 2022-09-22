@@ -112,73 +112,42 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             "MATCH (this:\`Drive\`)
             WHERE this.current = $param0
             CALL {
-            WITH this
-            MATCH (this)-[this_consists_of_relationship:CONSISTS_OF]->(this_drivecomposition:DriveComposition)
-            WHERE this_consists_of_relationship.current = $this_driveCompositionsConnection_args_where_DriveCompositionparam0
-            CALL {
-            WITH this_drivecomposition
-            CALL {
-            WITH this_drivecomposition
-            MATCH (this_drivecomposition)-[this_drivecomposition_has_relationship:HAS]->(this_drivecomposition_Battery:Battery)
-            WHERE this_drivecomposition_has_relationship.current = $this_driveCompositionsConnection_edges_node_driveComponentConnection_args_where_Battery_Batteryparam0
-            CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH { current: this_drivecomposition_has_relationship.current, node: { __resolveType: \\"Battery\\", id: this_drivecomposition_Battery.id } } AS edge
-            RETURN edge
-            UNION
-            WITH this_drivecomposition
-            MATCH (this_drivecomposition)-[this_drivecomposition_has_relationship:HAS]->(this_drivecomposition_CombustionEngine:CombustionEngine)
-            WHERE this_drivecomposition_has_relationship.current = $this_driveCompositionsConnection_edges_node_driveComponentConnection_args_where_CombustionEngine_CombustionEngineparam0
-            WITH { current: this_drivecomposition_has_relationship.current, node: { __resolveType: \\"CombustionEngine\\", id: this_drivecomposition_CombustionEngine.id } } AS edge
-            RETURN edge
+                WITH this
+                MATCH (this)-[this_connection_driveCompositionsConnectionthis0:CONSISTS_OF]->(this_DriveComposition:\`DriveComposition\`)
+                WHERE this_connection_driveCompositionsConnectionthis0.current = $this_connection_driveCompositionsConnectionparam0
+                CALL {
+                    WITH this_DriveComposition
+                    CALL {
+                        WITH this_DriveComposition
+                        MATCH (this_DriveComposition)-[this_DriveComposition_connection_driveComponentConnectionthis0:HAS]->(this_DriveComposition_Battery:\`Battery\`)
+                        WHERE (this_DriveComposition_connection_driveComponentConnectionthis0.current = $this_DriveComposition_connection_driveComponentConnectionparam0 AND apoc.util.validatePredicate(NOT ((any(this_DriveComposition_connection_driveComponentConnectionvar2 IN [\\"admin\\"] WHERE any(this_DriveComposition_connection_driveComponentConnectionvar1 IN $auth.roles WHERE this_DriveComposition_connection_driveComponentConnectionvar1 = this_DriveComposition_connection_driveComponentConnectionvar2)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                        WITH { current: this_DriveComposition_connection_driveComponentConnectionthis0.current, node: { __resolveType: \\"Battery\\", id: this_DriveComposition_Battery.id } } AS edge
+                        RETURN edge
+                        UNION
+                        WITH this_DriveComposition
+                        MATCH (this_DriveComposition)-[this_DriveComposition_connection_driveComponentConnectionthis2:HAS]->(this_DriveComposition_CombustionEngine:\`CombustionEngine\`)
+                        WHERE this_DriveComposition_connection_driveComponentConnectionthis2.current = $this_DriveComposition_connection_driveComponentConnectionparam3
+                        WITH { current: this_DriveComposition_connection_driveComponentConnectionthis2.current, node: { __resolveType: \\"CombustionEngine\\", id: this_DriveComposition_CombustionEngine.id } } AS edge
+                        RETURN edge
+                    }
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS driveComponentConnection
+                }
+                WITH { node: { driveComponentConnection: driveComponentConnection } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS driveCompositionsConnection
             }
-            WITH collect(edge) as edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS driveComponentConnection
-            }
-            WITH collect({ node: { driveComponentConnection: driveComponentConnection } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS driveCompositionsConnection
-            }
-            RETURN this { .current, driveCompositionsConnection } as this"
+            RETURN this { .current, driveCompositionsConnection: driveCompositionsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
-                \\"this_driveCompositionsConnection_args_where_DriveCompositionparam0\\": true,
-                \\"this_driveCompositionsConnection_edges_node_driveComponentConnection_args_where_Battery_Batteryparam0\\": true,
-                \\"this_driveCompositionsConnection_edges_node_driveComponentConnection_args_where_CombustionEngine_CombustionEngineparam0\\": true,
-                \\"this_driveCompositionsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"edge\\": {
-                                \\"current\\": true
-                            }
-                        }
-                    },
-                    \\"edges\\": {
-                        \\"node\\": {
-                            \\"driveComponentConnection\\": {
-                                \\"args\\": {
-                                    \\"where\\": {
-                                        \\"Battery\\": {
-                                            \\"edge\\": {
-                                                \\"current\\": true
-                                            }
-                                        },
-                                        \\"CombustionEngine\\": {
-                                            \\"edge\\": {
-                                                \\"current\\": true
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
+                \\"this_connection_driveCompositionsConnectionparam0\\": true,
+                \\"this_DriveComposition_connection_driveComponentConnectionparam0\\": true,
+                \\"this_DriveComposition_connection_driveComponentConnectionparam3\\": true,
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,
                     \\"roles\\": [

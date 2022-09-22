@@ -28,7 +28,7 @@ import type { BooleanOp } from "./expressions/operations/boolean";
 import type { ComparisonOp } from "./expressions/operations/comparison";
 import type { RawCypher } from "./clauses/RawCypher";
 import type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
-import type { RunFirstColumn, ValidatePredicate } from "./expressions/procedures/apoc/apoc";
+import type { ApocExpr, ApocPredicate } from "./expressions/procedures/apoc/apoc";
 import type { Case } from "./expressions/Case";
 import type { MathOp } from "./expressions/operations/math";
 import type { ListComprehension } from "./expressions/list/ListComprehension";
@@ -48,7 +48,7 @@ export type Expr =
     | PatternComprehension
     | MapExpr // NOTE this cannot be set as a property in a node
     | MapProjection // NOTE this cannot be set as a property in a node
-    | RunFirstColumn;
+    | ApocExpr;
 
 /** Represents a predicate statement (i.e returns a boolean). Note that RawCypher is only added for compatibility */
 export type Predicate =
@@ -57,7 +57,7 @@ export type Predicate =
     | RawCypher
     | Exists
     | PredicateFunction
-    | ValidatePredicate
+    | ApocPredicate
     | Literal<boolean>
     | Case;
 
