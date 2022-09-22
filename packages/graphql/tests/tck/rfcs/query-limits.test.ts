@@ -164,6 +164,8 @@ describe("tck/rfcs/query-limits", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
+                WITH *
+                LIMIT $this_limit
                 CALL {
                     WITH this
                     MATCH (this_actors:\`Person\`)-[thisthis0:ACTED_IN]->(this)
@@ -171,8 +173,6 @@ describe("tck/rfcs/query-limits", () => {
                     LIMIT 2
                     RETURN collect(this_actors) AS this_actors
                 }
-                WITH *
-                LIMIT $this_limit
                 RETURN this { .id, actors: this_actors } as this"
             `);
 
@@ -209,6 +209,8 @@ describe("tck/rfcs/query-limits", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
+                WITH *
+                LIMIT $this_limit
                 CALL {
                     WITH this
                     MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Person:\`Person\`)
@@ -221,8 +223,6 @@ describe("tck/rfcs/query-limits", () => {
                     WITH collect(edge) AS edges, totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
                 }
-                WITH *
-                LIMIT $this_limit
                 RETURN this { .id, actorsConnection: actorsConnection } as this"
             `);
 
@@ -255,6 +255,8 @@ describe("tck/rfcs/query-limits", () => {
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:\`Movie\`)
+                WITH *
+                LIMIT $this_limit
                 CALL {
                     WITH this
                     MATCH (this_actors:\`Person\`)-[thisthis0:ACTED_IN]->(this)
@@ -262,8 +264,6 @@ describe("tck/rfcs/query-limits", () => {
                     LIMIT 2
                     RETURN collect(this_actors) AS this_actors
                 }
-                WITH *
-                LIMIT $this_limit
                 RETURN this { .id, actors: this_actors } as this"
             `);
 
