@@ -1013,6 +1013,7 @@ describe("Connections Alias", () => {
             });
 
             expect(result.errors).toBeUndefined();
+
             expect((result.data as any)[typeMovie.plural][0].actorsConnection.edges[0].node.b).toEqual({
                 edges: [
                     {

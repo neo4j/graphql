@@ -81,6 +81,17 @@ describe("interface relationships", () => {
     });
 
     afterEach(async () => {
+        await session.run(
+            `
+                MATCH(a:${typeMovie})
+                MATCH(b:${typeSeries})
+                MATCH(c:${typeActor})
+
+                DETACH DELETE a
+                DETACH DELETE b
+                DETACH DELETE c
+            `
+        );
         await session.close();
     });
 
@@ -525,6 +536,60 @@ describe("interface relationships", () => {
                         },
                     ]),
                     name: actorName,
+                },
+            ],
+        });
+    });
+
+    test("should read and return all relationships with type specific where", async () => {
+        const query = `
+            query {
+                ${typeActor.plural} {
+                    actedInConnection(
+                        where: { node: { _on: { ${typeMovie}: { title_STARTS_WITH: "The " } } }, edge: { screenTime_GT: 60 } }
+                    ) {
+                        edges {
+                            node {
+                                title
+                                ... on ${typeMovie} {
+                                    runtime
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        await session.run(
+            `
+                CREATE (a:${typeActor} { name: "Arthur" })
+                CREATE (a)-[:ACTED_IN { screenTime: 62 }]->(:${typeMovie} { title: "The Movie1", runtime: 100 })
+                CREATE (a)-[:ACTED_IN { screenTime: 62 }]->(:${typeMovie} { title: "Movie2", runtime: 150 })
+                CREATE (a)-[:ACTED_IN { screenTime: 62 }]->(:${typeSeries} { title: "Apple", episodes: 10 })
+            `
+        );
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data).toEqual({
+            [typeActor.plural]: [
+                {
+                    actedInConnection: {
+                        edges: [
+                            {
+                                node: {
+                                    runtime: 100,
+                                    title: "The Movie1",
+                                },
+                            },
+                        ],
+                    },
                 },
             ],
         });
