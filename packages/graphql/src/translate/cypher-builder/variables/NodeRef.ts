@@ -48,8 +48,14 @@ export class NodeRef extends Variable {
 }
 
 export class NamedNode extends NodeRef {
+    public id: string;
+
     constructor(id: string, options?: NodeRefOptions) {
         super(options || {});
         this.id = id;
+    }
+
+    public get name(): string {
+        return this.id;
     }
 }

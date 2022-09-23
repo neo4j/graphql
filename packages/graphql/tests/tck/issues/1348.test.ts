@@ -136,28 +136,28 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`ProgrammeItem\`)
             CALL {
-            WITH this
-            CALL {
-            WITH this
-            MATCH (this)-[this_relates_to_relationship:RELATES_TO]-(this_Series:Series)
-            WITH { node: { __resolveType: \\"Series\\", productTitle: this_Series.productTitle } } AS edge
-            RETURN edge
-            UNION
-            WITH this
-            MATCH (this)-[this_relates_to_relationship:RELATES_TO]-(this_Season:Season)
-            WITH { node: { __resolveType: \\"Season\\", productTitle: this_Season.productTitle } } AS edge
-            RETURN edge
-            UNION
-            WITH this
-            MATCH (this)-[this_relates_to_relationship:RELATES_TO]-(this_ProgrammeItem:ProgrammeItem)
-            WITH { node: { __resolveType: \\"ProgrammeItem\\", productTitle: this_ProgrammeItem.productTitle } } AS edge
-            RETURN edge
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this_connection_releatsToConnectionthis0:RELATES_TO]-(this_Series:\`Series\`)
+                    WITH { node: { __resolveType: \\"Series\\", productTitle: this_Series.productTitle } } AS edge
+                    RETURN edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_connection_releatsToConnectionthis1:RELATES_TO]-(this_Season:\`Season\`)
+                    WITH { node: { __resolveType: \\"Season\\", productTitle: this_Season.productTitle } } AS edge
+                    RETURN edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_connection_releatsToConnectionthis2:RELATES_TO]-(this_ProgrammeItem:\`ProgrammeItem\`)
+                    WITH { node: { __resolveType: \\"ProgrammeItem\\", productTitle: this_ProgrammeItem.productTitle } } AS edge
+                    RETURN edge
+                }
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS releatsToConnection
             }
-            WITH collect(edge) as edges
-            WITH edges, size(edges) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS releatsToConnection
-            }
-            RETURN this { .productTitle, .episodeNumber, releatsToConnection } as this"
+            RETURN this { .productTitle, .episodeNumber, releatsToConnection: releatsToConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

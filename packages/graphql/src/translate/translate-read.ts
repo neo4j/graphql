@@ -22,10 +22,9 @@ import { int } from "neo4j-driver";
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
 import createProjectionAndParams, { ProjectionResult } from "./create-projection-and-params";
-import type { GraphQLOptionsArg, GraphQLSortArg, Context, ConnectionField } from "../types";
+import type { GraphQLOptionsArg, GraphQLSortArg, Context } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import createConnectionAndParams from "./connection/create-connection-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 
@@ -46,7 +45,6 @@ export function translateRead({
     let projAuth = "";
 
     let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
-    const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
 
     const topLevelMatch = translateTopLevelMatch({
@@ -72,22 +70,6 @@ export function translateRead({
         projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
             " AND "
         )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-    }
-
-    if (projection.meta.connectionFields?.length) {
-        projection.meta.connectionFields.forEach((connectionResolveTree) => {
-            const connectionField = node.connectionFields.find(
-                (x) => x.fieldName === connectionResolveTree.name
-            ) as ConnectionField;
-            const connection = createConnectionAndParams({
-                resolveTree: connectionResolveTree,
-                field: connectionField,
-                context,
-                nodeVariable: varName,
-            });
-            connectionStrs.push(connection[0]);
-            cypherParams = { ...cypherParams, ...connection[1] };
-        });
     }
 
     const allowAndParams = createAuthAndParams({
@@ -120,7 +102,6 @@ export function translateRead({
                     matchAndWhereStr,
                     authStr,
                     projAuth,
-                    connectionStrs,
                     interfaceStrs,
                 },
             });
@@ -136,7 +117,6 @@ export function translateRead({
                 matchAndWhereStr,
                 authStr,
                 projAuth,
-                connectionStrs,
                 interfaceStrs,
             },
         });
@@ -163,7 +143,6 @@ function translateRootField({
         matchAndWhereStr: string;
         authStr: string;
         projAuth: string;
-        connectionStrs: string[];
         interfaceStrs: string[];
         projectionSubqueries: string;
     };
@@ -218,9 +197,9 @@ function translateRootField({
     const cypher: string[] = [
         subStr.matchAndWhereStr,
         ...(sortOffsetLimit.length > 1 ? sortOffsetLimit : []),
+        subStr.projectionSubqueries,
         subStr.authStr,
         ...withStrs,
-        ...subStr.connectionStrs,
         ...subStr.interfaceStrs,
         subStr.projectionSubqueries,
         ...returnStrs,
@@ -242,7 +221,6 @@ function translateRootConnectionField({
         matchAndWhereStr: string;
         authStr: string;
         projAuth: string;
-        connectionStrs: string[];
         interfaceStrs: string[];
         projectionSubqueries: string;
     };
@@ -314,7 +292,6 @@ function translateRootConnectionField({
         ...(limitStr ? [limitStr] : []),
         "}",
         subStr.projectionSubqueries,
-        ...subStr.connectionStrs,
         ...subStr.interfaceStrs,
         ...returnStrs,
     ];

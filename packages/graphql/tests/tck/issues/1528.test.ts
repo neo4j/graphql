@@ -78,19 +78,21 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Genre\`)
             CALL {
-            WITH this
-            MATCH (this)<-[this_is_genre_relationship:IS_GENRE]-(this_movie:Movie)
-            WITH this_is_genre_relationship, this_movie
-            ORDER BY this_movie.actorsCount DESC
-            WITH collect({ node: { title: this_movie.title, actorsCount:  apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:ACTED_IN]-(ac:Person)
-            RETURN count(ac)\\", {this: this_movie, auth: $auth}) } }) AS edges
-            UNWIND edges as edge
-            WITH edges, edge
-            ORDER BY edge.node.actorsCount DESC
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
+                WITH this
+                MATCH (this)<-[this_connection_moviesConnectionthis0:IS_GENRE]-(this_Movie:\`Movie\`)
+                WITH this_connection_moviesConnectionthis0, this_Movie
+                ORDER BY this_Movie.actorsCount DESC
+                WITH { node: { title: this_Movie.title, actorsCount:  apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:ACTED_IN]-(ac:Person)
+                RETURN count(ac)\\", {this: this_Movie, auth: $auth}) } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                UNWIND edges AS edge
+                WITH edge, totalCount
+                ORDER BY edge.node.actorsCount DESC
+                WITH collect(edge) AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
             }
-            RETURN this { moviesConnection } as this"
+            RETURN this { moviesConnection: moviesConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
