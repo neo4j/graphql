@@ -159,7 +159,7 @@ function createConnectionNodeProjection({
     }
     return {
         subqueries: projectionSubqueries,
-        projection: new CypherBuilder.RawCypher((env) => {
+        projection: new CypherBuilder.RawCypher(() => {
             return [`${nodeProjectionAndParams.projection}`, nodeProjectionAndParams.params];
         }),
     };

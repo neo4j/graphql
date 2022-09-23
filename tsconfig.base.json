@@ -6,7 +6,7 @@
         "sourceMap": true,
         "resolveJsonModule": true, // Required for package.json import in @neo4j/graphql
         "importsNotUsedAsValues": "error",
-        "noUnusedParameters": false, // TODO: Refactor so that this can be true for monorepo
+        "noUnusedParameters": true,
         "noUnusedLocals": true,
         "noImplicitAny": false // TODO: Refactor so that this can be true for monorepo
     }

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import util, { InspectOptions } from "util";
+import util from "util";
 import { CypherASTNode } from "../CypherASTNode";
 import { CypherEnvironment, EnvPrefix } from "../Environment";
 import type { CypherResult } from "../types";
@@ -44,7 +44,7 @@ export abstract class Clause extends CypherASTNode {
     }
 
     /** Custom log for console.log */
-    [util.inspect.custom](depth: number, opts: InspectOptions): string {
+    [util.inspect.custom](): string {
         const cypher = padBlock(this.build().cypher);
         return `<Clause ${this.constructor.name}> """\n${cypher}\n"""`;
     }
