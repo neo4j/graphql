@@ -1,0 +1,9 @@
+name: "CodeQL config"
+paths:
+  - packages
+paths-ignore:
+  - docs
+  - examples
+  - config
+  - node_modules
+  - packages/**/tests/**/*.test.ts
