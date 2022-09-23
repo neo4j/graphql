@@ -73,15 +73,21 @@ describe("Cypher directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            RETURN this { movies: [this_movies IN apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie {title: $title})
-            RETURN m\\", {this: this, auth: $auth, title: $this_movies_title}) | this_movies { actorsConnection: apoc.cypher.runFirstColumnSingle(\\"CALL {
-                WITH this_movies
-                MATCH (this_movies)<-[this_movies_connection_actorsConnectionthis0:ACTED_IN]-(this_movies_Actor:\`Actor\`)
-                WITH { node: { __resolveType: \\\\\\"Actor\\\\\\" } } AS edge
-                WITH collect(edge) AS edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
-            } RETURN actorsConnection\\", { this_movies: this_movies, auth: $auth }) }] } as this"
+            CALL {
+                WITH this
+                UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie {title: $title})
+                RETURN m\\", {this: this, auth: $auth, title: $this_movies_title}) AS this_movies
+                CALL {
+                    WITH this_movies
+                    MATCH (this_movies)<-[this_movies_connection_actorsConnectionthis0:ACTED_IN]-(this_movies_Actor:\`Actor\`)
+                    WITH { node: { __resolveType: \\"Actor\\" } } AS edge
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                }
+                RETURN collect(this_movies { actorsConnection: actorsConnection }) AS this_movies
+            }
+            RETURN this { movies: this_movies } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

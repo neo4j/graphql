@@ -301,7 +301,8 @@ export default function createProjectionAndParams({
                     apocStr,
                 });
                 if (isRootConnectionField) {
-                    res.projection.push(`${alias}: edges.${alias}`);
+                    res.projection.push(`${alias}: ${param}`);
+                    // res.projection.push(`${alias}: edges.${alias}`);
                     return res;
                 }
                 if (cypherField.isScalar || cypherField.isEnum) {
@@ -480,33 +481,13 @@ export default function createProjectionAndParams({
             const connection = connectionClause.build(`${varName}_connection_${field.alias}`); // TODO: remove build from here
             const stupidParams = connection.params;
 
-            // Only for connections on a @cypher property
-            if (isInCypher) {
-                const connectionParamNames = Object.keys(connection.params);
-                const runFirstColumnParams = [
-                    ...[`${chainStr}: ${chainStr}`],
-                    ...connectionParamNames
-                        .filter(Boolean)
-                        .map((connectionParamName) => `${connectionParamName}: $${connectionParamName}`),
-                    ...(context.auth ? ["auth: $auth"] : []),
-                    ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
-                ];
+            const connectionSubClause = new CypherBuilder.RawCypher((_env) => {
+                // TODO: avoid REPLACE_ME in params and return them here
 
-                res.projection.push(
-                    `${field.name}: apoc.cypher.runFirstColumnSingle("${connection.cypher.replace(
-                        /("|')/g,
-                        "\\$1"
-                    )} RETURN ${field.name}", { ${runFirstColumnParams.join(", ")} })`
-                );
-            } else {
-                const connectionSubClause = new CypherBuilder.RawCypher((_env) => {
-                    // TODO: avoid REPLACE_ME in params and return them here
-
-                    return [connection.cypher, {}];
-                });
-                res.subqueries.push(connectionSubClause);
-                res.projection.push(`${field.alias}: ${field.alias}`);
-            }
+                return [connection.cypher, {}];
+            });
+            res.subqueries.push(connectionSubClause);
+            res.projection.push(`${field.alias}: ${field.alias}`);
 
             res.params = { ...res.params, ...stupidParams };
             return res;
@@ -530,7 +511,6 @@ export default function createProjectionAndParams({
             } else {
                 aliasedProj = "";
             }
-
             res.projection.push(`${aliasedProj}.${dbFieldName}`);
         }
 

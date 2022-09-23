@@ -79,16 +79,25 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE this.id = $param0
-            RETURN this { updates: apoc.coll.flatten([this_updates IN apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[a:WROTE]->(wrote:Post)
-            WHERE a.date_added IS NOT NULL
-            WITH COLLECT(wrote{ .*, date_added: a.date_added, typename: 'WROTE' }) as updates1, this
-            MATCH (this)-[a:FOLLOWS]->(umb)
-            WHERE (umb:User or umb:Movie or umb:Blog) AND a.date_added IS NOT NULL
-            WITH updates1 + COLLECT(umb{ .*, date_added: a.date_added, typename: 'FOLLOWED' }) as allUpdates
-            UNWIND allUpdates as update
-            RETURN update
-            ORDER BY update.date_added DESC
-            LIMIT 5\\", {this: this, auth: $auth}) WHERE (this_updates:\`Post\`) OR (this_updates:\`Movie\`) OR (this_updates:\`User\`)  |  head( [ this_updates IN [this_updates] WHERE (this_updates:\`Post\`) | this_updates { __resolveType: \\"Post\\" }  ] + [ this_updates IN [this_updates] WHERE (this_updates:\`Movie\`) | this_updates { __resolveType: \\"Movie\\" }  ] + [ this_updates IN [this_updates] WHERE (this_updates:\`User\`) | this_updates { __resolveType: \\"User\\" }  ] )]) } as this"
+            CALL {
+                WITH this
+                UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[a:WROTE]->(wrote:Post)
+                WHERE a.date_added IS NOT NULL
+                WITH COLLECT(wrote{ .*, date_added: a.date_added, typename: 'WROTE' }) as updates1, this
+                MATCH (this)-[a:FOLLOWS]->(umb)
+                WHERE (umb:User or umb:Movie or umb:Blog) AND a.date_added IS NOT NULL
+                WITH updates1 + COLLECT(umb{ .*, date_added: a.date_added, typename: 'FOLLOWED' }) as allUpdates
+                UNWIND allUpdates as update
+                RETURN update
+                ORDER BY update.date_added DESC
+                LIMIT 5\\", {this: this, auth: $auth}) AS this_updates
+                WITH *
+                WHERE (this_updates:\`Post\`) OR (this_updates:\`Movie\`) OR (this_updates:\`User\`)
+                RETURN collect(CASE WHEN this_updates:\`Post\` THEN this_updates { __resolveType: \\"Post\\" }
+                WHEN this_updates:\`Movie\` THEN this_updates { __resolveType: \\"Movie\\" }
+                WHEN this_updates:\`User\` THEN this_updates { __resolveType: \\"User\\" } END) AS this_updates
+            }
+            RETURN this { updates: this_updates } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -113,6 +113,7 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Bacenta\`)
             WHERE this.id = $param0
+            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[:HAS_HISTORY]->(:ServiceLog)-[:HAS_BUSSING]->(records:BussingRecord)-[:BUSSED_ON]->(date:TimeGraph)
@@ -133,7 +134,6 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
                 }
                 RETURN collect(this_bussing { .id, .attendance, markedAttendance: this_bussing_markedAttendance, serviceDate: this_bussing_serviceDate }) AS this_bussing
             }
-            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id, .name, bussing: this_bussing } as this"
         `);
 
