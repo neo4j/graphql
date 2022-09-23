@@ -17,6 +17,9 @@ jobs:
   neo-push-tests:
     uses: ./.github/workflows/reusable-neo-push-tests.yml
 
+  code-scanning:
+    uses: ./.github/workflows/reusable-codeql-analysis.yml
+
   unit-tests:
     uses: ./.github/workflows/reusable-unit-tests.yml
     secrets:
