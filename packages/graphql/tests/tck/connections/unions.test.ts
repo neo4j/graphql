@@ -87,24 +87,23 @@ describe("Cypher -> Connections -> Unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Author\`)
             CALL {
-            WITH this
-            CALL {
-            WITH this
-            MATCH (this)-[this_wrote_relationship:WROTE]->(this_Book:Book)
-            WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
-            RETURN edge
-            UNION
-            WITH this
-            MATCH (this)-[this_wrote_relationship:WROTE]->(this_Journal:Journal)
-            WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
-            RETURN edge
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this_connection_publicationsConnectionthis0:WROTE]->(this_Book:\`Book\`)
+                    WITH { words: this_connection_publicationsConnectionthis0.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
+                    RETURN edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_connection_publicationsConnectionthis1:WROTE]->(this_Journal:\`Journal\`)
+                    WITH { words: this_connection_publicationsConnectionthis1.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
+                    RETURN edge
+                }
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
             }
-            WITH collect(edge) as edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
-            }
-            RETURN this { .name, publicationsConnection } as this"
+            RETURN this { .name, publicationsConnection: publicationsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -145,48 +144,31 @@ describe("Cypher -> Connections -> Unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Author\`)
             CALL {
-            WITH this
-            CALL {
-            WITH this
-            MATCH (this)-[this_wrote_relationship:WROTE]->(this_Book:Book)
-            WHERE this_Book.title = $this_publicationsConnection_args_where_Book_Bookparam0
-            WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
-            RETURN edge
-            UNION
-            WITH this
-            MATCH (this)-[this_wrote_relationship:WROTE]->(this_Journal:Journal)
-            WHERE this_Journal.subject = $this_publicationsConnection_args_where_Journal_Journalparam0
-            WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
-            RETURN edge
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this_connection_publicationsConnectionthis0:WROTE]->(this_Book:\`Book\`)
+                    WHERE this_Book.title = $this_connection_publicationsConnectionparam0
+                    WITH { words: this_connection_publicationsConnectionthis0.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
+                    RETURN edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_connection_publicationsConnectionthis1:WROTE]->(this_Journal:\`Journal\`)
+                    WHERE this_Journal.subject = $this_connection_publicationsConnectionparam1
+                    WITH { words: this_connection_publicationsConnectionthis1.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
+                    RETURN edge
+                }
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
             }
-            WITH collect(edge) as edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
-            }
-            RETURN this { .name, publicationsConnection } as this"
+            RETURN this { .name, publicationsConnection: publicationsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_publicationsConnection_args_where_Book_Bookparam0\\": \\"Book Title\\",
-                \\"this_publicationsConnection_args_where_Journal_Journalparam0\\": \\"Journal Subject\\",
-                \\"this_publicationsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"Book\\": {
-                                \\"node\\": {
-                                    \\"title\\": \\"Book Title\\"
-                                }
-                            },
-                            \\"Journal\\": {
-                                \\"node\\": {
-                                    \\"subject\\": \\"Journal Subject\\"
-                                }
-                            }
-                        }
-                    }
-                }
+                \\"this_connection_publicationsConnectionparam0\\": \\"Book Title\\",
+                \\"this_connection_publicationsConnectionparam1\\": \\"Journal Subject\\"
             }"
         `);
     });
@@ -223,59 +205,36 @@ describe("Cypher -> Connections -> Unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Author\`)
             CALL {
-            WITH this
-            CALL {
-            WITH this
-            MATCH (this)-[this_wrote_relationship:WROTE]->(this_Book:Book)
-            WHERE this_wrote_relationship.words = $this_publicationsConnection_args_where_Book_Bookparam0
-            WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
-            RETURN edge
-            UNION
-            WITH this
-            MATCH (this)-[this_wrote_relationship:WROTE]->(this_Journal:Journal)
-            WHERE this_wrote_relationship.words = $this_publicationsConnection_args_where_Journal_Journalparam0
-            WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
-            RETURN edge
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this_connection_publicationsConnectionthis0:WROTE]->(this_Book:\`Book\`)
+                    WHERE this_connection_publicationsConnectionthis0.words = $this_connection_publicationsConnectionparam0
+                    WITH { words: this_connection_publicationsConnectionthis0.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
+                    RETURN edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_connection_publicationsConnectionthis1:WROTE]->(this_Journal:\`Journal\`)
+                    WHERE this_connection_publicationsConnectionthis1.words = $this_connection_publicationsConnectionparam1
+                    WITH { words: this_connection_publicationsConnectionthis1.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
+                    RETURN edge
+                }
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
             }
-            WITH collect(edge) as edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
-            }
-            RETURN this { .name, publicationsConnection } as this"
+            RETURN this { .name, publicationsConnection: publicationsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_publicationsConnection_args_where_Book_Bookparam0\\": {
+                \\"this_connection_publicationsConnectionparam0\\": {
                     \\"low\\": 1000,
                     \\"high\\": 0
                 },
-                \\"this_publicationsConnection_args_where_Journal_Journalparam0\\": {
+                \\"this_connection_publicationsConnectionparam1\\": {
                     \\"low\\": 2000,
                     \\"high\\": 0
-                },
-                \\"this_publicationsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"Book\\": {
-                                \\"edge\\": {
-                                    \\"words\\": {
-                                        \\"low\\": 1000,
-                                        \\"high\\": 0
-                                    }
-                                }
-                            },
-                            \\"Journal\\": {
-                                \\"edge\\": {
-                                    \\"words\\": {
-                                        \\"low\\": 2000,
-                                        \\"high\\": 0
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }"
         `);
@@ -316,67 +275,38 @@ describe("Cypher -> Connections -> Unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Author\`)
             CALL {
-            WITH this
-            CALL {
-            WITH this
-            MATCH (this)-[this_wrote_relationship:WROTE]->(this_Book:Book)
-            WHERE (this_Book.title = $this_publicationsConnection_args_where_Book_Bookparam0 AND this_wrote_relationship.words = $this_publicationsConnection_args_where_Book_Bookparam1)
-            WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
-            RETURN edge
-            UNION
-            WITH this
-            MATCH (this)-[this_wrote_relationship:WROTE]->(this_Journal:Journal)
-            WHERE (this_Journal.subject = $this_publicationsConnection_args_where_Journal_Journalparam0 AND this_wrote_relationship.words = $this_publicationsConnection_args_where_Journal_Journalparam1)
-            WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
-            RETURN edge
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this_connection_publicationsConnectionthis0:WROTE]->(this_Book:\`Book\`)
+                    WHERE (this_Book.title = $this_connection_publicationsConnectionparam0 AND this_connection_publicationsConnectionthis0.words = $this_connection_publicationsConnectionparam1)
+                    WITH { words: this_connection_publicationsConnectionthis0.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
+                    RETURN edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_connection_publicationsConnectionthis1:WROTE]->(this_Journal:\`Journal\`)
+                    WHERE (this_Journal.subject = $this_connection_publicationsConnectionparam2 AND this_connection_publicationsConnectionthis1.words = $this_connection_publicationsConnectionparam3)
+                    WITH { words: this_connection_publicationsConnectionthis1.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
+                    RETURN edge
+                }
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
             }
-            WITH collect(edge) as edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
-            }
-            RETURN this { .name, publicationsConnection } as this"
+            RETURN this { .name, publicationsConnection: publicationsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_publicationsConnection_args_where_Book_Bookparam0\\": \\"Book Title\\",
-                \\"this_publicationsConnection_args_where_Book_Bookparam1\\": {
+                \\"this_connection_publicationsConnectionparam0\\": \\"Book Title\\",
+                \\"this_connection_publicationsConnectionparam1\\": {
                     \\"low\\": 1000,
                     \\"high\\": 0
                 },
-                \\"this_publicationsConnection_args_where_Journal_Journalparam0\\": \\"Journal Subject\\",
-                \\"this_publicationsConnection_args_where_Journal_Journalparam1\\": {
+                \\"this_connection_publicationsConnectionparam2\\": \\"Journal Subject\\",
+                \\"this_connection_publicationsConnectionparam3\\": {
                     \\"low\\": 2000,
                     \\"high\\": 0
-                },
-                \\"this_publicationsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"Book\\": {
-                                \\"node\\": {
-                                    \\"title\\": \\"Book Title\\"
-                                },
-                                \\"edge\\": {
-                                    \\"words\\": {
-                                        \\"low\\": 1000,
-                                        \\"high\\": 0
-                                    }
-                                }
-                            },
-                            \\"Journal\\": {
-                                \\"node\\": {
-                                    \\"subject\\": \\"Journal Subject\\"
-                                },
-                                \\"edge\\": {
-                                    \\"words\\": {
-                                        \\"low\\": 2000,
-                                        \\"high\\": 0
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }"
         `);
@@ -412,27 +342,27 @@ describe("Cypher -> Connections -> Unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Author\`)
             CALL {
-            WITH this
-            CALL {
-            WITH this
-            MATCH (this)-[this_wrote_relationship:WROTE]->(this_Book:Book)
-            WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
-            RETURN edge
-            UNION
-            WITH this
-            MATCH (this)-[this_wrote_relationship:WROTE]->(this_Journal:Journal)
-            WITH { words: this_wrote_relationship.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
-            RETURN edge
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this_connection_publicationsConnectionthis0:WROTE]->(this_Book:\`Book\`)
+                    WITH { words: this_connection_publicationsConnectionthis0.words, node: { __resolveType: \\"Book\\", title: this_Book.title } } AS edge
+                    RETURN edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_connection_publicationsConnectionthis1:WROTE]->(this_Journal:\`Journal\`)
+                    WITH { words: this_connection_publicationsConnectionthis1.words, node: { __resolveType: \\"Journal\\", subject: this_Journal.subject } } AS edge
+                    RETURN edge
+                }
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                UNWIND edges AS edge
+                WITH edge, totalCount
+                ORDER BY edge.words ASC
+                WITH collect(edge) AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
             }
-            WITH edge ORDER BY edge.words ASC
-            WITH collect(edge) as edges
-            UNWIND edges as edge
-            WITH edges, edge
-            ORDER BY edge.words ASC
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS publicationsConnection
-            }
-            RETURN this { .name, publicationsConnection } as this"
+            RETURN this { .name, publicationsConnection: publicationsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

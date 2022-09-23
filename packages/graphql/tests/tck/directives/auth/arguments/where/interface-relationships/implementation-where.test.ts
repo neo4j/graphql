@@ -216,30 +216,30 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:\`User\`)
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             CALL {
-            WITH this
-            CALL {
-            WITH this
-            MATCH (this)-[this_has_content_relationship:HAS_CONTENT]->(this_Comment:Comment)
-            WITH { node: { __resolveType: \\"Comment\\" } } AS edge
-            RETURN edge
-            UNION
-            WITH this
-            MATCH (this)-[this_has_content_relationship:HAS_CONTENT]->(this_Post:Post)
-            WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_Post)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Postauth_param0)))
-            WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
-            RETURN edge
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this_connection_contentConnectionthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
+                    WITH { node: { __resolveType: \\"Comment\\" } } AS edge
+                    RETURN edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_connection_contentConnectionthis1:HAS_CONTENT]->(this_Post:\`Post\`)
+                    WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis2 IN [(this_Post)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis2:\`User\`) | this_connection_contentConnectionthis2] WHERE (this_connection_contentConnectionthis2.id IS NOT NULL AND this_connection_contentConnectionthis2.id = $this_connection_contentConnectionparam0)))
+                    WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    RETURN edge
+                }
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS contentConnection
             }
-            WITH collect(edge) as edges
-            WITH edges, size(edges) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS contentConnection
-            }
-            RETURN this { .id, contentConnection } as this"
+            RETURN this { .id, contentConnection: contentConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"thisauth_param0\\": \\"id-01\\",
-                \\"this_Postauth_param0\\": \\"id-01\\"
+                \\"this_connection_contentConnectionparam0\\": \\"id-01\\"
             }"
         `);
     });
@@ -271,42 +271,33 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:\`User\`)
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             CALL {
-            WITH this
-            CALL {
-            WITH this
-            MATCH (this)-[this_has_content_relationship:HAS_CONTENT]->(this_Comment:Comment)
-            WHERE this_Comment.id = $this_contentConnection_args_where_Commentparam0
-            WITH { node: { __resolveType: \\"Comment\\" } } AS edge
-            RETURN edge
-            UNION
-            WITH this
-            MATCH (this)-[this_has_content_relationship:HAS_CONTENT]->(this_Post:Post)
-            WHERE this_Post.id = $this_contentConnection_args_where_Postparam0 AND (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_Post)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Postauth_param0)))
-            WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
-            RETURN edge
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this_connection_contentConnectionthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
+                    WHERE this_Comment.id = $this_connection_contentConnectionparam0
+                    WITH { node: { __resolveType: \\"Comment\\" } } AS edge
+                    RETURN edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_connection_contentConnectionthis1:HAS_CONTENT]->(this_Post:\`Post\`)
+                    WHERE (this_Post.id = $this_connection_contentConnectionparam1 AND (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis2 IN [(this_Post)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis2:\`User\`) | this_connection_contentConnectionthis2] WHERE (this_connection_contentConnectionthis2.id IS NOT NULL AND this_connection_contentConnectionthis2.id = $this_connection_contentConnectionparam2))))
+                    WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    RETURN edge
+                }
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS contentConnection
             }
-            WITH collect(edge) as edges
-            WITH edges, size(edges) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS contentConnection
-            }
-            RETURN this { .id, contentConnection } as this"
+            RETURN this { .id, contentConnection: contentConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"thisauth_param0\\": \\"id-01\\",
-                \\"this_contentConnection_args_where_Commentparam0\\": \\"some-id\\",
-                \\"this_contentConnection_args_where_Postparam0\\": \\"some-id\\",
-                \\"this_Postauth_param0\\": \\"id-01\\",
-                \\"this_contentConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"id\\": \\"some-id\\"
-                            }
-                        }
-                    }
-                }
+                \\"this_connection_contentConnectionparam0\\": \\"some-id\\",
+                \\"this_connection_contentConnectionparam1\\": \\"some-id\\",
+                \\"this_connection_contentConnectionparam2\\": \\"id-01\\"
             }"
         `);
     });

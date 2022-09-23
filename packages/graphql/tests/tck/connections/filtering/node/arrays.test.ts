@@ -83,35 +83,23 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name IN $this_actorsConnection_args_where_Actorparam0
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE this_Actor.name IN $this_connection_actorsConnectionparam0
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actorsConnection_args_where_Actorparam0\\": [
+                \\"this_connection_actorsConnectionparam0\\": [
                     \\"Tom Hanks\\",
                     \\"Robin Wright\\"
-                ],
-                \\"this_actorsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"name_IN\\": [
-                                    \\"Tom Hanks\\",
-                                    \\"Robin Wright\\"
-                                ]
-                            }
-                        }
-                    }
-                }
+                ]
             }"
         `);
     });
@@ -141,35 +129,23 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE NOT (this_actor.name IN $this_actorsConnection_args_where_Actorparam0)
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE NOT (this_Actor.name IN $this_connection_actorsConnectionparam0)
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actorsConnection_args_where_Actorparam0\\": [
+                \\"this_connection_actorsConnectionparam0\\": [
                     \\"Tom Hanks\\",
                     \\"Robin Wright\\"
-                ],
-                \\"this_actorsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"name_NOT_IN\\": [
-                                    \\"Tom Hanks\\",
-                                    \\"Robin Wright\\"
-                                ]
-                            }
-                        }
-                    }
-                }
+                ]
             }"
         `);
     });
@@ -200,29 +176,20 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE $this_actorsConnection_args_where_Actorparam0 IN this_actor.favouriteColours
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, favouriteColours: this_actor.favouriteColours } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE $this_connection_actorsConnectionparam0 IN this_Actor.favouriteColours
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, favouriteColours: this_Actor.favouriteColours } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Blue\\",
-                \\"this_actorsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"favouriteColours_INCLUDES\\": \\"Blue\\"
-                            }
-                        }
-                    }
-                }
+                \\"this_connection_actorsConnectionparam0\\": \\"Blue\\"
             }"
         `);
     });
@@ -253,29 +220,20 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE NOT ($this_actorsConnection_args_where_Actorparam0 IN this_actor.favouriteColours)
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, favouriteColours: this_actor.favouriteColours } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE NOT ($this_connection_actorsConnectionparam0 IN this_Actor.favouriteColours)
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, favouriteColours: this_Actor.favouriteColours } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Blue\\",
-                \\"this_actorsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"favouriteColours_NOT_INCLUDES\\": \\"Blue\\"
-                            }
-                        }
-                    }
-                }
+                \\"this_connection_actorsConnectionparam0\\": \\"Blue\\"
             }"
         `);
     });

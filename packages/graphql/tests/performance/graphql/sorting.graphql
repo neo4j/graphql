@@ -18,9 +18,29 @@ query SortMultipleTypes {
     }
 }
 
+query SortMultipleTypesWithCypherWithCypher {
+    movies(options: { sort: { oneActorName: ASC }, limit: 10 }) {
+        title
+        actorsConnection {
+            edges {
+                node {
+                    name
+                }
+            }
+        }
+        directorsConnection {
+            edges {
+                node {
+                    name
+                }
+            }
+        }
+    }
+}
+
 query SortOnNestedFields {
     movies {
-        actors(options: {sort: {name: ASC}}) {
+        actors(options: { sort: { name: ASC } }) {
             name
         }
     }
@@ -29,8 +49,8 @@ query SortOnNestedFields {
 query SortDeeplyNestedFields {
     movies {
         title
-        actors(options: {sort: {name: ASC}}) {
-            movies(options: {sort: {released: DESC}}){
+        actors(options: { sort: { name: ASC } }) {
+            movies(options: { sort: { released: DESC } }) {
                 released
             }
         }

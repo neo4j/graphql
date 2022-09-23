@@ -80,22 +80,22 @@ describe("Cypher Auth Projection On Connections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Person\`)
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
-            WITH this
-            MATCH (this)-[this_has_post_relationship:HAS_POST]->(this_post:\`Comment\`)
-            CALL apoc.util.validate(NOT ((exists((this_post)<-[:HAS_POST]-(:\`Person\`)) AND any(auth_this0 IN [(this_post)<-[:HAS_POST]-(auth_this0:\`Person\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_postauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH collect({ node: { content: this_post.content } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS postsConnection
+                WITH this
+                MATCH (this)-[this_connection_postsConnectionthis0:HAS_POST]->(this_Post:\`Comment\`)
+                WHERE apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_POST]-(:\`Person\`)) AND any(this_connection_postsConnectionthis1 IN [(this_Post)<-[:HAS_POST]-(this_connection_postsConnectionthis1:\`Person\`) | this_connection_postsConnectionthis1] WHERE (this_connection_postsConnectionthis1.id IS NOT NULL AND this_connection_postsConnectionthis1.id = $this_connection_postsConnectionparam0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH { node: { content: this_Post.content } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS postsConnection
             }
-            RETURN this { .name, postsConnection } as this"
+            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            RETURN this { .name, postsConnection: postsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_postauth_param0\\": \\"super_admin\\",
+                \\"this_connection_postsConnectionparam0\\": \\"super_admin\\",
                 \\"thisauth_param0\\": \\"super_admin\\"
             }"
         `);
