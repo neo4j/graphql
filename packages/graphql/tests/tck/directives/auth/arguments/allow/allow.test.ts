@@ -165,6 +165,7 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 MATCH (this)-[thisthis0:HAS_POST]->(this_posts:\`Post\`)
@@ -172,7 +173,6 @@ describe("Cypher Auth Allow", () => {
                 WITH this_posts { .content } AS this_posts
                 RETURN collect(this_posts) AS this_posts
             }
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id, posts: this_posts } as this"
         `);
 
@@ -202,6 +202,7 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
+            CALL apoc.util.validate(NOT ((exists((this)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 MATCH (this_creator:\`User\`)-[thisthis0:HAS_POST]->(this)
@@ -209,7 +210,6 @@ describe("Cypher Auth Allow", () => {
                 WITH this_creator { .password } AS this_creator
                 RETURN head(collect(this_creator)) AS this_creator
             }
-            CALL apoc.util.validate(NOT ((exists((this)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { creator: this_creator } as this"
         `);
 
@@ -244,6 +244,7 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE this.id = $param0
+            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 MATCH (this)-[thisthis0:HAS_POST]->(this_posts:\`Post\`)
@@ -258,7 +259,6 @@ describe("Cypher Auth Allow", () => {
                 WITH this_posts { comments: this_posts_comments } AS this_posts
                 RETURN collect(this_posts) AS this_posts
             }
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id, posts: this_posts } as this"
         `);
 

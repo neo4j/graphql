@@ -178,7 +178,12 @@ describe("Cypher Auth isAuthenticated", () => {
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { history: [this_history IN apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h\\", {this: this, auth: $auth}) WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_history { .url }] } as this"
+            CALL {
+                WITH this
+                UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h\\", {this: this, auth: $auth}) WHERE apoc.util.validatePredicate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AS this_history
+                RETURN collect(this_history { .url }) AS this_history
+            }
+            RETURN this { history: this_history } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
