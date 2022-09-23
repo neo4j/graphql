@@ -14,6 +14,7 @@
         }
     },
     "include": ["src/**/*"],
+    "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"],
     "references": [
         { "path": "../graphql/src/tsconfig.production.json" },
         { "path": "../introspector/tsconfig.production.json" }
