@@ -197,7 +197,6 @@ function translateRootField({
     const cypher: string[] = [
         subStr.matchAndWhereStr,
         ...(sortOffsetLimit.length > 1 ? sortOffsetLimit : []),
-        subStr.projectionSubqueries,
         subStr.authStr,
         ...withStrs,
         ...subStr.interfaceStrs,
