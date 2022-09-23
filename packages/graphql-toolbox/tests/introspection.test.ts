@@ -25,7 +25,7 @@ const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localh
 describe("introspection", () => {
     let driver: neo4j.Driver;
 
-    beforeAll(async () => {
+    beforeAll(() => {
         driver = neo4j.driver(NEO_URL, neo4j.auth.basic(NEO_USER, NEO_PASSWORD));
     });
 
@@ -36,8 +36,8 @@ describe("introspection", () => {
     test("should introspect database and output result", async ({ page, loginPage, schemaEditorPage }) => {
         await loginPage.loginDismissIntrospection();
 
-        const sessionFactory = () => driver?.session({ defaultAccessMode: neo4j.session.WRITE }) as neo4j.Session;
-        const session = await sessionFactory();
+        const sessionFactory = () => driver?.session({ defaultAccessMode: neo4j.session.WRITE });
+        const session = sessionFactory();
 
         try {
             await session.run(`

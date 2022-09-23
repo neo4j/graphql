@@ -17,24 +17,32 @@ module.exports = {
     context: path.join(__dirname),
     target: "web",
     resolve: {
-        plugins: [new TsconfigPathsPlugin()],
+        plugins: [new TsconfigPathsPlugin({ configFile: "./tsconfig.production.json" })],
         extensions: [".ts", ".tsx", ".mjs", ".json", ".js"], // IMPORTANT: .mjs has to be BEFORE .js
     },
     ...(process.env.NODE_ENV === "production"
         ? {
-            optimization: {
-                minimize: true,
-                minimizer: [new TerserPlugin()],
-            },
-        }
+              optimization: {
+                  minimize: true,
+                  minimizer: [new TerserPlugin()],
+              },
+          }
         : {}),
     module: {
         rules: [
             {
                 test: /\.tsx?$/,
-                loader: "ts-loader",
                 exclude: "/node_modules/",
-                options: { projectReferences: true, transpileOnly: true },
+                use: [
+                    {
+                        loader: "ts-loader",
+                        options: {
+                            configFile: "tsconfig.production.json",
+                            projectReferences: true,
+                            transpileOnly: true,
+                        },
+                    },
+                ],
             },
             {
                 test: /\.(png|jpg|gif|svg)$/i,
@@ -60,8 +68,8 @@ module.exports = {
     },
     plugins: [
         new DefinePlugin({
-            'process.env.VERSION': JSON.stringify(packageJson.version),
-            'process.env.NEO4J_GRAPHQL_VERSION': JSON.stringify(packageJson.dependencies["@neo4j/graphql"]),
+            "process.env.VERSION": JSON.stringify(packageJson.version),
+            "process.env.NEO4J_GRAPHQL_VERSION": JSON.stringify(packageJson.dependencies["@neo4j/graphql"]),
         }),
         new CopyWebpackPlugin({
             patterns: ["public"],
@@ -78,20 +86,20 @@ module.exports = {
         new NodePolyfillPlugin(),
         ...(process.env.NODE_ENV === "test"
             ? [
-                new HtmlInlineScriptPlugin({
-                    htmlMatchPattern: [/index.html$/],
-                }),
-            ]
+                  new HtmlInlineScriptPlugin({
+                      htmlMatchPattern: [/index.html$/],
+                  }),
+              ]
             : []),
         ...(process.env.NODE_ENV === "production" ? [new CompressionPlugin()] : []),
         ...(process.env.NODE_ENV === "development"
             ? [
-                new WebpackNotifierPlugin({
-                    title: (params) => {
-                        return `Build status is ${params.status} with message ${params.message}`;
-                    },
-                }),
-            ]
+                  new WebpackNotifierPlugin({
+                      title: (params) => {
+                          return `Build status is ${params.status} with message ${params.message}`;
+                      },
+                  }),
+              ]
             : []),
     ],
     devServer: {

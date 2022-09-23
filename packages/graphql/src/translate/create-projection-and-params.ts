@@ -523,7 +523,7 @@ export default function createProjectionAndParams({
                     )} RETURN ${field.name}", { ${runFirstColumnParams.join(", ")} })`
                 );
             } else {
-                const connectionClause = new CypherBuilder.RawCypher((_env) => {
+                const connectionClause = new CypherBuilder.RawCypher(() => {
                     // TODO: avoid REPLACE_ME in params and return them here
 
                     return [connection[0], {}];

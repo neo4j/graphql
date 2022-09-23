@@ -83,7 +83,7 @@ export function createPropertyWhere({
 
         if (coalesceValue) {
             propertyRef = CypherBuilder.coalesce(
-                propertyRef as CypherBuilder.PropertyRef,
+                propertyRef,
                 new CypherBuilder.RawCypher(`${coalesceValue}`) // TODO: move into CypherBuilder.literal
             );
         }

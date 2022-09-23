@@ -26,6 +26,7 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import type { UniqueType } from "../../utils/graphql-types";
 import { generateUniqueType } from "../../utils/graphql-types";
+import { getQuerySource } from "../../utils/get-query-source";
 
 describe("interface relationships", () => {
     let driver: Driver;
@@ -221,7 +222,7 @@ describe("interface relationships", () => {
 
         const gqlResult = await graphql({
             schema: await neoSchema.getSchema(),
-            source: query.loc!.source,
+            source: getQuerySource(query),
             contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
             variableValues: { name: actor.name },
         });

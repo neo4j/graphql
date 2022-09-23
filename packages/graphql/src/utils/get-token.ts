@@ -32,28 +32,29 @@ type RequestLike = {
 
 export function getToken(context: Context): string | undefined {
     const req: RequestLike = context instanceof IncomingMessage ? context : context.req || context.request;
-    let token: string | undefined;
 
     if (!req) {
         debug("Could not get .req or .request from context");
 
-        return token;
+        return;
     }
 
     if (!req.headers && !req.cookies) {
         debug(".headers or .cookies not found on req");
 
-        return token;
+        return;
     }
-    const authorization = (req?.headers?.authorization || req?.headers?.Authorization || req.cookies?.token) as
-        | string
-        | undefined;
+
+    const authorization = req?.headers?.authorization || req?.headers?.Authorization || req.cookies?.token;
+
     if (!authorization) {
         debug("Could not get .authorization, .Authorization or .cookies.token from req");
 
-        return token;
+        return;
     }
-    token = authorization.split("Bearer ")[1];
+
+    const token = authorization.split("Bearer ")[1];
+
     if (!token) {
         debug("Authorization header was not in expected format 'Bearer <token>'");
 

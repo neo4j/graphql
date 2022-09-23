@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import gql from "graphql-tag";
+import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { DocumentNode, graphql } from "graphql";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
@@ -774,7 +774,7 @@ describe("unions", () => {
                 type ${typeGenre} @auth(rules: [{ operations: [READ], allow: { name: "$jwt.jwtAllowedNamesExample" } }]) {
                     name: String
                 }
-                    
+
                 type ${typeMovie} {
                     title: String
                     search: [Search!]! @relationship(type: "SEARCH", direction: OUT)

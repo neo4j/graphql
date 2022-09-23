@@ -97,7 +97,7 @@ export function createConnectionWithEdgeProperties({
     const cursorKey = getAliasKey({ selectionSet: edgesField?.selectionSet, key: "cursor" });
     const nodeKey = getAliasKey({ selectionSet: edgesField?.selectionSet, key: "node" });
 
-    const sliceEnd = sliceStart + (first || (edges.length as number));
+    const sliceEnd = sliceStart + (first || edges.length);
 
     const mappedEdges = edges.map((value, index) => {
         return {
@@ -152,7 +152,7 @@ export function createOffsetLimitStr({
     if (hasLimit && hasOffset) {
         const sliceStart = isNeoInt(offset) ? offset.toNumber() : offset;
         const itemsToGrab = isNeoInt(limit) ? limit.toNumber() : limit;
-        const sliceEnd = (sliceStart as number) + (itemsToGrab as number);
+        const sliceEnd = sliceStart + itemsToGrab;
         offsetLimitStr = `[${offset}..${sliceEnd}]`;
     }
 

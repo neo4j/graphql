@@ -229,7 +229,7 @@ function createAuthStatement({
         escapeQuotes: false,
     });
 
-    return new CypherBuilder.RawCypher((env) => {
+    return new CypherBuilder.RawCypher(() => {
         const predicate = `NOT (${auth[0]})`;
         const message = AUTH_FORBIDDEN_ERROR;
 

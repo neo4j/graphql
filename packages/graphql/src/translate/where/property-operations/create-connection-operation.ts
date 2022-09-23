@@ -77,7 +77,7 @@ export function createConnectionOperation({
         ) as Relationship;
         const whereOperator = createConnectionWherePropertyOperation({
             context,
-            whereInput: entry[1] as any,
+            whereInput: entry[1],
             edgeRef: relationship,
             targetNode: childNode,
             edge: contextRelationship,

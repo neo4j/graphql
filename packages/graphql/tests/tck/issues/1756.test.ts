@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
             }
         `;
 
-        const nanoid = (_parent, _args, context) => {
+        const nanoid = () => {
             return `callback_value`;
         };
 

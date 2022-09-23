@@ -209,7 +209,7 @@ function createSubPredicate({
     }
 
     PREDICATE_JOINS.forEach((key) => {
-        const value = authRule[key] as AuthRule["AND"] | AuthRule["OR"];
+        const value = authRule[key];
 
         if (!value) {
             return;
