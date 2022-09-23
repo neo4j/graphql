@@ -32,12 +32,17 @@ describe("Batch Create", () => {
             type Actor {
                 id: ID! @id
                 name: String
+                born: Date
+                createdAt: DateTime @timestamp(operations: [CREATE])
                 website: Website @relationship(type: "HAS_WEBSITE", direction: OUT)
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             type Movie {
                 id: ID
+                runningTime: Duration
+                location: Point
+                createdAt: DateTime @timestamp(operations: [CREATE])
                 website: Website @relationship(type: "HAS_WEBSITE", direction: OUT)
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
@@ -60,7 +65,12 @@ describe("Batch Create", () => {
     test("simple batch", async () => {
         const query = gql`
             mutation {
-                createMovies(input: [{ id: "1" }, { id: "2" }]) {
+                createMovies(
+                    input: [
+                        { id: "1", runningTime: "P14DT16H12M", location: { longitude: 3.0, latitude: 3.0 } }
+                        { id: "2" }
+                    ]
+                ) {
                     movies {
                         id
                     }
@@ -77,7 +87,10 @@ describe("Batch Create", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
             CREATE (this0:Movie)
+            SET this0.createdAt = datetime()
             SET this0.id = $this0_id
+            SET this0.runningTime = $this0_runningTime
+            SET this0.location = point($this0_location)
             WITH this0
             CALL {
             	WITH this0
@@ -90,6 +103,7 @@ describe("Batch Create", () => {
             }
             CALL {
             CREATE (this1:Movie)
+            SET this1.createdAt = datetime()
             SET this1.id = $this1_id
             WITH this1
             CALL {
@@ -109,6 +123,22 @@ describe("Batch Create", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"this0_id\\": \\"1\\",
+                \\"this0_runningTime\\": {
+                    \\"months\\": 0,
+                    \\"days\\": 14,
+                    \\"seconds\\": {
+                        \\"low\\": 58320,
+                        \\"high\\": 0
+                    },
+                    \\"nanoseconds\\": {
+                        \\"low\\": 0,
+                        \\"high\\": 0
+                    }
+                },
+                \\"this0_location\\": {
+                    \\"longitude\\": 3,
+                    \\"latitude\\": 3
+                },
                 \\"this1_id\\": \\"2\\",
                 \\"resolvedCallbacks\\": {}
             }"
@@ -153,9 +183,11 @@ describe("Batch Create", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
             CREATE (this0:Movie)
+            SET this0.createdAt = datetime()
             SET this0.id = $this0_id
             WITH this0
             CREATE (this0_actors0_node:Actor)
+            SET this0_actors0_node.createdAt = datetime()
             SET this0_actors0_node.id = randomUUID()
             SET this0_actors0_node.name = $this0_actors0_node_name
             WITH this0, this0_actors0_node
@@ -184,6 +216,7 @@ describe("Batch Create", () => {
             }
             CALL {
             CREATE (this1:Movie)
+            SET this1.createdAt = datetime()
             SET this1.id = $this1_id
             WITH this1
             CREATE (this1_website0_node:Website)
@@ -247,9 +280,11 @@ describe("Batch Create", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
             CREATE (this0:Movie)
+            SET this0.createdAt = datetime()
             SET this0.id = $this0_id
             WITH this0
             CREATE (this0_actors0_node:Actor)
+            SET this0_actors0_node.createdAt = datetime()
             SET this0_actors0_node.id = randomUUID()
             SET this0_actors0_node.name = $this0_actors0_node_name
             MERGE (this0)<-[this0_actors0_relationship:ACTED_IN]-(this0_actors0_node)
@@ -274,9 +309,11 @@ describe("Batch Create", () => {
             }
             CALL {
             CREATE (this1:Movie)
+            SET this1.createdAt = datetime()
             SET this1.id = $this1_id
             WITH this1
             CREATE (this1_actors0_node:Actor)
+            SET this1_actors0_node.createdAt = datetime()
             SET this1_actors0_node.id = randomUUID()
             SET this1_actors0_node.name = $this1_actors0_node_name
             MERGE (this1)<-[this1_actors0_relationship:ACTED_IN]-(this1_actors0_node)
@@ -376,9 +413,11 @@ describe("Batch Create", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
             CREATE (this0:Movie)
+            SET this0.createdAt = datetime()
             SET this0.id = $this0_id
             WITH this0
             CREATE (this0_actors0_node:Actor)
+            SET this0_actors0_node.createdAt = datetime()
             SET this0_actors0_node.id = randomUUID()
             SET this0_actors0_node.name = $this0_actors0_node_name
             MERGE (this0)<-[this0_actors0_relationship:ACTED_IN]-(this0_actors0_node)
@@ -403,9 +442,11 @@ describe("Batch Create", () => {
             }
             CALL {
             CREATE (this1:Movie)
+            SET this1.createdAt = datetime()
             SET this1.id = $this1_id
             WITH this1
             CREATE (this1_actors0_node:Actor)
+            SET this1_actors0_node.createdAt = datetime()
             SET this1_actors0_node.id = randomUUID()
             SET this1_actors0_node.name = $this1_actors0_node_name
             MERGE (this1)<-[this1_actors0_relationship:ACTED_IN]-(this1_actors0_node)
@@ -430,6 +471,7 @@ describe("Batch Create", () => {
             }
             CALL {
             CREATE (this2:Movie)
+            SET this2.createdAt = datetime()
             SET this2.id = $this2_id
             WITH this2
             CREATE (this2_website0_node:Website)
@@ -447,6 +489,7 @@ describe("Batch Create", () => {
             }
             CALL {
             CREATE (this3:Movie)
+            SET this3.createdAt = datetime()
             SET this3.id = $this3_id
             WITH this3
             CALL {
@@ -472,12 +515,14 @@ describe("Batch Create", () => {
             }
             CALL {
             CREATE (this4:Movie)
+            SET this4.createdAt = datetime()
             SET this4.id = $this4_id
             WITH this4
             CALL {
                 WITH this4
                 MERGE (this4_actors_connectOrCreate_this0:\`Actor\` { id: $this4_actors_connectOrCreate_param0 })
                 ON CREATE SET
+                    this4_actors_connectOrCreate_this0.createdAt = datetime(),
                     this4_actors_connectOrCreate_this0.name = $this4_actors_connectOrCreate_param1
                 MERGE (this4_actors_connectOrCreate_this0)-[this4_actors_connectOrCreate_this1:ACTED_IN]->(this4)
                 RETURN COUNT(*) AS _

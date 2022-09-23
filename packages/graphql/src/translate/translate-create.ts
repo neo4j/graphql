@@ -16,10 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
-import createCreateAndParams from "./create-create-and-params";
 import type { Context, ConnectionField, RelationField } from "../types";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import createConnectionAndParams from "./connection/create-connection-and-params";
@@ -27,26 +25,44 @@ import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { compileCypherIfExists } from "./cypher-builder/utils/utils";
+import createRelationshipValidationString from "./create-relationship-validation-string";
 
 type CreateInput = Record<string, any>;
 
-// at this point may be not longer necessary and just let it parse as params
-function inputTreeToCypherMap(input: CreateInput[] | CreateInput): CypherBuilder.List | CypherBuilder.Map {
+// TODO: refactor this tree traversal
+function inputTreeToCypherMap(
+    input: CreateInput[] | CreateInput,
+    node: Node,
+    context: Context
+): CypherBuilder.List | CypherBuilder.Map {
     if (Array.isArray(input)) {
-        return new CypherBuilder.List(input.map((node: CreateInput) => inputTreeToCypherMap(node)));
+        return new CypherBuilder.List(
+            input.map((createInput: CreateInput) => inputTreeToCypherMap(createInput, node, context))
+        );
     }
 
     const properties = (Object.entries(input) as CreateInput).reduce(
-        (obj: Record<string, CypherBuilder.Expr>, [key, value]: any[]) => {
-            if (typeof value === "object" && value !== null) {
+        (obj: Record<string, CypherBuilder.Expr>, [key, value]: [string, Record<string, any>]) => {
+            const [relationField, relatedNodes] = getRelationshipFields(node, key, {}, context);
+            const RESERVED_NAMES = ["node", "edge", "create", "connect", "connectOrCreate"];
+            // TODO: supports union/interfaces
+            if (typeof value === "object" && value !== null && (relationField || RESERVED_NAMES.includes(key))) {
                 if (Array.isArray(value)) {
-                    obj[key] = new CypherBuilder.List(value.map((node: CreateInput) => inputTreeToCypherMap(node)));
-                } else {
-                    obj[key] = inputTreeToCypherMap(value as CreateInput[] | CreateInput) as CypherBuilder.Map;
+                    obj[key] = new CypherBuilder.List(
+                        value.map((createInput: CreateInput) =>
+                            inputTreeToCypherMap(createInput, relationField ? relatedNodes[0] : node, context)
+                        )
+                    );
+                    return obj;
                 }
-            } else {
-                obj[key] = new CypherBuilder.Literal(value);
+                obj[key] = inputTreeToCypherMap(
+                    value as CreateInput[] | CreateInput,
+                    relationField ? relatedNodes[0] : node,
+                    context
+                ) as CypherBuilder.Map;
+                return obj;
             }
+            obj[key] = new CypherBuilder.Param(value);
             return obj;
         },
         {} as Record<string, CypherBuilder.Expr>
@@ -79,25 +95,32 @@ function mergeTreeDescriptors(input: TreeDescriptor[]): TreeDescriptor {
     );
 }
 
-function getTreeDescriptor(input: CreateInput): TreeDescriptor {
+function getTreeDescriptor(input: CreateInput, node: Node, context: Context): TreeDescriptor {
     return Object.entries(input).reduce(
         (previous, [key, value]) => {
-            if (typeof value === "object" && value !== null) {
+            const [relationField, relatedNodes] = getRelationshipFields(node, key as string, {}, context);
+            const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
+            const temporalFields = node.temporalFields.find((x) => key === x.fieldName);
+            const pointField = node.pointFields.find((x) => key === x.fieldName);
+            // TODO: supports union/interfaces
+            if (typeof value === "object" && value !== null && !primitiveField && !temporalFields && !pointField) {
+                const innerNode = relationField ? relatedNodes[0] : node;
                 if (Array.isArray(value)) {
                     previous.childrens[key] = mergeTreeDescriptors(
-                        value.map((el) => getTreeDescriptor(el as CreateInput))
+                        value.map((el) => getTreeDescriptor(el as CreateInput, innerNode, context))
                     );
-                } else {
-                    previous.childrens[key] = getTreeDescriptor(value as CreateInput);
+                    return previous;
                 }
-            } else {
-                previous.properties.add(key);
+                previous.childrens[key] = getTreeDescriptor(value as CreateInput, innerNode, context);
+                return previous;
             }
+            previous.properties.add(key);
             return previous;
         },
         { properties: new Set(), childrens: {} } as TreeDescriptor
     );
 }
+// TODO: support aliasing
 function getAutoGeneratedFields(node: Node, cypherNodeRef: CypherBuilder.Node): CypherBuilder.SetParam[] {
     const setParams: CypherBuilder.SetParam[] = [];
     const timestampedFields = node.temporalFields.filter(
@@ -124,6 +147,20 @@ function getAutoGeneratedFields(node: Node, cypherNodeRef: CypherBuilder.Node): 
     });
     return setParams;
 }
+// TODO: supports aliasing
+function fieldToSetParam(node: Node, cypherNodeRef: CypherBuilder.Node, key: string, value: CypherBuilder.Expr) {
+    const pointField = node.pointFields.find((x) => key === x.fieldName);
+    if (pointField) {
+        if (pointField.typeMeta.array) {
+            const comprehensionVar = new CypherBuilder.Variable();
+            const mapPoint = CypherBuilder.point(comprehensionVar);
+            const expression = new CypherBuilder.ListComprehension(comprehensionVar, value).map(mapPoint);
+            return [cypherNodeRef.property(key), expression];
+        }
+        return [cypherNodeRef.property(key), CypherBuilder.point(value)];
+    }
+    return [cypherNodeRef.property(key), value];
+}
 
 interface CreateVisitor {
     visitKey(key: string);
@@ -132,13 +169,18 @@ interface CreateVisitor {
     done(): CypherBuilder.Clause;
 }
 
-function createVisitor(node: Node, context: Context, unwindVar: CypherBuilder.Variable): CreateVisitor {
+interface RootVisitor {
+    getNodeVariable(): CypherBuilder.Variable;
+}
+
+function createVisitor(node: Node, context: Context, unwindVar: CypherBuilder.Variable): CreateVisitor & RootVisitor {
     let doneClause: CypherBuilder.Clause;
     let createClause: CypherBuilder.Clause;
     let childrensVisitor: CreateVisitor;
-    let parentVar: CypherBuilder.Variable;
+    let nodeVariable: CypherBuilder.Variable;
 
     return {
+        getNodeVariable: () => nodeVariable,
         visitKey: (key) => {},
         visitProperties: (properties) => {
             const labels = node.getLabels(context);
@@ -146,25 +188,36 @@ function createVisitor(node: Node, context: Context, unwindVar: CypherBuilder.Va
                 labels,
             });
 
-            // Not all the properties are equal TemporalFields, pointField etc..
-            const setProperties = [...properties].map((property: string) => [
-                currentNode.property(property),
-                unwindVar.property(property),
-            ]) as CypherBuilder.SetParam[];
+            const setProperties = [...properties].map((property: string) =>
+                fieldToSetParam(node, currentNode, property, unwindVar.property(property))
+            ) as CypherBuilder.SetParam[];
             const autogeneratedProperties = getAutoGeneratedFields(node, currentNode);
-            parentVar = currentNode;
+            nodeVariable = currentNode;
             createClause = new CypherBuilder.Create(currentNode).set(...setProperties, ...autogeneratedProperties);
         },
         getChildrensVisitor: () => {
-            childrensVisitor = relationshipVisitor(node, context, parentVar, unwindVar);
+            childrensVisitor = relationshipVisitor(node, context, nodeVariable, unwindVar);
             return childrensVisitor;
         },
         done: () => {
             if (doneClause) return doneClause;
+            const relationshipValidationClause = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+                const str = createRelationshipValidationString({
+                    node,
+                    context,
+                    varName: env.getVariableId(nodeVariable),
+                });
+                const cypher = [] as string[];
+                if (str) {
+                    cypher.push(`WITH ${env.getVariableId(nodeVariable)}`);
+                    cypher.push(str);
+                }
+                return cypher.join("\n");
+            });
             if (childrensVisitor) {
-                doneClause = CypherBuilder.concat(createClause, childrensVisitor.done());
+                doneClause = CypherBuilder.concat(createClause, childrensVisitor.done(), relationshipValidationClause);
             } else {
-                doneClause = createClause;
+                doneClause = CypherBuilder.concat(createClause, relationshipValidationClause);
             }
 
             return doneClause;
@@ -279,8 +332,8 @@ function relationshipCreateVisitor(
     const nodeVar = new CypherBuilder.Variable();
     const edgeVar = new CypherBuilder.Variable();
     const withCreate = new CypherBuilder.With(
-        [createUnwindVar.property("node"), nodeVar],
-        [createUnwindVar.property("edge"), edgeVar],
+        [createUnwindVar.property("create").property("node"), nodeVar],
+        [createUnwindVar.property("create").property("edge"), edgeVar],
         parentVar
     );
     const createClause = new CypherBuilder.Create(currentNode);
@@ -313,9 +366,9 @@ function relationshipCreateVisitor(
         done() {
             if (doneClause) return doneClause;
 
-            const setPropertiesNode = nodeProperties.map((property) => {
-                return [currentNode.property(property), nodeVar.property(property)];
-            }) as CypherBuilder.SetParam[];
+            const setPropertiesNode = nodeProperties.map((property: string) =>
+                fieldToSetParam(node, currentNode, property, nodeVar.property(property))
+            ) as CypherBuilder.SetParam[];
             const autogeneratedProperties = getAutoGeneratedFields(node, currentNode);
             // eslint-disable-next-line no-new
             createClause.set(...setPropertiesNode, ...autogeneratedProperties);
@@ -333,19 +386,23 @@ function relationshipCreateVisitor(
                 createClause,
                 mergeClause,
             ] as CypherBuilder.Clause[];
-/*             const relationshipValidationClause = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
-                const str = createRelationshipValidationString({node: parentNode, context, varName: env.getVariableId(parentVar)});
+            const relationshipValidationClause = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+                const str = createRelationshipValidationString({
+                    node,
+                    context,
+                    varName: env.getVariableId(currentNode),
+                });
                 const cypher = [] as string[];
                 if (str) {
-                    cypher.push(`WITH ${env.getVariableId(parentVar)}`);
+                    cypher.push(`WITH ${env.getVariableId(currentNode)}`);
                     cypher.push(str);
                 }
                 return cypher.join("\n");
-            }); */
+            });
             if (childrensVisitor) {
                 subQueryStatements.push(childrensVisitor.done());
             }
-            //subQueryStatements.push(relationshipValidationClause);
+            subQueryStatements.push(relationshipValidationClause);
             subQueryStatements.push(new CypherBuilder.Return(CypherBuilder.collect(new CypherBuilder.Literal(null))));
             const subQuery = CypherBuilder.concat(...subQueryStatements);
             const callClause = new CypherBuilder.Call(subQuery);
@@ -406,26 +463,26 @@ export default async function translateCreate({
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
 
     let connectionParams: any = {};
-    let interfaceParams: any;
 
     const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
 
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
 
-    // new unwind strategy block
-    const unwind = inputTreeToCypherMap(resolveTree.args.input as CreateInput | CreateInput[]);
-    const treeDescriptor = getTreeDescriptor({ root: resolveTree.args.input as CreateInput });
+    const input = resolveTree.args.input as CreateInput | CreateInput[];
+    const unwind = inputTreeToCypherMap(input, node, context);
+    const treeDescriptor = Array.isArray(input)
+        ? mergeTreeDescriptors(input.map((el: CreateInput) => getTreeDescriptor(el, node, context)))
+        : getTreeDescriptor(input, node, context);
     const unwindVar = new CypherBuilder.Variable();
     const unwindQuery = new CypherBuilder.Unwind([unwind, unwindVar]);
     const createPhase = createVisitor(node, context, unwindVar);
-    dispatch(treeDescriptor.childrens.root, createPhase);
+    dispatch(treeDescriptor, createPhase);
     const createPhaseCypher = createPhase.done();
     const createUnwind = CypherBuilder.concat(unwindQuery, createPhaseCypher);
-   
+    const rootNodeVariable = createPhase.getNodeVariable();
 
-    let clauses: CypherBuilder.Clause[];
-/* 
+    /* 
     const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
         (res, input, index) => {
             const varName = `this${index}`;
@@ -470,9 +527,9 @@ export default async function translateCreate({
         createStrs: string[];
         params: any;
     }; */
-    const createStrs: string[] = [];
+    //const createStrs: string[] = [];
     let replacedProjectionParams: Record<string, unknown> = {};
-    let projectionStr: string | undefined;
+    let projectionCypher: CypherBuilder.Expr | undefined;
     let authCalls: string | undefined;
 
     if (metaNames.length > 0) {
@@ -499,21 +556,19 @@ export default async function translateCreate({
             return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
         }, {});
 
-        projectionStr = createStrs
-            .map(
-                (_, i) =>
-                    `\nthis${i} ${projection.projection
-                        // First look to see if projection param is being reassigned
-                        // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
-                        .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
-                        .replace(/\$REPLACE_ME/g, "$projection")
-                        .replace(/REPLACE_ME/g, `this${i}`)}`
-            )
-            .join(", ");
+        projectionCypher = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+            return `${rootNodeVariable.getCypher(env)} ${projection.projection
+                // First look to see if projection param is being reassigned
+                // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
+                .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
+                .replace(/\$REPLACE_ME/g, "$projection")
+                .replace(/REPLACE_ME/g, `${rootNodeVariable.getCypher(env)}`)}`;
+        });
 
+        /*      TODO: AUTH
         authCalls = createStrs
             .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
-            .join("\n");
+            .join("\n"); */
 
         const withVars = context.subscriptionsEnabled ? [META_CYPHER_VARIABLE] : [];
         if (projection.meta?.connectionFields?.length) {
@@ -536,26 +591,23 @@ export default async function translateCreate({
     }
 
     const replacedConnectionStrs = connectionStrs.length
-        ? createStrs.map((_, i) => {
+        ? new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
               return connectionStrs
-                  .map((connectionStr) => {
-                      return connectionStr.replace(/REPLACE_ME/g, `this${i}`);
-                  })
+                  .map((connectionStr) => connectionStr.replace(/REPLACE_ME/g, `${rootNodeVariable.getCypher(env)}`))
                   .join("\n");
           })
-        : [];
+        : undefined;
 
     const replacedInterfaceStrs = interfaceStrs.length
-        ? createStrs.map((_, i) => {
+        ? new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
               return interfaceStrs
-                  .map((interfaceStr) => {
-                      return interfaceStr.replace(/REPLACE_ME/g, `this${i}`);
-                  })
+                  .map((interfaceStr) => interfaceStr.replace(/REPLACE_ME/g, `${rootNodeVariable.getCypher(env)}`))
                   .join("\n");
           })
-        : [];
+        : undefined;
 
-    const replacedConnectionParams = connectionParams
+    // TODO: support it
+    /*     const replacedConnectionParams = connectionParams
         ? createStrs.reduce((res1, _, i) => {
               return {
                   ...res1,
@@ -564,9 +616,10 @@ export default async function translateCreate({
                   }, {}),
               };
           }, {})
-        : {};
 
-    const replacedInterfaceParams = interfaceParams
+        : {}; */
+
+    /*     const replacedInterfaceParams = interfaceParams
         ? createStrs.reduce((res1, _, i) => {
               return {
                   ...res1,
@@ -575,32 +628,30 @@ export default async function translateCreate({
                   }, {}),
               };
           }, {})
-        : {};
-    
-    projectionStr = "*";
-    const returnStatement = generateCreateReturnStatement(projectionStr, context.subscriptionsEnabled);
+        : {}; */
+
+    const returnStatement = generateCreateReturnStatementCypher(projectionCypher, context.subscriptionsEnabled);
     const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
 
     const createQuery = new CypherBuilder.RawCypher((env) => {
         const projectionSubqueryStr = compileCypherIfExists(projectionSubquery, env);
+        const projectionConnectionStrs = compileCypherIfExists(replacedConnectionStrs, env);
+        const projectionInterfaceStrs = compileCypherIfExists(replacedInterfaceStrs, env);
         // TODO: avoid REPLACE_ME
-        const replacedProjectionSubqueryStrs = createStrs.length
-            ? createStrs.map((_, i) => {
-                  return projectionSubqueryStr
-                      .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
-                      .replace(/\$REPLACE_ME/g, "$projection")
-                      .replace(/REPLACE_ME/g, `this${i}`);
-              })
-            : [];
+
+        const replacedProjectionSubqueryStrs = projectionSubqueryStr
+            .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
+            .replace(/\$REPLACE_ME/g, "$projection")
+            .replace(/REPLACE_ME/g, `${rootNodeVariable.getCypher(env)}`);
 
         const cypher = filterTruthy([
-            `${createStrs.join("\n")}`,
+            createUnwind.getCypher(env),
             projectionWithStr,
             authCalls,
-            ...replacedConnectionStrs,
-            ...replacedInterfaceStrs,
-            ...replacedProjectionSubqueryStrs,
-            returnStatement,
+            projectionConnectionStrs,
+            projectionInterfaceStrs,
+            replacedProjectionSubqueryStrs,
+            returnStatement.getCypher(env),
         ])
             .filter(Boolean)
             .join("\n");
@@ -609,17 +660,13 @@ export default async function translateCreate({
             cypher,
             {
                 ...replacedProjectionParams,
-                ...replacedConnectionParams,
-                ...replacedInterfaceParams,
             },
         ];
     });
- 
-    const createQueryCypher = CypherBuilder.concat(createUnwind, createQuery).build("create_");
+    const createQueryCypher = createQuery.build("create_");
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
         cypher: createQueryCypher.cypher,
     });
-
     return {
         cypher,
         params: {
@@ -628,21 +675,25 @@ export default async function translateCreate({
         },
     };
 }
+function generateCreateReturnStatementCypher(
+    projection: CypherBuilder.Expr | undefined,
+    subscriptionsEnabled: boolean
+): CypherBuilder.Expr {
+    return new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+        const statements: string[] = [];
 
-function generateCreateReturnStatement(projectionStr: string | undefined, subscriptionsEnabled: boolean): string {
-    const statements: string[] = [];
+        if (projection) {
+            statements.push(`collect(${projection.getCypher(env)}) AS data`);
+        }
 
-    if (projectionStr) {
-        statements.push(`[${projectionStr}] AS data`);
-    }
+        if (subscriptionsEnabled) {
+            statements.push(META_CYPHER_VARIABLE);
+        }
 
-    if (subscriptionsEnabled) {
-        statements.push(META_CYPHER_VARIABLE);
-    }
+        if (statements.length === 0) {
+            statements.push("'Query cannot conclude with CALL'");
+        }
 
-    if (statements.length === 0) {
-        statements.push("'Query cannot conclude with CALL'");
-    }
-
-    return `RETURN ${statements.join(", ")}`;
+        return `RETURN ${statements.join(", ")}`;
+    });
 }

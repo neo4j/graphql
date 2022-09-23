@@ -109,21 +109,19 @@ export default function createProjectionAndParams({
         const temporalField = node.temporalFields.find((x) => x.fieldName === field.name);
         const authableField = node.authableFields.find((x) => x.fieldName === field.name);
 
-        if (authableField) {
-            if (authableField.auth) {
-                const allowAndParams = createAuthAndParams({
-                    entity: authableField,
-                    operations: "READ",
-                    context,
-                    allow: { parentNode: node, varName, chainStr: param },
-                });
-                if (allowAndParams[0]) {
-                    if (!res.meta.authValidateStrs) {
-                        res.meta.authValidateStrs = [];
-                    }
-                    res.meta.authValidateStrs?.push(allowAndParams[0]);
-                    res.params = { ...res.params, ...allowAndParams[1] };
+        if (authableField && authableField.auth) {
+            const allowAndParams = createAuthAndParams({
+                entity: authableField,
+                operations: "READ",
+                context,
+                allow: { parentNode: node, varName, chainStr: param },
+            });
+            if (allowAndParams[0]) {
+                if (!res.meta.authValidateStrs) {
+                    res.meta.authValidateStrs = [];
                 }
+                res.meta.authValidateStrs?.push(allowAndParams[0]);
+                res.params = { ...res.params, ...allowAndParams[1] };
             }
         }
 

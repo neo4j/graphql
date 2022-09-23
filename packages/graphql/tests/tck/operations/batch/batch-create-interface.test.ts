@@ -221,32 +221,32 @@ describe("Batch Create on interface", () => {
             WITH this0
             CALL {
                 WITH this0
-                MATCH (this0)<-[:EMPLOYED]-(this0_Actor:Actor)
-                RETURN { __resolveType: \\"Actor\\", name: this0_Actor.name } AS workers
+                MATCH (this0)<-[create_this0:EMPLOYED]-(this0_Actor:\`Actor\`)
+                RETURN { __resolveType: \\"Actor\\", name: this0_Actor.name } AS this0_workers
                 UNION
                 WITH this0
-                MATCH (this0)<-[:EMPLOYED]-(this0_Modeler:Modeler)
-                RETURN { __resolveType: \\"Modeler\\", name: this0_Modeler.name } AS workers
+                MATCH (this0)<-[create_this1:EMPLOYED]-(this0_Modeler:\`Modeler\`)
+                RETURN { __resolveType: \\"Modeler\\", name: this0_Modeler.name } AS this0_workers
             }
-            RETURN collect(workers) AS workers
+            RETURN collect(this0_workers) AS this0_workers
             }
             WITH *
             CALL {
             WITH this1
             CALL {
                 WITH this1
-                MATCH (this1)<-[:EMPLOYED]-(this1_Actor:Actor)
-                RETURN { __resolveType: \\"Actor\\", name: this1_Actor.name } AS workers
+                MATCH (this1)<-[create_this0:EMPLOYED]-(this1_Actor:\`Actor\`)
+                RETURN { __resolveType: \\"Actor\\", name: this1_Actor.name } AS this1_workers
                 UNION
                 WITH this1
-                MATCH (this1)<-[:EMPLOYED]-(this1_Modeler:Modeler)
-                RETURN { __resolveType: \\"Modeler\\", name: this1_Modeler.name } AS workers
+                MATCH (this1)<-[create_this1:EMPLOYED]-(this1_Modeler:\`Modeler\`)
+                RETURN { __resolveType: \\"Modeler\\", name: this1_Modeler.name } AS this1_workers
             }
-            RETURN collect(workers) AS workers
+            RETURN collect(this1_workers) AS this1_workers
             }
             RETURN [
-            this0 { .id, workers: workers },
-            this1 { .id, workers: workers }] AS data"
+            this0 { .id, workers: this0_workers },
+            this1 { .id, workers: this1_workers }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -394,9 +394,10 @@ describe("Batch Create on interface", () => {
             			MERGE (this3)<-[this3_workers_connect0_relationship:EMPLOYED]-(this3_workers_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
-            UNION
-            	WITH this3
+            	RETURN count(*) AS connect_this3_workers_connect_Actor
+            }
+            CALL {
+            		WITH this3
             	OPTIONAL MATCH (this3_workers_connect0_node:Modeler)
             	WHERE this3_workers_connect0_node.id = $this3_workers_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this3 IS NULL THEN [] ELSE [1] END |
@@ -404,7 +405,7 @@ describe("Batch Create on interface", () => {
             			MERGE (this3)<-[this3_workers_connect0_relationship:EMPLOYED]-(this3_workers_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this3_workers_connect_Modeler
             }
             WITH this3
             CALL {
@@ -427,14 +428,14 @@ describe("Batch Create on interface", () => {
             WITH this0
             CALL {
                 WITH this0
-                MATCH (this0)<-[:EMPLOYED]-(this0_Actor:Actor)
-                RETURN { __resolveType: \\"Actor\\", name: this0_Actor.name } AS workers
+                MATCH (this0)<-[create_this1:EMPLOYED]-(this0_Actor:\`Actor\`)
+                RETURN { __resolveType: \\"Actor\\", name: this0_Actor.name } AS this0_workers
                 UNION
                 WITH this0
-                MATCH (this0)<-[:EMPLOYED]-(this0_Modeler:Modeler)
-                RETURN { __resolveType: \\"Modeler\\", name: this0_Modeler.name } AS workers
+                MATCH (this0)<-[create_this2:EMPLOYED]-(this0_Modeler:\`Modeler\`)
+                RETURN { __resolveType: \\"Modeler\\", name: this0_Modeler.name } AS this0_workers
             }
-            RETURN collect(workers) AS workers
+            RETURN collect(this0_workers) AS this0_workers
             }
             CALL {
                 WITH this1
@@ -447,14 +448,14 @@ describe("Batch Create on interface", () => {
             WITH this1
             CALL {
                 WITH this1
-                MATCH (this1)<-[:EMPLOYED]-(this1_Actor:Actor)
-                RETURN { __resolveType: \\"Actor\\", name: this1_Actor.name } AS workers
+                MATCH (this1)<-[create_this1:EMPLOYED]-(this1_Actor:\`Actor\`)
+                RETURN { __resolveType: \\"Actor\\", name: this1_Actor.name } AS this1_workers
                 UNION
                 WITH this1
-                MATCH (this1)<-[:EMPLOYED]-(this1_Modeler:Modeler)
-                RETURN { __resolveType: \\"Modeler\\", name: this1_Modeler.name } AS workers
+                MATCH (this1)<-[create_this2:EMPLOYED]-(this1_Modeler:\`Modeler\`)
+                RETURN { __resolveType: \\"Modeler\\", name: this1_Modeler.name } AS this1_workers
             }
-            RETURN collect(workers) AS workers
+            RETURN collect(this1_workers) AS this1_workers
             }
             CALL {
                 WITH this2
@@ -467,14 +468,14 @@ describe("Batch Create on interface", () => {
             WITH this2
             CALL {
                 WITH this2
-                MATCH (this2)<-[:EMPLOYED]-(this2_Actor:Actor)
-                RETURN { __resolveType: \\"Actor\\", name: this2_Actor.name } AS workers
+                MATCH (this2)<-[create_this1:EMPLOYED]-(this2_Actor:\`Actor\`)
+                RETURN { __resolveType: \\"Actor\\", name: this2_Actor.name } AS this2_workers
                 UNION
                 WITH this2
-                MATCH (this2)<-[:EMPLOYED]-(this2_Modeler:Modeler)
-                RETURN { __resolveType: \\"Modeler\\", name: this2_Modeler.name } AS workers
+                MATCH (this2)<-[create_this2:EMPLOYED]-(this2_Modeler:\`Modeler\`)
+                RETURN { __resolveType: \\"Modeler\\", name: this2_Modeler.name } AS this2_workers
             }
-            RETURN collect(workers) AS workers
+            RETURN collect(this2_workers) AS this2_workers
             }
             CALL {
                 WITH this3
@@ -487,20 +488,20 @@ describe("Batch Create on interface", () => {
             WITH this3
             CALL {
                 WITH this3
-                MATCH (this3)<-[:EMPLOYED]-(this3_Actor:Actor)
-                RETURN { __resolveType: \\"Actor\\", name: this3_Actor.name } AS workers
+                MATCH (this3)<-[create_this1:EMPLOYED]-(this3_Actor:\`Actor\`)
+                RETURN { __resolveType: \\"Actor\\", name: this3_Actor.name } AS this3_workers
                 UNION
                 WITH this3
-                MATCH (this3)<-[:EMPLOYED]-(this3_Modeler:Modeler)
-                RETURN { __resolveType: \\"Modeler\\", name: this3_Modeler.name } AS workers
+                MATCH (this3)<-[create_this2:EMPLOYED]-(this3_Modeler:\`Modeler\`)
+                RETURN { __resolveType: \\"Modeler\\", name: this3_Modeler.name } AS this3_workers
             }
-            RETURN collect(workers) AS workers
+            RETURN collect(this3_workers) AS this3_workers
             }
             RETURN [
-            this0 { .id, website: this0_website, workers: workers },
-            this1 { .id, website: this1_website, workers: workers },
-            this2 { .id, website: this2_website, workers: workers },
-            this3 { .id, website: this3_website, workers: workers }] AS data"
+            this0 { .id, website: this0_website, workers: this0_workers },
+            this1 { .id, website: this1_website, workers: this1_workers },
+            this2 { .id, website: this2_website, workers: this2_workers },
+            this3 { .id, website: this3_website, workers: this3_workers }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
