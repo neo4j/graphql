@@ -217,12 +217,12 @@ function translateRootField({
 
     const cypher: string[] = [
         subStr.matchAndWhereStr,
-        subStr.projectionSubqueries,
         ...(sortOffsetLimit.length > 1 ? sortOffsetLimit : []),
         subStr.authStr,
         ...withStrs,
         ...subStr.connectionStrs,
         ...subStr.interfaceStrs,
+        subStr.projectionSubqueries,
         ...returnStrs,
     ];
 
