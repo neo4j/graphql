@@ -45,31 +45,37 @@ export class RunFirstColumn extends CypherASTNode {
         }
 
         if (Array.isArray(this.variables)) {
-            const params: Record<string, string> = {};
-            for (const variable of this.variables) {
-                const globalScopeName = variable.getCypher(env);
-                const key = env.getVariableId(variable);
-                params[key] = globalScopeName;
-            }
-            paramsStr = Object.entries(params)
-                .map(([key, value]) => {
-                    return `${key}: ${value}`;
-                })
-                .join(", ");
+            paramsStr = this.convertArrayToParams(env, this.variables);
         } else {
             paramsStr = this.variables.getCypher(env);
         }
 
         if (this.expectMultipleValues) {
-            return `apoc.cypher.runFirstColumnMany("${this.escapeQuery(clauseStr)}", { ${paramsStr} })`;
+            return `apoc.cypher.runFirstColumnMany("${this.escapeQuery(clauseStr)}", ${paramsStr})`;
         }
 
-        return `apoc.cypher.runFirstColumnSingle("${this.escapeQuery(clauseStr)}", { ${paramsStr} })`;
+        return `apoc.cypher.runFirstColumnSingle("${this.escapeQuery(clauseStr)}", ${paramsStr})`;
     }
 
     private escapeQuery(query: string): string {
         // TODO: Should single quotes be escaped?
         // return query.replace(/("|')/g, "\\$1");
         return query.replace(/("|\\)/g, "\\$1");
+    }
+
+    private convertArrayToParams(env: CypherEnvironment, variables: Variable[]): string {
+        const params = variables.reduce((acc, variable) => {
+            const globalScopeName = variable.getCypher(env);
+            const key = env.getVariableId(variable);
+            acc[key] = globalScopeName;
+            return acc;
+        }, {} as Record<string, string>);
+
+        const paramsStr = Object.entries(params)
+            .map(([key, value]) => {
+                return `${key}: ${value}`;
+            })
+            .join(", ");
+        return `{ ${paramsStr} }`;
     }
 }
