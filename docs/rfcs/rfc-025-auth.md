@@ -71,32 +71,54 @@ type User @authorization(rules: [{operations: [UPDATE], where: {id: "$jwt.id"}}]
 
 ```
 
-### TODO: Combining authorization rules with AND
-
-```gql
-type User @authorization(rules: [
-    {operations: [CREATE, UPDATE], where: {id: "$jwt.id"}},
-    {where: {active: true}}
-]) {
-    id: ID!
-}
-
-type User @authorization(rules: { AND: [
-    {operations: [CREATE, UPDATE], where: {id: "$jwt.id"}},
-    {where: {active: true}}
-]
-}) {
-    id: ID!
-}
-```
-
 ### TODO: Combining authorization rules with OR
 
 ```gql
-
-
-type User @authorization(rules: [{operations: [UPDATE], where: {id: "$jwt.id"}}]) {
+# Winner winner chicken dinner
+type User @authorization(
+    # rules combined with OR operator
+    rules: [
+      {
+        operations: [UPDATE],
+        where: {     # UserWhere
+            OR: [
+              { 
+                AND: [
+                  { id: "$jwt.id" }, 
+                  { admin: false }
+                ] 
+              }, 
+              { admin: true }
+            ]
+          }
+      },
+      {
+        operations: [READ],
+        where: {     # UserWhere
+            admin: false
+          }
+      },
+      {
+        operations: [UPDATE, READ],
+        where: {     # UserWhere
+            superAdmin: true
+          }
+      },
+    ]
+) {
     id: ID!
+    name: String!
+    admin: Boolean!
 }
-
 ```
+
+Pieces of work:
+
+* Remove `CREATE`, it's not valid for authorization, only outbound validation
+
+### TODO: Combining authorization rules with AND
+
+Multiple directives, future work, but limited use cases:
+
+* Where a field must always have a certain value?
+* Blocklist functionality? `rule: BLOCK`?
