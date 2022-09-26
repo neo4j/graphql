@@ -302,7 +302,6 @@ export default function createProjectionAndParams({
                 });
                 if (isRootConnectionField) {
                     res.projection.push(`${alias}: ${param}`);
-                    // res.projection.push(`${alias}: edges.${alias}`);
                     return res;
                 }
                 if (cypherField.isScalar || cypherField.isEnum) {
