@@ -248,7 +248,7 @@ describe("Cypher directive", () => {
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"RETURN rand()\\", {this: this, auth: $auth}) AS this_randomNumber
                 RETURN this_randomNumber AS this_randomNumber
             }
-            RETURN this { randomNumber: randomNumber } as this"
+            RETURN this { randomNumber: this_randomNumber } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

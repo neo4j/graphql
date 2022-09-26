@@ -169,7 +169,7 @@ describe("Cypher sort tests", () => {
                 RETURN count(DISTINCT genre)\\", {this: this, auth: $auth}) AS this_totalGenres
                 RETURN this_totalGenres AS this_totalGenres
             }
-            RETURN this { totalGenres: totalGenres } as this"
+            RETURN this { totalGenres: this_totalGenres } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

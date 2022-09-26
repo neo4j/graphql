@@ -75,8 +75,6 @@ export default function createProjectionAndParams({
     varName,
     literalElements,
     resolveType,
-    isRootConnectionField,
-    isInCypher = false, // Note, only used for connection in cypher fields
 }: {
     resolveTree: ResolveTree;
     node: Node;
@@ -85,8 +83,6 @@ export default function createProjectionAndParams({
     varName: string;
     literalElements?: boolean;
     resolveType?: boolean;
-    isRootConnectionField?: boolean;
-    isInCypher?: boolean;
 }): ProjectionResult {
     function reducer(res: Res, field: ResolveTree): Res {
         const alias = field.alias;
@@ -135,7 +131,6 @@ export default function createProjectionAndParams({
                 param,
                 chainStr: chainStr as any,
                 res,
-                isRootConnectionField,
             });
         }
 
@@ -190,7 +185,6 @@ export default function createProjectionAndParams({
                         context,
                         varName: `${varName}_${alias}`,
                         chainStr: unionVariableName,
-                        isRootConnectionField,
                     });
                     res.params = { ...res.params, ...recurse.params };
 
@@ -249,7 +243,6 @@ export default function createProjectionAndParams({
                 context,
                 varName: `${varName}_${alias}`,
                 chainStr: param,
-                isRootConnectionField,
             });
             res.params = { ...res.params, ...recurse.params };
 
@@ -442,7 +435,6 @@ function translateCypherProjection({
     param,
     chainStr,
     res,
-    isRootConnectionField = false,
 }: {
     context: Context;
     cypherField: CypherField;
@@ -453,7 +445,6 @@ function translateCypherProjection({
     varName: string;
     param: string;
     res: Res;
-    isRootConnectionField?: boolean;
 }) {
     const projectionAuthStrs: string[] = [];
     const unionWheres: string[] = [];
@@ -481,8 +472,6 @@ function translateCypherProjection({
             context,
             varName: param,
             chainStr: param,
-            isRootConnectionField,
-            isInCypher: true,
         });
 
         projectionStr = `${param} ${str}`;
@@ -627,14 +616,6 @@ function translateCypherProjection({
             alias,
             apocStr,
         });
-        if (isRootConnectionField) {
-            res.projection.push(`${alias}: ${param}`);
-            return res;
-        }
-        if (cypherField.isScalar || cypherField.isEnum) {
-            res.projection.push(`${alias}: ${alias}`);
-            return res;
-        }
     }
 
     res.projection.push(`${alias}: ${`${param}`}`);

@@ -61,7 +61,6 @@ export function translateRead({
         context,
         resolveTree,
         varName,
-        isRootConnectionField,
     });
 
     cypherParams = { ...cypherParams, ...projection.params };
