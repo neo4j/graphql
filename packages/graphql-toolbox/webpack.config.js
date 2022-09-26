@@ -17,7 +17,7 @@ module.exports = {
     context: path.join(__dirname),
     target: "web",
     resolve: {
-        plugins: [new TsconfigPathsPlugin({ configFile: "./tsconfig.production.json" })],
+        plugins: [new TsconfigPathsPlugin({ configFile: "tsconfig.production.json" })],
         extensions: [".ts", ".tsx", ".mjs", ".json", ".js"], // IMPORTANT: .mjs has to be BEFORE .js
     },
     ...(process.env.NODE_ENV === "production"
