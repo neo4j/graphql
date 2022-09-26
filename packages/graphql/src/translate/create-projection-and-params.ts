@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { GraphQLUnionType } from "graphql";
 import { mergeDeep } from "@graphql-tools/utils";
 import type { Node } from "../classes";
@@ -28,6 +28,7 @@ import type {
     Context,
     ConnectionField,
     RelationField,
+    CypherField,
 } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
@@ -98,7 +99,6 @@ export default function createProjectionAndParams({
 
         const whereInput = field.args.where as GraphQLWhereArg;
         const optionsInput = (field.args.options || {}) as GraphQLOptionsArg;
-        const fieldFields = field.fieldsByTypeName;
         const cypherField = node.cypherFields.find((x) => x.fieldName === field.name);
         const relationField = node.relationFields.find((x) => x.fieldName === field.name);
         const connectionField = node.connectionFields.find((x) => x.fieldName === field.name);
@@ -125,193 +125,18 @@ export default function createProjectionAndParams({
         }
 
         if (cypherField) {
-            const projectionAuthStrs: string[] = [];
-            const unionWheres: string[] = [];
-            let projectionStr = "";
-
-            const isArray = cypherField.typeMeta.array;
-
-            const graphqlType = context.schema.getType(cypherField.typeMeta.name);
-
-            const referenceNode = context.nodes.find((x) => x.name === cypherField.typeMeta.name);
-
-            const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
-
-            const subqueries: CypherBuilder.Clause[] = [];
-            if (referenceNode) {
-                const {
-                    projection: str,
-                    params: p,
-                    meta,
-                    subqueries: nestedSubqueries,
-                } = createProjectionAndParams({
-                    resolveTree: field,
-                    node: referenceNode || node,
-                    context,
-                    varName: `${varName}_${alias}`,
-                    chainStr: param,
-                    isRootConnectionField,
-                    isInCypher: true,
-                });
-
-                projectionStr = `${param} ${str}`;
-                res.params = { ...res.params, ...p };
-                subqueries.push(...nestedSubqueries);
-                if (meta?.authValidateStrs?.length) {
-                    projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
-                }
-            }
-
-            if (referenceUnion) {
-                const fieldFieldsKeys = Object.keys(fieldFields);
-                const hasMultipleFieldFields = fieldFieldsKeys.length > 1;
-
-                let referencedNodes =
-                    referenceUnion?.types
-                        ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
-                        ?.filter((b) => b !== undefined) || [];
-                if (hasMultipleFieldFields) {
-                    referencedNodes = referencedNodes?.filter((n) => fieldFieldsKeys.includes(n?.name ?? "")) || [];
-                }
-
-                const unionProjections: Array<{ predicate: string; projection: string }> = [];
-                referencedNodes.forEach((refNode) => {
-                    if (refNode) {
-                        const labelsStatements = refNode
-                            .getLabels(context)
-                            .map((label) => `${varName}_${alias}:\`${label}\``);
-                        unionWheres.push(`(${labelsStatements.join(" AND ")})`);
-
-                        if (fieldFields[refNode.name]) {
-                            const {
-                                projection: str,
-                                params: p,
-                                meta,
-                            } = createProjectionAndParams({
-                                resolveTree: field,
-                                node: refNode,
-                                context,
-                                varName: `${varName}_${alias}`,
-                            });
-
-                            unionProjections.push({
-                                projection: `{ __resolveType: "${refNode.name}", ${str.replace("{", "")}`,
-                                predicate: labelsStatements.join(" AND "),
-                            });
-
-                            res.params = { ...res.params, ...p };
-
-                            if (meta?.authValidateStrs?.length) {
-                                projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
-                            }
-                        } else {
-                            unionProjections.push({
-                                projection: `{ __resolveType: "${refNode.name}" }`,
-                                predicate: labelsStatements.join(" AND "),
-                            });
-                        }
-                    }
-                });
-
-                projectionStr = `CASE ${unionProjections
-                    .map(({ predicate, projection }) => `WHEN ${predicate} THEN ${param} ${projection}`)
-                    .join("\n")} END`;
-            }
-
-            const initApocParamsStrs = [
-                ...(context.auth ? ["auth: $auth"] : []),
-                ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
-            ];
-
-            // Null default argument values are not passed into the resolve tree therefore these are not being passed to
-            // `apocParams` below causing a runtime error when executing.
-            const nullArgumentValues = cypherField.arguments.reduce(
-                (r, argument) => ({
-                    ...r,
-                    ...{ [argument.name.value]: null },
-                }),
-                {}
-            );
-
-            const apocParams = Object.entries({ ...nullArgumentValues, ...field.args }).reduce(
-                (r: { strs: string[]; params: any }, entry) => {
-                    const argName = `${param}_${entry[0]}`;
-
-                    return {
-                        strs: [...r.strs, `${entry[0]}: $${argName}`],
-                        params: { ...r.params, [argName]: entry[1] },
-                    };
-                },
-                { strs: initApocParamsStrs, params: {} }
-            ) as { strs: string[]; params: any };
-            res.params = {
-                ...res.params,
-                ...apocParams.params,
-                ...(context.cypherParams ? { cypherParams: context.cypherParams } : {}),
-            };
-
-            const expectMultipleValues = (referenceNode || referenceUnion) && cypherField.typeMeta.array;
-            const apocWhere = projectionAuthStrs.length
-                ? `WHERE apoc.util.validatePredicate(NOT (${projectionAuthStrs.join(
-                      " AND "
-                  )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-                : "";
-            const unionWhere = unionWheres.length ? `WHERE ${unionWheres.join(" OR ")}` : "";
-            const apocParamsStr = `{this: ${chainStr || varName}${
-                apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
-            }}`;
-
-            const isProjectionStrEmpty = projectionStr.trim().length === 0;
-
-            const apocStr = `apoc.cypher.runFirstColumn${expectMultipleValues ? "Many" : "Single"}("${
-                cypherField.statement
-            }", ${apocParamsStr})${apocWhere ? ` ${apocWhere}` : ""}`;
-
-            const apocClause = new CypherBuilder.RawCypher(apocStr);
-
-            const unionExpression = unionWhere
-                ? CypherBuilder.concat(new CypherBuilder.With("*"), new CypherBuilder.RawCypher(`${unionWhere} `))
-                : new CypherBuilder.RawCypher("");
-
-            const unwindClause = new CypherBuilder.Unwind([apocClause, param]);
-            const projectionExpression = new CypherBuilder.RawCypher(`${projectionStr}`);
-            let returnData: CypherBuilder.Expr = !isProjectionStrEmpty
-                ? projectionExpression
-                : new CypherBuilder.NamedVariable(param);
-            if (isArray) {
-                returnData = CypherBuilder.collect(returnData);
-            }
-            const retClause = new CypherBuilder.Return([returnData, param]);
-            const callSt = new CypherBuilder.Call(
-                CypherBuilder.concat(unwindClause, unionExpression, ...subqueries, retClause)
-            ).with(new CypherBuilder.NamedVariable(chainStr || varName));
-            res.subqueries.push(callSt);
-
-            const sortInput = (context.resolveTree.args.sort ??
-                (context.resolveTree.args.options as any)?.sort ??
-                []) as GraphQLSortArg[];
-            const isSortArg = sortInput.find((obj) => Object.keys(obj)[0] === alias);
-            if (isSortArg) {
-                if (!res.meta.cypherSortFields) {
-                    res.meta.cypherSortFields = [];
-                }
-
-                res.meta.cypherSortFields.push({
-                    alias,
-                    apocStr,
-                });
-                if (isRootConnectionField) {
-                    res.projection.push(`${alias}: ${param}`);
-                    return res;
-                }
-                if (cypherField.isScalar || cypherField.isEnum) {
-                    res.projection.push(`${alias}: ${alias}`);
-                    return res;
-                }
-            }
-
-            res.projection.push(`${alias}: ${`${varName}_${alias}`}`);
-            return res;
+            return translateCypherProjection({
+                context,
+                cypherField,
+                field,
+                node,
+                varName,
+                alias,
+                param,
+                chainStr: chainStr as any,
+                res,
+                isRootConnectionField,
+            });
         }
 
         if (relationField) {
@@ -605,3 +430,213 @@ const generateMissingOrAliasedRequiredFields = ({
 
     return generateMissingOrAliasedFields({ fieldNames: requiredFields, selection });
 };
+
+// TRANSLATECYPHER
+function translateCypherProjection({
+    context,
+    cypherField,
+    field,
+    node,
+    varName,
+    alias,
+    param,
+    chainStr,
+    res,
+    isRootConnectionField = false,
+}: {
+    context: Context;
+    cypherField: CypherField;
+    field: ResolveTree;
+    node: Node;
+    chainStr: string;
+    alias: string;
+    varName: string;
+    param: string;
+    res: Res;
+    isRootConnectionField?: boolean;
+}) {
+    const projectionAuthStrs: string[] = [];
+    const unionWheres: string[] = [];
+    let projectionStr = "";
+
+    const isArray = cypherField.typeMeta.array;
+    const fieldFields = field.fieldsByTypeName;
+
+    const graphqlType = context.schema.getType(cypherField.typeMeta.name);
+
+    const referenceNode = context.nodes.find((x) => x.name === cypherField.typeMeta.name);
+
+    const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
+
+    const subqueries: CypherBuilder.Clause[] = [];
+    if (referenceNode) {
+        const {
+            projection: str,
+            params: p,
+            meta,
+            subqueries: nestedSubqueries,
+        } = createProjectionAndParams({
+            resolveTree: field,
+            node: referenceNode || node,
+            context,
+            varName: param,
+            chainStr: param,
+            isRootConnectionField,
+            isInCypher: true,
+        });
+
+        projectionStr = `${param} ${str}`;
+        res.params = { ...res.params, ...p };
+        subqueries.push(...nestedSubqueries);
+        if (meta?.authValidateStrs?.length) {
+            projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
+        }
+    }
+
+    if (referenceUnion) {
+        const fieldFieldsKeys = Object.keys(fieldFields);
+        const hasMultipleFieldFields = fieldFieldsKeys.length > 1;
+
+        let referencedNodes =
+            referenceUnion?.types
+                ?.map((u) => context.nodes.find((n) => n.name === u.name.value))
+                ?.filter((b) => b !== undefined) || [];
+        if (hasMultipleFieldFields) {
+            referencedNodes = referencedNodes?.filter((n) => fieldFieldsKeys.includes(n?.name ?? "")) || [];
+        }
+
+        const unionProjections: Array<{ predicate: string; projection: string }> = [];
+        referencedNodes.forEach((refNode) => {
+            if (refNode) {
+                const labelsStatements = refNode.getLabels(context).map((label) => `${param}:\`${label}\``);
+                unionWheres.push(`(${labelsStatements.join(" AND ")})`);
+
+                if (fieldFields[refNode.name]) {
+                    const {
+                        projection: str,
+                        params: p,
+                        meta,
+                    } = createProjectionAndParams({
+                        resolveTree: field,
+                        node: refNode,
+                        context,
+                        varName: param,
+                    });
+
+                    unionProjections.push({
+                        projection: `{ __resolveType: "${refNode.name}", ${str.replace("{", "")}`,
+                        predicate: labelsStatements.join(" AND "),
+                    });
+
+                    res.params = { ...res.params, ...p };
+
+                    if (meta?.authValidateStrs?.length) {
+                        projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
+                    }
+                } else {
+                    unionProjections.push({
+                        projection: `{ __resolveType: "${refNode.name}" }`,
+                        predicate: labelsStatements.join(" AND "),
+                    });
+                }
+            }
+        });
+
+        projectionStr = `CASE ${unionProjections
+            .map(({ predicate, projection }) => `WHEN ${predicate} THEN ${param} ${projection}`)
+            .join("\n")} END`;
+    }
+
+    const initApocParamsStrs = [
+        ...(context.auth ? ["auth: $auth"] : []),
+        ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
+    ];
+
+    // Null default argument values are not passed into the resolve tree therefore these are not being passed to
+    // `apocParams` below causing a runtime error when executing.
+    const nullArgumentValues = cypherField.arguments.reduce(
+        (r, argument) => ({
+            ...r,
+            ...{ [argument.name.value]: null },
+        }),
+        {}
+    );
+
+    const apocParams = Object.entries({ ...nullArgumentValues, ...field.args }).reduce(
+        (r: { strs: string[]; params: any }, entry) => {
+            const argName = `${param}_${entry[0]}`;
+
+            return {
+                strs: [...r.strs, `${entry[0]}: $${argName}`],
+                params: { ...r.params, [argName]: entry[1] },
+            };
+        },
+        { strs: initApocParamsStrs, params: {} }
+    ) as { strs: string[]; params: any };
+    res.params = {
+        ...res.params,
+        ...apocParams.params,
+        ...(context.cypherParams ? { cypherParams: context.cypherParams } : {}),
+    };
+
+    const expectMultipleValues = (referenceNode || referenceUnion) && cypherField.typeMeta.array;
+    const apocWhere = projectionAuthStrs.length
+        ? `WHERE apoc.util.validatePredicate(NOT (${projectionAuthStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+        : "";
+    const unionWhere = unionWheres.length ? `WHERE ${unionWheres.join(" OR ")}` : "";
+    const apocParamsStr = `{this: ${chainStr || varName}${
+        apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
+    }}`;
+
+    const isProjectionStrEmpty = projectionStr.trim().length === 0;
+
+    const apocStr = `apoc.cypher.runFirstColumn${expectMultipleValues ? "Many" : "Single"}("${
+        cypherField.statement
+    }", ${apocParamsStr})${apocWhere ? ` ${apocWhere}` : ""}`;
+
+    const apocClause = new CypherBuilder.RawCypher(apocStr);
+
+    const unionExpression = unionWhere
+        ? CypherBuilder.concat(new CypherBuilder.With("*"), new CypherBuilder.RawCypher(`${unionWhere} `))
+        : new CypherBuilder.RawCypher("");
+
+    const unwindClause = new CypherBuilder.Unwind([apocClause, param]);
+    const projectionExpression = new CypherBuilder.RawCypher(`${projectionStr}`);
+    let returnData: CypherBuilder.Expr = !isProjectionStrEmpty
+        ? projectionExpression
+        : new CypherBuilder.NamedVariable(param);
+    if (isArray) {
+        returnData = CypherBuilder.collect(returnData);
+    }
+    const retClause = new CypherBuilder.Return([returnData, param]);
+    const callSt = new CypherBuilder.Call(
+        CypherBuilder.concat(unwindClause, unionExpression, ...subqueries, retClause)
+    ).with(new CypherBuilder.NamedVariable(chainStr || varName));
+    res.subqueries.push(callSt);
+
+    const sortInput = (context.resolveTree.args.sort ??
+        (context.resolveTree.args.options as any)?.sort ??
+        []) as GraphQLSortArg[];
+    const isSortArg = sortInput.find((obj) => Object.keys(obj)[0] === alias);
+    if (isSortArg) {
+        if (!res.meta.cypherSortFields) {
+            res.meta.cypherSortFields = [];
+        }
+
+        res.meta.cypherSortFields.push({
+            alias,
+            apocStr,
+        });
+        if (isRootConnectionField) {
+            res.projection.push(`${alias}: ${param}`);
+            return res;
+        }
+        if (cypherField.isScalar || cypherField.isEnum) {
+            res.projection.push(`${alias}: ${alias}`);
+            return res;
+        }
+    }
+
+    res.projection.push(`${alias}: ${`${param}`}`);
+    return res;
+}

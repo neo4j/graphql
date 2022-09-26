@@ -237,7 +237,6 @@ function translateRootConnectionField({
     const hasSort = Boolean(sortInput && sortInput.length);
 
     const sortCypherFields = projection.meta?.cypherSortFields ?? [];
-    const sortCypherProj = sortCypherFields.map(({ alias, apocStr }) => `${alias}: ${apocStr}`);
 
     let sortStr = "";
     if (hasSort) {
@@ -270,10 +269,6 @@ function translateRootConnectionField({
         cypherParams[`${varName}_limit`] = firstInput;
     }
 
-    const withEdgeStr = `WITH { node: ${varName} ${projection.projection} } as edge, totalCount, ${varName}`;
-    const collectStr = `WITH COLLECT(edge) as edges, totalCount`;
-    const returnStr = `RETURN { edges: edges, totalCount: totalCount } as ${varName}`;
-
     const withStrs = subStr.projAuth ? [`WITH ${varName}`, subStr.projAuth] : [];
     const cypher = [
         subStr.matchAndWhereStr,
@@ -284,32 +279,14 @@ function translateRootConnectionField({
         `UNWIND edges as ${varName}`,
         `WITH ${varName}, totalCount`,
         subStr.projectionSubqueries,
-        withEdgeStr,
+        `WITH { node: ${varName} ${projection.projection} } as edge, totalCount, ${varName}`,
         ...(sortStr ? [sortStr] : []),
         ...(offsetStr ? [offsetStr] : []),
         ...(limitStr ? [limitStr] : []),
-        collectStr,
+        `WITH COLLECT(edge) as edges, totalCount`,
         ...subStr.interfaceStrs,
-        returnStr,
+        `RETURN { edges: edges, totalCount: totalCount } as ${varName}`,
     ];
-    // const cypher = [
-    //     "CALL {",
-    //     subStr.matchAndWhereStr,
-    //     subStr.authStr,
-    //     ...withStrs,
-    //     `WITH COLLECT(this) as edges`,
-    //     `WITH edges, size(edges) as totalCount`,
-    //     `UNWIND edges as ${varName}`,
-    //     `WITH ${varName}, totalCount, { ${sortCypherProj.join(", ")}} as edges`,
-    //     `RETURN ${varName}, totalCount, edges`,
-    //     ...(sortStr ? [sortStr] : []),
-    //     ...(offsetStr ? [offsetStr] : []),
-    //     ...(limitStr ? [limitStr] : []),
-    //     "}",
-    //     subStr.projectionSubqueries,
-    //     ...subStr.interfaceStrs,
-    //     ...returnStrs,
-    // ];
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];
 }

@@ -69,8 +69,6 @@ export function createProjectionSubquery({
         relationship.reverse();
     }
 
-    // console.log("projection subquery", alias, relationship.getTypeString());
-
     const isUndirected = relationshipDirection === "undirected";
     const pattern = relationship.pattern({ directed: !isUndirected });
 
