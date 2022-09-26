@@ -1,0 +1,69 @@
+# Surface executed cypher
+
+## Problem
+
+In the Neo4j GraphQL Toolbox we want to be able to show the executed cypher and its params for each query.
+Maybe other use cases need this option too for logging or other use cases.
+
+## Proposed Solution
+
+Config boolean to include the executed cypher and its params in the GraphQL response `extensions`. See: https://spec.graphql.org/June2018/#sec-Response-Format 
+
+(The extension can also be used for to provide rate limit data, See "GraphQL production ready" book)
+
+
+## Alternative solution
+
+Expose a hook/callback which is called on each execution of a query. Similar to a logger component like the log-level lib.
+
+
+
+### Usage Examples
+
+Enable it through the `Neo4jGraphQLConfig`:
+```js
+const neoSchema = new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    config: {
+        includeCypherInGraphQLResponse: true
+    },
+});
+````
+
+This is how the GraphQL response would look like:
+```json
+{
+    "data": {
+        "user": {
+            "name": "My name"
+        }
+    },
+    "error": {},  // <- here would the "error" be ...
+    "extensions": {
+        "cypher": {
+            "query": "CALL {\\nCREATE (this0:Genre)\\nSET this0.name = $this0_name\\nRETURN this0\\n}\\nRETURN [\\nthis0 { .name }] AS data", // <- JSON stringified cypher query
+            "params": {
+                "this0_name": "TestGenre1",
+                "resolvedCallbacks": {}
+            }
+        }
+        "costs": {} // <- just to show for a future use case
+    }
+}
+```
+
+## Risks
+
+tbd
+
+
+
+### Security consideration
+
+Do we expose an sensitive data this way?
+Needs to be on opt-in bases, even in the GraphQL Toolbox!
+
+## Out of Scope
+
+Logging for the Neo4j GraphQL library
