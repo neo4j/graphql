@@ -23,9 +23,12 @@ import type { Variable } from "../variables/Variable";
 import { Clause } from "./Clause";
 import { compileCypherIfExists, padBlock } from "../utils/utils";
 import { ImportWith } from "./sub-clauses/ImportWith";
-import { applyMixins } from "./utils/apply-mixin";
 import { WithReturn } from "./mixins/WithReturn";
+import { mixin } from "./utils/mixin";
 
+export interface Call extends WithReturn {}
+
+@mixin(WithReturn)
 export class Call extends Clause {
     private subQuery: CypherASTNode;
     private importWith: ImportWith | undefined;
@@ -52,6 +55,3 @@ export class Call extends Clause {
         return `CALL {\n${padBlock(inCallBlock)}\n}${returnCypher}`;
     }
 }
-
-export interface Call extends WithReturn {}
-applyMixins(Call, [WithReturn]);

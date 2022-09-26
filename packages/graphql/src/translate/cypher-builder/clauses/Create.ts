@@ -25,11 +25,14 @@ import { SetClause } from "./sub-clauses/Set";
 import { Clause } from "./Clause";
 import { compileCypherIfExists } from "../utils/utils";
 import { WithReturn } from "./mixins/WithReturn";
-import { applyMixins } from "./utils/apply-mixin";
+import { mixin } from "./utils/mixin";
 import { WithSet } from "./mixins/WithSet";
 
 type Params = Record<string, Param<any>>;
 
+export interface Create extends WithReturn, WithSet {}
+
+@mixin(WithReturn, WithSet)
 export class Create extends Clause {
     private pattern: Pattern<NodeRef>;
 
@@ -48,6 +51,3 @@ export class Create extends Clause {
         return `CREATE ${nodeCypher}${setCypher}${returnCypher}`;
     }
 }
-
-export interface Create extends WithReturn, WithSet {}
-applyMixins(Create, [WithReturn, WithSet]);
