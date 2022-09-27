@@ -11,6 +11,10 @@ Configuration boolean to include the executed cypher and its params in the Graph
 
 (The `extensions` can also be used to provide rate limit data, See "GraphQL production ready" book)
 
+### Question
+
+Shall we have the ability to do `dry-run`s? That is not possible right now. This could be useful for performance reasons. Yet we also have the TCK tests and the performance tests for that.
+
 ## Alternative solution
 
 Expose a hook/callback which is called on each execution of a query. Similar to a logger component like the [log-level lib](https://www.npmjs.com/package/loglevel).
