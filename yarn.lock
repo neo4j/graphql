@@ -2592,7 +2592,7 @@ __metadata:
     "@types/codemirror": 5.60.5
     "@types/lodash.debounce": 4.0.7
     "@types/markdown-it": 12.2.3
-    "@types/prettier": 2.7.0
+    "@types/prettier": 2.7.1
     "@types/react-dom": 18.0.6
     "@types/webpack": 5.28.0
     autoprefixer: 10.4.12
@@ -3515,7 +3515,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prettier@npm:2.7.0, @types/prettier@npm:^2.1.5":
+"@types/prettier@npm:2.7.1":
+  version: 2.7.1
+  resolution: "@types/prettier@npm:2.7.1"
+  checksum: 5e3f58e229d6c73b5f5cae2e8f96c1c4a5b5805f83459e17a045ba8e96152b1d38e86b63e3172fb159dac923388699660862b75b2d37e54220805f0e691e26f1
+  languageName: node
+  linkType: hard
+
+"@types/prettier@npm:^2.1.5":
   version: 2.7.0
   resolution: "@types/prettier@npm:2.7.0"
   checksum: bf5d0c7c1270909b39399539ac106d20ddaa85fe92eb1d59922dc99159604b4f8d5e41b0045fb29c8011585cf5bca2350b7441ef3d9816c08bd0e10ebd4b31d4
