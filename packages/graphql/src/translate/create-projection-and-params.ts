@@ -128,10 +128,9 @@ export default function createProjectionAndParams({
                 cypherField,
                 field,
                 node,
-                varName,
                 alias,
                 param,
-                chainStr: chainStr as any,
+                chainStr: chainStr || varName,
                 res,
             });
         }
@@ -434,7 +433,6 @@ function translateCypherProjection({
     cypherField,
     field,
     node,
-    varName,
     alias,
     param,
     chainStr,
@@ -446,10 +444,9 @@ function translateCypherProjection({
     node: Node;
     chainStr: string;
     alias: string;
-    varName: string;
     param: string;
     res: Res;
-}) {
+}): Res {
     const projectionAuthStrs: string[] = [];
     const unionWheres: string[] = [];
     let projectionStr = "";
@@ -578,9 +575,7 @@ function translateCypherProjection({
         ? `WHERE apoc.util.validatePredicate(NOT (${projectionAuthStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
         : "";
     const unionWhere = unionWheres.length ? `WHERE ${unionWheres.join(" OR ")}` : "";
-    const apocParamsStr = `{this: ${chainStr || varName}${
-        apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""
-    }}`;
+    const apocParamsStr = `{this: ${chainStr}${apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""}}`;
 
     const isProjectionStrEmpty = projectionStr.trim().length === 0;
 
@@ -605,7 +600,7 @@ function translateCypherProjection({
     const retClause = new CypherBuilder.Return([returnData, param]);
     const callSt = new CypherBuilder.Call(
         CypherBuilder.concat(unwindClause, unionExpression, ...subqueries, retClause)
-    ).with(new CypherBuilder.NamedVariable(chainStr || varName));
+    ).with(new CypherBuilder.NamedVariable(chainStr));
 
     const sortInput = (context.resolveTree.args.sort ??
         (context.resolveTree.args.options as any)?.sort ??

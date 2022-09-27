@@ -193,7 +193,6 @@ function translateRootField({
     }
 
     const withStrs = subStr.projAuth ? [`WITH *`, subStr.projAuth] : [];
-    // const withStrs = ["WITH *", subStr.projAuth];
 
     const returnStrs = [`RETURN ${varName} ${projection.projection} as ${varName}`];
 
