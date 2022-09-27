@@ -17,6 +17,9 @@ The `@neo4j/graphql` library's user audience are full stack developers who want 
 The GraphQL Toolbox can further include developers wanting to experiment with GraphQL and Neo4j in general, yet also developers who want to experiment with/edit the (introspected) schema.  
 The main aim is for prototyping and rapid development for both experienced as well as inexperienced users.
 
+### Tracking consent
+We need to ask for tracking consent. Opt-in? Or can we do opt-out?
+
 ### Requirements
 
 Track basic metrics with [Segment](https://segment.com/docs/connections/sources/catalog/libraries/website/javascript/). Segment offers a JS library that we can leverage.
