@@ -91,7 +91,7 @@ describe("Cypher Alias", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie)
-                RETURN m\\", {this: this, auth: $auth}) AS this_custom
+                RETURN m\\", { this: this, auth: $auth }) AS this_custom
                 RETURN collect(this_custom { aliasCustomId: this_custom.id }) AS this_custom
             }
             RETURN this { movieId: this.id, actors: this_actors, custom: this_custom } as this"

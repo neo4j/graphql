@@ -76,7 +76,7 @@ describe("Cypher directive", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie {title: $title})
-                RETURN m\\", {this: this, auth: $auth, title: $this_movies_title}) AS this_movies
+                RETURN m\\", { title: NULL, this: this, auth: $auth }) AS this_movies
                 CALL {
                     WITH this_movies
                     MATCH (this_movies)<-[this_movies_connection_actorsConnectionthis0:ACTED_IN]-(this_movies_Actor:\`Actor\`)
@@ -92,7 +92,6 @@ describe("Cypher directive", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_movies_title\\": null,
                 \\"auth\\": {
                     \\"isAuthenticated\\": false,
                     \\"roles\\": []

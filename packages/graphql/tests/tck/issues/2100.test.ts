@@ -118,11 +118,11 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[:HAS_HISTORY]->(:ServiceLog)-[:HAS_BUSSING]->(records:BussingRecord)-[:BUSSED_ON]->(date:TimeGraph)
                 WITH DISTINCT records, date LIMIT $limit
-                RETURN records ORDER BY date.date DESC\\", {this: this, auth: $auth, limit: $this_bussing_limit}) AS this_bussing
+                RETURN records ORDER BY date.date DESC\\", { limit: $thisparam0, this: this, auth: $auth }) AS this_bussing
                 CALL {
                     WITH this_bussing
                     UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
-                    RETURN COUNT(member) > 0 AS markedAttendance\\", {this: this_bussing, auth: $auth}) AS this_bussing_markedAttendance
+                    RETURN COUNT(member) > 0 AS markedAttendance\\", { this: this_bussing, auth: $auth }) AS this_bussing_markedAttendance
                     RETURN this_bussing_markedAttendance AS this_bussing_markedAttendance
                 }
                 CALL {
@@ -140,7 +140,7 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"this_bussing_limit\\": {
+                \\"thisparam0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },

@@ -87,22 +87,22 @@ describe("#387", () => {
             "MATCH (this:\`Place\`)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"return '' + ''\\", {this: this, auth: $auth}) AS this_url_works
+                UNWIND apoc.cypher.runFirstColumnSingle(\\"return '' + ''\\", { this: this, auth: $auth }) AS this_url_works
                 RETURN this_url_works AS this_url_works
             }
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"return '' + ''\\", {this: this, auth: $auth}) AS this_url_fails
+                UNWIND apoc.cypher.runFirstColumnSingle(\\"return '' + ''\\", { this: this, auth: $auth }) AS this_url_fails
                 RETURN this_url_fails AS this_url_fails
             }
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"return ['' + '']\\", {this: this, auth: $auth}) AS this_url_array_works
+                UNWIND apoc.cypher.runFirstColumnSingle(\\"return ['' + '']\\", { this: this, auth: $auth }) AS this_url_array_works
                 RETURN collect(this_url_array_works) AS this_url_array_works
             }
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnSingle(\\"return ['' + '']\\", {this: this, auth: $auth}) AS this_url_array_fails
+                UNWIND apoc.cypher.runFirstColumnSingle(\\"return ['' + '']\\", { this: this, auth: $auth }) AS this_url_array_fails
                 RETURN collect(this_url_array_fails) AS this_url_array_fails
             }
             RETURN this { url_works: this_url_works, url_fails: this_url_fails, url_array_works: this_url_array_works, url_array_fails: this_url_array_fails } as this"

@@ -90,7 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
                 UNWIND allUpdates as update
                 RETURN update
                 ORDER BY update.date_added DESC
-                LIMIT 5\\", {this: this, auth: $auth}) AS this_updates
+                LIMIT 5\\", { this: this, auth: $auth }) AS this_updates
                 WITH *
                 WHERE (this_updates:\`Post\`) OR (this_updates:\`Movie\`) OR (this_updates:\`User\`)
                 RETURN collect(CASE WHEN this_updates:\`Post\` THEN this_updates { __resolveType: \\"Post\\" }

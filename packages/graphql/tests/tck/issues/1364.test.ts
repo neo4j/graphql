@@ -108,7 +108,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-                RETURN count(DISTINCT genre)\\", {this: this, auth: $auth}) AS this_totalGenres
+                RETURN count(DISTINCT genre)\\", { this: this, auth: $auth }) AS this_totalGenres
                 RETURN this_totalGenres AS this_totalGenres
             }
             WITH { node: this { .title, totalGenres: this_totalGenres } } as edge, totalCount, this
@@ -144,7 +144,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-                RETURN count(DISTINCT genre)\\", {this: this, auth: $auth}) AS this_totalGenres
+                RETURN count(DISTINCT genre)\\", { this: this, auth: $auth }) AS this_totalGenres
                 RETURN this_totalGenres AS this_totalGenres
             }
             WITH { node: this { .title, totalGenres: this_totalGenres } } as edge, totalCount, this
@@ -181,13 +181,13 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-                RETURN count(DISTINCT genre)\\", {this: this, auth: $auth}) AS this_totalGenres
+                RETURN count(DISTINCT genre)\\", { this: this, auth: $auth }) AS this_totalGenres
                 RETURN this_totalGenres AS this_totalGenres
             }
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                RETURN count(DISTINCT actor)\\", {this: this, auth: $auth}) AS this_totalActors
+                RETURN count(DISTINCT actor)\\", { this: this, auth: $auth }) AS this_totalActors
                 RETURN this_totalActors AS this_totalActors
             }
             WITH { node: this { .title, totalGenres: this_totalGenres, totalActors: this_totalActors } } as edge, totalCount, this

@@ -482,9 +482,7 @@ function translateCypherProjection({
         if (meta?.authValidateStrs?.length) {
             projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
         }
-    }
-
-    if (referenceUnion) {
+    } else if (referenceUnion) {
         const fieldFieldsKeys = Object.keys(fieldFields);
         const hasMultipleFieldFields = fieldFieldsKeys.length > 1;
 
@@ -538,52 +536,39 @@ function translateCypherProjection({
             .join("\n")} END`;
     }
 
-    const initApocParamsStrs = [
-        ...(context.auth ? ["auth: $auth"] : []),
-        ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
-    ];
-
     // Null default argument values are not passed into the resolve tree therefore these are not being passed to
     // `apocParams` below causing a runtime error when executing.
     const nullArgumentValues = cypherField.arguments.reduce(
         (r, argument) => ({
             ...r,
-            ...{ [argument.name.value]: null },
+            [argument.name.value]: null,
         }),
         {}
     );
 
-    const apocParams = Object.entries({ ...nullArgumentValues, ...field.args }).reduce(
-        (r: { strs: string[]; params: any }, entry) => {
-            const argName = `${param}_${entry[0]}`;
-
-            return {
-                strs: [...r.strs, `${entry[0]}: $${argName}`],
-                params: { ...r.params, [argName]: entry[1] },
-            };
-        },
-        { strs: initApocParamsStrs, params: {} }
-    ) as { strs: string[]; params: any };
-    res.params = {
-        ...res.params,
-        ...apocParams.params,
-        ...(context.cypherParams ? { cypherParams: context.cypherParams } : {}),
-    };
+    const rawApocParams = Object.entries({ ...nullArgumentValues, ...field.args });
 
     const expectMultipleValues = (referenceNode || referenceUnion) && cypherField.typeMeta.array;
-    const apocWhere = projectionAuthStrs.length
-        ? `WHERE apoc.util.validatePredicate(NOT (${projectionAuthStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`
-        : "";
     const unionWhere = unionWheres.length ? `WHERE ${unionWheres.join(" OR ")}` : "";
-    const apocParamsStr = `{this: ${chainStr}${apocParams.strs.length ? `, ${apocParams.strs.join(", ")}` : ""}}`;
 
     const isProjectionStrEmpty = projectionStr.trim().length === 0;
 
-    const apocStr = `apoc.cypher.runFirstColumn${expectMultipleValues ? "Many" : "Single"}("${
-        cypherField.statement
-    }", ${apocParamsStr})${apocWhere ? ` ${apocWhere}` : ""}`;
+    const apocParams: Record<string, CypherBuilder.Param> = rawApocParams.reduce((acc, [key, value]) => {
+        acc[key] = new CypherBuilder.Param(value);
+        return acc;
+    }, {});
 
-    const apocClause = new CypherBuilder.RawCypher(apocStr);
+    const apocParamsMap = new CypherBuilder.Map({
+        ...apocParams,
+        this: new CypherBuilder.NamedVariable(chainStr),
+        ...(context.auth && { auth: new CypherBuilder.NamedParam("auth") }),
+        ...(Boolean(context.cypherParams) && { cypherParams: new CypherBuilder.NamedParam("cypherParams") }),
+    });
+    const apocClause = new CypherBuilder.apoc.RunFirstColumn(
+        cypherField.statement,
+        apocParamsMap,
+        Boolean(expectMultipleValues)
+    );
 
     const unionExpression = unionWhere
         ? CypherBuilder.concat(new CypherBuilder.With("*"), new CypherBuilder.RawCypher(`${unionWhere} `))
@@ -617,6 +602,6 @@ function translateCypherProjection({
         res.subqueries.push(callSt);
     }
 
-    res.projection.push(`${alias}: ${`${param}`}`);
+    res.projection.push(`${alias}: ${param}`);
     return res;
 }
