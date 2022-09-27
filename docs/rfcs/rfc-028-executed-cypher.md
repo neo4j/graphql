@@ -7,16 +7,13 @@ Maybe other use cases need this option too for logging or other use cases.
 
 ## Proposed Solution
 
-Config boolean to include the executed cypher and its params in the GraphQL response `extensions`. See: https://spec.graphql.org/June2018/#sec-Response-Format 
+Configuration boolean to include the executed cypher and its params in the GraphQL response `extensions`. See in the [GraphQL specs](https://spec.graphql.org/June2018/#sec-Response-Format ).
 
-(The extension can also be used for to provide rate limit data, See "GraphQL production ready" book)
-
+(The `extensions` can also be used to provide rate limit data, See "GraphQL production ready" book)
 
 ## Alternative solution
 
-Expose a hook/callback which is called on each execution of a query. Similar to a logger component like the log-level lib.
-
-
+Expose a hook/callback which is called on each execution of a query. Similar to a logger component like the [log-level lib](https://www.npmjs.com/package/loglevel).
 
 ### Usage Examples
 
@@ -39,7 +36,7 @@ This is how the GraphQL response would look like:
             "name": "My name"
         }
     },
-    "error": {},  // <- here would the "error" be ...
+    "error": {},  // <- This is where the "error" is located if there is one
     "extensions": {
         "cypher": {
             "query": "CALL {\\nCREATE (this0:Genre)\\nSET this0.name = $this0_name\\nRETURN this0\\n}\\nRETURN [\\nthis0 { .name }] AS data", // <- JSON stringified cypher query
@@ -48,20 +45,22 @@ This is how the GraphQL response would look like:
                 "resolvedCallbacks": {}
             }
         }
-        "costs": {} // <- just to show for a future use case
+        "costs": {} // <- just to show for a future use case, append other "extensions"
     }
 }
 ```
+
+Questisons:
+- Is JSON stringfy the query the best option we have?
+- For (very) large queries, will the payload size be an issue?
 
 ## Risks
 
 tbd
 
-
-
 ### Security consideration
 
-Do we expose an sensitive data this way?
+Do we expose any sensitive data this way?
 Needs to be on opt-in bases, even in the GraphQL Toolbox!
 
 ## Out of Scope
