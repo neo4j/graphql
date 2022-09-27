@@ -240,14 +240,14 @@ describe("Cypher directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
-            WITH *, apoc.cypher.runFirstColumnSingle(\\"RETURN rand()\\", {this: this, auth: $auth}) AS randomNumber
-            ORDER BY randomNumber ASC
-            LIMIT $this_limit
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"RETURN rand()\\", {this: this, auth: $auth}) AS this_randomNumber
                 RETURN this_randomNumber AS this_randomNumber
             }
+            WITH *
+            ORDER BY this_randomNumber ASC
+            LIMIT $this_limit
             RETURN this { randomNumber: this_randomNumber } as this"
         `);
 

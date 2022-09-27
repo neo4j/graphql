@@ -53,6 +53,7 @@ interface Res {
     params: any;
     meta: ProjectionMeta;
     subqueries: Array<CypherBuilder.Clause>;
+    subqueriesBeforeSort: Array<CypherBuilder.Clause>;
 }
 
 export interface ProjectionMeta {
@@ -65,6 +66,7 @@ export type ProjectionResult = {
     params: Record<string, any>;
     meta: ProjectionMeta;
     subqueries: Array<CypherBuilder.Clause>;
+    subqueriesBeforeSort: Array<CypherBuilder.Clause>;
 };
 
 export default function createProjectionAndParams({
@@ -206,7 +208,7 @@ export default function createProjectionAndParams({
                         context,
                         alias: unionVariableName,
                         nestedProjection,
-                        nestedSubqueries: recurse.subqueries,
+                        nestedSubqueries: [...recurse.subqueriesBeforeSort, ...recurse.subqueries],
                         relationField,
                         relationshipDirection: direction,
                         optionsInput,
@@ -256,7 +258,7 @@ export default function createProjectionAndParams({
                 context,
                 alias: param,
                 nestedProjection: recurse.projection,
-                nestedSubqueries: recurse.subqueries,
+                nestedSubqueries: [...recurse.subqueriesBeforeSort, ...recurse.subqueries],
                 relationField,
                 relationshipDirection: direction,
                 optionsInput,
@@ -377,11 +379,12 @@ export default function createProjectionAndParams({
         generateMissingOrAliasedRequiredFields({ selection: mergedSelectedFields, node }),
     ]);
 
-    const { projection, params, meta, subqueries } = Object.values(mergedFields).reduce(reducer, {
+    const { projection, params, meta, subqueries, subqueriesBeforeSort } = Object.values(mergedFields).reduce(reducer, {
         projection: resolveType ? [`__resolveType: "${node.name}"`] : [],
         params: {},
         meta: {},
         subqueries: [],
+        subqueriesBeforeSort: [],
     });
 
     return {
@@ -389,6 +392,7 @@ export default function createProjectionAndParams({
         params,
         meta,
         subqueries,
+        subqueriesBeforeSort,
     };
 }
 
@@ -466,6 +470,7 @@ function translateCypherProjection({
             params: p,
             meta,
             subqueries: nestedSubqueries,
+            subqueriesBeforeSort: nestedSubqueriesBeforeSort,
         } = createProjectionAndParams({
             resolveTree: field,
             node: referenceNode || node,
@@ -476,7 +481,7 @@ function translateCypherProjection({
 
         projectionStr = `${param} ${str}`;
         res.params = { ...res.params, ...p };
-        subqueries.push(...nestedSubqueries);
+        subqueries.push(...nestedSubqueriesBeforeSort, ...nestedSubqueries);
         if (meta?.authValidateStrs?.length) {
             projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
         }
@@ -504,7 +509,7 @@ function translateCypherProjection({
                     const {
                         projection: str,
                         params: p,
-                        meta,
+                        meta, // TODO: projectionsubqueries?
                     } = createProjectionAndParams({
                         resolveTree: field,
                         node: refNode,
@@ -601,7 +606,6 @@ function translateCypherProjection({
     const callSt = new CypherBuilder.Call(
         CypherBuilder.concat(unwindClause, unionExpression, ...subqueries, retClause)
     ).with(new CypherBuilder.NamedVariable(chainStr || varName));
-    res.subqueries.push(callSt);
 
     const sortInput = (context.resolveTree.args.sort ??
         (context.resolveTree.args.options as any)?.sort ??
@@ -611,11 +615,14 @@ function translateCypherProjection({
         if (!res.meta.cypherSortFields) {
             res.meta.cypherSortFields = [];
         }
+        res.subqueriesBeforeSort.push(callSt);
 
         res.meta.cypherSortFields.push({
             alias,
             apocStr,
         });
+    } else {
+        res.subqueries.push(callSt);
     }
 
     res.projection.push(`${alias}: ${`${param}`}`);

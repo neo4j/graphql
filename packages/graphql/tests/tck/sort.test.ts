@@ -160,15 +160,14 @@ describe("Cypher sort tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH *, apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-            RETURN count(DISTINCT genre)\\", {this: this, auth: $auth}) AS totalGenres
-            ORDER BY totalGenres DESC
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                 RETURN count(DISTINCT genre)\\", {this: this, auth: $auth}) AS this_totalGenres
                 RETURN this_totalGenres AS this_totalGenres
             }
+            WITH *
+            ORDER BY this_totalGenres DESC
             RETURN this { totalGenres: this_totalGenres } as this"
         `);
 
