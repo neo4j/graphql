@@ -58,7 +58,7 @@ interface Res {
 
 export interface ProjectionMeta {
     authValidateStrs?: string[];
-    cypherSortFields?: { alias: string; apocStr: string }[];
+    cypherSortFields?: string[];
 }
 
 export type ProjectionResult = {
@@ -617,10 +617,7 @@ function translateCypherProjection({
         }
         res.subqueriesBeforeSort.push(callSt);
 
-        res.meta.cypherSortFields.push({
-            alias,
-            apocStr,
-        });
+        res.meta.cypherSortFields.push(alias);
     } else {
         res.subqueries.push(callSt);
     }

@@ -164,10 +164,7 @@ function translateRootField({
     const params = {} as Record<string, any>;
     const hasOffset = Boolean(optionsInput.offset) || optionsInput.offset === 0;
 
-    // const sortCypherFields = projection.meta?.cypherSortFields ?? [];
-    // const sortCypherProj = sortCypherFields.map(({ alias, apocStr }) => `${apocStr} AS ${alias}`);
     const sortOffsetLimit: string[] = [`WITH *`];
-    // const sortOffsetLimit: string[] = [[`WITH *`, ...sortCypherProj].join(", ")];
 
     if (optionsInput.sort && optionsInput.sort.length) {
         const sortArr = optionsInput.sort.reduce((res: string[], sort: GraphQLSortArg) => {
@@ -253,7 +250,7 @@ function translateRootConnectionField({
                 ...res,
                 ...Object.entries(sort).map(([field, direction]) => {
                     // if the sort arg is a cypher field, substitaute "edges" for varName
-                    const varOrEdgeName = sortCypherFields.find((x) => x.alias === field) ? "edge.node" : varName;
+                    const varOrEdgeName = sortCypherFields.find((x) => x === field) ? "edge.node" : varName;
                     return `${varOrEdgeName}.${field} ${direction}`;
                 }),
             ];
