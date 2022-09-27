@@ -536,45 +536,24 @@ function translateCypherProjection({
             .join("\n")} END`;
     }
 
-    // Null default argument values are not passed into the resolve tree therefore these are not being passed to
-    // `apocParams` below causing a runtime error when executing.
-    const nullArgumentValues = cypherField.arguments.reduce(
-        (r, argument) => ({
-            ...r,
-            [argument.name.value]: null,
-        }),
-        {}
-    );
-
-    const rawApocParams = Object.entries({ ...nullArgumentValues, ...field.args });
-
-    const expectMultipleValues = (referenceNode || referenceUnion) && cypherField.typeMeta.array;
     const unionWhere = unionWheres.length ? `WHERE ${unionWheres.join(" OR ")}` : "";
 
     const isProjectionStrEmpty = projectionStr.trim().length === 0;
 
-    const apocParams: Record<string, CypherBuilder.Param> = rawApocParams.reduce((acc, [key, value]) => {
-        acc[key] = new CypherBuilder.Param(value);
-        return acc;
-    }, {});
-
-    const apocParamsMap = new CypherBuilder.Map({
-        ...apocParams,
-        this: new CypherBuilder.NamedVariable(chainStr),
-        ...(context.auth && { auth: new CypherBuilder.NamedParam("auth") }),
-        ...(Boolean(context.cypherParams) && { cypherParams: new CypherBuilder.NamedParam("cypherParams") }),
+    const expectMultipleValues = Boolean((referenceNode || referenceUnion) && cypherField.typeMeta.array);
+    const apocClause = createCypherDirectiveApocProcedure({
+        nodeRef: new CypherBuilder.NamedNode(chainStr),
+        expectMultipleValues,
+        context,
+        field,
+        cypherField,
     });
-    const apocClause = new CypherBuilder.apoc.RunFirstColumn(
-        cypherField.statement,
-        apocParamsMap,
-        Boolean(expectMultipleValues)
-    );
 
+    const unwindClause = new CypherBuilder.Unwind([apocClause, param]);
     const unionExpression = unionWhere
         ? CypherBuilder.concat(new CypherBuilder.With("*"), new CypherBuilder.RawCypher(`${unionWhere} `))
         : new CypherBuilder.RawCypher("");
 
-    const unwindClause = new CypherBuilder.Unwind([apocClause, param]);
     const projectionExpression = new CypherBuilder.RawCypher(`${projectionStr}`);
     let returnData: CypherBuilder.Expr = !isProjectionStrEmpty
         ? projectionExpression
@@ -583,6 +562,7 @@ function translateCypherProjection({
         returnData = CypherBuilder.collect(returnData);
     }
     const retClause = new CypherBuilder.Return([returnData, param]);
+
     const callSt = new CypherBuilder.Call(
         CypherBuilder.concat(unwindClause, unionExpression, ...subqueries, retClause)
     ).with(new CypherBuilder.NamedVariable(chainStr));
@@ -604,4 +584,48 @@ function translateCypherProjection({
 
     res.projection.push(`${alias}: ${param}`);
     return res;
+}
+
+function createCypherDirectiveApocProcedure({
+    cypherField,
+    field,
+    expectMultipleValues,
+    context,
+    nodeRef,
+}: {
+    cypherField: CypherField;
+    field: ResolveTree;
+    expectMultipleValues: boolean;
+    context: Context;
+    nodeRef: CypherBuilder.Node;
+}): CypherBuilder.apoc.RunFirstColumn {
+    // Null default argument values are not passed into the resolve tree therefore these are not being passed to
+    // `apocParams` below causing a runtime error when executing.
+    const nullArgumentValues = cypherField.arguments.reduce(
+        (r, argument) => ({
+            ...r,
+            [argument.name.value]: null,
+        }),
+        {}
+    );
+
+    const rawApocParams = Object.entries({ ...nullArgumentValues, ...field.args });
+
+    const apocParams: Record<string, CypherBuilder.Param> = rawApocParams.reduce((acc, [key, value]) => {
+        acc[key] = new CypherBuilder.Param(value);
+        return acc;
+    }, {});
+
+    const apocParamsMap = new CypherBuilder.Map({
+        ...apocParams,
+        this: nodeRef,
+        ...(context.auth && { auth: new CypherBuilder.NamedParam("auth") }),
+        ...(Boolean(context.cypherParams) && { cypherParams: new CypherBuilder.NamedParam("cypherParams") }),
+    });
+    const apocClause = new CypherBuilder.apoc.RunFirstColumn(
+        cypherField.statement,
+        apocParamsMap,
+        Boolean(expectMultipleValues)
+    );
+    return apocClause;
 }
