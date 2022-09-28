@@ -63,7 +63,7 @@ jobs:
           NEO_USER: neo4j
           NEO_PASSWORD: password
           NEO_URL: bolt://localhost:7687
-      - if: ${{ env.CODECOV_TOKEN != '' }}
+      - if: ${{ env.CODECOV_TOKEN != '' && matrix.package == "graphql" }}
         name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
