@@ -160,7 +160,7 @@ export function translateCypherDirectiveProjection({
 
     const callSt = new CypherBuilder.Call(
         CypherBuilder.concat(unwindClause, unionExpression, ...subqueries, returnClause)
-    ).with(new CypherBuilder.NamedVariable(chainStr));
+    ).innerWith(new CypherBuilder.NamedVariable(chainStr));
 
     const sortInput = (context.resolveTree.args.sort ??
         (context.resolveTree.args.options as any)?.sort ??
