@@ -225,7 +225,7 @@ export default function createProjectionAndParams({
                     new CypherBuilder.Call(unionClause),
                     collectAndLimitStatements
                 );
-                res.subqueries.push(new CypherBuilder.Call(unionAndSort).with(parentNode));
+                res.subqueries.push(new CypherBuilder.Call(unionAndSort).innerWith(parentNode));
                 res.projection.push(`${alias}: ${unionVariableName}`);
 
                 return res;
@@ -256,7 +256,7 @@ export default function createProjectionAndParams({
                 optionsInput,
                 authValidateStrs: recurse.meta?.authValidateStrs,
             });
-            res.subqueries.push(new CypherBuilder.Call(subquery).with(parentNode));
+            res.subqueries.push(new CypherBuilder.Call(subquery).innerWith(parentNode));
             res.projection.push(`${alias}: ${param}`);
 
             return res;
@@ -287,7 +287,7 @@ export default function createProjectionAndParams({
                     context,
                     nodeVariable: varName,
                 })
-            ).with(new CypherBuilder.NamedNode(varName));
+            ).innerWith(new CypherBuilder.NamedNode(varName));
 
             const connection = connectionClause.build(`${varName}_connection_${field.alias}`); // TODO: remove build from here
             const stupidParams = connection.params;

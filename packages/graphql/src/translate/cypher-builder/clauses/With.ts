@@ -26,12 +26,15 @@ import type { Variable } from "../variables/Variable";
 import { Clause } from "./Clause";
 import { WithOrder } from "./mixins/WithOrder";
 import { WithReturn } from "./mixins/WithReturn";
-import { applyMixins } from "./utils/apply-mixin";
 import { WithWhere } from "./mixins/WithWhere";
+import { mixin } from "./utils/mixin";
 
 // With requires an alias for expressions that are not variables
 export type WithProjection = Variable | [Expr, string | Variable | Literal];
 
+export interface With extends WithOrder, WithReturn, WithWhere {}
+
+@mixin(WithOrder, WithReturn, WithWhere)
 export class With extends Clause {
     private projection: Projection;
     private isDistinct = false;
@@ -74,7 +77,3 @@ export class With extends Clause {
         return this.withStatement;
     }
 }
-
-export interface With extends WithOrder, WithReturn, WithWhere {}
-
-applyMixins(With, [WithOrder, WithReturn, WithWhere]);

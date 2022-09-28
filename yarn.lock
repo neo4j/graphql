@@ -2569,7 +2569,7 @@ __metadata:
     jest: ">=28.0.0 <29.0.0-0"
     neo4j-driver: 5.0.1
     pluralize: 8.0.0
-    randomstring: 1.1.5
+    randomstring: 1.2.2
     supertest: 6.2.4
     ts-jest: 28.0.8
     typescript: 4.8.3
@@ -2587,7 +2587,7 @@ __metadata:
     "@neo4j-ndl/react": 0.8.0
     "@neo4j/graphql": 3.8.0
     "@neo4j/introspector": ^1.0.2
-    "@playwright/test": 1.26.0
+    "@playwright/test": 1.26.1
     "@tsconfig/create-react-app": 1.0.2
     "@types/codemirror": 5.60.5
     "@types/lodash.debounce": 4.0.7
@@ -2796,15 +2796,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.26.0":
-  version: 1.26.0
-  resolution: "@playwright/test@npm:1.26.0"
+"@playwright/test@npm:1.26.1":
+  version: 1.26.1
+  resolution: "@playwright/test@npm:1.26.1"
   dependencies:
     "@types/node": "*"
-    playwright-core: 1.26.0
+    playwright-core: 1.26.1
   bin:
     playwright: cli.js
-  checksum: ce85c07e91f26f9f9ae9951011030347469ec3aa0fc2b2ab525e202cbcb9ba6dafe12d12ee10c13675c4ae8786f9ecd7b54bbe88034ad5f83b35d940cefc022c
+  checksum: 872bc58dfa8f8a94547b69aaf7e88178213e2201a17aced1b425ef6b13bdd2b53e7274ae8f7ca57dfc189b214be5da5e3290f80b03e5bf5bdc4f3ff0ccd38375
   languageName: node
   linkType: hard
 
@@ -13407,7 +13407,7 @@ __metadata:
     jsonwebtoken: 8.5.1
     neo4j-driver: 5.0.1
     nodemon: 2.0.20
-    randomstring: 1.1.5
+    randomstring: 1.2.2
     ts-jest: 28.0.8
     ts-node: 10.9.1
     tsconfig-paths: 4.1.0
@@ -14699,12 +14699,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.26.0":
-  version: 1.26.0
-  resolution: "playwright-core@npm:1.26.0"
+"playwright-core@npm:1.26.1":
+  version: 1.26.1
+  resolution: "playwright-core@npm:1.26.1"
   bin:
     playwright: cli.js
-  checksum: bd1da7baad202d48e51eb4810ff75960e5a61d137059031dd71a55856f4387e5b42086ea0d3e37d9a595cb5f65d19e2db19e0e06b873dd30a2f0d7177d5d7b41
+  checksum: 6347224c28c1ec21d49b659ae35452955e2d8a8ff7aa578f0a0dbb1eccfbcea97e7400446335e966c2a1cbb356381d78131ea65e4a2f19a3eccfb58d33aed0ca
   languageName: node
   linkType: hard
 
@@ -15595,17 +15595,6 @@ __metadata:
     randombytes: ^2.0.5
     safe-buffer: ^5.1.0
   checksum: 33734bb578a868d29ee1b8555e21a36711db084065d94e019a6d03caa67debef8d6a1bfd06a2b597e32901ddc761ab483a85393f0d9a75838f1912461d4dbfc7
-  languageName: node
-  linkType: hard
-
-"randomstring@npm:1.1.5":
-  version: 1.1.5
-  resolution: "randomstring@npm:1.1.5"
-  dependencies:
-    array-uniq: 1.0.2
-  bin:
-    randomstring: bin/randomstring
-  checksum: 7e969682b4f6e32fd947870e3ec2b271359c98aecdd2d8370b87a13df5512ac0e19d5bc5846abbae8b204934b77db52ffa9ca5c0b16a8127a79543dbaa5c6a3c
   languageName: node
   linkType: hard
 
