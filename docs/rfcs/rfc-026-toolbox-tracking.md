@@ -7,30 +7,44 @@ For reference:
 ## Problem
 
 Now that the GraphQL Toolbox has been published under https://graphql-toolbox.neo4j.io and has had some exposure in various forms it's time to gather data
-regarding how the GraphQL Toolbox is used. Hence adding basic tracking metrics is proposed in this pitch. 
-
-
-### User audience
-
-The `@neo4j/graphql` library's user audience are full stack developers who want a GraphQL API quickly without worrying about the database.
-
-The GraphQL Toolbox can further include developers wanting to experiment with GraphQL and Neo4j in general, yet also developers who want to experiment with/edit the (introspected) schema.  
-The main aim is for prototyping and rapid development for both experienced as well as inexperienced users.
+regarding how the GraphQL Toolbox is used. Hence adding tracking metrics is proposed in this pitch. 
 
 ### Tracking consent
-We need to ask for tracking consent. Opt-in? Or can we do opt-out?
+
+The user needs to know that we are tracking certain events and needs to have the option to opt out.
+
+We can display a message that we enabled tracking by default and have a switch/checkbox in the settings for the user to allow/deny tracking at any time.
+
 
 ### Requirements
 
 Track basic metrics with [Segment](https://segment.com/docs/connections/sources/catalog/libraries/website/javascript/). Segment offers a JS library that we can leverage.
+
 Create a spreadsheet to list all the tracking events, their name, why we track it, etc. See a proposed structure of the document below with an example entry:
 
 | Event Category |  Event | Display Name  | Event fires once for every time  | Property  | Property type  | Value  | Why capture this?  | 
 |---|---|---|---|---| ---|---|---|
 | Environment Info  | toolbox-ready  |  Toolbox loaded | Toolbox app loaded  |  urlParameterPresent | Boolean |  - |  Track if the URL parameters are used |
- 		 					
 
-A list of questions we need to answer:
+#### Type definitions and queries/mutations
+
+Track high level details of type definitions.
+- Number of types
+- Quantity of directive usage
+- Number of interfaces and unions
+
+Track high level information of queries/mutations:
+- Per executed query/mutation: complexity calculation with third-party lib. The [graphql-query-complexity](https://github.com/slicknode/graphql-query-complexity) lib seems to be the best choice.
+
+
+#### Additional tracking
+
+- Track "Want us to host your API for you? Click here to register your interest"
+- Track "Publish your API feature coming soon! Click here to register your interest"
+
+#### Tracking with UX focus
+
+A list of questions we potentially need to answer (roughly ordered by priority):
 
 -   Is the database introspection being used via the initial modal?
 -   Is the database introspection (the `introspect` button) being used via the type definitions editor?
@@ -43,16 +57,16 @@ A list of questions we need to answer:
 -   Are users adding queries or mutations via the button at the bottom of the Explorer component? Which type (`query` or `mutation`)?
 -   Are users reading the schema documentation in the Help&Learn drawer? Or via enabling the docs in the Explorer component?
 
-=> TODO: refine the questions and pick the most valuable ones!
 
 ## Risks
 
 Tracking events which have no or low business or UX value.
+
 We rely on other people within the organisation to link the Segment source (the GraphQL Toolbox) to the correct destination (for example Mixpanel or BigQuery).
 
 ### Rabbit holes
 
-tbd
+- Track too many UX related features
 
 ### Security consideration
 
@@ -60,4 +74,4 @@ Do not track any sensitive data! The tracking will follow the standards applied 
 
 ## Out of Scope
 
-Evaluating the tracking results
+- Evaluating or analysing the tracking results
