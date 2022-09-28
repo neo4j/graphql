@@ -108,6 +108,7 @@ Note:
 * We want to be able to use offset on connections and cursor on normal fields
 * We want to be able to sort on relationships fields for connections using offset pagination
 * [Sorting on aggregations](https://github.com/neo4j/graphql/issues/1156)
+* Add an opt-in field as cursor instead of the auto-generated one
 
 ## Open Questions
 
@@ -115,6 +116,8 @@ Note:
 * Sorting on multiple fields (`sort: [{title: ASC}, {age: ASC}]` vs {title: ASC, age: ASC}`).
 * [Default sorting](https://github.com/neo4j/graphql/issues/499)
 * [Deep sorting](https://github.com/neo4j/graphql/issues/145)
+* How to return `cursor` on normal fields with cursor pagination?
+* Relay spec vs offset pagination
 
 ## Proposed solution
 
@@ -151,6 +154,8 @@ query BottomMovies {
 > TODO
 
 ### Cursor pagination API
+
+> Note that cursor based pagination **requires** that sorting fields are at top level (i.e. not in options)
 
 #### Simple Queries
 
