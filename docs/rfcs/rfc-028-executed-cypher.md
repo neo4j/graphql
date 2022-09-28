@@ -72,6 +72,8 @@ This is how the GraphQL response would look like when the setting is enabled:
 }
 ```
 
+==>> Toolbox, include a tooltip to say that "surfacing cypher" is now available.
+
 #### Documentation
 
 See the comment aboout security considerations below, this needs to be documented.
