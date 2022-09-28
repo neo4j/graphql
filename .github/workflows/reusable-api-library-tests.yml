@@ -58,11 +58,11 @@ jobs:
         name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
-          token: ${{ secrets.CODECOV_TOKEN && matrix.package == "graphql" }}
+          token: ${{ secrets.CODECOV_TOKEN && matrix.package == 'graphql' }}
           directory: ./packages/graphql/coverage/
           flags: graphql,schema
           fail_ci_if_error: true
-      - if: ${{ env.CODECOV_TOKEN != '' && matrix.package == "graphql" }}
+      - if: ${{ env.CODECOV_TOKEN != '' && matrix.package == 'graphql' }}
         name: Archive coverage report
         uses: actions/upload-artifact@v3
         with:
