@@ -150,9 +150,6 @@ query BottomMovies {
 **Example**
 > TODO
 
-**Expect Cypher**
-> TODO
-> 
 ### Cursor pagination API
 
 #### Simple Queries
@@ -168,9 +165,6 @@ query BottomMovies {
 #### Aggregations
 
 **Example**
-> TODO
-
-**Expect Cypher**
 > TODO
 
 ## Out of scope and future work
