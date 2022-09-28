@@ -1,19 +1,25 @@
 # Surface executed cypher
 
+## Background
+
+The GraphQL Toolbox in its current shape is a great tool for first time users to explore the library features, explore queries, debugging, but once people have gained a better understanding and confidence in using the library they might not need the Toolbox anymore.
+By adding a way to surface the cypher translation of their GraphQL queries we can _retain more users_ who might be interested in understanding why some queries are slow, and by giving them additional information we can create a user journey where a developer uses the Toolbox to debug a problem or a slow query, then they reach out to us on Discord by sending a link to the Toolbox. This was we can make the Toolbox part of the developer experience of Neo4j GraphQL community.
+
 ## Problem
 
-In the Neo4j GraphQL Toolbox we want to be able to show the executed cypher and its params for each query.
-Maybe other use cases need this option too for logging or other use cases.
+In the Neo4j GraphQL Toolbox we want to be able to show the executed cypher and its releated params for each query.
+
+This feature may also be of use for other scenarios or customer use cases.
 
 ## Proposed Solution
 
-Configuration boolean to include the executed cypher and its params in the GraphQL response `extensions`. See in the [GraphQL specs](https://spec.graphql.org/June2018/#sec-Response-Format ).
+Configuration boolean to include the executed cypher and its params in the GraphQL response `extensions`. See the [GraphQL specs](https://spec.graphql.org/June2018/#sec-Response-Format) for more information regarding the `extensions`.
 
-(The `extensions` can also be used to provide rate limit data, See "GraphQL production ready" book)
+Side note: the `extensions` can also be used to provide for instance rate limit data, see the [GraphQL production ready](https://book.productionreadygraphql.com/) book.
 
-### Question
+## Alternative approach
 
-Shall we have the ability to do `dry-run`s? That is not possible right now. This could be useful for performance reasons. Yet we also have the TCK tests and the performance tests for that.
+Shall we have the ability to do `dry-run`s? That is not possible at the moment. This could be useful for investigating performance issues. Yet we also have the TCK tests and the performance tests that cover this topic.
 
 ## Alternative solution
 
@@ -27,12 +33,12 @@ const neoSchema = new Neo4jGraphQL({
     typeDefs,
     driver,
     config: {
-        includeCypherInGraphQLResponse: true
+        includeCypherInGraphQLResponse: true  // TODO: better name
     },
 });
-````
+```
 
-This is how the GraphQL response would look like:
+This is how the GraphQL response would look like when the setting is enabled:
 ```json
 {
     "data": {
@@ -40,7 +46,7 @@ This is how the GraphQL response would look like:
             "name": "My name"
         }
     },
-    "error": {},  // <- This is where the "error" is located if there is one
+    "error": {},  // <- This is where the "error" would be located if there is one.
     "extensions": {
         "cypher": {
             "query": "CALL {\\nCREATE (this0:Genre)\\nSET this0.name = $this0_name\\nRETURN this0\\n}\\nRETURN [\\nthis0 { .name }] AS data", // <- JSON stringified cypher query
@@ -49,23 +55,27 @@ This is how the GraphQL response would look like:
                 "resolvedCallbacks": {}
             }
         }
-        "costs": {} // <- just to show for a future use case, append other "extensions"
+        "costs": {} // <- just to show for a future/other use case
     }
 }
 ```
 
-Questisons:
+### Technical details
+This can likely be achieved by adding the `extensions` to the [`execute` util method](https://github.com/neo4j/graphql/blob/dev/packages/graphql/src/utils/execute.ts#L34) `ExecuteResult`.
+
+Questions:
 - Is JSON stringfy the query the best option we have?
 - For (very) large queries, will the payload size be an issue?
 
 ## Risks
 
-tbd
+Large queries may slow down the performance of the GraphQL server.
 
 ### Security consideration
 
 Do we expose any sensitive data this way?
-Needs to be on opt-in bases, even in the GraphQL Toolbox!
+
+Needs to be on opt-in bases with a configuration setting, even in the Neo4j GraphQL Toolbox!
 
 ## Out of Scope
 
