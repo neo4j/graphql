@@ -39,7 +39,7 @@
         "cross-env": "7.0.3",
         "jest": ">=28.0.0 <29.0.0-0",
         "nodemon": "2.0.20",
-        "randomstring": "1.1.5",
+        "randomstring": "1.2.2",
         "ts-jest": "28.0.8",
         "ts-node": "10.9.1",
         "tsconfig-paths": "4.1.0",
