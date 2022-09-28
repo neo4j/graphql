@@ -114,6 +114,12 @@ jobs:
           directory: ./packages/${{ matrix.packages.package }}/coverage-nightly/
           flags: ${{ matrix.packages.package }},nightly,integration
           fail_ci_if_error: true
+      - if: ${{ env.CODECOV_TOKEN != '' && matrix.package == "graphql" }}
+        name: Archive coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: integration-nightly-coverage-${{ matrix.package }}
+          path: packages/${{ matrix.package }}/coverage/
       - name: Stop Neo4j container
         if: always()
         run: |
