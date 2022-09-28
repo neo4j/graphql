@@ -21,9 +21,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { GraphQLUnionType } from "graphql";
 import type { Node } from "../../../classes";
 import type { GraphQLSortArg, Context, CypherField } from "../../../types";
-
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
-
 // eslint-disable-next-line import/no-cycle
 import createProjectionAndParams, { ProjectionMeta } from "../../create-projection-and-params";
 
@@ -54,19 +52,18 @@ export function translateCypherDirectiveProjection({
     param: string;
     res: Res;
 }): Res {
-    let projectionExpr: CypherBuilder.Expr | undefined;
-    const returnVariable = new CypherBuilder.NamedVariable(param);
-
-    const isArray = Boolean(cypherField.typeMeta.array);
-    const fieldFields = field.fieldsByTypeName;
-
-    const graphqlType = context.schema.getType(cypherField.typeMeta.name);
-
     const referenceNode = context.nodes.find((x) => x.name === cypherField.typeMeta.name);
-
+    const graphqlType = context.schema.getType(cypherField.typeMeta.name);
     const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
 
+    const isArray = Boolean(cypherField.typeMeta.array);
+    const expectMultipleValues = Boolean((referenceNode || referenceUnion) && isArray);
+
+    const fieldFields = field.fieldsByTypeName;
+
+    const returnVariable = new CypherBuilder.NamedVariable(param);
     const subqueries: CypherBuilder.Clause[] = [];
+    let projectionExpr: CypherBuilder.Expr | undefined;
     let hasUnionLabelsPredicate: CypherBuilder.Predicate | undefined;
 
     if (referenceNode) {
@@ -87,6 +84,9 @@ export function translateCypherDirectiveProjection({
         res.params = { ...res.params, ...p };
         subqueries.push(...nestedSubqueriesBeforeSort, ...nestedSubqueries);
     } else if (referenceUnion) {
+        const unionProjections: Array<{ predicate: CypherBuilder.Predicate; projection: string }> = [];
+        const labelsSubPredicates: CypherBuilder.Predicate[] = [];
+
         const fieldFieldsKeys = Object.keys(fieldFields);
         const hasMultipleFieldFields = fieldFieldsKeys.length > 1;
 
@@ -97,15 +97,12 @@ export function translateCypherDirectiveProjection({
         if (hasMultipleFieldFields) {
             referencedNodes = referencedNodes?.filter((n) => fieldFieldsKeys.includes(n?.name ?? "")) || [];
         }
-
-        const unionProjections: Array<{ predicate: CypherBuilder.Predicate; projection: string }> = [];
-        const labelsSubPredicates: CypherBuilder.Predicate[] = [];
         referencedNodes.forEach((refNode) => {
             if (refNode) {
                 const cypherNodeRef = new CypherBuilder.NamedNode(param);
                 const hasLabelsPredicates = refNode.getLabels(context).map((label) => cypherNodeRef.hasLabel(label));
-
                 const labelsSubPredicate = CypherBuilder.and(...hasLabelsPredicates);
+
                 labelsSubPredicates.push(labelsSubPredicate);
 
                 if (fieldFields[refNode.name]) {
@@ -135,15 +132,13 @@ export function translateCypherDirectiveProjection({
             }
         });
 
+        hasUnionLabelsPredicate = CypherBuilder.or(...labelsSubPredicates);
         projectionExpr = new CypherBuilder.Case();
         for (const { projection, predicate } of unionProjections) {
             projectionExpr.when(predicate).then(new CypherBuilder.RawCypher(`${param} ${projection}`));
         }
-
-        hasUnionLabelsPredicate = CypherBuilder.or(...labelsSubPredicates);
     }
 
-    const expectMultipleValues = Boolean((referenceNode || referenceUnion) && cypherField.typeMeta.array);
     const runCypherInApocClause = createCypherDirectiveApocProcedure({
         nodeRef: new CypherBuilder.NamedNode(chainStr),
         expectMultipleValues,
@@ -151,8 +146,8 @@ export function translateCypherDirectiveProjection({
         field,
         cypherField,
     });
-
     const unwindClause = new CypherBuilder.Unwind([runCypherInApocClause, param]);
+
     const unionExpression = hasUnionLabelsPredicate
         ? new CypherBuilder.With("*").where(hasUnionLabelsPredicate)
         : undefined;
@@ -175,9 +170,8 @@ export function translateCypherDirectiveProjection({
         if (!res.meta.cypherSortFields) {
             res.meta.cypherSortFields = [];
         }
-        res.subqueriesBeforeSort.push(callSt);
-
         res.meta.cypherSortFields.push(alias);
+        res.subqueriesBeforeSort.push(callSt);
     } else {
         res.subqueries.push(callSt);
     }

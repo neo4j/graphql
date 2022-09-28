@@ -37,6 +37,7 @@ import { collectUnionSubqueriesResults } from "./projection/subquery/collect-uni
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
 // eslint-disable-next-line import/no-cycle
 import { createConnectionClause } from "./connection-clause/create-connection-clause";
+// eslint-disable-next-line import/no-cycle
 import { translateCypherDirectiveProjection } from "./projection/subquery/translate-cypher-directive-projection";
 
 interface Res {
