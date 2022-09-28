@@ -80,7 +80,7 @@
         "supertest": "6.2.4",
         "ts-jest": "28.0.8",
         "ts-node": "10.9.1",
-        "typescript": "4.8.3",
+        "typescript": "4.8.4",
         "ws": "8.9.0"
     },
     "dependencies": {
