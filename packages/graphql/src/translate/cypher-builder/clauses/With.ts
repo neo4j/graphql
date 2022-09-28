@@ -27,6 +27,7 @@ import { Clause } from "./Clause";
 import { WithOrder } from "./mixins/WithOrder";
 import { WithReturn } from "./mixins/WithReturn";
 import { applyMixins } from "./utils/apply-mixin";
+import { WithWhere } from "./mixins/WithWhere";
 
 // With requires an alias for expressions that are not variables
 export type WithProjection = Variable | [Expr, string | Variable | Literal];
@@ -56,9 +57,10 @@ export class With extends Clause {
         const orderByStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });
         const returnStr = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
         const withStr = compileCypherIfExists(this.withStatement, env, { prefix: "\n" });
+        const whereStr = compileCypherIfExists(this.whereSubClause, env, { prefix: "\n" });
         const distinctStr = this.isDistinct ? " DISTINCT" : "";
 
-        return `WITH${distinctStr} ${projectionStr}${orderByStr}${withStr}${returnStr}`;
+        return `WITH${distinctStr} ${projectionStr}${whereStr}${orderByStr}${withStr}${returnStr}`;
     }
 
     // Cannot be part of WithWith due to dependency cycles
@@ -73,6 +75,6 @@ export class With extends Clause {
     }
 }
 
-export interface With extends WithOrder, WithReturn {}
+export interface With extends WithOrder, WithReturn, WithWhere {}
 
-applyMixins(With, [WithOrder, WithReturn]);
+applyMixins(With, [WithOrder, WithReturn, WithWhere]);

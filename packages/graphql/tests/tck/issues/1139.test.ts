@@ -92,10 +92,12 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
                 ORDER BY update.date_added DESC
                 LIMIT 5\\", { this: this, auth: $auth }) AS this_updates
                 WITH *
-                WHERE (this_updates:\`Post\`) OR (this_updates:\`Movie\`) OR (this_updates:\`User\`)
-                RETURN collect(CASE WHEN this_updates:\`Post\` THEN this_updates { __resolveType: \\"Post\\" }
-                WHEN this_updates:\`Movie\` THEN this_updates { __resolveType: \\"Movie\\" }
-                WHEN this_updates:\`User\` THEN this_updates { __resolveType: \\"User\\" } END) AS this_updates
+                WHERE (this_updates:\`Post\` OR this_updates:\`Movie\` OR this_updates:\`User\`)
+                RETURN collect(CASE
+                    WHEN this_updates:\`Post\` THEN this_updates { __resolveType: \\"Post\\" }
+                    WHEN this_updates:\`Movie\` THEN this_updates { __resolveType: \\"Movie\\" }
+                    WHEN this_updates:\`User\` THEN this_updates { __resolveType: \\"User\\" }
+                END) AS this_updates
             }
             RETURN this { updates: this_updates } as this"
         `);

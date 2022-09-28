@@ -105,6 +105,7 @@ export default function createProjectionAndParams({
         const authableField = node.authableFields.find((x) => x.fieldName === field.name);
 
         if (authableField) {
+            // TODO: move this to translate-top-level
             if (authableField.auth) {
                 const allowAndParams = createAuthAndParams({
                     entity: authableField,
@@ -447,9 +448,7 @@ function translateCypherProjection({
     param: string;
     res: Res;
 }): Res {
-    const projectionAuthStrs: string[] = [];
-    const unionWheres: string[] = [];
-    let projectionStr = "";
+    let projectionExpr: CypherBuilder.Expr | undefined;
 
     const isArray = cypherField.typeMeta.array;
     const fieldFields = field.fieldsByTypeName;
@@ -461,11 +460,12 @@ function translateCypherProjection({
     const referenceUnion = graphqlType instanceof GraphQLUnionType ? graphqlType.astNode : undefined;
 
     const subqueries: CypherBuilder.Clause[] = [];
+    let labelsPredicate: CypherBuilder.Predicate | undefined; // FIXME
+
     if (referenceNode) {
         const {
             projection: str,
             params: p,
-            meta,
             subqueries: nestedSubqueries,
             subqueriesBeforeSort: nestedSubqueriesBeforeSort,
         } = createProjectionAndParams({
@@ -476,12 +476,9 @@ function translateCypherProjection({
             chainStr: param,
         });
 
-        projectionStr = `${param} ${str}`;
+        projectionExpr = new CypherBuilder.RawCypher(`${param} ${str}`);
         res.params = { ...res.params, ...p };
         subqueries.push(...nestedSubqueriesBeforeSort, ...nestedSubqueries);
-        if (meta?.authValidateStrs?.length) {
-            projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
-        }
     } else if (referenceUnion) {
         const fieldFieldsKeys = Object.keys(fieldFields);
         const hasMultipleFieldFields = fieldFieldsKeys.length > 1;
@@ -494,17 +491,21 @@ function translateCypherProjection({
             referencedNodes = referencedNodes?.filter((n) => fieldFieldsKeys.includes(n?.name ?? "")) || [];
         }
 
-        const unionProjections: Array<{ predicate: string; projection: string }> = [];
+        const unionProjections: Array<{ predicate: CypherBuilder.Predicate; projection: string }> = [];
+        const labelsSubPredicates: CypherBuilder.Predicate[] = [];
         referencedNodes.forEach((refNode) => {
             if (refNode) {
-                const labelsStatements = refNode.getLabels(context).map((label) => `${param}:\`${label}\``);
-                unionWheres.push(`(${labelsStatements.join(" AND ")})`);
+                const cypherNodeRef = new CypherBuilder.NamedNode(param);
+                const hasLabelsPredicates = refNode.getLabels(context).map((label) => cypherNodeRef.hasLabel(label));
+
+                const labelsSubPredicate = CypherBuilder.and(...hasLabelsPredicates);
+                labelsSubPredicates.push(labelsSubPredicate);
 
                 if (fieldFields[refNode.name]) {
                     const {
                         projection: str,
                         params: p,
-                        meta, // TODO: projectionsubqueries?
+                        // TODO: projectionsubqueries?
                     } = createProjectionAndParams({
                         resolveTree: field,
                         node: refNode,
@@ -514,31 +515,26 @@ function translateCypherProjection({
 
                     unionProjections.push({
                         projection: `{ __resolveType: "${refNode.name}", ${str.replace("{", "")}`,
-                        predicate: labelsStatements.join(" AND "),
+                        predicate: labelsSubPredicate,
                     });
 
                     res.params = { ...res.params, ...p };
-
-                    if (meta?.authValidateStrs?.length) {
-                        projectionAuthStrs.push(meta.authValidateStrs.join(" AND "));
-                    }
                 } else {
                     unionProjections.push({
                         projection: `{ __resolveType: "${refNode.name}" }`,
-                        predicate: labelsStatements.join(" AND "),
+                        predicate: labelsSubPredicate,
                     });
                 }
             }
         });
 
-        projectionStr = `CASE ${unionProjections
-            .map(({ predicate, projection }) => `WHEN ${predicate} THEN ${param} ${projection}`)
-            .join("\n")} END`;
+        projectionExpr = new CypherBuilder.Case();
+        for (const { projection, predicate } of unionProjections) {
+            projectionExpr.when(predicate).then(new CypherBuilder.RawCypher(`${param} ${projection}`));
+        }
+
+        labelsPredicate = CypherBuilder.or(...labelsSubPredicates);
     }
-
-    const unionWhere = unionWheres.length ? `WHERE ${unionWheres.join(" OR ")}` : "";
-
-    const isProjectionStrEmpty = projectionStr.trim().length === 0;
 
     const expectMultipleValues = Boolean((referenceNode || referenceUnion) && cypherField.typeMeta.array);
     const apocClause = createCypherDirectiveApocProcedure({
@@ -550,14 +546,9 @@ function translateCypherProjection({
     });
 
     const unwindClause = new CypherBuilder.Unwind([apocClause, param]);
-    const unionExpression = unionWhere
-        ? CypherBuilder.concat(new CypherBuilder.With("*"), new CypherBuilder.RawCypher(`${unionWhere} `))
-        : new CypherBuilder.RawCypher("");
+    const unionExpression = labelsPredicate ? new CypherBuilder.With("*").where(labelsPredicate) : undefined;
 
-    const projectionExpression = new CypherBuilder.RawCypher(`${projectionStr}`);
-    let returnData: CypherBuilder.Expr = !isProjectionStrEmpty
-        ? projectionExpression
-        : new CypherBuilder.NamedVariable(param);
+    let returnData: CypherBuilder.Expr = projectionExpr || new CypherBuilder.NamedVariable(param);
     if (isArray) {
         returnData = CypherBuilder.collect(returnData);
     }

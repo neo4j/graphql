@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { HasLabel } from "../expressions/HasLabel";
 import { MatchPatternOptions, Pattern } from "../Pattern";
 import { RelationshipRef } from "./RelationshipRef";
 import { Variable } from "./Variable";
@@ -39,6 +40,14 @@ export class NodeRef extends Variable {
             source: this,
             target: node,
         });
+    }
+
+    public hasLabels(...labels: string[]): HasLabel {
+        return new HasLabel(this, labels);
+    }
+
+    public hasLabel(label: string): HasLabel {
+        return new HasLabel(this, [label]);
     }
 
     /** Creates a new Pattern from this node */

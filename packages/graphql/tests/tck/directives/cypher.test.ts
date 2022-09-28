@@ -465,9 +465,11 @@ describe("Cypher directive", () => {
                 WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
                 RETURN n\\", { title: $thisparam0, this: this, auth: $auth }) AS this_movieOrTVShow
                 WITH *
-                WHERE (this_movieOrTVShow:\`Movie\`) OR (this_movieOrTVShow:\`TVShow\`)
-                RETURN collect(CASE WHEN this_movieOrTVShow:\`Movie\` THEN this_movieOrTVShow { __resolveType: \\"Movie\\",  .id, .title, topActor: this_movieOrTVShow_topActor }
-                WHEN this_movieOrTVShow:\`TVShow\` THEN this_movieOrTVShow { __resolveType: \\"TVShow\\",  .id, .title, topActor: this_movieOrTVShow_topActor } END) AS this_movieOrTVShow
+                WHERE (this_movieOrTVShow:\`Movie\` OR this_movieOrTVShow:\`TVShow\`)
+                RETURN collect(CASE
+                    WHEN this_movieOrTVShow:\`Movie\` THEN this_movieOrTVShow { __resolveType: \\"Movie\\",  .id, .title, topActor: this_movieOrTVShow_topActor }
+                    WHEN this_movieOrTVShow:\`TVShow\` THEN this_movieOrTVShow { __resolveType: \\"TVShow\\",  .id, .title, topActor: this_movieOrTVShow_topActor }
+                END) AS this_movieOrTVShow
             }
             RETURN this { movieOrTVShow: this_movieOrTVShow } as this"
         `);
@@ -507,9 +509,11 @@ describe("Cypher directive", () => {
                 WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
                 RETURN n\\", { title: $thisparam0, this: this, auth: $auth }) AS this_movieOrTVShow
                 WITH *
-                WHERE (this_movieOrTVShow:\`Movie\`) OR (this_movieOrTVShow:\`TVShow\`)
-                RETURN collect(CASE WHEN this_movieOrTVShow:\`Movie\` THEN this_movieOrTVShow { __resolveType: \\"Movie\\" }
-                WHEN this_movieOrTVShow:\`TVShow\` THEN this_movieOrTVShow { __resolveType: \\"TVShow\\" } END) AS this_movieOrTVShow
+                WHERE (this_movieOrTVShow:\`Movie\` OR this_movieOrTVShow:\`TVShow\`)
+                RETURN collect(CASE
+                    WHEN this_movieOrTVShow:\`Movie\` THEN this_movieOrTVShow { __resolveType: \\"Movie\\" }
+                    WHEN this_movieOrTVShow:\`TVShow\` THEN this_movieOrTVShow { __resolveType: \\"TVShow\\" }
+                END) AS this_movieOrTVShow
             }
             RETURN this { movieOrTVShow: this_movieOrTVShow } as this"
         `);
