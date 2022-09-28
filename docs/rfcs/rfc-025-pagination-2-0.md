@@ -106,12 +106,15 @@ Note:
 * Consistent connections vs normal fields API
 * Be able to use cursor based pagination **or** offset based pagination, but not both at the same time
 * We want to be able to use offset on connections and cursor on normal fields
-* We want to be able to sort on relationships fields for connections using offset pagination 
+* We want to be able to sort on relationships fields for connections using offset pagination
+* [Sorting on aggregations](https://github.com/neo4j/graphql/issues/1156)
 
 ## Open Questions
 
-* Do we want to change the underlying implementation of cursors so those use constant indexes?
-* Sorting on multiple fields (`sort: [{title: ASC}, {age: ASC}]` vs {title: ASC, age: ASC}`)
+* Do we want to change the underlying implementation of cursors so those use constant indexes
+* Sorting on multiple fields (`sort: [{title: ASC}, {age: ASC}]` vs {title: ASC, age: ASC}`).
+* [Default sorting](https://github.com/neo4j/graphql/issues/499)
+* [Deep sorting](https://github.com/neo4j/graphql/issues/145)
 
 ## Proposed solution
 
