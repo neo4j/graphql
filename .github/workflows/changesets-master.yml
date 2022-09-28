@@ -92,7 +92,7 @@ jobs:
     steps:
       - name: Send Slack announcement of release
         if: matrix.package.name == '@neo4j/graphql'
-        uses: slackapi/slack-github-action@v1.21.0
+        uses: slackapi/slack-github-action@v1.22.0
         with:
           payload: '{"version":"${{ matrix.package.version }}"}'
         env:

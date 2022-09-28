@@ -25,6 +25,21 @@ export function isString(value: unknown): value is string {
     return typeof value === "string";
 }
 
+/** Checks if value is object (array not included) */
+export function isObject(value: unknown): value is object {
+    return typeof value === "object" && !Array.isArray(value) && value !== null;
+}
+
+/** Checks if two value have the same type */
+export function isSameType<T>(a: T, b: unknown): b is T {
+    return typeof a === typeof b && isObject(a) === isObject(b) && Array.isArray(a) === Array.isArray(b);
+}
+
+/** Checks if two objects have the number of properties */
+export function haveSameLength(o1: Record<string, any>, o2: Record<string, any>) {
+    return Object.keys(o1).length === Object.keys(o2).length;
+}
+
 /** Checks if value is a Neo4j int object */
 export function isNeoInt(value: unknown): value is Integer {
     return isInt(value);

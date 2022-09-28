@@ -420,7 +420,7 @@ describe("Cypher Auth isAuthenticated", () => {
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -472,7 +472,7 @@ describe("Cypher Auth isAuthenticated", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_posts0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_posts0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

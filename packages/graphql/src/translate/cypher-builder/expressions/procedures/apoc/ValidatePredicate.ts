@@ -23,9 +23,9 @@ import type { Predicate } from "../../../types";
 
 export class ValidatePredicate extends CypherASTNode {
     private predicate: Predicate;
-    private message: string | undefined;
+    private message: string;
 
-    constructor(predicate: Predicate, message?: string) {
+    constructor(predicate: Predicate, message: string) {
         super();
         this.predicate = predicate;
         this.message = message;
@@ -33,7 +33,6 @@ export class ValidatePredicate extends CypherASTNode {
 
     public getCypher(env: CypherEnvironment): string {
         const predicateCypher = this.predicate.getCypher(env);
-        const messageStr = this.message ? `, "${this.message}"` : "";
-        return `apoc.util.validatePredicate(${predicateCypher}${messageStr}, [0])`;
+        return `apoc.util.validatePredicate(${predicateCypher}, "${this.message}", [0])`;
     }
 }

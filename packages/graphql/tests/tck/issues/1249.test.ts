@@ -87,14 +87,15 @@ describe("https://github.com/neo4j/graphql/issues/1429", () => {
             CALL {
                 WITH this
                 MATCH (this)-[thisthis0:MATERIAL_BULK]->(this_material:\`Material\`)
-                WITH this_material { .id, suppliersConnection: apoc.cypher.runFirstColumnSingle(\\"CALL {
-                WITH this_material
-                MATCH (this_material)-[this_material_material_supplier_relationship:MATERIAL_SUPPLIER]->(this_material_supplier:Supplier)
-                WITH collect({ supplierMaterialNumber: this_material_material_supplier_relationship.supplierMaterialNumber, node: { supplierId: this_material_supplier.supplierId } }) AS edges
-                UNWIND edges as edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS suppliersConnection
-                } RETURN suppliersConnection\\", { this_material: this_material, auth: $auth, cypherParams: $cypherParams }) } AS this_material
+                CALL {
+                    WITH this_material
+                    MATCH (this_material)-[this_material_connection_suppliersConnectionthis0:MATERIAL_SUPPLIER]->(this_material_Supplier:\`Supplier\`)
+                    WITH { supplierMaterialNumber: this_material_connection_suppliersConnectionthis0.supplierMaterialNumber, node: { supplierId: this_material_Supplier.supplierId } } AS edge
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS suppliersConnection
+                }
+                WITH this_material { .id, suppliersConnection: suppliersConnection } AS this_material
                 RETURN head(collect(this_material)) AS this_material
             }
             RETURN this { .supplierMaterialNumber, material: this_material } as this"
@@ -104,10 +105,6 @@ describe("https://github.com/neo4j/graphql/issues/1429", () => {
             "{
                 \\"cypherParams\\": {
                     \\"tenant\\": \\"BULK\\"
-                },
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
                 }
             }"
         `);

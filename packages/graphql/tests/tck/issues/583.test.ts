@@ -93,19 +93,19 @@ describe("#583", () => {
             CALL {
                 WITH this
                 MATCH (this)-[thisthis0:ACTED_IN]->(this_Movie:\`Movie\`)
-                RETURN { __resolveType: \\"Movie\\", title: this_Movie.title, awardsGiven: this_Movie.awardsGiven } AS actedIn
+                RETURN { __resolveType: \\"Movie\\", title: this_Movie.title, awardsGiven: this_Movie.awardsGiven } AS this_actedIn
                 UNION
                 WITH this
                 MATCH (this)-[thisthis1:ACTED_IN]->(this_Series:\`Series\`)
-                RETURN { __resolveType: \\"Series\\", title: this_Series.title, awardsGiven: this_Series.awardsGiven } AS actedIn
+                RETURN { __resolveType: \\"Series\\", title: this_Series.title, awardsGiven: this_Series.awardsGiven } AS this_actedIn
                 UNION
                 WITH this
                 MATCH (this)-[thisthis2:ACTED_IN]->(this_ShortFilm:\`ShortFilm\`)
-                RETURN { __resolveType: \\"ShortFilm\\", title: this_ShortFilm.title } AS actedIn
+                RETURN { __resolveType: \\"ShortFilm\\", title: this_ShortFilm.title } AS this_actedIn
             }
-            RETURN collect(actedIn) AS actedIn
+            RETURN collect(this_actedIn) AS this_actedIn
             }
-            RETURN this { .name, actedIn: actedIn } as this"
+            RETURN this { .name, actedIn: this_actedIn } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

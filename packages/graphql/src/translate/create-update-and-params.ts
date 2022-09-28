@@ -425,7 +425,7 @@ export default function createUpdateAndParams({
                     }
 
                     if (relationField.interface) {
-                        subquery.push("RETURN count(*) AS _");
+                        subquery.push(`RETURN count(*) AS update_${varName}_${refNode.name}`);
                     }
                 });
 
@@ -437,7 +437,7 @@ export default function createUpdateAndParams({
             if (relationField.interface) {
                 res.strs.push(`WITH ${withVars.join(", ")}`);
                 res.strs.push("CALL {");
-                res.strs.push(subqueries.join("\nUNION\n"));
+                res.strs.push(subqueries.join("\n}\nCALL {\n\t"));
                 res.strs.push("}");
             } else {
                 res.strs.push(subqueries.join("\n"));

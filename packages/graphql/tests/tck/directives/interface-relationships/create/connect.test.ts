@@ -108,9 +108,10 @@ describe("Interface Relationships - Create connect", () => {
             SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS _
-            UNION
-            	WITH this0
+            	RETURN count(*) AS connect_this0_actedIn_connect_Movie
+            }
+            CALL {
+            		WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect0_node:Series)
             	WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_param0
             	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
@@ -119,7 +120,7 @@ describe("Interface Relationships - Create connect", () => {
             SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_actedIn_connect_Series
             }
             RETURN this0
             }
@@ -129,16 +130,16 @@ describe("Interface Relationships - Create connect", () => {
             CALL {
                 WITH this0
                 MATCH (this0)-[create_this0:ACTED_IN]->(this0_Movie:\`Movie\`)
-                RETURN { __resolveType: \\"Movie\\", runtime: this0_Movie.runtime, title: this0_Movie.title } AS actedIn
+                RETURN { __resolveType: \\"Movie\\", runtime: this0_Movie.runtime, title: this0_Movie.title } AS this0_actedIn
                 UNION
                 WITH this0
                 MATCH (this0)-[create_this1:ACTED_IN]->(this0_Series:\`Series\`)
-                RETURN { __resolveType: \\"Series\\", episodes: this0_Series.episodes, title: this0_Series.title } AS actedIn
+                RETURN { __resolveType: \\"Series\\", episodes: this0_Series.episodes, title: this0_Series.title } AS this0_actedIn
             }
-            RETURN collect(actedIn) AS actedIn
+            RETURN collect(this0_actedIn) AS this0_actedIn
             }
             RETURN [
-            this0 { .name, actedIn: actedIn }] AS data"
+            this0 { .name, actedIn: this0_actedIn }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

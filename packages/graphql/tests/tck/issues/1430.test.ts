@@ -91,13 +91,13 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:HAS_INTERFACE]->(this_ChildOne:\`ChildOne\`)
-                RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS interface
+                RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS this_interface
                 UNION
                 WITH this
                 MATCH (this)-[update_this1:HAS_INTERFACE]->(this_ChildTwo:\`ChildTwo\`)
-                RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS interface
+                RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS this_interface
             }
-            RETURN collect(DISTINCT this { .id, interface: interface }) AS data"
+            RETURN collect(DISTINCT this { .id, interface: this_interface }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -145,9 +145,10 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface0_node)
             		)
             	)
-            	RETURN count(*) AS _
-            UNION
-            	WITH this
+            	RETURN count(*) AS connect_this_connect_interface_ChildOne
+            }
+            CALL {
+            		WITH this
             	OPTIONAL MATCH (this_connect_interface0_node:ChildTwo)
             	WHERE this_connect_interface0_node.name = $this_connect_interface0_node_param0
             	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
@@ -155,20 +156,20 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
             			MERGE (this)-[:HAS_INTERFACE]->(this_connect_interface0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_interface_ChildTwo
             }
             WITH *
             WITH this
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:HAS_INTERFACE]->(this_ChildOne:\`ChildOne\`)
-                RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS interface
+                RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS this_interface
                 UNION
                 WITH this
                 MATCH (this)-[update_this1:HAS_INTERFACE]->(this_ChildTwo:\`ChildTwo\`)
-                RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS interface
+                RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS this_interface
             }
-            RETURN collect(DISTINCT this { .id, interface: interface }) AS data"
+            RETURN collect(DISTINCT this { .id, interface: this_interface }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

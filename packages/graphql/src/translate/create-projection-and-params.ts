@@ -33,8 +33,6 @@ import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import createPointElement from "./projection/elements/create-point-element";
-// eslint-disable-next-line import/no-cycle
-import createConnectionAndParams from "./connection/create-connection-and-params";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
@@ -46,6 +44,8 @@ import { createProjectionSubquery } from "./projection/subquery/create-projectio
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
 // eslint-disable-next-line import/no-cycle
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
+// eslint-disable-next-line import/no-cycle
+import { createConnectionClause } from "./connection-clause/create-connection-clause";
 
 interface Res {
     projection: string[];
@@ -56,7 +56,6 @@ interface Res {
 
 export interface ProjectionMeta {
     authValidateStrs?: string[];
-    connectionFields?: ResolveTree[];
     cypherSortFields?: { alias: string; apocStr: string }[];
 }
 
@@ -75,8 +74,8 @@ export default function createProjectionAndParams({
     varName,
     literalElements,
     resolveType,
-    inRelationshipProjection,
     isRootConnectionField,
+    isInCypher = false, // Note, only used for connection in cypher fields
 }: {
     resolveTree: ResolveTree;
     node: Node;
@@ -85,8 +84,8 @@ export default function createProjectionAndParams({
     varName: string;
     literalElements?: boolean;
     resolveType?: boolean;
-    inRelationshipProjection?: boolean;
     isRootConnectionField?: boolean;
+    isInCypher?: boolean;
 }): ProjectionResult {
     function reducer(res: Res, field: ResolveTree): Res {
         const alias = field.alias;
@@ -143,6 +142,7 @@ export default function createProjectionAndParams({
                     projection: str,
                     params: p,
                     meta,
+                    // subqueries, // TODO: properly take care of these subqueries
                 } = createProjectionAndParams({
                     resolveTree: field,
                     node: referenceNode || node,
@@ -150,7 +150,7 @@ export default function createProjectionAndParams({
                     varName: `${varName}_${alias}`,
                     chainStr: param,
                     isRootConnectionField,
-                    inRelationshipProjection: true,
+                    isInCypher: true,
                 });
 
                 projectionStr = str;
@@ -347,7 +347,7 @@ export default function createProjectionAndParams({
                     withVars: prevRelationshipFields,
                 });
                 res.subqueries.push(interfaceProjection);
-                res.projection.push(`${field.alias}: ${field.name}`);
+                res.projection.push(`${field.alias}: ${varName}_${field.name}`);
 
                 return res;
             }
@@ -376,7 +376,6 @@ export default function createProjectionAndParams({
                         context,
                         varName: `${varName}_${alias}`,
                         chainStr: unionVariableName,
-                        inRelationshipProjection: true,
                         isRootConnectionField,
                     });
                     res.params = { ...res.params, ...recurse.params };
@@ -436,7 +435,6 @@ export default function createProjectionAndParams({
                 context,
                 varName: `${varName}_${alias}`,
                 chainStr: param,
-                inRelationshipProjection: true,
                 isRootConnectionField,
             });
             res.params = { ...res.params, ...recurse.params };
@@ -477,43 +475,52 @@ export default function createProjectionAndParams({
         }
 
         if (connectionField) {
-            if (!inRelationshipProjection) {
-                if (!res.meta.connectionFields) {
-                    res.meta.connectionFields = [];
-                }
-
-                res.meta.connectionFields.push(field);
-                res.projection.push(literalElements ? `${alias}: ${alias}` : `${alias}`);
-
-                return res;
-            }
-
             const matchedConnectionField = node.connectionFields.find(
                 (x) => x.fieldName === field.name
             ) as ConnectionField;
-            const connection = createConnectionAndParams({
-                resolveTree: field,
-                field: matchedConnectionField,
-                context,
-                nodeVariable: varName,
-            });
 
-            const connectionParamNames = Object.keys(connection[1]);
-            const runFirstColumnParams = [
-                ...[`${chainStr}: ${chainStr}`],
-                ...connectionParamNames
-                    .filter(Boolean)
-                    .map((connectionParamName) => `${connectionParamName}: $${connectionParamName}`),
-                ...(context.auth ? ["auth: $auth"] : []),
-                ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
-            ];
+            const connectionClause = new CypherBuilder.Call(
+                createConnectionClause({
+                    resolveTree: field,
+                    field: matchedConnectionField,
+                    context,
+                    nodeVariable: varName,
+                })
+            ).with(new CypherBuilder.NamedNode(varName));
 
-            res.projection.push(
-                `${field.name}: apoc.cypher.runFirstColumnSingle("${connection[0].replace(/("|')/g, "\\$1")} RETURN ${
-                    field.name
-                }", { ${runFirstColumnParams.join(", ")} })`
-            );
-            res.params = { ...res.params, ...connection[1] };
+            const connection = connectionClause.build(`${varName}_connection_${field.alias}`); // TODO: remove build from here
+
+            const stupidParams = connection.params;
+
+            // Only for connections on a @cypher property
+            if (isInCypher) {
+                const connectionParamNames = Object.keys(connection.params);
+                const runFirstColumnParams = [
+                    ...[`${chainStr}: ${chainStr}`],
+                    ...connectionParamNames
+                        .filter(Boolean)
+                        .map((connectionParamName) => `${connectionParamName}: $${connectionParamName}`),
+                    ...(context.auth ? ["auth: $auth"] : []),
+                    ...(context.cypherParams ? ["cypherParams: $cypherParams"] : []),
+                ];
+
+                res.projection.push(
+                    `${field.name}: apoc.cypher.runFirstColumnSingle("${connection.cypher.replace(
+                        /("|')/g,
+                        "\\$1"
+                    )} RETURN ${field.name}", { ${runFirstColumnParams.join(", ")} })`
+                );
+            } else {
+                const connectionSubClause = new CypherBuilder.RawCypher((_env) => {
+                    // TODO: avoid REPLACE_ME in params and return them here
+
+                    return [connection.cypher, {}];
+                });
+                res.subqueries.push(connectionSubClause);
+                res.projection.push(`${field.alias}: ${field.alias}`);
+            }
+
+            res.params = { ...res.params, ...stupidParams };
             return res;
         }
 

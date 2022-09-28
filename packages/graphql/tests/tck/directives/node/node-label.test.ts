@@ -131,14 +131,14 @@ describe("Label in Node directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Film\`)
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:\`Person\`)
-            WITH collect({ node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Person\`)
+                WITH { node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -367,7 +367,7 @@ describe("Label in Node directive", () => {
             			MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actors_Actor
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -409,7 +409,7 @@ describe("Label in Node directive", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_actors0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actors0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_actors_Actor
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

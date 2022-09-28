@@ -37,12 +37,13 @@ export function generateSubscriptionTypes({
 
     const eventTypeEnum = schemaComposer.createEnumTC(EventType);
 
-    nodes.forEach((node) => {
+    const shouldIncludeSubscriptionOperation = (node: Node) => !node.exclude?.operations.includes("subscribe");
+
+    nodes.filter(shouldIncludeSubscriptionOperation).forEach((node) => {
         const eventPayload = generateEventPayloadType(node, schemaComposer);
         const where = generateSubscriptionWhereType(node, schemaComposer);
-        const subscribeOperation = node.rootTypeFieldNames.subscribe;
-        const subscriptionEventTypeNames = node.subscriptionEventTypeNames;
-        const subscriptionEventPayloadFieldNames = node.subscriptionEventPayloadFieldNames;
+        const { subscriptionEventTypeNames, subscriptionEventPayloadFieldNames, rootTypeFieldNames } = node;
+        const { subscribe: subscribeOperation } = rootTypeFieldNames;
 
         const nodeCreatedEvent = schemaComposer.createObjectTC({
             name: subscriptionEventTypeNames.create,

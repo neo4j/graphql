@@ -607,7 +607,7 @@ describe("@auth allow when inherited from interface", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_posts0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_posts0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -684,9 +684,9 @@ describe("@auth allow when inherited from interface", () => {
             FOREACH(_ IN CASE WHEN this_post0_disconnect0_creator0 IS NULL THEN [] ELSE [1] END |
             DELETE this_post0_disconnect0_creator0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_post0_disconnect0_creator_User
             }
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_post0_disconnect_Post
             }
             WITH this
             CALL {
@@ -768,7 +768,7 @@ describe("@auth allow when inherited from interface", () => {
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"

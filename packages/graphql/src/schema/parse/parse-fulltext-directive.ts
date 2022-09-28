@@ -33,7 +33,9 @@ function parseFulltextDirective({
 }): FullText {
     const indexesArg = directive.arguments?.find((arg) => arg.name.value === "indexes") as ArgumentNode;
     const value = parseValueNode(indexesArg.value) as FullTextIndex[];
-    const stringFields = nodeFields.primitiveFields.filter((f) => f.typeMeta.name === "String" && !f.typeMeta.array);
+    const compatibleFields = nodeFields.primitiveFields.filter(
+        (f) => ["String", "ID"].includes(f.typeMeta.name) && !f.typeMeta.array
+    );
 
     value.forEach((index) => {
         const names = value.filter((i) => index.name === i.name);
@@ -42,10 +44,10 @@ function parseFulltextDirective({
         }
 
         index.fields.forEach((field) => {
-            const foundField = stringFields.find((f) => f.fieldName === field);
+            const foundField = compatibleFields.find((f) => f.fieldName === field);
             if (!foundField) {
                 throw new Error(
-                    `Node '${definition.name.value}' @fulltext index contains invalid index '${index.name}' cannot use find String field '${field}'`
+                    `Node '${definition.name.value}' @fulltext index contains invalid index '${index.name}' cannot use find String or ID field '${field}'`
                 );
             }
         });

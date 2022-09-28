@@ -19,10 +19,8 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { asArray, removeDuplicates } from "../utils/utils";
-import type { ConnectionField, Context, GraphQLOptionsArg, InterfaceWhereArg, RelationField } from "../types";
-import filterInterfaceNodes from "../utils/filter-interface-nodes";
-// eslint-disable-next-line import/no-cycle
-import createConnectionAndParams from "./connection/create-connection-and-params";
+import type { Context, GraphQLOptionsArg, InterfaceWhereArg, RelationField } from "../types";
+import { filterInterfaceNodes } from "../utils/filter-interface-nodes";
 import { createAuthPredicates } from "./create-auth-and-params";
 // eslint-disable-next-line import/no-cycle
 import createProjectionAndParams from "./create-projection-and-params";
@@ -50,6 +48,7 @@ export default function createInterfaceProjectionAndParams({
     const fullWithVars = removeDuplicates([...asArray(withVars), nodeVariable]);
     const parentNode = new CypherBuilder.NamedNode(nodeVariable);
     const whereInput = resolveTree.args.where as InterfaceWhereArg;
+    const returnVariable = `${nodeVariable}_${field.fieldName}`;
 
     const referenceNodes = context.nodes.filter(
         (node) => field.interface?.implementations?.includes(node.name) && filterInterfaceNodes({ node, whereInput })
@@ -74,7 +73,7 @@ export default function createInterfaceProjectionAndParams({
         addSortAndLimitOptionsToClause({
             optionsInput,
             projectionClause: withClause,
-            target: new CypherBuilder.NamedNode(field.fieldName),
+            target: new CypherBuilder.NamedNode(returnVariable),
         });
     }
 
@@ -91,7 +90,7 @@ export default function createInterfaceProjectionAndParams({
                 `WITH *`,
                 "CALL {",
                 ...interfaceProjection,
-                `${withStr}RETURN collect(${field.fieldName}) AS ${field.fieldName}`,
+                `${withStr}RETURN collect(${returnVariable}) AS ${returnVariable}`,
                 "}",
             ];
         }
@@ -197,12 +196,7 @@ function createInterfaceSubquery({
         matchQuery.where(whereAuthPredicate);
     }
 
-    const {
-        projection: projectionStr,
-        params: projectionParams,
-        meta,
-        subqueries: projectionSubQueries,
-    } = createProjectionAndParams({
+    const { projection: projectionStr, subqueries: projectionSubQueries } = createProjectionAndParams({
         resolveTree,
         node: refNode,
         context,
@@ -210,27 +204,13 @@ function createInterfaceSubquery({
         literalElements: true,
         resolveType: true,
     });
-    let connectionClauses: CypherBuilder.Clause[] = [];
-    if (meta?.connectionFields?.length) {
-        connectionClauses = meta.connectionFields.map((connectionResolveTree) => {
-            return new CypherBuilder.RawCypher(() => {
-                const connectionField = refNode.connectionFields.find(
-                    (x) => x.fieldName === connectionResolveTree.name
-                ) as ConnectionField;
-                const connection = createConnectionAndParams({
-                    resolveTree: connectionResolveTree,
-                    field: connectionField,
-                    context,
-                    nodeVariable: param,
-                });
-                return [connection[0], projectionParams];
-            });
-        });
-    }
 
     const projectionSubqueryClause = CypherBuilder.concat(...projectionSubQueries);
 
-    const returnClause = new CypherBuilder.Return([new CypherBuilder.RawCypher(projectionStr), field.fieldName]);
+    const returnClause = new CypherBuilder.Return([
+        new CypherBuilder.RawCypher(projectionStr),
+        `${nodeVariable}_${field.fieldName}`,
+    ]);
 
-    return CypherBuilder.concat(withClause, matchQuery, ...connectionClauses, projectionSubqueryClause, returnClause);
+    return CypherBuilder.concat(withClause, matchQuery, projectionSubqueryClause, returnClause);
 }

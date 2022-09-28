@@ -426,7 +426,7 @@ describe("Cypher Auth Roles", () => {
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -488,7 +488,7 @@ describe("Cypher Auth Roles", () => {
             			MERGE (this_post0)-[:HAS_POST]->(this_post0_creator0_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_post0_creator0_connect_User
             }
             WITH this, this_post0
             CALL {
@@ -580,7 +580,7 @@ describe("Cypher Auth Roles", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_posts0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_posts0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -649,7 +649,7 @@ describe("Cypher Auth Roles", () => {
             FOREACH(_ IN CASE WHEN this_post0_creator0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_post0_creator0_disconnect0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_post0_creator0_disconnect_User
             }
             WITH this, this_post0
             CALL {

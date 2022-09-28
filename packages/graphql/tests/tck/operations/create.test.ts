@@ -283,7 +283,7 @@ describe("Cypher Create", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_actors_connect_Actor
             }
             RETURN this0
             }
@@ -340,22 +340,23 @@ describe("Cypher Create", () => {
             			MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_movies_connect_Movie
             }
             RETURN this0
             }
             CALL {
                 WITH this0
                 MATCH (this0)-[create_this0:ACTED_IN]->(this0_movies:\`Movie\`)
-                WITH this0_movies { actorsConnection: apoc.cypher.runFirstColumnSingle(\\"CALL {
-                WITH this0_movies
-                MATCH (this0_movies)<-[this0_movies_acted_in_relationship:ACTED_IN]-(this0_movies_actor:Actor)
-                WHERE this0_movies_actor.name = $projection_movies_actorsConnection_args_where_Actorparam0
-                WITH collect({ node: { name: this0_movies_actor.name } }) AS edges
-                UNWIND edges as edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
-                } RETURN actorsConnection\\", { this0_movies: this0_movies, projection_movies_actorsConnection_args_where_Actorparam0: $projection_movies_actorsConnection_args_where_Actorparam0, projection_movies_actorsConnection: $projection_movies_actorsConnection, auth: $auth }) } AS this0_movies
+                CALL {
+                    WITH this0_movies
+                    MATCH (this0_movies)<-[this0_movies_connection_actorsConnectionthis0:ACTED_IN]-(this0_movies_Actor:\`Actor\`)
+                    WHERE this0_movies_Actor.name = $projection_movies_connection_actorsConnectionparam0
+                    WITH { node: { name: this0_movies_Actor.name } } AS edge
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                }
+                WITH this0_movies { actorsConnection: actorsConnection } AS this0_movies
                 RETURN collect(this0_movies) AS this0_movies
             }
             RETURN [
@@ -366,21 +367,8 @@ describe("Cypher Create", () => {
             "{
                 \\"this0_name\\": \\"Dan\\",
                 \\"this0_movies_connect0_node_param0\\": \\"1\\",
-                \\"projection_movies_actorsConnection_args_where_Actorparam0\\": \\"Dan\\",
-                \\"projection_movies_actorsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"name\\": \\"Dan\\"
-                            }
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {},
-                \\"auth\\": {
-                    \\"isAuthenticated\\": false,
-                    \\"roles\\": []
-                }
+                \\"projection_movies_connection_actorsConnectionparam0\\": \\"Dan\\",
+                \\"resolvedCallbacks\\": {}
             }"
         `);
     });

@@ -327,7 +327,7 @@ function createDisconnectAndParams({
             params = { ...params, ...postAuth.params };
         }
 
-        subquery.push("RETURN count(*) AS _");
+        subquery.push(`RETURN count(*) AS disconnect_${varName}_${relatedNode.name}`);
 
         return { subquery: subquery.join("\n"), params };
     }
@@ -359,7 +359,7 @@ function createDisconnectAndParams({
                     res.params = { ...res.params, ...subquery.params };
                 }
             });
-            res.disconnects.push(subqueries.join("\nUNION\n"));
+            res.disconnects.push(subqueries.join("\n}\nCALL {\n\t"));
         } else {
             const subquery = createSubqueryContents(refNodes[0], disconnect, index);
             res.disconnects.push(subquery.subquery);

@@ -212,29 +212,20 @@ describe("Cypher coalesce()", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Actor\`)
             CALL {
-            WITH this
-            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
-            WHERE coalesce(this_movie.status, \\"ACTIVE\\") = $this_moviesConnection_args_where_Movieparam0
-            WITH collect({ node: { id: this_movie.id, status: this_movie.status } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
+                WITH this
+                MATCH (this)-[this_connection_moviesConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
+                WHERE coalesce(this_Movie.status, \\"ACTIVE\\") = $this_connection_moviesConnectionparam0
+                WITH { node: { id: this_Movie.id, status: this_Movie.status } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
             }
-            RETURN this { moviesConnection } as this"
+            RETURN this { moviesConnection: moviesConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_moviesConnection_args_where_Movieparam0\\": \\"ACTIVE\\",
-                \\"this_moviesConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"status\\": \\"ACTIVE\\"
-                            }
-                        }
-                    }
-                }
+                \\"this_connection_moviesConnectionparam0\\": \\"ACTIVE\\"
             }"
         `);
     });

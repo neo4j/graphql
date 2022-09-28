@@ -10,9 +10,9 @@
     "dependencies": {
         "@neo4j/graphql": "file:./package",
         "graphql": "^16.6.0",
-        "neo4j-driver": "^4.4.7"
+        "neo4j-driver": "^5.0.0"
     },
     "devDependencies": {
-        "typescript": "4.8.2"
+        "typescript": "4.8.3"
     }
 }

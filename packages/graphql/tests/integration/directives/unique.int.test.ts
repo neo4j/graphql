@@ -25,21 +25,26 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType } from "../../utils/graphql-types";
 import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
+import { getNeo4jDatabaseInfo, Neo4jDatabaseInfo } from "../../../src/classes/Neo4jDatabaseInfo";
+import { Executor } from "../../../src/classes/Executor";
 
 describe("assertIndexesAndConstraints/unique", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let databaseName: string;
     let MULTIDB_SUPPORT = true;
+    let dbInfo: Neo4jDatabaseInfo;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
+        dbInfo = await getNeo4jDatabaseInfo(new Executor({ executionContext: driver }));
 
         databaseName = generate({ readable: true, charset: "alphabetic" });
 
         const cypher = `CREATE DATABASE ${databaseName}`;
         const session = driver.session();
+
         try {
             await session.run(cypher);
         } catch (e) {
@@ -235,7 +240,9 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = `CREATE CONSTRAINT ${type.name}_isbn ON (n:${type.name}) ASSERT n.isbn IS UNIQUE`;
+            const cypher = `CREATE CONSTRAINT ${type.name}_isbn ${dbInfo.gte("4.4") ? "FOR" : "ON"} (n:${type.name}) ${
+                dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"
+            } n.isbn IS UNIQUE`;
 
             try {
                 await session.run(cypher);
@@ -269,7 +276,9 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = `CREATE CONSTRAINT ${type.name}_isbn ON (n:${type.name}) ASSERT n.internationalStandardBookNumber IS UNIQUE`;
+            const cypher = `CREATE CONSTRAINT ${type.name}_isbn ${dbInfo.gte("4.4") ? "FOR" : "ON"} (n:${type.name}) ${
+                dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"
+            } n.internationalStandardBookNumber IS UNIQUE`;
 
             try {
                 await session.run(cypher);
@@ -497,7 +506,9 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = `CREATE CONSTRAINT ${type.name}_id ON (n:${type.name}) ASSERT n.id IS UNIQUE`;
+            const cypher = `CREATE CONSTRAINT ${type.name}_id ${dbInfo.gte("4.4") ? "FOR" : "ON"} (n:${type.name}) ${
+                dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"
+            } n.id IS UNIQUE`;
 
             try {
                 await session.run(cypher);
@@ -531,7 +542,9 @@ describe("assertIndexesAndConstraints/unique", () => {
 
             const session = driver.session({ database: databaseName });
 
-            const cypher = `CREATE CONSTRAINT ${type.name}_id ON (n:${type.name}) ASSERT n.identifier IS UNIQUE`;
+            const cypher = `CREATE CONSTRAINT ${type.name}_id ${dbInfo.gte("4.4") ? "FOR" : "ON"} (n:${type.name}) ${
+                dbInfo.gte("4.4") ? "REQUIRE" : "ASSERT"
+            } n.identifier IS UNIQUE`;
 
             try {
                 await session.run(cypher);
