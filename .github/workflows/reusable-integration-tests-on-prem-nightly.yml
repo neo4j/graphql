@@ -119,7 +119,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: integration-nightly-coverage-${{ matrix.packages.package }}
-          path: packages/${{ matrix.package }}/coverage/
+          path: packages/${{ matrix.packages.package }}/coverage/
       - name: Stop Neo4j container
         if: always()
         run: |
