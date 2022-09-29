@@ -45,10 +45,10 @@
         "jest": ">=28.0.0 <29.0.0-0",
         "neo4j-driver": "5.0.1",
         "pluralize": "8.0.0",
-        "randomstring": "1.1.5",
+        "randomstring": "1.2.2",
         "supertest": "6.2.4",
         "ts-jest": "28.0.8",
-        "typescript": "4.8.3",
+        "typescript": "4.8.4",
         "ws": "8.9.0"
     },
     "dependencies": {
