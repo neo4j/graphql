@@ -106,11 +106,11 @@ jobs:
           NEO_USER: neo4j
           NEO_PASSWORD: password
           NEO_URL: neo4j://localhost:7687
-      - if: ${{ env.CODECOV_TOKEN != '' }}
+      - if: ${{ env.CODECOV_TOKEN != '' && matrix.package == 'graphql' }}
         name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
-          token: ${{ secrets.CODECOV_TOKEN && matrix.package == 'graphql' }}
+          token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./packages/${{ matrix.packages.package }}/coverage-nightly/
           flags: ${{ matrix.packages.package }},nightly,integration
           fail_ci_if_error: true
