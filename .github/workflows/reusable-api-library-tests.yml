@@ -66,5 +66,5 @@ jobs:
         name: Archive coverage report
         uses: actions/upload-artifact@v3
         with:
-          name: api-library-coverage-${{ matrix.package }}
-          path: packages/${{ matrix.package }}/coverage/
+          name: api-library-coverage-graphql
+          path: packages/graphql/coverage/
