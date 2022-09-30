@@ -24,8 +24,11 @@ import { Where } from "../../clauses/sub-clauses/Where";
 import type { NodeRef } from "../../variables/NodeRef";
 import { Clause } from "../../clauses/Clause";
 import { WithReturn } from "../../clauses/mixins/WithReturn";
-import { applyMixins } from "../../clauses/utils/apply-mixin";
+import { mixin } from "../../clauses/utils/mixin";
 
+export interface FullTextQueryNodes extends WithReturn {}
+
+@mixin(WithReturn)
 export class FullTextQueryNodes extends Clause {
     private targetNode: NodeRef;
     private indexName: string;
@@ -68,6 +71,3 @@ export class FullTextQueryNodes extends Clause {
         `;
     }
 }
-
-export interface FullTextQueryNodes extends WithReturn {}
-applyMixins(FullTextQueryNodes, [WithReturn]);
