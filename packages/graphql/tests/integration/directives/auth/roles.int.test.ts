@@ -25,6 +25,8 @@ import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { runCypher } from "../../../utils/run-cypher";
+import { cleanNodes } from "../../../utils/clean-nodes";
 
 describe("auth/roles", () => {
     let driver: Driver;
@@ -54,20 +56,18 @@ describe("auth/roles", () => {
         typeHistory = generateUniqueType("History");
 
         const session = await neo4j.getSession();
+        await runCypher(
+            session,
+            `
+                CREATE (:${typeProduct} { name: 'p1', id:123 })
+                CREATE (:${typeUser} { id: 1234, password:'dontpanic' })
+           `
+        );
+    });
 
-        try {
-            await session.run(`
-                    MATCH(N)
-                    DETACH DELETE(N)
-                `);
-
-            await session.run(`
-                    CREATE (:${typeProduct} { name: 'p1', id:123 })
-                    CREATE (:${typeUser} { id: 1234, password:'dontpanic' })
-                `);
-        } finally {
-            await session.close();
-        }
+    afterEach(async () => {
+        const session = await neo4j.getSession();
+        await cleanNodes(session, [typeProduct, typeUser]);
     });
 
     describe("read", () => {
