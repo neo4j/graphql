@@ -24,18 +24,18 @@ import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
 
 describe("auth/roles", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     const secret = "secret";
 
-    const typeUser = generateUniqueType("User");
-    const typeProduct = generateUniqueType("Product");
-    const typePost = generateUniqueType("Post");
-    const typeComment = generateUniqueType("Comment");
-    const typeHistory = generateUniqueType("History");
+    let typeUser: UniqueType;
+    let typeProduct: UniqueType;
+    let typePost: UniqueType;
+    let typeComment: UniqueType;
+    let typeHistory: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -47,6 +47,12 @@ describe("auth/roles", () => {
     });
 
     beforeEach(async () => {
+        typeUser = generateUniqueType("User");
+        typeProduct = generateUniqueType("Product");
+        typePost = generateUniqueType("Post");
+        typeComment = generateUniqueType("Comment");
+        typeHistory = generateUniqueType("History");
+
         const session = await neo4j.getSession();
 
         try {
