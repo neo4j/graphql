@@ -1,8 +1,32 @@
-# UNIFORM API
+# Standalone Relay GraphQL Cursor Connections Specification
 
 ## Problem
 
-At this moment there is inconsistency between the Connection API and the standard API.
+The Neo4j Graphql library introduced the [GraphQL Cursor Connections Specification](https://relay.dev/graphql/connections.htm) in its API design.
+
+As the [Connection spec](https://relay.dev/graphql/connections.htm) and the Neo4j Graphql library API design can differ a lot,
+having a Query or Mutation using both syntaxes could result in a high complexity operation.
+
+Let's consider this typeDefs for the RFC:
+```graphql
+    type Actor  {
+        id: ID!
+        name: String
+        movies: [Movie!]! @relationship(type: "EMPLOYED", direction: OUT, properties: "ActedIn")
+    }
+
+    type Movie {
+        id: ID!
+        name: String
+        actors: [Actor!]! @relationship(type: "EMPLOYED", direction: IN, properties: "ActedIn")
+    }
+
+    interface ActedIn @relationshipProperties {
+        year: Int
+    }
+```
+
+For instance, consider the following GraphQL query:
 
 ```graphql
 query Actors {
@@ -16,7 +40,7 @@ query Actors {
     offset: 10
     }) {
     name
-    moviesConnection(first: 32, after: "jksdfnoifdahh=") {
+    moviesConnection(first: 32, after: "YXJyYXljb25uZWN0aW9uOjA=") {
       edges {
         node {
           id
@@ -29,47 +53,82 @@ query Actors {
   }
 }
 ```
-As is visible in this GraphQL query, the pagination arguments are inconsistent between the two styles.
-
+In the Query above is visible that the [Connection spec](https://relay.dev/graphql/connections.htm) has a different approach in the way of querying data and paginating it.
 
 ## Proposed Solution
 
-Separate the Connection API to the Standard API making it an opt-in feature.
+The RFC proposes to keep the support of the [Connection spec](https://relay.dev/graphql/connections.htm) but does not allow the usage in conjunction with the Neo4j GraphQL API.
+This means that the [Connection spec](https://relay.dev/graphql/connections.htm) will be no longer available from the Neo4j GraphQL types and vice versa.
 
-### Usage Examples
+The RFC proposes also that the [Connection spec](https://relay.dev/graphql/connections.htm) is not included by default during the schema augmentation phase, but it could be added by configuration.
 
-It will be not longer possible to combine the behaviour of the Standard API with the Connection API, 
-for instance the follwing GraphQL query will be not longer valid:
+### Deprecated syntaxes:
 
+#### Querying connections in conjunction with the Neo4j GraphQL syntax:
 ```graphql
 query Actors {
   actors {
-    name
-    moviesConnection{
-      edges {
-        node {
-          id
-        }
+    movies {
+      actorsConnection {
+        totalCount
       }
     }
   }
 }
 ```
-The Connection API node types should be separated from the Standard API node types.
-## Risks
+#### Using the [Connection spec](https://relay.dev/graphql/connections.htm) as filter in a Neo4j GraphQL syntax. 
+```graphql
+query Actors{
+  actors(where: {
+    moviesConnection_SOME: {
+      edge: {
+        year: null
+      }
+    }
+  }) {
+    name
+  }
+}
+```
 
-What risks might cause us to go over the appetite described above?
+### Schema changes
+
+The following types should not be generated anymore, if not specified differently in the configuration:
+- ActorsConnection & MovieConnection
+- ActorMoviesConnection & MovieActorsConnection
+- ActorEdge & MovieEdge
+- ActorMoviesRelationship & MovieActorsRelationship
+- ActedInCreateInput 
+
+As currently, the relationship properties are accessible only using the [Connection spec](https://relay.dev/graphql/connections.htm), it may be recommended to remove all soft references as node & edge fields in the Neo4j GraphQL API, see Aggregation, CreateInput, UpdateInput.
+
+For instance:
+- Type `MovieActorActorsAggregationSelection` should not hold anymore the field `edge`, and the content of the node field of type `MovieActorActorsNodeAggregateSelection` should spreaded in the type `MovieActorActorsAggregationSelection`.
+- Type `ActorMoviesCreateFieldInput` should no longer have the separation between `node` and `edge` but only the node content spreaded in the type `ActorMoviesCreateFieldInput`.
+- Type `ActorWhere` should no contains anymore `[moviesConnection_SOME, moviesConnection_ALL, moviesConnection_NONE, moviesConnection_SINGLE]` but instead they should be part of a new type `ActorConnectionWhere`, the same for `MovieWhere`. 
+`ActorConnectionWhere` should not hold references to the `MovieWhere`.
+
+As no relationship properties are accessible by the Neo4j GraphQL syntax, 
+the directive `@relationshipProperties` should be only available when the [Connection spec](https://relay.dev/graphql/connections.htm) is included.
+
+###  Configuration
+
+This RFC proposes to make the [Connection spec](https://relay.dev/graphql/connections.htm) optional and isolated from the Neo4j GraphQL syntax.
+The configuration can be done by adding the boolean attribute `enableRelayCursorConnection` to the `Neo4jGraphQLConfig`.
+
+```typescript
+interface Neo4jGraphQLConfig {
+    enableRelayCursorConnection: boolean;
+}
+```
+
+## Risks
+This RFC proposes many breaking changes. This may slow down the adpation to the new version of the libray. 
 
 ### Security consideration
 
-Please take some time to think about potential security issues/considerations for the proposed solution.
-For example: How can a malicious user abuse this? How can we prevent that in such case?
+None
 
 ## Out of Scope
+Pagination changes.
 
-What are we definitely not going to implement in this solution?
-
-
-TODO: 
-- filters
-- exclude
