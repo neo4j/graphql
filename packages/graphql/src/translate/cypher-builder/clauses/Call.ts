@@ -25,7 +25,6 @@ import { compileCypherIfExists, padBlock } from "../utils/utils";
 import { ImportWith } from "./sub-clauses/ImportWith";
 import { WithReturn } from "./mixins/WithReturn";
 import { mixin } from "./utils/mixin";
-// import { WithWith } from "./mixins/WithWith";
 
 export interface Call extends WithReturn {}
 

@@ -46,7 +46,6 @@ describe("auth/roles", () => {
         await driver.close();
     });
 
-    // TODO: should this really run beforeEach?
     beforeEach(async () => {
         const session = await neo4j.getSession();
 
@@ -55,10 +54,7 @@ describe("auth/roles", () => {
                     MATCH(N)
                     DETACH DELETE(N)
                 `);
-            // await session.run(`
-            //         MATCH(N:NotANode)
-            //         DETACH DELETE(N)
-            //     `);
+
             await session.run(`
                     CREATE (:${typeProduct} { name: 'p1', id:123 })
                     CREATE (:${typeUser} { id: 1234, password:'dontpanic' })
