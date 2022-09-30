@@ -24,7 +24,7 @@ Shall we have the ability to do `dry-run`s? That is not possible at the moment. 
 
 Expose a hook/callback which is called on each execution of a query. Similar to a logger component like the [log-level lib](https://www.npmjs.com/package/loglevel).
 
-The drawback is that linking a GraphQL query execution to a cypher query "callback" can be tricky and potentially be out of sync.
+The drawback is that linking a specific GraphQL query execution to a cypher query "callback" requires those to either be in sync or use a timestap or id for correct ordering/association.
 
 ## Usage Example
 
@@ -72,14 +72,12 @@ This is how the GraphQL response would look like when the setting is enabled:
 }
 ```
 
-==>> Toolbox, include a tooltip to say that "surfacing cypher" is now available.
-
 #### Documentation
 
 See the comment aboout security considerations below, this needs to be documented.
 
 #### Questions:
-- Is JSON stringfy the cypher query the best option we have?
+- Is 'JSON stringfy' the cypher query the best option we have?
 - For (very) large queries, will the payload size be an issue?
 
 ## Risks
