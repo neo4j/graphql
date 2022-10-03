@@ -87,6 +87,7 @@ describe("Interfaces tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`SomeNode\`)
+            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 MATCH (this)-[thisthis0:HAS_OTHER_NODES]->(this_other:\`OtherNode\`)
@@ -105,7 +106,6 @@ describe("Interfaces tests", () => {
                 WITH this_other { interfaceField: this_other_interfaceField } AS this_other
                 RETURN head(collect(this_other)) AS this_other
             }
-            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id, other: this_other } as this"
         `);
 

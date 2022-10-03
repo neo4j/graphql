@@ -91,6 +91,7 @@ describe("#601", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Stakeholder\`)
+            CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"view\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 MATCH (this)-[thisthis0:REQUIRES]->(this_documents:\`Document\`)
@@ -107,7 +108,6 @@ describe("#601", () => {
                 WITH this_documents { customerContactConnection: customerContactConnection } AS this_documents
                 RETURN collect(this_documents) AS this_documents
             }
-            CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"view\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { documents: this_documents } as this"
         `);
 

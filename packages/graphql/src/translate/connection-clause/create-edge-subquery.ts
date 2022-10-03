@@ -137,5 +137,5 @@ export function createEdgeSubquery({
         });
     }
 
-    return CypherBuilder.concat(matchClause, ...projection.subqueries, withSortClause, withReturn);
+    return CypherBuilder.concat(matchClause, withSortClause, ...projection.subqueries, withReturn);
 }

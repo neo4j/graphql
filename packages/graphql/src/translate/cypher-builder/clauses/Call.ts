@@ -43,6 +43,7 @@ export class Call extends Clause {
     public innerWith(...params: Variable[]): this {
         if (this.importWith) throw new Error("Call import already set");
         this.importWith = new ImportWith(this, params);
+        this.addChildren(this.importWith);
         return this;
     }
 

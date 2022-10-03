@@ -85,7 +85,27 @@ describe("#387", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Place\`)
-            RETURN this { url_works:  apoc.cypher.runFirstColumnSingle(\\"return '' + ''\\", {this: this, auth: $auth}), url_fails:  apoc.cypher.runFirstColumnSingle(\\"return '' + ''\\", {this: this, auth: $auth}), url_array_works:  apoc.cypher.runFirstColumnSingle(\\"return ['' + '']\\", {this: this, auth: $auth}), url_array_fails:  apoc.cypher.runFirstColumnSingle(\\"return ['' + '']\\", {this: this, auth: $auth}) } as this"
+            CALL {
+                WITH this
+                UNWIND apoc.cypher.runFirstColumnSingle(\\"return '' + ''\\", { this: this, auth: $auth }) AS this_url_works
+                RETURN this_url_works AS this_url_works
+            }
+            CALL {
+                WITH this
+                UNWIND apoc.cypher.runFirstColumnSingle(\\"return '' + ''\\", { this: this, auth: $auth }) AS this_url_fails
+                RETURN this_url_fails AS this_url_fails
+            }
+            CALL {
+                WITH this
+                UNWIND apoc.cypher.runFirstColumnSingle(\\"return ['' + '']\\", { this: this, auth: $auth }) AS this_url_array_works
+                RETURN collect(this_url_array_works) AS this_url_array_works
+            }
+            CALL {
+                WITH this
+                UNWIND apoc.cypher.runFirstColumnSingle(\\"return ['' + '']\\", { this: this, auth: $auth }) AS this_url_array_fails
+                RETURN collect(this_url_array_fails) AS this_url_array_fails
+            }
+            RETURN this { url_works: this_url_works, url_fails: this_url_fails, url_array_works: this_url_array_works, url_array_fails: this_url_array_fails } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

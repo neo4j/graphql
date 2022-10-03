@@ -196,7 +196,11 @@ function createInterfaceSubquery({
         matchQuery.where(whereAuthPredicate);
     }
 
-    const { projection: projectionStr, subqueries: projectionSubQueries } = createProjectionAndParams({
+    const {
+        projection: projectionStr,
+        subqueries: projectionSubQueries,
+        subqueriesBeforeSort,
+    } = createProjectionAndParams({
         resolveTree,
         node: refNode,
         context,
@@ -205,7 +209,7 @@ function createInterfaceSubquery({
         resolveType: true,
     });
 
-    const projectionSubqueryClause = CypherBuilder.concat(...projectionSubQueries);
+    const projectionSubqueryClause = CypherBuilder.concat(...subqueriesBeforeSort, ...projectionSubQueries);
 
     const returnClause = new CypherBuilder.Return([
         new CypherBuilder.RawCypher(projectionStr),

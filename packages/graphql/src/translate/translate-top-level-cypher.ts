@@ -68,9 +68,9 @@ export function translateTopLevelCypher({
             varName: `this`,
         });
 
-        const { projection: str, params: p, meta, subqueries } = recurse;
+        const { projection: str, params: p, meta, subqueries, subqueriesBeforeSort } = recurse;
         projectionStr = str;
-        projectionSubqueries.push(...subqueries);
+        projectionSubqueries.push(...subqueriesBeforeSort, ...subqueries);
         params = { ...params, ...p };
 
         if (meta.authValidateStrs?.length) {
