@@ -192,7 +192,7 @@ RETURN collect(DISTINCT m) AS meta
 ```
 
 #### Subscribe to relationships
-To provide support for relationship subscriptions, `connect` and `disconnect` events should be available.
+To provide support for relationship subscriptions, `connect` and `disconnect` events should be available. These subscriptions will trigger events containing the relationship data and the related nodes.
 
 Assuming the following typedefs:
 ```graphql
@@ -275,6 +275,19 @@ WITH meta
 UNWIND meta AS m
 RETURN collect(DISTINCT m) AS meta
 ```
+
+##### Examples of subscriptions to relationships
+Get the source and target nodes of a relationship in subscription:
+
+
+ ```graphql   
+ personConnected {  // Non-directed, another event will be triggered for movies
+    to { Movie | Actor } // Target node, union is the list of all types related to a person
+    from { Actor }
+    relationshipName: "actedIn" // Only connections with a relationship defined 
+}
+```
+
 
 #### Excluding types from subscriptions
 
