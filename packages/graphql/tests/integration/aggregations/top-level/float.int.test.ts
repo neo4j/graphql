@@ -90,7 +90,7 @@ describe("aggregations-top_level-float", () => {
 
             expect((gqlResult.data as any).moviesAggregate).toEqual({
                 imdbRating: {
-                    min: 1.1,
+                    min: expect.closeTo(1.1),
                 },
             });
         } finally {
@@ -152,7 +152,7 @@ describe("aggregations-top_level-float", () => {
 
             expect((gqlResult.data as any).moviesAggregate).toEqual({
                 imdbRating: {
-                    max: 4.1,
+                    max: expect.closeTo(4.1),
                 },
             });
         } finally {
@@ -214,7 +214,7 @@ describe("aggregations-top_level-float", () => {
 
             expect((gqlResult.data as any).moviesAggregate).toEqual({
                 imdbRating: {
-                    average: 2.6,
+                    average: expect.closeTo(2.6),
                 },
             });
         } finally {
@@ -276,7 +276,7 @@ describe("aggregations-top_level-float", () => {
 
             expect((gqlResult.data as any).moviesAggregate).toEqual({
                 imdbRating: {
-                    sum: 10.4,
+                    sum: expect.closeTo(10.4),
                 },
             });
         } finally {
@@ -341,10 +341,10 @@ describe("aggregations-top_level-float", () => {
 
             expect((gqlResult.data as any).moviesAggregate).toEqual({
                 imdbRating: {
-                    min: 1.1,
-                    max: 4.1,
-                    average: 2.6,
-                    sum: 10.4,
+                    min: expect.closeTo(1.1),
+                    max: expect.closeTo(4.1),
+                    average: expect.closeTo(2.6),
+                    sum: expect.closeTo(10.4),
                 },
             });
         } finally {
