@@ -106,7 +106,7 @@ query {
 }
 ```
 
-### Fitlering, sorting and limiting
+### Filtering, sorting and limiting
 
 #### Filtering
 
