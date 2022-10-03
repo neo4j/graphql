@@ -141,7 +141,7 @@ type Query {
 
 Usage example filtering by minimum score:
 
-```
+```gql
 query {
   moviesByTitle(phrase: "Matrix", where: { score: { min: 0.5 } }) {
     score
@@ -154,7 +154,7 @@ query {
 
 Usage example filtering by minimum score and minimum releaseYear
 
-```
+```gql
 query {
   moviesByTitle(phrase: "Matrix", where: { score: { min: 0.5 }, movie: { releaseYear_GT: 1980 } }) {
     score
@@ -180,7 +180,7 @@ type Movie @fulltext(indexes: [{ queryName: "moviesByTitle", indexName: "MovieTi
 
 Usage example ordering by minimum score ascending:
 
-```
+```gql
 query {
   moviesByTitle(phrase: "Matrix", sort: { score: ASC }) {
     score
@@ -193,7 +193,7 @@ query {
 
 Usage example ordering by minimum score ascending and movie release year descending (order of sorts not guaranteed):
 
-```
+```gql
 query {
   moviesByTitle(phrase: "Matrix", sort: { score: ASC, movie: { releaseYear: DESC } }) {
     score
@@ -206,7 +206,7 @@ query {
 
 Usage example ordering by minimum score ascending and movie release year descending (order of sorts guaranteed):
 
-```
+```gql
 query {
   moviesByTitle(phrase: "Matrix", sort: [{ score: ASC }, { movie: { releaseYear: DESC } }]) {
     score
@@ -221,7 +221,7 @@ query {
 
 Usage example ordering by minimum score ascending, offsetting by 2 and limiting to 10 results:
 
-```
+```gql
 query {
   moviesByTitle(phrase: "Matrix", sort: { score: ASC }, offset: 2, limit: 10) {
     score
