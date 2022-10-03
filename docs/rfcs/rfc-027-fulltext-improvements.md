@@ -23,7 +23,7 @@ directive @fulltext(indexes: [FullTextInput]!) on OBJECT
 
 ## Solution
 
-### Future directive definition
+### Future directive definition (*breaking*)
 
 * `FullTextInput` renamed to `FulltextInput`
 * `FullTextInput.name` renamed to `FulltextInput.indexName`
@@ -44,7 +44,7 @@ Informs @neo4j/graphql that there should be a fulltext index in the database, al
 directive @fulltext(indexes: [FulltextInput!]!) on OBJECT
 ```
 
-### Returning the score
+### Returning the score (*breaking*)
 
 We will need a return type which returns each node along with the confidence score of the fulltext match.
 
@@ -57,7 +57,7 @@ type MovieFulltextResult {
 
 ### New Query field to return result type
 
-#### Automatically generating field name
+#### Automatically generating field name (*breaking*)
 
 Given the following type definitions:
 
