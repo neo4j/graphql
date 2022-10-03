@@ -21,22 +21,28 @@ import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { IncomingMessage } from "http";
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { createJwtRequest } from "../../utils/create-jwt-request";
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/2100", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let bookmarks: string[];
     let req: IncomingMessage;
-    const typeDefs = gql`
-        type ServiceLog {
+
+    const BacentaType = generateUniqueType("Bacenta");
+    const ServiceLogType = generateUniqueType("ServiceLog");
+    const BussingRecordType = generateUniqueType("BussingRecord");
+    const TimeGraphType = generateUniqueType("TimeGraph");
+
+    const typeDefs = `
+        type ${ServiceLogType} {
             id: ID
             records: [Record!]! @relationship(type: "HAS_BUSSING", direction: OUT)
         }
-        type BussingRecord implements Record {
+        type ${BussingRecordType} implements Record {
             id: ID!
             attendance: Int
             markedAttendance: Boolean!
@@ -46,20 +52,20 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                     RETURN COUNT(member) > 0 AS markedAttendance
                     """
                 )
-            serviceDate: TimeGraph! @relationship(type: "BUSSED_ON", direction: OUT)
+            serviceDate: ${TimeGraphType}! @relationship(type: "BUSSED_ON", direction: OUT)
         }
 
         interface Church @auth(rules: [{ isAuthenticated: true }]) {
             id: ID @id
             name: String!
-            serviceLogs: [ServiceLog!]! @relationship(type: "HAS_HISTORY", direction: OUT)
+            serviceLogs: [${ServiceLogType}!]! @relationship(type: "HAS_HISTORY", direction: OUT)
         }
 
-        type Bacenta implements Church {
+        type ${BacentaType} implements Church {
             id: ID @id
             name: String!
-            serviceLogs: [ServiceLog!]! @relationship(type: "HAS_HISTORY", direction: OUT)
-            bussing(limit: Int!): [BussingRecord!]!
+            serviceLogs: [${ServiceLogType}!]! @relationship(type: "HAS_HISTORY", direction: OUT)
+            bussing(limit: Int!): [${BussingRecordType}!]!
                 @cypher(
                     statement: """
                     MATCH (this)-[:HAS_HISTORY]->(:ServiceLog)-[:HAS_BUSSING]->(records:BussingRecord)-[:BUSSED_ON]->(date:TimeGraph)
@@ -69,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 )
         }
 
-        type TimeGraph @auth(rules: [{ isAuthenticated: true }]) {
+        type ${TimeGraphType} @auth(rules: [{ isAuthenticated: true }]) {
             date: Date
         }
 
@@ -83,9 +89,9 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                     RETURN COUNT(member) > 0 AS markedAttendance
                     """
                 )
-            serviceDate: TimeGraph! @relationship(type: "BUSSED_ON", direction: OUT)
+            serviceDate: ${TimeGraphType}! @relationship(type: "BUSSED_ON", direction: OUT)
         }
-    `;
+        `;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -95,11 +101,11 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
         try {
             await session.run(
                 `
-                CREATE (b:Bacenta {id: "1"})
+                CREATE (b:${BacentaType} {id: "1"})
                 SET b.name =  "test"
                 
                 WITH b
-                MERGE p=(b)-[:HAS_HISTORY]->(:ServiceLog {id: 2})-[:HAS_BUSSING]->(record:BussingRecord {id: 3})-[:BUSSED_ON]->(date:TimeGraph {date:date()})
+                MERGE p=(b)-[:HAS_HISTORY]->(:${ServiceLogType} {id: 2})-[:HAS_BUSSING]->(record:${BussingRecordType} {id: 3})-[:BUSSED_ON]->(date:${TimeGraphType} {date:date()})
                 RETURN p;
                 `
             );
@@ -113,10 +119,9 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
 
     afterAll(async () => {
         const session = await neo4j.getSession();
-
         try {
             await session.run(
-                "MATCH (b:Bacenta {id: 1})-[:HAS_HISTORY]->(s:ServiceLog {id: 2})-[:HAS_BUSSING]->(record:BussingRecord {id: 3})-[:BUSSED_ON]->(date:TimeGraph {date:date()}) DETACH DELETE b,s, record, date"
+                `MATCH (b:${BacentaType} {id: 1})-[:HAS_HISTORY]->(s:${ServiceLogType} {id: 2})-[:HAS_BUSSING]->(record:${BussingRecordType} {id: 3})-[:BUSSED_ON]->(date:${TimeGraphType} {date:date()}) DETACH DELETE b,s, record, date`
             );
         } finally {
             await session.close();
@@ -140,7 +145,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
 
         const query = `
             query {
-                bussingRecords {
+                ${BussingRecordType.plural} {
                   id
                   __typename
                   serviceDate {
@@ -161,9 +166,9 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             });
 
             expect(result.errors).toBeFalsy();
-            expect((result?.data as any)?.bussingRecords[0].id).toBe("3");
-            expect((result?.data as any)?.bussingRecords[0].__typename).toBe("BussingRecord");
-            expect((result?.data as any)?.bussingRecords[0].markedAttendance).toBe(false);
+            expect((result?.data as any)[BussingRecordType.plural][0].id).toBe("3");
+            expect((result?.data as any)[BussingRecordType.plural][0].__typename).toBe(BussingRecordType.name);
+            expect((result?.data as any)[BussingRecordType.plural][0].markedAttendance).toBe(false);
         } finally {
             await session.close();
         }
@@ -184,7 +189,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
 
         const query = `
             query DisplayBacentaServices($id: ID!) {
-                bacentas(where: {id: $id}) {
+                ${BacentaType.plural}(where: {id: $id}) {
                   id
                   name
                   bussing(limit: 10) {
