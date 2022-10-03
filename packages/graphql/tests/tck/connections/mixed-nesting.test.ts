@@ -79,38 +79,29 @@ describe("Mixed nesting", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name = $this_actorsConnection_args_where_Actorparam0
-            CALL {
-                WITH this_actor
-                MATCH (this_actor)-[this_actor_connectionthis0:ACTED_IN]->(this_actor_movies:\`Movie\`)
-                WHERE NOT (this_actor_movies.title = $this_actor_connectionparam0)
-                WITH this_actor_movies { .title } AS this_actor_movies
-                RETURN collect(this_actor_movies) AS this_actor_movies
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE this_Actor.name = $this_connection_actorsConnectionparam0
+                CALL {
+                    WITH this_Actor
+                    MATCH (this_Actor)-[this_connection_actorsConnectionthis1:ACTED_IN]->(this_Actor_movies:\`Movie\`)
+                    WHERE NOT (this_Actor_movies.title = $this_connection_actorsConnectionparam1)
+                    WITH this_Actor_movies { .title } AS this_Actor_movies
+                    RETURN collect(this_Actor_movies) AS this_Actor_movies
+                }
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, movies: this_Actor_movies } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, movies: this_actor_movies } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
-            }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Tom Hanks\\",
-                \\"this_actor_connectionparam0\\": \\"Forrest Gump\\",
-                \\"this_actorsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"name\\": \\"Tom Hanks\\"
-                            }
-                        }
-                    }
-                }
+                \\"this_connection_actorsConnectionparam0\\": \\"Tom Hanks\\",
+                \\"this_connection_actorsConnectionparam1\\": \\"Forrest Gump\\"
             }"
         `);
     });
@@ -151,61 +142,39 @@ describe("Mixed nesting", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name = $this_actorsConnection_args_where_Actorparam0
-            CALL {
-            WITH this_actor
-            MATCH (this_actor)-[this_actor_acted_in_relationship:ACTED_IN]->(this_actor_movie:Movie)
-            WHERE NOT (this_actor_movie.title = $this_actorsConnection_edges_node_moviesConnection_args_where_Movieparam0)
-            CALL {
-                WITH this_actor_movie
-                MATCH (this_actor_movie_actors:\`Actor\`)-[this_actor_movie_connectionthis0:ACTED_IN]->(this_actor_movie)
-                WHERE NOT (this_actor_movie_actors.name = $this_actor_movie_connectionparam0)
-                WITH this_actor_movie_actors { .name } AS this_actor_movie_actors
-                RETURN collect(this_actor_movie_actors) AS this_actor_movie_actors
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE this_Actor.name = $this_connection_actorsConnectionparam0
+                CALL {
+                    WITH this_Actor
+                    MATCH (this_Actor)-[this_Actor_connection_moviesConnectionthis0:ACTED_IN]->(this_Actor_Movie:\`Movie\`)
+                    WHERE NOT (this_Actor_Movie.title = $this_Actor_connection_moviesConnectionparam0)
+                    CALL {
+                        WITH this_Actor_Movie
+                        MATCH (this_Actor_Movie_actors:\`Actor\`)-[this_Actor_connection_moviesConnectionthis1:ACTED_IN]->(this_Actor_Movie)
+                        WHERE NOT (this_Actor_Movie_actors.name = $this_Actor_connection_moviesConnectionparam1)
+                        WITH this_Actor_Movie_actors { .name } AS this_Actor_Movie_actors
+                        RETURN collect(this_Actor_Movie_actors) AS this_Actor_Movie_actors
+                    }
+                    WITH { node: { title: this_Actor_Movie.title, actors: this_Actor_Movie_actors } } AS edge
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
+                }
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, moviesConnection: moviesConnection } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
             }
-            WITH collect({ node: { title: this_actor_movie.title, actors: this_actor_movie_actors } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
-            }
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, moviesConnection: moviesConnection } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
-            }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Tom Hanks\\",
-                \\"this_actorsConnection_edges_node_moviesConnection_args_where_Movieparam0\\": \\"Forrest Gump\\",
-                \\"this_actor_movie_connectionparam0\\": \\"Tom Hanks\\",
-                \\"this_actorsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"name\\": \\"Tom Hanks\\"
-                            }
-                        }
-                    },
-                    \\"edges\\": {
-                        \\"node\\": {
-                            \\"moviesConnection\\": {
-                                \\"args\\": {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title_NOT\\": \\"Forrest Gump\\"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                \\"this_connection_actorsConnectionparam0\\": \\"Tom Hanks\\",
+                \\"this_Actor_connection_moviesConnectionparam0\\": \\"Forrest Gump\\",
+                \\"this_Actor_connection_moviesConnectionparam1\\": \\"Tom Hanks\\"
             }"
         `);
     });
@@ -243,13 +212,13 @@ describe("Mixed nesting", () => {
                 MATCH (this_actors:\`Actor\`)-[thisthis0:ACTED_IN]->(this)
                 WHERE this_actors.name = $thisparam0
                 CALL {
-                WITH this_actors
-                MATCH (this_actors)-[this_actors_acted_in_relationship:ACTED_IN]->(this_actors_movie:Movie)
-                WHERE NOT (this_actors_movie.title = $this_actors_moviesConnection_args_where_Movieparam0)
-                WITH collect({ screenTime: this_actors_acted_in_relationship.screenTime, node: { title: this_actors_movie.title } }) AS edges
-                UNWIND edges as edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
+                    WITH this_actors
+                    MATCH (this_actors)-[this_actors_connection_moviesConnectionthis0:ACTED_IN]->(this_actors_Movie:\`Movie\`)
+                    WHERE NOT (this_actors_Movie.title = $this_actors_connection_moviesConnectionparam0)
+                    WITH { screenTime: this_actors_connection_moviesConnectionthis0.screenTime, node: { title: this_actors_Movie.title } } AS edge
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
                 }
                 WITH this_actors { .name, moviesConnection: moviesConnection } AS this_actors
                 RETURN collect(this_actors) AS this_actors
@@ -260,16 +229,7 @@ describe("Mixed nesting", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"this_actors_moviesConnection_args_where_Movieparam0\\": \\"Forrest Gump\\",
-                \\"this_actors_moviesConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"title_NOT\\": \\"Forrest Gump\\"
-                            }
-                        }
-                    }
-                },
+                \\"this_actors_connection_moviesConnectionparam0\\": \\"Forrest Gump\\",
                 \\"thisparam0\\": \\"Tom Hanks\\"
             }"
         `);

@@ -18,6 +18,7 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import { getOrCreateCypherVariable } from "../../utils/get-or-create-cypher-variable";
 import type { PointField } from "../../../types";
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 
@@ -39,21 +40,21 @@ export default function createPointElement({
     return `${resolveTree.alias}: (${cypher})`;
 }
 
-function createPointExpression({
+export function createPointExpression({
     resolveTree,
     field,
     variable,
 }: {
     resolveTree: ResolveTree;
     field: PointField;
-    variable: string;
+    variable: string | CypherBuilder.Variable;
 }): CypherBuilder.Expr {
     const isArray = field.typeMeta.array;
 
     const { crs, ...point } = resolveTree.fieldsByTypeName[field.typeMeta.name];
     const dbFieldName = field.dbPropertyName || resolveTree.name;
 
-    const CypherVariable = new CypherBuilder.NamedVariable(variable);
+    const CypherVariable = getOrCreateCypherVariable(variable);
 
     // Sadly need to select the whole point object due to the risk of height/z
     // being selected on a 2D point, to which the database will throw an error

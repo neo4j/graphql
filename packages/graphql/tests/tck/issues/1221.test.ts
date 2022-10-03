@@ -88,54 +88,32 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             "MATCH (this:\`Series\`)
             WHERE (this.current = $param0 AND size([(this)-[this0:ARCHITECTURE]->(this1:\`MasterData\`) WHERE size([(this1)-[this2:HAS_NAME]->(this3:\`NameDetails\`) WHERE this3.fullName = $param1 | 1]) = 1 | 1]) = 1)
             CALL {
-            WITH this
-            MATCH (this)-[this_architecture_relationship:ARCHITECTURE]->(this_masterdata:MasterData)
-            WHERE this_architecture_relationship.current = $this_architectureConnection_args_where_MasterDataparam0
-            CALL {
-            WITH this_masterdata
-            MATCH (this_masterdata)-[this_masterdata_has_name_relationship:HAS_NAME]->(this_masterdata_namedetails:NameDetails)
-            WHERE this_masterdata_has_name_relationship.current = $this_architectureConnection_edges_node_nameDetailsConnection_args_where_NameDetailsparam0
-            WITH collect({ node: { fullName: this_masterdata_namedetails.fullName } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
+                WITH this
+                MATCH (this)-[this_connection_architectureConnectionthis0:ARCHITECTURE]->(this_MasterData:\`MasterData\`)
+                WHERE this_connection_architectureConnectionthis0.current = $this_connection_architectureConnectionparam0
+                CALL {
+                    WITH this_MasterData
+                    MATCH (this_MasterData)-[this_MasterData_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_MasterData_NameDetails:\`NameDetails\`)
+                    WHERE this_MasterData_connection_nameDetailsConnectionthis0.current = $this_MasterData_connection_nameDetailsConnectionparam0
+                    WITH { node: { fullName: this_MasterData_NameDetails.fullName } } AS edge
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
+                }
+                WITH { node: { nameDetailsConnection: nameDetailsConnection } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS architectureConnection
             }
-            WITH collect({ node: { nameDetailsConnection: nameDetailsConnection } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS architectureConnection
-            }
-            RETURN this { .id, architectureConnection } as this"
+            RETURN this { .id, architectureConnection: architectureConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
                 \\"param1\\": \\"MHA\\",
-                \\"this_architectureConnection_args_where_MasterDataparam0\\": true,
-                \\"this_architectureConnection_edges_node_nameDetailsConnection_args_where_NameDetailsparam0\\": true,
-                \\"this_architectureConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"edge\\": {
-                                \\"current\\": true
-                            }
-                        }
-                    },
-                    \\"edges\\": {
-                        \\"node\\": {
-                            \\"nameDetailsConnection\\": {
-                                \\"args\\": {
-                                    \\"where\\": {
-                                        \\"edge\\": {
-                                            \\"current\\": true
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                \\"this_connection_architectureConnectionparam0\\": true,
+                \\"this_MasterData_connection_nameDetailsConnectionparam0\\": true
             }"
         `);
     });
@@ -218,77 +196,42 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             "MATCH (this:\`Main\`)
             WHERE (this.current = $param0 AND size([(this)-[this0:MAIN]->(this1:\`Series\`) WHERE size([(this1)-[this2:ARCHITECTURE]->(this3:\`MasterData\`) WHERE size([(this3)-[this4:HAS_NAME]->(this5:\`NameDetails\`) WHERE this5.fullName = $param1 | 1]) = 1 | 1]) > 0 | 1]) = 1)
             CALL {
-            WITH this
-            MATCH (this)-[this_main_relationship:MAIN]->(this_series:Series)
-            WHERE this_main_relationship.current = $this_mainConnection_args_where_Seriesparam0
-            CALL {
-            WITH this_series
-            MATCH (this_series)-[this_series_architecture_relationship:ARCHITECTURE]->(this_series_masterdata:MasterData)
-            WHERE this_series_architecture_relationship.current = $this_mainConnection_edges_node_architectureConnection_args_where_MasterDataparam0
-            CALL {
-            WITH this_series_masterdata
-            MATCH (this_series_masterdata)-[this_series_masterdata_has_name_relationship:HAS_NAME]->(this_series_masterdata_namedetails:NameDetails)
-            WHERE this_series_masterdata_has_name_relationship.current = $this_mainConnection_edges_node_architectureConnection_edges_node_nameDetailsConnection_args_where_NameDetailsparam0
-            WITH collect({ node: { fullName: this_series_masterdata_namedetails.fullName } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
+                WITH this
+                MATCH (this)-[this_connection_mainConnectionthis0:MAIN]->(this_Series:\`Series\`)
+                WHERE this_connection_mainConnectionthis0.current = $this_connection_mainConnectionparam0
+                CALL {
+                    WITH this_Series
+                    MATCH (this_Series)-[this_Series_connection_architectureConnectionthis0:ARCHITECTURE]->(this_Series_MasterData:\`MasterData\`)
+                    WHERE this_Series_connection_architectureConnectionthis0.current = $this_Series_connection_architectureConnectionparam0
+                    CALL {
+                        WITH this_Series_MasterData
+                        MATCH (this_Series_MasterData)-[this_Series_MasterData_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_Series_MasterData_NameDetails:\`NameDetails\`)
+                        WHERE this_Series_MasterData_connection_nameDetailsConnectionthis0.current = $this_Series_MasterData_connection_nameDetailsConnectionparam0
+                        WITH { node: { fullName: this_Series_MasterData_NameDetails.fullName } } AS edge
+                        WITH collect(edge) AS edges
+                        WITH edges, size(edges) AS totalCount
+                        RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
+                    }
+                    WITH { node: { nameDetailsConnection: nameDetailsConnection } } AS edge
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS architectureConnection
+                }
+                WITH { node: { architectureConnection: architectureConnection } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS mainConnection
             }
-            WITH collect({ node: { nameDetailsConnection: nameDetailsConnection } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS architectureConnection
-            }
-            WITH collect({ node: { architectureConnection: architectureConnection } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS mainConnection
-            }
-            RETURN this { .id, mainConnection } as this"
+            RETURN this { .id, mainConnection: mainConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": true,
                 \\"param1\\": \\"MHA\\",
-                \\"this_mainConnection_args_where_Seriesparam0\\": true,
-                \\"this_mainConnection_edges_node_architectureConnection_args_where_MasterDataparam0\\": true,
-                \\"this_mainConnection_edges_node_architectureConnection_edges_node_nameDetailsConnection_args_where_NameDetailsparam0\\": true,
-                \\"this_mainConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"edge\\": {
-                                \\"current\\": true
-                            }
-                        }
-                    },
-                    \\"edges\\": {
-                        \\"node\\": {
-                            \\"architectureConnection\\": {
-                                \\"args\\": {
-                                    \\"where\\": {
-                                        \\"edge\\": {
-                                            \\"current\\": true
-                                        }
-                                    }
-                                },
-                                \\"edges\\": {
-                                    \\"node\\": {
-                                        \\"nameDetailsConnection\\": {
-                                            \\"args\\": {
-                                                \\"where\\": {
-                                                    \\"edge\\": {
-                                                        \\"current\\": true
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                \\"this_connection_mainConnectionparam0\\": true,
+                \\"this_Series_connection_architectureConnectionparam0\\": true,
+                \\"this_Series_MasterData_connection_nameDetailsConnectionparam0\\": true
             }"
         `);
     });

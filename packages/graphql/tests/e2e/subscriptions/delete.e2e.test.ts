@@ -21,7 +21,7 @@ import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 import type { TestGraphQLServer } from "../setup/apollo-server";
 import { ApolloTestServer } from "../setup/apollo-server";
 import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
@@ -31,18 +31,22 @@ import Neo4j from "../setup/neo4j";
 describe("Delete Subscription", () => {
     let neo4j: Neo4j;
     let driver: Driver;
-
-    const typeMovie = generateUniqueType("Movie");
-
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
+    let typeMovie: UniqueType;
+    let typeActor: UniqueType;
 
     beforeEach(async () => {
+        typeMovie = generateUniqueType("Movie");
+        typeActor = generateUniqueType("Actor");
         const typeDefs = `
         type ${typeMovie} {
             title: String
+            actors: [${typeActor}]
         }
-        `;
+        type ${typeActor} @exclude(operations: [SUBSCRIBE]) {
+           name: String
+        }`;
 
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
@@ -137,6 +141,26 @@ describe("Delete Subscription", () => {
         ]);
     });
 
+    test("delete subscription on excluded type", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
+            subscription {
+                ${typeActor.operations.subscribe.deleted}(where: { name: "Keanu" }) {
+                    ${typeActor.operations.subscribe.payload.deleted} {
+                        name
+                    }
+                }
+            }
+        `,
+            onReturnError
+        );
+        await createActor("Keanu");
+        await deleteActor("Keanu");
+        expect(onReturnError).toHaveBeenCalled();
+        expect(wsClient.events).toEqual([]);
+    });
+
     async function createMovie(title: string): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
@@ -154,7 +178,23 @@ describe("Delete Subscription", () => {
             .expect(200);
         return result;
     }
-
+    async function createActor(name: string): Promise<Response> {
+        const result = await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeActor.operations.create}(input: [{ name: "${name}" }]) {
+                            ${typeActor.plural} {
+                                name
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+        return result;
+    }
     async function deleteMovie(title: string): Promise<Response> {
         const result = await supertest(server.path)
             .post("")
@@ -166,6 +206,23 @@ describe("Delete Subscription", () => {
                         }
                     }
                 `,
+            })
+            .expect(200);
+        return result;
+    }
+    async function deleteActor(name: string): Promise<Response> {
+        const result = await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                        mutation {
+                            ${typeActor.operations.update}(where: { name: "${name}" }) {
+                                ${typeActor.plural} {
+                                    name
+                                }
+                            }
+                        }
+                    `,
             })
             .expect(200);
         return result;

@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
+import { HasLabel } from "../expressions/HasLabel";
 import { MatchPatternOptions, Pattern } from "../Pattern";
-import { escapeLabel } from "../utils/utils";
+import { RelationshipRef } from "./RelationshipRef";
 import { Variable } from "./Variable";
 
 type NodeRefOptions = {
@@ -27,17 +28,26 @@ type NodeRefOptions = {
 
 /** Represents a Node reference */
 export class NodeRef extends Variable {
-    private labels: string[];
+    public labels: string[];
 
     constructor(options: NodeRefOptions) {
         super("this");
         this.labels = options.labels || [];
     }
 
-    public getLabelsString(): string {
-        const escapedLabels = this.labels.map(escapeLabel);
-        if (escapedLabels.length === 0) return "";
-        return `:${escapedLabels.join(":")}`;
+    public relatedTo(node: NodeRef): RelationshipRef {
+        return new RelationshipRef({
+            source: this,
+            target: node,
+        });
+    }
+
+    public hasLabels(...labels: string[]): HasLabel {
+        return new HasLabel(this, labels);
+    }
+
+    public hasLabel(label: string): HasLabel {
+        return new HasLabel(this, [label]);
     }
 
     /** Creates a new Pattern from this node */
@@ -47,8 +57,14 @@ export class NodeRef extends Variable {
 }
 
 export class NamedNode extends NodeRef {
+    public id: string;
+
     constructor(id: string, options?: NodeRefOptions) {
         super(options || {});
         this.id = id;
+    }
+
+    public get name(): string {
+        return this.id;
     }
 }

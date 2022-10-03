@@ -24,12 +24,20 @@ import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
-import { generateUniqueType } from "../../../utils/graphql-types";
+import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
+import { runCypher } from "../../../utils/run-cypher";
+import { cleanNodes } from "../../../utils/clean-nodes";
 
 describe("auth/roles", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     const secret = "secret";
+
+    let typeUser: UniqueType;
+    let typeProduct: UniqueType;
+    let typePost: UniqueType;
+    let typeComment: UniqueType;
+    let typeHistory: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -40,21 +48,26 @@ describe("auth/roles", () => {
         await driver.close();
     });
 
-    beforeAll(async () => {
-        const session = await neo4j.getSession();
+    beforeEach(async () => {
+        typeUser = generateUniqueType("User");
+        typeProduct = generateUniqueType("Product");
+        typePost = generateUniqueType("Post");
+        typeComment = generateUniqueType("Comment");
+        typeHistory = generateUniqueType("History");
 
-        try {
-            await session.run(`
-                    CREATE (:Product { name: 'p1', id:123 })
-                    CREATE (:User { id: 1234, password:'dontpanic' })
-                `);
-            await session.run(`
-                    MATCH(N:NotANode)
-                    DETACH DELETE(N)
-                `);
-        } finally {
-            await session.close();
-        }
+        const session = await neo4j.getSession();
+        await runCypher(
+            session,
+            `
+                CREATE (:${typeProduct} { name: 'p1', id:123 })
+                CREATE (:${typeUser} { id: 1234, password:'dontpanic' })
+           `
+        );
+    });
+
+    afterEach(async () => {
+        const session = await neo4j.getSession();
+        await cleanNodes(session, [typeProduct, typeUser]);
     });
 
     describe("read", () => {
@@ -62,7 +75,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Product @auth(rules: [{
+                type ${typeProduct} @auth(rules: [{
                     operations: [READ],
                     roles: ["admin"]
                 }]) {
@@ -73,7 +86,7 @@ describe("auth/roles", () => {
 
             const query = `
             {
-                products {
+                ${typeProduct.plural} {
                     id
                 }
             }
@@ -107,7 +120,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type User  {
+                type ${typeUser}  {
                     id: ID
                     password: String @auth(rules: [{ operations: [READ], roles: ["admin"] }])
                 }
@@ -115,7 +128,7 @@ describe("auth/roles", () => {
 
             const query = `
                 {
-                    users {
+                    ${typeUser.plural} {
                         password
                     }
                 }
@@ -140,6 +153,79 @@ describe("auth/roles", () => {
                 });
 
                 expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
+            } finally {
+                await session.close();
+            }
+        });
+
+        test("Read Node & Cypher Field", async () => {
+            const session = await neo4j.getSession();
+
+            const typeDefs = `
+                type ${typeHistory} {
+                    url: String @auth(rules: [{ operations: [READ], roles: ["super-admin"] }])
+                }
+                type ${typeUser} {
+                    id: ID
+                    name: String
+                    password: String
+                }
+
+                extend type ${typeUser}
+                    @auth(rules: [{ operations: [READ, CREATE, UPDATE, CONNECT, DISCONNECT, DELETE], roles: ["admin"] }])
+
+                extend type ${typeUser} {
+                    history: [${typeHistory}]
+                        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${typeHistory}) RETURN h")
+                        @auth(rules: [{ operations: [READ], roles: ["super-admin"] }])
+                }
+            `;
+
+            const query = `
+                {
+                    ${typeUser.plural} {
+                        history {
+                            url
+                        }
+                    }
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret: "secret",
+                    }),
+                },
+            });
+
+            try {
+                await session.run(`
+                MATCH (u:${typeUser} { id: 1234 })
+                CREATE(h:${typeHistory} { url: 'http://some.url' })<-[:HAS_HISTORY]-(u)
+            `);
+
+                const req = createJwtRequest(secret, { sub: "super_admin", roles: ["admin", "super-admin"] });
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
+                expect(gqlResult.data).toEqual({
+                    [typeUser.plural]: [
+                        {
+                            history: [
+                                {
+                                    url: "http://some.url",
+                                },
+                            ],
+                        },
+                    ],
+                });
             } finally {
                 await session.close();
             }
@@ -197,7 +283,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type User @auth(rules: [{
+                type ${typeUser} @auth(rules: [{
                     operations: [CREATE]
                     roles: ["admin"]
                 }]) {
@@ -208,8 +294,8 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    createUsers(input: [{ id: "1" }]) {
-                        users {
+                    ${typeUser.operations.create}(input: [{ id: "1" }]) {
+                        ${typeUser.plural} {
                             id
                         }
                     }
@@ -244,7 +330,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type User {
+                type ${typeUser} {
                     id: ID
                     password: String @auth(rules: [{
                         operations: [CREATE],
@@ -255,8 +341,8 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    createUsers(input: [{ password: "1" }]) {
-                        users {
+                    ${typeUser.operations.create}(input: [{ password: "1" }]) {
+                        ${typeUser.plural} {
                             password
                         }
                     }
@@ -293,7 +379,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type User @auth(rules: [{
+                type ${typeUser} @auth(rules: [{
                     operations: [UPDATE],
                     roles: ["admin"]
                 }]) {
@@ -304,8 +390,8 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { id: "1" }) {
-                        users {
+                    ${typeUser.operations.update}(update: { id: "1" }) {
+                        ${typeUser.plural} {
                             id
                         }
                     }
@@ -340,7 +426,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type User {
+                type ${typeUser} {
                     id: ID
                     password: String @auth(rules: [{
                         operations: [UPDATE],
@@ -351,8 +437,8 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { password: "1" }) {
-                        users {
+                    ${typeUser.operations.update}(update: { password: "1" }) {
+                        ${typeUser.plural} {
                             password
                         }
                     }
@@ -389,19 +475,19 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Post {
+                type ${typePost} {
                     id: String
                     content: String
                 }
 
-                type User {
+                type ${typeUser} {
                     id: ID
                     name: String
                     password: String
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${typePost}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User
+                extend type ${typeUser}
                     @auth(
                         rules: [
                             {
@@ -411,7 +497,7 @@ describe("auth/roles", () => {
                         ]
                     )
 
-                extend type Post @auth(rules: [{ operations: [CONNECT], roles: ["super-admin"] }])
+                extend type ${typePost} @auth(rules: [{ operations: [CONNECT], roles: ["super-admin"] }])
             `;
 
             const userId = generate({
@@ -424,8 +510,8 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { id: "${userId}" }, connect: { posts: { where: { node: { id: "${postId}" } } } }) {
-                        users {
+                    ${typeUser.operations.update}(update: { id: "${userId}" }, connect: { posts: { where: { node: { id: "${postId}" } } } }) {
+                        ${typeUser.plural} {
                             id
                         }
                     }
@@ -443,8 +529,8 @@ describe("auth/roles", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})
-                    CREATE (:Post {id: "${userId}"})
+                    CREATE (:${typeUser} {id: "${userId}"})
+                    CREATE (:${typePost} {id: "${userId}"})
                 `);
                 // missing super-admin
                 const req = createJwtRequest(secret, { roles: ["admin"] });
@@ -465,26 +551,26 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Comment {
+                type ${typeComment} {
                     id: String
                     content: String
-                    post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
+                    post: ${typePost}! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
-                type Post {
+                type ${typePost} {
                     id: String
                     content: String
-                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
-                    comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
+                    creator: ${typeUser}! @relationship(type: "HAS_POST", direction: OUT)
+                    comments: [${typeComment}!]! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
-                type User {
+                type ${typeUser} {
                     id: ID
                     name: String
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${typePost}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User
+                extend type ${typeUser}
                     @auth(
                         rules: [
                             {
@@ -509,7 +595,7 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    updateComments(
+                    ${typeComment.operations.update}(
                         where: { id: "${commentId}" }
                         update: {
                             post: {
@@ -521,7 +607,7 @@ describe("auth/roles", () => {
                             }
                         }
                     ) {
-                        comments {
+                        ${typeComment.plural} {
                             content
                         }
                     }
@@ -539,8 +625,8 @@ describe("auth/roles", () => {
 
             try {
                 await session.run(`
-                    CREATE (:Comment {id: "${commentId}"})<-[:HAS_COMMENT]-(:Post {id: "${postId}"})
-                    CREATE (:User {id: "${userId}"})
+                    CREATE (:${typeComment} {id: "${commentId}"})<-[:HAS_COMMENT]-(:${typePost} {id: "${postId}"})
+                    CREATE (:${typeUser} {id: "${userId}"})
                 `);
 
                 const req = createJwtRequest(secret, { roles: [""] });
@@ -563,19 +649,19 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Post {
+                type ${typePost} {
                     id: String
                     content: String
                 }
 
-                type User {
+                type ${typeUser} {
                     id: ID
                     name: String
                     password: String
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${typePost}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User
+                extend type ${typeUser}
                     @auth(
                         rules: [
                             {
@@ -585,7 +671,7 @@ describe("auth/roles", () => {
                         ]
                     )
 
-                extend type Post @auth(rules: [{ operations: [DISCONNECT], roles: ["super-admin"] }])
+                extend type ${typePost} @auth(rules: [{ operations: [DISCONNECT], roles: ["super-admin"] }])
             `;
 
             const userId = generate({
@@ -598,8 +684,8 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { id: "${userId}" }, disconnect: { posts: { where: { node: { id: "${postId}" } } } }) {
-                        users {
+                    ${typeUser.operations.update}(update: { id: "${userId}" }, disconnect: { posts: { where: { node: { id: "${postId}" } } } }) {
+                        ${typeUser.plural} {
                             id
                         }
                     }
@@ -617,8 +703,8 @@ describe("auth/roles", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})
-                    CREATE (:Post {id: "${userId}"})
+                    CREATE (:${typeUser} {id: "${userId}"})
+                    CREATE (:${typePost} {id: "${userId}"})
                 `);
                 // missing super-admin
                 const req = createJwtRequest(secret, { roles: ["admin"] });
@@ -639,26 +725,26 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type Comment {
+                type ${typeComment} {
                     id: String
                     content: String
-                    post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
+                    post: ${typePost}! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
-                type Post {
+                type ${typePost} {
                     id: String
                     content: String
-                    creator: User! @relationship(type: "HAS_POST", direction: OUT)
-                    comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
+                    creator: ${typeUser}! @relationship(type: "HAS_POST", direction: OUT)
+                    comments: [${typeComment}!]! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
-                type User {
+                type ${typeUser} {
                     id: ID
                     name: String
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${typePost}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type User
+                extend type ${typeUser}
                     @auth(
                         rules: [
                             {
@@ -683,7 +769,7 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    updateComments(
+                    ${typeComment.operations.update}(
                         where: { id: "${commentId}" }
                         update: {
                             post: {
@@ -695,7 +781,7 @@ describe("auth/roles", () => {
                             }
                         }
                     ) {
-                        comments {
+                        ${typeComment.plural} {
                             content
                         }
                     }
@@ -713,7 +799,7 @@ describe("auth/roles", () => {
 
             try {
                 await session.run(`
-                    CREATE (:Comment {id: "${commentId}"})<-[:HAS_COMMENT]-(:Post {id: "${postId}"})-[:HAS_POST]->(:User {id: "${userId}"})
+                    CREATE (:${typeComment} {id: "${commentId}"})<-[:HAS_COMMENT]-(:${typePost} {id: "${postId}"})-[:HAS_POST]->(:${typeUser} {id: "${userId}"})
                 `);
 
                 const req = createJwtRequest(secret, { roles: [""] });
@@ -736,7 +822,7 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type User @auth(rules: [{
+                type ${typeUser} @auth(rules: [{
                     operations: [DELETE],
                     roles: ["admin"]
                 }]) {
@@ -747,7 +833,7 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    deleteUsers {
+                    ${typeUser.operations.delete} {
                         nodesDeleted
                     }
                 }
@@ -781,13 +867,13 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type User {
+                type ${typeUser} {
                     id: ID
                     name: String
-                    posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT)
+                    posts: [${typePost}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                type Post @auth(rules: [{
+                type ${typePost} @auth(rules: [{
                     operations: [DELETE],
                     roles: ["admin"]
                 }]) {
@@ -806,7 +892,7 @@ describe("auth/roles", () => {
 
             const query = `
                 mutation {
-                    deleteUsers(where: {id: "${userId}"}, delete:{posts: {where:{node: { id: "${postId}"}}}}) {
+                    ${typeUser.operations.delete}(where: {id: "${userId}"}, delete:{posts: {where:{node: { id: "${postId}"}}}}) {
                         nodesDeleted
                     }
                 }
@@ -822,7 +908,7 @@ describe("auth/roles", () => {
             });
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})-[:HAS_POST]->(:Post {id: "${postId}"})
+                    CREATE (:${typeUser} {id: "${userId}"})-[:HAS_POST]->(:${typePost} {id: "${postId}"})
                 `);
 
                 const req = createJwtRequest(secret, { roles: [] });
@@ -845,19 +931,19 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type User @exclude {
+                type ${typeUser} @exclude {
                     id: ID
                     name: String
                 }
 
                 type Query {
-                    users: [User] @cypher(statement: "MATCH (u:User) RETURN u") @auth(rules: [{ roles: ["admin"] }])
+                    ${typeUser.plural}: [${typeUser}] @cypher(statement: "MATCH (u:${typeUser}) RETURN u") @auth(rules: [{ roles: ["admin"] }])
                 }
             `;
 
             const query = `
                 query {
-                    users {
+                    ${typeUser.plural} {
                         id
                     }
                 }
@@ -891,19 +977,19 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type User {
+                type ${typeUser} {
                     id: ID
                     name: String
                 }
 
                 type Mutation {
-                    createUser: User @cypher(statement: "CREATE (u:User) RETURN u") @auth(rules: [{ roles: ["admin"] }])
+                    ${typeUser.operations.create}: ${typeUser} @cypher(statement: "CREATE (u:${typeUser}) RETURN u") @auth(rules: [{ roles: ["admin"] }])
                 }
             `;
 
             const query = `
                 mutation {
-                    createUser {
+                    ${typeUser.operations.create} {
                         id
                     }
                 }
@@ -937,21 +1023,21 @@ describe("auth/roles", () => {
             const session = await neo4j.getSession();
 
             const typeDefs = `
-                type History {
+                type ${typeHistory} {
                     url: String
                 }
 
-                type User {
+                type ${typeUser} {
                     id: ID
-                    history: [History]
-                        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h")
+                    history: [${typeHistory}]
+                        @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${typeHistory}) RETURN h")
                         @auth(rules: [{ operations: [READ], roles: ["admin"] }])
                 }
             `;
 
             const query = `
                 {
-                    users {
+                    ${typeUser.plural} {
                         history {
                             url
                         }

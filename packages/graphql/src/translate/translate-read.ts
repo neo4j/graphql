@@ -22,10 +22,9 @@ import { int } from "neo4j-driver";
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
 import createProjectionAndParams, { ProjectionResult } from "./create-projection-and-params";
-import type { GraphQLOptionsArg, GraphQLSortArg, Context, ConnectionField } from "../types";
+import type { GraphQLOptionsArg, GraphQLSortArg, Context } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import createConnectionAndParams from "./connection/create-connection-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 
@@ -46,7 +45,6 @@ export function translateRead({
     let projAuth = "";
 
     let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
-    const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
 
     const topLevelMatch = translateTopLevelMatch({
@@ -63,7 +61,6 @@ export function translateRead({
         context,
         resolveTree,
         varName,
-        isRootConnectionField,
     });
 
     cypherParams = { ...cypherParams, ...projection.params };
@@ -72,22 +69,6 @@ export function translateRead({
         projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
             " AND "
         )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-    }
-
-    if (projection.meta.connectionFields?.length) {
-        projection.meta.connectionFields.forEach((connectionResolveTree) => {
-            const connectionField = node.connectionFields.find(
-                (x) => x.fieldName === connectionResolveTree.name
-            ) as ConnectionField;
-            const connection = createConnectionAndParams({
-                resolveTree: connectionResolveTree,
-                field: connectionField,
-                context,
-                nodeVariable: varName,
-            });
-            connectionStrs.push(connection[0]);
-            cypherParams = { ...cypherParams, ...connection[1] };
-        });
     }
 
     const allowAndParams = createAuthAndParams({
@@ -105,10 +86,12 @@ export function translateRead({
     }
 
     const projectionSubqueries = CypherBuilder.concat(...projection.subqueries);
+    const projectionSubqueriesBeforeSort = CypherBuilder.concat(...projection.subqueriesBeforeSort);
 
     // TODO: concatenate with "translateTopLevelMatch" result to avoid param collision
     const readQuery = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
         const projectionSubqueriesStr = projectionSubqueries.getCypher(env);
+        const subqueriesBeforeSort = projectionSubqueriesBeforeSort.getCypher(env);
 
         if (isRootConnectionField) {
             return translateRootConnectionField({
@@ -120,8 +103,8 @@ export function translateRead({
                     matchAndWhereStr,
                     authStr,
                     projAuth,
-                    connectionStrs,
                     interfaceStrs,
+                    subqueriesBeforeSort,
                 },
             });
         }
@@ -136,8 +119,8 @@ export function translateRead({
                 matchAndWhereStr,
                 authStr,
                 projAuth,
-                connectionStrs,
                 interfaceStrs,
+                subqueriesBeforeSort,
             },
         });
     });
@@ -163,9 +146,9 @@ function translateRootField({
         matchAndWhereStr: string;
         authStr: string;
         projAuth: string;
-        connectionStrs: string[];
         interfaceStrs: string[];
         projectionSubqueries: string;
+        subqueriesBeforeSort: string;
     };
 }): [string, Record<string, any>] {
     const { resolveTree } = context;
@@ -181,9 +164,7 @@ function translateRootField({
     const params = {} as Record<string, any>;
     const hasOffset = Boolean(optionsInput.offset) || optionsInput.offset === 0;
 
-    const sortCypherFields = projection.meta?.cypherSortFields ?? [];
-    const sortCypherProj = sortCypherFields.map(({ alias, apocStr }) => `${apocStr} AS ${alias}`);
-    const sortOffsetLimit: string[] = [[`WITH *`, ...sortCypherProj].join(", ")];
+    const sortOffsetLimit: string[] = [`WITH *`];
 
     if (optionsInput.sort && optionsInput.sort.length) {
         const sortArr = optionsInput.sort.reduce((res: string[], sort: GraphQLSortArg) => {
@@ -191,7 +172,7 @@ function translateRootField({
                 ...res,
                 ...Object.entries(sort).map(([field, direction]) => {
                     if (node.cypherFields.some((f) => f.fieldName === field)) {
-                        return `${field} ${direction}`;
+                        return `${varName}_${field} ${direction}`;
                     }
                     return `${varName}.${field} ${direction}`;
                 }),
@@ -211,18 +192,18 @@ function translateRootField({
         sortOffsetLimit.push(`LIMIT $${varName}_limit`);
     }
 
-    const withStrs = subStr.projAuth ? [`WITH ${varName}`, subStr.projAuth] : [];
+    const withStrs = subStr.projAuth ? [`WITH *`, subStr.projAuth] : [];
 
     const returnStrs = [`RETURN ${varName} ${projection.projection} as ${varName}`];
 
     const cypher: string[] = [
         subStr.matchAndWhereStr,
-        subStr.projectionSubqueries,
+        subStr.subqueriesBeforeSort,
         ...(sortOffsetLimit.length > 1 ? sortOffsetLimit : []),
         subStr.authStr,
         ...withStrs,
-        ...subStr.connectionStrs,
         ...subStr.interfaceStrs,
+        subStr.projectionSubqueries,
         ...returnStrs,
     ];
 
@@ -242,9 +223,9 @@ function translateRootConnectionField({
         matchAndWhereStr: string;
         authStr: string;
         projAuth: string;
-        connectionStrs: string[];
         interfaceStrs: string[];
         projectionSubqueries: string;
+        subqueriesBeforeSort: string;
     };
 }): [string, Record<string, any>] {
     const { resolveTree } = context;
@@ -260,7 +241,6 @@ function translateRootConnectionField({
     const hasSort = Boolean(sortInput && sortInput.length);
 
     const sortCypherFields = projection.meta?.cypherSortFields ?? [];
-    const sortCypherProj = sortCypherFields.map(({ alias, apocStr }) => `${alias}: ${apocStr}`);
 
     let sortStr = "";
     if (hasSort) {
@@ -269,7 +249,7 @@ function translateRootConnectionField({
                 ...res,
                 ...Object.entries(sort).map(([field, direction]) => {
                     // if the sort arg is a cypher field, substitaute "edges" for varName
-                    const varOrEdgeName = sortCypherFields.find((x) => x.alias === field) ? "edges" : varName;
+                    const varOrEdgeName = sortCypherFields.find((x) => x === field) ? "edge.node" : varName;
                     return `${varOrEdgeName}.${field} ${direction}`;
                 }),
             ];
@@ -293,30 +273,24 @@ function translateRootConnectionField({
         cypherParams[`${varName}_limit`] = firstInput;
     }
 
-    const returnStrs: string[] = [
-        `WITH COLLECT({ node: ${varName} ${projection.projection} }) as edges, totalCount`,
-        `RETURN { edges: edges, totalCount: totalCount } as ${varName}`,
-    ];
-
     const withStrs = subStr.projAuth ? [`WITH ${varName}`, subStr.projAuth] : [];
     const cypher = [
-        "CALL {",
         subStr.matchAndWhereStr,
         subStr.authStr,
         ...withStrs,
         `WITH COLLECT(this) as edges`,
         `WITH edges, size(edges) as totalCount`,
         `UNWIND edges as ${varName}`,
-        `WITH ${varName}, totalCount, { ${sortCypherProj.join(", ")}} as edges`,
-        `RETURN ${varName}, totalCount, edges`,
+        `WITH ${varName}, totalCount`,
+        subStr.subqueriesBeforeSort,
+        subStr.projectionSubqueries,
+        `WITH { node: ${varName} ${projection.projection} } as edge, totalCount, ${varName}`,
         ...(sortStr ? [sortStr] : []),
         ...(offsetStr ? [offsetStr] : []),
         ...(limitStr ? [limitStr] : []),
-        "}",
-        subStr.projectionSubqueries,
-        ...subStr.connectionStrs,
+        `WITH COLLECT(edge) as edges, totalCount`,
         ...subStr.interfaceStrs,
-        ...returnStrs,
+        `RETURN { edges: edges, totalCount: totalCount } as ${varName}`,
     ];
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];

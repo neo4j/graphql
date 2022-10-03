@@ -26,7 +26,7 @@ function parseExcludeDirective(excludeDirective: DirectiveNode | undefined | nul
         throw new Error("Undefined or incorrect directive passed into parseExcludeDirective function");
     }
 
-    const allResolvers = ["create", "read", "update", "delete"];
+    const allResolvers = ["create", "read", "update", "delete", "subscribe"];
 
     if (!excludeDirective.arguments?.length) {
         return new Exclude({ operations: allResolvers });
