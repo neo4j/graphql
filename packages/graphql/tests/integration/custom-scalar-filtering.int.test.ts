@@ -40,7 +40,7 @@ describe("Custom Scalar Filtering", () => {
     });
 
     describe("Single Value Custom Scalar", () => {
-        test("should find Movies NOT CustomScalar", async () => {
+        test("Filter NOT CustomScalar", async () => {
             const session = await neo4j.getSession();
             const randomType = generateUniqueType("Movie");
 
@@ -87,7 +87,7 @@ describe("Custom Scalar Filtering", () => {
                 await session.close();
             }
         });
-        test("should find Movies IN CustomScalar", async () => {
+        test("Filter IN CustomScalar", async () => {
             const session = await neo4j.getSession();
             const randomType = generateUniqueType("Movie");
 
@@ -134,7 +134,7 @@ describe("Custom Scalar Filtering", () => {
                 await session.close();
             }
         });
-        test("should find Movies NOT_IN CustomScalar", async () => {
+        test("Filter NOT_IN CustomScalar", async () => {
             const session = await neo4j.getSession();
             const randomType = generateUniqueType("Movie");
 
@@ -185,7 +185,7 @@ describe("Custom Scalar Filtering", () => {
         });
     });
     describe("List Custom Scalar Filtering", () => {
-        test("should find Movies NOT CustomListScalar", async () => {
+        test("Filter NOT CustomListScalar", async () => {
             const session = await neo4j.getSession();
             const randomType = generateUniqueType("Movie");
 
@@ -233,7 +233,7 @@ describe("Custom Scalar Filtering", () => {
                 await session.close();
             }
         });
-        test("should find Movies INCLUDES CustomListScalar", async () => {
+        test("Filter INCLUDES CustomListScalar", async () => {
             const session = await neo4j.getSession();
             const randomType = generateUniqueType("Movie");
 
@@ -280,7 +280,7 @@ describe("Custom Scalar Filtering", () => {
                 await session.close();
             }
         });
-        test("should find Movies NOT_INCLUDES CustomListScalar", async () => {
+        test("Filter NOT_INCLUDES CustomListScalar", async () => {
             const session = await neo4j.getSession();
             const randomType = generateUniqueType("Movie");
 
