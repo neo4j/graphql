@@ -78,7 +78,7 @@ export function createEdgeProjection({
         const nodeField = Object.values(relationshipFieldsByTypeName).find((v) => v.name === "node");
         if (nodeField) {
             const nodeProjection = createConnectionNodeProjection({
-                nodeResolveTree: nodeField as ResolveTree,
+                nodeResolveTree: nodeField,
                 context,
                 node: relatedNode,
                 resolveTree,
