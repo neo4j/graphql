@@ -17,18 +17,11 @@
  * limitations under the License.
  */
 
-import { Reference } from "./Reference";
+import type { VariableLike } from "../types";
+import { Literal } from "../variables/Literal";
+import { PropertyRef } from "../variables/PropertyRef";
+import { Reference } from "../variables/Reference";
 
-/** Represents a variable */
-export class Variable extends Reference {
-    constructor(prefix = "var", id?: string) {
-        super(prefix, id);
-    }
-}
-
-/** For compatibility reasons, represents a plain string variable */
-export class NamedVariable extends Variable {
-    constructor(name: string) {
-        super("", name);
-    }
+export function isVariableLike(t: unknown): t is VariableLike {
+    return t instanceof Reference || t instanceof PropertyRef || t instanceof Literal;
 }

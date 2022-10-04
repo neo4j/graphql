@@ -55,7 +55,7 @@ export class FullTextQueryNodes extends Clause {
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const targetId = env.getVariableId(this.targetNode);
+        const targetId = env.getReferenceId(this.targetNode);
 
         const whereStr = this.whereClause?.getCypher(env) || "";
         const returnStr = this.returnStatement?.getCypher(env) || "";

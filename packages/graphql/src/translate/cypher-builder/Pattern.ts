@@ -106,7 +106,7 @@ export class Pattern<T extends MatchableElement = any> implements CypherCompilab
     }
 
     private getRelationshipCypher(env: CypherEnvironment, relationship: RelationshipRef): string {
-        const referenceId = this.options?.relationship?.variable ? env.getVariableId(relationship) : "";
+        const referenceId = this.options?.relationship?.variable ? env.getReferenceId(relationship) : "";
 
         const parameterOptions = this.parameters as MatchParams<RelationshipRef>;
         const relationshipParamsStr = this.serializeParameters(parameterOptions.relationship || {}, env);
@@ -141,7 +141,7 @@ export class Pattern<T extends MatchableElement = any> implements CypherCompilab
     ): string {
         const nodeOptions = this.options[item] as ItemOption;
 
-        const referenceId = nodeOptions.variable ? env.getVariableId(node) : "";
+        const referenceId = nodeOptions.variable ? env.getReferenceId(node) : "";
         const parametersStr = this.serializeParameters(parameters || {}, env);
         const nodeLabelString = nodeOptions.labels ? this.getNodeLabelsString(node) : "";
 

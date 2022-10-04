@@ -19,15 +19,15 @@
 
 import { HasLabel } from "../expressions/HasLabel";
 import { MatchPatternOptions, Pattern } from "../Pattern";
+import { Reference } from "./Reference";
 import { RelationshipRef } from "./RelationshipRef";
-import { Variable } from "./Variable";
 
 type NodeRefOptions = {
     labels?: string[];
 };
 
 /** Represents a Node reference */
-export class NodeRef extends Variable {
+export class NodeRef extends Reference {
     public labels: string[];
 
     constructor(options: NodeRefOptions) {

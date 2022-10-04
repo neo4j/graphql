@@ -17,18 +17,26 @@
  * limitations under the License.
  */
 
-import { Reference } from "./Reference";
+import { PropertyRef } from "./PropertyRef";
+import type { CypherCompilable } from "../types";
+import type { CypherEnvironment } from "../Environment";
 
-/** Represents a variable */
-export class Variable extends Reference {
+/** Represents a reference that will be kept in the environment */
+export abstract class Reference implements CypherCompilable {
+    public readonly prefix: string;
+    public id: string | undefined; // Overrides variable name for compatibility reasons
+
     constructor(prefix = "var", id?: string) {
-        super(prefix, id);
+        this.prefix = prefix;
+        this.id = id;
     }
-}
 
-/** For compatibility reasons, represents a plain string variable */
-export class NamedVariable extends Variable {
-    constructor(name: string) {
-        super("", name);
+    public getCypher(env: CypherEnvironment): string {
+        const id = env.getReferenceId(this);
+        return `${id}`;
+    }
+
+    public property(path: string): PropertyRef {
+        return new PropertyRef(this, path);
     }
 }

@@ -19,7 +19,7 @@
 
 import type { Call } from "../Call";
 import type { CypherEnvironment } from "../../Environment";
-import type { PropertyRef } from "../../expressions/PropertyRef";
+import type { PropertyRef } from "../../variables/PropertyRef";
 import type { Param } from "../../variables/Param";
 import type { Variable } from "../../variables/Variable";
 import { CypherASTNode } from "../../CypherASTNode";
