@@ -82,8 +82,18 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Community\`)
             WHERE this.id = $param0
-            RETURN this { .id, hasFeedItems: apoc.coll.flatten([this_hasFeedItems IN apoc.cypher.runFirstColumnMany(\\"Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag)
-               return pag SKIP ($limit * $pageIndex) LIMIT $limit\\", {this: this, auth: $auth, limit: $this_hasFeedItems_limit, page: $this_hasFeedItems_page}) WHERE (this_hasFeedItems:\`Content\`) OR (this_hasFeedItems:\`Project\`)  |   [ this_hasFeedItems IN [this_hasFeedItems] WHERE (this_hasFeedItems:\`Content\`) | this_hasFeedItems { __resolveType: \\"Content\\",  .name } ] + [ this_hasFeedItems IN [this_hasFeedItems] WHERE (this_hasFeedItems:\`Project\`) | this_hasFeedItems { __resolveType: \\"Project\\",  .name } ] ]) } as this"
+            CALL {
+                WITH this
+                UNWIND apoc.cypher.runFirstColumnMany(\\"Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag)
+                   return pag SKIP ($limit * $pageIndex) LIMIT $limit\\", { limit: $thisparam0, page: $thisparam1, this: this, auth: $auth }) AS this_hasFeedItems
+                WITH *
+                WHERE (this_hasFeedItems:\`Content\` OR this_hasFeedItems:\`Project\`)
+                RETURN collect(CASE
+                    WHEN this_hasFeedItems:\`Content\` THEN this_hasFeedItems { __resolveType: \\"Content\\",  .name }
+                    WHEN this_hasFeedItems:\`Project\` THEN this_hasFeedItems { __resolveType: \\"Project\\",  .name }
+                END) AS this_hasFeedItems
+            }
+            RETURN this { .id, hasFeedItems: this_hasFeedItems } as this"
         `);
     });
 });

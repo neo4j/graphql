@@ -30,6 +30,9 @@ jobs:
           eslint_flags: "."
           node_options: "--max_old_space_size=4096"
 
+  code-scanning:
+    uses: ./.github/workflows/reusable-codeql-analysis.yml
+
   package-tests:
     uses: ./.github/workflows/reusable-package-tests.yml
 

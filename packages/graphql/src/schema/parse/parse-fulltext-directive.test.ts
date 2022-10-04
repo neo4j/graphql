@@ -33,7 +33,7 @@ describe("parseFulltextDirective", () => {
             }
         `;
 
-        const definition = (typeDefs.definitions[0] as unknown) as ObjectTypeDefinitionNode;
+        const definition = typeDefs.definitions[0] as unknown as ObjectTypeDefinitionNode;
         const directive = (definition.directives || [])[0] as DirectiveNode;
 
         const nodeFields = getObjFieldMeta({
@@ -62,7 +62,7 @@ describe("parseFulltextDirective", () => {
             }
         `;
 
-        const definition = (typeDefs.definitions[0] as unknown) as ObjectTypeDefinitionNode;
+        const definition = typeDefs.definitions[0] as unknown as ObjectTypeDefinitionNode;
         const directive = (definition.directives || [])[0] as DirectiveNode;
 
         const nodeFields = getObjFieldMeta({
@@ -80,7 +80,9 @@ describe("parseFulltextDirective", () => {
                 definition,
                 nodeFields,
             })
-        ).toThrow("Node 'Movie' @fulltext index contains invalid index 'MyIndex' cannot use find String field 'title'");
+        ).toThrow(
+            "Node 'Movie' @fulltext index contains invalid index 'MyIndex' cannot use find String or ID field 'title'"
+        );
     });
 
     test("should return valid Fulltext", () => {
@@ -97,7 +99,7 @@ describe("parseFulltextDirective", () => {
             }
         `;
 
-        const definition = (typeDefs.definitions[0] as unknown) as ObjectTypeDefinitionNode;
+        const definition = typeDefs.definitions[0] as unknown as ObjectTypeDefinitionNode;
         const directive = (definition.directives || [])[0] as DirectiveNode;
 
         const nodeFields = getObjFieldMeta({

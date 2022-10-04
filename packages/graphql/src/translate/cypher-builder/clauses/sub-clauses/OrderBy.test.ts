@@ -28,7 +28,7 @@ describe("CypherBuilder OrderBy", () => {
         });
 
         const orderBy = new OrderBy();
-        orderBy.setOrderElements([
+        orderBy.addOrderElements([
             [movieNode.property("name"), "DESC"],
             [movieNode.property("age"), "ASC"],
         ]);

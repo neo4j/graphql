@@ -140,7 +140,7 @@ describe("Cypher Auth Roles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this
+            WITH *
             CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id, .name, .password } as this"
         `);
@@ -182,9 +182,14 @@ describe("Cypher Auth Roles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this
+            WITH *
             CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { history: [this_history IN apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h\\", {this: this, auth: $auth}) WHERE apoc.util.validatePredicate(NOT (any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) | this_history { .url }] } as this"
+            CALL {
+                WITH this
+                UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h\\", { this: this, auth: $auth }) AS this_history
+                RETURN collect(this_history { .url }) AS this_history
+            }
+            RETURN this { history: this_history } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -426,7 +431,7 @@ describe("Cypher Auth Roles", () => {
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -488,7 +493,7 @@ describe("Cypher Auth Roles", () => {
             			MERGE (this_post0)-[:HAS_POST]->(this_post0_creator0_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_post0_creator0_connect_User
             }
             WITH this, this_post0
             CALL {
@@ -580,7 +585,7 @@ describe("Cypher Auth Roles", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_posts0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_posts0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -649,7 +654,7 @@ describe("Cypher Auth Roles", () => {
             FOREACH(_ IN CASE WHEN this_post0_creator0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_post0_creator0_disconnect0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_post0_creator0_disconnect_User
             }
             WITH this, this_post0
             CALL {

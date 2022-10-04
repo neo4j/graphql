@@ -80,7 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             			MERGE (this)-[:ACTIVELY_MANAGING]->(this_connect_activeOrganization0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_activeOrganization_Organization
             }
             WITH this
             CALL {
@@ -90,7 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_activeOrganization0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_activeOrganization0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_activeOrganization_Organization
             }
             WITH *
             WITH *

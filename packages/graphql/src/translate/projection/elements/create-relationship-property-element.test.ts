@@ -20,7 +20,7 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import Relationship from "../../../classes/Relationship";
 import type { TemporalField, PointField, PrimitiveField } from "../../../types";
-import createRelationshipPropertyElement from "./create-relationship-property-element";
+import { createRelationshipPropertyElement } from "./create-relationship-property-element";
 
 describe("createRelationshipPropertyElement", () => {
     let relationship: Relationship;

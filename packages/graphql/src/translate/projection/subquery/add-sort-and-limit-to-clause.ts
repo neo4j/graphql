@@ -27,7 +27,7 @@ export function addSortAndLimitOptionsToClause({
     projectionClause,
 }: {
     optionsInput: GraphQLOptionsArg;
-    target: CypherBuilder.Variable;
+    target: CypherBuilder.Variable | CypherBuilder.PropertyRef;
     projectionClause: CypherBuilder.Return | CypherBuilder.With;
 }): void {
     if (optionsInput.sort) {
@@ -54,7 +54,7 @@ function createOrderByParams({
     target,
 }: {
     optionsInput: GraphQLOptionsArg;
-    target: CypherBuilder.Variable;
+    target: CypherBuilder.Variable | CypherBuilder.PropertyRef;
 }): Array<[CypherBuilder.Expr, CypherBuilder.Order]> {
     const orderList = (optionsInput.sort || []).flatMap((arg: GraphQLSortArg): Array<[string, "ASC" | "DESC"]> => {
         return Object.entries(arg);

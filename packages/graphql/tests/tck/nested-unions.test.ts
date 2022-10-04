@@ -125,9 +125,9 @@ describe("Nested Unions", () => {
             			MERGE (this_connect_actors_LeadActor0_node)-[:ACTED_IN]->(this_connect_actors_LeadActor0_node_actedIn_Series0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actors_LeadActor0_node_actedIn_Series_Series
             }
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_connect_actors_LeadActor_LeadActor
             }
             WITH *
             CALL {
@@ -230,9 +230,9 @@ describe("Nested Unions", () => {
             FOREACH(_ IN CASE WHEN this_disconnect_actors_LeadActor0_actedIn_Series0 IS NULL THEN [] ELSE [1] END |
             DELETE this_disconnect_actors_LeadActor0_actedIn_Series0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_actors_LeadActor0_actedIn_Series_Series
             }
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_disconnect_actors_LeadActor_LeadActor
             }
             WITH *
             CALL {

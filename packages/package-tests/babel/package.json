@@ -10,11 +10,11 @@
     "dependencies": {
         "@neo4j/graphql": "file:./package",
         "graphql": "^16.6.0",
-        "neo4j-driver": "^4.4.7"
+        "neo4j-driver": "^5.0.0"
     },
     "devDependencies": {
-        "@babel/core": "7.19.0",
-        "@babel/node": "7.18.10",
-        "@babel/preset-env": "7.19.0"
+        "@babel/core": "7.19.3",
+        "@babel/node": "7.19.1",
+        "@babel/preset-env": "7.19.3"
     }
 }

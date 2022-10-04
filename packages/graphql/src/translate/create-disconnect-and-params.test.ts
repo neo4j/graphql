@@ -22,6 +22,7 @@ import type { Neo4jGraphQL } from "../classes";
 import type { Context } from "../types";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { RelationshipQueryDirectionOption } from "../constants";
+import { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
 
 describe("createDisconnectAndParams", () => {
     test("should return the correct disconnect", () => {
@@ -78,7 +79,12 @@ describe("createDisconnectAndParams", () => {
         };
 
         // @ts-ignore
-        const context: Context = { neoSchema, nodes: [node], relationships: [] };
+        const context: Context = {
+            neoSchema,
+            nodes: [node],
+            relationships: [],
+            neo4jDatabaseInfo: new Neo4jDatabaseInfo("4.4.0"),
+        };
 
         const result = createDisconnectAndParams({
             withVars: ["this"],
@@ -114,9 +120,9 @@ describe("createDisconnectAndParams", () => {
             FOREACH(_ IN CASE WHEN this0_similarMovies0 IS NULL THEN [] ELSE [1] END | 
             DELETE this0_similarMovies0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this0_similarMovies_Movie
             }
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_Movie
             }"
         `);
 

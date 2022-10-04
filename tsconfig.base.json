@@ -7,6 +7,7 @@
         "resolveJsonModule": true,
         "importsNotUsedAsValues": "error",
         // TODO Refactor so that noImplicitAny is no longer needed
-        "noImplicitAny": false
+        "noImplicitAny": false,
+        "experimentalDecorators": true
     }
 }

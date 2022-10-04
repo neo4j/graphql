@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
 
         session = await neo4j.getSession();
 
-        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver, config: { enableDebug: true } });
+        const neoGraphql = new Neo4jGraphQL({ typeDefs, driver });
         schema = await neoGraphql.getSchema();
     });
 
@@ -102,7 +102,7 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
                                     id
                                     name
                                 }
-                            } 
+                            }
                             owner {
                                 id
                                 name

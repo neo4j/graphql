@@ -266,16 +266,15 @@ describe("Math operators", () => {
                 WITH this_actedIn { .title } AS this_actedIn
                 RETURN collect(this_actedIn) AS this_actedIn
             }
-            WITH *
             CALL {
-            WITH this
-            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
-            WITH collect({ pay: this_acted_in_relationship.pay }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                WITH this
+                MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
+                WITH { pay: this_connection_actedInConnectionthis0.pay } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
             }
-            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection }) AS data"
+            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection: actedInConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -345,7 +344,7 @@ describe("Math operators", () => {
             RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_marriedWith0:this_marriedWith0, auth:$auth,this_update_marriedWith0_marriageLength_INCREMENT:$this_update_marriedWith0_marriageLength_INCREMENT})
             YIELD value AS _
-            RETURN count(*) AS _
+            RETURN count(*) AS update_this_Star
             }
             WITH *
             WITH this
@@ -435,7 +434,7 @@ describe("Math operators", () => {
             RETURN count(*) AS _
             \\", \\"\\", {this:this, updateActors: $updateActors, this_marriedWith0:this_marriedWith0, auth:$auth,this_update_marriedWith0_on_Star_marriageLength_INCREMENT:$this_update_marriedWith0_on_Star_marriageLength_INCREMENT})
             YIELD value AS _
-            RETURN count(*) AS _
+            RETURN count(*) AS update_this_Star
             }
             WITH *
             WITH this

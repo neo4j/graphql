@@ -96,6 +96,11 @@ Conversely, the following operators are available on array fields, and accept a 
 
 These four operators are available for all types apart from `Boolean`.
 
+=== AND, OR operators
+
+Complex combinations of operators are possible using the `AND`/ `OR` operators. 
+These are stand-alone operators - that is, they are used as such and not appended to field names, and they accept an array argument with items of the same format as the `where` argument. 
+
 == Usage
 
 Using the type definitions from xref::queries.adoc[Queries], below are some example of how filtering can be applied when querying for data.
@@ -109,6 +114,36 @@ By using the `where` argument on the Query field in question, you can return a U
 query {
     users(where: { id: "7CF1D9D6-E527-4ACD-9C2A-207AE0F5CB8C" }) {
         name
+    }
+}
+----
+
+=== Combining operators
+
+All above-mentioned operators can be combined using the `AND`/`OR` operators. 
+They accept an array argument with items of the same format as the `where` argument, which means they can also be nested to form complex combinations.
+As an example, the below query matches all actors by the name of either "Keanu" or belonging to the "Pantoliano" family, that played in "The Matrix" movie.
+
+[source, graphql, indent=0]
+----
+query {
+    actors(where: { 
+        AND: [
+            { 
+                OR: [
+                    { name_CONTAINS: "Keanu" },
+                    { name_ENDS_WITH: "Pantoliano" }
+                ]
+            },
+            {
+                movies_SOME: { title: "The Matrix" }
+            }
+        ]}
+    ) {
+        name
+        movies {
+            title
+        }
     }
 }
 ----

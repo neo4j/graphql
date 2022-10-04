@@ -35,22 +35,3 @@ subscription {
     }
 }
 ```
-
-== Using `where`
-Basic filtering of events can be done with the `where` parameter. This lets you filter on top-level properties of the deleted nodes.
-Only events matching these properties and type will be returned to this subscription.
-
-=== Example
-Assuming the same type definitions as before, we can filter our movies by their genre:
-
-```graphql
-movieDeleted(where: {genre: "Drama"}) {
-    deletedMovie {
-        title
-    }
-}
-```
-
-This way, only deleted movies with the genre `"Drama"` will trigger events to this subscription.
-
-NOTE: Where will only filter by existing properties right before deletion.

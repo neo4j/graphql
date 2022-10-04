@@ -172,7 +172,7 @@ describe("Cypher Create Pringles", () => {
             			MERGE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_photos1_node_color_connect_Color
             }
             MERGE (this0)-[:HAS_PHOTO]->(this0_photos1_node)
             WITH this0, this0_photos1_node
@@ -198,7 +198,7 @@ describe("Cypher Create Pringles", () => {
             			MERGE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this0_photos2_node_color_connect_Color
             }
             MERGE (this0)-[:HAS_PHOTO]->(this0_photos2_node)
             WITH this0, this0_photos2_node
@@ -293,7 +293,7 @@ describe("Cypher Create Pringles", () => {
             FOREACH(_ IN CASE WHEN this_photos0_color0_disconnect0 IS NULL THEN [] ELSE [1] END |
             DELETE this_photos0_color0_disconnect0_rel
             )
-            RETURN count(*) AS _
+            RETURN count(*) AS disconnect_this_photos0_color0_disconnect_Color
             }
             WITH this, this_photos0
             CALL {
@@ -305,7 +305,7 @@ describe("Cypher Create Pringles", () => {
             			MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
             		)
             	)
-            	RETURN count(*) AS _
+            	RETURN count(*) AS connect_this_photos0_color0_connect_Color
             }
             WITH this, this_photos0
             CALL {

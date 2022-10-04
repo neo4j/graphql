@@ -276,6 +276,132 @@ UNWIND meta AS m
 RETURN collect(DISTINCT m) AS meta
 ```
 
+#### Excluding types from subscriptions
+
+##### Proposed Solution:
+
+As it is currently possible to exclude specific operations for queries and mutations, it should be possible to have some exclude capabilities for subscription operations on specified types.
+
+To achieve this, the proposed solution uses the `@exclude` directive by extending the `ExcludeOperation` options from `[CREATE, READ, UPDATE, DELETE]` to include a dedicated argument `SUBSCRIBE` referring to subscriptions.
+
+The list of options would thus look like `[CREATE, READ, UPDATE, DELETE, SUBSCRIBE]`.
+
+##### Usage Example
+
+Given the following type definitions (notice `@exclude` is not being used):
+
+```graphql
+type Movie {
+  title: String!
+  released: Int!
+}
+```
+
+the library will auto-generate the following types in the schema:
+
+```graphql
+type Query {
+  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+  moviesConnection(first: Int, after: String, where: MovieWhere, sort: [MovieSort]): MoviesConnection!
+}
+
+type Mutation {
+  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+  deleteMovies(where: MovieWhere): DeleteInfo!
+  updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
+}
+
+type Subscription {
+  movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
+  movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
+  movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
+}
+```
+
+By excluding the `CREATE` and `DELETE` operations on the movie type like so:
+
+```graphql
+type Movie @exclude(operations: [CREATE, DELETE]) {
+  title: String!
+  released: Int!
+}
+```
+
+the auto-generated types will change to:
+
+```graphql
+type Query {
+  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+  moviesConnection(first: Int, after: String, where: MovieWhere, sort: [MovieSort]): MoviesConnection!
+}
+
+type Mutation {
+  updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
+}
+
+type Subscription {
+  movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
+  movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
+  movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
+}
+```
+
+In other words, the `createMovies` and `deleteMovies` mutations have not been generated, the query type was not impacted because it does not do any create/ delete operations and the subscriptions were not impacted because of the current behavior.
+
+The proposed solution would would make use of a new operation in the exclude list:
+
+```graphql
+type Movie @exclude(operations: [SUBSCRIBE, CREATE, DELETE]) {
+  title: String!
+  released: Int!
+}
+```
+
+and have as outcome the exclusion of the subscription fields altogether:
+
+```graphql
+type Query {
+  movies(where: MovieWhere, options: MovieOptions): [Movie!]!
+  moviesAggregate(where: MovieWhere): MovieAggregateSelection!
+  moviesConnection(first: Int, after: String, where: MovieWhere, sort: [MovieSort]): MoviesConnection!
+}
+
+type Mutation {
+  updateMovies(where: MovieWhere, update: MovieUpdateInput): UpdateMoviesMutationResponse!
+}
+
+type Subscription {
+  # no fields generated
+}
+```
+
+##### Out of Scope
+
+1. At this point we are **not** yet considering fine-grain control on excluding specific subscription operations. Either all subscription operations on a specified type are excluded, or none. This means nothing like this will be possible for now:
+
+```graphql
+type Movie @exclude(operations: [SUBSCRIBE_CREATE]) {
+  ...
+}
+# generating.. 
+type Subscription {
+  # no create operation 
+  movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
+  movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
+}
+```
+
+2. Preserving the current behavior of the `@exclude` directive, it will only be possible to add it to GraphQL types. This means it will not be possible to ignore just particular fields of a type.
+
+```graphql
+type Movie {
+  title: String! @exclude(operations: [SUBSCRIBE])
+  released: Int!
+}
+```
+
 ### Plugin Implementation
 
 Subscriptions will be made available through a plugin, for which we will initially provide a "local" implementation of,
