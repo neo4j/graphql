@@ -2481,19 +2481,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/base@npm:0.8.0, @neo4j-ndl/base@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "@neo4j-ndl/base@npm:0.8.0"
-  checksum: 91d0b90bd1808313dce86f5053265e28fec2b8d693c63a069cb25f1b21e0b5e0e19db399009e4d4cad3e3eb50a527a3deec1b48321964b0237df87a8aaf625cc
+"@neo4j-ndl/base@npm:0.8.4, @neo4j-ndl/base@npm:^0.8.4":
+  version: 0.8.4
+  resolution: "@neo4j-ndl/base@npm:0.8.4"
+  checksum: 00978c6fda8f56d84c58e08f34db729cfa24aac4d5112065b4b2da0ed6da3a58a2bd831fcb07d71e0dde5633ca7c4d5b52398683098f8061b82a7419143ca211
   languageName: node
   linkType: hard
 
-"@neo4j-ndl/react@npm:0.8.0":
-  version: 0.8.0
-  resolution: "@neo4j-ndl/react@npm:0.8.0"
+"@neo4j-ndl/react@npm:0.8.4":
+  version: 0.8.4
+  resolution: "@neo4j-ndl/react@npm:0.8.4"
   dependencies:
     "@heroicons/react": ^1.0.5
-    "@neo4j-ndl/base": ^0.8.0
+    "@neo4j-ndl/base": ^0.8.4
     classnames: ^2.3.1
     detect-browser: ^5.3.0
     react-dropzone: ^14.0.0
@@ -2501,9 +2501,10 @@ __metadata:
     react-syntax-highlighter: ^15.5.0
     react-table: ^7.7.0
     react-use: ^17.4.0
+    tinycolor2: ^1.4.2
   peerDependencies:
     react: 17.x
-  checksum: 6c7c8c359b2ce31f77ce6585925b9812a51ba200256ee30b56ab9deaf2839a0ebec841022ed1a1c4da3665cf7624133b9efa40fea79d887ada1f4be56c1bf448
+  checksum: 8c6a6572f1ccb4e3018a542c8c50d7b859a12eabba12b650c3bdbeb4e1d59457d86a033f3e160f0220b2e27a8cff297746a986771ebbde8548b0a30ac8a9634e
   languageName: node
   linkType: hard
 
@@ -2585,8 +2586,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-toolbox@workspace:packages/graphql-toolbox"
   dependencies:
-    "@neo4j-ndl/base": 0.8.0
-    "@neo4j-ndl/react": 0.8.0
+    "@neo4j-ndl/base": 0.8.4
+    "@neo4j-ndl/react": 0.8.4
     "@neo4j/graphql": 3.9.0
     "@neo4j/introspector": ^1.0.2
     "@playwright/test": 1.26.1
@@ -17801,6 +17802,13 @@ __metadata:
     globalyzer: 0.1.0
     globrex: ^0.1.2
   checksum: aea5801eb6663ddf77ebb74900b8f8bd9dfcfc9b6a1cc8018cb7421590c00bf446109ff45e4b64a98e6c95ddb1255a337a5d488fb6311930e2a95334151ec9c6
+  languageName: node
+  linkType: hard
+
+"tinycolor2@npm:^1.4.2":
+  version: 1.4.2
+  resolution: "tinycolor2@npm:1.4.2"
+  checksum: 57ed262e08815a4ab0ed933edafdbc6555a17081781766149813b44a080ecbe58b3ee281e81c0e75b42e4d41679f138cfa98eabf043f829e0683c04adb12c031
   languageName: node
   linkType: hard
 
