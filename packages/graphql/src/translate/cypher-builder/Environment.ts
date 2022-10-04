@@ -18,7 +18,7 @@
  */
 
 import { Param } from "./variables/Param";
-import type { Reference } from "./variables/Reference";
+import type { NamedReference, Reference } from "./variables/Reference";
 
 export type EnvPrefix = {
     params?: string;
@@ -46,8 +46,8 @@ export class CypherEnvironment {
         }
     }
 
-    public getReferenceId(reference: Reference): string {
-        if (reference.id) return reference.id; // Overrides ids for compatibility reasons
+    public getReferenceId(reference: Reference | NamedReference): string {
+        if (this.isNamedReference(reference)) return reference.id; // Overrides ids for compatibility reasons
         const id = this.references.get(reference);
         if (!id) {
             return this.addVariableReference(reference);
@@ -96,5 +96,9 @@ export class CypherEnvironment {
         const varId = `${this.globalPrefix.variables}${variable.prefix}${varIndex}`;
         this.references.set(variable, varId);
         return varId;
+    }
+
+    private isNamedReference(ref: Reference | NamedReference): ref is NamedReference {
+        return Boolean((ref as any).id);
     }
 }

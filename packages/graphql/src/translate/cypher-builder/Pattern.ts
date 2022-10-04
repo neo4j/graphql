@@ -49,7 +49,7 @@ type MatchRelationshipParams = {
 
 export type MatchParams<T extends MatchableElement> = T extends NodeRef ? ParamsRecord : MatchRelationshipParams;
 
-export class Pattern<T extends MatchableElement = any> implements CypherCompilable {
+export class Pattern<T extends MatchableElement = MatchableElement> implements CypherCompilable {
     public readonly matchElement: T;
     private parameters: MatchParams<T>;
     private options: MatchPatternOptions;

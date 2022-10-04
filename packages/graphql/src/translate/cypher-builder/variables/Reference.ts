@@ -23,12 +23,10 @@ import type { CypherEnvironment } from "../Environment";
 
 /** Represents a reference that will be kept in the environment */
 export abstract class Reference implements CypherCompilable {
-    public readonly prefix: string;
-    public id: string | undefined; // Overrides variable name for compatibility reasons
+    public prefix: string;
 
-    constructor(prefix = "var", id?: string) {
+    constructor(prefix = "") {
         this.prefix = prefix;
-        this.id = id;
     }
 
     public getCypher(env: CypherEnvironment): string {
@@ -39,4 +37,8 @@ export abstract class Reference implements CypherCompilable {
     public property(path: string): PropertyRef {
         return new PropertyRef(this, path);
     }
+}
+
+export interface NamedReference extends Reference {
+    readonly id: string;
 }

@@ -19,7 +19,7 @@
 
 import { HasLabel } from "../expressions/HasLabel";
 import { MatchPatternOptions, Pattern } from "../Pattern";
-import { Reference } from "./Reference";
+import { NamedReference, Reference } from "./Reference";
 import { RelationshipRef } from "./RelationshipRef";
 
 type NodeRefOptions = {
@@ -56,8 +56,8 @@ export class NodeRef extends Reference {
     }
 }
 
-export class NamedNode extends NodeRef {
-    public id: string;
+export class NamedNode extends NodeRef implements NamedReference {
+    public readonly id: string;
 
     constructor(id: string, options?: NodeRefOptions) {
         super(options || {});
