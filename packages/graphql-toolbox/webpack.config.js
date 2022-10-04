@@ -17,7 +17,7 @@ module.exports = {
     context: path.join(__dirname),
     target: "web",
     resolve: {
-        plugins: [new TsconfigPathsPlugin({ configFile: "tsconfig.production.json" })],
+        plugins: [new TsconfigPathsPlugin()],
         extensions: [".ts", ".tsx", ".mjs", ".json", ".js"], // IMPORTANT: .mjs has to be BEFORE .js
     },
     ...(process.env.NODE_ENV === "production"
@@ -32,17 +32,9 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
+                loader: "ts-loader",
                 exclude: "/node_modules/",
-                use: [
-                    {
-                        loader: "ts-loader",
-                        options: {
-                            configFile: "tsconfig.production.json",
-                            projectReferences: true,
-                            transpileOnly: true,
-                        },
-                    },
-                ],
+                options: { projectReferences: true, transpileOnly: true },
             },
             {
                 test: /\.(png|jpg|gif|svg)$/i,
