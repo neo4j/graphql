@@ -90,14 +90,11 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            MATCH (this:\`ArtPiece\`)
+            "MATCH (this:\`ArtPiece\`)
             WITH COLLECT(this) as edges
             WITH edges, size(edges) as totalCount
             UNWIND edges as this
-            WITH this, totalCount, { } as edges
-            RETURN this, totalCount, edges
-            }
+            WITH this, totalCount
             CALL {
                 WITH this
                 MATCH (this)-[thisthis0:SOLD_AT_AUCTION_AS]->(this_auction:\`AuctionItem\`)
@@ -116,7 +113,8 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
                 WITH this_owner { .name, dbId: this_owner.id } AS this_owner
                 RETURN head(collect(this_owner)) AS this_owner
             }
-            WITH COLLECT({ node: this { .title, auction: this_auction, owner: this_owner, dbId: this.id } }) as edges, totalCount
+            WITH { node: this { .title, auction: this_auction, owner: this_owner, dbId: this.id } } as edge, totalCount, this
+            WITH COLLECT(edge) as edges, totalCount
             RETURN { edges: edges, totalCount: totalCount } as this"
         `);
 

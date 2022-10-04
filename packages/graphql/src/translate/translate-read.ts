@@ -61,7 +61,6 @@ export function translateRead({
         context,
         resolveTree,
         varName,
-        isRootConnectionField,
     });
 
     cypherParams = { ...cypherParams, ...projection.params };
@@ -87,10 +86,12 @@ export function translateRead({
     }
 
     const projectionSubqueries = CypherBuilder.concat(...projection.subqueries);
+    const projectionSubqueriesBeforeSort = CypherBuilder.concat(...projection.subqueriesBeforeSort);
 
     // TODO: concatenate with "translateTopLevelMatch" result to avoid param collision
     const readQuery = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
         const projectionSubqueriesStr = projectionSubqueries.getCypher(env);
+        const subqueriesBeforeSort = projectionSubqueriesBeforeSort.getCypher(env);
 
         if (isRootConnectionField) {
             return translateRootConnectionField({
@@ -103,6 +104,7 @@ export function translateRead({
                     authStr,
                     projAuth,
                     interfaceStrs,
+                    subqueriesBeforeSort,
                 },
             });
         }
@@ -118,6 +120,7 @@ export function translateRead({
                 authStr,
                 projAuth,
                 interfaceStrs,
+                subqueriesBeforeSort,
             },
         });
     });
@@ -145,6 +148,7 @@ function translateRootField({
         projAuth: string;
         interfaceStrs: string[];
         projectionSubqueries: string;
+        subqueriesBeforeSort: string;
     };
 }): [string, Record<string, any>] {
     const { resolveTree } = context;
@@ -160,9 +164,7 @@ function translateRootField({
     const params = {} as Record<string, any>;
     const hasOffset = Boolean(optionsInput.offset) || optionsInput.offset === 0;
 
-    const sortCypherFields = projection.meta?.cypherSortFields ?? [];
-    const sortCypherProj = sortCypherFields.map(({ alias, apocStr }) => `${apocStr} AS ${alias}`);
-    const sortOffsetLimit: string[] = [[`WITH *`, ...sortCypherProj].join(", ")];
+    const sortOffsetLimit: string[] = [`WITH *`];
 
     if (optionsInput.sort && optionsInput.sort.length) {
         const sortArr = optionsInput.sort.reduce((res: string[], sort: GraphQLSortArg) => {
@@ -170,7 +172,7 @@ function translateRootField({
                 ...res,
                 ...Object.entries(sort).map(([field, direction]) => {
                     if (node.cypherFields.some((f) => f.fieldName === field)) {
-                        return `${field} ${direction}`;
+                        return `${varName}_${field} ${direction}`;
                     }
                     return `${varName}.${field} ${direction}`;
                 }),
@@ -190,17 +192,18 @@ function translateRootField({
         sortOffsetLimit.push(`LIMIT $${varName}_limit`);
     }
 
-    const withStrs = subStr.projAuth ? [`WITH ${varName}`, subStr.projAuth] : [];
+    const withStrs = subStr.projAuth ? [`WITH *`, subStr.projAuth] : [];
 
     const returnStrs = [`RETURN ${varName} ${projection.projection} as ${varName}`];
 
     const cypher: string[] = [
         subStr.matchAndWhereStr,
+        subStr.subqueriesBeforeSort,
         ...(sortOffsetLimit.length > 1 ? sortOffsetLimit : []),
-        subStr.projectionSubqueries,
         subStr.authStr,
         ...withStrs,
         ...subStr.interfaceStrs,
+        subStr.projectionSubqueries,
         ...returnStrs,
     ];
 
@@ -222,6 +225,7 @@ function translateRootConnectionField({
         projAuth: string;
         interfaceStrs: string[];
         projectionSubqueries: string;
+        subqueriesBeforeSort: string;
     };
 }): [string, Record<string, any>] {
     const { resolveTree } = context;
@@ -237,7 +241,6 @@ function translateRootConnectionField({
     const hasSort = Boolean(sortInput && sortInput.length);
 
     const sortCypherFields = projection.meta?.cypherSortFields ?? [];
-    const sortCypherProj = sortCypherFields.map(({ alias, apocStr }) => `${alias}: ${apocStr}`);
 
     let sortStr = "";
     if (hasSort) {
@@ -246,7 +249,7 @@ function translateRootConnectionField({
                 ...res,
                 ...Object.entries(sort).map(([field, direction]) => {
                     // if the sort arg is a cypher field, substitaute "edges" for varName
-                    const varOrEdgeName = sortCypherFields.find((x) => x.alias === field) ? "edges" : varName;
+                    const varOrEdgeName = sortCypherFields.find((x) => x === field) ? "edge.node" : varName;
                     return `${varOrEdgeName}.${field} ${direction}`;
                 }),
             ];
@@ -270,29 +273,24 @@ function translateRootConnectionField({
         cypherParams[`${varName}_limit`] = firstInput;
     }
 
-    const returnStrs: string[] = [
-        `WITH COLLECT({ node: ${varName} ${projection.projection} }) as edges, totalCount`,
-        `RETURN { edges: edges, totalCount: totalCount } as ${varName}`,
-    ];
-
     const withStrs = subStr.projAuth ? [`WITH ${varName}`, subStr.projAuth] : [];
     const cypher = [
-        "CALL {",
         subStr.matchAndWhereStr,
         subStr.authStr,
         ...withStrs,
         `WITH COLLECT(this) as edges`,
         `WITH edges, size(edges) as totalCount`,
         `UNWIND edges as ${varName}`,
-        `WITH ${varName}, totalCount, { ${sortCypherProj.join(", ")}} as edges`,
-        `RETURN ${varName}, totalCount, edges`,
+        `WITH ${varName}, totalCount`,
+        subStr.subqueriesBeforeSort,
+        subStr.projectionSubqueries,
+        `WITH { node: ${varName} ${projection.projection} } as edge, totalCount, ${varName}`,
         ...(sortStr ? [sortStr] : []),
         ...(offsetStr ? [offsetStr] : []),
         ...(limitStr ? [limitStr] : []),
-        "}",
-        subStr.projectionSubqueries,
+        `WITH COLLECT(edge) as edges, totalCount`,
         ...subStr.interfaceStrs,
-        ...returnStrs,
+        `RETURN { edges: edges, totalCount: totalCount } as ${varName}`,
     ];
 
     return [cypher.filter(Boolean).join("\n"), cypherParams];

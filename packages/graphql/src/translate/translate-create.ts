@@ -110,7 +110,7 @@ export default async function translateCreate({
             resolveTree: nodeProjection,
             varName: "REPLACE_ME",
         });
-        projectionSubquery = CypherBuilder.concat(...projection.subqueries);
+        projectionSubquery = CypherBuilder.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
         if (projection.meta?.authValidateStrs?.length) {
             projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
                 " AND "

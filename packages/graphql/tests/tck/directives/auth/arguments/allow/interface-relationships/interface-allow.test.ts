@@ -104,6 +104,7 @@ describe("@auth allow with interface relationships", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
             CALL {
             WITH this
@@ -120,7 +121,6 @@ describe("@auth allow with interface relationships", () => {
             }
             RETURN collect(this_content) AS this_content
             }
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id, content: this_content } as this"
         `);
 
@@ -157,6 +157,7 @@ describe("@auth allow with interface relationships", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE this.id = $param0
+            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
             CALL {
             WITH this
@@ -180,7 +181,6 @@ describe("@auth allow with interface relationships", () => {
             }
             RETURN collect(this_content) AS this_content
             }
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id, content: this_content } as this"
         `);
 

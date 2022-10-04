@@ -17,8 +17,10 @@
  * limitations under the License.
  */
 
+import { TestClause } from "../../../utils/TestClause";
 import * as CypherBuilder from "../../../CypherBuilder";
 import { CypherEnvironment } from "../../../Environment";
+import { MapExpr } from "../../map/MapExpr";
 
 describe("RunFirstColumn", () => {
     let env: CypherEnvironment;
@@ -76,6 +78,33 @@ describe("RunFirstColumn", () => {
             Object {
               "param0": "The Matrix",
               "param1": 1999,
+            }
+        `);
+    });
+
+    test("String subquery with mapExpr for params", () => {
+        const node = new CypherBuilder.Node({ labels: ["Movie"] });
+
+        const releasedParam = new CypherBuilder.Param(1999);
+
+        const apocCall = new CypherBuilder.apoc.RunFirstColumn(
+            "MATCH (n) RETURN n",
+            new MapExpr({
+                releasedParam,
+                n: node,
+            })
+        );
+
+        const testQuery = new TestClause(apocCall);
+
+        const cypherResult = testQuery.build();
+
+        expect(cypherResult.cypher).toMatchInlineSnapshot(
+            `"apoc.cypher.runFirstColumnMany(\\"MATCH (n) RETURN n\\", { releasedParam: $param0, n: this0 })"`
+        );
+        expect(cypherResult.params).toMatchInlineSnapshot(`
+            Object {
+              "param0": 1999,
             }
         `);
     });

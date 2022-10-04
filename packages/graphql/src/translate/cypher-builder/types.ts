@@ -34,6 +34,7 @@ import type { MathOp } from "./expressions/operations/math";
 import type { ListComprehension } from "./expressions/list/ListComprehension";
 import type { PatternComprehension } from "./expressions/list/PatternComprehension";
 import type { MapProjection } from "./CypherBuilder";
+import type { HasLabel } from "./expressions/HasLabel";
 
 export type Operation = BooleanOp | ComparisonOp | MathOp;
 
@@ -59,7 +60,8 @@ export type Predicate =
     | PredicateFunction
     | ApocPredicate
     | Literal<boolean>
-    | Case;
+    | Case
+    | HasLabel;
 
 export type CypherResult = {
     cypher: string;

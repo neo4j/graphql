@@ -17,22 +17,15 @@
  * limitations under the License.
  */
 
-import type { Expr } from "../CypherBuilder";
-import type { CypherEnvironment } from "../Environment";
+import type { Result, Session } from "neo4j-driver";
+import type { UniqueType } from "./graphql-types";
+import { runCypher } from "./run-cypher";
 
-export function serializeMap(
-    env: CypherEnvironment,
-    obj: Record<string, Expr | undefined>,
-    omitCurlyBraces = false
-): string {
-    const valuesList = Object.entries(obj)
-        .filter(([_k, value]) => value !== undefined)
-        .map(([key, value]) => {
-            return `${key}: ${(value as Expr).getCypher(env)}`; // TODO: improve Typings
-        });
-
-    const serializedContent = valuesList.join(", ");
-    if (omitCurlyBraces) return serializedContent;
-
-    return `{ ${serializedContent} }`;
+/** Removes all nodes with the given labels from the database */
+export async function cleanNodes(session: Session, labels: Array<string | UniqueType>): Promise<Result> {
+    return runCypher(
+        session,
+        `MATCH(n) WHERE labels(n) IN [${labels.map((l) => `"${l}"`).join(",")}]
+        DETACH DELETE n`
+    );
 }

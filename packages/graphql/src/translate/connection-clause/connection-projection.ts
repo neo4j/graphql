@@ -148,7 +148,10 @@ function createConnectionNodeProjection({
     });
 
     const projectionMeta = nodeProjectionAndParams.meta;
-    const projectionSubqueries = nodeProjectionAndParams.subqueries;
+    const projectionSubqueries = [
+        ...nodeProjectionAndParams.subqueriesBeforeSort,
+        ...nodeProjectionAndParams.subqueries,
+    ];
 
     if (projectionMeta?.authValidateStrs?.length) {
         const authStrs = projectionMeta.authValidateStrs;

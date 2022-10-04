@@ -13,7 +13,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
-          cache: yarn
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:

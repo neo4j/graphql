@@ -379,7 +379,7 @@ export default async function translateUpdate({
             resolveTree: nodeProjection,
             varName,
         });
-        projectionSubquery = CypherBuilder.concat(...projection.subqueries);
+        projectionSubquery = CypherBuilder.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
         projStr = projection.projection;
         cypherParams = { ...cypherParams, ...projection.params };
         if (projection.meta?.authValidateStrs?.length) {
