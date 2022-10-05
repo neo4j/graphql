@@ -464,7 +464,6 @@ describe("Relationship properties - read", () => {
                 },
             ]);
         } finally {
-            // await session.run(`MATCH (a:${typeActor.name}) WHERE a.name = '${actorD}' DETACH DELETE a`);
             await session.close();
         }
     });

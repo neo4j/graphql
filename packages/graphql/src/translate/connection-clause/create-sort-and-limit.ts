@@ -41,7 +41,9 @@ export function createSortAndLimitProjection({
     ignoreSkipLimit?: boolean;
 }): CypherBuilder.With | undefined {
     const nodeAndEdgeSortFields = getSortFields(resolveTree);
-    if (nodeAndEdgeSortFields.length === 0 && !limit) return undefined;
+    if (nodeAndEdgeSortFields.length === 0 && !limit) {
+        return undefined;
+    }
 
     const withStatement = new CypherBuilder.With(relationshipRef, ...extraFields);
 
