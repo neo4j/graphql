@@ -1243,14 +1243,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@changesets/changelog-github@npm:0.4.6":
-  version: 0.4.6
-  resolution: "@changesets/changelog-github@npm:0.4.6"
+"@changesets/changelog-github@npm:0.4.7":
+  version: 0.4.7
+  resolution: "@changesets/changelog-github@npm:0.4.7"
   dependencies:
     "@changesets/get-github-info": ^0.5.1
-    "@changesets/types": ^5.1.0
+    "@changesets/types": ^5.2.0
     dotenv: ^8.1.0
-  checksum: f2f729028c08b8950eec1ca871e910eca528ff803d9c5dd31b314b79d06b7972e6af892139c6f02e7d85288e8d371e1729c9b1ccb7f7194387c16751697bcd20
+  checksum: 911b2ca3fc52d9f883001d2aa6122208ca9daa884201eae77d2a5f4cce34df685e443ee49aa88f89a913bf8ac6b0129a12d18f36517b118962f18ba9c5163173
   languageName: node
   linkType: hard
 
@@ -1432,13 +1432,6 @@ __metadata:
   version: 4.1.0
   resolution: "@changesets/types@npm:4.1.0"
   checksum: 72c1f58044178ca867dd9349ecc4b7c233ce3781bb03b5b72a70c3166fbbab54a2f2cb19a81f96b4649ba004442c8734569fba238be4dd737fb4624a135c6098
-  languageName: node
-  linkType: hard
-
-"@changesets/types@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "@changesets/types@npm:5.1.0"
-  checksum: fa903b53d5cc0ce1bd6054fd6c0053af54f604ade2c6436e735a7a66e4f31f7757ec324ceed3355ccd7f0653174fe8b51e1b3850a0b0d80315d13d92a45185b2
   languageName: node
   linkType: hard
 
@@ -13332,7 +13325,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "neo4j-graphql@workspace:."
   dependencies:
-    "@changesets/changelog-github": 0.4.6
+    "@changesets/changelog-github": 0.4.7
     "@changesets/cli": 2.25.0
     "@tsconfig/node14": 1.0.3
     "@typescript-eslint/eslint-plugin": 5.39.0
