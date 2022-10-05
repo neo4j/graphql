@@ -28,11 +28,11 @@
     },
     "devDependencies": {
         "@tsconfig/node16": "^1.0.3",
-        "@typescript-eslint/eslint-plugin": "5.38.0",
-        "@typescript-eslint/parser": "5.38.0",
+        "@typescript-eslint/eslint-plugin": "5.39.0",
+        "@typescript-eslint/parser": "5.39.0",
         "concurrently": "7.4.0",
         "dotenv": "16.0.3",
-        "eslint": "8.23.1",
+        "eslint": "8.24.0",
         "eslint-config-airbnb-typescript": "17.0.0",
         "eslint-config-prettier": "8.5.0",
         "eslint-formatter-summary": "^1.1.0",
@@ -55,7 +55,7 @@
     },
     "packageManager": "yarn@3.2.3",
     "dependencies": {
-        "@changesets/changelog-github": "0.4.6",
+        "@changesets/changelog-github": "0.4.7",
         "@changesets/cli": "2.25.0"
     }
 }
