@@ -29,7 +29,9 @@ describe("Scalar", () => {
 
             type Movie {
                 id: ID
+                myCustomArrayScalar: [CustomScalar!]
                 myCustomScalar: CustomScalar
+                myRequiredCustomArrayScalar: [CustomScalar!]!
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -67,7 +69,9 @@ describe("Scalar", () => {
 
             type Movie {
               id: ID
+              myCustomArrayScalar: [CustomScalar!]
               myCustomScalar: CustomScalar
+              myRequiredCustomArrayScalar: [CustomScalar!]!
             }
 
             type MovieAggregateSelection {
@@ -77,7 +81,9 @@ describe("Scalar", () => {
 
             input MovieCreateInput {
               id: ID
+              myCustomArrayScalar: [CustomScalar!]
               myCustomScalar: CustomScalar
+              myRequiredCustomArrayScalar: [CustomScalar!]!
             }
 
             type MovieEdge {
@@ -104,7 +110,9 @@ describe("Scalar", () => {
 
             input MovieUpdateInput {
               id: ID
+              myCustomArrayScalar: [CustomScalar!]
               myCustomScalar: CustomScalar
+              myRequiredCustomArrayScalar: [CustomScalar!]
             }
 
             input MovieWhere {
@@ -120,7 +128,18 @@ describe("Scalar", () => {
               id_NOT_IN: [ID]
               id_NOT_STARTS_WITH: ID
               id_STARTS_WITH: ID
+              myCustomArrayScalar: [CustomScalar!]
+              myCustomArrayScalar_INCLUDES: CustomScalar
+              myCustomArrayScalar_NOT: [CustomScalar!]
+              myCustomArrayScalar_NOT_INCLUDES: CustomScalar
               myCustomScalar: CustomScalar
+              myCustomScalar_IN: [CustomScalar]
+              myCustomScalar_NOT: CustomScalar
+              myCustomScalar_NOT_IN: [CustomScalar]
+              myRequiredCustomArrayScalar: [CustomScalar!]
+              myRequiredCustomArrayScalar_INCLUDES: CustomScalar
+              myRequiredCustomArrayScalar_NOT: [CustomScalar!]
+              myRequiredCustomArrayScalar_NOT_INCLUDES: CustomScalar
             }
 
             type MoviesConnection {
