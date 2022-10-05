@@ -196,12 +196,16 @@ describe("Cypher Points", () => {
         let verifyTCK;
 
         beforeAll(() => {
-            verifyTCK = process.env.VERIFY_TCK;
-            delete process.env.VERIFY_TCK;
+            if (process.env.VERIFY_TCK) {
+                verifyTCK = process.env.VERIFY_TCK;
+                delete process.env.VERIFY_TCK;
+            }
         });
 
         afterAll(() => {
-            process.env.VERIFY_TCK = verifyTCK;
+            if (verifyTCK) {
+                process.env.VERIFY_TCK = verifyTCK;
+            }
         });
 
         test("Simple Point LT query", async () => {
