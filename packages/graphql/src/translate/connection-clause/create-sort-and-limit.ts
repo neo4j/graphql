@@ -40,10 +40,8 @@ export function createSortAndLimitProjection({
     extraFields?: CypherBuilder.Variable[];
     ignoreSkipLimit?: boolean;
 }): CypherBuilder.With | undefined {
-    const { node: nodeSortFields, edge: edgeSortFields } = getSortFields(resolveTree);
-
-    if (Object.keys(edgeSortFields).length === 0 && Object.keys(nodeSortFields).length === 0 && !limit)
-        return undefined;
+    const nodeAndEdgeSortFields = getSortFields(resolveTree);
+    if (nodeAndEdgeSortFields.length === 0 && !limit) return undefined;
 
     const withStatement = new CypherBuilder.With(relationshipRef, ...extraFields);
 
@@ -61,17 +59,20 @@ export function createSortAndLimitProjection({
         offset = undefined;
         firstArg = undefined;
     }
-    addSortAndLimitOptionsToClause({
-        optionsInput: { sort: [edgeSortFields], limit: firstArg, offset },
-        target: relationshipRef,
-        projectionClause: withStatement,
+    nodeAndEdgeSortFields.forEach((sortField) => {
+        const [nodeOrEdge, sortKeyAndValue] = Object.entries(sortField)[0];
+        addSortAndLimitOptionsToClause({
+            optionsInput: { sort: [sortKeyAndValue], limit: firstArg, offset },
+            target: nodeOrEdge === "node" ? nodeRef : relationshipRef,
+            projectionClause: withStatement,
+        });
     });
-
-    addSortAndLimitOptionsToClause({
-        optionsInput: { sort: [nodeSortFields] },
-        target: nodeRef,
-        projectionClause: withStatement,
-    });
+    if (limit) {
+        addSortAndLimitOptionsToClause({
+            optionsInput: { limit: firstArg, offset },
+            projectionClause: withStatement,
+        });
+    }
 
     return withStatement;
 }

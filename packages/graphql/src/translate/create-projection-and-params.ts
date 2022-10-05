@@ -276,14 +276,10 @@ export default function createProjectionAndParams({
         }
 
         if (connectionField) {
-            const matchedConnectionField = node.connectionFields.find(
-                (x) => x.fieldName === field.name
-            ) as ConnectionField;
-
             const connectionClause = new CypherBuilder.Call(
                 createConnectionClause({
                     resolveTree: field,
-                    field: matchedConnectionField,
+                    field: connectionField,
                     context,
                     nodeVariable: varName,
                 })

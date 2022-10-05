@@ -41,6 +41,7 @@ describe("Relationship Properties Cypher", () => {
 
             interface ActedIn {
                 screenTime: Int!
+                year: Int!
             }
         `;
 
@@ -185,6 +186,91 @@ describe("Relationship Properties Cypher", () => {
                 \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
+    });
+
+    test("Projecting node and relationship properties with sort argument ordered edge first", async () => {
+        const query = gql`
+            query {
+                movies {
+                    actorsConnection(sort: [{ edge: { year: DESC } }, { node: { name: ASC } }]) {
+                        edges {
+                            year
+                            node {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Movie\`)
+            CALL {
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WITH this_connection_actorsConnectionthis0, this_Actor
+                ORDER BY this_connection_actorsConnectionthis0.year DESC, this_Actor.name ASC
+                WITH { year: this_connection_actorsConnectionthis0.year, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                UNWIND edges AS edge
+                WITH edge, totalCount
+                ORDER BY edge.year DESC, edge.node.name ASC
+                WITH collect(edge) AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+            }
+            RETURN this { actorsConnection: actorsConnection } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+    test("Projecting node and relationship properties with sort argument ordered node first", async () => {
+        const query = gql`
+            query {
+                movies {
+                    actorsConnection(sort: [{ node: { name: ASC } }, { edge: { year: DESC } }]) {
+                        edges {
+                            year
+                            node {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "MATCH (this:\`Movie\`)
+            CALL {
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WITH this_connection_actorsConnectionthis0, this_Actor
+                ORDER BY this_Actor.name ASC, this_connection_actorsConnectionthis0.year DESC
+                WITH { year: this_connection_actorsConnectionthis0.year, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                UNWIND edges AS edge
+                WITH edge, totalCount
+                ORDER BY edge.node.name ASC, edge.year DESC
+                WITH collect(edge) AS edges, totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+            }
+            RETURN this { actorsConnection: actorsConnection } as this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
     test("Projecting twice nested node and relationship properties with no arguments", async () => {

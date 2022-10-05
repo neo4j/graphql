@@ -27,13 +27,13 @@ export function addSortAndLimitOptionsToClause({
     projectionClause,
 }: {
     optionsInput: GraphQLOptionsArg;
-    target: CypherBuilder.Variable | CypherBuilder.PropertyRef;
+    target?: CypherBuilder.Variable | CypherBuilder.PropertyRef;
     projectionClause: CypherBuilder.Return | CypherBuilder.With;
 }): void {
     if (optionsInput.sort) {
         const orderByParams = createOrderByParams({
             optionsInput,
-            target, // This works because targetNode uses alias
+            target: target as CypherBuilder.Variable | CypherBuilder.PropertyRef, // This works because targetNode uses alias
         });
         if (orderByParams.length > 0) {
             projectionClause.orderBy(...orderByParams);
