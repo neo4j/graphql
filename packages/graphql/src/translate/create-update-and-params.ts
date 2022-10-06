@@ -433,16 +433,16 @@ export default function createUpdateAndParams({
                     subqueries.push(subquery.join("\n"));
                 }
             });
-
             if (relationField.interface) {
                 res.strs.push(`WITH ${withVars.join(", ")}`);
                 res.strs.push("CALL {");
-                res.strs.push(subqueries.join("\n}\nCALL {\n\t"));
+                res.strs.push(subqueries.join(`\n}\nCALL {\n\t WITH ${withVars.join(", ")}\n\t`));
                 res.strs.push("}");
             } else {
                 res.strs.push(subqueries.join("\n"));
             }
 
+            console.log(res.strs);
             return res;
         }
 
@@ -582,7 +582,6 @@ export default function createUpdateAndParams({
         strs: [],
         params: {},
     });
-
     const { strs, meta = { preArrayMethodValidationStrs: [], preAuthStrs: [], postAuthStrs: [] } } = reducedUpdate;
     let params = reducedUpdate.params;
 
