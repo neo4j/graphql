@@ -8,7 +8,7 @@ module.exports = {
     coverageDirectory: "<rootDir>/packages/graphql-toolbox/coverage/",
     globals: {
         "ts-jest": {
-            tsconfig: "<rootDir>/packages/graphql-toolbox/tsconfig.test.json",
+            tsconfig: "<rootDir>/packages/graphql-toolbox/tests/tsconfig.json",
         },
     },
 };
