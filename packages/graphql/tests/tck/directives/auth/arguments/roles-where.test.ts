@@ -992,7 +992,7 @@ describe("Cypher Auth Where with Roles", () => {
         `);
     });
 
-    test("Connect Node (from update update)e", async () => {
+    test("Connect Node (from update update)", async () => {
         const query = gql`
             mutation {
                 updateUsers(update: { posts: { connect: { where: { node: {} } } } }) {
