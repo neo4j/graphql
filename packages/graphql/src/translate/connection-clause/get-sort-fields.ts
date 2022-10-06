@@ -20,19 +20,17 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { GraphQLSortArg } from "../../types";
 
-type SortFields = {
-    edge?: GraphQLSortArg;
-    node?: GraphQLSortArg;
-};
+type SortFields = { edge: GraphQLSortArg } | { node: GraphQLSortArg };
 
-/** Returns sort fields for connections, of format [{ ['edge' | 'node']: { [key]: [value] } }] */
 export function getSortFields(resolveTree: ResolveTree): SortFields[] {
     return (resolveTree.args.sort ?? []) as SortFields[];
 }
 /** Returns keys of sort fields on edges for connections */
 export function getEdgeSortFieldKeys(resolveTree: ResolveTree): string[] {
-    return getSortFields(resolveTree).reduce((acc: string[], x) => {
-        acc.push(...Object.keys(x.edge || {}));
+    return getSortFields(resolveTree).reduce((acc: string[], x: SortFields) => {
+        if ("edge" in x) {
+            acc.push(...Object.keys(x.edge));
+        }
         return acc;
     }, []);
 }

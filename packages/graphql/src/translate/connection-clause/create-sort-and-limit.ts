@@ -22,7 +22,10 @@ import { cursorToOffset } from "graphql-relay";
 import type { Integer } from "neo4j-driver";
 import { isNeoInt, isString, toNumber } from "../../utils/utils";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
-import { addSortAndLimitOptionsToClause } from "../projection/subquery/add-sort-and-limit-to-clause";
+import {
+    addSortAndLimitOptionsToClause,
+    addLimitOrOffsetOptionsToClause,
+} from "../projection/subquery/add-sort-and-limit-to-clause";
 import { getSortFields } from "./get-sort-fields";
 
 export function createSortAndLimitProjection({
@@ -46,7 +49,6 @@ export function createSortAndLimitProjection({
     }
 
     const withStatement = new CypherBuilder.With(relationshipRef, ...extraFields);
-
     let firstArg = resolveTree.args.first as Integer | number | undefined;
     const afterArg = resolveTree.args.after as string | undefined;
     let offset = isString(afterArg) ? cursorToOffset(afterArg) + 1 : undefined;
@@ -70,7 +72,8 @@ export function createSortAndLimitProjection({
         });
     });
     if (limit) {
-        addSortAndLimitOptionsToClause({
+        // this limit is specified using `@queryOptions` directive
+        addLimitOrOffsetOptionsToClause({
             optionsInput: { limit: firstArg, offset },
             projectionClause: withStatement,
         });

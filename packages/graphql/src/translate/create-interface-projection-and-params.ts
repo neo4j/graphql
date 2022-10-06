@@ -70,10 +70,11 @@ export default function createInterfaceProjectionAndParams({
     let withClause: CypherBuilder.With | undefined;
     if (optionsInput) {
         withClause = new CypherBuilder.With("*");
+        const target = new CypherBuilder.NamedNode(returnVariable);
         addSortAndLimitOptionsToClause({
             optionsInput,
             projectionClause: withClause,
-            target: new CypherBuilder.NamedNode(returnVariable),
+            target,
         });
     }
 

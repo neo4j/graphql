@@ -21,32 +21,43 @@ import { toNumber } from "../../../utils/utils";
 import type { GraphQLOptionsArg, GraphQLSortArg } from "../../../types";
 import type * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 
+export function addLimitOrOffsetOptionsToClause({
+    optionsInput,
+    projectionClause,
+}: {
+    optionsInput: GraphQLOptionsArg;
+    projectionClause: CypherBuilder.Return | CypherBuilder.With;
+}): void {
+    if (optionsInput.limit) {
+        projectionClause.limit(toNumber(optionsInput.limit));
+    }
+    if (optionsInput.offset) {
+        projectionClause.skip(toNumber(optionsInput.offset));
+    }
+}
+
 export function addSortAndLimitOptionsToClause({
     optionsInput,
     target,
     projectionClause,
 }: {
     optionsInput: GraphQLOptionsArg;
-    target?: CypherBuilder.Variable | CypherBuilder.PropertyRef;
+    target: CypherBuilder.Variable | CypherBuilder.PropertyRef;
     projectionClause: CypherBuilder.Return | CypherBuilder.With;
 }): void {
     if (optionsInput.sort) {
         const orderByParams = createOrderByParams({
             optionsInput,
-            target: target as CypherBuilder.Variable | CypherBuilder.PropertyRef, // This works because targetNode uses alias
+            target, // This works because targetNode uses alias
         });
         if (orderByParams.length > 0) {
             projectionClause.orderBy(...orderByParams);
         }
     }
-    if (optionsInput.limit) {
-        const limit = toNumber(optionsInput.limit);
-        projectionClause.limit(limit);
-    }
-    if (optionsInput.offset) {
-        const offset = toNumber(optionsInput.offset);
-        projectionClause.skip(offset);
-    }
+    addLimitOrOffsetOptionsToClause({
+        optionsInput,
+        projectionClause,
+    });
 }
 
 function createOrderByParams({
@@ -59,7 +70,6 @@ function createOrderByParams({
     const orderList = (optionsInput.sort || []).flatMap((arg: GraphQLSortArg): Array<[string, "ASC" | "DESC"]> => {
         return Object.entries(arg);
     });
-
     return orderList.map(([field, order]) => {
         return [target.property(field), order];
     });
