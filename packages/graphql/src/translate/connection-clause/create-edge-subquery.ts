@@ -26,7 +26,7 @@ import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { createConnectionWherePropertyOperation } from "../where/property-operations/create-connection-operation";
 import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
 import { getPattern } from "../utils/get-pattern";
-// eslint-disable-next-line import/no-cycle
+
 import { createEdgeProjection } from "./connection-projection";
 import { getSortFields } from "./get-sort-fields";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";

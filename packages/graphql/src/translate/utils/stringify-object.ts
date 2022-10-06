@@ -20,7 +20,7 @@
 /** Serializes object into a string for Cypher objects */
 export function stringifyObject(fields: Record<string, string | undefined | null>): string {
     return `{ ${Object.entries(fields)
-        .filter(([_key, value]) => Boolean(value))
+        .filter(([, value]) => Boolean(value))
         .map(([key, value]): string | undefined => {
             return `${key}: ${value}`;
         })

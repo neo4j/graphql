@@ -53,5 +53,5 @@ export function SettingsProvider(props: React.PropsWithChildren<any>) {
         },
     });
 
-    return <SettingsContext.Provider value={value as State}>{props.children}</SettingsContext.Provider>;
+    return <SettingsContext.Provider value={value }>{props.children}</SettingsContext.Provider>;
 }

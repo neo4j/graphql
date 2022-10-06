@@ -830,7 +830,7 @@ describe("Update Subscriptions", () => {
         similarTitles?: string[];
     }): Promise<Response> {
         const movieInput = Object.entries(all)
-            .filter(([_, v]) => v)
+            .filter(([, v]) => v)
             .map(([k, v]) => {
                 return `${k}: ${makeTypedFieldValue(v)}`;
             })

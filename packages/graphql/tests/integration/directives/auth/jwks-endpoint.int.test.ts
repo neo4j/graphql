@@ -27,7 +27,7 @@ import supertest from "supertest";
 import Koa from "koa";
 import Router from "koa-router";
 import jwt from "koa-jwt";
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import jwksRsa from "jwks-rsa";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";

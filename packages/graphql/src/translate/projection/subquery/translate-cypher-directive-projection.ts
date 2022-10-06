@@ -22,7 +22,7 @@ import { GraphQLUnionType } from "graphql";
 import type { Node } from "../../../classes";
 import type { GraphQLSortArg, Context, CypherField } from "../../../types";
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
-// eslint-disable-next-line import/no-cycle
+
 import createProjectionAndParams, { ProjectionMeta } from "../../create-projection-and-params";
 
 interface Res {

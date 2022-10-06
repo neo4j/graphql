@@ -20,7 +20,7 @@
 import type { Context, GraphQLWhereArg, RelationField } from "../../../types";
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 // Recursive function
-// eslint-disable-next-line import/no-cycle
+
 import { createWherePredicate } from "../create-where-predicate";
 
 export function createRelationshipOperation({

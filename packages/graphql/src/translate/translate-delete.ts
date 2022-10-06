@@ -81,7 +81,7 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
         };
     }
 
-    const deleteQuery = new CypherBuilder.RawCypher((_env: CypherBuilder.Environment) => {
+    const deleteQuery = new CypherBuilder.RawCypher(() => {
         const eventMeta = createEventMeta({ event: "delete", nodeVariable: varName, typename: node.name });
         const cypher = [
             ...(context.subscriptionsEnabled ? [`WITH [] AS ${META_CYPHER_VARIABLE}`] : []),

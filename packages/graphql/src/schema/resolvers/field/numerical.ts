@@ -37,7 +37,7 @@ function isIntegerable(value: unknown): value is number | string | Integer | { l
 
     if (typeof value === "object") {
         // FIXME: necessary for neo-push tests to pass
-        const castedValue = value as object;
+        const castedValue = value;
 
         if (
             Object.keys(castedValue).length === 2 &&
