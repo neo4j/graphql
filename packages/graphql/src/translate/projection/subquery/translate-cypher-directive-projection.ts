@@ -97,7 +97,7 @@ export function translateCypherDirectiveProjection({
         if (hasMultipleFieldFields) {
             referencedNodes = referencedNodes?.filter((n) => fieldFieldsKeys.includes(n?.name ?? "")) || [];
         }
-        referencedNodes.forEach((refNode) => {
+        referencedNodes.forEach((refNode, index) => {
             if (refNode) {
                 const cypherNodeRef = new CypherBuilder.NamedNode(param);
                 const hasLabelsPredicates = refNode.getLabels(context).map((label) => cypherNodeRef.hasLabel(label));
@@ -105,18 +105,27 @@ export function translateCypherDirectiveProjection({
 
                 labelsSubPredicates.push(labelsSubPredicate);
 
+                const subqueryParam = `${param}_${index}`;
                 if (fieldFields[refNode.name]) {
                     const {
                         projection: str,
                         params: p,
-                        // TODO: projectionsubqueries?
+                        subqueries: nestedSubqueries,
                     } = createProjectionAndParams({
                         resolveTree: field,
                         node: refNode,
                         context,
-                        varName: param,
+                        varName: subqueryParam,
                     });
 
+                    if (nestedSubqueries.length > 0) {
+                        const projectionVariable = new CypherBuilder.NamedVariable(subqueryParam);
+
+                        const beforeCallWith = new CypherBuilder.With("*", [cypherNodeRef, projectionVariable]);
+
+                        const withAndSubqueries = CypherBuilder.concat(beforeCallWith, ...nestedSubqueries);
+                        subqueries.push(withAndSubqueries);
+                    }
                     unionProjections.push({
                         projection: `{ __resolveType: "${refNode.name}", ${str.replace("{", "")}`,
                         predicate: labelsSubPredicate,
