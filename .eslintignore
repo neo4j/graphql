@@ -3,3 +3,4 @@
 **/docs
 **/examples
 packages/graphql-toolbox/playwright.config.ts
+**/coverage/lcov-report

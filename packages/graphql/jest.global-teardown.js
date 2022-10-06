@@ -21,9 +21,9 @@ module.exports = async function globalTeardown() {
             error.message.includes("Unsupported administration command") ||
             error.message.includes("Unable to route write operation to leader for database 'system'")
         ) {
-            console.log(`\nJest /packages/graphql teardown: Expected action - NO drop of database as not supported in the current environment.`); // eslint-disable-line no-console
+            console.log(`\nJest /packages/graphql teardown: Expected action - NO drop of database as not supported in the current environment.`);  
         } else {
-            console.log(`\nJest /packages/graphql teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypherDropDb}", Error: ${error.message}`); // eslint-disable-line no-console
+            console.log(`\nJest /packages/graphql teardown: Teardown failure on neo4j @ ${NEO_URL}, cypher: "${cypherDropDb}", Error: ${error.message}`);  
         }
     } finally {
         if (session) await session.close();

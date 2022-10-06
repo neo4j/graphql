@@ -1,9 +1,17 @@
 module.exports = {
-    extends: ["eslint:recommended", "plugin:import/recommended", "prettier"],
+    extends: ["eslint:recommended", "plugin:eslint-comments/recommended", "plugin:import/recommended", "prettier"],
     root: true,
     env: {
         node: true,
         es2021: true,
+    },
+    rules: {
+        "eslint-comments/no-unused-disable": "error",
+        // Expensive rules disabled below
+        "import/default": "off",
+        "import/namespace": "off",
+        "import/no-named-as-default": "off",
+        "import/no-named-as-default-member": "off",
     },
     overrides: [
         {
@@ -11,7 +19,6 @@ module.exports = {
             extends: [
                 "plugin:@typescript-eslint/recommended",
                 "plugin:@typescript-eslint/recommended-requiring-type-checking",
-                "plugin:eslint-comments/recommended",
                 "plugin:import/typescript",
             ],
             parser: "@typescript-eslint/parser",
@@ -29,7 +36,6 @@ module.exports = {
                 "@typescript-eslint/no-unsafe-call": "off",
                 "@typescript-eslint/no-unsafe-member-access": "off",
                 "@typescript-eslint/no-unsafe-return": "off",
-                "eslint-comments/no-unused-disable": "error",
             },
         },
         {
