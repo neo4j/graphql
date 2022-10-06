@@ -20,12 +20,19 @@
 import type { Result, Session } from "neo4j-driver";
 import type { UniqueType } from "./graphql-types";
 import { runCypher } from "./run-cypher";
+import * as CypherBuilder from "../../src/translate/cypher-builder/CypherBuilder";
 
 /** Removes all nodes with the given labels from the database */
 export async function cleanNodes(session: Session, labels: Array<string | UniqueType>): Promise<Result> {
-    return runCypher(
-        session,
-        `MATCH(n) WHERE labels(n) IN [${labels.map((l) => `"${l}"`).join(",")}]
-        DETACH DELETE n`
-    );
+    const nodeRef = new CypherBuilder.Node({});
+
+    const nodeHasLabelPredicates = labels.map((l) => {
+        return nodeRef.hasLabel(`${l}`);
+    });
+
+    const nodeHasAnyLabelPredicate = CypherBuilder.or(...nodeHasLabelPredicates);
+
+    const query = new CypherBuilder.Match(nodeRef).where(nodeHasAnyLabelPredicate).detachDelete(nodeRef);
+    const { cypher } = query.build();
+    return runCypher(session, cypher);
 }
