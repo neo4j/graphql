@@ -245,7 +245,6 @@ describe("connectOrCreate", () => {
                 WITH this0
                 CALL {
                     WITH this0
-                    CALL apoc.util.validate(NOT (), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     MERGE (this0_genres_connectOrCreate_this0:\`Genre\` { name: $this0_genres_connectOrCreate_param0 })
                     ON CREATE SET
                         this0_genres_connectOrCreate_this0.name = $this0_genres_connectOrCreate_param1
@@ -458,7 +457,6 @@ describe("connectOrCreate", () => {
                 WITH this
                 CALL {
                     WITH this
-                    CALL apoc.util.validate(NOT (), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     MERGE (this_genres0_connectOrCreate_this0:\`Genre\` { name: $this_genres0_connectOrCreate_param0 })
                     ON CREATE SET
                         this_genres0_connectOrCreate_this0.name = $this_genres0_connectOrCreate_param1
@@ -667,7 +665,6 @@ describe("connectOrCreate", () => {
                 WITH this
                 CALL {
                     WITH this
-                    CALL apoc.util.validate(NOT (), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     MERGE (this_connectOrCreate_genres_this0:\`Genre\` { name: $this_connectOrCreate_genres_param0 })
                     ON CREATE SET
                         this_connectOrCreate_genres_this0.name = $this_connectOrCreate_genres_param1
