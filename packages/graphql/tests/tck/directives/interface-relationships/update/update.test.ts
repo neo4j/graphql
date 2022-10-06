@@ -97,6 +97,7 @@ describe("Interface Relationships - Update update", () => {
             RETURN count(*) AS update_this_Movie
             }
             CALL {
+            	 WITH this
             	WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
             WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Seriesparam0
@@ -188,6 +189,7 @@ describe("Interface Relationships - Update update", () => {
             RETURN count(*) AS update_this_Movie
             }
             CALL {
+            	 WITH this
             	WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
             WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Seriesparam0
@@ -295,6 +297,7 @@ describe("Interface Relationships - Update update", () => {
             RETURN count(*) AS update_this_Movie
             }
             CALL {
+            	 WITH this
             	WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
             WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Seriesparam0
@@ -402,6 +405,7 @@ describe("Interface Relationships - Update update", () => {
             RETURN count(*) AS update_this_Movie
             }
             CALL {
+            	 WITH this
             	WITH this
             OPTIONAL MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
             WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_Seriesparam0
