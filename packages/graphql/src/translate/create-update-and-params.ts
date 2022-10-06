@@ -442,7 +442,6 @@ export default function createUpdateAndParams({
                 res.strs.push(subqueries.join("\n"));
             }
 
-            console.log(res.strs);
             return res;
         }
 
