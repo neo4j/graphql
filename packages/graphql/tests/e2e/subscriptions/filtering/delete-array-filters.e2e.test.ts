@@ -75,8 +75,6 @@ describe("Create Subscription with optional filters valid for all types", () => 
         wsClient = new WebSocketTestClient(server.wsPath);
     });
 
-    beforeEach(() => {});
-
     afterEach(async () => {
         await wsClient.close();
 
@@ -528,7 +526,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
         allSizes?: string[];
     }): Promise<Response> {
         const input = Object.entries(all)
-            .filter(([_, v]) => v)
+            .filter(([, v]) => v)
             .map(([k, v]) => {
                 return `${k}: ${makeTypedFieldValue(v)}`;
             })

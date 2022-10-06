@@ -388,7 +388,6 @@ function getObjFieldMeta({
                 };
                 res.objectFields.push(objectField);
             } else {
-                // eslint-disable-next-line no-lonely-if
                 if (["DateTime", "Date", "Time", "LocalDateTime", "LocalTime"].includes(typeMeta.name)) {
                     const temporalField: TemporalField = {
                         ...baseField,

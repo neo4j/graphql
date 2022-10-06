@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "../Environment";
 import type { CypherCompilable } from "../types";
 
 type LiteralValue = string | number | boolean | null | Array<LiteralValue>;
@@ -30,7 +29,7 @@ export class Literal<T extends LiteralValue = any> implements CypherCompilable {
         this.value = value;
     }
 
-    public getCypher(_env: CypherEnvironment): string {
+    public getCypher(): string {
         return this.formatLiteralValue(this.value);
     }
 

@@ -435,7 +435,7 @@ export default function createUpdateAndParams({
             });
             if (relationField.interface) {
                 res.strs.push(`WITH ${withVars.join(", ")}`);
-                res.strs.push("CALL {");
+                res.strs.push(`CALL {\n\t WITH ${withVars.join(", ")}\n\t`);
                 res.strs.push(subqueries.join(`\n}\nCALL {\n\t WITH ${withVars.join(", ")}\n\t`));
                 res.strs.push("}");
             } else {

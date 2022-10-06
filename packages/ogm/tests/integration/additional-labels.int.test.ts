@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver, Session } from "neo4j-driver";
-import gql from "graphql-tag";
+import { gql } from "graphql-tag";
 import neo4j from "./neo4j";
 import { OGM } from "../../src";
 import { createJwtRequest, generateUniqueType } from "../utils";

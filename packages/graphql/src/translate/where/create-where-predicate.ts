@@ -21,7 +21,7 @@ import type { GraphQLWhereArg, Context } from "../../types";
 import type { GraphElement } from "../../classes";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 // Recursive function
-// eslint-disable-next-line import/no-cycle
+
 import { createPropertyWhere } from "./property-operations/create-property-where";
 
 type WhereOperators = "OR" | "AND";

@@ -179,6 +179,7 @@ describe("Cypher Auth Allow", () => {
             WHERE this.id = $param0
             WITH this
             CALL {
+            	 WITH this
             WITH this
             OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
             WHERE this_content0.id = $updateUsers_args_update_content0_where_Commentparam0

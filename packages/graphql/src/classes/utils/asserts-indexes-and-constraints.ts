@@ -123,7 +123,6 @@ async function createIndexesAndConstraints({
 
         debug(`About to execute Cypher: ${cypher}`);
 
-        // eslint-disable-next-line no-await-in-loop
         const result = await session.run(cypher);
 
         const { constraintsAdded } = result.summary.counters.updates();
@@ -140,7 +139,6 @@ async function createIndexesAndConstraints({
 
         debug(`About to execute Cypher: ${cypher}`);
 
-        // eslint-disable-next-line no-await-in-loop
         await session.run(cypher);
 
         debug(`Created @fulltext index ${indexToCreate.indexName}`);

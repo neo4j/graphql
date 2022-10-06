@@ -208,11 +208,11 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
             expect(usersResult?.errors).toBeFalsy();
             expect((usersResult?.data as any)?.[userType.plural]).toHaveLength(1);
-            expect((usersResult?.data as any as any)?.[userType.plural][0]?.createdPages).toHaveLength(2);
+            expect((usersResult?.data as any)?.[userType.plural][0]?.createdPages).toHaveLength(2);
 
             expect(workspacesResult?.errors).toBeFalsy();
             expect((workspacesResult?.data as any)?.[workspaceType.plural]).toHaveLength(1);
-            expect((workspacesResult?.data as any as any)?.[workspaceType.plural][0]?.pages).toHaveLength(2);
+            expect((workspacesResult?.data as any)?.[workspaceType.plural][0]?.pages).toHaveLength(2);
 
             expect(pagesResult?.errors).toBeFalsy();
             expect(pagesResult?.data?.[pageType.plural]).toHaveLength(2);
