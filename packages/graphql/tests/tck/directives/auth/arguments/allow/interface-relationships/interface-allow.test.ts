@@ -251,6 +251,7 @@ describe("@auth allow with interface relationships", () => {
             RETURN count(*) AS update_this_Comment
             }
             CALL {
+            	 WITH this
             	WITH this
             OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
             CALL apoc.do.when(this_content0 IS NOT NULL, \\"
