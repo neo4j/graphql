@@ -22,13 +22,11 @@ import type {
     DirectiveNode,
     InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
-    StringValueNode} from "graphql";
-import {
-    Kind
+    StringValueNode,
 } from "graphql";
+import { Kind } from "graphql";
 import type { Unique } from "../../types";
 
-// eslint-disable-next-line consistent-return
 function getUniqueMeta(
     directives: DirectiveNode[],
     type: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,

@@ -68,5 +68,5 @@ export function ThemeProvider(props: React.PropsWithChildren<any>) {
         }
     }, []);
 
-    return <ThemeContext.Provider value={value as State}>{props.children}</ThemeContext.Provider>;
+    return <ThemeContext.Provider value={value }>{props.children}</ThemeContext.Provider>;
 }

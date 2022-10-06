@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import gql from "graphql-tag";
+import { gql } from "graphql-tag";
 import type { Driver } from "neo4j-driver";
 import { DocumentNode, graphql } from "graphql";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
@@ -123,7 +123,7 @@ describe("unions", () => {
         const session = await neo4j.getSession();
 
         const typeDefs = `
-            union Search = ${MovieType} | ${GenreType} 
+            union Search = ${MovieType} | ${GenreType}
 
             type ${GenreType} {
                 name: String
@@ -777,7 +777,7 @@ describe("unions", () => {
                 type ${GenreType} @auth(rules: [{ operations: [READ], allow: { name: "$jwt.jwtAllowedNamesExample" } }]) {
                     name: String
                 }
-                    
+
                 type ${MovieType} {
                     title: String
                     search: [Search!]! @relationship(type: "SEARCH", direction: OUT)

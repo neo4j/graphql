@@ -31,6 +31,7 @@ describe("Cypher directive", () => {
         typeDefs = gql`
             type Actor {
                 name: String
+                year: Int
                 movies(title: String): [Movie]
                     @cypher(
                         statement: """
@@ -438,6 +439,10 @@ describe("Cypher directive", () => {
                             title
                             topActor {
                                 name
+                                year
+                            }
+                            actors {
+                                name
                             }
                         }
                         ... on TVShow {
@@ -466,9 +471,29 @@ describe("Cypher directive", () => {
                 RETURN n\\", { title: $thisparam0, this: this, auth: $auth }) AS this_movieOrTVShow
                 WITH *
                 WHERE (this_movieOrTVShow:\`Movie\` OR this_movieOrTVShow:\`TVShow\`)
+                WITH *, this_movieOrTVShow AS this_movieOrTVShow_0
+                CALL {
+                    WITH this_movieOrTVShow_0
+                    UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
+                    RETURN a\\", { this: this_movieOrTVShow_0, auth: $auth }) AS this_movieOrTVShow_0_topActor
+                    RETURN this_movieOrTVShow_0_topActor { .name, .year } AS this_movieOrTVShow_0_topActor
+                }
+                CALL {
+                    WITH this_movieOrTVShow_0
+                    UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (a:Actor)
+                    RETURN a\\", { this: this_movieOrTVShow_0, auth: $auth }) AS this_movieOrTVShow_0_actors
+                    RETURN collect(this_movieOrTVShow_0_actors { .name }) AS this_movieOrTVShow_0_actors
+                }
+                WITH *, this_movieOrTVShow AS this_movieOrTVShow_1
+                CALL {
+                    WITH this_movieOrTVShow_1
+                    UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
+                    RETURN a\\", { this: this_movieOrTVShow_1, auth: $auth }) AS this_movieOrTVShow_1_topActor
+                    RETURN this_movieOrTVShow_1_topActor { .name } AS this_movieOrTVShow_1_topActor
+                }
                 RETURN collect(CASE
-                    WHEN this_movieOrTVShow:\`Movie\` THEN this_movieOrTVShow { __resolveType: \\"Movie\\",  .id, .title, topActor: this_movieOrTVShow_topActor }
-                    WHEN this_movieOrTVShow:\`TVShow\` THEN this_movieOrTVShow { __resolveType: \\"TVShow\\",  .id, .title, topActor: this_movieOrTVShow_topActor }
+                    WHEN this_movieOrTVShow:\`Movie\` THEN this_movieOrTVShow { __resolveType: \\"Movie\\",  .id, .title, topActor: this_movieOrTVShow_0_topActor, actors: this_movieOrTVShow_0_actors }
+                    WHEN this_movieOrTVShow:\`TVShow\` THEN this_movieOrTVShow { __resolveType: \\"TVShow\\",  .id, .title, topActor: this_movieOrTVShow_1_topActor }
                 END) AS this_movieOrTVShow
             }
             RETURN this { movieOrTVShow: this_movieOrTVShow } as this"

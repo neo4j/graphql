@@ -321,6 +321,7 @@ describe("Math operators", () => {
             "MATCH (this:\`Actor\`)
             WITH this
             CALL {
+            	 WITH this
             WITH this
             OPTIONAL MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)
             CALL apoc.do.when(this_marriedWith0 IS NOT NULL, \\"
@@ -411,6 +412,7 @@ describe("Math operators", () => {
             "MATCH (this:\`Actor\`)
             WITH this
             CALL {
+            	 WITH this
             WITH this
             OPTIONAL MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)
             CALL apoc.do.when(this_marriedWith0 IS NOT NULL, \\"

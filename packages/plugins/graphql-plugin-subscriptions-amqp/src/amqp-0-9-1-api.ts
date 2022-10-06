@@ -79,7 +79,6 @@ export class AmqpApi<T> {
         try {
             cb(messageBody);
         } catch (err) {
-            // eslint-disable-next-line no-console
             console.warn("Error consuming message", err);
         } finally {
             this.channel?.ack(msg);

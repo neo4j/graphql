@@ -1,5 +1,5 @@
 const path = require("path");
-// eslint-disable-next-line import/no-extraneous-dependencies
+ 
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 module.exports = {
