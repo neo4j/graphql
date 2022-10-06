@@ -644,7 +644,6 @@ function createRelationshipFields({
                 );
             });
 
-            // eslint-disable-next-line consistent-return
             return aggregationInput;
         });
 

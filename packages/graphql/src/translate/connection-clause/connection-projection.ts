@@ -21,7 +21,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { mergeDeep } from "@graphql-tools/utils";
 import type { ConnectionField, ConnectionSortArg, Context } from "../../types";
 import type { Node } from "../../classes";
-// eslint-disable-next-line import/no-cycle
+
 import createProjectionAndParams from "../create-projection-and-params";
 import type Relationship from "../../classes/Relationship";
 import { createRelationshipPropertyValue } from "../projection/elements/create-relationship-property-element";

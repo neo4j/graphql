@@ -24,7 +24,7 @@ import { getListPredicate } from "../utils";
 import { listPredicateToSizeFunction } from "../list-predicate-to-size-function";
 import type { WhereOperator } from "../types";
 // Recursive function
-// eslint-disable-next-line import/no-cycle
+
 import { createWherePredicate } from "../create-where-predicate";
 import { filterTruthy } from "../../../utils/utils";
 import { compileCypherIfExists } from "../../cypher-builder/utils/utils";

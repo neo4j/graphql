@@ -42,7 +42,6 @@ export class Storage {
         try {
             return JSON.parse(data);
         } catch (error) {
-            // eslint-disable-next-line no-console
             console.log("retrieveJSON error: ", error);
             return null;
         }

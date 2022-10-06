@@ -59,7 +59,7 @@ describe("assertIndexesAndConstraints/unique", () => {
         } finally {
             await session.close();
         }
-        // eslint-disable-next-line no-promise-executor-return
+
         await new Promise((x) => setTimeout(x, 5000));
     });
 

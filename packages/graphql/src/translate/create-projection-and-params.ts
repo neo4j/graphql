@@ -33,11 +33,11 @@ import { removeDuplicates } from "../utils/utils";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
-// eslint-disable-next-line import/no-cycle
+
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
-// eslint-disable-next-line import/no-cycle
+
 import { createConnectionClause } from "./connection-clause/create-connection-clause";
-// eslint-disable-next-line import/no-cycle
+
 import { translateCypherDirectiveProjection } from "./projection/subquery/translate-cypher-directive-projection";
 
 interface Res {

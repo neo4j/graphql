@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-// This file should only be used for tests. As randomstring is a devDependecy
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { generate } from "randomstring";
 import pluralize from "pluralize";
 import camelcase from "camelcase";

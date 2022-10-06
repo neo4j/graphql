@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
 import ws from "ws";
 import type { Client } from "graphql-ws";
 import { createClient } from "graphql-ws";
@@ -92,4 +91,3 @@ export class WebSocketTestClient implements WebSocketClient {
         this.events = [];
     }
 }
-/* eslint-enable import/no-extraneous-dependencies */
