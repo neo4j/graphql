@@ -7,6 +7,7 @@ module.exports = {
     },
     overrides: [
         {
+            files: ["**/*.ts", "**/*.tsx"],
             extends: [
                 "plugin:@typescript-eslint/recommended",
                 "plugin:@typescript-eslint/recommended-requiring-type-checking",
@@ -17,7 +18,6 @@ module.exports = {
                 tsconfigRootDir: __dirname,
                 project: "./**/tsconfig.json",
             },
-            files: ["**/*.ts"],
             rules: {
                 "@typescript-eslint/ban-ts-comment": ["error", { "ts-ignore": "allow-with-description" }],
                 "@typescript-eslint/restrict-template-expressions": "off",
@@ -38,6 +38,15 @@ module.exports = {
                 "@typescript-eslint/ban-ts-comment": "off",
                 "@typescript-eslint/no-unsafe-assignment": "off",
                 "@typescript-eslint/no-explicit-any": "off",
+            },
+        },
+        {
+            files: ["**/*.tsx"],
+            extends: ["plugin:react/recommended", "plugin:react/jsx-runtime", "plugin:jsx-a11y/recommended"],
+            settings: {
+                react: {
+                    version: "detect",
+                },
             },
         },
         {

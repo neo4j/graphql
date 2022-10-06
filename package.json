@@ -33,7 +33,6 @@
         "concurrently": "7.4.0",
         "dotenv": "16.0.3",
         "eslint": "8.24.0",
-        "eslint-config-airbnb-typescript": "17.0.0",
         "eslint-config-prettier": "8.5.0",
         "eslint-formatter-summary": "^1.1.0",
         "eslint-import-resolver-typescript": "3.5.1",

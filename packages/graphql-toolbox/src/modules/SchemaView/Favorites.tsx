@@ -20,7 +20,7 @@
 import { HeroIcon } from "@neo4j-ndl/react";
 import { Storage } from "../../utils/storage";
 import { Favorite } from "../../types";
-import { LOCAL_STATE_FAVORITES } from "src/constants";
+import { LOCAL_STATE_FAVORITES } from "../../constants";
 import { Fragment, useState } from "react";
 
 interface NameComponentProps {
