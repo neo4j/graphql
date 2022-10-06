@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { HasLabel } from "../expressions/HasLabel";
 import { MatchPatternOptions, Pattern } from "../Pattern";
 import { RelationshipRef } from "./RelationshipRef";
 import { Variable } from "./Variable";
@@ -41,6 +42,14 @@ export class NodeRef extends Variable {
         });
     }
 
+    public hasLabels(...labels: string[]): HasLabel {
+        return new HasLabel(this, labels);
+    }
+
+    public hasLabel(label: string): HasLabel {
+        return new HasLabel(this, [label]);
+    }
+
     /** Creates a new Pattern from this node */
     public pattern(options: Pick<MatchPatternOptions, "source"> = {}): Pattern<NodeRef> {
         return new Pattern(this, options);
@@ -48,8 +57,14 @@ export class NodeRef extends Variable {
 }
 
 export class NamedNode extends NodeRef {
+    public id: string;
+
     constructor(id: string, options?: NodeRefOptions) {
         super(options || {});
         this.id = id;
+    }
+
+    public get name(): string {
+        return this.id;
     }
 }

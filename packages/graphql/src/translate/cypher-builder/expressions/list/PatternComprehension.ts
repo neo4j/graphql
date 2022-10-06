@@ -18,13 +18,16 @@
  */
 
 import { WithWhere } from "../../clauses/mixins/WithWhere";
-import { applyMixins } from "../../clauses/utils/apply-mixin";
+import { mixin } from "../../clauses/utils/mixin";
 import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import { MatchableElement, Pattern } from "../../Pattern";
 import type { Expr } from "../../types";
 import { compileCypherIfExists } from "../../utils/utils";
 
+export interface PatternComprehension extends WithWhere {}
+
+@mixin(WithWhere)
 export class PatternComprehension extends CypherASTNode {
     private pattern: Pattern;
     private mapExpr: Expr | undefined;
@@ -47,6 +50,3 @@ export class PatternComprehension extends CypherASTNode {
         return `[${patternStr}${whereStr}${mapStr}]`;
     }
 }
-
-export interface PatternComprehension extends WithWhere {}
-applyMixins(PatternComprehension, [WithWhere]);

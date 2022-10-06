@@ -17,9 +17,11 @@
  * limitations under the License.
  */
 
+import util, { InspectOptions } from "util";
 import { CypherASTNode } from "../CypherASTNode";
 import { CypherEnvironment, EnvPrefix } from "../Environment";
 import type { CypherResult } from "../types";
+import { padBlock } from "../utils/utils";
 
 /** Represents a clause AST node */
 export abstract class Clause extends CypherASTNode {
@@ -39,5 +41,11 @@ export abstract class Clause extends CypherASTNode {
 
     private getEnv(prefix?: string | EnvPrefix): CypherEnvironment {
         return new CypherEnvironment(prefix);
+    }
+
+    /** Custom log for console.log */
+    [util.inspect.custom](depth: number, opts: InspectOptions): string {
+        const cypher = padBlock(this.build().cypher);
+        return `<Clause ${this.constructor.name}> """\n${cypher}\n"""`;
     }
 }

@@ -27,10 +27,11 @@ import type { GraphQLWhereArg, Node } from "../types";
  *   * There is no _on filter
  *   * _on is the only filter and the current implementation can be found within it
  */
-const filterInterfaceNodes = ({ node, whereInput }: { node: Node; whereInput?: GraphQLWhereArg }) =>
-    !whereInput ||
-    Object.keys(whereInput).length > 1 ||
-    !Object.prototype.hasOwnProperty.call(whereInput, "_on") ||
-    (Object.keys(whereInput).length === 1 && Object.prototype.hasOwnProperty.call(whereInput._on, node.name));
-
-export default filterInterfaceNodes;
+export function filterInterfaceNodes({ node, whereInput }: { node: Node; whereInput?: GraphQLWhereArg }) {
+    return (
+        !whereInput ||
+        Object.keys(whereInput).length > 1 ||
+        !Object.prototype.hasOwnProperty.call(whereInput, "_on") ||
+        (Object.keys(whereInput).length === 1 && Object.prototype.hasOwnProperty.call(whereInput._on, node.name))
+    );
+}

@@ -19,10 +19,8 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { asArray, removeDuplicates } from "../utils/utils";
-import type { ConnectionField, Context, GraphQLOptionsArg, InterfaceWhereArg, RelationField } from "../types";
-import filterInterfaceNodes from "../utils/filter-interface-nodes";
-// eslint-disable-next-line import/no-cycle
-import createConnectionAndParams from "./connection/create-connection-and-params";
+import type { Context, GraphQLOptionsArg, InterfaceWhereArg, RelationField } from "../types";
+import { filterInterfaceNodes } from "../utils/filter-interface-nodes";
 import { createAuthPredicates } from "./create-auth-and-params";
 // eslint-disable-next-line import/no-cycle
 import createProjectionAndParams from "./create-projection-and-params";
@@ -200,9 +198,8 @@ function createInterfaceSubquery({
 
     const {
         projection: projectionStr,
-        params: projectionParams,
-        meta,
         subqueries: projectionSubQueries,
+        subqueriesBeforeSort,
     } = createProjectionAndParams({
         resolveTree,
         node: refNode,
@@ -211,30 +208,13 @@ function createInterfaceSubquery({
         literalElements: true,
         resolveType: true,
     });
-    let connectionClauses: CypherBuilder.Clause[] = [];
-    if (meta?.connectionFields?.length) {
-        connectionClauses = meta.connectionFields.map((connectionResolveTree) => {
-            return new CypherBuilder.RawCypher(() => {
-                const connectionField = refNode.connectionFields.find(
-                    (x) => x.fieldName === connectionResolveTree.name
-                ) as ConnectionField;
-                const connection = createConnectionAndParams({
-                    resolveTree: connectionResolveTree,
-                    field: connectionField,
-                    context,
-                    nodeVariable: param,
-                });
-                return [connection[0], projectionParams];
-            });
-        });
-    }
 
-    const projectionSubqueryClause = CypherBuilder.concat(...projectionSubQueries);
+    const projectionSubqueryClause = CypherBuilder.concat(...subqueriesBeforeSort, ...projectionSubQueries);
 
     const returnClause = new CypherBuilder.Return([
         new CypherBuilder.RawCypher(projectionStr),
         `${nodeVariable}_${field.fieldName}`,
     ]);
 
-    return CypherBuilder.concat(withClause, matchQuery, ...connectionClauses, projectionSubqueryClause, returnClause);
+    return CypherBuilder.concat(withClause, matchQuery, projectionSubqueryClause, returnClause);
 }

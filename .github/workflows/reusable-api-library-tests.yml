@@ -62,3 +62,9 @@ jobs:
           directory: ./packages/graphql/coverage/
           flags: graphql,schema
           fail_ci_if_error: true
+      - if: ${{ env.CODECOV_TOKEN != '' }}
+        name: Archive coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: api-library-coverage-graphql
+          path: packages/graphql/coverage/

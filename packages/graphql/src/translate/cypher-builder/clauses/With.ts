@@ -26,14 +26,19 @@ import type { Variable } from "../variables/Variable";
 import { Clause } from "./Clause";
 import { WithOrder } from "./mixins/WithOrder";
 import { WithReturn } from "./mixins/WithReturn";
-import { applyMixins } from "./utils/apply-mixin";
+import { WithWhere } from "./mixins/WithWhere";
+import { mixin } from "./utils/mixin";
 
 // With requires an alias for expressions that are not variables
 export type WithProjection = Variable | [Expr, string | Variable | Literal];
 
+export interface With extends WithOrder, WithReturn, WithWhere {}
+
+@mixin(WithOrder, WithReturn, WithWhere)
 export class With extends Clause {
     private projection: Projection;
     private isDistinct = false;
+    private withStatement: With | undefined;
 
     constructor(...columns: Array<"*" | WithProjection>) {
         super();
@@ -54,12 +59,21 @@ export class With extends Clause {
         const projectionStr = this.projection.getCypher(env);
         const orderByStr = compileCypherIfExists(this.orderByStatement, env, { prefix: "\n" });
         const returnStr = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
+        const withStr = compileCypherIfExists(this.withStatement, env, { prefix: "\n" });
+        const whereStr = compileCypherIfExists(this.whereSubClause, env, { prefix: "\n" });
         const distinctStr = this.isDistinct ? " DISTINCT" : "";
 
-        return `WITH${distinctStr} ${projectionStr}${orderByStr}${returnStr}`;
+        return `WITH${distinctStr} ${projectionStr}${whereStr}${orderByStr}${withStr}${returnStr}`;
+    }
+
+    // Cannot be part of WithWith due to dependency cycles
+    public with(...columns: ("*" | WithProjection)[]): With {
+        if (this.withStatement) {
+            this.withStatement.addColumns(...columns);
+        } else {
+            this.withStatement = new With(...columns);
+            this.addChildren(this.withStatement);
+        }
+        return this.withStatement;
     }
 }
-
-export interface With extends WithOrder, WithReturn {}
-
-applyMixins(With, [WithOrder, WithReturn]);
