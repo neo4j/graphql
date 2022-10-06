@@ -565,9 +565,9 @@ describe("Arrays Methods", () => {
                 WITH { pay: this_connection_actedInConnectionthis0.pay } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
             }
-            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection: actedInConnection }) AS data"
+            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection: this_actedInConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -669,9 +669,9 @@ describe("Arrays Methods", () => {
                 WITH { pay: this_connection_actedInConnectionthis0.pay } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
             }
-            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection: actedInConnection }) AS data"
+            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection: this_actedInConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

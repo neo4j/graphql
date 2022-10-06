@@ -329,9 +329,9 @@ describe("Interface Relationships", () => {
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
             }
-            RETURN this { actedInConnection: actedInConnection } as this"
+            RETURN this { actedInConnection: this_actedInConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -383,9 +383,9 @@ describe("Interface Relationships", () => {
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
             }
-            RETURN this { actedInConnection: actedInConnection } as this"
+            RETURN this { actedInConnection: this_actedInConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -443,9 +443,9 @@ describe("Interface Relationships", () => {
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
             }
-            RETURN this { actedInConnection: actedInConnection } as this"
+            RETURN this { actedInConnection: this_actedInConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -510,9 +510,9 @@ describe("Interface Relationships", () => {
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
             }
-            RETURN this { actedInConnection: actedInConnection } as this"
+            RETURN this { actedInConnection: this_actedInConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
