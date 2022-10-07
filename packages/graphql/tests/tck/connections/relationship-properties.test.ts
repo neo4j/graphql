@@ -223,9 +223,9 @@ describe("Relationship Properties Cypher", () => {
                 WITH edge, totalCount
                 ORDER BY edge.year DESC, edge.node.name ASC
                 WITH collect(edge) AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { actorsConnection: actorsConnection } as this"
+            RETURN this { actorsConnection: this_actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -265,9 +265,9 @@ describe("Relationship Properties Cypher", () => {
                 WITH edge, totalCount
                 ORDER BY edge.node.name ASC, edge.year DESC
                 WITH collect(edge) AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { actorsConnection: actorsConnection } as this"
+            RETURN this { actorsConnection: this_actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
