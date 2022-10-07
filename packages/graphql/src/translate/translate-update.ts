@@ -18,6 +18,7 @@
  */
 
 import type { Node, Relationship } from "../classes";
+import { Neo4jGraphQLError } from "../classes/Error";
 import type { Context, RelationField } from "../types";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
@@ -33,6 +34,7 @@ import createRelationshipValidationStr from "./create-relationship-validation-st
 import { CallbackBucket } from "../classes/CallbackBucket";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { compileCypherIfExists } from "./cypher-builder/utils/utils";
+import { doDbPropertiesClash } from "../utils/is-property-clash";
 
 export default async function translateUpdate({
     node,
@@ -50,6 +52,20 @@ export default async function translateUpdate({
     const connectOrCreateInput = resolveTree.args.connectOrCreate;
     const varName = "this";
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
+
+    if (updateInput) {
+        const isMutationPropertiesClash = doDbPropertiesClash({ node, mutationInputs: [updateInput] });
+        if (isMutationPropertiesClash) {
+            throw new Neo4jGraphQLError("Conflicting modification of the same database property multiple times");
+        }
+    }
+    // TODO: should include?
+    // if (createInput) {
+    //     const isMutationPropertiesClash = doDbPropertiesClash({ node, mutationInputs: [createInput] });
+    //     if (isMutationPropertiesClash) {
+    //         throw new Neo4jGraphQLError("Conflicting modification of the same database property multiple times");
+    //     }
+    // }
 
     const withVars = [varName];
 

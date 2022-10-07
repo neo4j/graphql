@@ -18,6 +18,7 @@
  */
 
 import type { Node } from "../classes";
+import { Neo4jGraphQLError } from "../classes/Error";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import type { Context } from "../types";
@@ -26,6 +27,7 @@ import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { compileCypherIfExists } from "./cypher-builder/utils/utils";
+import { doDbPropertiesClash } from "../utils/is-property-clash";
 
 export default async function translateCreate({
     context,
@@ -35,6 +37,7 @@ export default async function translateCreate({
     node: Node;
 }): Promise<{ cypher: string; params: Record<string, any> }> {
     const { resolveTree } = context;
+    const mutationInputs = resolveTree.args.input as any[];
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
     const projectionWith: string[] = [];
@@ -43,12 +46,19 @@ export default async function translateCreate({
     let connectionParams: any;
     let interfaceParams: any;
 
+    // TODO: get relationship from context
+    // console.log(context);
+    const isMutationPropertiesClash = doDbPropertiesClash({ node, mutationInputs });
+    if (isMutationPropertiesClash) {
+        throw new Neo4jGraphQLError("Conflicting modification of the same database property multiple times");
+    }
+
     const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
 
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
 
-    const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
+    const { createStrs, params } = mutationInputs.reduce(
         (res, input, index) => {
             const varName = `this${index}`;
             const create = [`CALL {`];

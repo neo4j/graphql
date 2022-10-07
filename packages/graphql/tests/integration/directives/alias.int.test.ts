@@ -68,7 +68,24 @@ describe("@alias directive", () => {
             type ProtectedUser @auth(rules: [{ allow: { name: "$jwt.sub" } }]) {
                 name: String! @alias(property: "dbName")
             }
+
+            type Director {
+                name: String
+                nameAgain: String @alias(property: "name")
+                movies: [Movie!]! @relationship(direction: OUT, type: "DIRECTED", properties: "Directed")
+            }
+
+            interface Directed @relationshipProperties {
+                year: Int!
+                movieYear: Int @alias(property: "year")
+            }
+
+            type Movie {
+                title: String
+            }
+
         `;
+
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
@@ -441,5 +458,205 @@ describe("@alias directive", () => {
                 ],
             },
         });
+    });
+
+    test("Create mutation with alias referring to existing field, include both fields as inputs", async () => {
+        const userMutation = `
+            mutation {
+                createDirectors(input: [{ name: "Tim Burton", nameAgain: "Timmy Burton" }]) {
+                    directors {
+                        name
+                        nameAgain
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: userMutation,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+        expect(gqlResult.errors).toHaveLength(1);
+        expect(gqlResult.errors?.[0].message).toBe(
+            `Conflicting modification of the same database property multiple times`
+        );
+        expect((gqlResult?.data as any)?.createDirectors?.directors).toBeUndefined();
+    });
+    test("Create mutation with alias referring to existing field, include only field as inputs", async () => {
+        const userMutation = `
+            mutation {
+                createDirectors(input: [{ name: "Tim Burton" }]) {
+                    directors {
+                        name
+                        nameAgain
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: userMutation,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult?.data as any)?.createDirectors?.directors).toEqual([
+            {
+                name: "Tim Burton",
+                nameAgain: "Tim Burton",
+            },
+        ]);
+    });
+    test("Create mutation with alias referring to existing field, include only alias field as inputs", async () => {
+        const userMutation = `
+            mutation {
+                createDirectors(input: [{ nameAgain: "Timmy Burton" }]) {
+                    directors {
+                        name
+                        nameAgain
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: userMutation,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult?.data as any)?.createDirectors?.directors).toEqual([
+            {
+                name: "Timmy Burton",
+                nameAgain: "Timmy Burton",
+            },
+        ]);
+    });
+    test("Create mutation with alias referring to existing field, include both bad and good inputs", async () => {
+        const userMutation = `
+            mutation {
+                createDirectors(input: [{ name: "Tim Burton", nameAgain: "Timmy Burton" }, { name: "Someone" }]) {
+                    directors {
+                        name
+                        nameAgain
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: userMutation,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+        expect(gqlResult.errors).toHaveLength(1);
+        expect(gqlResult.errors?.[0].message).toBe(
+            `Conflicting modification of the same database property multiple times`
+        );
+        expect((gqlResult?.data as any)?.createDirectors?.directors).toBeUndefined();
+    });
+
+    test("Update mutation with alias referring to existing field, include both fields as inputs", async () => {
+        const userMutation = `
+            mutation {
+                updateDirectors(where: {name_CONTAINS: "Tim"}, update: { name: "Tim Burton", nameAgain: "Timmy Burton" }) {
+                    directors {
+                        name
+                        nameAgain
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: userMutation,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+        expect(gqlResult.errors).toHaveLength(1);
+        expect(gqlResult.errors?.[0].message).toBe(
+            `Conflicting modification of the same database property multiple times`
+        );
+        expect((gqlResult?.data as any)?.updateDirectors?.directors).toBeUndefined();
+    });
+    test("Update mutation with alias referring to existing field, include only alias field as inputs", async () => {
+        const userMutation = `
+            mutation {
+                updateDirectors(where: {name_CONTAINS: "Timmy"}, update: { nameAgain: "El Timmy Burton" }) {
+                    directors {
+                        name
+                        nameAgain
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: userMutation,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult?.data as any)?.updateDirectors?.directors).toEqual([
+            {
+                name: "El Timmy Burton",
+                nameAgain: "El Timmy Burton",
+            },
+        ]);
+    });
+
+    // TODO: props on relationships
+    test.skip("Create mutation with relationship alias referring to existing field, include both fields as inputs", async () => {
+        const userMutation = `
+            mutation {
+                createDirectors(input: [{ 
+                    name: "Woody Allen", 
+                    movies: { 
+                        create: [
+                            {
+                                node: {
+                                    title: "Bananas"
+                                },
+                                edge: {
+                                    year: 2000,
+                                    movieYear: 2000
+                                }
+                            }
+                        ] 
+                    } 
+                }]) {
+                    directors {
+                        name
+                        movies {
+                            title
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: userMutation,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        console.log(gqlResult);
+        // expect(gqlResult.errors).toBeDefined();
+        // expect(gqlResult.errors).toHaveLength(1);
+        // expect(gqlResult.errors?.[0].message).toBe(
+        //     `Conflicting modification of the same database property multiple times`
+        // );
+        expect((gqlResult?.data as any)?.createDirectors?.directors).toBeUndefined();
     });
 });
