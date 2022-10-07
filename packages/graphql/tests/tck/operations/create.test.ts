@@ -354,9 +354,9 @@ describe("Cypher Create", () => {
                     WITH { node: { name: this0_movies_Actor.name } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS this0_movies_actorsConnection
                 }
-                WITH this0_movies { actorsConnection: actorsConnection } AS this0_movies
+                WITH this0_movies { actorsConnection: this0_movies_actorsConnection } AS this0_movies
                 RETURN collect(this0_movies) AS this0_movies
             }
             RETURN [

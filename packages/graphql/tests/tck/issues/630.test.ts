@@ -83,9 +83,9 @@ describe("Cypher directive", () => {
                     WITH { node: { __resolveType: \\"Actor\\" } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS this_movies_actorsConnection
                 }
-                RETURN collect(this_movies { actorsConnection: actorsConnection }) AS this_movies
+                RETURN collect(this_movies { actorsConnection: this_movies_actorsConnection }) AS this_movies
             }
             RETURN this { movies: this_movies } as this"
         `);

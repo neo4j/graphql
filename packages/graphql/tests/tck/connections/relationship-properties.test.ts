@@ -82,9 +82,9 @@ describe("Relationship Properties Cypher", () => {
                 WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection: actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -126,9 +126,9 @@ describe("Relationship Properties Cypher", () => {
                 WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection: actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -176,9 +176,9 @@ describe("Relationship Properties Cypher", () => {
                 WITH edge, totalCount
                 ORDER BY edge.screenTime DESC
                 WITH collect(edge) AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection: actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -315,14 +315,14 @@ describe("Relationship Properties Cypher", () => {
                     WITH { screenTime: this_Actor_connection_moviesConnectionthis0.screenTime, node: { title: this_Actor_Movie.title } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS this_Actor_moviesConnection
                 }
-                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, moviesConnection: moviesConnection } } AS edge
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, moviesConnection: this_Actor_moviesConnection } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection: actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -385,19 +385,19 @@ describe("Relationship Properties Cypher", () => {
                         WITH { screenTime: this_Actor_Movie_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor_Movie_Actor.name } } AS edge
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                        RETURN { edges: edges, totalCount: totalCount } AS this_Actor_Movie_actorsConnection
                     }
-                    WITH { screenTime: this_Actor_connection_moviesConnectionthis0.screenTime, node: { title: this_Actor_Movie.title, actorsConnection: actorsConnection } } AS edge
+                    WITH { screenTime: this_Actor_connection_moviesConnectionthis0.screenTime, node: { title: this_Actor_Movie.title, actorsConnection: this_Actor_Movie_actorsConnection } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS this_Actor_moviesConnection
                 }
-                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, moviesConnection: moviesConnection } } AS edge
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, moviesConnection: this_Actor_moviesConnection } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection: actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

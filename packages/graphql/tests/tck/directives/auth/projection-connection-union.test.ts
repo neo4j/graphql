@@ -104,16 +104,16 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
                         WITH { node: { name: this_Post_User.name } } AS edge
                         WITH collect(edge) AS edges
                         WITH edges, size(edges) AS totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS creatorConnection
+                        RETURN { edges: edges, totalCount: totalCount } AS this_Post_creatorConnection
                     }
-                    WITH { node: { __resolveType: \\"Post\\", content: this_Post.content, creatorConnection: creatorConnection } } AS edge
+                    WITH { node: { __resolveType: \\"Post\\", content: this_Post.content, creatorConnection: this_Post_creatorConnection } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS contentConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_contentConnection
             }
-            RETURN this { contentConnection: contentConnection } as this"
+            RETURN this { contentConnection: this_contentConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
