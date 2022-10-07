@@ -88,12 +88,12 @@ describe("#387", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"return '' + ''\\", { this: this, auth: $auth }) AS this_url_works
-                RETURN this_url_works AS this_url_works
+                RETURN head(collect(this_url_works)) AS this_url_works
             }
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"return '' + ''\\", { this: this, auth: $auth }) AS this_url_fails
-                RETURN this_url_fails AS this_url_fails
+                RETURN head(collect(this_url_fails)) AS this_url_fails
             }
             CALL {
                 WITH this

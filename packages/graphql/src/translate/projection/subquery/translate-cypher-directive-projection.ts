@@ -243,8 +243,9 @@ function createReturnClause({
     projectionExpr: CypherBuilder.Expr | undefined;
 }): CypherBuilder.Return {
     let returnData: CypherBuilder.Expr = projectionExpr || returnVariable;
-    if (isArray) {
-        returnData = CypherBuilder.collect(returnData);
+    returnData = CypherBuilder.collect(returnData);
+    if (!isArray) {
+        returnData = CypherBuilder.head(returnData);
     }
     return new CypherBuilder.Return([returnData, returnVariable]);
 }

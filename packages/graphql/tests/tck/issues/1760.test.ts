@@ -128,7 +128,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id\\", { this: this, auth: $auth }) AS this_relatedId
-                RETURN this_relatedId AS this_relatedId
+                RETURN head(collect(this_relatedId)) AS this_relatedId
             }
             WITH *
             ORDER BY this_relatedId ASC
