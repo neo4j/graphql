@@ -25,8 +25,6 @@
 
 import Neo4j from "./neo4j";
 
-/* eslint-disable no-console */
-
 const teardown = async () => {
     const neo4j = new Neo4j();
     const driver = await neo4j.getDriver();
@@ -45,5 +43,3 @@ teardown().then(
     () => console.log("Successfully cleared down database."),
     (reason) => console.log(`Error encountered whilst clearing down database: ${reason}`)
 );
-
-/* eslint-enable no-console */

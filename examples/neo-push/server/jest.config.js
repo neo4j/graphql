@@ -5,9 +5,12 @@ module.exports = {
     displayName: "neo-push",
     roots: ["<rootDir>/examples/neo-push/server/src/", "<rootDir>/examples/neo-push/server/tests/"],
     coverageDirectory: "<rootDir>/examples/neo-push/server/coverage/",
-    globals: {
-        "ts-jest": {
-            tsconfig: "<rootDir>/examples/neo-push/server/src/tsconfig.json",
-        },
+    transform: {
+        "^.+\\.ts$": [
+            "ts-jest",
+            {
+                tsconfig: "<rootDir>/examples/neo-push/server/src/tsconfig.json",
+            },
+        ],
     },
 };

@@ -41,7 +41,7 @@ import { SchemaSettings } from "./SchemaSettings";
 import { SchemaErrorDisplay } from "./SchemaErrorDisplay";
 import { ActionElementsBar } from "./ActionElementsBar";
 import { SchemaEditor } from "./SchemaEditor";
-import { ConstraintState, Favorite } from "src/types";
+import { ConstraintState, Favorite } from "../../types";
 import { Favorites } from "./Favorites";
 import { IntrospectionPrompt } from "./IntrospectionPrompt";
 

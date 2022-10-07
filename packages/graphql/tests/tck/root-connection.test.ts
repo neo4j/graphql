@@ -193,9 +193,9 @@ describe("Root Connection Query tests", () => {
                 WITH { node: { name: this_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            WITH { node: this { .title, actorsConnection: actorsConnection } } as edge, totalCount, this
+            WITH { node: this { .title, actorsConnection: this_actorsConnection } } as edge, totalCount, this
             ORDER BY this.title ASC
             LIMIT $this_limit
             WITH COLLECT(edge) as edges, totalCount

@@ -18,25 +18,19 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { ConnectionSortArg, GraphQLSortArg } from "../../types";
+import type { GraphQLSortArg } from "../../types";
 
-type SortFields = {
-    edge: GraphQLSortArg;
-    node: GraphQLSortArg;
-};
+type SortFields = { edge: GraphQLSortArg } | { node: GraphQLSortArg };
 
-/** Returns sort fields for connections, split between edge and node */
-export function getSortFields(resolveTree: ResolveTree): SortFields {
-    const sortInput = (resolveTree.args.sort ?? []) as ConnectionSortArg[];
-
-    return {
-        edge: getSortFieldsByElement(sortInput, "edge"),
-        node: getSortFieldsByElement(sortInput, "node"),
-    };
+export function getSortFields(resolveTree: ResolveTree): SortFields[] {
+    return (resolveTree.args.sort ?? []) as SortFields[];
 }
-
-function getSortFieldsByElement(sortInput: ConnectionSortArg[], element: "node" | "edge"): GraphQLSortArg {
-    return sortInput.reduce((acc, f) => {
-        return { ...acc, ...(f[element] || {}) };
-    }, {} as GraphQLSortArg);
+/** Returns keys of sort fields on edges for connections */
+export function getEdgeSortFieldKeys(resolveTree: ResolveTree): string[] {
+    return getSortFields(resolveTree).reduce((acc: string[], x: SortFields) => {
+        if ("edge" in x) {
+            acc.push(...Object.keys(x.edge));
+        }
+        return acc;
+    }, []);
 }

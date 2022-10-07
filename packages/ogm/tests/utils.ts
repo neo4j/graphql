@@ -19,13 +19,9 @@
 
 import { Socket } from "net";
 import { IncomingMessage } from "http";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import jsonwebtoken from "jsonwebtoken";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { generate } from "randomstring";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import camelcase from "camelcase";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import pluralize from "pluralize";
 
 /** Creates a JWT valid request with the given secret and the extraData in the JWT token */

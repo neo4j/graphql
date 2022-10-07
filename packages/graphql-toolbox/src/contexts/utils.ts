@@ -110,7 +110,6 @@ export const resolveNeo4jDesktopLoginPayload = async (): Promise<LoginPayload | 
             password,
         };
     } catch (error) {
-        // eslint-disable-next-line no-console
         console.log("Error while fetching and processing Neo4jDesktop GraphQL API, e: ", error);
         return null;
     }
@@ -138,7 +137,7 @@ export const getDatabases = async (driver: neo4j.Driver): Promise<Neo4jDatabase[
         await session.close();
         if (error instanceof Error && !isMultiDbUnsupportedError(error)) {
             // Only log error if it's not a multi-db unsupported error.
-            // eslint-disable-next-line no-console
+
             console.error("Error while fetching databases information, e: ", error);
         }
         return undefined;
@@ -158,7 +157,7 @@ export const checkDatabaseHasData = async (driver: neo4j.Driver, selectedDatabas
         return resultLength > 0;
     } catch (error) {
         await session.close();
-        // eslint-disable-next-line no-console
+
         console.error("Error while checking if database contains data, e: ", error);
         return false;
     }

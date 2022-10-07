@@ -8,9 +8,12 @@ module.exports = {
         // "<rootDir>/packages/plugins/graphql-plugin-subscriptions-amqp/tests",
     ],
     coverageDirectory: "<rootDir>/packages/plugins/graphql-plugin-subscriptions-amqp/coverage/",
-    globals: {
-        "ts-jest": {
-            tsconfig: "<rootDir>/packages/plugins/graphql-plugin-subscriptions-amqp/tsconfig.json",
-        },
+    transform: {
+        "^.+\\.ts$": [
+            "ts-jest",
+            {
+                tsconfig: "<rootDir>/packages/plugins/graphql-plugin-subscriptions-amqp/tsconfig.json",
+            },
+        ],
     },
 };

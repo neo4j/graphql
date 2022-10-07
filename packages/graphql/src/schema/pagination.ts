@@ -19,7 +19,6 @@
 
 import type { FieldNode, GraphQLResolveInfo, SelectionSetNode } from "graphql";
 import { getOffsetWithDefault, offsetToCursor } from "graphql-relay/connection/arrayConnection";
-import type { Integer } from "neo4j-driver";
 import type { ConnectionField, ConnectionQueryArgs } from "../types";
 import { isNeoInt } from "../utils/utils";
 
@@ -97,7 +96,7 @@ export function createConnectionWithEdgeProperties({
     const cursorKey = getAliasKey({ selectionSet: edgesField?.selectionSet, key: "cursor" });
     const nodeKey = getAliasKey({ selectionSet: edgesField?.selectionSet, key: "node" });
 
-    const sliceEnd = sliceStart + (first || (edges.length as number));
+    const sliceEnd = sliceStart + (first || edges.length);
 
     const mappedEdges = edges.map((value, index) => {
         return {
