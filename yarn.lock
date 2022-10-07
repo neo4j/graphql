@@ -2449,7 +2449,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^2.4.2
     "@graphql-codegen/typescript": ^2.6.0
     "@graphql-tools/merge": ^8.3.3
-    "@neo4j/graphql": ^3.9.0
+    "@neo4j/graphql": ^3.10.0
     "@neo4j/graphql-plugin-auth": ^1.1.0
     "@types/jest": 29.1.2
     "@types/node": 16.11.64
@@ -2492,7 +2492,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-plugin-subscriptions-amqp@workspace:packages/plugins/graphql-plugin-subscriptions-amqp"
   dependencies:
-    "@neo4j/graphql": ^3.9.0
+    "@neo4j/graphql": ^3.10.0
     "@types/amqplib": 0.8.2
     "@types/debug": 4.1.7
     "@types/jest": 29.1.2
@@ -2503,7 +2503,7 @@ __metadata:
     camelcase: 6.3.0
     graphql-ws: 5.11.2
     jest: 29.1.2
-    neo4j-driver: 5.0.1
+    neo4j-driver: 5.1.0
     pluralize: 8.0.0
     randomstring: 1.2.2
     supertest: 6.3.0
@@ -2511,7 +2511,7 @@ __metadata:
     typescript: 4.8.4
     ws: 8.9.0
   peerDependencies:
-    "@neo4j/graphql": ^3.9.0
+    "@neo4j/graphql": ^3.10.0
   languageName: unknown
   linkType: soft
 
@@ -2521,7 +2521,7 @@ __metadata:
   dependencies:
     "@neo4j-ndl/base": 0.8.4
     "@neo4j-ndl/react": 0.8.4
-    "@neo4j/graphql": 3.9.0
+    "@neo4j/graphql": 3.10.0
     "@neo4j/introspector": ^1.0.2
     "@playwright/test": 1.26.1
     "@tsconfig/create-react-app": 1.0.2
@@ -2550,7 +2550,7 @@ __metadata:
     jest-environment-jsdom: 29.1.2
     lodash.debounce: ^4.0.8
     markdown-it: ^13.0.1
-    neo4j-driver: 5.0.1
+    neo4j-driver: 5.1.0
     node-polyfill-webpack-plugin: 2.0.1
     parse5: 5.1.1
     postcss: 8.4.17
@@ -2577,7 +2577,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@3.9.0, @neo4j/graphql@^3.5.0, @neo4j/graphql@^3.8.0, @neo4j/graphql@^3.9.0, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@3.10.0, @neo4j/graphql@^3.10.0, @neo4j/graphql@^3.5.0, @neo4j/graphql@^3.8.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -3000,7 +3000,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/node16@npm:^1.0.2, @tsconfig/node16@npm:^1.0.3":
+"@tsconfig/node16@npm:1.0.3, @tsconfig/node16@npm:^1.0.2":
   version: 1.0.3
   resolution: "@tsconfig/node16@npm:1.0.3"
   checksum: 3a8b657dd047495b7ad23437d6afd20297ce90380ff0bdee93fc7d39a900dbd8d9e26e53ff6b465e7967ce2adf0b218782590ce9013285121e6a5928fbd6819f
@@ -8178,7 +8178,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-formatter-summary@npm:^1.1.0":
+"eslint-formatter-summary@npm:1.1.0":
   version: 1.1.0
   resolution: "eslint-formatter-summary@npm:1.1.0"
   dependencies:
@@ -13617,7 +13617,7 @@ __metadata:
     "@neo4j/graphql": ^3.5.0
     apollo-server: 3.10.2
     graphql: 16.6.0
-    neo4j-driver: 5.0.1
+    neo4j-driver: 5.1.0
   languageName: unknown
   linkType: soft
 
@@ -14075,7 +14075,7 @@ __metadata:
     graphql: 16.6.0
     jest: 29.1.2
     jsonwebtoken: 8.5.1
-    neo4j-driver: 5.0.1
+    neo4j-driver: 5.1.0
     nodemon: 2.0.20
     randomstring: 1.2.2
     ts-jest: 29.0.3
@@ -14085,33 +14085,33 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"neo4j-driver-bolt-connection@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "neo4j-driver-bolt-connection@npm:5.0.1"
+"neo4j-driver-bolt-connection@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "neo4j-driver-bolt-connection@npm:5.1.0"
   dependencies:
     buffer: ^6.0.3
-    neo4j-driver-core: ^5.0.1
+    neo4j-driver-core: ^5.1.0
     string_decoder: ^1.3.0
-  checksum: f48070761013ada431e4b979dbede63e1a37fbc5cf9e5eca9988db79206f8126ec6dc2e8acb3f2c177a0821765d618849ae245c3001ce9c98809fb29ca904d52
+  checksum: 74d334567dceea4242040ff3b5656f154f63ae9f5f099e02b646daf716366278a283873e3d988c8f4faa538f770513e0c4c415a8ed0323e9d4328a20d3a652ba
   languageName: node
   linkType: hard
 
-"neo4j-driver-core@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "neo4j-driver-core@npm:5.0.1"
-  checksum: b4c62585856d10d45da86e8c518339328ddbd75d40de31f6e1c8c55921481bf7e60db3fa98799156c42dbe98a8c8cb1a4f17c517ccae33e77b82c1bf3084975f
+"neo4j-driver-core@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "neo4j-driver-core@npm:5.1.0"
+  checksum: e078573513449d1694976bf4e58b2b2c8dc2b95a6f8c6b0cd0069b96e33185822574cc57950b66e24fc9215331de6746ab168fa7e5119587a20b595d5f4f55f5
   languageName: node
   linkType: hard
 
-"neo4j-driver@npm:5.0.1":
-  version: 5.0.1
-  resolution: "neo4j-driver@npm:5.0.1"
+"neo4j-driver@npm:5.1.0":
+  version: 5.1.0
+  resolution: "neo4j-driver@npm:5.1.0"
   dependencies:
     "@babel/runtime": ^7.17.8
-    neo4j-driver-bolt-connection: ^5.0.1
-    neo4j-driver-core: ^5.0.1
+    neo4j-driver-bolt-connection: ^5.1.0
+    neo4j-driver-core: ^5.1.0
     rxjs: ^7.5.5
-  checksum: 49ba027a78c2bd1e2c1d88cbfe969f6f4d8e8c319ce26330bc966de1adcd066a46581dd3c34bb20047090f494246c602c9398d00ddd5d6c59a01a9303eb313c1
+  checksum: 613175ff13c4a30a1dc6e139f266f319059d88f30115f8a6bde348236d8bd7f83918a58c31a08db328293e0e3984dbf6db31079df2d10e6600a3df06563a158f
   languageName: node
   linkType: hard
 
@@ -14121,14 +14121,14 @@ __metadata:
   dependencies:
     "@changesets/changelog-github": 0.4.7
     "@changesets/cli": 2.25.0
-    "@tsconfig/node16": ^1.0.3
+    "@tsconfig/node16": 1.0.3
     "@typescript-eslint/eslint-plugin": 5.39.0
     "@typescript-eslint/parser": 5.39.0
     concurrently: 7.4.0
     dotenv: 16.0.3
     eslint: 8.24.0
     eslint-config-prettier: 8.5.0
-    eslint-formatter-summary: ^1.1.0
+    eslint-formatter-summary: 1.1.0
     eslint-import-resolver-typescript: 3.5.1
     eslint-plugin-eslint-comments: 3.2.0
     eslint-plugin-import: 2.26.0
@@ -14139,7 +14139,7 @@ __metadata:
     husky: 8.0.1
     jest: 29.1.2
     lint-staged: 13.0.3
-    neo4j-driver: 5.0.1
+    neo4j-driver: 5.1.0
     npm-run-all: 4.1.5
     prettier: 2.7.1
     set-tz: 0.2.0

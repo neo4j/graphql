@@ -123,7 +123,7 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
                     WITH this_bussing
                     UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
                     RETURN COUNT(member) > 0 AS markedAttendance\\", { this: this_bussing, auth: $auth }) AS this_bussing_markedAttendance
-                    RETURN this_bussing_markedAttendance AS this_bussing_markedAttendance
+                    RETURN head(collect(this_bussing_markedAttendance)) AS this_bussing_markedAttendance
                 }
                 CALL {
                     WITH this_bussing
