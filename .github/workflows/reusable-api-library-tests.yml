@@ -15,13 +15,11 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      fail-fast: false
       matrix:
         graphql-version:
           - "^15.0.0"
           - "^16.0.0"
         neo4j-version:
-          - 4.3.2
           - 4.3
           - 4.4
 
