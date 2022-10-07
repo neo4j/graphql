@@ -143,7 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                 WITH { current: this_connection_manufacturerConnectionthis0.current, node: { name: this_Manufacturer.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS manufacturerConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_manufacturerConnection
             }
             CALL {
                 WITH this
@@ -151,9 +151,9 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                 WITH { current: this_connection_brandConnectionthis0.current, node: { name: this_Brand.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS brandConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_brandConnection
             }
-            RETURN this { .name, .current, manufacturerConnection: manufacturerConnection, brandConnection: brandConnection } as this"
+            RETURN this { .name, .current, manufacturerConnection: this_manufacturerConnection, brandConnection: this_brandConnection } as this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

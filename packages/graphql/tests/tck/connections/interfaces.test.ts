@@ -104,9 +104,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
             }
-            RETURN this { .name, actedInConnection: actedInConnection } as this"
+            RETURN this { .name, actedInConnection: this_actedInConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -159,9 +159,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
             }
-            RETURN this { .name, actedInConnection: actedInConnection } as this"
+            RETURN this { .name, actedInConnection: this_actedInConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -221,9 +221,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
             }
-            RETURN this { .name, actedInConnection: actedInConnection } as this"
+            RETURN this { .name, actedInConnection: this_actedInConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -287,9 +287,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
             }
-            RETURN this { .name, actedInConnection: actedInConnection } as this"
+            RETURN this { .name, actedInConnection: this_actedInConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -357,9 +357,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         WITH edge, totalCount
                         ORDER BY edge.screenTime ASC
                         WITH collect(edge) AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                        RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
                     }
-                    RETURN this { .name, actedInConnection: actedInConnection } as this"
+                    RETURN this { .name, actedInConnection: this_actedInConnection } as this"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -414,9 +414,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         WITH edge, totalCount
                         ORDER BY edge.node.title ASC
                         WITH collect(edge) AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                        RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
                     }
-                    RETURN this { .name, actedInConnection: actedInConnection } as this"
+                    RETURN this { .name, actedInConnection: this_actedInConnection } as this"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -472,9 +472,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         WITH edge, totalCount
                         ORDER BY edge.screenTime ASC
                         WITH collect(edge) AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                        RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
                     }
-                    RETURN this { .name, actedInConnection: actedInConnection } as this"
+                    RETURN this { .name, actedInConnection: this_actedInConnection } as this"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -528,9 +528,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         WITH edge, totalCount
                         ORDER BY edge.node.title ASC
                         WITH collect(edge) AS edges, totalCount
-                        RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                        RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
                     }
-                    RETURN this { .name, actedInConnection: actedInConnection } as this"
+                    RETURN this { .name, actedInConnection: this_actedInConnection } as this"
                 `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

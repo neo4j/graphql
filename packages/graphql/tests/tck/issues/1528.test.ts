@@ -95,9 +95,9 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
                 WITH edge, totalCount
                 ORDER BY edge.node.actorsCount DESC
                 WITH collect(edge) AS edges, totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_moviesConnection
             }
-            RETURN this { moviesConnection: moviesConnection } as this"
+            RETURN this { moviesConnection: this_moviesConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

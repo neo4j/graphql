@@ -103,9 +103,9 @@ describe("#601", () => {
                     WITH { fileId: this_documents_connection_customerContactConnectionthis0.fileId, uploadedAt: apoc.date.convertFormat(toString(this_documents_connection_customerContactConnectionthis0.uploadedAt), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS customerContactConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS this_documents_customerContactConnection
                 }
-                WITH this_documents { customerContactConnection: customerContactConnection } AS this_documents
+                WITH this_documents { customerContactConnection: this_documents_customerContactConnection } AS this_documents
                 RETURN collect(this_documents) AS this_documents
             }
             RETURN this { documents: this_documents } as this"
