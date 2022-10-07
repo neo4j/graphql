@@ -44,7 +44,7 @@ jobs:
       - name: Overwrite GraphQL version
         run: yarn up --exact graphql@${{ matrix.graphql-version }}
       - name: Run TCK tests
-        run: yarn --cwd packages/graphql run test tck --coverage
+        run: yarn --cwd packages/graphql run test:tck --coverage
         env:
           VERIFY_TCK: true
           NODE_OPTIONS: "--max_old_space_size=4096"
