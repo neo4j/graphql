@@ -17,12 +17,12 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../CypherBuilder";
+import * as Cypher from "../CypherBuilder";
 import { TestClause } from "../utils/TestClause";
 
 describe("Literal", () => {
     it("Serialize string value", () => {
-        const stringLiteral = new CypherBuilder.Literal("hello");
+        const stringLiteral = new Cypher.Literal("hello");
 
         const testClause = new TestClause(stringLiteral);
 
@@ -31,7 +31,7 @@ describe("Literal", () => {
     });
 
     it("Serialize boolean value", () => {
-        const booleanLiteral = new CypherBuilder.Literal(true);
+        const booleanLiteral = new Cypher.Literal(true);
 
         const testClause = new TestClause(booleanLiteral);
 
@@ -40,7 +40,7 @@ describe("Literal", () => {
     });
 
     it("Serialize number value", () => {
-        const numberLiteral = new CypherBuilder.Literal(5);
+        const numberLiteral = new Cypher.Literal(5);
 
         const testClause = new TestClause(numberLiteral);
 
@@ -49,7 +49,7 @@ describe("Literal", () => {
     });
 
     it("Serialize array", () => {
-        const literal = new CypherBuilder.Literal(["hello", 5, "hello"]);
+        const literal = new Cypher.Literal(["hello", 5, "hello"]);
 
         const testClause = new TestClause(literal);
 
@@ -58,7 +58,7 @@ describe("Literal", () => {
     });
 
     it("Serialize null", () => {
-        const literal = new CypherBuilder.Literal(null);
+        const literal = new Cypher.Literal(null);
 
         const testClause = new TestClause(literal);
 
@@ -67,7 +67,7 @@ describe("Literal", () => {
     });
 
     it("Null constant literal", () => {
-        const testClause = new TestClause(CypherBuilder.Null);
+        const testClause = new TestClause(Cypher.Null);
 
         const queryResult = testClause.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`"NULL"`);

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "./CypherBuilder";
+import * as Cypher from "./CypherBuilder";
 import { CypherEnvironment } from "./Environment";
 import { Pattern } from "./Pattern";
 
@@ -29,34 +29,34 @@ describe("Pattern", () => {
     });
     describe("Node", () => {
         test("Simple node", () => {
-            const node = new CypherBuilder.Node({ labels: ["TestLabel"] });
+            const node = new Cypher.Node({ labels: ["TestLabel"] });
             const pattern = new Pattern(node, { source: { labels: false } });
 
             expect(pattern.getCypher(env)).toMatchInlineSnapshot(`"(this0)"`);
         });
 
         test("Simple node with default values", () => {
-            const node = new CypherBuilder.Node({ labels: ["TestLabel"] });
+            const node = new Cypher.Node({ labels: ["TestLabel"] });
             const pattern = new Pattern(node);
 
             expect(pattern.getCypher(env)).toMatchInlineSnapshot(`"(this0:\`TestLabel\`)"`);
         });
 
         test("Node with parameters", () => {
-            const node = new CypherBuilder.Node({ labels: ["TestLabel"] });
+            const node = new Cypher.Node({ labels: ["TestLabel"] });
             const pattern = new Pattern(node, { source: { labels: false } }).withParams({
-                name: new CypherBuilder.Param("test"),
-                age: new CypherBuilder.Param(123),
+                name: new Cypher.Param("test"),
+                age: new Cypher.Param(123),
             });
 
             expect(pattern.getCypher(env)).toMatchInlineSnapshot(`"(this0 { name: $param0, age: $param1 })"`);
         });
 
         test("Node with parameters and labels", () => {
-            const node = new CypherBuilder.Node({ labels: ["TestLabel"] });
+            const node = new Cypher.Node({ labels: ["TestLabel"] });
             const pattern = new Pattern(node).withParams({
-                name: new CypherBuilder.Param("test"),
-                age: new CypherBuilder.Param(123),
+                name: new Cypher.Param("test"),
+                age: new Cypher.Param(123),
             });
 
             expect(pattern.getCypher(env)).toMatchInlineSnapshot(
@@ -67,9 +67,9 @@ describe("Pattern", () => {
 
     describe("Relationship", () => {
         test("Simple relationship", () => {
-            const node1 = new CypherBuilder.Node({ labels: ["Actor"] });
-            const node2 = new CypherBuilder.Node({ labels: ["Movie"] });
-            const relationship = new CypherBuilder.Relationship({ source: node1, target: node2, type: "ACTED_IN" });
+            const node1 = new Cypher.Node({ labels: ["Actor"] });
+            const node2 = new Cypher.Node({ labels: ["Movie"] });
+            const relationship = new Cypher.Relationship({ source: node1, target: node2, type: "ACTED_IN" });
             const pattern = new Pattern(relationship, {
                 source: { labels: false },
                 relationship: { type: false },
@@ -80,9 +80,9 @@ describe("Pattern", () => {
         });
 
         test("Simple relationship with default values", () => {
-            const node1 = new CypherBuilder.Node({ labels: ["Actor"] });
-            const node2 = new CypherBuilder.Node({ labels: ["Movie"] });
-            const relationship = new CypherBuilder.Relationship({ source: node1, target: node2, type: "ACTED_IN" });
+            const node1 = new Cypher.Node({ labels: ["Actor"] });
+            const node2 = new Cypher.Node({ labels: ["Movie"] });
+            const relationship = new Cypher.Relationship({ source: node1, target: node2, type: "ACTED_IN" });
             const pattern = new Pattern(relationship);
 
             expect(pattern.getCypher(env)).toMatchInlineSnapshot(
@@ -91,19 +91,19 @@ describe("Pattern", () => {
         });
 
         test("Relationship with parameters", () => {
-            const node1 = new CypherBuilder.Node({ labels: ["Actor"] });
-            const node2 = new CypherBuilder.Node({ labels: ["Movie"] });
-            const relationship = new CypherBuilder.Relationship({ source: node1, target: node2, type: "ACTED_IN" });
+            const node1 = new Cypher.Node({ labels: ["Actor"] });
+            const node2 = new Cypher.Node({ labels: ["Movie"] });
+            const relationship = new Cypher.Relationship({ source: node1, target: node2, type: "ACTED_IN" });
             const pattern = new Pattern(relationship, {
                 source: { labels: false },
                 target: { labels: false },
             }).withParams({
-                source: { name: new CypherBuilder.Param("test") },
+                source: { name: new Cypher.Param("test") },
                 relationship: {
-                    value: new CypherBuilder.Param("test"),
+                    value: new Cypher.Param("test"),
                 },
                 target: {
-                    name: new CypherBuilder.Param("test2"),
+                    name: new Cypher.Param("test2"),
                 },
             });
 

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
+import * as Cypher from "../../cypher-builder/CypherBuilder";
 import type { Node } from "../../../classes";
 import mapToDbProperty from "../../../utils/map-to-db-property";
 
@@ -28,17 +28,17 @@ export function createGlobalNodeOperation({
 }: {
     node: Node;
     value: string;
-    targetElement: CypherBuilder.Variable;
+    targetElement: Cypher.Variable;
     coalesceValue: string | undefined;
-}): CypherBuilder.ComparisonOp {
+}): Cypher.ComparisonOp {
     const { field, id } = node.fromGlobalId(value);
     const idDbFieldName = mapToDbProperty(node, field);
-    let idProperty = targetElement.property(idDbFieldName) as CypherBuilder.PropertyRef | CypherBuilder.Function;
+    let idProperty = targetElement.property(idDbFieldName) as Cypher.PropertyRef | Cypher.Function;
     if (coalesceValue) {
-        idProperty = CypherBuilder.coalesce(
-            idProperty as CypherBuilder.PropertyRef,
-            new CypherBuilder.RawCypher(`${coalesceValue}`) // TODO: move into CypherBuilder.literal
+        idProperty = Cypher.coalesce(
+            idProperty as Cypher.PropertyRef,
+            new Cypher.RawCypher(`${coalesceValue}`) // TODO: move into Cypher.literal
         );
     }
-    return CypherBuilder.eq(idProperty, new CypherBuilder.Param(id));
+    return Cypher.eq(idProperty, new Cypher.Param(id));
 }

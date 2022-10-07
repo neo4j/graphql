@@ -17,28 +17,28 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../CypherBuilder";
+import * as Cypher from "../CypherBuilder";
 
 describe("CypherBuilder Match Examples", () => {
     test("Match movies by actor name and released date", () => {
-        const nameParam = new CypherBuilder.Param("Keanu Reeves");
-        const releasedParam = new CypherBuilder.Param(1999);
+        const nameParam = new Cypher.Param("Keanu Reeves");
+        const releasedParam = new Cypher.Param(1999);
 
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
-        const personNode = new CypherBuilder.Node({
+        const personNode = new Cypher.Node({
             labels: ["Person"],
         });
 
-        const relationship = new CypherBuilder.Relationship({
+        const relationship = new Cypher.Relationship({
             source: personNode,
             target: movieNode,
             type: "ACTED_IN",
         });
 
         // This where is a simplified sugar syntax for simple x=y AND z=w queries
-        const matchQuery = new CypherBuilder.Match(relationship)
+        const matchQuery = new Cypher.Match(relationship)
             .where(personNode, { name: nameParam })
             .and(movieNode, { released: releasedParam })
             .return(movieNode.property("title"), [movieNode.property("released"), "year"]);
@@ -59,34 +59,34 @@ describe("CypherBuilder Match Examples", () => {
     });
 
     test("Match movies from actor and two years with OR operator", () => {
-        const nameParam = new CypherBuilder.Param("Keanu Reeves");
-        const released1Param = new CypherBuilder.Param(1999);
-        const released2Param = new CypherBuilder.Param(2000);
+        const nameParam = new Cypher.Param("Keanu Reeves");
+        const released1Param = new Cypher.Param(1999);
+        const released2Param = new Cypher.Param(2000);
 
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
-        const personNode = new CypherBuilder.Node({
+        const personNode = new Cypher.Node({
             labels: ["Person"],
         });
 
-        const relationship = new CypherBuilder.Relationship({
+        const relationship = new Cypher.Relationship({
             source: personNode,
             target: movieNode,
             type: "ACTED_IN",
         });
 
-        const matchQuery = new CypherBuilder.Match(
+        const matchQuery = new Cypher.Match(
             relationship.pattern({
                 source: { labels: false },
             })
         )
             .where(
-                CypherBuilder.and(
-                    CypherBuilder.eq(personNode.property("name"), nameParam),
-                    CypherBuilder.or(
-                        CypherBuilder.eq(movieNode.property("year"), released1Param),
-                        CypherBuilder.eq(movieNode.property("year"), released2Param)
+                Cypher.and(
+                    Cypher.eq(personNode.property("name"), nameParam),
+                    Cypher.or(
+                        Cypher.eq(movieNode.property("year"), released1Param),
+                        Cypher.eq(movieNode.property("year"), released2Param)
                     )
                 )
             )
@@ -109,14 +109,14 @@ describe("CypherBuilder Match Examples", () => {
     });
 
     test("Match and update movie", () => {
-        const nameParam = new CypherBuilder.Param("Keanu Reeves");
-        const evilKeanu = new CypherBuilder.Param("Seveer unaeK");
+        const nameParam = new Cypher.Param("Keanu Reeves");
+        const evilKeanu = new Cypher.Param("Seveer unaeK");
 
-        const personNode = new CypherBuilder.Node({
+        const personNode = new Cypher.Node({
             labels: ["Person"],
         });
 
-        const matchQuery = new CypherBuilder.Match(personNode)
+        const matchQuery = new Cypher.Match(personNode)
             .where(personNode, { name: nameParam })
             .set([personNode.property("name"), evilKeanu])
             .return(personNode);

@@ -17,17 +17,17 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../CypherBuilder";
+import * as Cypher from "../CypherBuilder";
 
 describe("CypherBuilder Create Examples", () => {
     test("Create a movie", () => {
-        const releasedParam = new CypherBuilder.Param(1999);
+        const releasedParam = new Cypher.Param(1999);
 
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const query = new CypherBuilder.Create(movieNode).set(
+        const query = new Cypher.Create(movieNode).set(
             [movieNode.property("released"), releasedParam] // Explicitly defines the node property
         );
 
@@ -47,21 +47,21 @@ describe("CypherBuilder Create Examples", () => {
     });
 
     test("Create two nodes by concatenating clauses movie", () => {
-        const titleParam = new CypherBuilder.Param("The Matrix");
+        const titleParam = new Cypher.Param("The Matrix");
 
-        const movie1 = new CypherBuilder.Node({
+        const movie1 = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const movie2 = new CypherBuilder.Node({
+        const movie2 = new Cypher.Node({
             labels: ["Movie"],
         });
 
         // Note that both nodes share the same param
-        const create1 = new CypherBuilder.Create(movie1).set([movie1.property("title"), titleParam]);
-        const create2 = new CypherBuilder.Create(movie2).set([movie2.property("title"), titleParam]);
+        const create1 = new Cypher.Create(movie1).set([movie1.property("title"), titleParam]);
+        const create2 = new Cypher.Create(movie2).set([movie2.property("title"), titleParam]);
 
-        const queryResult = CypherBuilder.concat(create1, create2).build();
+        const queryResult = Cypher.concat(create1, create2).build();
 
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "CREATE (this0:\`Movie\`)

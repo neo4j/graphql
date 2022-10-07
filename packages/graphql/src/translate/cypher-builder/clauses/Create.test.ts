@@ -17,22 +17,22 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../CypherBuilder";
+import * as Cypher from "../CypherBuilder";
 
 describe("CypherBuilder Create", () => {
     test("Create Node", () => {
-        const idParam = new CypherBuilder.Param("my-id");
-        const movieNode = new CypherBuilder.Node({
+        const idParam = new Cypher.Param("my-id");
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const createQuery = new CypherBuilder.Create(movieNode, {
-            test: new CypherBuilder.Param("test-value"),
+        const createQuery = new Cypher.Create(movieNode, {
+            test: new Cypher.Param("test-value"),
             id: idParam,
         })
             .set(
-                [movieNode.property("title"), new CypherBuilder.Param("The Matrix")],
-                [movieNode.property("runtime"), new CypherBuilder.Param(120)]
+                [movieNode.property("title"), new Cypher.Param("The Matrix")],
+                [movieNode.property("runtime"), new Cypher.Param(120)]
             )
             .return(movieNode);
 
@@ -56,15 +56,15 @@ describe("CypherBuilder Create", () => {
     });
 
     test("Create Node with null property", () => {
-        const idParam = new CypherBuilder.Param(null);
-        const testParam = new CypherBuilder.Param(null);
-        const nullStringParam = new CypherBuilder.Param("null");
+        const idParam = new Cypher.Param(null);
+        const testParam = new Cypher.Param(null);
+        const nullStringParam = new Cypher.Param("null");
 
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const createQuery = new CypherBuilder.Create(movieNode, {
+        const createQuery = new Cypher.Create(movieNode, {
             id: idParam,
         })
             .set([movieNode.property("test"), testParam], [movieNode.property("nullStr"), nullStringParam])

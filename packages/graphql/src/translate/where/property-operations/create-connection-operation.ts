@@ -18,7 +18,7 @@
  */
 
 import type { ConnectionField, ConnectionWhereArg, Context } from "../../../types";
-import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
+import * as Cypher from "../../cypher-builder/CypherBuilder";
 import type { Node, Relationship } from "../../../classes";
 import { getListPredicate } from "../utils";
 import { listPredicateToSizeFunction } from "../list-predicate-to-size-function";
@@ -39,9 +39,9 @@ export function createConnectionOperation({
     connectionField: ConnectionField;
     value: any;
     context: Context;
-    parentNode: CypherBuilder.Node;
+    parentNode: Cypher.Node;
     operator: string | undefined;
-}): CypherBuilder.BooleanOp | CypherBuilder.RawCypher | undefined {
+}): Cypher.BooleanOp | Cypher.RawCypher | undefined {
     let nodeEntries: Record<string, any>;
 
     if (!connectionField?.relationship.union) {
@@ -57,8 +57,8 @@ export function createConnectionOperation({
 
         const relationField = connectionField.relationship;
 
-        const childNode = new CypherBuilder.Node({ labels: refNode.getLabels(context) });
-        const relationship = new CypherBuilder.Relationship({
+        const childNode = new Cypher.Node({ labels: refNode.getLabels(context) });
+        const relationship = new Cypher.Relationship({
             source: relationField.direction === "IN" ? childNode : parentNode,
             target: relationField.direction === "IN" ? parentNode : childNode,
             type: relationField.type,
@@ -87,7 +87,7 @@ export function createConnectionOperation({
         if (listPredicateStr === "any" && !connectionField.relationship.typeMeta.array) {
             listPredicateStr = "single";
         }
-        const subquery = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+        const subquery = new Cypher.RawCypher((env: Cypher.Environment) => {
             const patternStr = matchPattern.getCypher(env);
             const whereStr = compileCypherIfExists(whereOperator, env, {});
             const clause = listPredicateToSizeFunction(listPredicateStr, patternStr, whereStr);
@@ -97,7 +97,7 @@ export function createConnectionOperation({
         return subquery;
     });
 
-    return CypherBuilder.and(...operations) as CypherBuilder.BooleanOp | undefined;
+    return Cypher.and(...operations) as Cypher.BooleanOp | undefined;
 }
 
 export function createConnectionWherePropertyOperation({
@@ -112,9 +112,9 @@ export function createConnectionWherePropertyOperation({
     context: Context;
     node: Node;
     edge: Relationship;
-    edgeRef: CypherBuilder.Variable;
-    targetNode: CypherBuilder.Node;
-}): CypherBuilder.Predicate | undefined {
+    edgeRef: Cypher.Variable;
+    targetNode: Cypher.Node;
+}): Cypher.Predicate | undefined {
     const params = Object.entries(whereInput).map(([key, value]) => {
         if (key === "AND" || key === "OR") {
             const subOperations = (value as Array<any>).map((input) => {
@@ -128,10 +128,10 @@ export function createConnectionWherePropertyOperation({
                 });
             });
             if (key === "AND") {
-                return CypherBuilder.and(...filterTruthy(subOperations));
+                return Cypher.and(...filterTruthy(subOperations));
             }
             if (key === "OR") {
-                return CypherBuilder.or(...filterTruthy(subOperations));
+                return Cypher.or(...filterTruthy(subOperations));
             }
         }
 
@@ -173,7 +173,7 @@ export function createConnectionWherePropertyOperation({
         }
         return undefined;
     });
-    return CypherBuilder.and(...filterTruthy(params));
+    return Cypher.and(...filterTruthy(params));
 }
 
 /** Checks if a where property has an explicit interface inside _on */

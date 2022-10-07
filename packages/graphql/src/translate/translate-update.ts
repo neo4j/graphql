@@ -31,7 +31,7 @@ import { translateTopLevelMatch } from "./translate-top-level-match";
 import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 import { CallbackBucket } from "../classes/CallbackBucket";
-import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import * as Cypher from "./cypher-builder/CypherBuilder";
 import { compileCypherIfExists } from "./cypher-builder/utils/utils";
 
 export default async function translateUpdate({
@@ -371,7 +371,7 @@ export default async function translateUpdate({
         });
     }
 
-    let projectionSubquery: CypherBuilder.Clause | undefined;
+    let projectionSubquery: Cypher.Clause | undefined;
     if (nodeProjection?.fieldsByTypeName) {
         const projection = createProjectionAndParams({
             node,
@@ -379,7 +379,7 @@ export default async function translateUpdate({
             resolveTree: nodeProjection,
             varName,
         });
-        projectionSubquery = CypherBuilder.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
+        projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
         projStr = projection.projection;
         cypherParams = { ...cypherParams, ...projection.params };
         if (projection.meta?.authValidateStrs?.length) {
@@ -393,7 +393,7 @@ export default async function translateUpdate({
 
     const relationshipValidationStr = !updateInput ? createRelationshipValidationStr({ node, context, varName }) : "";
 
-    const updateQuery = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+    const updateQuery = new Cypher.RawCypher((env: Cypher.Environment) => {
         const projectionSubqueryStr = compileCypherIfExists(projectionSubquery, env);
 
         const cypher = [

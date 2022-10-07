@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../CypherBuilder";
+import * as Cypher from "../CypherBuilder";
 
 describe("CypherBuilder With", () => {
     test("With *", () => {
-        const withQuery = new CypherBuilder.With("*");
+        const withQuery = new Cypher.With("*");
 
         const queryResult = withQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`"WITH *"`);
@@ -29,10 +29,10 @@ describe("CypherBuilder With", () => {
     });
 
     test("With nodes", () => {
-        const node = new CypherBuilder.Node({
+        const node = new Cypher.Node({
             labels: ["Movie"],
         });
-        const withQuery = new CypherBuilder.With(node);
+        const withQuery = new Cypher.With(node);
 
         const queryResult = withQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`"WITH this0"`);
@@ -40,13 +40,13 @@ describe("CypherBuilder With", () => {
     });
 
     test("With multiple variables", () => {
-        const node = new CypherBuilder.Node({
+        const node = new Cypher.Node({
             labels: ["Movie"],
         });
-        const variable = new CypherBuilder.Variable();
-        const param = new CypherBuilder.Param("Matrix");
+        const variable = new Cypher.Variable();
+        const param = new Cypher.Param("Matrix");
 
-        const withQuery = new CypherBuilder.With(node, variable, param);
+        const withQuery = new Cypher.With(node, variable, param);
 
         const queryResult = withQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`"WITH this0, var1, $param0"`);
@@ -59,11 +59,11 @@ describe("CypherBuilder With", () => {
 
     describe("With alias", () => {
         test("With variable aliased", () => {
-            const node = new CypherBuilder.Node({
+            const node = new Cypher.Node({
                 labels: ["Movie"],
             });
-            const alias = new CypherBuilder.Variable();
-            const withQuery = new CypherBuilder.With([node, alias]);
+            const alias = new Cypher.Variable();
+            const withQuery = new Cypher.With([node, alias]);
 
             const queryResult = withQuery.build();
             expect(queryResult.cypher).toMatchInlineSnapshot(`"WITH this0 AS var1"`);
@@ -71,9 +71,9 @@ describe("CypherBuilder With", () => {
         });
 
         test("With expression aliased", () => {
-            const expr = CypherBuilder.plus(new CypherBuilder.Param("The "), new CypherBuilder.Param("Matrix"));
-            const alias = new CypherBuilder.Variable();
-            const withQuery = new CypherBuilder.With([expr, alias]);
+            const expr = Cypher.plus(new Cypher.Param("The "), new Cypher.Param("Matrix"));
+            const alias = new Cypher.Variable();
+            const withQuery = new Cypher.With([expr, alias]);
 
             const queryResult = withQuery.build();
             expect(queryResult.cypher).toMatchInlineSnapshot(`"WITH $param0 + $param1 AS var0"`);

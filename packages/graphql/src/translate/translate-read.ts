@@ -26,7 +26,7 @@ import type { GraphQLOptionsArg, GraphQLSortArg, Context } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { translateTopLevelMatch } from "./translate-top-level-match";
-import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import * as Cypher from "./cypher-builder/CypherBuilder";
 
 export function translateRead({
     node,
@@ -36,7 +36,7 @@ export function translateRead({
     context: Context;
     node: Node;
     isRootConnectionField?: boolean;
-}): CypherBuilder.CypherResult {
+}): Cypher.CypherResult {
     const { resolveTree } = context;
     const varName = "this";
 
@@ -85,11 +85,11 @@ export function translateRead({
         authStr = `CALL apoc.util.validate(NOT (${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
     }
 
-    const projectionSubqueries = CypherBuilder.concat(...projection.subqueries);
-    const projectionSubqueriesBeforeSort = CypherBuilder.concat(...projection.subqueriesBeforeSort);
+    const projectionSubqueries = Cypher.concat(...projection.subqueries);
+    const projectionSubqueriesBeforeSort = Cypher.concat(...projection.subqueriesBeforeSort);
 
     // TODO: concatenate with "translateTopLevelMatch" result to avoid param collision
-    const readQuery = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+    const readQuery = new Cypher.RawCypher((env: Cypher.Environment) => {
         const projectionSubqueriesStr = projectionSubqueries.getCypher(env);
         const subqueriesBeforeSort = projectionSubqueriesBeforeSort.getCypher(env);
 

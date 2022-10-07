@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../../CypherBuilder";
+import * as Cypher from "../../CypherBuilder";
 import { TestClause } from "../../utils/TestClause";
 
 describe("List comprehension", () => {
     test("comprehension without filter", () => {
-        const variable = new CypherBuilder.Variable();
-        const exprVariable = new CypherBuilder.Param([1, 2, 5]);
+        const variable = new Cypher.Variable();
+        const exprVariable = new Cypher.Param([1, 2, 5]);
 
-        const listComprehension = new CypherBuilder.ListComprehension(variable, exprVariable);
+        const listComprehension = new Cypher.ListComprehension(variable, exprVariable);
 
         const queryResult = new TestClause(listComprehension).build();
 
@@ -43,11 +43,11 @@ describe("List comprehension", () => {
     });
 
     test("comprehension with filter", () => {
-        const variable = new CypherBuilder.Variable();
-        const exprVariable = new CypherBuilder.Param([1, 2, 5]);
-        const andExpr = CypherBuilder.eq(variable, new CypherBuilder.Param(5));
+        const variable = new Cypher.Variable();
+        const exprVariable = new Cypher.Param([1, 2, 5]);
+        const andExpr = Cypher.eq(variable, new Cypher.Param(5));
 
-        const listComprehension = new CypherBuilder.ListComprehension(variable, exprVariable).where(andExpr);
+        const listComprehension = new Cypher.ListComprehension(variable, exprVariable).where(andExpr);
 
         const queryResult = new TestClause(listComprehension).build();
 

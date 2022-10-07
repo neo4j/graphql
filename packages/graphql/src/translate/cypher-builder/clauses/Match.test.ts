@@ -17,19 +17,19 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../CypherBuilder";
+import * as Cypher from "../CypherBuilder";
 
 describe("CypherBuilder Match", () => {
     test("Match node", () => {
-        const idParam = new CypherBuilder.Param("my-id");
-        const nameParam = new CypherBuilder.Param("my-name");
-        const ageParam = new CypherBuilder.Param(5);
+        const idParam = new Cypher.Param("my-id");
+        const nameParam = new Cypher.Param("my-name");
+        const ageParam = new Cypher.Param(5);
 
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const matchQuery = new CypherBuilder.Match(movieNode, { test: new CypherBuilder.Param("test-value") })
+        const matchQuery = new Cypher.Match(movieNode, { test: new Cypher.Param("test-value") })
             .where(movieNode, { id: idParam, name: nameParam, age: ageParam })
             .return(movieNode);
 
@@ -51,14 +51,14 @@ describe("CypherBuilder Match", () => {
     });
 
     test("Match node with alias", () => {
-        const idParam = new CypherBuilder.Param("my-id");
-        const nameParam = new CypherBuilder.Param("my-name");
+        const idParam = new Cypher.Param("my-id");
+        const nameParam = new Cypher.Param("my-name");
 
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const matchQuery = new CypherBuilder.Match(movieNode, { test: new CypherBuilder.Param("test-value") })
+        const matchQuery = new Cypher.Match(movieNode, { test: new Cypher.Param("test-value") })
             .where(movieNode, { id: idParam, name: nameParam })
             .return([movieNode.property("name"), "myAlias"]);
 
@@ -79,12 +79,12 @@ describe("CypherBuilder Match", () => {
     });
 
     test("Match node with and and or in where with top level properties", () => {
-        const idParam = new CypherBuilder.Param("my-id");
-        const nameParam = new CypherBuilder.Param("my-name");
-        const ageParam = new CypherBuilder.Param(5);
-        const descriptionParam = new CypherBuilder.Param("A description");
+        const idParam = new Cypher.Param("my-id");
+        const nameParam = new Cypher.Param("my-name");
+        const ageParam = new Cypher.Param(5);
+        const descriptionParam = new Cypher.Param("A description");
 
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
@@ -92,14 +92,14 @@ describe("CypherBuilder Match", () => {
         const movieName = movieNode.property("name");
         const movieAge = movieNode.property("age");
 
-        const matchQuery = new CypherBuilder.Match(movieNode)
+        const matchQuery = new Cypher.Match(movieNode)
             .where(
-                CypherBuilder.and(
-                    CypherBuilder.and(
-                        CypherBuilder.eq(movieId, idParam),
-                        CypherBuilder.or(CypherBuilder.eq(movieName, nameParam), CypherBuilder.eq(movieAge, ageParam))
+                Cypher.and(
+                    Cypher.and(
+                        Cypher.eq(movieId, idParam),
+                        Cypher.or(Cypher.eq(movieName, nameParam), Cypher.eq(movieAge, ageParam))
                     ),
-                    CypherBuilder.eq(movieNode.property("description"), descriptionParam)
+                    Cypher.eq(movieNode.property("description"), descriptionParam)
                 )
             )
             .return(movieNode);
@@ -122,14 +122,14 @@ describe("CypherBuilder Match", () => {
     });
 
     test("Match node with simple NOT", () => {
-        const nameParam = new CypherBuilder.Param("my-name");
+        const nameParam = new Cypher.Param("my-name");
 
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const matchQuery = new CypherBuilder.Match(movieNode)
-            .where(CypherBuilder.not(CypherBuilder.eq(movieNode.property("name"), nameParam)))
+        const matchQuery = new Cypher.Match(movieNode)
+            .where(Cypher.not(Cypher.eq(movieNode.property("name"), nameParam)))
             .return(movieNode);
 
         const queryResult = matchQuery.build();
@@ -147,19 +147,19 @@ describe("CypherBuilder Match", () => {
     });
 
     test("Match node with NOT and OR operator", () => {
-        const nameParam = new CypherBuilder.Param("my-name");
-        const ageParam = new CypherBuilder.Param(5);
+        const nameParam = new Cypher.Param("my-name");
+        const ageParam = new Cypher.Param(5);
 
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const matchQuery = new CypherBuilder.Match(movieNode)
+        const matchQuery = new Cypher.Match(movieNode)
             .where(
-                CypherBuilder.not(
-                    CypherBuilder.or(
-                        CypherBuilder.eq(movieNode.property("age"), ageParam),
-                        CypherBuilder.eq(movieNode.property("name"), nameParam)
+                Cypher.not(
+                    Cypher.or(
+                        Cypher.eq(movieNode.property("age"), ageParam),
+                        Cypher.eq(movieNode.property("name"), nameParam)
                     )
                 )
             )
@@ -181,14 +181,14 @@ describe("CypherBuilder Match", () => {
     });
 
     test("Match with null values", () => {
-        const testParam = new CypherBuilder.Param(null);
+        const testParam = new Cypher.Param(null);
 
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const matchQuery = new CypherBuilder.Match(movieNode, { test: testParam })
-            .where(CypherBuilder.isNull(movieNode.property("name")))
+        const matchQuery = new Cypher.Match(movieNode, { test: testParam })
+            .where(Cypher.isNull(movieNode.property("name")))
             .return(movieNode);
 
         const queryResult = matchQuery.build();
@@ -202,17 +202,14 @@ describe("CypherBuilder Match", () => {
     });
 
     it("Match Where with complex operation", () => {
-        const node = new CypherBuilder.Node({ labels: ["Movie"] });
+        const node = new Cypher.Node({ labels: ["Movie"] });
 
-        const param = new CypherBuilder.Param(1);
-        const clause = new CypherBuilder.Match(node)
+        const param = new Cypher.Param(1);
+        const clause = new Cypher.Match(node)
             .where(
-                CypherBuilder.and(
-                    CypherBuilder.or(
-                        CypherBuilder.gt(param, new CypherBuilder.Param(2)),
-                        CypherBuilder.lt(param, new CypherBuilder.Param(4))
-                    ),
-                    CypherBuilder.eq(new CypherBuilder.Param("aa"), new CypherBuilder.Param("bb"))
+                Cypher.and(
+                    Cypher.or(Cypher.gt(param, new Cypher.Param(2)), Cypher.lt(param, new Cypher.Param(4))),
+                    Cypher.eq(new Cypher.Param("aa"), new Cypher.Param("bb"))
                 )
             )
             .return([node.property("title"), "movie"]);
@@ -236,10 +233,10 @@ describe("CypherBuilder Match", () => {
     });
 
     test("Match where with property and not", () => {
-        const node = new CypherBuilder.Node({ labels: ["Movie"] });
+        const node = new Cypher.Node({ labels: ["Movie"] });
 
-        const queryMatch = new CypherBuilder.Match(node).where(
-            CypherBuilder.not(CypherBuilder.eq(node.property("title"), new CypherBuilder.Param("Matrix")))
+        const queryMatch = new Cypher.Match(node).where(
+            Cypher.not(Cypher.eq(node.property("title"), new Cypher.Param("Matrix")))
         );
 
         const queryResult = queryMatch.build();
@@ -256,19 +253,14 @@ describe("CypherBuilder Match", () => {
     });
 
     test("Match node with mathematical operator", () => {
-        const yearParam = new CypherBuilder.Param(2000);
+        const yearParam = new Cypher.Param(2000);
 
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const matchQuery = new CypherBuilder.Match(movieNode)
-            .where(
-                CypherBuilder.eq(
-                    movieNode.property("released"),
-                    CypherBuilder.plus(new CypherBuilder.Literal(10), yearParam)
-                )
-            )
+        const matchQuery = new Cypher.Match(movieNode)
+            .where(Cypher.eq(movieNode.property("released"), Cypher.plus(new Cypher.Literal(10), yearParam)))
             .return(movieNode);
 
         const queryResult = matchQuery.build();
@@ -286,13 +278,13 @@ describe("CypherBuilder Match", () => {
     });
 
     test("Match node with order", () => {
-        const nameParam = new CypherBuilder.Param("arthur");
+        const nameParam = new Cypher.Param("arthur");
 
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const matchQuery = new CypherBuilder.Match(movieNode)
+        const matchQuery = new Cypher.Match(movieNode)
             .where(movieNode, { name: nameParam })
             .return(movieNode)
             .orderBy([movieNode.property("age"), "DESC"]);
@@ -313,17 +305,17 @@ describe("CypherBuilder Match", () => {
     });
 
     test("Match and delete with return", () => {
-        const idParam = new CypherBuilder.Param("my-id");
-        const nameParam = new CypherBuilder.Param("my-name");
+        const idParam = new Cypher.Param("my-id");
+        const nameParam = new Cypher.Param("my-name");
 
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const matchQuery = new CypherBuilder.Match(movieNode)
+        const matchQuery = new Cypher.Match(movieNode)
             .where(movieNode, { id: idParam, name: nameParam })
             .delete(movieNode)
-            .return(new CypherBuilder.Literal(5));
+            .return(new Cypher.Literal(5));
 
         const queryResult = matchQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
@@ -342,14 +334,14 @@ describe("CypherBuilder Match", () => {
     });
 
     test("Match and detach delete", () => {
-        const idParam = new CypherBuilder.Param("my-id");
-        const nameParam = new CypherBuilder.Param("my-name");
+        const idParam = new Cypher.Param("my-id");
+        const nameParam = new Cypher.Param("my-name");
 
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const matchQuery = new CypherBuilder.Match(movieNode)
+        const matchQuery = new Cypher.Match(movieNode)
             .where(movieNode, { id: idParam, name: nameParam })
             .detachDelete(movieNode);
 
@@ -369,14 +361,14 @@ describe("CypherBuilder Match", () => {
     });
 
     test("Match with remove", () => {
-        const idParam = new CypherBuilder.Param("my-id");
-        const nameParam = new CypherBuilder.Param("my-name");
+        const idParam = new Cypher.Param("my-id");
+        const nameParam = new Cypher.Param("my-name");
 
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const matchQuery = new CypherBuilder.Match(movieNode)
+        const matchQuery = new Cypher.Match(movieNode)
             .where(movieNode, { id: idParam, name: nameParam })
             .remove(movieNode.property("name"))
             .return(movieNode.property("id"));
@@ -397,15 +389,15 @@ describe("CypherBuilder Match", () => {
         `);
     });
     test("Optional Match", () => {
-        const idParam = new CypherBuilder.Param("my-id");
-        const nameParam = new CypherBuilder.Param("my-name");
-        const ageParam = new CypherBuilder.Param(5);
+        const idParam = new Cypher.Param("my-id");
+        const nameParam = new Cypher.Param("my-name");
+        const ageParam = new Cypher.Param(5);
 
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const matchQuery = new CypherBuilder.OptionalMatch(movieNode, { test: new CypherBuilder.Param("test-value") })
+        const matchQuery = new Cypher.OptionalMatch(movieNode, { test: new Cypher.Param("test-value") })
             .where(movieNode, { id: idParam, name: nameParam, age: ageParam })
             .return(movieNode);
 

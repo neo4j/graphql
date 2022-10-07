@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../CypherBuilder";
+import * as Cypher from "../CypherBuilder";
 import { TestClause } from "../utils/TestClause";
 
 describe("RelationshipRef", () => {
     it("Create relationship from node", () => {
-        const node1 = new CypherBuilder.Node({
+        const node1 = new Cypher.Node({
             labels: ["Actor"],
         });
 
-        const node2 = new CypherBuilder.Node({ labels: ["Movie"] });
+        const node2 = new Cypher.Node({ labels: ["Movie"] });
 
         const actedIn = node1.relatedTo(node2).withType("ACTED_IN");
         const testClause = new TestClause(actedIn.pattern());

@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../CypherBuilder";
+import * as Cypher from "../CypherBuilder";
 
 describe("RawCypher", () => {
     it("Return a simple string as a clause", () => {
-        const rawQuery = new CypherBuilder.RawCypher(() => {
+        const rawQuery = new Cypher.RawCypher(() => {
             const cypherStr = "RETURN $myParam as title";
             return [
                 cypherStr,

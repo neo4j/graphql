@@ -18,17 +18,15 @@
  */
 
 import { TestClause } from "../utils/TestClause";
-import * as CypherBuilder from "../CypherBuilder";
+import * as Cypher from "../CypherBuilder";
 
 describe("Case", () => {
     test("case ... then ... else with comparator", () => {
-        const testParam = new CypherBuilder.Param("Hello");
+        const testParam = new Cypher.Param("Hello");
 
-        const caseClause = new CypherBuilder.Case(testParam)
-            .when(new CypherBuilder.Literal("Hello"))
-            .then(new CypherBuilder.Literal(true));
+        const caseClause = new Cypher.Case(testParam).when(new Cypher.Literal("Hello")).then(new Cypher.Literal(true));
 
-        caseClause.else(new CypherBuilder.Literal(false));
+        caseClause.else(new Cypher.Literal(false));
 
         const queryResult = new TestClause(caseClause).build();
 
@@ -47,13 +45,13 @@ describe("Case", () => {
     });
 
     test("generic case ... then ... else without comparator", () => {
-        const testParam = new CypherBuilder.Param("Hello");
+        const testParam = new Cypher.Param("Hello");
 
-        const caseClause = new CypherBuilder.Case()
-            .when(CypherBuilder.eq(new CypherBuilder.Literal("Hello"), testParam))
-            .then(new CypherBuilder.Literal(true));
+        const caseClause = new Cypher.Case()
+            .when(Cypher.eq(new Cypher.Literal("Hello"), testParam))
+            .then(new Cypher.Literal(true));
 
-        caseClause.else(new CypherBuilder.Literal(false));
+        caseClause.else(new Cypher.Literal(false));
 
         const queryResult = new TestClause(caseClause).build();
 

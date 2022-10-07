@@ -17,15 +17,15 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../CypherBuilder";
+import * as Cypher from "../CypherBuilder";
 
 describe("CypherBuilder Merge", () => {
     test("Merge node", () => {
-        const node = new CypherBuilder.Node({
+        const node = new Cypher.Node({
             labels: ["MyLabel"],
         });
 
-        const query = new CypherBuilder.Merge(node).onCreate([node.property("age"), new CypherBuilder.Param(23)]);
+        const query = new Cypher.Merge(node).onCreate([node.property("age"), new Cypher.Param(23)]);
 
         const queryResult = query.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
@@ -41,13 +41,13 @@ describe("CypherBuilder Merge", () => {
     });
 
     test("Merge node with parameters", () => {
-        const node = new CypherBuilder.Node({
+        const node = new Cypher.Node({
             labels: ["MyLabel"],
         });
 
-        const query = new CypherBuilder.Merge(node, { test: new CypherBuilder.Param("test") }).onCreate([
+        const query = new Cypher.Merge(node, { test: new Cypher.Param("test") }).onCreate([
             node.property("age"),
-            new CypherBuilder.Param(23),
+            new Cypher.Param(23),
         ]);
 
         const queryResult = query.build();
@@ -65,18 +65,18 @@ describe("CypherBuilder Merge", () => {
     });
 
     test("Merge relationship", () => {
-        const node1 = new CypherBuilder.Node({
+        const node1 = new Cypher.Node({
             labels: ["MyLabel"],
         });
-        const node2 = new CypherBuilder.Node({});
+        const node2 = new Cypher.Node({});
 
-        const relationship = new CypherBuilder.Relationship({ source: node1, target: node2 });
+        const relationship = new Cypher.Relationship({ source: node1, target: node2 });
 
-        const query = new CypherBuilder.Merge(relationship)
+        const query = new Cypher.Merge(relationship)
             .onCreate(
-                [node1.property("age"), new CypherBuilder.Param(23)],
-                [node1.property("name"), new CypherBuilder.Param("Keanu")],
-                [relationship.property("screentime"), new CypherBuilder.Param(10)]
+                [node1.property("age"), new Cypher.Param(23)],
+                [node1.property("name"), new Cypher.Param("Keanu")],
+                [relationship.property("screentime"), new Cypher.Param(10)]
             )
             .return([node1.property("title"), "movie"]);
 

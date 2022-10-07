@@ -30,7 +30,7 @@ import { addGlobalIdField } from "../utils/global-node-projection";
 import { getRelationshipDirection } from "../utils/get-relationship-direction";
 import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjectionField } from "./utils/resolveTree";
 import { removeDuplicates } from "../utils/utils";
-import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import * as Cypher from "./cypher-builder/CypherBuilder";
 import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
 
@@ -44,8 +44,8 @@ interface Res {
     projection: string[];
     params: any;
     meta: ProjectionMeta;
-    subqueries: Array<CypherBuilder.Clause>;
-    subqueriesBeforeSort: Array<CypherBuilder.Clause>;
+    subqueries: Array<Cypher.Clause>;
+    subqueriesBeforeSort: Array<Cypher.Clause>;
 }
 
 export interface ProjectionMeta {
@@ -57,8 +57,8 @@ export type ProjectionResult = {
     projection: string;
     params: Record<string, any>;
     meta: ProjectionMeta;
-    subqueries: Array<CypherBuilder.Clause>;
-    subqueriesBeforeSort: Array<CypherBuilder.Clause>;
+    subqueries: Array<Cypher.Clause>;
+    subqueriesBeforeSort: Array<Cypher.Clause>;
 };
 
 export default function createProjectionAndParams({
@@ -162,9 +162,9 @@ export default function createProjectionAndParams({
                         (!field.args.where || Object.prototype.hasOwnProperty.call(field.args.where, x.name))
                 );
 
-                const parentNode = new CypherBuilder.NamedNode(chainStr || varName);
+                const parentNode = new Cypher.NamedNode(chainStr || varName);
 
-                const unionSubqueries: CypherBuilder.Clause[] = [];
+                const unionSubqueries: Cypher.Clause[] = [];
                 const unionVariableName = `${param}`;
                 for (const refNode of referenceNodes) {
                     const refNodeInterfaceNames = node.interfaces.map(
@@ -208,23 +208,20 @@ export default function createProjectionAndParams({
                         collect: false,
                     });
 
-                    const unionWith = new CypherBuilder.With(parentNode);
-                    unionSubqueries.push(CypherBuilder.concat(unionWith, subquery));
+                    const unionWith = new Cypher.With(parentNode);
+                    unionSubqueries.push(Cypher.concat(unionWith, subquery));
                 }
 
-                const unionClause = new CypherBuilder.Union(...unionSubqueries);
+                const unionClause = new Cypher.Union(...unionSubqueries);
 
                 const collectAndLimitStatements = collectUnionSubqueriesResults({
-                    resultVariable: new CypherBuilder.NamedNode(unionVariableName),
+                    resultVariable: new Cypher.NamedNode(unionVariableName),
                     optionsInput,
                     isArray: Boolean(relationField.typeMeta.array),
                 });
 
-                const unionAndSort = CypherBuilder.concat(
-                    new CypherBuilder.Call(unionClause),
-                    collectAndLimitStatements
-                );
-                res.subqueries.push(new CypherBuilder.Call(unionAndSort).innerWith(parentNode));
+                const unionAndSort = Cypher.concat(new Cypher.Call(unionClause), collectAndLimitStatements);
+                res.subqueries.push(new Cypher.Call(unionAndSort).innerWith(parentNode));
                 res.projection.push(`${alias}: ${unionVariableName}`);
 
                 return res;
@@ -239,7 +236,7 @@ export default function createProjectionAndParams({
             });
             res.params = { ...res.params, ...recurse.params };
 
-            const parentNode = new CypherBuilder.NamedNode(chainStr || varName);
+            const parentNode = new Cypher.NamedNode(chainStr || varName);
 
             const direction = getRelationshipDirection(relationField, field.args);
             const subquery = createProjectionSubquery({
@@ -255,7 +252,7 @@ export default function createProjectionAndParams({
                 optionsInput,
                 authValidateStrs: recurse.meta?.authValidateStrs,
             });
-            res.subqueries.push(new CypherBuilder.Call(subquery).innerWith(parentNode));
+            res.subqueries.push(new Cypher.Call(subquery).innerWith(parentNode));
             res.projection.push(`${alias}: ${param}`);
             return res;
         }
@@ -278,20 +275,20 @@ export default function createProjectionAndParams({
                 (x) => x.fieldName === field.name
             ) as ConnectionField;
 
-            const connectionClause = new CypherBuilder.Call(
+            const connectionClause = new Cypher.Call(
                 createConnectionClause({
                     resolveTree: field,
                     field: matchedConnectionField,
                     context,
                     nodeVariable: varName,
-                    returnVariable: new CypherBuilder.NamedVariable(param),
+                    returnVariable: new Cypher.NamedVariable(param),
                 })
-            ).innerWith(new CypherBuilder.NamedNode(varName));
+            ).innerWith(new Cypher.NamedNode(varName));
 
             const connection = connectionClause.build(`${varName}_connection_${field.alias}`); // TODO: remove build from here
             const stupidParams = connection.params;
 
-            const connectionSubClause = new CypherBuilder.RawCypher(() => {
+            const connectionSubClause = new Cypher.RawCypher(() => {
                 // TODO: avoid REPLACE_ME in params and return them here
 
                 return [connection.cypher, {}];

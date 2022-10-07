@@ -17,19 +17,19 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../CypherBuilder";
+import * as Cypher from "../CypherBuilder";
 
 describe("CypherBuilder Call Examples", () => {
     test("Wraps a match in call", () => {
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const matchQuery = new CypherBuilder.Match(movieNode)
-            .where(movieNode, { released: new CypherBuilder.Param(1999) })
+        const matchQuery = new Cypher.Match(movieNode)
+            .where(movieNode, { released: new Cypher.Param(1999) })
             .return(movieNode.property("title"));
 
-        const callQuery = new CypherBuilder.Call(matchQuery).return(movieNode.property("title"));
+        const callQuery = new Cypher.Call(matchQuery).return(movieNode.property("title"));
         const queryResult = callQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "CALL {
@@ -48,24 +48,24 @@ describe("CypherBuilder Call Examples", () => {
     });
 
     test("Wraps a match in call with an inner with", () => {
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
-        const titleParam = new CypherBuilder.Param("The Matrix");
+        const titleParam = new Cypher.Param("The Matrix");
 
-        const titleVar = new CypherBuilder.Variable(); // arbitrarily named variable
+        const titleVar = new Cypher.Variable(); // arbitrarily named variable
         // An initial with outside of call, just to define the param and assign to a variable
-        const initialWith = new CypherBuilder.With([titleParam, titleVar]);
+        const initialWith = new Cypher.With([titleParam, titleVar]);
 
-        const innerMatch = new CypherBuilder.Match(movieNode)
+        const innerMatch = new Cypher.Match(movieNode)
             .where(movieNode, { title: titleVar })
             .return(movieNode.property("title"));
 
-        const callQuery = new CypherBuilder.Call(innerMatch)
+        const callQuery = new Cypher.Call(innerMatch)
             .innerWith(titleVar) // Note that this with is an import with, different to top level WITH
             .return(movieNode.property("title"));
 
-        const queryResult = CypherBuilder.concat(initialWith, callQuery).build();
+        const queryResult = Cypher.concat(initialWith, callQuery).build();
 
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "WITH $param0 AS var0
