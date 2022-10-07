@@ -18,7 +18,7 @@
  */
 import { gql } from "apollo-server";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
-import type { Driver } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
@@ -27,21 +27,23 @@ import { createJwtRequest } from "../../utils/create-jwt-request";
 describe("https://github.com/neo4j/graphql/pull/2068", () => {
     let driver: Driver;
     let neo4j: Neo4j;
+    let session: Session;
+
+    const secret = "secret";
+    const jwtPlugin = new Neo4jGraphQLAuthJWTPlugin({
+        secret: "secret",
+    });
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
+        session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
     });
 
     afterAll(async () => {
         await driver.close();
     });
     describe("Updates within updates", () => {
-        const secret = "secret";
-        const jwtPlugin = new Neo4jGraphQLAuthJWTPlugin({
-            secret: "secret",
-        });
-
         const typeDefs = gql`
             interface Content {
                 id: ID
@@ -69,8 +71,6 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             }
         `;
         test("Connect node - update within an update", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const userID = "someID";
             const contentID = "someContentID";
 
@@ -112,8 +112,6 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             }
         });
         test("Connect node - user defined update where within an update", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const userID1 = "someID";
             const userID2 = "differentID";
             const contentID = "someContentID";
@@ -157,8 +155,6 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             }
         });
         test("Disconnect node - update within an update", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const userId = "someID";
             const contentId = "someContentID";
 
@@ -199,8 +195,6 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             }
         });
         test("Disconnect node - user defined update where within an update", async () => {
-            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-
             const userId = "someID";
             const contentId = "someContentID";
 
@@ -242,10 +236,10 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
         });
     });
     test("Unions in cypher directives", async () => {
-        const actorName = "someName"
-        const actorAge = 43
-        const numberOfSeasons = 2
-        const sharedTitle = "someTitle"
+        const actorName = "someName";
+        const actorAge = 43;
+        const numberOfSeasons = 2;
+        const sharedTitle = "someTitle";
 
         const typeDefs = `
             type Actor {
@@ -329,9 +323,6 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                                 name
                                 age
                             }
-                            actors {
-                                name
-                            }
                         }
                         ... on TVShow {
                             title
@@ -344,7 +335,6 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 }
             }
         `;
-        const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
         const neoSchema = new Neo4jGraphQL({ typeDefs });
 
         try {
@@ -362,32 +352,216 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             expect(gqlResult.errors).toBeUndefined();
             expect(gqlResult.data).toEqual({
-                actors: [{
-                    movieOrTVShow: [
-                        {
-                          title: "someTitle",
-                          numSeasons: 2,
-                          topActor: {
-                            name: "someName",
-                          },
-                        },
-                        {
-                          title: "someTitle",
-                          topActor: {
-                            name: "someName",
-                            age: 43,
-                          },
-                          actors: [
+                actors: [
+                    {
+                        movieOrTVShow: [
                             {
-                              name: "someName",
+                                title: sharedTitle,
+                                numSeasons: numberOfSeasons,
+                                topActor: {
+                                    name: actorName,
+                                },
                             },
-                          ],
-                        },
-                    ]
-                }]
+                            {
+                                title: sharedTitle,
+                                topActor: {
+                                    name: actorName,
+                                    age: actorAge,
+                                },
+                            },
+                        ],
+                    },
+                ],
             });
         } finally {
             await session.close();
         }
+    });
+    describe("connectOrCreate auth ordering", () => {
+        const movieTitle = "Cool Movie";
+        const requiredRole = "admin";
+        const forbiddenMessage = "Forbidden";
+        const validReq = createJwtRequest(secret, { roles: [requiredRole] });
+        const invalidReq = createJwtRequest(secret, { roles: [] });
+
+        /**
+         * Generate type definitions for connectOrCreate auth tests.
+         * @param operations The operations argument of auth rules.
+         * @returns A graphql type deinition string.
+         */
+        function getTypedef(operations: string): string {
+            return `
+                type Movie {
+                    title: String
+                    genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
+                }
+        
+                type Genre @auth(rules: [{ operations: ${operations}, roles: ["${requiredRole}"] }]) {
+                    name: String @unique
+                }
+            `;
+        }
+
+        /**
+         * Generate a query for connectOrCreate auth tests.
+         * @param mutationType The type of mutation to perform.
+         * @returns A graphql query.
+         */
+        function getQuery(mutationType = "createMovies"): string {
+            return `
+                mutation {
+                    ${mutationType}(
+                        input: [
+                            {
+                                title: "${movieTitle}"
+                                genres: {
+                                    connectOrCreate: [
+                                        { where: { node: { name: "Horror" } }, onCreate: { node: { name: "Horror" } } }
+                                    ]
+                                }
+                            }
+                        ]
+                    ) {
+                        movies {
+                            title
+                        }
+                    }
+                }
+            `;
+        }
+        test("Create with createOrConnect and CONNECT operation rule - valid auth", async () => {
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs: getTypedef("[CONNECT]"),
+                plugins: { auth: jwtPlugin },
+            });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: getQuery(),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req: validReq }),
+            });
+
+            expect(gqlResult.errors).toBeUndefined();
+            expect(gqlResult.data).toEqual({
+                createMovies: {
+                    movies: [
+                        {
+                            title: movieTitle,
+                        },
+                    ],
+                },
+            });
+        });
+        test("Create with createOrConnect and CONNECT operation rule - invalid auth", async () => {
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs: getTypedef("[CONNECT]"),
+                plugins: { auth: jwtPlugin },
+            });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: getQuery(),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req: invalidReq }),
+            });
+
+            expect(((gqlResult as any).errors[0].message as string)).toBe(forbiddenMessage);
+        });
+        test("Create with createOrConnect and CREATE operation rule - valid auth", async () => {
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs: getTypedef("[CREATE]"),
+                plugins: { auth: jwtPlugin },
+            });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: getQuery(),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req: validReq }),
+            });
+
+            expect(gqlResult.errors).toBeUndefined();
+            expect(gqlResult.data).toEqual({
+                createMovies: {
+                    movies: [
+                        {
+                            title: movieTitle,
+                        },
+                    ],
+                },
+            });
+        });
+        test("Create with createOrConnect and CREATE operation rule - invalid auth", async () => {
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs: getTypedef("[CREATE]"),
+                plugins: { auth: jwtPlugin },
+            });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: getQuery(),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req: invalidReq }),
+            });
+
+            expect(((gqlResult as any).errors[0].message as string)).toBe(forbiddenMessage);
+        });
+        test("Create with createOrConnect and CREATE, CONNECT operation rule - valid auth", async () => {
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs: getTypedef("[CREATE, CONNECT]"),
+                plugins: { auth: jwtPlugin },
+            });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: getQuery(),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req: validReq }),
+            });
+
+            expect(gqlResult.errors).toBeUndefined();
+            expect(gqlResult.data).toEqual({
+                createMovies: {
+                    movies: [
+                        {
+                            title: movieTitle,
+                        },
+                    ],
+                },
+            });
+        });
+        test("Create with createOrConnect and CREATE, CONNECT operation rule - invalid auth", async () => {
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs: getTypedef("[CREATE, CONNECT]"),
+                plugins: { auth: jwtPlugin },
+            });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: getQuery(),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req: invalidReq }),
+            });
+
+            expect(((gqlResult as any).errors[0].message as string)).toBe(forbiddenMessage);
+        });
+        test("Create with createOrConnect and DELETE operation rule - valid auth", async () => {
+            const neoSchema = new Neo4jGraphQL({
+                typeDefs: getTypedef("[DELETE]"),
+                plugins: { auth: jwtPlugin },
+            });
+
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: getQuery(),
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks(), { req: validReq }),
+            });
+
+            expect(gqlResult.errors).toBeUndefined();
+            expect(gqlResult.data).toEqual({
+                createMovies: {
+                    movies: [
+                        {
+                            title: movieTitle,
+                        },
+                    ],
+                },
+            });
+        });
     });
 });
