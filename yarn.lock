@@ -3000,7 +3000,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/node16@npm:^1.0.2, @tsconfig/node16@npm:^1.0.3":
+"@tsconfig/node16@npm:1.0.3, @tsconfig/node16@npm:^1.0.2":
   version: 1.0.3
   resolution: "@tsconfig/node16@npm:1.0.3"
   checksum: 3a8b657dd047495b7ad23437d6afd20297ce90380ff0bdee93fc7d39a900dbd8d9e26e53ff6b465e7967ce2adf0b218782590ce9013285121e6a5928fbd6819f
@@ -8178,7 +8178,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-formatter-summary@npm:^1.1.0":
+"eslint-formatter-summary@npm:1.1.0":
   version: 1.1.0
   resolution: "eslint-formatter-summary@npm:1.1.0"
   dependencies:
@@ -14121,14 +14121,14 @@ __metadata:
   dependencies:
     "@changesets/changelog-github": 0.4.7
     "@changesets/cli": 2.25.0
-    "@tsconfig/node16": ^1.0.3
+    "@tsconfig/node16": 1.0.3
     "@typescript-eslint/eslint-plugin": 5.39.0
     "@typescript-eslint/parser": 5.39.0
     concurrently: 7.4.0
     dotenv: 16.0.3
     eslint: 8.24.0
     eslint-config-prettier: 8.5.0
-    eslint-formatter-summary: ^1.1.0
+    eslint-formatter-summary: 1.1.0
     eslint-import-resolver-typescript: 3.5.1
     eslint-plugin-eslint-comments: 3.2.0
     eslint-plugin-import: 2.26.0
