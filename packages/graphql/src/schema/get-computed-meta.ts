@@ -53,7 +53,7 @@ function getComputedMeta(field: FieldDefinitionNode, interfaceField?: FieldDefin
     // `@computed(from: [String!])`
     // Create a set from array of argument `require`
     const requiredFields = removeDuplicates(
-        (directiveFromArgument.value.values.map((v) => (v as StringValueNode).value) as string[]) ?? []
+        directiveFromArgument.value.values.map((v) => (v as StringValueNode).value) ?? []
     );
 
     return {

@@ -56,7 +56,7 @@ export const GraphQLQueryEditor = ({
             return;
         }
 
-        const element = ref.current as HTMLTextAreaElement;
+        const element = ref.current;
 
         const showHint = () => {
             mirror.showHint({

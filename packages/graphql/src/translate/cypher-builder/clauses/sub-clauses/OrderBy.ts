@@ -76,7 +76,7 @@ class Skip extends CypherASTNode {
         this.value = value;
     }
 
-    public getCypher(env: CypherEnvironment): string {
+    public getCypher(): string {
         return `SKIP ${this.value}`;
     }
 }
@@ -89,7 +89,7 @@ class Limit extends CypherASTNode {
         this.value = value;
     }
 
-    public getCypher(env: CypherEnvironment): string {
+    public getCypher(): string {
         return `LIMIT ${this.value}`;
     }
 }

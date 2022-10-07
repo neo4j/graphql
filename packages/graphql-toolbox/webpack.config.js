@@ -22,11 +22,11 @@ module.exports = {
     },
     ...(process.env.NODE_ENV === "production"
         ? {
-            optimization: {
-                minimize: true,
-                minimizer: [new TerserPlugin()],
-            },
-        }
+              optimization: {
+                  minimize: true,
+                  minimizer: [new TerserPlugin()],
+              },
+          }
         : {}),
     module: {
         rules: [
@@ -60,8 +60,8 @@ module.exports = {
     },
     plugins: [
         new DefinePlugin({
-            'process.env.VERSION': JSON.stringify(packageJson.version),
-            'process.env.NEO4J_GRAPHQL_VERSION': JSON.stringify(packageJson.dependencies["@neo4j/graphql"]),
+            "process.env.VERSION": JSON.stringify(packageJson.version),
+            "process.env.NEO4J_GRAPHQL_VERSION": JSON.stringify(packageJson.dependencies["@neo4j/graphql"]),
         }),
         new CopyWebpackPlugin({
             patterns: ["public"],
@@ -78,20 +78,20 @@ module.exports = {
         new NodePolyfillPlugin(),
         ...(process.env.NODE_ENV === "test"
             ? [
-                new HtmlInlineScriptPlugin({
-                    htmlMatchPattern: [/index.html$/],
-                }),
-            ]
+                  new HtmlInlineScriptPlugin({
+                      htmlMatchPattern: [/index.html$/],
+                  }),
+              ]
             : []),
         ...(process.env.NODE_ENV === "production" ? [new CompressionPlugin()] : []),
         ...(process.env.NODE_ENV === "development"
             ? [
-                new WebpackNotifierPlugin({
-                    title: (params) => {
-                        return `Build status is ${params.status} with message ${params.message}`;
-                    },
-                }),
-            ]
+                  new WebpackNotifierPlugin({
+                      title: (params) => {
+                          return `Build status is ${params.status} with message ${params.message}`;
+                      },
+                  }),
+              ]
             : []),
     ],
     devServer: {

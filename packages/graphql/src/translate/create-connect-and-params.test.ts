@@ -18,7 +18,6 @@
  */
 
 import createConnectAndParams from "./create-connect-and-params";
-import { trimmer } from "../utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { RelationshipQueryDirectionOption } from "../constants";

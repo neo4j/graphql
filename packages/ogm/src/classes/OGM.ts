@@ -25,7 +25,7 @@ import { filterDocument } from "../utils";
 
 export type OGMConstructor = Neo4jGraphQLConstructor;
 
-class OGM<ModelMap = {}> {
+class OGM<ModelMap = unknown> {
     public checkNeo4jCompat: () => Promise<void>;
     private models: Model[];
     private neoSchema: Neo4jGraphQL;

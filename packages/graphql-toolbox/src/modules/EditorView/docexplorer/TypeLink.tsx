@@ -5,11 +5,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from "react";
 import { GraphQLList, GraphQLNonNull, GraphQLType, GraphQLNamedType } from "graphql";
-import { OnClickTypeFunction } from "./types";
-
-import { Maybe } from "./types";
+import { OnClickTypeFunction, Maybe } from "./types";
 
 type TypeLinkProps = {
     type?: Maybe<GraphQLType>;
