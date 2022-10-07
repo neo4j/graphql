@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type { Integer } from "neo4j-driver";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConnectionField, ConnectionWhereArg, Context } from "../../types";
 import type { Node } from "../../classes";
@@ -49,6 +50,7 @@ export function createConnectionClause({
     }
 
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
+    const firstArg = resolveTree.args.first as Integer | number | undefined;
     const relatedNode = context.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
     const edgeItem = new CypherBuilder.NamedVariable("edge");
 
@@ -70,12 +72,11 @@ export function createConnectionClause({
     ]);
 
     const totalCount = new CypherBuilder.NamedVariable("totalCount");
-
     const withSortAfterUnwindClause = createSortAndLimitProjection({
         resolveTree,
         relationshipRef: edgeItem,
         nodeRef: edgeItem.property("node"),
-        limit: relatedNode?.queryOptions?.getLimit(),
+        limit: relatedNode?.queryOptions?.getLimit(firstArg), // `first` specified on connection field in query needs to be compared with existing `@queryOptions`-imposed limit
         extraFields: [totalCountItem],
     });
 
@@ -152,7 +153,6 @@ function createConnectionClauseForUnions({
 
     let withOrderClause: CypherBuilder.Clause | undefined;
     const limit = relatedNode?.queryOptions?.getLimit();
-
     const withOrder = createSortAndLimitProjection({
         resolveTree,
         relationshipRef: edgeItem,
