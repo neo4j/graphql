@@ -36,7 +36,7 @@
         "@neo4j/graphql": "^3.9.0",
         "@types/amqplib": "0.8.2",
         "@types/debug": "4.1.7",
-        "@types/jest": "29.1.1",
+        "@types/jest": "29.1.2",
         "@types/node": "16.11.64",
         "apollo-server": "3.10.2",
         "apollo-server-express": "3.10.2",
