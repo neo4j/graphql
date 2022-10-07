@@ -33,11 +33,13 @@ export function createConnectionClause({
     field,
     context,
     nodeVariable,
+    returnVariable,
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
     context: Context;
     nodeVariable: string;
+    returnVariable: CypherBuilder.Variable;
 }): CypherBuilder.Clause {
     if (field.relationship.union || field.relationship.interface) {
         return createConnectionClauseForUnions({
@@ -45,6 +47,7 @@ export function createConnectionClause({
             field,
             context,
             nodeVariable,
+            returnVariable,
         });
     }
 
@@ -93,7 +96,7 @@ export function createConnectionClause({
             edges: edgesList,
             totalCount,
         }),
-        resolveTree.alias,
+        returnVariable,
     ]);
     return CypherBuilder.concat(edgeSubquery, withClause, unwindSortClause, returnClause);
 }
@@ -103,11 +106,13 @@ function createConnectionClauseForUnions({
     field,
     context,
     nodeVariable,
+    returnVariable,
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
     context: Context;
     nodeVariable: string;
+    returnVariable: CypherBuilder.Variable;
 }) {
     const whereInput = resolveTree.args.where as ConnectionWhereArg;
     const relatedNode = context.nodes.find((x) => x.name === field.relationship.typeMeta.name) as Node;
@@ -172,7 +177,7 @@ function createConnectionClauseForUnions({
             edges: edgesList,
             totalCount,
         }),
-        resolveTree.alias,
+        returnVariable,
     ]);
 
     return CypherBuilder.concat(unionClauses, withEdgesAndTotalCount, withOrderClause, returnClause);

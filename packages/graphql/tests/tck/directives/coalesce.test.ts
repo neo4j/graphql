@@ -218,9 +218,9 @@ describe("Cypher coalesce()", () => {
                 WITH { node: { id: this_Movie.id, status: this_Movie.status } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS moviesConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_moviesConnection
             }
-            RETURN this { moviesConnection: moviesConnection } as this"
+            RETURN this { moviesConnection: this_moviesConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
