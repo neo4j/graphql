@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { Variable } from "./variables/Variable";
 import type { PropertyRef } from "./variables/PropertyRef";
 import type { CypherFunction } from "./expressions/functions/CypherFunction";
 import type { Literal } from "./variables/Literal";
