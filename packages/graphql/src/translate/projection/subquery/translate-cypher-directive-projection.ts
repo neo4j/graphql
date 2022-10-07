@@ -239,10 +239,11 @@ function createReturnClause({
     returnVariable: Cypher.Variable;
     isArray: boolean;
     projectionExpr: Cypher.Expr | undefined;
-}): Cypher.Return {
+}): CypherBuilder.Return {
     let returnData: Cypher.Expr = projectionExpr || returnVariable;
-    if (isArray) {
-        returnData = Cypher.collect(returnData);
+    returnData = Cypher.collect(returnData);
+    if (!isArray) {
+        returnData = Cypher.head(returnData);
     }
     return new Cypher.Return([returnData, returnVariable]);
 }
