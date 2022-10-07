@@ -22,7 +22,10 @@ import { cursorToOffset } from "graphql-relay";
 import type { Integer } from "neo4j-driver";
 import { isNeoInt, isString, toNumber } from "../../utils/utils";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
-import { addSortAndLimitOptionsToClause } from "../projection/subquery/add-sort-and-limit-to-clause";
+import {
+    addSortAndLimitOptionsToClause,
+    addLimitOrOffsetOptionsToClause,
+} from "../projection/subquery/add-sort-and-limit-to-clause";
 import { getSortFields } from "./get-sort-fields";
 
 export function createSortAndLimitProjection({
@@ -40,13 +43,12 @@ export function createSortAndLimitProjection({
     extraFields?: CypherBuilder.Variable[];
     ignoreSkipLimit?: boolean;
 }): CypherBuilder.With | undefined {
-    const { node: nodeSortFields, edge: edgeSortFields } = getSortFields(resolveTree);
-
-    if (Object.keys(edgeSortFields).length === 0 && Object.keys(nodeSortFields).length === 0 && !limit)
+    const nodeAndEdgeSortFields = getSortFields(resolveTree);
+    if (nodeAndEdgeSortFields.length === 0 && !limit) {
         return undefined;
+    }
 
     const withStatement = new CypherBuilder.With(relationshipRef, ...extraFields);
-
     let firstArg = resolveTree.args.first as Integer | number | undefined;
     const afterArg = resolveTree.args.after as string | undefined;
     let offset = isString(afterArg) ? cursorToOffset(afterArg) + 1 : undefined;
@@ -61,17 +63,21 @@ export function createSortAndLimitProjection({
         offset = undefined;
         firstArg = undefined;
     }
-    addSortAndLimitOptionsToClause({
-        optionsInput: { sort: [edgeSortFields], limit: firstArg, offset },
-        target: relationshipRef,
-        projectionClause: withStatement,
+    nodeAndEdgeSortFields.forEach((sortField) => {
+        const [nodeOrEdge, sortKeyAndValue] = Object.entries(sortField)[0];
+        addSortAndLimitOptionsToClause({
+            optionsInput: { sort: [sortKeyAndValue], limit: firstArg, offset },
+            target: nodeOrEdge === "node" ? nodeRef : relationshipRef,
+            projectionClause: withStatement,
+        });
     });
-
-    addSortAndLimitOptionsToClause({
-        optionsInput: { sort: [nodeSortFields] },
-        target: nodeRef,
-        projectionClause: withStatement,
-    });
+    if (limit) {
+        // this limit is specified using `@queryOptions` directive
+        addLimitOrOffsetOptionsToClause({
+            optionsInput: { limit: firstArg, offset },
+            projectionClause: withStatement,
+        });
+    }
 
     return withStatement;
 }

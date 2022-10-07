@@ -20,7 +20,7 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { mergeDeep } from "@graphql-tools/utils";
 import type { Node } from "../classes";
-import type { GraphQLOptionsArg, GraphQLWhereArg, Context, ConnectionField, RelationField } from "../types";
+import type { GraphQLOptionsArg, GraphQLWhereArg, Context, RelationField } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import createPointElement from "./projection/elements/create-point-element";
@@ -274,14 +274,10 @@ export default function createProjectionAndParams({
         }
 
         if (connectionField) {
-            const matchedConnectionField = node.connectionFields.find(
-                (x) => x.fieldName === field.name
-            ) as ConnectionField;
-
             const connectionClause = new CypherBuilder.Call(
                 createConnectionClause({
                     resolveTree: field,
-                    field: matchedConnectionField,
+                    field: connectionField,
                     context,
                     nodeVariable: varName,
                     returnVariable: new CypherBuilder.NamedVariable(param),

@@ -28,7 +28,7 @@ import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
 import { getPattern } from "../utils/get-pattern";
 
 import { createEdgeProjection } from "./connection-projection";
-import { getSortFields } from "./get-sort-fields";
+import { getEdgeSortFieldKeys } from "./get-sort-fields";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createSortAndLimitProjection } from "./create-sort-and-limit";
 
@@ -120,7 +120,7 @@ export function createEdgeSubquery({
         relatedNodeVariableName: relatedNodeRef.name,
         context,
         resolveType,
-        extraFields: Object.keys(getSortFields(resolveTree).edge),
+        extraFields: getEdgeSortFieldKeys(resolveTree),
     });
 
     const withReturn = new CypherBuilder.With([projection.projection, returnVariable]);
