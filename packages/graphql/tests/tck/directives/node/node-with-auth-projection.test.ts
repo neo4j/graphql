@@ -88,9 +88,9 @@ describe("Cypher Auth Projection On Connections", () => {
                 WITH { node: { content: this_Post.content } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS postsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_postsConnection
             }
-            RETURN this { .name, postsConnection: postsConnection } as this"
+            RETURN this { .name, postsConnection: this_postsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

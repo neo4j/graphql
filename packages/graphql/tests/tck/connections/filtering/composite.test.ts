@@ -96,9 +96,9 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
                 WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { firstName: this_Actor.firstName, lastName: this_Actor.lastName } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection: actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

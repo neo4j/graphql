@@ -221,9 +221,9 @@ describe("tck/rfcs/query-limits", () => {
                     WITH edge, totalCount
                     LIMIT 2
                     WITH collect(edge) AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
                 }
-                RETURN this { .id, actorsConnection: actorsConnection } as this"
+                RETURN this { .id, actorsConnection: this_actorsConnection } as this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`

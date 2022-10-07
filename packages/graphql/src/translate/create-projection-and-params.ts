@@ -192,7 +192,6 @@ export default function createProjectionAndParams({
                     if (!hasFields) {
                         nestedProjection = `{ __resolveType: "${refNode.name}" }`;
                     }
-
                     const subquery = createProjectionSubquery({
                         parentNode,
                         whereInput: field.args.where ? field.args.where[refNode.name] : field.args.where,
@@ -258,7 +257,6 @@ export default function createProjectionAndParams({
             });
             res.subqueries.push(new CypherBuilder.Call(subquery).innerWith(parentNode));
             res.projection.push(`${alias}: ${param}`);
-
             return res;
         }
 
@@ -286,6 +284,7 @@ export default function createProjectionAndParams({
                     field: matchedConnectionField,
                     context,
                     nodeVariable: varName,
+                    returnVariable: new CypherBuilder.NamedVariable(param),
                 })
             ).innerWith(new CypherBuilder.NamedNode(varName));
 
@@ -298,7 +297,7 @@ export default function createProjectionAndParams({
                 return [connection.cypher, {}];
             });
             res.subqueries.push(connectionSubClause);
-            res.projection.push(`${field.alias}: ${field.alias}`);
+            res.projection.push(`${field.alias}: ${param}`);
 
             res.params = { ...res.params, ...stupidParams };
             return res;
