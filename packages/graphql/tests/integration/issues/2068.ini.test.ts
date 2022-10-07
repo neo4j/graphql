@@ -43,40 +43,43 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
         await driver.close();
     });
     describe("Updates within updates", () => {
+        const contentType = generateUniqueType("Content");
+        const userType = generateUniqueType("User");
+        const commentType = generateUniqueType("Comment");
+
         const typeDefs = gql`
-            interface Content {
+            interface ${contentType.name} {
                 id: ID
                 content: String
-                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: ${userType.name}! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
-            type User {
+            type ${userType.name} {
                 id: ID
                 name: String
-                content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
+                content: [${contentType.name}!]! @relationship(type: "HAS_CONTENT", direction: OUT)
             }
 
-            type Comment implements Content {
+            type ${commentType.name} implements ${contentType.name} {
                 id: ID
                 content: String
-                creator: User!
+                creator: ${userType.name}!
             }
 
-            extend type User
+            extend type ${userType.name}
                 @auth(rules: [{ operations: [READ, UPDATE, DELETE, CONNECT, DISCONNECT], where: { id: "$jwt.sub" } }])
 
-            extend type User {
+            extend type ${userType.name} {
                 password: String! @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
             }
         `;
         test("Connect node - update within an update", async () => {
             const userID = "someID";
             const contentID = "someContentID";
-
             const query = `
                 mutation {
-                    updateUsers(update: { content: { connect: { where: { node: {} } } } }) {
-                        users {
+                    ${userType.operations.update}(update: { content: { connect: { where: { node: {} } } } }) {
+                        ${userType.plural} {
                             id
                             contentConnection {
                                 totalCount
@@ -92,8 +95,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userID}"})
-                    CREATE (:Content {id: "${contentID}"})
+                    CREATE (:${userType.name} {id: "${userID}"})
+                    CREATE (:${contentType.name} {id: "${contentID}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: userID });
@@ -106,7 +109,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                const users = (gqlResult.data as any).updateUsers.users as any[];
+                const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
                 expect(users).toEqual([{ id: userID, contentConnection: { totalCount: 0 } }]);
             } finally {
                 await session.close();
@@ -119,8 +122,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { content: { connect: { where: { node: { id: "${userID2}" } } } } }) {
-                        users {
+                    ${userType.operations.update}(update: { content: { connect: { where: { node: { id: "${userID2}" } } } } }) {
+                        ${userType.plural} {
                             id
                             contentConnection {
                                 totalCount
@@ -136,9 +139,9 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userID1}"})
-                    CREATE (:User {id: "${userID2}"})
-                    CREATE (:Content {id: "${contentID}"})
+                    CREATE (:${userType.name} {id: "${userID1}"})
+                    CREATE (:${userType.name} {id: "${userID2}"})
+                    CREATE (:${contentType.name} {id: "${contentID}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: userID1 });
@@ -151,7 +154,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                const users = (gqlResult.data as any).updateUsers.users as any[];
+                const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
                 expect(users).toEqual([{ id: userID1, contentConnection: { totalCount: 0 } }]);
             } finally {
                 await session.close();
@@ -163,8 +166,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { content: { disconnect: { where: {} } } }) {
-                        users {
+                    ${userType.operations.update}(update: { content: { disconnect: { where: {} } } }) {
+                        ${userType.plural} {
                             id
                             contentConnection {
                                 totalCount
@@ -180,7 +183,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})-[:HAS_CONTENT]->(:Content {id: "${contentId}"})
+                    CREATE (:${userType.name} {id: "${userId}"})-[:HAS_CONTENT]->(:${contentType.name} {id: "${contentId}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: userId });
@@ -193,7 +196,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                const users = (gqlResult.data as any).updateUsers.users as any[];
+                const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
                 expect(users).toEqual([{ id: userId, contentConnection: { totalCount: 0 } }]);
             } finally {
                 await session.close();
@@ -205,8 +208,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             const query = `
                 mutation {
-                    updateUsers(update: { content: [{ disconnect: { where: { node: { id: "${userId}" } } } }] }) {
-                        users {
+                    ${userType.operations.update}(update: { content: [{ disconnect: { where: { node: { id: "${userId}" } } } }] }) {
+                        ${userType.plural} {
                             id
                             contentConnection {
                                 totalCount
@@ -222,7 +225,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             try {
                 await session.run(`
-                    CREATE (:User {id: "${userId}"})-[:HAS_CONTENT]->(:Content {id: "${contentId}"})
+                    CREATE (:${userType.name} {id: "${userId}"})-[:HAS_CONTENT]->(:${contentType.name} {id: "${contentId}"})
                 `);
 
                 const req = createJwtRequest(secret, { sub: userId });
@@ -235,7 +238,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
                 expect(gqlResult.errors).toBeUndefined();
 
-                const users = (gqlResult.data as any).updateUsers.users as any[];
+                const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
                 expect(users).toEqual([{ id: userId, contentConnection: { totalCount: 0 } }]);
             } finally {
                 await session.close();
@@ -248,72 +251,77 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
         const numberOfSeasons = 2;
         const sharedTitle = "someTitle";
 
+        const actorType = generateUniqueType("Actor");
+        const movieType = generateUniqueType("Movie");
+        const tvShowType = generateUniqueType("TVShow");
+        const movieOrTVShowType = generateUniqueType("MovieOrTVShow")
+
         const typeDefs = `
-            type Actor {
+            type ${actorType.name} {
                 name: String
                 age: Int
-                movies(title: String): [Movie]
+                movies(title: String): [${movieType.name}]
                     @cypher(
                         statement: """
-                        MATCH (m:Movie {title: $title})
+                        MATCH (m:${movieType.name} {title: $title})
                         RETURN m
                         """
                     )
 
-                tvShows(title: String): [Movie]
+                tvShows(title: String): [${movieType.name}]
                     @cypher(
                         statement: """
-                        MATCH (t:TVShow {title: $title})
+                        MATCH (t:${tvShowType.name} {title: $title})
                         RETURN t
                         """
                     )
 
-                movieOrTVShow(title: String): [MovieOrTVShow]
+                movieOrTVShow(title: String): [${movieOrTVShowType.name}]
                     @cypher(
                         statement: """
                         MATCH (n)
-                        WHERE (n:TVShow OR n:Movie) AND ($title IS NULL OR n.title = $title)
+                        WHERE (n:${tvShowType.name} OR n:${movieType.name}) AND ($title IS NULL OR n.title = $title)
                         RETURN n
                         """
                     )
             }
 
-            union MovieOrTVShow = Movie | TVShow
+            union ${movieOrTVShowType.name} = ${movieType.name} | ${tvShowType.name}
 
-            type TVShow {
+            type ${tvShowType.name} {
                 id: ID
                 title: String
                 numSeasons: Int
-                actors: [Actor]
+                actors: [${actorType.name}]
                     @cypher(
                         statement: """
-                        MATCH (a:Actor)
+                        MATCH (a:${actorType.name})
                         RETURN a
                         """
                     )
-                topActor: Actor
+                topActor: ${actorType.name}
                     @cypher(
                         statement: """
-                        MATCH (a:Actor)
+                        MATCH (a:${actorType.name})
                         RETURN a
                         """
                     )
             }
 
-            type Movie {
+            type ${movieType.name} {
                 id: ID
                 title: String
-                actors: [Actor]
+                actors: [${actorType.name}]
                     @cypher(
                         statement: """
-                        MATCH (a:Actor)
+                        MATCH (a:${actorType.name})
                         RETURN a
                         """
                     )
-                topActor: Actor
+                topActor: ${actorType.name}
                     @cypher(
                         statement: """
-                        MATCH (a:Actor)
+                        MATCH (a:${actorType.name})
                         RETURN a
                         """
                     )
@@ -322,16 +330,16 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
         const query = `
             {
-                actors {
+                ${actorType.plural} {
                     movieOrTVShow(title: "${sharedTitle}") {
-                        ... on Movie {
+                        ... on ${movieType.name} {
                             title
                             topActor {
                                 name
                                 age
                             }
                         }
-                        ... on TVShow {
+                        ... on ${tvShowType.name} {
                             title
                             numSeasons
                             topActor {
@@ -348,9 +356,9 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
         try {
             await session.run(`
-                CREATE (:Actor { name: "${actorName}", age: ${actorAge} })
-                CREATE (:TVShow { title: "${sharedTitle}", numSeasons: ${numberOfSeasons} })
-                CREATE (:Movie { title: "${sharedTitle}" })
+                CREATE (:${actorType.name} { name: "${actorName}", age: ${actorAge} })
+                CREATE (:${tvShowType.name} { title: "${sharedTitle}", numSeasons: ${numberOfSeasons} })
+                CREATE (:${movieType.name} { title: "${sharedTitle}" })
             `);
 
             const gqlResult = await graphql({
@@ -361,7 +369,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             expect(gqlResult.errors).toBeUndefined();
             expect(gqlResult.data).toEqual({
-                actors: [
+                [actorType.plural]: [
                     {
                         movieOrTVShow: [
                             {
@@ -834,7 +842,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             try {
                 await session.run(`CREATE (:${movieType.name})`);
-                
+
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: getQuery(updateOperation, movieType.plural),
