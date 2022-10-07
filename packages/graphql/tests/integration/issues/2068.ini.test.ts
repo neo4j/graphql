@@ -16,6 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { gql } from "apollo-server";
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver } from "neo4j-driver";
@@ -73,6 +74,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 password: String! @auth(rules: [{ operations: [READ], where: { id: "$jwt.sub" } }])
             }
         `;
+
         test("Connect node - update within an update", async () => {
             const userID = "someID";
             const contentID = "someContentID";
@@ -161,8 +163,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             }
         });
         test("Disconnect node - update within an update", async () => {
-            const userId = "someID";
-            const contentId = "someContentID";
+            const userID = "someID";
+            const contentID = "someContentID";
 
             const query = `
                 mutation {
@@ -183,10 +185,10 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             try {
                 await session.run(`
-                    CREATE (:${userType.name} {id: "${userId}"})-[:HAS_CONTENT]->(:${contentType.name} {id: "${contentId}"})
+                    CREATE (:${userType.name} {id: "${userID}"})-[:HAS_CONTENT]->(:${contentType.name} {id: "${contentID}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: userId });
+                const req = createJwtRequest(secret, { sub: userID });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -197,18 +199,18 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 expect(gqlResult.errors).toBeUndefined();
 
                 const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
-                expect(users).toEqual([{ id: userId, contentConnection: { totalCount: 0 } }]);
+                expect(users).toEqual([{ id: userID, contentConnection: { totalCount: 0 } }]);
             } finally {
                 await session.close();
             }
         });
         test("Disconnect node - user defined update where within an update", async () => {
-            const userId = "someID";
-            const contentId = "someContentID";
+            const userID = "someID";
+            const contentID = "someContentID";
 
             const query = `
                 mutation {
-                    ${userType.operations.update}(update: { content: [{ disconnect: { where: { node: { id: "${userId}" } } } }] }) {
+                    ${userType.operations.update}(update: { content: [{ disconnect: { where: { node: { id: "${userID}" } } } }] }) {
                         ${userType.plural} {
                             id
                             contentConnection {
@@ -225,10 +227,10 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
 
             try {
                 await session.run(`
-                    CREATE (:${userType.name} {id: "${userId}"})-[:HAS_CONTENT]->(:${contentType.name} {id: "${contentId}"})
+                    CREATE (:${userType.name} {id: "${userID}"})-[:HAS_CONTENT]->(:${contentType.name} {id: "${contentID}"})
                 `);
 
-                const req = createJwtRequest(secret, { sub: userId });
+                const req = createJwtRequest(secret, { sub: userID });
 
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -239,7 +241,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                 expect(gqlResult.errors).toBeUndefined();
 
                 const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
-                expect(users).toEqual([{ id: userId, contentConnection: { totalCount: 0 } }]);
+                expect(users).toEqual([{ id: userID, contentConnection: { totalCount: 0 } }]);
             } finally {
                 await session.close();
             }
