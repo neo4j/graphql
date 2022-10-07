@@ -1,12 +1,12 @@
 # Subscriptions
 
-## Problem
+# Problem
 
 Our users would like to use [GraphQL Subscriptions](https://graphql.org/blog/subscriptions-in-graphql-and-relay/) to get real-time updates on their data.
 
-## Requirements
+# Requirements
 
-### Must have
+## Must have
 
 -   Subscribe to the following events:
     -   CREATE
@@ -23,28 +23,28 @@ Our users would like to use [GraphQL Subscriptions](https://graphql.org/blog/sub
 -   Some form of auth validation.
 -   `@neo4j/graphql` should still run on browser
 
-### Should have
+## Should have
 
 -   To subscribe to the following events:
     -   CONNECT
     -   DISCONNECT
 -   Relationship property updates
 
-### Could have
+## Could have
 
 -   Subscriptions to Interface and Union types
 -   OGM support
 -   We return "full objects" including nested relationships (for example, a movie subscription must return type `Movie` with nested `actors`)
 
-### Won't have
+## Won't have
 
 -   Events from changes outside of GraphQL
 -   Events triggered from custom Cypher
 -   Support for subscriptions on browser
 
-## Proposed Solution
+# Proposed Solution
 
-### Type Definitions
+## Type Definitions
 
 Considering the following definitions:
 
@@ -84,9 +84,9 @@ type Subscription {
 }
 ```
 
-### Usage Examples & Cypher Queries
+## Usage Examples & Cypher Queries
 
-### Setup
+## Setup
 
 Subscriptions are an opt-in feature, to be activated when passing a subscriptions plugin to the Neo4jGraphQL schema
 
@@ -100,7 +100,7 @@ const neoSchema = new Neo4jGraphQL({
 });
 ```
 
-#### Subscribing to creation
+### Subscribing to creation
 
 If a user wanted to subscribe to all movies being created, they could run the following subscription:
 
@@ -128,7 +128,7 @@ WITH this0, this0_meta AS meta
 RETURN [this0 { .title }] AS data, meta
 ```
 
-#### Subscribing to update
+### Subscribing to update
 
 If a user wants to get the updates of a particular movie, they could use a `where` argument:
 
@@ -166,7 +166,7 @@ RETURN collect(DISTINCT this { .title }) AS data, collect(DISTINCT m) as meta
 Having the old properties and the new properties to hand means we can actually check whether anything changed as part of the update operation.
 Mutations without changes should not trigger update events.
 
-#### Subscribing to delete
+### Subscribing to delete
 
 If a user wants to get the deletion of a particular movie, they could use a `where` argument:
 
@@ -193,7 +193,7 @@ UNWIND meta AS m
 RETURN collect(DISTINCT m) AS meta
 ```
 
-#### Subscribe to relationships
+### Subscribe to relationships
 
 Events `connect` and `disconnect` should be available to provide support for subscriptions to relationships.
 
@@ -202,6 +202,7 @@ These events should contain the following information:
 -   The connected/disconnected relationship properties
 -   Source and target nodes with the top level properties
 -   Relationship name: This should, somehow, map to the name given to the property. The internal relationship type should **not** be used.
+-   Direction of the relationship
 
 Assuming the following typedefs:
 
@@ -227,137 +228,16 @@ interface Follows @relationshipProperties {
 }
 ```
 
-##### Option 1 - Subscription endpoint per type
-
-All of the subscriptions are attached to nodes, the event will trigger whenever a connection is made or destroyed to that node
-
-**Payload**
-
-```graphql
-actorConnected { // Same for actorDisconnected
-   [actor]: Actor // The node that triggers the event (Actor), regardless of direction
-   connectedNode: Movie | Actor // The node it has been connected to (Movie for actedIn, Actor for follows)
-   relationshipProperties: ActedIn | Follows // Union of all possible properties
-   direction: IN | OUT
-   relationshipFieldName: "actedIn" // The name of the relationship prop (actedIn or follows)
-   event // CONNECT / DISCONNECT
-}
-```
-
-> Note: Name from/to may be misleading, better naming pending
-
-For these events, the following rules apply:
+All of the subscriptions are attached to nodes, the events will trigger whenever a connection is made or destroyed to that node respectively. For these events, the following rules apply:
 
 -   An event will be triggered for all relationship fields connected, meaning that a connection can trigger up to 2 events (source and target nodes)
 -   Only connections with a relationship defined in the schema will be triggered
 
-**Filtering**
-Filtering should work as with other subscriptions, with the following differences:
+**Payload**  
+The payload will contain the root fields of the node triggering the event, (e.g. `actor`).
+It will also contain the `relationship` field, which will contain **all** of the relationships defined in the root node. These relationships will each contain the properties and the related node, each event will only contain one of these, with the rest being nullable.
 
--   `relationshipName` can be filtered
--   From can be easily filtered, the connectedNode requires using a "fake" union on input
-    -   Nested fields and relationships **cannot** be filtered, only primitive fields of each node
--   Relationship properties can be filtered
-
-The `where` input field will have the following properties
-
--   relationshipName: filter on relationship names
--   from: filters on source node
--   to: filters on target node
--   direction: Filters only incoming or outcoming direction relative to `from` node
-
-**Examples**
-
-Subscribe to _actedIn_ connections
-
-```graphql
-subscription {
-    movieConnected(where: { relationshipFieldNames: "actedIn", movie: { title: "The Matrix" } }) {
-        movie {
-            title
-        }
-        connectedNode {
-            ... on Actor {
-                name
-            }
-        }
-        relationshipProperties {
-            ... on ActedIn {
-                role
-            }
-        }
-    }
-}
-```
-
-For the previous example, the same connection will also trigger the following subscription for actors:
-
-```graphql
-subscription {
-    actorConnected(where: { relationshipFieldNames: "actedIn" }) {
-        actor {
-            name
-        }
-        connectedNode {
-            ... on Movie {
-                title
-            }
-        }
-    }
-}
-```
-
-Subscribe to followed actors
-
-```graphql
-subscription {
-    actorConnected(where: { relationshipFieldNames: "follows" }) {
-        actor {
-            name
-        }
-        connectedNode {
-            ... on Actor {
-                name
-            }
-        }
-    }
-}
-```
-
-This last example will only be triggered once per connection, as a single `@relationship` field exists
-
-Subscribe to director from movie
-
-```graphql
-subscription {
-    moviesConnected(where: { relationshipFieldNames: "director" }) {
-        movie {
-            title
-        }
-        connectedNode {
-            ... on Actor {
-                name
-            }
-        }
-    }
-}
-```
-
-Note that a `directed` connection will **not** be triggered for actors, as the connection does not exists in the schema
-
-**Limitations**
-This approach have a few problems and limitations
-
--   The `to` field needs to be an union of all possible relationships, even when the subscription is done to a specific relationship
--   relationshipFieldName has to be a string
--   Target node cannot be filtered due to unions
-
-##### Option 2 - Subscription endpoint per type with all the relationships types in event
-
-All of the subscriptions are attached to nodes, the event will trigger whenever a connection is made or destroyed to that node, the event,
-instead of unions, will contain all the possible relationships as nullable fields
-
-**Payload**
+Additionally the fields `direction` and `relationshipName` will contain the relationship direction and field name respectively.
 
 ```graphql
 ActorConnected {
@@ -378,25 +258,15 @@ ActorConnected {
 }
 ```
 
-This approach also leads to less confusing naming, as the field `to` is no longer needed
+With this payload, a client either return only the data of the relevant events, or retrieve the data of any event returned the following way:
 
-**Filtering**
-Filtering works similarly to other approach
-Filtering should work as with other subscriptions, with the following differences:
+```js
+const relationshipProperties = data.relationship[data.relationshipName];
+```
 
--   `relationshipName` can be filtered
--   Both, `from` and `to` nodes should be filterable
-    -   Nested fields and relationships **cannot** be filtered, only primitive fields of each node
--   Relationship properties can be filtered
+> Note that the top level node will be the one from the subscription, regardless of relationship direction.
 
-The `where` input field will have the following properties
-
--   relationshipName: Filter on relationship names
--   from: Filters on source node
--   to: fitlers on target node
--   direction: Filters only incoming or outcoming direction relative to `from` node
-
-**Examples**
+An example of the full payload:
 
 ```graphql
 subscription {
@@ -423,17 +293,45 @@ subscription {
 }
 ```
 
-The advantages of this approach is that unions are not needed, making the common case of filtering by relationship type less verbose. The main disadvantage is the nullable fields.
+**Filtering**  
+Filtering can be done with a `where` input field that will have the following properties
 
-##### Risks on connections
+-   `actor`: Filter of top level properties of the node (e.g. `actor`) from which the subscription is done
+-   `relationshipName` can be filtered
+-   All of the `relationships` can be filtered either by related node or properties, by using the same properties as in the payload, only top-level properties of the related node can be filtered
+-   `direction`
 
--   (Dis)Connections should be triggered regardless of the way the connection is created. (e.g. ActorUpdate or MovieUpdate as top level operation)
+For instance, subscribing to only `actedIn` connections:
 
-##### Cypher Examples
+```graphql
+subscription {
+    movieConnected(where: { relationshipFieldNames: "actedIn", movie: { title: "The Matrix" } }) {
+        movie {
+            title
+        }
+        relationship {
+            actedIn {
+                node {
+                    title
+                    released
+                }
+            }
+        }
+    }
+}
+```
 
-These are proposals on how to inject the given subscriptions into Cypher
+#### Risks and Limitations on connections
 
-**Connect**
+-   (Dis)Connections should be triggered regardless of the way the connection is created. (e.g. ActorUpdate or MovieUpdate as top level operation).
+-   Currently, connection works as a idempotent operation with `MERGE`, the event should only trigger when a new connection is made.
+-   (out of scope) Subscription to changes to the relationship properties are out of scope, only creation/deletion of relationships trigger events.
+
+#### Cypher Examples
+
+These are proposals on how to inject the given subscriptions into Cypher, the changes require for the source node, target node and relationship variables to be available on the metadata generation
+
+**Connect**  
 Whenever a create or update operation is executed, metadata regarding the connection events will be created:
 
 ```cypher
@@ -456,7 +354,7 @@ RETURN [
 this0 { .name, actedIn: [ (this0)-[:ACTED_IN]->(this0_actedIn:Movie)   | this0_actedIn { .title } ] }] AS data, meta
 ```
 
-**Disconnect**
+**Disconnect**  
 Whenever a delete or update operation is executed, metadata regarding the connection events will be created:
 
 ```cypher
@@ -479,7 +377,11 @@ UNWIND meta AS m
 RETURN collect(DISTINCT m) AS meta
 ```
 
-#### Excluding types from subscriptions
+With the provided metadata, subscription events should be triggered for both nodes, taking into account all of the relationship properties to generate the payload.
+
+Note that these should be triggered on **any** creation/deletion of relationships, this includes top-level and nested mutations.
+
+### Excluding types from subscriptions
 
 As it is currently possible to exclude specific operations for queries and mutations, it should be possible to have some exclude capabilities for subscription operations on specified types.
 
@@ -487,7 +389,7 @@ To achieve this, the proposed solution uses the `@exclude` directive by extendin
 
 The list of options would thus look like `[CREATE, READ, UPDATE, DELETE, SUBSCRIBE]`.
 
-##### Usage Example
+#### Usage Example
 
 Given the following type definitions (notice `@exclude` is not being used):
 
@@ -578,7 +480,7 @@ type Subscription {
 }
 ```
 
-##### Out of Scope
+#### Out of Scope
 
 1. At this point we are **not** yet considering fine-grain control on excluding specific subscription operations. Either all subscription operations on a specified type are excluded, or none. This means nothing like this will be possible for now:
 
@@ -603,7 +505,7 @@ type Movie {
 }
 ```
 
-### Plugin Implementation
+## Plugin Implementation
 
 Subscriptions will be made available through a plugin, for which we will initially provide a "local" implementation of,
 which will not scale horizontally. Providing a plugin API means that later down the line, a plugin can be built which emits
@@ -659,7 +561,7 @@ class Neo4jGraphQLSubscriptionsAMQPPlugin extends Neo4jGraphQLSubscriptionsPlugi
 }
 ```
 
-#### Alternative interface
+### Alternative interface
 
 Alternatively, the plugin interface exposed to the users could be akin to:
 
@@ -674,7 +576,7 @@ This would allow for a slightly more flexible interface, not relying on explicit
 
 > NOTE: Our current implementation uses the `on()` function from EventEmitter which takes an EventEmitter, that may make this solution hard or not viable.
 
-### Events vs PubSub
+## Events vs PubSub
 
 Most GraphQL implementations are based on PubSub (e.g. [graphql-subscriptions](https://www.npmjs.com/package/graphql-subscriptions)). However, PubSub
 is not a standard, making it hard to provide a library cross-compatible with different servers.
@@ -682,7 +584,7 @@ is not a standard, making it hard to provide a library cross-compatible with dif
 The proposed solution implements an `EventEmitter` and a `publish` method as its interface, this ensures an standard interface that may be used with
 PubSub, or any custom solution.
 
-#### PubSub Support
+### PubSub Support
 
 The proposed solution could be used with most PubSub implementations, by subscribing to it and triggering the eventEmitter locally on a custom plugin:
 
@@ -724,7 +626,7 @@ const neoSchema = new Neo4jGraphQL({
 });
 ```
 
-### Resolvers
+## Resolvers
 
 A subscription require 2 fields, a `subscribe` method and a `resolver`:
 
@@ -740,7 +642,7 @@ A subscription require 2 fields, a `subscribe` method and a `resolver`:
 
 ```
 
-### Filtering
+## Filtering
 
 Subscriptions can be created with a filter (`where`) statement, this ensures that only subscriptions matching these filters will be triggered.
 
@@ -770,7 +672,7 @@ The proposed filters should mimic, as possible, the `query` where filters, Inclu
 
 > Due to limitations on filtering, only root level fields can be filtered, aggregations, connections and relationships are out of scope.
 
-#### Update events
+### Update events
 
 Update events, by default, will filter on the previous state, for example, the following subscription:
 
@@ -822,12 +724,12 @@ subscription SubscribeToConfirmedUsers {
 }
 ```
 
-### Auth
+## Auth
 
 A new operation `SUBSCRIBE` to deal with authorization on subscriptions, this operation will follow the same syntax and rules as any other operation, but with more
 limited scope, allowing only for top-level properties validation (same limitations as `where`).
 
-#### Authentication
+### Authentication
 
 ```graphql
 type Post @auth(rules: [{ operations: [SUBSCRIBE], isAuthenticated: true }]) {
@@ -837,7 +739,7 @@ type Post @auth(rules: [{ operations: [SUBSCRIBE], isAuthenticated: true }]) {
 
 If the user is not authenticated, the subscription request will fail.
 
-#### Allow
+### Allow
 
 Works as usual, but not supported throughout relationships:
 
@@ -850,20 +752,20 @@ type User @auth(rules: [{ operations: [SUBSCRIBE], allow: { id: "$jwt.sub" } }])
 
 This requires `jwt` to be available in the context on subscription resolver. If a rule does not match, the subscription will not be sent.
 
-#### Bind
+### Bind
 
 Bind does not make sense on subscriptions, as it is intended for mutations. So bind is ignored for SUBSCRIBE operations
 
-#### Roles
+### Roles
 
 Roles should work as usual, the subscription request should error if the role does not match.
 
-#### Where
+### Where
 
 Where filter in the auth directive should work under the same limitations and behaviour as the subscriptions filtering. With any subscription event not matching
 this where not being sent.
 
-### Extra fields in subscription
+## Extra fields in subscription
 
 The following should be available along with the data payload:
 
@@ -871,7 +773,7 @@ The following should be available along with the data payload:
 -   **timestamp**: The timestamp the event was generated, this may be needed to ensure order consistency on horizontal scaled subscriptions.
 -   **previousState** (only for updates): State of the node before the modification.
 
-### Nested fields
+## Nested fields
 
 Due to subscriptions relying on the `meta` data returned by the queries, only top-level properties of the node are available to return or filter.
 
@@ -879,9 +781,9 @@ To properly support nested queries, follow-up queries to the database, after the
 
 Due to this, any nested field queries support should be opt-in.
 
-### Horizontal scalability
+## Horizontal scalability
 
-#### Problem
+### Problem
 
 While subscriptions may be made to an instance, the mutation triggering the subscriptions may happen on a different instance, the library must support
 a broker (e.g. Redis or AMQP).
@@ -902,21 +804,21 @@ We should also leverage existing PubSub implementations to these services, some 
 -   [graphql-subscriptions](https://github.com/apollographql/graphql-subscriptions)
 -   [yoga](https://www.graphql-yoga.com/docs/features/subscriptions)
 
-### Subscriptions transports
+## Subscriptions transports
 
 This library should **not** implement any transport, and should be, when possible, agnostic of how the subscriptions are delivered, as that is part of the server and user implementation. It is important to make sure that the library works as expected with the most common transport methods.
 
-#### Websockets
+### Websockets
 
 Most use cases will user WebSockets. The current standard on GraphQL subscriptions delivery through WebSockets is [graphql-ws](https://github.com/enisdenjo/graphql-ws).
 
 While not a high priority, the protocol implemented by [graphql-transport-ws](https://www.npmjs.com/package/graphql-transport-ws) (deprecated) should also work with the library.
 
-#### Server-sent events
+### Server-sent events
 
 An alterantive to websocket are [SSE](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events), with [yoga server](https://www.graphql-yoga.com/docs/features/subscriptions) using them for the subscriptions implementation.
 
-## Security Considerations
+# Security Considerations
 
 The addition of subscriptions creates a new entry top-level access for the database, increasing any security risks. The access to subscriptions should be handled by the `@auth` directive (described above).
 
@@ -928,7 +830,7 @@ Additionally, by the real-time nature of subscriptions, a few extra consideratio
 
 > Due to these security considerations, any form of subscriptions must be opt-in for new and existing users.
 
-## Risks
+# Risks
 
 -   Maintaining order of events being fired
     -   For a single instance this can be guaranteed. On multiple-servers implementations, broker network may lead to unordered events in some cases. The addition of timestamps to the payload would be beneficial in these cases.
@@ -937,9 +839,9 @@ Additionally, by the real-time nature of subscriptions, a few extra consideratio
 -   Make sure it works with `@auth` directive - users shouldn't be able to listen to events for types they can't access
 -   Efficiency of Cypher queries - do we fetch all properties of a node and allow GraphQL runtime to filter down, or only the properties in the selection set?
 
-## Discarded solutions
+# Discarded solutions
 
-### Solution 1: Subscription field per node type
+## Solution 1: Subscription field per node type
 
 The subscription type generated by this proposed solution would look like:
 
@@ -960,7 +862,7 @@ type Subscription {
 }
 ```
 
-### Usage Examples
+## Usage Examples
 
 If a user wanted to subscribe to all movies being created, they could run the following subscription:
 
