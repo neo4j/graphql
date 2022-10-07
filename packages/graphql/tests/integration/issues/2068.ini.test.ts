@@ -864,4 +864,139 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             }
         });
     });
+    describe("Select connections following the creation of a multiple nodes", () => {
+        const movieType = generateUniqueType("Movie");
+        const actorType = generateUniqueType("Actor");
+
+        const typeDefs = `
+            type ${movieType.name} {
+                title: String
+                actors: [${actorType.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            }
+            
+            type ${actorType.name} {
+                name: String
+                movies: [${movieType.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            }
+
+            interface ActedIn @relationshipProperties {
+                screenTime: Int
+            }
+        `;
+        test("Filtered results", async () => {
+            const filmName1 = "Forrest Gump";
+            const filmName2 = "Toy Story";
+            const actorName = "Tom Hanks";
+
+            const query = `
+                mutation {
+                    ${movieType.operations.create}(input: [{ title: "${filmName1}" }, { title: "${filmName2}" }]) {
+                        ${movieType.plural} {
+                            title
+                            actorsConnection(where: { node: { name: "${actorName}" } }) {
+                                edges {
+                                    screenTime
+                                    node {
+                                        name
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+
+            try {
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
+                expect(gqlResult.data).toEqual({
+                    [movieType.operations.create]: {
+                        [movieType.plural]: [
+                            {
+                                actorsConnection: {
+                                    edges: [],
+                                },
+                                title: filmName1,
+                            },
+                            {
+                                actorsConnection: {
+                                    edges: [],
+                                },
+                                title: filmName2,
+                            },
+                        ]
+                    }
+                });
+            } finally {
+                await session.close();
+            }
+        });
+        test("Unfiltered results", async () => {
+            const filmName1 = "Forrest Gump";
+            const filmName2 = "Toy Story";
+
+            const query = `
+                mutation {
+                    ${movieType.operations.create}(input: [{ title: "${filmName1}" }, { title: "${filmName2}" }]) {
+                        ${movieType.plural} {
+                            title
+                            actorsConnection {
+                                edges {
+                                    screenTime
+                                    node {
+                                        name
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
+
+            try {
+
+                const gqlResult = await graphql({
+                    schema: await neoSchema.getSchema(),
+                    source: query,
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                });
+
+                expect(gqlResult.errors).toBeUndefined();
+                expect(gqlResult.data).toEqual({
+                    [movieType.operations.create]: {
+                        [movieType.plural]: [
+                            {
+                                actorsConnection: {
+                                    edges: [],
+                                },
+                                title: filmName1,
+                            },
+                            {
+                                actorsConnection: {
+                                    edges: [],
+                                },
+                                title: filmName2,
+                            },
+                        ]
+                    }
+                });
+            } finally {
+                await session.close();
+            }
+        });
+    });
 });
