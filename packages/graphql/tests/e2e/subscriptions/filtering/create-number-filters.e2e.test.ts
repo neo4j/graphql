@@ -737,7 +737,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
         similarTitles?: string[];
     }): Promise<Response> {
         const movieInput = Object.entries(all)
-            .filter(([_, v]) => v)
+            .filter(([, v]) => v)
             .map(([k, v]) => {
                 return `${k}: ${makeTypedFieldValue(v)}`;
             })

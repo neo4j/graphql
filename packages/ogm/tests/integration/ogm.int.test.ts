@@ -19,7 +19,7 @@
 
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
-import gql from "graphql-tag";
+import { gql } from "graphql-tag";
 import neo4j from "./neo4j";
 import type { Model } from "../../src";
 import { OGM } from "../../src";
@@ -229,7 +229,7 @@ describe("OGM", () => {
             try {
                 const Movie = ogm.model("Movie");
 
-                const { movies } = await Movie?.create({ input: [{ id }] });
+                const { movies } = await Movie.create({ input: [{ id }] });
 
                 expect(movies).toEqual([{ id }]);
 
@@ -270,7 +270,7 @@ describe("OGM", () => {
             try {
                 const Movie = ogm.model("Movie");
 
-                const { movies } = await Movie?.create({ input: [{ id: id1 }, { id: id2 }] });
+                const { movies } = await Movie.create({ input: [{ id: id1 }, { id: id2 }] });
 
                 expect(movies).toEqual([{ id: id1 }, { id: id2 }]);
             } finally {
@@ -367,7 +367,7 @@ describe("OGM", () => {
                 },
             ];
 
-            const Product = ogm.model("Product") as Model;
+            const Product = ogm.model("Product");
 
             const { products } = await Product.create({
                 input: [
@@ -423,16 +423,16 @@ describe("OGM", () => {
 
             expect(neo4jProduct.id).toMatch(product.id);
             expect(neo4jProduct.name).toMatch(product.name);
-            neo4jProduct.sizes.forEach((size) => {
+            neo4jProduct.sizes.forEach((size: string) => {
                 expect(sizes.map((x) => x.id).includes(size)).toBeTruthy();
             });
-            neo4jProduct.colors.forEach((color) => {
+            neo4jProduct.colors.forEach((color: string) => {
                 expect(colors.map((x) => x.id).includes(color)).toBeTruthy();
             });
-            neo4jProduct.photos.ids.forEach((photo) => {
+            neo4jProduct.photos.ids.forEach((photo: string) => {
                 expect(photos.map((x) => x.id).includes(photo)).toBeTruthy();
             });
-            neo4jProduct.photos.colors.forEach((photoColor) => {
+            neo4jProduct.photos.colors.forEach((photoColor: string) => {
                 expect(colors.map((x) => x.id).includes(photoColor)).toBeTruthy();
             });
         });
@@ -478,7 +478,7 @@ describe("OGM", () => {
 
                 const Movie = ogm.model("Movie");
 
-                const { movies } = await Movie?.update({ where: { id }, update: { name: updatedName } });
+                const { movies } = await Movie.update({ where: { id }, update: { name: updatedName } });
 
                 expect(movies).toEqual([{ id, name: updatedName }]);
             } finally {
@@ -531,7 +531,7 @@ describe("OGM", () => {
 
                 const Movie = ogm.model("Movie");
 
-                const { movies } = await Movie?.update({ where: { id_IN: [id1, id2] }, update: { name: updatedName } });
+                const { movies } = await Movie.update({ where: { id_IN: [id1, id2] }, update: { name: updatedName } });
 
                 const movie1 = movies.find((x) => x.id === id1);
                 expect(movie1.name).toEqual(updatedName);
@@ -584,7 +584,7 @@ describe("OGM", () => {
 
                 const Movie = ogm.model("Movie");
 
-                const { movies } = await Movie?.update({
+                const { movies } = await Movie.update({
                     where: { id: movieId },
                     connect: { actors: [{ where: { node: { id: actorId } } }] },
                     selectionSet: `
@@ -644,7 +644,7 @@ describe("OGM", () => {
 
                 const Movie = ogm.model("Movie");
 
-                const { movies } = await Movie?.update({
+                const { movies } = await Movie.update({
                     where: { id: movieId },
                     create: { actors: [{ node: { id: actorId } }] },
                     selectionSet: `
@@ -707,7 +707,7 @@ describe("OGM", () => {
 
                 const Movie = ogm.model("Movie");
 
-                const { movies } = await Movie?.update({
+                const { movies } = await Movie.update({
                     where: { id: movieId },
                     disconnect: { actors: [{ where: { node: { id: actorId } } }] },
                     selectionSet: `
@@ -819,7 +819,7 @@ describe("OGM", () => {
             `;
 
             const ogm = new OGM({ typeDefs, driver });
-            const User = (ogm.model("User") as unknown) as Model;
+            const User = ogm.model("User") as unknown as Model;
 
             await ogm.init();
 

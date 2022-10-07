@@ -123,7 +123,7 @@ describe("Subscription global authentication", () => {
             const result = await createMovie("movie1", server, "");
 
             expect(result.body.errors).toBeDefined();
-            expect((result.body.errors as any)[0].message).toBe("Unauthenticated");
+            expect(result.body.errors[0].message).toBe("Unauthenticated");
             expect(wsClient.events).toEqual([]);
             expect(wsClient.errors).toEqual([]);
         });
@@ -198,7 +198,7 @@ describe("Subscription global authentication", () => {
             const result = await createMovie("movie1", server, "Bearer xxx.invalidtoken.xxx");
 
             expect(result.body.errors).toBeDefined();
-            expect((result.body.errors as any)[0].message).toBe("Unauthenticated");
+            expect(result.body.errors[0].message).toBe("Unauthenticated");
             expect(wsClient.events).toEqual([]);
             expect(wsClient.errors).toEqual([]);
         });

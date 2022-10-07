@@ -524,7 +524,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
         allSizes?: string[];
     }): Promise<Response> {
         const input = Object.entries(all)
-            .filter(([_, v]) => v)
+            .filter(([, v]) => v)
             .map(([k, v]) => {
                 return `${k}: ${makeTypedFieldValue(v)}`;
             })

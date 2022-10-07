@@ -19,69 +19,73 @@
 
 import { offsetToCursor } from "graphql-relay";
 import type { Driver } from "neo4j-driver";
-import { graphql } from "graphql";
+import { DocumentNode, graphql } from "graphql";
 import { gql } from "apollo-server";
 import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
+import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { runCypher } from "../../utils/run-cypher";
+import { cleanNodes } from "../../utils/clean-nodes";
 
 describe("Relationship properties - read", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let bookmarks: string[];
 
-    const typeDefs = gql`
-        type Movie {
-            title: String!
-            actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
-        }
+    let typeMovie: UniqueType;
+    let typeActor: UniqueType;
+    let typeDefs: DocumentNode;
 
-        type Actor {
-            name: String!
-            movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
-        }
-
-        interface ActedIn {
-            screenTime: Int!
-        }
-    `;
     const movieTitle = generate({ charset: "alphabetic" });
     const actorA = `a${generate({ charset: "alphabetic" })}`;
     const actorB = `b${generate({ charset: "alphabetic" })}`;
     const actorC = `c${generate({ charset: "alphabetic" })}`;
+    const actorD = `d${generate({ charset: "alphabetic" })}`;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
-        const session = await neo4j.getSession();
-
-        try {
-            await session.run(
-                `
-                    CREATE (:Actor { name: '${actorA}' })-[:ACTED_IN { screenTime: 105 }]->(m:Movie { title: '${movieTitle}'})
-                    CREATE (m)<-[:ACTED_IN { screenTime: 105 }]-(:Actor { name: '${actorB}' })
-                    CREATE (m)<-[:ACTED_IN { screenTime: 5 }]-(:Actor { name: '${actorC}' })
-                `
-            );
-            bookmarks = session.lastBookmark();
-        } finally {
-            await session.close();
-        }
     });
 
     afterAll(async () => {
-        const session = await neo4j.getSession();
-
-        try {
-            await session.run(`MATCH (a:Actor) WHERE a.name = '${actorA}' DETACH DELETE a`);
-            await session.run(`MATCH (a:Actor) WHERE a.name = '${actorB}' DETACH DELETE a`);
-            await session.run(`MATCH (a:Actor) WHERE a.name = '${actorC}' DETACH DELETE a`);
-            await session.run(`MATCH (m:Movie) WHERE m.title = '${movieTitle}' DETACH DELETE m`);
-        } finally {
-            await session.close();
-        }
-
         await driver.close();
+    });
+
+    beforeEach(async () => {
+        typeMovie = generateUniqueType("Movie");
+        typeActor = generateUniqueType("Actor");
+
+        const session = await neo4j.getSession();
+        await runCypher(
+            session,
+            `
+                CREATE (:${typeActor.name} { name: '${actorA}' })-[:ACTED_IN { screenTime: 105 }]->(m:${typeMovie.name} { title: '${movieTitle}'})
+                CREATE (m)<-[:ACTED_IN { screenTime: 105 }]-(:${typeActor.name} { name: '${actorB}' })
+                CREATE (m)<-[:ACTED_IN { screenTime: 5 }]-(:${typeActor.name} { name: '${actorC}' })
+           `
+        );
+
+        typeDefs = gql`
+            type ${typeMovie.name} {
+                title: String!
+                actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            }
+
+            type ${typeActor.name} {
+                name: String!
+                movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            }
+
+            interface ActedIn {
+                screenTime: Int!
+            }
+        `;
+    });
+
+    afterEach(async () => {
+        const session = await neo4j.getSession();
+        await cleanNodes(session, [typeMovie, typeActor]);
     });
 
     test("Projecting node and relationship properties with no arguments", async () => {
@@ -91,7 +95,7 @@ describe("Relationship properties - read", () => {
 
         const query = `
             query {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     title
                     actorsConnection {
                         totalCount
@@ -120,25 +124,27 @@ describe("Relationship properties - read", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect(result?.data?.movies).toHaveLength(1);
+            expect(result?.data?.[typeMovie.plural]).toHaveLength(1);
 
-            expect((result?.data as any)?.movies[0].actorsConnection.totalCount).toBe(3);
-            expect((result?.data as any)?.movies[0].actorsConnection.pageInfo).toEqual({ hasNextPage: false });
+            expect((result?.data as any)?.[typeMovie.plural][0].actorsConnection.totalCount).toBe(3);
+            expect((result?.data as any)?.[typeMovie.plural][0].actorsConnection.pageInfo).toEqual({
+                hasNextPage: false,
+            });
 
-            expect((result?.data as any)?.movies[0].actorsConnection.edges).toHaveLength(3);
-            expect((result?.data as any)?.movies[0].actorsConnection.edges).toContainEqual({
+            expect((result?.data as any)?.[typeMovie.plural][0].actorsConnection.edges).toHaveLength(3);
+            expect((result?.data as any)?.[typeMovie.plural][0].actorsConnection.edges).toContainEqual({
                 screenTime: 5,
                 node: {
                     name: actorC,
                 },
             });
-            expect((result?.data as any)?.movies[0].actorsConnection.edges).toContainEqual({
+            expect((result?.data as any)?.[typeMovie.plural][0].actorsConnection.edges).toContainEqual({
                 screenTime: 105,
                 node: {
                     name: actorB,
                 },
             });
-            expect((result?.data as any)?.movies[0].actorsConnection.edges).toContainEqual({
+            expect((result?.data as any)?.[typeMovie.plural][0].actorsConnection.edges).toContainEqual({
                 screenTime: 105,
                 node: {
                     name: actorA,
@@ -156,7 +162,7 @@ describe("Relationship properties - read", () => {
 
         const query = `
             query {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     title
                     actorsConnection(
                         where: { AND: [{ edge: { screenTime_GT: 60 } }, { node: { name_STARTS_WITH: "a" } }] }
@@ -188,7 +194,7 @@ describe("Relationship properties - read", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect((result?.data as any)?.movies).toEqual([
+            expect((result?.data as any)?.[typeMovie.plural]).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {
@@ -220,7 +226,7 @@ describe("Relationship properties - read", () => {
 
         const query = `
             query ConnectionWithSort($nameSort: SortDirection) {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     title
                     actorsConnection(
                         sort: [{ edge: { screenTime: DESC } }, { node: { name: $nameSort } }]
@@ -250,7 +256,7 @@ describe("Relationship properties - read", () => {
 
             expect(ascResult.errors).toBeFalsy();
 
-            expect(ascResult?.data?.movies).toEqual([
+            expect(ascResult?.data?.[typeMovie.plural]).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {
@@ -291,7 +297,7 @@ describe("Relationship properties - read", () => {
 
             expect(descResult.errors).toBeFalsy();
 
-            expect(descResult?.data?.movies).toEqual([
+            expect(descResult?.data?.[typeMovie.plural]).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {
@@ -327,6 +333,141 @@ describe("Relationship properties - read", () => {
         }
     });
 
+    test("With `sort` argument ordered", async () => {
+        const session = await neo4j.getSession();
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+        const query = `
+            query {
+                ${typeMovie.plural} {
+                    actorsConnection(
+                        sort: [{ edge: { screenTime: DESC } }, { node: { name: ASC } }]
+                    ) {
+                        edges {
+                            screenTime
+                            node {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const queryReverse = `
+            query {
+                ${typeMovie.plural} {
+                    actorsConnection(
+                        sort: [{ node: { name: ASC } }, { edge: { screenTime: DESC } }]
+                    ) {
+                        edges {
+                            screenTime
+                            node {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        try {
+            await neoSchema.checkNeo4jCompat();
+
+            await session.run(
+                `
+                    MATCH (m:${typeMovie.name} { title: '${movieTitle}'})
+                    CREATE (m)<-[:ACTED_IN { screenTime: 106 }]-(:${typeActor.name} { name: '${actorD}' })
+                `
+            );
+
+            const result = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+            });
+
+            expect(result.errors).toBeFalsy();
+
+            expect(result?.data?.[typeMovie.plural]).toEqual([
+                {
+                    actorsConnection: {
+                        edges: [
+                            {
+                                screenTime: 106,
+                                node: {
+                                    name: actorD,
+                                },
+                            },
+                            {
+                                screenTime: 105,
+                                node: {
+                                    name: actorA,
+                                },
+                            },
+                            {
+                                screenTime: 105,
+                                node: {
+                                    name: actorB,
+                                },
+                            },
+                            {
+                                screenTime: 5,
+                                node: {
+                                    name: actorC,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+
+            const reverseResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: queryReverse,
+                contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
+            });
+
+            expect(reverseResult.errors).toBeFalsy();
+
+            expect(reverseResult?.data?.[typeMovie.plural]).toEqual([
+                {
+                    actorsConnection: {
+                        edges: [
+                            {
+                                screenTime: 105,
+                                node: {
+                                    name: actorA,
+                                },
+                            },
+                            {
+                                screenTime: 105,
+                                node: {
+                                    name: actorB,
+                                },
+                            },
+                            {
+                                screenTime: 5,
+                                node: {
+                                    name: actorC,
+                                },
+                            },
+                            {
+                                screenTime: 106,
+                                node: {
+                                    name: actorD,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ]);
+        } finally {
+            await session.close();
+        }
+    });
+
     test("With `where` and `sort` arguments", async () => {
         const session = await neo4j.getSession();
 
@@ -334,7 +475,7 @@ describe("Relationship properties - read", () => {
 
         const query = `
             query ConnectionWithSort($nameSort: SortDirection) {
-                movies(where: { title: "${movieTitle}" }) {
+                ${typeMovie.plural}(where: { title: "${movieTitle}" }) {
                     title
                     actorsConnection(
                         where: { edge: { screenTime_GT: 60 } }
@@ -367,7 +508,7 @@ describe("Relationship properties - read", () => {
 
             expect(ascResult.errors).toBeFalsy();
 
-            expect(ascResult?.data?.movies).toEqual([
+            expect(ascResult?.data?.[typeMovie.plural]).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {
@@ -402,7 +543,7 @@ describe("Relationship properties - read", () => {
 
             expect(descResult.errors).toBeFalsy();
 
-            expect(descResult?.data?.movies).toEqual([
+            expect(descResult?.data?.[typeMovie.plural]).toEqual([
                 {
                     title: movieTitle,
                     actorsConnection: {
@@ -439,7 +580,7 @@ describe("Relationship properties - read", () => {
 
         const query = `
             query {
-                actors(where: { name: "${actorA}" }) {
+                ${typeActor.plural}(where: { name: "${actorA}" }) {
                     name
                     movies {
                         title
@@ -467,25 +608,25 @@ describe("Relationship properties - read", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect((result?.data as any)?.actors).toHaveLength(1);
-            expect((result?.data as any)?.actors[0].name).toEqual(actorA);
+            expect((result?.data as any)?.[typeActor.plural]).toHaveLength(1);
+            expect((result?.data as any)?.[typeActor.plural][0].name).toEqual(actorA);
 
-            expect((result?.data as any)?.actors[0].movies).toHaveLength(1);
+            expect((result?.data as any)?.[typeActor.plural][0].movies).toHaveLength(1);
 
-            expect((result?.data as any)?.actors[0].movies[0].actorsConnection.edges).toHaveLength(3);
-            expect((result?.data as any)?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
+            expect((result?.data as any)?.[typeActor.plural][0].movies[0].actorsConnection.edges).toHaveLength(3);
+            expect((result?.data as any)?.[typeActor.plural][0].movies[0].actorsConnection.edges).toContainEqual({
                 screenTime: 5,
                 node: {
                     name: actorC,
                 },
             });
-            expect((result?.data as any)?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
+            expect((result?.data as any)?.[typeActor.plural][0].movies[0].actorsConnection.edges).toContainEqual({
                 screenTime: 105,
                 node: {
                     name: actorB,
                 },
             });
-            expect((result?.data as any)?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
+            expect((result?.data as any)?.[typeActor.plural][0].movies[0].actorsConnection.edges).toContainEqual({
                 screenTime: 105,
                 node: {
                     name: actorA,
@@ -503,7 +644,7 @@ describe("Relationship properties - read", () => {
 
         const query = `
             query {
-                actors(where: { name: "${actorA}" }) {
+                ${typeActor.plural}(where: { name: "${actorA}" }) {
                     name
                     movies {
                         title
@@ -531,19 +672,19 @@ describe("Relationship properties - read", () => {
 
             expect(result.errors).toBeFalsy();
 
-            expect((result?.data as any)?.actors).toHaveLength(1);
-            expect((result?.data as any)?.actors[0].name).toEqual(actorA);
+            expect((result?.data as any)?.[typeActor.plural]).toHaveLength(1);
+            expect((result?.data as any)?.[typeActor.plural][0].name).toEqual(actorA);
 
-            expect((result?.data as any)?.actors[0].movies).toHaveLength(1);
+            expect((result?.data as any)?.[typeActor.plural][0].movies).toHaveLength(1);
 
-            expect((result?.data as any)?.actors[0].movies[0].actorsConnection.edges).toHaveLength(2);
-            expect((result?.data as any)?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
+            expect((result?.data as any)?.[typeActor.plural][0].movies[0].actorsConnection.edges).toHaveLength(2);
+            expect((result?.data as any)?.[typeActor.plural][0].movies[0].actorsConnection.edges).toContainEqual({
                 screenTime: 5,
                 node: {
                     name: actorC,
                 },
             });
-            expect((result?.data as any)?.actors[0].movies[0].actorsConnection.edges).toContainEqual({
+            expect((result?.data as any)?.[typeActor.plural][0].movies[0].actorsConnection.edges).toContainEqual({
                 screenTime: 105,
                 node: {
                     name: actorB,

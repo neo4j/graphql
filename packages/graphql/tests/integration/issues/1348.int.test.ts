@@ -145,7 +145,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
 
         const updateProgrammeItemsResults = await graphqlQuery(
             updateProgrammeItems,
-            (createProgrammeItemsResults.data![testProgrammeItem.operations.create] as any).info.bookmark as
+            (createProgrammeItemsResults.data?.[testProgrammeItem.operations.create] as any).info.bookmark as
                 | string
                 | undefined
         );
@@ -165,7 +165,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
         `;
         const queryResults = await graphqlQuery(
             query,
-            (updateProgrammeItemsResults.data![testProgrammeItem.operations.update] as any).info.bookmark as
+            (updateProgrammeItemsResults.data?.[testProgrammeItem.operations.update] as any).info.bookmark as
                 | string
                 | undefined
         );

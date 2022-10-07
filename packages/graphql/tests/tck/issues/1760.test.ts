@@ -128,7 +128,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id\\", { this: this, auth: $auth }) AS this_relatedId
-                RETURN this_relatedId AS this_relatedId
+                RETURN head(collect(this_relatedId)) AS this_relatedId
             }
             WITH *
             ORDER BY this_relatedId ASC
@@ -142,7 +142,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 WITH { node: { fullName: this_NameDetails.fullName } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_nameDetailsConnection
             }
             CALL {
                 WITH this
@@ -155,12 +155,12 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                     WITH { node: { fullName: this_Market_NameDetails.fullName } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS this_Market_nameDetailsConnection
                 }
-                WITH { node: { nameDetailsConnection: nameDetailsConnection } } AS edge
+                WITH { node: { nameDetailsConnection: this_Market_nameDetailsConnection } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS marketsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_marketsConnection
             }
             CALL {
                 WITH this
@@ -169,9 +169,9 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 WITH { node: { id: this_BaseObject.id } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS baseObjectConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_baseObjectConnection
             }
-            RETURN this { relatedId: this_relatedId, nameDetailsConnection: nameDetailsConnection, marketsConnection: marketsConnection, baseObjectConnection: baseObjectConnection } as this"
+            RETURN this { relatedId: this_relatedId, nameDetailsConnection: this_nameDetailsConnection, marketsConnection: this_marketsConnection, baseObjectConnection: this_baseObjectConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -25,11 +25,11 @@ import mapToDbProperty from "../../../utils/map-to-db-property";
 import { createGlobalNodeOperation } from "./create-global-node-operation";
 import { createAggregateOperation } from "./create-aggregate-operation";
 // Recursive function
-// eslint-disable-next-line import/no-cycle
+
 import { createConnectionOperation } from "./create-connection-operation";
 import { createComparisonOperation } from "./create-comparison-operation";
 // Recursive function
-// eslint-disable-next-line import/no-cycle
+
 import { createRelationshipOperation } from "./create-relationship-operation";
 
 /** Translates a property into its predicate filter */
@@ -83,7 +83,7 @@ export function createPropertyWhere({
 
         if (coalesceValue) {
             propertyRef = CypherBuilder.coalesce(
-                propertyRef as CypherBuilder.PropertyRef,
+                propertyRef,
                 new CypherBuilder.RawCypher(`${coalesceValue}`) // TODO: move into CypherBuilder.literal
             );
         }

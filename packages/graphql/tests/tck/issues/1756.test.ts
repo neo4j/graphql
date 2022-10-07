@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
             }
         `;
 
-        const nanoid = (_parent, _args, context) => {
+        const nanoid = () => {
             return `callback_value`;
         };
 
@@ -89,11 +89,11 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
             WITH this0
             CALL {
                 WITH this0
-                MERGE (this0_genre_connectOrCreate_this0:\`Genre\` { value: $this0_genre_connectOrCreate_param0 })
+                MERGE (this0_genre_connectOrCreate0:\`Genre\` { value: $this0_genre_connectOrCreate_param0 })
                 ON CREATE SET
-                    this0_genre_connectOrCreate_this0.value = $this0_genre_connectOrCreate_param1,
-                    this0_genre_connectOrCreate_this0.id = $resolvedCallbacks.this0_genre_connectOrCreate_id_nanoid
-                MERGE (this0)-[this0_genre_connectOrCreate_this1:HAS_GENRE]->(this0_genre_connectOrCreate_this0)
+                    this0_genre_connectOrCreate0.value = $this0_genre_connectOrCreate_param1,
+                    this0_genre_connectOrCreate0.id = $resolvedCallbacks.this0_genre_connectOrCreate0_id_nanoid
+                MERGE (this0)-[this0_genre_connectOrCreate_this0:HAS_GENRE]->(this0_genre_connectOrCreate0)
                 RETURN COUNT(*) AS _
             }
             RETURN this0
@@ -115,7 +115,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
                 \\"this0_genre_connectOrCreate_param1\\": \\"Action\\",
                 \\"resolvedCallbacks\\": {
                     \\"this0_id_nanoid\\": \\"callback_value\\",
-                    \\"this0_genre_connectOrCreate_id_nanoid\\": \\"callback_value\\"
+                    \\"this0_genre_connectOrCreate0_id_nanoid\\": \\"callback_value\\"
                 }
             }"
         `);
