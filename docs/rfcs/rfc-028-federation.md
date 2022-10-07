@@ -2,23 +2,28 @@
 
 Requirements:
 
-- Depends on package `@apollo/subgraph`
-- Opt into Federation in schema using `extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])`
-- Needs to be able to accept the `@key` directive on types
-- Whenever we see a `@key` directive, add a `__resolveReference` resolver for that type
-- Returns a schema by running `buildSubgraphSchema` from `@apollo/subgraph`
+* Depends on package `@apollo/subgraph`
+* Opt into Federation in schema using `extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])`
+* Needs to be able to accept the `@key` directive on types
+* Whenever we see a `@key` directive, add a `__resolveReference` resolver for that type
+* Returns a schema by running `buildSubgraphSchema` from `@apollo/subgraph`
 
-## PoC - OGM
+## Solution - PoC plugin using the OGM for resolution
 
-### The Package
+This will be a new package, depending on `@neo4j/graphql-ogm` and `@apollo/subgraph`. A new "plugin" slot will be added alongside `auth` and `subscriptions` for this to be added into the library. It will provide the resolver signature which can be used to inject the `__resolveReference` resolvers into the schema. It will provide the schema extension needed to enable Federation. It will provide a rudimentary way of fetching the schema returned by `buildSubgraphSchema`.
 
-This will be a new npm package. 
+### Resolver signature
 
-The new package will depend on `@apollo/subgraph`.
+```ts
+function getResolveReference(__typename: String!) {
+    const __resolveReference = async (reference, context) => {
+        const model = this.ogm.model(__typename);
+        return model.find({ where: reference, context });
+    }
 
-An OGM using the type definitions provided by the user will be constructed on start-up.
-
-### Defining resolvers
+    return __resolveReference;
+}
+```
 
 Given the following user type definitions:
 
@@ -47,26 +52,23 @@ const resolvers = {
 }
 ```
 
-### Augmenting the schema
+### Extending the schema
 
-Before the library calls `makeAugmentedSchema`, pass the type definitions into the Federation "plugin".
-This will perform the following:
-
-Adding in the opt-in for Federation:
+Add in the opt-in for Federation:
 
 ```gql
 extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 ```
 
-Return the `__resolveReference` resolvers.
+### Schema validation
 
-Pass the "Federation augmented" type definitions into `makeAugmentedSchema` (something will break here)
+If the Federation plugin is enabled, ignore `@link` and `@shareable` in `validateDocument`.
 
-Where we currently call `makeExecutableSchema`, add a conditional to check if Federation is enabled, and call `buildSubgraphSchema` if so.
+### Schema generation
 
-In `validateDocument`, ignore `@link` and `@shareable`.
+Where we currently call `makeExecutableSchema`, add a conditional to check if Federation is enabled, and fetch the schema from the Federation plugin if so.
 
-## Plugin implementation - using OGM
+## Solution - plugin using OGM, generic using lifecycle hooks
 
 ### Required lifecycle hooks
 
@@ -75,7 +77,7 @@ In `validateDocument`, ignore `@link` and `@shareable`.
 * Add resolvers
 * _Replace_ the schema return
 
-## Slightly mad idea
+### Concept for how to get schema from `buildSubgraphSchema` without replacing the schema generation
 
 Call `buildSubgraphSchema` on Federation package construction. Extract type definitions and resolvers.
 Generate `__resolveReference` resolvers, merging them with extracted resolvers.
