@@ -306,6 +306,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@apollo/protobufjs@npm:1.2.6":
+  version: 1.2.6
+  resolution: "@apollo/protobufjs@npm:1.2.6"
+  dependencies:
+    "@protobufjs/aspromise": ^1.1.2
+    "@protobufjs/base64": ^1.1.2
+    "@protobufjs/codegen": ^2.0.4
+    "@protobufjs/eventemitter": ^1.1.0
+    "@protobufjs/fetch": ^1.1.0
+    "@protobufjs/float": ^1.0.2
+    "@protobufjs/inquire": ^1.1.0
+    "@protobufjs/path": ^1.1.2
+    "@protobufjs/pool": ^1.1.0
+    "@protobufjs/utf8": ^1.1.0
+    "@types/long": ^4.0.0
+    "@types/node": ^10.1.0
+    long: ^4.0.0
+  bin:
+    apollo-pbjs: bin/pbjs
+    apollo-pbts: bin/pbts
+  checksum: 1410e94f87f7ce202491f2c45633ddea0590f5279bd3eaaeb25aa114345d09a5041f15d79b75e5915b23813dc71ec52e71fc1fda858fee21dead890dcb768416
+  languageName: node
+  linkType: hard
+
 "@apollo/utils.dropunuseddefinitions@npm:^1.1.0":
   version: 1.1.0
   resolution: "@apollo/utils.dropunuseddefinitions@npm:1.1.0"
@@ -2498,8 +2522,8 @@ __metadata:
     "@types/jest": 29.1.2
     "@types/node": 16.11.64
     amqplib: 0.10.3
-    apollo-server: 3.10.2
-    apollo-server-express: 3.10.2
+    apollo-server: 3.10.3
+    apollo-server-express: 3.10.3
     camelcase: 6.3.0
     graphql-ws: 5.11.2
     jest: 29.1.2
@@ -2597,8 +2621,8 @@ __metadata:
     "@types/semver": 7.3.12
     "@types/supertest": 2.0.12
     "@types/ws": 8.5.3
-    apollo-server: 3.10.2
-    apollo-server-express: 3.10.2
+    apollo-server: 3.10.3
+    apollo-server-express: 3.10.3
     camelcase: ^6.3.0
     debug: ^4.3.4
     dedent: 0.7.0
@@ -3215,7 +3239,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express-serve-static-core@npm:*, @types/express-serve-static-core@npm:^4.17.18":
+"@types/express-serve-static-core@npm:*, @types/express-serve-static-core@npm:4.17.31, @types/express-serve-static-core@npm:^4.17.18":
   version: 4.17.31
   resolution: "@types/express-serve-static-core@npm:4.17.31"
   dependencies:
@@ -3223,17 +3247,6 @@ __metadata:
     "@types/qs": "*"
     "@types/range-parser": "*"
   checksum: 009bfbe1070837454a1056aa710d0390ee5fb8c05dfe5a1691cc3e2ca88dc256f80e1ca27cb51a978681631d2f6431bfc9ec352ea46dd0c6eb183d0170bde5df
-  languageName: node
-  linkType: hard
-
-"@types/express-serve-static-core@npm:4.17.30":
-  version: 4.17.30
-  resolution: "@types/express-serve-static-core@npm:4.17.30"
-  dependencies:
-    "@types/node": "*"
-    "@types/qs": "*"
-    "@types/range-parser": "*"
-  checksum: c40d9027884ab9e97fa29d9d41d1b75a5966109312e26594cf03c61b278b5bf8e095f53589e47899b34a2e224291a44043617695c3e8bd22284f988e48582ee6
   languageName: node
   linkType: hard
 
@@ -3246,18 +3259,6 @@ __metadata:
     "@types/qs": "*"
     "@types/serve-static": "*"
   checksum: 15c1af46d02de834e4a225eccaa9d85c0370fdbb3ed4e1bc2d323d24872309961542b993ae236335aeb3e278630224a6ea002078d39e651d78a3b0356b1eaa79
-  languageName: node
-  linkType: hard
-
-"@types/express@npm:4.17.13":
-  version: 4.17.13
-  resolution: "@types/express@npm:4.17.13"
-  dependencies:
-    "@types/body-parser": "*"
-    "@types/express-serve-static-core": ^4.17.18
-    "@types/qs": "*"
-    "@types/serve-static": "*"
-  checksum: 12a2a0e6c4b993fc0854bec665906788aea0d8ee4392389d7a98a5de1eefdd33c9e1e40a91f3afd274011119c506f7b4126acb97fae62ae20b654974d44cba12
   languageName: node
   linkType: hard
 
@@ -4518,7 +4519,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-reporting-protobuf@npm:^3.3.1, apollo-reporting-protobuf@npm:^3.3.2":
+"apollo-reporting-protobuf@npm:^3.3.1":
   version: 3.3.2
   resolution: "apollo-reporting-protobuf@npm:3.3.2"
   dependencies:
@@ -4527,9 +4528,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-server-core@npm:^3.10.2":
-  version: 3.10.2
-  resolution: "apollo-server-core@npm:3.10.2"
+"apollo-reporting-protobuf@npm:^3.3.3":
+  version: 3.3.3
+  resolution: "apollo-reporting-protobuf@npm:3.3.3"
+  dependencies:
+    "@apollo/protobufjs": 1.2.6
+  checksum: 6900db30476ef2e888ecef4c291e26579eba9695dc874ca8b3d1f93064bea307689172790b9d574849e5bdb371953ea38f2caddc5abb51e1ca197197f3d56d28
+  languageName: node
+  linkType: hard
+
+"apollo-server-core@npm:^3.10.3":
+  version: 3.10.3
+  resolution: "apollo-server-core@npm:3.10.3"
   dependencies:
     "@apollo/utils.keyvaluecache": ^1.0.1
     "@apollo/utils.logger": ^1.0.0
@@ -4540,22 +4550,22 @@ __metadata:
     "@graphql-tools/schema": ^8.0.0
     "@josephg/resolvable": ^1.0.0
     apollo-datasource: ^3.3.2
-    apollo-reporting-protobuf: ^3.3.2
+    apollo-reporting-protobuf: ^3.3.3
     apollo-server-env: ^4.2.1
     apollo-server-errors: ^3.3.1
-    apollo-server-plugin-base: ^3.6.2
-    apollo-server-types: ^3.6.2
+    apollo-server-plugin-base: ^3.6.3
+    apollo-server-types: ^3.6.3
     async-retry: ^1.2.1
     fast-json-stable-stringify: ^2.1.0
     graphql-tag: ^2.11.0
     loglevel: ^1.6.8
     lru-cache: ^6.0.0
     sha.js: ^2.4.11
-    uuid: ^8.0.0
+    uuid: ^9.0.0
     whatwg-mimetype: ^3.0.0
   peerDependencies:
     graphql: ^15.3.0 || ^16.0.0
-  checksum: 14b8ac9ef442993b5ef9354d6457cfeeaa1af09c8ece6041bfbf061e7c5d9983f20971ebf6ae2c9b8b8447ad5273943ea548a139ecf06c3559d380ed5c077bcb
+  checksum: 1a9c3ca29c1e664970737e83d76999d43ceb938e39026a329682fcc80fa17a564a69cb7b38110b1928d3d512ae77eeeb8ed6e160043521052c0360b0b00f0ada
   languageName: node
   linkType: hard
 
@@ -4577,64 +4587,64 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apollo-server-express@npm:3.10.2, apollo-server-express@npm:^3.10.2":
-  version: 3.10.2
-  resolution: "apollo-server-express@npm:3.10.2"
+"apollo-server-express@npm:3.10.3, apollo-server-express@npm:^3.10.3":
+  version: 3.10.3
+  resolution: "apollo-server-express@npm:3.10.3"
   dependencies:
     "@types/accepts": ^1.3.5
     "@types/body-parser": 1.19.2
     "@types/cors": 2.8.12
-    "@types/express": 4.17.13
-    "@types/express-serve-static-core": 4.17.30
+    "@types/express": 4.17.14
+    "@types/express-serve-static-core": 4.17.31
     accepts: ^1.3.5
-    apollo-server-core: ^3.10.2
-    apollo-server-types: ^3.6.2
+    apollo-server-core: ^3.10.3
+    apollo-server-types: ^3.6.3
     body-parser: ^1.19.0
     cors: ^2.8.5
     parseurl: ^1.3.3
   peerDependencies:
     express: ^4.17.1
     graphql: ^15.3.0 || ^16.0.0
-  checksum: 8e0159c00b7b2dbcb043542cf37d62bcd1dfd958dc88fa4e3dd6b273632524cde01d26ded3438e04dd2f77783f29c5075ec2b5fa78df534ee2d87478bf20d602
+  checksum: c6dcfd8b61a558bd479d93d1c9cc4f436145b31e7f5e53d6c655d919c79f0b4b785788f0d16fc1d94c1929b85b034ae84a7332ce4e20603b67e0a4709e48b3a6
   languageName: node
   linkType: hard
 
-"apollo-server-plugin-base@npm:^3.6.2":
-  version: 3.6.2
-  resolution: "apollo-server-plugin-base@npm:3.6.2"
+"apollo-server-plugin-base@npm:^3.6.3":
+  version: 3.6.3
+  resolution: "apollo-server-plugin-base@npm:3.6.3"
   dependencies:
-    apollo-server-types: ^3.6.2
+    apollo-server-types: ^3.6.3
   peerDependencies:
     graphql: ^15.3.0 || ^16.0.0
-  checksum: 8430aa65619d96cd9e15e46b7352bca5abda3f7e4b19d3a289cf337263cdd5bc0d808d2ef110ff76358fea9cf63e62c63d0a8502f1555ee7bb8c784c64b52b6d
+  checksum: 50e690cf4c5047957c4546676f11d82f8c0bee2c0340573322f23188af27175ac49859d463c6123ebef500b3c32a0932e3e3f9fa8671e2d1a410d2e89c8608e3
   languageName: node
   linkType: hard
 
-"apollo-server-types@npm:^3.6.2":
-  version: 3.6.2
-  resolution: "apollo-server-types@npm:3.6.2"
+"apollo-server-types@npm:^3.6.3":
+  version: 3.6.3
+  resolution: "apollo-server-types@npm:3.6.3"
   dependencies:
     "@apollo/utils.keyvaluecache": ^1.0.1
     "@apollo/utils.logger": ^1.0.0
-    apollo-reporting-protobuf: ^3.3.2
+    apollo-reporting-protobuf: ^3.3.3
     apollo-server-env: ^4.2.1
   peerDependencies:
     graphql: ^15.3.0 || ^16.0.0
-  checksum: 410d7c0e6cfcc68dbc5f0182e07008235c6ecf5ab7d01d334a2af3c4deed3921cff12e32f54206d16aad88d5213f67f5f5302762ac92a6883b778800334e2016
+  checksum: ebd218e6fa8b756bb2d6954b454676907d99b8f140923b439cc1bbb200251f9df7228a9d83c5c91bb571a448cc80c2d86bc0a0eae491a4ce028e86a724cde68a
   languageName: node
   linkType: hard
 
-"apollo-server@npm:3.10.2":
-  version: 3.10.2
-  resolution: "apollo-server@npm:3.10.2"
+"apollo-server@npm:3.10.3":
+  version: 3.10.3
+  resolution: "apollo-server@npm:3.10.3"
   dependencies:
-    "@types/express": 4.17.13
-    apollo-server-core: ^3.10.2
-    apollo-server-express: ^3.10.2
+    "@types/express": 4.17.14
+    apollo-server-core: ^3.10.3
+    apollo-server-express: ^3.10.3
     express: ^4.17.1
   peerDependencies:
     graphql: ^15.3.0 || ^16.0.0
-  checksum: 9f3c22ed1d4275a8bd5559b276dadab26758c3b4ae90b454d86aeccfa1a0da90d1201f627676e36ec84b8d581f767f24037d682a58615247b393930aca850324
+  checksum: eec2423bbd30256683c0e7873cd1e3f616ff2a3c90cf7bba241880027f5e1374d20d13bf7ce4b09543b16753d0d7a4627f77d64de77b5b241c410f0f246bdbd7
   languageName: node
   linkType: hard
 
@@ -5337,6 +5347,26 @@ __metadata:
     type-is: ~1.6.18
     unpipe: 1.0.0
   checksum: 12fffdeac82fe20dddcab7074215d5156e7d02a69ae90cbe9fee1ca3efa2f28ef52097cbea76685ee0a1509c71d85abd0056a08e612c09077cad6277a644cf88
+  languageName: node
+  linkType: hard
+
+"body-parser@npm:1.20.1":
+  version: 1.20.1
+  resolution: "body-parser@npm:1.20.1"
+  dependencies:
+    bytes: 3.1.2
+    content-type: ~1.0.4
+    debug: 2.6.9
+    depd: 2.0.0
+    destroy: 1.2.0
+    http-errors: 2.0.0
+    iconv-lite: 0.4.24
+    on-finished: 2.4.1
+    qs: 6.11.0
+    raw-body: 2.5.1
+    type-is: ~1.6.18
+    unpipe: 1.0.0
+  checksum: f1050dbac3bede6a78f0b87947a8d548ce43f91ccc718a50dd774f3c81f2d8b04693e52acf62659fad23101827dd318da1fb1363444ff9a8482b886a3e4a5266
   languageName: node
   linkType: hard
 
@@ -8307,9 +8337,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:7.31.8":
-  version: 7.31.8
-  resolution: "eslint-plugin-react@npm:7.31.8"
+"eslint-plugin-react@npm:7.31.9":
+  version: 7.31.9
+  resolution: "eslint-plugin-react@npm:7.31.9"
   dependencies:
     array-includes: ^3.1.5
     array.prototype.flatmap: ^1.3.0
@@ -8327,7 +8357,7 @@ __metadata:
     string.prototype.matchall: ^4.0.7
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
-  checksum: 0683e2a624a4df6f08264a3f6bc614a81e8f961c83173bdf2d8d3523f84ed5d234cddc976dbc6815913e007c5984df742ba61be0c0592b27c3daabe0f68165a3
+  checksum: 073256ceaaa8b0425f76544a44fe15c2f08ba4786847035f640b1e0144a023f2c854a93d77a3951969303962feaaa93f1d4a038d322b029cdce2190e8e3338a4
   languageName: node
   linkType: hard
 
@@ -8603,7 +8633,46 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:4.18.1, express@npm:^4.17.1, express@npm:^4.17.3":
+"express@npm:4.18.2":
+  version: 4.18.2
+  resolution: "express@npm:4.18.2"
+  dependencies:
+    accepts: ~1.3.8
+    array-flatten: 1.1.1
+    body-parser: 1.20.1
+    content-disposition: 0.5.4
+    content-type: ~1.0.4
+    cookie: 0.5.0
+    cookie-signature: 1.0.6
+    debug: 2.6.9
+    depd: 2.0.0
+    encodeurl: ~1.0.2
+    escape-html: ~1.0.3
+    etag: ~1.8.1
+    finalhandler: 1.2.0
+    fresh: 0.5.2
+    http-errors: 2.0.0
+    merge-descriptors: 1.0.1
+    methods: ~1.1.2
+    on-finished: 2.4.1
+    parseurl: ~1.3.3
+    path-to-regexp: 0.1.7
+    proxy-addr: ~2.0.7
+    qs: 6.11.0
+    range-parser: ~1.2.1
+    safe-buffer: 5.2.1
+    send: 0.18.0
+    serve-static: 1.15.0
+    setprototypeof: 1.2.0
+    statuses: 2.0.1
+    type-is: ~1.6.18
+    utils-merge: 1.0.1
+    vary: ~1.1.2
+  checksum: 3c4b9b076879442f6b968fe53d85d9f1eeacbb4f4c41e5f16cc36d77ce39a2b0d81b3f250514982110d815b2f7173f5561367f9110fcc541f9371948e8c8b037
+  languageName: node
+  linkType: hard
+
+"express@npm:^4.17.1, express@npm:^4.17.3":
   version: 4.18.1
   resolution: "express@npm:4.18.1"
   dependencies:
@@ -9677,7 +9746,7 @@ __metadata:
     "@neo4j-documentation/macros": ^1.0.2
     "@neo4j-documentation/remote-include": ^1.0.0
     cheerio: 1.0.0-rc.12
-    express: 4.18.1
+    express: 4.18.2
     hyperlink: 5.0.4
     npm-watch: 0.11.0
   languageName: unknown
@@ -13615,7 +13684,7 @@ __metadata:
   resolution: "migration@workspace:examples/migration"
   dependencies:
     "@neo4j/graphql": ^3.5.0
-    apollo-server: 3.10.2
+    apollo-server: 3.10.3
     graphql: 16.6.0
     neo4j-driver: 5.1.0
   languageName: unknown
@@ -14065,12 +14134,12 @@ __metadata:
     "@types/jsonwebtoken": 8.5.9
     "@types/node": 16.11.64
     "@types/uuid": 8.3.4
-    apollo-server-express: 3.10.2
+    apollo-server-express: 3.10.3
     bcrypt: 5.1.0
     cross-env: 7.0.3
     debug: 4.3.4
     dotenv: ^16.0.1
-    express: 4.18.1
+    express: 4.18.2
     express-rate-limit: ^6.5.2
     graphql: 16.6.0
     jest: 29.1.2
@@ -14134,7 +14203,7 @@ __metadata:
     eslint-plugin-import: 2.26.0
     eslint-plugin-jest: 27.1.1
     eslint-plugin-jsx-a11y: 6.6.1
-    eslint-plugin-react: 7.31.8
+    eslint-plugin-react: 7.31.9
     graphql: 16.6.0
     husky: 8.0.1
     jest: 29.1.2
@@ -16385,19 +16454,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:6.9.3":
-  version: 6.9.3
-  resolution: "qs@npm:6.9.3"
-  checksum: 89cd1b5e521c19a7e0a7a056ddc261c5c30889664608cf9ce6085f9f25606fc48568cf6a6249e641b4b5c04dac7889e3b82133142523abf397228eb4f488fc38
-  languageName: node
-  linkType: hard
-
-"qs@npm:^6.10.3, qs@npm:^6.5.2":
+"qs@npm:6.11.0, qs@npm:^6.10.3, qs@npm:^6.5.2":
   version: 6.11.0
   resolution: "qs@npm:6.11.0"
   dependencies:
     side-channel: ^1.0.4
   checksum: 6e1f29dd5385f7488ec74ac7b6c92f4d09a90408882d0c208414a34dd33badc1a621019d4c799a3df15ab9b1d0292f97c1dd71dc7c045e69f81a8064e5af7297
+  languageName: node
+  linkType: hard
+
+"qs@npm:6.9.3":
+  version: 6.9.3
+  resolution: "qs@npm:6.9.3"
+  checksum: 89cd1b5e521c19a7e0a7a056ddc261c5c30889664608cf9ce6085f9f25606fc48568cf6a6249e641b4b5c04dac7889e3b82133142523abf397228eb4f488fc38
   languageName: node
   linkType: hard
 
@@ -19958,12 +20027,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^8.0.0, uuid@npm:^8.3.0, uuid@npm:^8.3.2":
+"uuid@npm:^8.3.0, uuid@npm:^8.3.2":
   version: 8.3.2
   resolution: "uuid@npm:8.3.2"
   bin:
     uuid: dist/bin/uuid
   checksum: 5575a8a75c13120e2f10e6ddc801b2c7ed7d8f3c8ac22c7ed0c7b2ba6383ec0abda88c905085d630e251719e0777045ae3236f04c812184b7c765f63a70e58df
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "uuid@npm:9.0.0"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 8dd2c83c43ddc7e1c71e36b60aea40030a6505139af6bee0f382ebcd1a56f6cd3028f7f06ffb07f8cf6ced320b76aea275284b224b002b289f89fe89c389b028
   languageName: node
   linkType: hard
 
