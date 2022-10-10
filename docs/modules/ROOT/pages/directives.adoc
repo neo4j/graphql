@@ -17,6 +17,8 @@ Reference: xref::auth/auth-directive.adoc[`@auth` directive]
 
 The `@callback` directive is used to specify a function that will be invoked when updating or creating the properties on a node or relationship.
 
+Note: The `@callback` directive has been deprecated. Please use the xref::directives.adoc#populated-by-directive[`@populatedBy` directive] instead.
+
 Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-callback[`@callback`]
 
 == `@coalesce`
@@ -67,6 +69,14 @@ Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogener
 The `@node` directive is used to specify the configuration of a GraphQL object type which represents a Neo4j node.
 
 Reference: xref::type-definitions/database-mapping.adoc#type-definitions-node[`@node`]
+
+[[populated-by-directive]]
+== `@populatedBy`
+
+The `@populatedBy` directive is used to specify a callback function that will be invoked and used to populate the given field when updating or creating the properties on a node or relationship.
+The callback function will be executed after a GraphQL query has been parsed, before data is sent to the database.
+
+Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-populated-by[`@populatedBy`]
 
 == `@private`
 
