@@ -2473,7 +2473,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": ^2.4.2
     "@graphql-codegen/typescript": ^2.6.0
     "@graphql-tools/merge": ^8.3.3
-    "@neo4j/graphql": ^3.10.0
+    "@neo4j/graphql": ^3.10.1
     "@neo4j/graphql-plugin-auth": ^1.1.0
     "@types/jest": 29.1.2
     "@types/node": 16.11.64
@@ -2516,7 +2516,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-plugin-subscriptions-amqp@workspace:packages/plugins/graphql-plugin-subscriptions-amqp"
   dependencies:
-    "@neo4j/graphql": ^3.10.0
+    "@neo4j/graphql": ^3.10.1
     "@types/amqplib": 0.8.2
     "@types/debug": 4.1.7
     "@types/jest": 29.1.2
@@ -2535,7 +2535,7 @@ __metadata:
     typescript: 4.8.4
     ws: 8.9.0
   peerDependencies:
-    "@neo4j/graphql": ^3.10.0
+    "@neo4j/graphql": ^3.10.1
   languageName: unknown
   linkType: soft
 
@@ -2545,7 +2545,7 @@ __metadata:
   dependencies:
     "@neo4j-ndl/base": 0.8.4
     "@neo4j-ndl/react": 0.8.4
-    "@neo4j/graphql": 3.10.0
+    "@neo4j/graphql": 3.10.1
     "@neo4j/introspector": ^1.0.2
     "@playwright/test": 1.26.1
     "@tsconfig/create-react-app": 1.0.2
@@ -2601,7 +2601,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@neo4j/graphql@3.10.0, @neo4j/graphql@^3.10.0, @neo4j/graphql@^3.5.0, @neo4j/graphql@^3.8.0, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@3.10.1, @neo4j/graphql@^3.10.1, @neo4j/graphql@^3.5.0, @neo4j/graphql@^3.8.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
