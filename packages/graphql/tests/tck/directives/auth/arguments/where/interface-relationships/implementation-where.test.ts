@@ -231,9 +231,9 @@ describe("Cypher Auth Where", () => {
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS contentConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_contentConnection
             }
-            RETURN this { .id, contentConnection: contentConnection } as this"
+            RETURN this { .id, contentConnection: this_contentConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -287,9 +287,9 @@ describe("Cypher Auth Where", () => {
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS contentConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_contentConnection
             }
-            RETURN this { .id, contentConnection: contentConnection } as this"
+            RETURN this { .id, contentConnection: this_contentConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -404,6 +404,7 @@ describe("Cypher Auth Where", () => {
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
             CALL {
+            	 WITH this
             WITH this
             OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
             CALL apoc.do.when(this_content0 IS NOT NULL, \\"
@@ -422,6 +423,7 @@ describe("Cypher Auth Where", () => {
             RETURN count(*) AS update_this_Comment
             }
             CALL {
+            	 WITH this
             	WITH this
             OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
             WHERE (exists((this_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content0auth_param0)))
@@ -730,6 +732,7 @@ describe("Cypher Auth Where", () => {
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
             CALL {
+            	 WITH this
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
@@ -746,6 +749,7 @@ describe("Cypher Auth Where", () => {
             RETURN count(*) AS update_this_Comment
             }
             CALL {
+            	 WITH this
             	WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
@@ -795,6 +799,7 @@ describe("Cypher Auth Where", () => {
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
             CALL {
+            	 WITH this
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
@@ -812,6 +817,7 @@ describe("Cypher Auth Where", () => {
             RETURN count(*) AS update_this_Comment
             }
             CALL {
+            	 WITH this
             	WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
@@ -976,6 +982,7 @@ describe("Cypher Auth Where", () => {
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
             CALL {
+            	 WITH this
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
@@ -990,6 +997,7 @@ describe("Cypher Auth Where", () => {
             RETURN count(*) AS update_this_Comment
             }
             CALL {
+            	 WITH this
             	WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
@@ -1037,6 +1045,7 @@ describe("Cypher Auth Where", () => {
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
             CALL {
+            	 WITH this
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
@@ -1052,6 +1061,7 @@ describe("Cypher Auth Where", () => {
             RETURN count(*) AS update_this_Comment
             }
             CALL {
+            	 WITH this
             	WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this

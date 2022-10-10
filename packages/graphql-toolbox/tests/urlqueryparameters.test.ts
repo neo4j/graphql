@@ -36,7 +36,7 @@ describe("URL query parameters", () => {
 
     beforeAll(async () => {
         driver = neo4j.driver(NEO_URL, neo4j.auth.basic(NEO_USER, NEO_PASSWORD));
-        const session = await driver.session();
+        const session = driver.session();
         try {
             await session.run(`CREATE OR REPLACE DATABASE ${databaseName}`);
         } catch (err) {
@@ -47,7 +47,7 @@ describe("URL query parameters", () => {
     });
 
     afterAll(async () => {
-        const session = await driver.session();
+        const session = driver.session();
         try {
             await session.run(`DROP DATABASE ${databaseName} IF EXISTS`);
         } catch (err) {

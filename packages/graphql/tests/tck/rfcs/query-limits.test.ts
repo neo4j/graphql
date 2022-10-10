@@ -18,7 +18,7 @@
  */
 
 import type { DocumentNode } from "graphql";
-import gql from "graphql-tag";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
@@ -41,6 +41,11 @@ describe("tck/rfcs/query-limits", () => {
 
             type Show @queryOptions(limit: { max: 2 }) {
                 id: ID!
+            }
+
+            type Festival {
+                name: String!
+                shows: [Show!]! @relationship(type: "PART_OF", direction: IN)
             }
         `;
 
@@ -221,9 +226,9 @@ describe("tck/rfcs/query-limits", () => {
                     WITH edge, totalCount
                     LIMIT 2
                     WITH collect(edge) AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
                 }
-                RETURN this { .id, actorsConnection: actorsConnection } as this"
+                RETURN this { .id, actorsConnection: this_actorsConnection } as this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -234,6 +239,97 @@ describe("tck/rfcs/query-limits", () => {
                     }
                 }"
             `);
+        });
+
+        test("should extend the limit to the connection field if `first` provided", async () => {
+            const query = gql`
+                query {
+                    movies {
+                        id
+                        actorsConnection(first: 4) {
+                            edges {
+                                node {
+                                    id
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const req = createJwtRequest(secret, {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Movie\`)
+                WITH *
+                LIMIT $this_limit
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Person:\`Person\`)
+                    WITH { node: { id: this_Person.id } } AS edge
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    UNWIND edges AS edge
+                    WITH edge, totalCount
+                    LIMIT 4
+                    WITH collect(edge) AS edges, totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                }
+                RETURN this { .id, actorsConnection: this_actorsConnection } as this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"this_limit\\": {
+                        \\"low\\": 3,
+                        \\"high\\": 0
+                    }
+                }"
+            `);
+        });
+
+        test("should extend the limit to the connection field if `first` provided, honouring the `max` argument", async () => {
+            const query = gql`
+                query {
+                    festivals {
+                        name
+                        showsConnection(first: 3) {
+                            edges {
+                                node {
+                                    id
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const req = createJwtRequest(secret, {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Festival\`)
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this_connection_showsConnectionthis0:PART_OF]-(this_Show:\`Show\`)
+                    WITH { node: { id: this_Show.id } } AS edge
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    UNWIND edges AS edge
+                    WITH edge, totalCount
+                    LIMIT 2
+                    WITH collect(edge) AS edges, totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS this_showsConnection
+                }
+                RETURN this { .name, showsConnection: this_showsConnection } as this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
         });
 
         test("should limit the relationship field level query", async () => {

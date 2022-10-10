@@ -90,9 +90,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
                 WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, age: this_Actor.age } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection: actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -137,9 +137,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
                 WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, age: this_Actor.age } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection: actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -184,9 +184,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
                 WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, age: this_Actor.age } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection: actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -231,9 +231,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
                 WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, age: this_Actor.age } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection: actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

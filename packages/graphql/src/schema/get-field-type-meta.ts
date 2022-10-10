@@ -28,7 +28,6 @@ function getName(type: TypeNode): string {
 function getPrettyName(type: TypeNode): string {
     let result: string;
 
-    // eslint-disable-next-line default-case
     switch (type.kind) {
         case Kind.NAMED_TYPE:
             result = type.name.value;

@@ -41,7 +41,7 @@ async function start(typeDefs = defaultTypeDefs, driver = {}) {
         context: ({ req }) => ({ driver, req }),
     });
     const { url } = await server.listen();
-    // eslint-disable-next-line no-console
+     
     console.log(`🚀  Server ready at ${url}`);
 }
 

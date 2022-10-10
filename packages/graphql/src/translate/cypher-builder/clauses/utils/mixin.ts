@@ -39,7 +39,7 @@ function applyMixins<T>(
             Object.defineProperty(
                 baseClass.prototype,
                 name,
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
                 Object.getOwnPropertyDescriptor(baseCtor.prototype, name) || Object.create(null)
             );
         });

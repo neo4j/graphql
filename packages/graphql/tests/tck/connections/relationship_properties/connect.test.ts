@@ -105,10 +105,10 @@ describe("Relationship Properties Connect Cypher", () => {
                 WITH { screenTime: this0_connection_actorsConnectionthis0.screenTime, node: { name: this0_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this0_actorsConnection
             }
             RETURN [
-            this0 { .title, actorsConnection: actorsConnection }] AS data"
+            this0 { .title, actorsConnection: this0_actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -179,10 +179,10 @@ describe("Relationship Properties Connect Cypher", () => {
                 WITH { screenTime: this0_connection_actorsConnectionthis0.screenTime, node: { name: this0_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this0_actorsConnection
             }
             RETURN [
-            this0 { .title, actorsConnection: actorsConnection }] AS data"
+            this0 { .title, actorsConnection: this0_actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -244,9 +244,9 @@ describe("Relationship Properties Connect Cypher", () => {
                 WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN collect(DISTINCT this { .title, actorsConnection: actorsConnection }) AS data"
+            RETURN collect(DISTINCT this { .title, actorsConnection: this_actorsConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -311,9 +311,9 @@ describe("Relationship Properties Connect Cypher", () => {
                 WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN collect(DISTINCT this { .title, actorsConnection: actorsConnection }) AS data"
+            RETURN collect(DISTINCT this { .title, actorsConnection: this_actorsConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

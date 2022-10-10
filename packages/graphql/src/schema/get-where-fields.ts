@@ -42,12 +42,7 @@ function getWhereFields({
 }): { [k: string]: string } {
     return {
         ...(isInterface ? {} : { OR: `[${typeName}Where!]`, AND: `[${typeName}Where!]` }),
-        // Custom scalar fields only support basic equality
-        ...fields.scalarFields.reduce((res, f) => {
-            res[f.fieldName] = f.typeMeta.array ? `[${f.typeMeta.name}]` : f.typeMeta.name;
-            return res;
-        }, {}),
-        ...[...fields.primitiveFields, ...fields.temporalFields, ...fields.enumFields, ...fields.pointFields].reduce(
+        ...[...fields.primitiveFields, ...fields.temporalFields, ...fields.enumFields, ...fields.pointFields, ...fields.scalarFields].reduce(
             (res, f) => {
                 res[f.fieldName] = f.typeMeta.input.where.pretty;
                 res[`${f.fieldName}_NOT`] = f.typeMeta.input.where.pretty;

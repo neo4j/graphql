@@ -23,7 +23,7 @@ import type { GraphQLResolveInfo } from "graphql";
  * Based on the default field resolver used by graphql-js that accounts for aliased fields
  * @link https://github.com/graphql/graphql-js/blob/main/src/execution/execute.ts#L999-L1015
  */
-// eslint-disable-next-line consistent-return
+
 export function defaultFieldResolver(source: any, args: any, context: unknown, info: GraphQLResolveInfo) {
     if ((typeof source === "object" && source !== null) || typeof source === "function") {
         const property =

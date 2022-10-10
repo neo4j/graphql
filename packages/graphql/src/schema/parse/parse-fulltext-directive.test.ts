@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-/* eslint-disable-next-line import/no-extraneous-dependencies */
 import { gql } from "apollo-server-core";
 import type { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
 import getObjFieldMeta from "../get-obj-field-meta";

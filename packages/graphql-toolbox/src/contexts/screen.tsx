@@ -42,5 +42,5 @@ export function ScreenProvider(props: React.PropsWithChildren<any>) {
         },
     });
 
-    return <ScreenContext.Provider value={value as State}>{props.children}</ScreenContext.Provider>;
+    return <ScreenContext.Provider value={value }>{props.children}</ScreenContext.Provider>;
 }
