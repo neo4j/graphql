@@ -75,7 +75,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -124,7 +124,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -170,7 +170,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -218,7 +218,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -243,7 +243,7 @@ describe("Custom Scalar Filtering", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const value1 = "someValue";
-            const value2 = "someOtherValue"
+            const value2 = "someOtherValue";
             const unwantedValue = "foo";
 
             try {
@@ -269,7 +269,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -316,7 +316,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -364,7 +364,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -413,7 +413,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -459,7 +459,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -507,7 +507,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { unwantedValue },
                 });
 
@@ -557,7 +557,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { unwantedValue },
                 });
 
@@ -604,7 +604,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                     variableValues: { value },
                 });
 
@@ -651,7 +651,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -700,7 +700,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -747,7 +747,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -793,7 +793,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -842,7 +842,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
@@ -888,7 +888,7 @@ describe("Custom Scalar Filtering", () => {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
-                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmarks()),
+                    contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
                 });
 
                 expect(gqlResult.errors).toBeUndefined();
