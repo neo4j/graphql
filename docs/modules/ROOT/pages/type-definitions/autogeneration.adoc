@@ -212,7 +212,7 @@ NOTE: The second positional argument, in this case `_args`, has a type of `Recor
 [[type-definitions-autogeneration-callback]]
 == `@callback`
 
-NOTE: The `@callback` directive has been deprecated. Please use xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-populated-by[`@populatedBy`] instead.
+NOTE: The `@callback` directive has been deprecated and will be removed in version 4.0. Please use xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-populated-by[`@populatedBy`] instead.
 
 The `@callback` directive is used to specify a function that will be invoked when updating or creating the properties on a node or relationship.
 

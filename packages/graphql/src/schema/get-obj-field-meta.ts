@@ -61,7 +61,7 @@ import type {
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
 import { upperFirst } from "../utils/upper-first";
-import getCallbackMeta from "./get-callback-meta";
+import { getCallbackMeta, getPopulatedByMeta } from "./get-callback-meta";
 
 export interface ObjectFields {
     relationFields: RelationField[];
@@ -128,7 +128,8 @@ function getObjFieldMeta({
             const coalesceDirective = directives.find((x) => x.name.value === "coalesce");
             const timestampDirective = directives.find((x) => x.name.value === "timestamp");
             const aliasDirective = directives.find((x) => x.name.value === "alias");
-            const populatedByDirective = directives.find((x) => ["populatedBy", "callback"].includes(x.name.value));
+            const callbackDirective = directives.find((x) => x.name.value === "callback");
+            const populatedByDirective = directives.find((x) => x.name.value === "populatedBy");
 
             const unique = getUniqueMeta(directives, obj, field.name.value);
 
@@ -449,7 +450,13 @@ function getObjFieldMeta({
                     };
 
                     if (populatedByDirective) {
-                        const callback = getCallbackMeta(populatedByDirective, callbacks);
+                        const callback = getPopulatedByMeta(populatedByDirective, callbacks);
+                        primitiveField.callback = callback;
+                    }
+
+                    if (callbackDirective) {
+                        console.warn("The @callback directive has been deprecated and will be removed in version 4.0. Please use @populatedBy instead.");
+                        const callback = getCallbackMeta(callbackDirective, callbacks);
                         primitiveField.callback = callback;
                     }
 
