@@ -22,14 +22,15 @@ import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/1414", () => {
-    const testProduct = generateUniqueType("Product");
-    const testProgrammeItem = generateUniqueType("ProgrammeItem");
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const warningsSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
 
-    let counter = 0;
-
+    let testProduct: UniqueType;
+    let testProgrammeItem: UniqueType;
+    let counter: number;
     let schema: GraphQLSchema;
     let driver: Driver;
     let neo4j: Neo4j;
@@ -42,10 +43,20 @@ describe("https://github.com/neo4j/graphql/issues/1414", () => {
         });
     }
 
-    beforeAll(async () => {
+    beforeEach(async () => {
+        warningsSpy.mockClear()
+        testProduct = generateUniqueType("Product");
+        testProgrammeItem = generateUniqueType("ProgrammeItem");
+        counter = 0;
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
+    });
 
+    afterEach(async () => {
+        await driver.close();
+    });
+
+    test("callbacks should only be called for specified operations", async () => {
         const typeDefs = `
             interface ${testProduct.name} {
                 id: ID! @callback(operations: [CREATE], name: "nanoid")
@@ -71,13 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/1414", () => {
             },
         });
         schema = await neoGraphql.getSchema();
-    });
 
-    afterAll(async () => {
-        await driver.close();
-    });
-
-    test("callbacks should only be called for specified operations", async () => {
         const createProgrammeItems = `
             mutation {
                 ${testProgrammeItem.operations.create}(input: { productTitle: "TestPI" }) {
@@ -125,5 +130,163 @@ describe("https://github.com/neo4j/graphql/issues/1414", () => {
                 ],
             },
         });
+    });
+    test("callbacks should only be called for specified operations - deprecated callback directive", async () => {
+        const typeDefs = `
+            interface ${testProduct.name} {
+                id: ID! @callback(operations: [CREATE], name: "nanoid")
+                productTitle: String!
+            }
+
+            type ${testProgrammeItem.name} implements ${testProduct.name} {
+                id: ID!
+                productTitle: String!
+            }
+        `;
+        const neoGraphql = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+            config: {
+                callbacks: {
+                    nanoid: () => {
+                        const id = `nanoid${counter}`;
+                        counter += 1;
+                        return id;
+                    },
+                },
+            },
+        });
+        schema = await neoGraphql.getSchema();
+
+        const createProgrammeItems = `
+            mutation {
+                ${testProgrammeItem.operations.create}(input: { productTitle: "TestPI" }) {
+                    ${testProgrammeItem.plural} {
+                        id
+                        productTitle
+                    }
+                }
+            }
+        `;
+
+        const updateProgrammeItems = `
+            mutation {
+                ${testProgrammeItem.operations.update}(where: { id: "nanoid0" }, update: { productTitle: "TestPI2" }) {
+                    ${testProgrammeItem.plural} {
+                        id
+                        productTitle
+                    }
+                }
+            }
+        `;
+
+        const createProgrammeItemsResults = await graphqlQuery(createProgrammeItems);
+        expect(createProgrammeItemsResults.errors).toBeUndefined();
+        expect(createProgrammeItemsResults.data as any).toEqual({
+            [testProgrammeItem.operations.create]: {
+                [testProgrammeItem.plural]: [
+                    {
+                        id: "nanoid0",
+                        productTitle: "TestPI",
+                    },
+                ],
+            },
+        });
+
+        const updateProgrammeItemsResults = await graphqlQuery(updateProgrammeItems);
+        expect(updateProgrammeItemsResults.errors).toBeUndefined();
+        expect(updateProgrammeItemsResults.data as any).toEqual({
+            [testProgrammeItem.operations.update]: {
+                [testProgrammeItem.plural]: [
+                    {
+                        id: "nanoid0",
+                        productTitle: "TestPI2",
+                    },
+                ],
+            },
+        });
+        expect(warningsSpy).toHaveBeenCalledWith("The @callback directive has been deprecated and will be removed in version 4.0. Please use @populatedBy instead.");
+    });
+    test("callbacks should only be called for specified operations - populatedBy and deprecated callback directives", async () => {
+        const typeDefs = `
+            interface ${testProduct.name} {
+                id: ID! @callback(operations: [CREATE], name: "nanoid")
+                populatedById: ID! @populatedBy(callback: "nanoid", operations: [CREATE])
+                productTitle: String!
+            }
+
+            type ${testProgrammeItem.name} implements ${testProduct.name} {
+                id: ID!
+                populatedById: ID!
+                productTitle: String!
+            }
+        `;
+        const neoGraphql = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+            config: {
+                callbacks: {
+                    nanoid: () => {
+                        const id = `nanoid${counter}`;
+                        counter += 1;
+                        return id;
+                    },
+                },
+            },
+        });
+        schema = await neoGraphql.getSchema();
+
+        const createProgrammeItems = `
+            mutation {
+                ${testProgrammeItem.operations.create}(input: { productTitle: "TestPI" }) {
+                    ${testProgrammeItem.plural} {
+                        id
+                        populatedById
+                        productTitle
+                    }
+                }
+            }
+        `;
+
+        const updateProgrammeItems = `
+            mutation {
+                ${testProgrammeItem.operations.update}(where: { id: "nanoid0" }, update: { productTitle: "TestPI2" }) {
+                    ${testProgrammeItem.plural} {
+                        id
+                        populatedById
+                        productTitle
+                    }
+                }
+            }
+        `;
+
+        const createProgrammeItemsResults = await graphqlQuery(createProgrammeItems);
+        expect(createProgrammeItemsResults.errors).toBeUndefined();
+        expect(createProgrammeItemsResults.data as any).toEqual({
+            [testProgrammeItem.operations.create]: {
+                [testProgrammeItem.plural]: [
+                    {
+                        id: "nanoid0",
+                        populatedById: "nanoid1",
+                        productTitle: "TestPI",
+                    },
+                ],
+            },
+        });
+
+        const updateProgrammeItemsResults = await graphqlQuery(updateProgrammeItems);
+        expect(updateProgrammeItemsResults.errors).toBeUndefined();
+        expect(updateProgrammeItemsResults.data as any).toEqual({
+            [testProgrammeItem.operations.update]: {
+                [testProgrammeItem.plural]: [
+                    {
+                        id: "nanoid0",
+                        populatedById: "nanoid1",
+                        productTitle: "TestPI2",
+                    },
+                ],
+            },
+        });
+        expect(warningsSpy).toHaveBeenCalledWith("The @callback directive has been deprecated and will be removed in version 4.0. Please use @populatedBy instead.");
     });
 });
