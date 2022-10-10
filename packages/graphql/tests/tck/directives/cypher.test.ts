@@ -136,7 +136,7 @@ describe("Cypher directive", () => {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
                 RETURN a\\", { this: this, auth: $auth }) AS this_topActor
-                RETURN this_topActor { .name } AS this_topActor
+                RETURN head(collect(this_topActor { .name })) AS this_topActor
             }
             RETURN this { .title, topActor: this_topActor } as this"
         `);
@@ -170,7 +170,7 @@ describe("Cypher directive", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"RETURN rand()\\", { this: this, auth: $auth }) AS this_randomNumber
-                RETURN this_randomNumber AS this_randomNumber
+                RETURN head(collect(this_randomNumber)) AS this_randomNumber
             }
             RETURN this { randomNumber: this_randomNumber } as this"
         `);
@@ -206,7 +206,7 @@ describe("Cypher directive", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"RETURN rand()\\", { this: this, auth: $auth }) AS this_randomNumber
-                RETURN this_randomNumber AS this_randomNumber
+                RETURN head(collect(this_randomNumber)) AS this_randomNumber
             }
             RETURN this { randomNumber: this_randomNumber } as this"
         `);
@@ -244,7 +244,7 @@ describe("Cypher directive", () => {
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"RETURN rand()\\", { this: this, auth: $auth }) AS this_randomNumber
-                RETURN this_randomNumber AS this_randomNumber
+                RETURN head(collect(this_randomNumber)) AS this_randomNumber
             }
             WITH *
             ORDER BY this_randomNumber ASC
@@ -298,7 +298,7 @@ describe("Cypher directive", () => {
                     RETURN m\\", { title: $thisparam1, this: this_topActor, auth: $auth }) AS this_topActor_movies
                     RETURN collect(this_topActor_movies { .title }) AS this_topActor_movies
                 }
-                RETURN this_topActor { .name, movies: this_topActor_movies } AS this_topActor
+                RETURN head(collect(this_topActor { .name, movies: this_topActor_movies })) AS this_topActor
             }
             RETURN this { .title, topActor: this_topActor } as this"
         `);
@@ -360,11 +360,11 @@ describe("Cypher directive", () => {
                             RETURN m\\", { title: $thisparam4, this: this_topActor_movies_topActor, auth: $auth }) AS this_topActor_movies_topActor_movies
                             RETURN collect(this_topActor_movies_topActor_movies { .title }) AS this_topActor_movies_topActor_movies
                         }
-                        RETURN this_topActor_movies_topActor { .name, movies: this_topActor_movies_topActor_movies } AS this_topActor_movies_topActor
+                        RETURN head(collect(this_topActor_movies_topActor { .name, movies: this_topActor_movies_topActor_movies })) AS this_topActor_movies_topActor
                     }
                     RETURN collect(this_topActor_movies { .title, topActor: this_topActor_movies_topActor }) AS this_topActor_movies
                 }
-                RETURN this_topActor { .name, movies: this_topActor_movies } AS this_topActor
+                RETURN head(collect(this_topActor { .name, movies: this_topActor_movies })) AS this_topActor
             }
             RETURN this { .title, topActor: this_topActor } as this"
         `);
@@ -413,7 +413,7 @@ describe("Cypher directive", () => {
                     RETURN m\\", { title: $thisparam1, this: this_topActor, auth: $auth }) AS this_topActor_movies
                     RETURN collect(this_topActor_movies { .title }) AS this_topActor_movies
                 }
-                RETURN this_topActor { .name, movies: this_topActor_movies } AS this_topActor
+                RETURN head(collect(this_topActor { .name, movies: this_topActor_movies })) AS this_topActor
             }
             RETURN this { .title, topActor: this_topActor } as this"
         `);
@@ -476,7 +476,7 @@ describe("Cypher directive", () => {
                     WITH this_movieOrTVShow_0
                     UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
                     RETURN a\\", { this: this_movieOrTVShow_0, auth: $auth }) AS this_movieOrTVShow_0_topActor
-                    RETURN this_movieOrTVShow_0_topActor { .name, .year } AS this_movieOrTVShow_0_topActor
+                    RETURN head(collect(this_movieOrTVShow_0_topActor { .name, .year })) AS this_movieOrTVShow_0_topActor
                 }
                 CALL {
                     WITH this_movieOrTVShow_0
@@ -489,7 +489,7 @@ describe("Cypher directive", () => {
                     WITH this_movieOrTVShow_1
                     UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (a:Actor)
                     RETURN a\\", { this: this_movieOrTVShow_1, auth: $auth }) AS this_movieOrTVShow_1_topActor
-                    RETURN this_movieOrTVShow_1_topActor { .name } AS this_movieOrTVShow_1_topActor
+                    RETURN head(collect(this_movieOrTVShow_1_topActor { .name })) AS this_movieOrTVShow_1_topActor
                 }
                 RETURN collect(CASE
                     WHEN this_movieOrTVShow:\`Movie\` THEN this_movieOrTVShow { __resolveType: \\"Movie\\",  .id, .title, topActor: this_movieOrTVShow_0_topActor, actors: this_movieOrTVShow_0_actors }
