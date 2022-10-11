@@ -80,7 +80,7 @@ describe("parseNodeDirective", () => {
 
     test("should return a node directive with custom plural", () => {
         const typeDefs = `
-            type TestType @node(plural: "testTypes") {
+            type TestType @plural(value: "testTypes") {
                 name: String
             }
         `;
