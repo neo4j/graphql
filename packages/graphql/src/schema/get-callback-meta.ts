@@ -27,7 +27,7 @@ export function getCallbackMeta(directive: DirectiveNode, callbacks?: Neo4jGraph
 
     const operationsList = operationsArg.value as ListValueNode;
     const operations = operationsList.values.map((value) => (value as StringValueNode).value) as CallbackOperations[];
-    const callbackName = (nameArg?.value as StringValueNode)?.value;
+    const callbackName = (nameArg.value as StringValueNode).value;
 
     if (typeof (callbacks || {})[callbackName] !== "function") {
         throw new Error(`Directive callback '${callbackName}' must be of type function`);
