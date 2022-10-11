@@ -88,7 +88,7 @@ describe("Cypher sort tests", () => {
                 "MATCH (this:\`Movie\`)
                 WITH *
                 ORDER BY this.id DESC
-                RETURN this { .id, .title } as this"
+                RETURN this { .id, .title } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -113,7 +113,7 @@ describe("Cypher sort tests", () => {
                 "MATCH (this:\`Movie\`)
                 WITH *
                 ORDER BY this.id DESC
-                RETURN this { aliased: this.id, .title, .id } as this"
+                RETURN this { aliased: this.id, .title, .id } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -137,7 +137,7 @@ describe("Cypher sort tests", () => {
                 "MATCH (this:\`Movie\`)
                 WITH *
                 ORDER BY this.id DESC
-                RETURN this { .title, .id } as this"
+                RETURN this { .title, .id } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -168,7 +168,7 @@ describe("Cypher sort tests", () => {
             }
             WITH *
             ORDER BY this_totalGenres DESC
-            RETURN this { totalGenres: this_totalGenres } as this"
+            RETURN this { totalGenres: this_totalGenres } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -203,7 +203,7 @@ describe("Cypher sort tests", () => {
             "MATCH (this:\`Movie\`)
             WITH *
             ORDER BY this.id DESC, this.title ASC
-            RETURN this { .id, .title } as this"
+            RETURN this { .id, .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -235,7 +235,7 @@ describe("Cypher sort tests", () => {
             ORDER BY this.id DESC, this.title ASC
             SKIP $this_offset
             LIMIT $this_limit
-            RETURN this { .id, .title } as this"
+            RETURN this { .id, .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -273,12 +273,12 @@ describe("Cypher sort tests", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:HAS_GENRE]->(this_genres:\`Genre\`)
+                MATCH (this)-[this0:HAS_GENRE]->(this_genres:\`Genre\`)
                 WITH this_genres { .name } AS this_genres
                 ORDER BY this_genres.name DESC
                 RETURN collect(this_genres) AS this_genres
             }
-            RETURN this { genres: this_genres } as this"
+            RETURN this { genres: this_genres } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -304,12 +304,12 @@ describe("Cypher sort tests", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:HAS_GENRE]->(this_genres:\`Genre\`)
+                MATCH (this)-[this0:HAS_GENRE]->(this_genres:\`Genre\`)
                 WITH this_genres { .name } AS this_genres
                 ORDER BY this_genres.name ASC
                 RETURN collect(this_genres) AS this_genres
             }
-            RETURN this { genres: this_genres } as this"
+            RETURN this { genres: this_genres } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -336,7 +336,7 @@ describe("Cypher sort tests", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:HAS_GENRE]->(this_genres:\`Genre\`)
+                MATCH (this)-[this0:HAS_GENRE]->(this_genres:\`Genre\`)
                 CALL {
                     WITH this_genres
                     UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:HAS_GENRE]-(movie:Movie)
@@ -347,7 +347,7 @@ describe("Cypher sort tests", () => {
                 ORDER BY this_genres.totalMovies ASC
                 RETURN collect(this_genres) AS this_genres
             }
-            RETURN this { genres: this_genres } as this"
+            RETURN this { genres: this_genres } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

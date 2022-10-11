@@ -102,22 +102,22 @@ describe("@auth allow on specific interface implementation", () => {
             WITH this
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
+                MATCH (this)-[this0:HAS_CONTENT]->(this_Comment:\`Comment\`)
                 RETURN { __resolveType: \\"Comment\\", id: this_Comment.id, content: this_Comment.content } AS this_content
                 UNION
                 WITH this
-                MATCH (this)-[thisthis1:HAS_CONTENT]->(this_Post:\`Post\`)
-                WHERE apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(thisthis2 IN [(this_Post)<-[:HAS_CONTENT]-(thisthis2:\`User\`) | thisthis2] WHERE (thisthis2.id IS NOT NULL AND thisthis2.id = $thisparam0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                MATCH (this)-[this1:HAS_CONTENT]->(this_Post:\`Post\`)
+                WHERE apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(this2 IN [(this_Post)<-[:HAS_CONTENT]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN { __resolveType: \\"Post\\", id: this_Post.id, content: this_Post.content } AS this_content
             }
             RETURN collect(this_content) AS this_content
             }
-            RETURN this { .id, content: this_content } as this"
+            RETURN this { .id, content: this_content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"thisparam0\\": \\"id-01\\"
+                \\"param0\\": \\"id-01\\"
             }"
         `);
     });
@@ -151,17 +151,17 @@ describe("@auth allow on specific interface implementation", () => {
             WITH this
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
-                WHERE this_Comment.id = $thisparam0
+                MATCH (this)-[this0:HAS_CONTENT]->(this_Comment:\`Comment\`)
+                WHERE this_Comment.id = $param1
                 RETURN { __resolveType: \\"Comment\\" } AS this_content
                 UNION
                 WITH this
-                MATCH (this)-[thisthis1:HAS_CONTENT]->(this_Post:\`Post\`)
-                WHERE (apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(thisthis2 IN [(this_Post)<-[:HAS_CONTENT]-(thisthis2:\`User\`) | thisthis2] WHERE (thisthis2.id IS NOT NULL AND thisthis2.id = $thisparam1)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND this_Post.id = $thisparam2)
+                MATCH (this)-[this1:HAS_CONTENT]->(this_Post:\`Post\`)
+                WHERE (apoc.util.validatePredicate(NOT ((exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND any(this2 IN [(this_Post)<-[:HAS_CONTENT]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param2)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND this_Post.id = $param3)
                 CALL {
                     WITH this_Post
-                    MATCH (this_Post)-[thisthis3:HAS_COMMENT]->(this_Post_comments:\`Comment\`)
-                    WHERE this_Post_comments.id = $thisparam3
+                    MATCH (this_Post)-[this3:HAS_COMMENT]->(this_Post_comments:\`Comment\`)
+                    WHERE this_Post_comments.id = $param4
                     WITH this_Post_comments { .content } AS this_Post_comments
                     RETURN collect(this_Post_comments) AS this_Post_comments
                 }
@@ -169,16 +169,16 @@ describe("@auth allow on specific interface implementation", () => {
             }
             RETURN collect(this_content) AS this_content
             }
-            RETURN this { .id, content: this_content } as this"
+            RETURN this { .id, content: this_content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"thisparam0\\": \\"1\\",
-                \\"thisparam1\\": \\"id-01\\",
-                \\"thisparam2\\": \\"1\\",
-                \\"thisparam3\\": \\"1\\"
+                \\"param1\\": \\"1\\",
+                \\"param2\\": \\"id-01\\",
+                \\"param3\\": \\"1\\",
+                \\"param4\\": \\"1\\"
             }"
         `);
     });

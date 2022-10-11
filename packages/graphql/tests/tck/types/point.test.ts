@@ -65,7 +65,7 @@ describe("Cypher Points", () => {
             RETURN this { point: (CASE
                 WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
                 ELSE NULL
-            END) } as this"
+            END) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -101,7 +101,7 @@ describe("Cypher Points", () => {
             RETURN this { point: (CASE
                 WHEN this.point IS NOT NULL THEN { point: this.point }
                 ELSE NULL
-            END) } as this"
+            END) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -138,7 +138,7 @@ describe("Cypher Points", () => {
             RETURN this { point: (CASE
                 WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
                 ELSE NULL
-            END) } as this"
+            END) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -177,7 +177,7 @@ describe("Cypher Points", () => {
             RETURN this { point: (CASE
                 WHEN this.point IS NOT NULL THEN { point: this.point, crs: this.point.crs }
                 ELSE NULL
-            END) } as this"
+            END) } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -231,7 +231,7 @@ describe("Cypher Points", () => {
                 RETURN this { point: (CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } as this"
+                END) } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -270,7 +270,7 @@ describe("Cypher Points", () => {
                 RETURN this { point: (CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } as this"
+                END) } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -309,7 +309,7 @@ describe("Cypher Points", () => {
                 RETURN this { point: (CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } as this"
+                END) } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -348,7 +348,7 @@ describe("Cypher Points", () => {
                 RETURN this { point: (CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } as this"
+                END) } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -389,7 +389,7 @@ describe("Cypher Points", () => {
                 RETURN this { point: (CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } as this"
+                END) } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -429,7 +429,7 @@ describe("Cypher Points", () => {
                 RETURN this { point: (CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } as this"
+                END) } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -469,7 +469,7 @@ describe("Cypher Points", () => {
                 RETURN this { point: (CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } as this"
+                END) } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -509,7 +509,7 @@ describe("Cypher Points", () => {
                 RETURN this { point: (CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } as this"
+                END) } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -549,7 +549,7 @@ describe("Cypher Points", () => {
                 RETURN this { point: (CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } as this"
+                END) } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -591,7 +591,7 @@ describe("Cypher Points", () => {
                 RETURN this { point: (CASE
                     WHEN this.point IS NOT NULL THEN { point: this.point }
                     ELSE NULL
-                END) } as this"
+                END) } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`

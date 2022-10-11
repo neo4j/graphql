@@ -84,7 +84,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             RETURN sum(aggr_edge.allocation) <= toFloat($aggr_edge_allocation_SUM_LTE)
             \\", { this: this, aggr_edge_allocation_SUM_LTE: $aggr_edge_allocation_SUM_LTE })
             RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: size([(this)-[this_projectsAggregate_this1:PARTICIPATES]->(this_projectsAggregate_this0:\`Project\`) | this_projectsAggregate_this0]), edge: { allocation: head(apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[r:PARTICIPATES]->(n:Project)
-                    RETURN {min: min(r.allocation), max: max(r.allocation), average: avg(r.allocation), sum: sum(r.allocation)}\\", { this: this })) } } } as this"
+                    RETURN {min: min(r.allocation), max: max(r.allocation), average: avg(r.allocation), sum: sum(r.allocation)}\\", { this: this })) } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -124,7 +124,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             RETURN aggr_edge.allocation <= $aggr_edge_allocation_LTE
             \\", { this: this, aggr_edge_allocation_LTE: $aggr_edge_allocation_LTE })
             RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: size([(this)-[this_projectsAggregate_this1:PARTICIPATES]->(this_projectsAggregate_this0:\`Project\`) | this_projectsAggregate_this0]), edge: { allocation: head(apoc.cypher.runFirstColumnMany(\\"MATCH (this)-[r:PARTICIPATES]->(n:Project)
-                    RETURN {min: min(r.allocation), max: max(r.allocation), average: avg(r.allocation), sum: sum(r.allocation)}\\", { this: this })) } } } as this"
+                    RETURN {min: min(r.allocation), max: max(r.allocation), average: avg(r.allocation), sum: sum(r.allocation)}\\", { this: this })) } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

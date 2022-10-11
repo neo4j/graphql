@@ -98,17 +98,17 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
             WHERE (size([(this)-[this0:HAS_MANUFACTURER]->(this1:\`Series\`) WHERE (this0.current = $param0 AND this1.name = $param1) | 1]) = 1 OR size([(this)-[this2:HAS_BRAND]->(this3:\`Series\`) WHERE (this2.current = $param2 AND this3.name = $param3) | 1]) = 1)
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:HAS_BRAND]->(this_brand:\`Series\`)
+                MATCH (this)-[this4:HAS_BRAND]->(this_brand:\`Series\`)
                 WITH this_brand { .name } AS this_brand
                 RETURN head(collect(this_brand)) AS this_brand
             }
             CALL {
                 WITH this
-                MATCH (this)-[thisthis1:HAS_MANUFACTURER]->(this_manufacturer:\`Series\`)
+                MATCH (this)-[this5:HAS_MANUFACTURER]->(this_manufacturer:\`Series\`)
                 WITH this_manufacturer { .name } AS this_manufacturer
                 RETURN head(collect(this_manufacturer)) AS this_manufacturer
             }
-            RETURN this { .name, brand: this_brand, manufacturer: this_manufacturer } as this"
+            RETURN this { .name, brand: this_brand, manufacturer: this_manufacturer } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
