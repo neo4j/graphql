@@ -38,7 +38,7 @@ describe("@populatedBy directive", () => {
         await driver.close();
     });
 
-    describe("Property tests", () => {
+    describe("Node property tests", () => {
         describe("@populatedBy - String", () => {
             test("Should use on CREATE", async () => {
                 const testMovie = generateUniqueType("Movie");
@@ -808,7 +808,7 @@ describe("@populatedBy directive", () => {
             });
         });
     });
-    describe("Relationship tests", () => {
+    describe("Relationship property tests", () => {
         describe("@populatedBy - String", () => {
             test("Should use on CREATE", async () => {
                 const testMovie = generateUniqueType("Movie");

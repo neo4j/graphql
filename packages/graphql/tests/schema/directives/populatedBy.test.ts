@@ -23,9 +23,9 @@ import { lexicographicSortSchema } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("@populatedBy tests", () => {
-    describe("Property tests", () => {
+    describe("Node property tests", () => {
         describe("Directive combinations", () => {
-            test("Callback and default directives", async () => {
+            test("PopulatedBy and default directives", async () => {
                 const typeDefs = gql`
                     type Movie {
                         id: ID
@@ -44,7 +44,7 @@ describe("@populatedBy tests", () => {
                 );
             });
 
-            test("Callback and id directives", async () => {
+            test("PopulatedBy and id directives", async () => {
                 const typeDefs = gql`
                     type Movie {
                         id: ID
@@ -62,7 +62,7 @@ describe("@populatedBy tests", () => {
             });
         });
 
-        test("Callback - existance", async () => {
+        test("PopulatedBy - existance", async () => {
             const typeDefs = gql`
                 type Movie {
                     id: ID
@@ -79,7 +79,7 @@ describe("@populatedBy tests", () => {
             );
         });
 
-        test("Callback - String", async () => {
+        test("PopulatedBy - String", async () => {
             const callback1 = () => "random-string";
             const callback2 = () => "random-string";
             const callback3 = () => "random-string";
@@ -279,7 +279,7 @@ describe("@populatedBy tests", () => {
             `);
         });
 
-        test("Callback - Int", async () => {
+        test("PopulatedBy - Int", async () => {
             const callback1 = () => "random-int";
             const callback2 = () => "random-int";
             const callback3 = () => "random-int";
@@ -475,9 +475,9 @@ describe("@populatedBy tests", () => {
             `);
         });
     });
-    describe("Relationship tests", () => {
+    describe("Relationship property tests", () => {
         describe("Directive combinations", () => {
-            test("Callback and default directives", async () => {
+            test("PopulatedBy and default directives", async () => {
                 const typeDefs = gql`
                     type Movie {
                         id: ID
@@ -505,7 +505,7 @@ describe("@populatedBy tests", () => {
                 );
             });
 
-            test("Callback and id directives", async () => {
+            test("PopulatedBy and id directives", async () => {
                 const typeDefs = gql`
                     type Movie {
                         id: ID
@@ -532,7 +532,7 @@ describe("@populatedBy tests", () => {
             });
         });
 
-        test("Callback - existance", async () => {
+        test("PopulatedBy - existance", async () => {
             const typeDefs = gql`
                 type Movie {
                     id: ID
@@ -557,7 +557,7 @@ describe("@populatedBy tests", () => {
                 "PopulatedBy callback 'callback4' must be of type function"
             );
         });
-        test("Callback - String", async () => {
+        test("PopulatedBy - String", async () => {
             const callback1 = () => "random-string";
             const callback2 = () => "random-string";
             const callback3 = () => "random-string";
@@ -1083,7 +1083,7 @@ describe("@populatedBy tests", () => {
             `);
         });
 
-        test("Callback - Int", async () => {
+        test("PopulatedBy - Int", async () => {
             const callback1 = () => "random-int";
             const callback2 = () => "random-int";
             const callback3 = () => "random-int";
