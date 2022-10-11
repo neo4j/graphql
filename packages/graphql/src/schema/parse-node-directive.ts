@@ -26,10 +26,15 @@ function parseNodeDirective(nodeDirective: DirectiveNode | undefined) {
         throw new Error("Undefined or incorrect directive passed into parseNodeDirective function");
     }
 
+    const plural = getArgumentValue<string>(nodeDirective, "plural");
+    if (plural) {
+        console.warn("The plural argument has been deprecated and will be removed in version 4.0. Please use the @plural directive instead.");
+    }
+
     return new NodeDirective({
         label: getArgumentValue<string>(nodeDirective, "label"),
         additionalLabels: getArgumentValue<string[]>(nodeDirective, "additionalLabels"),
-        plural: getArgumentValue<string>(nodeDirective, "plural"),
+        plural,
     });
 }
 
