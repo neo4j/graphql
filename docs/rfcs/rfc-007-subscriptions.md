@@ -209,8 +209,9 @@ Assuming the following typedefs:
 ```graphql
 type Actor {
     name: String!
-    actedIn: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+    movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
     follows: [Actor!]! @relationship(type: "FOLLOWS", direction: OUT, properties: "Follows")
+    followedBy: [Actor!]! @relationship(type: "FOLLOWS", direction: IN, properties: "Follows")
 }
 
 type Movie {
@@ -233,19 +234,30 @@ All of the subscriptions are attached to nodes, the events will trigger whenever
 -   An event will be triggered for all relationship fields connected, meaning that a connection can trigger up to 2 events (source and target nodes)
 -   Only connections with a relationship defined in the schema will be triggered
 
-**Payload**  
+For example, the following connections will trigger these events:
+
+-   Actor - movies: Will trigger 2 events (actor-movies, movie-actors)
+-   Actor - follows: Will trigger 2 events (actor-follows, actors-followedBy)
+-   Movie - director: Will trigger 1 event (movie-director), the opposite will not be triggered as it is not defined in Actor type
+
+**Payload**
 The payload will contain the root fields of the node triggering the event, (e.g. `actor`).
 It will also contain the `relationship` field, which will contain **all** of the relationships defined in the root node. These relationships will each contain the properties and the related node, each event will only contain one of these, with the rest being nullable.
 
 Additionally the fields `direction` and `relationshipName` will contain the relationship direction and field name respectively.
 
 ```graphql
-ActorConnected {
-   actor: Actor // The node that triggers the event (Actor), regardless of direction
+actorConnected {
+   connectedActor: ActorEventPayload! // The node subscribed to (Actor), regardless of direction
+   timestamp: Float!
+   event // CONNECT / DISCONNECT
+   relationshipName: "movies" // The name of the relationship prop (movies or follows)
    relationship {
-      actedIn { // nullable
-        ...relationshipProperties
-        node
+      movies { // nullable
+        role: String!
+        node {
+            title
+        }
       }
       follows { // nullable
         ...relationshipProperties
@@ -253,8 +265,6 @@ ActorConnected {
       }
    }
    direction: IN | OUT
-   relationshipName: "actedIn" // The name of the relationship prop (actedIn or follows)
-   event // CONNECT / DISCONNECT
 }
 ```
 
@@ -271,17 +281,23 @@ An example of the full payload:
 ```graphql
 subscription {
     actorConnected() {
-        from {
+        connectedActor {
             name
         }
         relationship {
-          actedIn {
+          movies {
             role
             node {
               title
             }
           }
           follows {
+            date
+            node {
+              name
+            }
+          }
+          followedBy {
             date
             node {
               name
@@ -305,15 +321,20 @@ For instance, subscribing to only `actedIn` connections:
 
 ```graphql
 subscription {
-    movieConnected(where: { relationshipFieldNames: "actedIn", movie: { title: "The Matrix" } }) {
-        movie {
+    movieConnected(
+        where: {
+            relationshipName: "actors"
+            connectedMovie: { title: "The Matrix" }
+            relationship: { actors: { node: { name: "Keanu" } } }
+        }
+    ) {
+        connectedMovie {
             title
         }
         relationship {
-            actedIn {
+            actors {
                 node {
-                    title
-                    released
+                    name
                 }
             }
         }
@@ -321,10 +342,14 @@ subscription {
 }
 ```
 
+-   Relationship filtering can be cut out of scope if needed
+
 #### Risks and Limitations on connections
 
--   (Dis)Connections should be triggered regardless of the way the connection is created. (e.g. ActorUpdate or MovieUpdate as top level operation).
--   Currently, connection works as a idempotent operation with `MERGE`, the event should only trigger when a new connection is made.
+-   (blocker) FOREACH on nested Connect, disconnect and delete
+-   (unknown) ConnectOrCreate
+-   (non-blocker) Currently, connection works as a idempotent operation with `MERGE`, the event should only trigger when a new connection is made.
+-   (non-blocker) (Dis)Connections should be triggered regardless of the way the connection is created. (e.g. ActorUpdate or MovieUpdate as top level operation).
 -   (out of scope) Subscription to changes to the relationship properties are out of scope, only creation/deletion of relationships trigger events.
 
 #### Cypher Examples
@@ -332,7 +357,59 @@ subscription {
 These are proposals on how to inject the given subscriptions into Cypher, the changes require for the source node, target node and relationship variables to be available on the metadata generation
 
 **Connect**  
-Whenever a create or update operation is executed, metadata regarding the connection events will be created:
+Whenever a create or update operation is executed, metadata regarding the connection events will be created
+
+Assuming the following update GraphQL query:
+
+```graphql
+mutation UpdateMovies {
+    updateMovies(
+        where: { title: "The Matrix" }
+        update: { title: "Another Matrix" }
+        connect: { actors: [{ where: { node: { name_NOT: "Keanu Reeves" } } }] }
+    ) {
+        movies {
+            title
+        }
+    }
+}
+```
+
+It will generate the Cypher query:
+
+```cypher
+WITH [] AS meta
+MATCH (this:`Movie`)
+WHERE this.title = $param0
+WITH this { .* } AS oldProps, this, meta
+CALL {
+	WITH *
+	SET this.title = $this_update_title
+	RETURN meta as update_meta
+}
+WITH *, update_meta as meta
+WITH this, meta + { event: "update", id: id(this), properties: { old: oldProps, new: this { .* } }, timestamp: timestamp(), typename: "Movie" } AS meta
+WITH this, meta
+CALL {
+	WITH this, meta
+	OPTIONAL MATCH (this_connect_actors0_node:Person)
+	WHERE NOT (this_connect_actors0_node.name = $this_connect_actors0_node_param0)
+	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
+		FOREACH(_ IN CASE WHEN this_connect_actors0_node IS NULL THEN [] ELSE [1] END |
+            MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+            >>> Here meta should be updated, however, foreach doesn't allow for return
+		)
+	)
+	RETURN count(*) AS connect_this_connect_actors_Person
+}
+WITH *
+WITH *
+UNWIND meta AS m
+RETURN collect(DISTINCT this { .title }) AS data, collect(DISTINCT m) as meta
+
+```
+
+With a create:
 
 ```cypher
 CALL {
