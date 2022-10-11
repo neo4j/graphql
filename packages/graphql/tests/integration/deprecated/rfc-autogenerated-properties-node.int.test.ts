@@ -50,7 +50,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const typeDefs = gql`
                 type ${testMovie.name} {
                     id: ID
-                    callback: String! @callback(operations: [CREATE], name: "callback")
+                    callback: String! @callback(name:"callback", operations: [CREATE])
                 }
             `;
 
@@ -108,7 +108,7 @@ describe("integration/rfc/autogenerate-properties-node", () => {
             const typeDefs = gql`
                 type ${testMovie.name} {
                     id: ID
-                    callback: String! @callback(operations: [UPDATE], name: "callback")
+                    callback: String! @callback(operations: [UPDATE], name:"callback")
                 }
             `;
 
