@@ -15,7 +15,7 @@ This will be a new package, depending on `@neo4j/graphql-ogm` and `@apollo/subgr
 ### Resolver signature
 
 ```ts
-function getResolveReference(__typename: String!) {
+function getResolveReference(__typename: string) {
     const __resolveReference = async (reference, context) => {
         const model = this.ogm.model(__typename);
         return model.find({ where: reference, context });
