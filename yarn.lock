@@ -246,6 +246,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@apollo/cache-control-types@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@apollo/cache-control-types@npm:1.0.2"
+  peerDependencies:
+    graphql: 14.x || 15.x || 16.x
+  checksum: 1e00c57b45fbd8656c96cdcd254658f332c1955bd8db9274c665e1c6ef8ac881a6b6a3f953b60638ae5f59fdfce6b005adb9a5b945b694903579a9665499e823
+  languageName: node
+  linkType: hard
+
 "@apollo/client@npm:3.7.0":
   version: 3.7.0
   resolution: "@apollo/client@npm:3.7.0"
@@ -279,6 +288,18 @@ __metadata:
     subscriptions-transport-ws:
       optional: true
   checksum: e6e2fb6c4f05509a0ec1c632fc8eeae7bd4831dbafd2db243bad1412b3c024476a3efb838e31568888cf6b07bd8833467343edac2309e58d60c7bf50f67d449c
+  languageName: node
+  linkType: hard
+
+"@apollo/federation-internals@npm:^2.1.3":
+  version: 2.1.3
+  resolution: "@apollo/federation-internals@npm:2.1.3"
+  dependencies:
+    chalk: ^4.1.0
+    js-levenshtein: ^1.1.6
+  peerDependencies:
+    graphql: ^16.5.0
+  checksum: a80a9f1e1b7490ba8a01e17a11cea22d381c35cc9134858b7bc8a0012adf077a285d173bbe54874b685c33af619b6cf041fc8b52af8bf541e911df83a0a445fc
   languageName: node
   linkType: hard
 
@@ -327,6 +348,18 @@ __metadata:
     apollo-pbjs: bin/pbjs
     apollo-pbts: bin/pbts
   checksum: 1410e94f87f7ce202491f2c45633ddea0590f5279bd3eaaeb25aa114345d09a5041f15d79b75e5915b23813dc71ec52e71fc1fda858fee21dead890dcb768416
+  languageName: node
+  linkType: hard
+
+"@apollo/subgraph@npm:^2.1.3":
+  version: 2.1.3
+  resolution: "@apollo/subgraph@npm:2.1.3"
+  dependencies:
+    "@apollo/cache-control-types": ^1.0.2
+    "@apollo/federation-internals": ^2.1.3
+  peerDependencies:
+    graphql: ^16.5.0
+  checksum: d0a48e125e8600e0803a9df1fb10276e036cac78fb0d18cde47490705416d04308f5117517c145d5243771bbcadaf3a5f52fd190d886048c5058a3d9e8feec34
   languageName: node
   linkType: hard
 
@@ -2465,7 +2498,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/graphql-ogm@^3.5.0, @neo4j/graphql-ogm@workspace:packages/ogm":
+"@neo4j/graphql-ogm@3.10.1, @neo4j/graphql-ogm@^3.5.0, @neo4j/graphql-ogm@workspace:packages/ogm":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-ogm@workspace:packages/ogm"
   dependencies:
@@ -2507,6 +2540,23 @@ __metadata:
     jest: 29.1.2
     jsonwebtoken: ^8.5.1
     jwks-rsa: ^2.1.4
+    ts-jest: 29.0.3
+    typescript: 4.8.4
+  languageName: unknown
+  linkType: soft
+
+"@neo4j/graphql-plugin-federation@workspace:packages/plugins/graphql-plugin-federation":
+  version: 0.0.0-use.local
+  resolution: "@neo4j/graphql-plugin-federation@workspace:packages/plugins/graphql-plugin-federation"
+  dependencies:
+    "@apollo/subgraph": ^2.1.3
+    "@neo4j/graphql-ogm": 3.10.1
+    "@types/debug": 4.1.7
+    "@types/jest": 29.1.2
+    "@types/node": 16.11.65
+    debug: ^4.3.4
+    graphql: ^16.6.0
+    jest: 29.1.2
     ts-jest: 29.0.3
     typescript: 4.8.4
   languageName: unknown
@@ -9828,7 +9878,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:16.6.0":
+"graphql@npm:16.6.0, graphql@npm:^16.6.0":
   version: 16.6.0
   resolution: "graphql@npm:16.6.0"
   checksum: bf1d9e3c1938ce3c1a81e909bd3ead1ae4707c577f91cff1ca2eca474bfbc7873d5d7b942e1e9777ff5a8304421dba57a4b76d7a29eb19de8711cb70e3c2415e
@@ -12067,6 +12117,13 @@ __metadata:
   version: 2.2.1
   resolution: "js-cookie@npm:2.2.1"
   checksum: 9b1fb980a1c5e624fd4b28ea4867bb30c71e04c4484bb3a42766344c533faa684de9498e443425479ec68609e96e27b60614bfe354877c449c631529b6d932f2
+  languageName: node
+  linkType: hard
+
+"js-levenshtein@npm:^1.1.6":
+  version: 1.1.6
+  resolution: "js-levenshtein@npm:1.1.6"
+  checksum: 409f052a7f1141be4058d97da7860e08efd97fc588b7a4c5cfa0548bc04f6d576644dae65ab630266dff685d56fb90d494e03d4d79cb484c287746b4f1bf0694
   languageName: node
   linkType: hard
 

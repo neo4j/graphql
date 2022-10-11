@@ -5,6 +5,7 @@
         { "path": "./packages/ogm/tsconfig.production.json" },
         { "path": "./packages/introspector/tsconfig.production.json" },
         { "path": "./packages/plugins/graphql-plugin-auth/tsconfig.production.json" },
+        { "path": "./packages/plugins/graphql-plugin-federation/tsconfig.production.json" },
         { "path": "./packages/plugins/graphql-plugin-subscriptions-amqp/tsconfig.production.json" }
     ]
 }
