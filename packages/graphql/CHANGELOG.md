@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 3.10.1
+
+### Patch Changes
+
+-   [#2207](https://github.com/neo4j/graphql/pull/2207) [`23467c469`](https://github.com/neo4j/graphql/commit/23467c4699287c9d33c0a1004db83ddb9e7e606a) Thanks [@angrykoala](https://github.com/angrykoala)! - Use lastBookmark instead of lastBookmarks to keep compatibility of neo4j-driver 4 in tests
+
 ## 3.10.0
 
 ### Minor Changes
