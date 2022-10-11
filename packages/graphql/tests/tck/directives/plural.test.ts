@@ -109,7 +109,7 @@ describe("Plural directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL {
-            CREATE (this0:\`Tech\`)
+            CREATE (this0:Tech)
             SET this0.name = $this0_name
             RETURN this0
             }

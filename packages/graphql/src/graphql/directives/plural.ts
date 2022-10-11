@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { DirectiveLocation, GraphQLDirective, GraphQLString } from "graphql";
+import { DirectiveLocation, GraphQLDirective, GraphQLString, GraphQLNonNull } from "graphql";
 
 export const pluralDirective = new GraphQLDirective({
     name: "plural",
@@ -26,7 +26,7 @@ export const pluralDirective = new GraphQLDirective({
     args: {
         value: {
             description: "The value to use as the plural of the type name.",
-            type: GraphQLString,
+            type: new GraphQLNonNull(GraphQLString),
         },
     },
 });
