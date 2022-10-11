@@ -403,49 +403,4 @@ describe("@alias directive", () => {
 
         expect(gqlResult.errors).toBeUndefined();
     });
-
-    // TODO: props on relationships
-    test.skip("Create mutation with relationship alias referring to existing field, include both fields as inputs", async () => {
-        const userMutation = `
-            mutation {
-                createDirectors(input: [{ 
-                    name: "Woody Allen", 
-                    movies: { 
-                        create: [
-                            {
-                                node: {
-                                    title: "Bananas"
-                                },
-                                edge: {
-                                    year: 2000,
-                                    movieYear: 2000
-                                }
-                            }
-                        ] 
-                    } 
-                }]) {
-                    directors {
-                        name
-                        movies {
-                            title
-                        }
-                    }
-                }
-            }
-        `;
-
-        const gqlResult = await graphql({
-            schema: await neoSchema.getSchema(),
-            source: userMutation,
-            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
-        });
-
-        console.log(gqlResult);
-        // expect(gqlResult.errors).toBeDefined();
-        // expect(gqlResult.errors).toHaveLength(1);
-        // expect(gqlResult.errors?.[0].message).toBe(
-        //     `Conflicting modification of the same database property multiple times`
-        // );
-        expect((gqlResult?.data as any)?.createDirectors?.directors).toBeUndefined();
-    });
 });
