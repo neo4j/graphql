@@ -15,9 +15,9 @@ Reference: xref::auth/auth-directive.adoc[`@auth` directive]
 
 == `@callback`
 
-The `@callback` directive is used to specify a function that will be invoked when updating or creating the properties on a node or relationship.
+NOTE: The `@callback` directive has been deprecated and will be removed in version 4.0. Please use the xref::directives.adoc#populated-by-directive[`@populatedBy` directive] instead.
 
-Note: The `@callback` directive has been deprecated and will be removed in version 4.0. Please use the xref::directives.adoc#populated-by-directive[`@populatedBy` directive] instead.
+The `@callback` directive is used to specify a function that will be invoked when updating or creating the properties on a node or relationship.
 
 Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-callback[`@callback`]
 
