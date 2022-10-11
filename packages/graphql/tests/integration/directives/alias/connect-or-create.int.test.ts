@@ -21,7 +21,6 @@ import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
-// import * as neo4jDriver from "neo4j-driver";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
 import { cleanNodes } from "../../../utils/clean-nodes";
@@ -34,7 +33,6 @@ describe("@alias directive", () => {
 
     let typeActor: UniqueType;
     let typeMovie: UniqueType;
-    // TODO: unions?
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -78,6 +76,41 @@ describe("@alias directive", () => {
 
     afterAll(async () => {
         await driver.close();
+    });
+
+    test("Update mutation with top-level connectOrCreate alias referring to existing field, include both fields as inputs", async () => {
+        const query = `
+            mutation {
+              ${typeActor.operations.update}(
+                update: {
+                    name: "Tom Hanks 2"
+                },
+                connectOrCreate: {
+                    movies: {
+                        where: { node: { id: 5 } }
+                        onCreate: { node: { title: "The Terminal", titleAgain: "oops" } }
+                    }
+                }
+                where: { name: "Tom Hanks"}
+              ) {
+                ${typeActor.plural} {
+                  name
+                }
+              }
+            }
+            `;
+
+        const gqlResult = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: query,
+            contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+        expect(gqlResult.errors).toHaveLength(1);
+        expect(gqlResult.errors?.[0].message).toBe(
+            `Conflicting modification of the same database property multiple times`
+        );
     });
 
     test("Create mutation with alias referring to existing field, include only field as inputs", async () => {

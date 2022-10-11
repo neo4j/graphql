@@ -35,6 +35,7 @@ import { CallbackBucket } from "../classes/CallbackBucket";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { compileCypherIfExists } from "./cypher-builder/utils/utils";
 import { doDbPropertiesClash } from "../utils/is-property-clash";
+import { asArray } from "../utils/utils";
 
 export default async function translateUpdate({
     node,
@@ -364,13 +365,18 @@ export default async function translateUpdate({
             }
 
             refNodes.forEach((refNode) => {
-                // TODO: when do we get here?
-                // const isMutationPropertiesClash = doDbPropertiesClash({ node, input: input[refNode.name] || input });
-                // if (isMutationPropertiesClash) {
-                //     throw new Neo4jGraphQLError(
-                //         "Conflicting modification of the same database property multiple times"
-                //     );
-                // }
+                const connectOrCreateTopLevelInput = input[refNode.name] || input;
+                asArray(connectOrCreateTopLevelInput).forEach((connectOrCreateItem) => {
+                    const isMutationPropertiesClash = doDbPropertiesClash({
+                        node: refNode,
+                        input: connectOrCreateItem.onCreate?.node,
+                    });
+                    if (isMutationPropertiesClash) {
+                        throw new Neo4jGraphQLError(
+                            "Conflicting modification of the same database property multiple times"
+                        );
+                    }
+                });
 
                 const { cypher, params } = createConnectOrCreateAndParams({
                     input: input[refNode.name] || input, // Deals with different input from update -> connectOrCreate
