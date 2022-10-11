@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import type { Variable } from "./variables/Variable";
 import { Param } from "./variables/Param";
+import type { NamedReference, Reference } from "./variables/Reference";
 
 export type EnvPrefix = {
     params?: string;
@@ -29,7 +29,7 @@ export type EnvPrefix = {
 export class CypherEnvironment {
     private readonly globalPrefix: EnvPrefix;
 
-    private references: Map<Variable, string> = new Map();
+    private references: Map<Reference, string> = new Map();
     private params: Param[] = [];
 
     constructor(prefix?: string | EnvPrefix) {
@@ -46,18 +46,18 @@ export class CypherEnvironment {
         }
     }
 
-    public getVariableId(variable: Variable): string {
-        if (variable.id) return variable.id; // Overrides ids for compatibility reasons
-        const id = this.references.get(variable);
+    public getReferenceId(reference: Reference | NamedReference): string {
+        if (this.isNamedReference(reference)) return reference.id; // Overrides ids for compatibility reasons
+        const id = this.references.get(reference);
         if (!id) {
-            return this.addVariableReference(variable);
+            return this.addVariableReference(reference);
         }
         return id;
     }
 
     public getParams(): Record<string, any> {
         return this.params.reduce((acc, param: Param) => {
-            const key = this.getVariableId(param);
+            const key = this.getReferenceId(param);
             if (param.hasValue) {
                 acc[key] = param.value;
             }
@@ -73,7 +73,7 @@ export class CypherEnvironment {
         return this.params.length;
     }
 
-    public getReferences(): Map<Variable, string> {
+    public getReferences(): Map<Reference, string> {
         return this.references;
     }
 
@@ -84,7 +84,7 @@ export class CypherEnvironment {
         return paramId;
     }
 
-    private addVariableReference(variable: Variable): string {
+    private addVariableReference(variable: Reference): string {
         const paramIndex = this.getParamsSize(); // Indexes are separate for readability reasons
 
         if (variable instanceof Param) {
@@ -96,5 +96,9 @@ export class CypherEnvironment {
         const varId = `${this.globalPrefix.variables}${variable.prefix}${varIndex}`;
         this.references.set(variable, varId);
         return varId;
+    }
+
+    private isNamedReference(ref: Reference | NamedReference): ref is NamedReference {
+        return Boolean((ref as any).id);
     }
 }

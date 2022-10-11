@@ -66,7 +66,7 @@ export class RunFirstColumn extends CypherASTNode {
     private convertArrayToParams(env: CypherEnvironment, variables: Variable[]): string {
         const params = variables.reduce((acc, variable) => {
             const globalScopeName = variable.getCypher(env);
-            const key = env.getVariableId(variable);
+            const key = env.getReferenceId(variable);
             acc[key] = globalScopeName;
             return acc;
         }, {} as Record<string, string>);

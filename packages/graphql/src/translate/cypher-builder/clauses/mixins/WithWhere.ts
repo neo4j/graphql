@@ -19,30 +19,38 @@
 
 import { ClauseMixin } from "./ClauseMixin";
 import { Where } from "../sub-clauses/Where";
-import { Variable } from "../../variables/Variable";
 import { and, BooleanOp } from "../../expressions/operations/boolean";
-import { PropertyRef } from "../../expressions/PropertyRef";
+import { PropertyRef } from "../../variables/PropertyRef";
 import { ComparisonOp, eq } from "../../expressions/operations/comparison";
-import type { Predicate } from "../../types";
+import type { Predicate, VariableLike } from "../../types";
+import { Reference } from "../../variables/Reference";
+import type { RelationshipRef } from "../../variables/RelationshipRef";
+import type { NodeRef } from "../../variables/NodeRef";
+import type { Variable } from "../../variables/Variable";
+
+type VariableWithProperties = Variable | NodeRef | RelationshipRef | PropertyRef;
 
 export abstract class WithWhere extends ClauseMixin {
     protected whereSubClause: Where | undefined;
 
     public where(input: Predicate): this;
-    public where(target: Variable, params: Record<string, Variable>): this;
-    public where(input: Predicate | Variable, params?: Record<string, Variable>): this {
+    public where(target: VariableWithProperties, params: Record<string, VariableLike>): this;
+    public where(input: Predicate | VariableWithProperties, params?: Record<string, VariableLike>): this {
         this.updateOrCreateWhereClause(input, params);
         return this;
     }
 
     public and(input: Predicate): this;
-    public and(target: Variable, params: Record<string, Variable>): this;
-    public and(input: Predicate | Variable, params?: Record<string, Variable>): this {
+    public and(target: VariableWithProperties, params: Record<string, VariableLike>): this;
+    public and(input: Predicate | VariableWithProperties, params?: Record<string, VariableLike>): this {
         this.updateOrCreateWhereClause(input, params);
         return this;
     }
 
-    private updateOrCreateWhereClause(input: Predicate | Variable, params?: Record<string, Variable>): void {
+    private updateOrCreateWhereClause(
+        input: Predicate | VariableWithProperties,
+        params?: Record<string, VariableLike>
+    ): void {
         const whereInput = this.createWhereInput(input, params);
         if (!whereInput) return;
 
@@ -55,10 +63,10 @@ export abstract class WithWhere extends ClauseMixin {
     }
 
     private createWhereInput(
-        input: Predicate | Variable,
-        params: Record<string, Variable> | undefined
+        input: Predicate | Reference | PropertyRef,
+        params: Record<string, VariableLike> | undefined
     ): Predicate | undefined {
-        if (input instanceof Variable) {
+        if (input instanceof Reference || input instanceof PropertyRef) {
             const generatedOp = this.variableAndObjectToOperation(input, params || {});
             return generatedOp;
         }
@@ -67,12 +75,12 @@ export abstract class WithWhere extends ClauseMixin {
 
     /** Transforms a simple input into an operation sub tree */
     private variableAndObjectToOperation(
-        target: Variable,
-        params: Record<string, Variable>
+        target: Reference | PropertyRef,
+        params: Record<string, VariableLike>
     ): BooleanOp | ComparisonOp | undefined {
         let operation: BooleanOp | ComparisonOp | undefined;
         for (const [key, value] of Object.entries(params)) {
-            const property = new PropertyRef(target, key);
+            const property = target.property(key);
             const eqOp = eq(property, value);
             if (!operation) operation = eqOp;
             else {
