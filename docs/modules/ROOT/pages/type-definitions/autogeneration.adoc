@@ -118,7 +118,8 @@ type User {
 [[type-definitions-autogeneration-populated-by]]
 == `@populatedBy`
 
-The `@populatedBy` directive is used to specify a function that will be invoked when updating or creating the properties on a node or relationship.
+The `@populatedBy` directive is used to specify a callback function that gets executed during GraphQL query parsing,
+to populate fields which have not been provided within the input.
 
 For non-required values, callbacks may return `undefined` (meaning that nothing will be changed or added to the property) or `null` (meaning that the property will be removed).
 
