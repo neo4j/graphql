@@ -18,14 +18,16 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import type { Variable } from "../variables/Variable";
+import type { CypherCompilable } from "../types";
+import type { Reference } from "./Reference";
+import type { Variable } from "./Variable";
 
 /** Reference to a Variable property */
-export class PropertyRef {
+export class PropertyRef implements CypherCompilable {
     private _variable: Variable;
     private _property: string;
 
-    constructor(variable: Variable, property: string) {
+    constructor(variable: Reference, property: string) {
         this._variable = variable;
         this._property = property;
     }
