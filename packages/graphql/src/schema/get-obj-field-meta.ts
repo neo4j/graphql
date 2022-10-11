@@ -78,6 +78,8 @@ export interface ObjectFields {
     computedFields: ComputedField[];
 }
 
+let callbackDeprecatedWarningShown = false;
+
 function getObjFieldMeta({
     obj,
     objects,
@@ -455,7 +457,10 @@ function getObjFieldMeta({
                     }
 
                     if (callbackDirective) {
-                        console.warn("The @callback directive has been deprecated and will be removed in version 4.0. Please use @populatedBy instead.");
+                        if (!callbackDeprecatedWarningShown) {
+                            console.warn("The @callback directive has been deprecated and will be removed in version 4.0. Please use @populatedBy instead.");
+                            callbackDeprecatedWarningShown = true;
+                        }
                         const callback = getCallbackMeta(callbackDirective, callbacks);
                         primitiveField.callback = callback;
                     }
