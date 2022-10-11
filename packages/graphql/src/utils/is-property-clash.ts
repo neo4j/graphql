@@ -20,28 +20,21 @@
 import type { Node } from "../classes";
 
 /* returns true if clashes exist between the db property names of the mutation inputs */
-export function doDbPropertiesClash({ node, mutationInputs }: { node: Node; mutationInputs: any[] }): boolean {
-    // TODO: support relationship properties
-    if (!mutationInputs) {
+export function doDbPropertiesClash({ node, input }: { node: Node; input: Map<string, any> | undefined }): boolean {
+    if (!input) {
         return false;
     }
     const mutationFieldNameToDbNameMap = node.primitiveFields.reduce((acc, el) => {
         acc[el.fieldName] = el.dbPropertyName;
         return acc;
     }, {});
-    const getDbNamesFromFieldNames = (inputFields: Map<string, unknown>) =>
-        Object.keys(inputFields)
-            .map((fieldName) => mutationFieldNameToDbNameMap[fieldName])
-            // some input fields are not primitive fields (eg relation fields) => no corresponding db name in the map
-            .filter((x) => x !== undefined);
+    const inputFieldsDbName = Object.keys(input)
+        .map((fieldName) => mutationFieldNameToDbNameMap[fieldName])
+        // some input fields are not primitive fields (eg relation fields) => no corresponding db name in the map
+        .filter((x) => x !== undefined);
 
-    return mutationInputs
-        .map(getDbNamesFromFieldNames)
-        .map((inputFieldsDbName) => {
-            const fieldPropertyCount = inputFieldsDbName.length;
-            const uniqueDbPropertyCount = new Set(inputFieldsDbName).size;
-            // each field property should have a unique correspondent db property
-            return fieldPropertyCount === uniqueDbPropertyCount;
-        })
-        .includes(false);
+    const fieldPropertyCount = inputFieldsDbName.length;
+    const uniqueDbPropertyCount = new Set(inputFieldsDbName).size;
+    // each field property should have a unique correspondent db property
+    return fieldPropertyCount !== uniqueDbPropertyCount;
 }

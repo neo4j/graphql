@@ -18,6 +18,7 @@
  */
 
 import type { Node, Relationship } from "../classes";
+import { Neo4jGraphQLError } from "../classes/Error";
 import type { CallbackBucket } from "../classes/CallbackBucket";
 import type { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
@@ -30,6 +31,8 @@ import createRelationshipValidationStr from "./create-relationship-validation-st
 import { createEventMeta } from "./subscriptions/create-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
+import { doDbPropertiesClash } from "../utils/is-property-clash";
+import { asArray } from "../utils/utils";
 
 interface Res {
     creates: string[];
@@ -62,6 +65,11 @@ function createCreateAndParams({
     includeRelationshipValidation?: boolean;
     topLevelNodeVariable?: string;
 }): [string, any] {
+    const isMutationPropertiesClash = doDbPropertiesClash({ node, input });
+    if (isMutationPropertiesClash) {
+        throw new Neo4jGraphQLError("Conflicting modification of the same database property multiple times");
+    }
+
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const varNameKey = `${varName}_${key}`;
         const relationField = node.relationFields.find((x) => key === x.fieldName);
@@ -182,8 +190,21 @@ function createCreateAndParams({
                 }
 
                 if (v.connectOrCreate) {
+                    const connectOrCreateInput = v.connectOrCreate;
+                    asArray(connectOrCreateInput).forEach((connectOrCreateItem) => {
+                        const isMutationPropertiesClash = doDbPropertiesClash({
+                            node: refNode,
+                            input: connectOrCreateItem.onCreate?.node,
+                        });
+                        if (isMutationPropertiesClash) {
+                            throw new Neo4jGraphQLError(
+                                "Conflicting modification of the same database property multiple times"
+                            );
+                        }
+                    });
+
                     const { cypher, params } = createConnectOrCreateAndParams({
-                        input: v.connectOrCreate,
+                        input: connectOrCreateInput,
                         varName: `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}_connectOrCreate`,
                         parentVar: varName,
                         relationField,
