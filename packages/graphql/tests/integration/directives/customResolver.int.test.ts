@@ -159,8 +159,13 @@ describe("@customResolver directive", () => {
                 fullName: fullName(user),
             });
         });
+        test("Throws error if customResolver is not provided", () => {
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            expect(async () => {
+                await neoSchema.getSchema();
+            }).toThrow("Custom resolver for User.fullname has not been provided");
+        });
     });
-
     describe("Cypher fields", () => {
         const user = {
             id: generate(),
@@ -280,6 +285,12 @@ describe("@customResolver directive", () => {
                 f: user.firstName,
                 fullName: fullName(user),
             });
+        });
+        test("Throws error if customResolver is not provided", () => {
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            expect(async () => {
+                await neoSchema.getSchema();
+            }).toThrow("Custom resolver for User.fullname has not been provided");
         });
     });
 });
