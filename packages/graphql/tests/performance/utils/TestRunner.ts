@@ -26,6 +26,8 @@ import { createJwtRequest } from "../../utils/create-jwt-request";
 import { translateQuery } from "../../tck/utils/tck-test-utils";
 import type Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";
 
+type ExecutionHook = (info: Performance.TestInfo) => Promise<void>;
+
 export class TestRunner {
     private driver: Driver;
     private schema: Neo4jGraphQL;
@@ -35,11 +37,16 @@ export class TestRunner {
         this.schema = schema;
     }
 
-    public async runTests(tests: Array<Performance.TestInfo>): Promise<Array<Performance.TestDisplayData>> {
+    public async runTests(
+        tests: Array<Performance.TestInfo>,
+        { beforeEach, afterEach }: { beforeEach: ExecutionHook; afterEach: ExecutionHook }
+    ): Promise<Array<Performance.TestDisplayData>> {
         const results: Array<Performance.TestDisplayData> = [];
         for (const test of tests) {
             try {
+                await beforeEach(test);
                 const perfResult = await this.runPerformanceTest(gql(test.query));
+                await afterEach(test);
                 results.push({ name: test.name, result: perfResult, file: test.filename, type: "graphql" });
             } catch (err) {
                 console.error("Error running test", test.filename, test.name);
@@ -50,10 +57,15 @@ export class TestRunner {
         return results;
     }
 
-    public async runCypherTests(tests: Array<Performance.TestInfo>): Promise<Array<Performance.TestDisplayData>> {
+    public async runCypherTests(
+        tests: Array<Performance.TestInfo>,
+        { beforeEach, afterEach }: { beforeEach: ExecutionHook; afterEach: ExecutionHook }
+    ): Promise<Array<Performance.TestDisplayData>> {
         const results: Array<Performance.TestDisplayData> = [];
         for (const test of tests) {
+            await beforeEach(test);
             const perfResult = await this.runCypherQuery(test.query);
+            await afterEach(test);
             results.push({ name: test.name, result: perfResult, file: test.filename, type: "cypher" });
         }
 

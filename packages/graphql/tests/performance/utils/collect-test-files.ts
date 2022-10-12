@@ -19,10 +19,9 @@
 
 import * as fs from "fs/promises";
 import * as path from "path";
+import type * as Performance from "../types";
 
-export async function collectTests(
-    rootPath: string
-): Promise<Array<{ query: string; name: string; filename: string }>> {
+export async function collectTests(rootPath: string): Promise<Array<Performance.TestInfo>> {
     const files = await filesFromDir(rootPath, ".graphql");
     let onlyFilter = false;
     const onlyRegex = /_only$/i;
@@ -35,22 +34,24 @@ export async function collectTests(
             rawQueries.shift();
             rawMutations.shift();
             // TODO: remove duplicate
-            const queries = rawQueries.map((query: string) => {
+            const queries = rawQueries.map((query: string): Performance.TestInfo => {
                 const name = query.split(" {")[0].trim();
                 if (name.match(onlyRegex)) onlyFilter = true;
                 return {
                     query: `query ${query}`,
                     name,
                     filename: path.basename(filePath).split(path.extname(filePath))[0],
+                    type: "query",
                 };
             });
-            const mutations = rawMutations.map((query: string) => {
+            const mutations = rawMutations.map((query: string): Performance.TestInfo => {
                 const name = query.split(" {")[0].trim();
                 if (name.match(onlyRegex)) onlyFilter = true;
                 return {
                     query: `mutation ${query}`,
                     name,
                     filename: path.basename(filePath).split(path.extname(filePath))[0],
+                    type: "mutation",
                 };
             });
             return [...queries, ...mutations];
@@ -65,9 +66,7 @@ export async function collectTests(
     return tests;
 }
 
-export async function collectCypherTests(
-    rootPath: string
-): Promise<Array<{ query: string; name: string; filename: string }>> {
+export async function collectCypherTests(rootPath: string): Promise<Array<Performance.TestInfo>> {
     const files = await filesFromDir(rootPath, ".cypher");
 
     let onlyFilter = false;
@@ -78,7 +77,7 @@ export async function collectCypherTests(
             const fileData = await fs.readFile(filePath, "utf-8");
             const rawQueries = fileData.split(/^#\s?Test:\s/gim);
             rawQueries.shift();
-            return rawQueries.map((query: string) => {
+            return rawQueries.map((query: string): Performance.TestInfo => {
                 const tokens = query.trim().split("\n");
                 const name = tokens.shift()?.trim() as string;
                 if (name.match(onlyRegex)) onlyFilter = true;
@@ -87,6 +86,7 @@ export async function collectCypherTests(
                     query: cypher,
                     name,
                     filename: path.basename(filePath).split(path.extname(filePath))[0],
+                    type: "cypher",
                 };
             });
         })
