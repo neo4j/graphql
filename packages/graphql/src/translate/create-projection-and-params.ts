@@ -407,7 +407,7 @@ const generateMissingOrAliasedRequiredFields = ({
     selection: Record<string, ResolveTree>;
 }): Record<string, ResolveTree> => {
     const requiredFields = removeDuplicates(
-        filterFieldsInSelection({ fields: node.computedFields, selection })
+        filterFieldsInSelection({ fields: node.customResolverFields, selection })
             .map((f) => f.requiredFields)
             .flat()
     );

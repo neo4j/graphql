@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import type { FieldDefinitionNode} from "graphql";
+import type { FieldDefinitionNode } from "graphql";
 import { Kind } from "graphql";
-import getComputedMeta, { ERROR_MESSAGE } from "./get-computed-meta";
+import getComputedMeta, { ERROR_MESSAGE } from "./get-custom-resolver-meta";
 
 describe("getComputedMeta", () => {
     test("should return undefined if no directive found", () => {
