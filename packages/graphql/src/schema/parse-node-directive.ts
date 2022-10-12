@@ -17,19 +17,30 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode} from "graphql";
+import type { DirectiveNode } from "graphql";
 import { valueFromASTUntyped } from "graphql";
 import { NodeDirective } from "../classes/NodeDirective";
+
+const deprecationWarning =
+    "The plural argument has been deprecated and will be removed in version 4.0." +
+    "Please use the @plural directive instead.";
+let pluralDeprecationWarningShown = false;
 
 function parseNodeDirective(nodeDirective: DirectiveNode | undefined) {
     if (!nodeDirective || nodeDirective.name.value !== "node") {
         throw new Error("Undefined or incorrect directive passed into parseNodeDirective function");
     }
 
+    const plural = getArgumentValue<string>(nodeDirective, "plural");
+    if (plural && !pluralDeprecationWarningShown) {
+        console.warn(deprecationWarning);
+        pluralDeprecationWarningShown = true;
+    }
+
     return new NodeDirective({
         label: getArgumentValue<string>(nodeDirective, "label"),
         additionalLabels: getArgumentValue<string[]>(nodeDirective, "additionalLabels"),
-        plural: getArgumentValue<string>(nodeDirective, "plural"),
+        plural,
     });
 }
 
