@@ -608,9 +608,12 @@ describe("@auth allow when inherited from interface", () => {
             WHERE this_disconnect_posts0.id = $updateUsers_args_disconnect_posts0_where_Postparam0
             WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0) AND (exists((this_disconnect_posts0)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this_disconnect_posts0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_posts0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            FOREACH(_ IN CASE WHEN this_disconnect_posts0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_posts0_rel
-            )
+            CALL {
+            	WITH this_disconnect_posts0, this_disconnect_posts0_rel
+            	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel
+            	UNWIND this_disconnect_posts0 as x
+            	DELETE this_disconnect_posts0_rel
+            }
             RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
             WITH *
@@ -675,9 +678,12 @@ describe("@auth allow when inherited from interface", () => {
             OPTIONAL MATCH (this)<-[this_post0_disconnect0_rel:HAS_COMMENT]-(this_post0_disconnect0:Post)
             WITH this, this_post0_disconnect0, this_post0_disconnect0_rel
             CALL apoc.util.validate(NOT ((exists((this)<-[:HAS_COMMENT]-(:\`User\`)) AND any(auth_this0 IN [(this)<-[:HAS_COMMENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0))) AND (exists((this_post0_disconnect0)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this_post0_disconnect0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_post0_disconnect0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            FOREACH(_ IN CASE WHEN this_post0_disconnect0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_post0_disconnect0_rel
-            )
+            CALL {
+            	WITH this_post0_disconnect0, this_post0_disconnect0_rel
+            	WITH collect(this_post0_disconnect0) as this_post0_disconnect0, this_post0_disconnect0_rel
+            	UNWIND this_post0_disconnect0 as x
+            	DELETE this_post0_disconnect0_rel
+            }
             WITH this, this_post0_disconnect0
             CALL {
             WITH this, this_post0_disconnect0
@@ -685,9 +691,12 @@ describe("@auth allow when inherited from interface", () => {
             WHERE this_post0_disconnect0_creator0.id = $updateComments_args_update_post_disconnect_disconnect_creator_where_Userparam0
             WITH this, this_post0_disconnect0, this_post0_disconnect0_creator0, this_post0_disconnect0_creator0_rel
             CALL apoc.util.validate(NOT ((exists((this_post0_disconnect0)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this_post0_disconnect0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_post0_disconnect0auth_param0))) AND (this_post0_disconnect0_creator0.id IS NOT NULL AND this_post0_disconnect0_creator0.id = $this_post0_disconnect0_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            FOREACH(_ IN CASE WHEN this_post0_disconnect0_creator0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_post0_disconnect0_creator0_rel
-            )
+            CALL {
+            	WITH this_post0_disconnect0_creator0, this_post0_disconnect0_creator0_rel
+            	WITH collect(this_post0_disconnect0_creator0) as this_post0_disconnect0_creator0, this_post0_disconnect0_creator0_rel
+            	UNWIND this_post0_disconnect0_creator0 as x
+            	DELETE this_post0_disconnect0_creator0_rel
+            }
             RETURN count(*) AS disconnect_this_post0_disconnect0_creator_User
             }
             RETURN count(*) AS disconnect_this_post0_disconnect_Post

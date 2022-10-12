@@ -223,17 +223,23 @@ describe("Nested Unions", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors_LeadActor0_rel:ACTED_IN]-(this_disconnect_actors_LeadActor0:LeadActor)
             WHERE this_disconnect_actors_LeadActor0.name = $updateMovies_args_disconnect_actors_LeadActor0_where_LeadActorparam0
-            FOREACH(_ IN CASE WHEN this_disconnect_actors_LeadActor0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_actors_LeadActor0_rel
-            )
+            CALL {
+            	WITH this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel
+            	WITH collect(this_disconnect_actors_LeadActor0) as this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel
+            	UNWIND this_disconnect_actors_LeadActor0 as x
+            	DELETE this_disconnect_actors_LeadActor0_rel
+            }
             WITH this, this_disconnect_actors_LeadActor0
             CALL {
             WITH this, this_disconnect_actors_LeadActor0
             OPTIONAL MATCH (this_disconnect_actors_LeadActor0)-[this_disconnect_actors_LeadActor0_actedIn_Series0_rel:ACTED_IN]->(this_disconnect_actors_LeadActor0_actedIn_Series0:Series)
             WHERE this_disconnect_actors_LeadActor0_actedIn_Series0.name = $updateMovies_args_disconnect_actors_LeadActor0_disconnect_actedIn_Series0_where_Seriesparam0
-            FOREACH(_ IN CASE WHEN this_disconnect_actors_LeadActor0_actedIn_Series0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_actors_LeadActor0_actedIn_Series0_rel
-            )
+            CALL {
+            	WITH this_disconnect_actors_LeadActor0_actedIn_Series0, this_disconnect_actors_LeadActor0_actedIn_Series0_rel
+            	WITH collect(this_disconnect_actors_LeadActor0_actedIn_Series0) as this_disconnect_actors_LeadActor0_actedIn_Series0, this_disconnect_actors_LeadActor0_actedIn_Series0_rel
+            	UNWIND this_disconnect_actors_LeadActor0_actedIn_Series0 as x
+            	DELETE this_disconnect_actors_LeadActor0_actedIn_Series0_rel
+            }
             RETURN count(*) AS disconnect_this_disconnect_actors_LeadActor0_actedIn_Series_Series
             }
             RETURN count(*) AS disconnect_this_disconnect_actors_LeadActor_LeadActor

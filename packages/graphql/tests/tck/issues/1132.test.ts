@@ -130,9 +130,12 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             WHERE this_disconnect_targets0.id = $updateSources_args_disconnect_targets0_where_Targetparam0
             WITH this, this_disconnect_targets0, this_disconnect_targets0_rel
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            FOREACH(_ IN CASE WHEN this_disconnect_targets0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_targets0_rel
-            )
+            CALL {
+            	WITH this_disconnect_targets0, this_disconnect_targets0_rel
+            	WITH collect(this_disconnect_targets0) as this_disconnect_targets0, this_disconnect_targets0_rel
+            	UNWIND this_disconnect_targets0 as x
+            	DELETE this_disconnect_targets0_rel
+            }
             RETURN count(*) AS disconnect_this_disconnect_targets_Target
             }
             WITH *

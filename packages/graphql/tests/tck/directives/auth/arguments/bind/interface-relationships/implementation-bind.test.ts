@@ -467,9 +467,12 @@ describe("Cypher Auth Allow", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
             WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Commentparam0
-            FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_content0_rel
-            )
+            CALL {
+            	WITH this_disconnect_content0, this_disconnect_content0_rel
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	UNWIND this_disconnect_content0 as x
+            	DELETE this_disconnect_content0_rel
+            }
             WITH this, this_disconnect_content0
             CALL apoc.util.validate(NOT ((this_disconnect_content0.id IS NOT NULL AND this_disconnect_content0.id = $this_disconnect_content0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN count(*) AS disconnect_this_disconnect_content_Comment
@@ -478,9 +481,12 @@ describe("Cypher Auth Allow", () => {
             	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Postparam0
-            FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_content0_rel
-            )
+            CALL {
+            	WITH this_disconnect_content0, this_disconnect_content0_rel
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	UNWIND this_disconnect_content0 as x
+            	DELETE this_disconnect_content0_rel
+            }
             WITH this, this_disconnect_content0
             CALL apoc.util.validate(NOT ((this_disconnect_content0.id IS NOT NULL AND this_disconnect_content0.id = $this_disconnect_content0auth_param0) AND (exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_content0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN count(*) AS disconnect_this_disconnect_content_Post

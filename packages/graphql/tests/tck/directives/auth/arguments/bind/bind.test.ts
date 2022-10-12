@@ -396,9 +396,12 @@ describe("Cypher Auth Allow", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_creator0_rel:HAS_POST]-(this_disconnect_creator0:User)
             WHERE this_disconnect_creator0.id = $updatePosts_args_disconnect_creator_where_Userparam0
-            FOREACH(_ IN CASE WHEN this_disconnect_creator0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_creator0_rel
-            )
+            CALL {
+            	WITH this_disconnect_creator0, this_disconnect_creator0_rel
+            	WITH collect(this_disconnect_creator0) as this_disconnect_creator0, this_disconnect_creator0_rel
+            	UNWIND this_disconnect_creator0 as x
+            	DELETE this_disconnect_creator0_rel
+            }
             WITH this, this_disconnect_creator0
             CALL apoc.util.validate(NOT ((exists((this_disconnect_creator0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_creator0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_creator0auth_param0))) AND (this_disconnect_creator0.id IS NOT NULL AND this_disconnect_creator0.id = $this_disconnect_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN count(*) AS disconnect_this_disconnect_creator_User

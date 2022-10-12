@@ -396,9 +396,12 @@ describe("Cypher Update", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
             WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actorparam0
-            FOREACH(_ IN CASE WHEN this_disconnect_actors0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_actors0_rel
-            )
+            CALL {
+            	WITH this_disconnect_actors0, this_disconnect_actors0_rel
+            	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel
+            	UNWIND this_disconnect_actors0 as x
+            	DELETE this_disconnect_actors0_rel
+            }
             RETURN count(*) AS disconnect_this_disconnect_actors_Actor
             }
             WITH *
@@ -458,9 +461,12 @@ describe("Cypher Update", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
             WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actorparam0
-            FOREACH(_ IN CASE WHEN this_disconnect_actors0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_actors0_rel
-            )
+            CALL {
+            	WITH this_disconnect_actors0, this_disconnect_actors0_rel
+            	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel
+            	UNWIND this_disconnect_actors0 as x
+            	DELETE this_disconnect_actors0_rel
+            }
             RETURN count(*) AS disconnect_this_disconnect_actors_Actor
             }
             WITH this
@@ -468,9 +474,12 @@ describe("Cypher Update", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors1_rel:ACTED_IN]-(this_disconnect_actors1:Actor)
             WHERE this_disconnect_actors1.name = $updateMovies_args_disconnect_actors1_where_Actorparam0
-            FOREACH(_ IN CASE WHEN this_disconnect_actors1 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_actors1_rel
-            )
+            CALL {
+            	WITH this_disconnect_actors1, this_disconnect_actors1_rel
+            	WITH collect(this_disconnect_actors1) as this_disconnect_actors1, this_disconnect_actors1_rel
+            	UNWIND this_disconnect_actors1 as x
+            	DELETE this_disconnect_actors1_rel
+            }
             RETURN count(*) AS disconnect_this_disconnect_actors_Actor
             }
             WITH *

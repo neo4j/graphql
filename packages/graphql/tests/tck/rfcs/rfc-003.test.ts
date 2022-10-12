@@ -1202,9 +1202,12 @@ describe("tck/rfs/003", () => {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
                         WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Directorparam0
-                        FOREACH(_ IN CASE WHEN this_disconnect_director0 IS NULL THEN [] ELSE [1] END |
-                        DELETE this_disconnect_director0_rel
-                        )
+                        CALL {
+                        	WITH this_disconnect_director0, this_disconnect_director0_rel
+                        	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel
+                        	UNWIND this_disconnect_director0 as x
+                        	DELETE this_disconnect_director0_rel
+                        }
                         RETURN count(*) AS disconnect_this_disconnect_director_Director
                         }
                         WITH *
@@ -1308,9 +1311,12 @@ describe("tck/rfs/003", () => {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
                         WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Directorparam0
-                        FOREACH(_ IN CASE WHEN this_disconnect_director0 IS NULL THEN [] ELSE [1] END |
-                        DELETE this_disconnect_director0_rel
-                        )
+                        CALL {
+                        	WITH this_disconnect_director0, this_disconnect_director0_rel
+                        	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel
+                        	UNWIND this_disconnect_director0 as x
+                        	DELETE this_disconnect_director0_rel
+                        }
                         RETURN count(*) AS disconnect_this_disconnect_director_Director
                         }
                         WITH *
@@ -1419,9 +1425,12 @@ describe("tck/rfs/003", () => {
                         WITH this
                         OPTIONAL MATCH (this)<-[this_disconnect_director0_rel:DIRECTED]-(this_disconnect_director0:Director)
                         WHERE this_disconnect_director0.id = $updateMovies_args_disconnect_director_where_Directorparam0
-                        FOREACH(_ IN CASE WHEN this_disconnect_director0 IS NULL THEN [] ELSE [1] END |
-                        DELETE this_disconnect_director0_rel
-                        )
+                        CALL {
+                        	WITH this_disconnect_director0, this_disconnect_director0_rel
+                        	WITH collect(this_disconnect_director0) as this_disconnect_director0, this_disconnect_director0_rel
+                        	UNWIND this_disconnect_director0 as x
+                        	DELETE this_disconnect_director0_rel
+                        }
                         RETURN count(*) AS disconnect_this_disconnect_director_Director
                         }
                         WITH *

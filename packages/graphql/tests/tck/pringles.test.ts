@@ -294,9 +294,12 @@ describe("Cypher Create Pringles", () => {
             WITH this, this_photos0
             OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
             WHERE this_photos0_color0_disconnect0.name = $updateProducts_args_update_photos0_update_node_color_disconnect_where_Colorparam0
-            FOREACH(_ IN CASE WHEN this_photos0_color0_disconnect0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_photos0_color0_disconnect0_rel
-            )
+            CALL {
+            	WITH this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel
+            	WITH collect(this_photos0_color0_disconnect0) as this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel
+            	UNWIND this_photos0_color0_disconnect0 as x
+            	DELETE this_photos0_color0_disconnect0_rel
+            }
             RETURN count(*) AS disconnect_this_photos0_color0_disconnect_Color
             }
             WITH this, this_photos0
