@@ -17,14 +17,16 @@
  * limitations under the License.
  */
 
-import { GraphQLEnumType } from "graphql";
+import type { DirectiveNode, StringValueNode } from "graphql";
 
-/** Deprecated in favour of @populatedBy */
-export const CallbackOperationEnum = new GraphQLEnumType({
-    name: "CallbackOperation",
-    description: "*For use in the @callback directive only*",
-    values: {
-        CREATE: {},
-        UPDATE: {},
-    },
-});
+/**
+ * Parse the plural directive and return the plural value.
+ * @param pluralDirective The plural directicve to parse.
+ * @returns The plural value.
+ */
+export default function parsePluralDirective(pluralDirective: DirectiveNode | undefined): string | undefined {
+    return (
+        (pluralDirective?.arguments?.find((argument) => argument.name.value === "value")?.value as StringValueNode)
+            ?.value || undefined
+    );
+}
