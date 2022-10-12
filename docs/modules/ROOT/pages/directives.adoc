@@ -15,6 +15,8 @@ Reference: xref::auth/auth-directive.adoc[`@auth` directive]
 
 == `@callback`
 
+NOTE: The `@callback` directive has been deprecated and will be removed in version 4.0. Please use the xref::directives.adoc#populated-by-directive[`@populatedBy` directive] instead.
+
 The `@callback` directive is used to specify a function that will be invoked when updating or creating the properties on a node or relationship.
 
 Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-callback[`@callback`]
@@ -78,6 +80,14 @@ The `@plural` directive redefines how to compose the plural of the type for the 
 This is particularly useful for types that are not correctly pluralized or are non-English words.
 
 Reference: xref::type-definitions/database-mapping.adoc#type-definitions-plural[`@plural`]
+
+[[populated-by-directive]]
+== `@populatedBy`
+
+The `@populatedBy` directive is used to specify a callback function that gets executed during GraphQL query parsing,
+to populate fields which have not been provided within the input.
+
+Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-populated-by[`@populatedBy`]
 
 == `@private`
 
