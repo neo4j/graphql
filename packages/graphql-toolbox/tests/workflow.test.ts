@@ -60,7 +60,7 @@ describe("workflow", () => {
 
     let driver: neo4j.Driver;
 
-    beforeAll(async () => {
+    beforeAll(() => {
         driver = neo4j.driver(NEO_URL, neo4j.auth.basic(NEO_USER, NEO_PASSWORD));
     });
 
@@ -76,7 +76,7 @@ describe("workflow", () => {
 
         await editorPage.setQuery(query);
 
-        const session = await driver.session();
+        const session = driver.session();
         try {
             await session.run(`
                 CREATE (:Movie { id: "${id}" })

@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 import * as neo4j from "neo4j-driver";
 import * as util from "util";
 

@@ -254,9 +254,9 @@ describe("Cypher Auth Where with Roles", () => {
                 WITH { node: { content: this_Post.content } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS postsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_postsConnection
             }
-            RETURN this { .id, postsConnection: postsConnection } as this"
+            RETURN this { .id, postsConnection: this_postsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -311,9 +311,9 @@ describe("Cypher Auth Where with Roles", () => {
                 WITH { node: { content: this_Post.content } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS postsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_postsConnection
             }
-            RETURN this { .id, postsConnection: postsConnection } as this"
+            RETURN this { .id, postsConnection: this_postsConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -485,9 +485,9 @@ describe("Cypher Auth Where with Roles", () => {
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS contentConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_contentConnection
             }
-            RETURN this { .id, contentConnection: contentConnection } as this"
+            RETURN this { .id, contentConnection: this_contentConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -548,9 +548,9 @@ describe("Cypher Auth Where with Roles", () => {
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS contentConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_contentConnection
             }
-            RETURN this { .id, contentConnection: contentConnection } as this"
+            RETURN this { .id, contentConnection: this_contentConnection } as this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -992,7 +992,7 @@ describe("Cypher Auth Where with Roles", () => {
         `);
     });
 
-    test("Connect Node (from update update)e", async () => {
+    test("Connect Node (from update update)", async () => {
         const query = gql`
             mutation {
                 updateUsers(update: { posts: { connect: { where: { node: {} } } } }) {

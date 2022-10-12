@@ -14,7 +14,7 @@ export default function debounce<F extends (...args: any[]) => any>(
     fn: F
 ): (this: any, ...args: Parameters<F>) => void {
     let timeout: number | null;
-    // eslint-disable-next-line func-names
+
     return function (this: any, ...args: Parameters<F>) {
         if (timeout) {
             window.clearTimeout(timeout);

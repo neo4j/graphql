@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { Variable } from "./Variable";
 import type { NodeRef } from "./NodeRef";
 import { MatchPatternOptions, Pattern } from "../Pattern";
+import { Reference } from "./Reference";
 
 export type RelationshipInput = {
     source: NodeRef;
@@ -27,7 +27,7 @@ export type RelationshipInput = {
     type?: string;
 };
 
-export class RelationshipRef extends Variable {
+export class RelationshipRef extends Reference {
     private _source: NodeRef;
     private _target: NodeRef;
     private _type: string | undefined;

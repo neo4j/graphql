@@ -94,21 +94,21 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
             WITH this
             CALL {
                 WITH this
-                MERGE (this_isInPublication0_connectOrCreate_this0:\`Concept\`:\`Resource\` { uri: $this_isInPublication0_connectOrCreate_param0 })
+                MERGE (this_isInPublication0_connectOrCreate0:\`Concept\`:\`Resource\` { uri: $this_isInPublication0_connectOrCreate_param0 })
                 ON CREATE SET
-                    this_isInPublication0_connectOrCreate_this0.uri = $this_isInPublication0_connectOrCreate_param1,
-                    this_isInPublication0_connectOrCreate_this0.prefLabel = $this_isInPublication0_connectOrCreate_param2
-                MERGE (this)-[this_isInPublication0_connectOrCreate_this1:isInPublication]->(this_isInPublication0_connectOrCreate_this0)
+                    this_isInPublication0_connectOrCreate0.uri = $this_isInPublication0_connectOrCreate_param1,
+                    this_isInPublication0_connectOrCreate0.prefLabel = $this_isInPublication0_connectOrCreate_param2
+                MERGE (this)-[this_isInPublication0_connectOrCreate_this0:isInPublication]->(this_isInPublication0_connectOrCreate0)
                 RETURN COUNT(*) AS _
             }
             WITH this
             CALL {
                 WITH this
-                MERGE (this_isInPublication1_connectOrCreate_this0:\`Concept\`:\`Resource\` { uri: $this_isInPublication1_connectOrCreate_param0 })
+                MERGE (this_isInPublication1_connectOrCreate0:\`Concept\`:\`Resource\` { uri: $this_isInPublication1_connectOrCreate_param0 })
                 ON CREATE SET
-                    this_isInPublication1_connectOrCreate_this0.uri = $this_isInPublication1_connectOrCreate_param1,
-                    this_isInPublication1_connectOrCreate_this0.prefLabel = $this_isInPublication1_connectOrCreate_param2
-                MERGE (this)-[this_isInPublication1_connectOrCreate_this1:isInPublication]->(this_isInPublication1_connectOrCreate_this0)
+                    this_isInPublication1_connectOrCreate0.uri = $this_isInPublication1_connectOrCreate_param1,
+                    this_isInPublication1_connectOrCreate0.prefLabel = $this_isInPublication1_connectOrCreate_param2
+                MERGE (this)-[this_isInPublication1_connectOrCreate_this0:isInPublication]->(this_isInPublication1_connectOrCreate0)
                 RETURN COUNT(*) AS _
             }
             WITH *

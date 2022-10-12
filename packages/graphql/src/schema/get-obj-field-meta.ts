@@ -61,7 +61,7 @@ import type {
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
 import { upperFirst } from "../utils/upper-first";
-import getCallbackMeta from "./get-callback-meta";
+import { getCallbackMeta, getPopulatedByMeta } from "./get-populated-by-meta";
 
 export interface ObjectFields {
     relationFields: RelationField[];
@@ -77,6 +77,8 @@ export interface ObjectFields {
     pointFields: PointField[];
     computedFields: ComputedField[];
 }
+
+let callbackDeprecatedWarningShown = false;
 
 function getObjFieldMeta({
     obj,
@@ -129,6 +131,7 @@ function getObjFieldMeta({
             const timestampDirective = directives.find((x) => x.name.value === "timestamp");
             const aliasDirective = directives.find((x) => x.name.value === "alias");
             const callbackDirective = directives.find((x) => x.name.value === "callback");
+            const populatedByDirective = directives.find((x) => x.name.value === "populatedBy");
 
             const unique = getUniqueMeta(directives, obj, field.name.value);
 
@@ -158,6 +161,7 @@ function getObjFieldMeta({
                             "alias",
                             "unique",
                             "callback",
+                            "populatedBy",
                         ].includes(x.name.value)
                 ),
                 arguments: [...(field.arguments || [])],
@@ -388,7 +392,6 @@ function getObjFieldMeta({
                 };
                 res.objectFields.push(objectField);
             } else {
-                // eslint-disable-next-line no-lonely-if
                 if (["DateTime", "Date", "Time", "LocalDateTime", "LocalTime"].includes(typeMeta.name)) {
                     const temporalField: TemporalField = {
                         ...baseField,
@@ -448,7 +451,16 @@ function getObjFieldMeta({
                         ...baseField,
                     };
 
+                    if (populatedByDirective) {
+                        const callback = getPopulatedByMeta(populatedByDirective, callbacks);
+                        primitiveField.callback = callback;
+                    }
+
                     if (callbackDirective) {
+                        if (!callbackDeprecatedWarningShown) {
+                            console.warn("The @callback directive has been deprecated and will be removed in version 4.0. Please use @populatedBy instead.");
+                            callbackDeprecatedWarningShown = true;
+                        }
                         const callback = getCallbackMeta(callbackDirective, callbacks);
                         primitiveField.callback = callback;
                     }

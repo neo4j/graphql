@@ -20,7 +20,7 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { mergeDeep } from "@graphql-tools/utils";
 import type { Node } from "../classes";
-import type { GraphQLOptionsArg, GraphQLWhereArg, Context, ConnectionField, RelationField } from "../types";
+import type { GraphQLOptionsArg, GraphQLWhereArg, Context, RelationField } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import createPointElement from "./projection/elements/create-point-element";
@@ -33,11 +33,11 @@ import { removeDuplicates } from "../utils/utils";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
-// eslint-disable-next-line import/no-cycle
+
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
-// eslint-disable-next-line import/no-cycle
+
 import { createConnectionClause } from "./connection-clause/create-connection-clause";
-// eslint-disable-next-line import/no-cycle
+
 import { translateCypherDirectiveProjection } from "./projection/subquery/translate-cypher-directive-projection";
 
 interface Res {
@@ -192,7 +192,6 @@ export default function createProjectionAndParams({
                     if (!hasFields) {
                         nestedProjection = `{ __resolveType: "${refNode.name}" }`;
                     }
-
                     const subquery = createProjectionSubquery({
                         parentNode,
                         whereInput: field.args.where ? field.args.where[refNode.name] : field.args.where,
@@ -258,7 +257,6 @@ export default function createProjectionAndParams({
             });
             res.subqueries.push(new CypherBuilder.Call(subquery).innerWith(parentNode));
             res.projection.push(`${alias}: ${param}`);
-
             return res;
         }
 
@@ -276,29 +274,26 @@ export default function createProjectionAndParams({
         }
 
         if (connectionField) {
-            const matchedConnectionField = node.connectionFields.find(
-                (x) => x.fieldName === field.name
-            ) as ConnectionField;
-
             const connectionClause = new CypherBuilder.Call(
                 createConnectionClause({
                     resolveTree: field,
-                    field: matchedConnectionField,
+                    field: connectionField,
                     context,
                     nodeVariable: varName,
+                    returnVariable: new CypherBuilder.NamedVariable(param),
                 })
             ).innerWith(new CypherBuilder.NamedNode(varName));
 
             const connection = connectionClause.build(`${varName}_connection_${field.alias}`); // TODO: remove build from here
             const stupidParams = connection.params;
 
-            const connectionSubClause = new CypherBuilder.RawCypher((_env) => {
+            const connectionSubClause = new CypherBuilder.RawCypher(() => {
                 // TODO: avoid REPLACE_ME in params and return them here
 
                 return [connection.cypher, {}];
             });
             res.subqueries.push(connectionSubClause);
-            res.projection.push(`${field.alias}: ${field.alias}`);
+            res.projection.push(`${field.alias}: ${param}`);
 
             res.params = { ...res.params, ...stupidParams };
             return res;

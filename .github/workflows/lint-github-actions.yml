@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: reviewdog/action-actionlint@fe5c2db6029881e0b5634d7cb0d119b0c16b6922 # tag=v1.32.0
+      - uses: reviewdog/action-actionlint@c5d7b203340dfcb0f18fdf2ea44b0c10a1dee012 # tag=v1.33.0
         with:
           reporter: github-check
           fail_on_error: true

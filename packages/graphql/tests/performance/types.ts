@@ -35,4 +35,4 @@ export type TestDisplayData = {
     type: "cypher" | "graphql";
 };
 
-export type TestInfo = { query: string; name: string; filename: string };
+export type TestInfo = { query: string; name: string; filename: string; type: "query" | "mutation" | "cypher" };

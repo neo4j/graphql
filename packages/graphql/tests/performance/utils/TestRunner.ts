@@ -18,7 +18,6 @@
  */
 
 import assert from "assert";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { gql } from "apollo-server-express";
 import type { Driver, ProfiledPlan } from "neo4j-driver";
 import type { DocumentNode } from "graphql";
@@ -26,6 +25,8 @@ import type * as Performance from "../types";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { translateQuery } from "../../tck/utils/tck-test-utils";
 import type Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";
+
+type ExecutionHook = (info: Performance.TestInfo) => Promise<void>;
 
 export class TestRunner {
     private driver: Driver;
@@ -36,17 +37,19 @@ export class TestRunner {
         this.schema = schema;
     }
 
-    public async runTests(tests: Array<Performance.TestInfo>): Promise<Array<Performance.TestDisplayData>> {
+    public async runTests(
+        tests: Array<Performance.TestInfo>,
+        { beforeEach, afterEach }: { beforeEach: ExecutionHook; afterEach: ExecutionHook }
+    ): Promise<Array<Performance.TestDisplayData>> {
         const results: Array<Performance.TestDisplayData> = [];
         for (const test of tests) {
             try {
-                // eslint-disable-next-line no-await-in-loop -- We want to run tests sequentially
+                await beforeEach(test);
                 const perfResult = await this.runPerformanceTest(gql(test.query));
+                await afterEach(test);
                 results.push({ name: test.name, result: perfResult, file: test.filename, type: "graphql" });
             } catch (err) {
-                // eslint-disable-next-line no-console
                 console.error("Error running test", test.filename, test.name);
-                // eslint-disable-next-line no-console
                 console.warn(err);
             }
         }
@@ -54,11 +57,15 @@ export class TestRunner {
         return results;
     }
 
-    public async runCypherTests(tests: Array<Performance.TestInfo>): Promise<Array<Performance.TestDisplayData>> {
+    public async runCypherTests(
+        tests: Array<Performance.TestInfo>,
+        { beforeEach, afterEach }: { beforeEach: ExecutionHook; afterEach: ExecutionHook }
+    ): Promise<Array<Performance.TestDisplayData>> {
         const results: Array<Performance.TestDisplayData> = [];
         for (const test of tests) {
-            // eslint-disable-next-line no-await-in-loop -- We want to run tests sequentially
+            await beforeEach(test);
             const perfResult = await this.runCypherQuery(test.query);
+            await afterEach(test);
             results.push({ name: test.name, result: perfResult, file: test.filename, type: "cypher" });
         }
 

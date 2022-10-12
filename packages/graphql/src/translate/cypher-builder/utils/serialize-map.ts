@@ -26,7 +26,7 @@ export function serializeMap(
     omitCurlyBraces = false
 ): string {
     const valuesList = Object.entries(obj)
-        .filter(([_k, value]) => value !== undefined)
+        .filter(([, value]) => value !== undefined)
         .map(([key, value]) => {
             return `${key}: ${(value as Expr).getCypher(env)}`; // TODO: improve Typings
         });

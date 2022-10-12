@@ -118,7 +118,7 @@ export interface Unique {
 
 export interface Callback {
     operations: CallbackOperations[];
-    name: string;
+    callbackName: string;
 }
 
 /**
@@ -344,9 +344,6 @@ export interface CypherQueryOptions {
     interpretedPipesFallback?: CypherInterpretedPipesFallback;
     replan?: CypherReplanning;
 }
-
-/** Nested Records helper type, supports any level of recursion. Ending in properties of type T */
-export interface NestedRecord<T> extends Record<string | symbol | number, T | NestedRecord<T>> {} // Using interface to allow recursive types
 
 /** Input field for graphql-compose */
 export type InputField = { type: string; defaultValue?: string } | string;

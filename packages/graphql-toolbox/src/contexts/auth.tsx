@@ -170,5 +170,5 @@ export function AuthProvider(props: any) {
         resolveNeo4jDesktopLoginPayload().then(processLoginPayload.bind(null, value)).catch(console.error);
     }, []);
 
-    return <AuthContext.Provider value={value as State}>{props.children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={value }>{props.children}</AuthContext.Provider>;
 }

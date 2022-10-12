@@ -50,7 +50,7 @@ describe("wrapper test", () => {
         // @ts-ignore
         fakeDriver = {
             // @ts-ignore
-            session: (config) => {
+            session: () => {
                 return fakeSession;
             },
             // @ts-ignore
@@ -77,7 +77,7 @@ describe("wrapper test", () => {
         readTransaction.mockReturnValueOnce({
             records: [["4.4.0", "enterprise"]],
         });
-        const resolver = jest.fn((root, args, context: Context, info) => {
+        const resolver = jest.fn((_root, _args, context: Context) => {
             expect(context).toBeDefined();
             expect(context.neo4jDatabaseInfo).toBeDefined();
             expect(context.neo4jDatabaseInfo?.edition).toBe("enterprise");
@@ -98,7 +98,7 @@ describe("wrapper test", () => {
             records: [["4.5.0", "enterprise"]],
         });
         const contextVersion = new Neo4jDatabaseInfo("1.1.0", "enterprise");
-        const resolver = jest.fn((root, args, context: Context, info) => {
+        const resolver = jest.fn((_root, _args, context: Context) => {
             expect(context).toBeDefined();
             expect(context.neo4jDatabaseInfo).toBeDefined();
             expect(context.neo4jDatabaseInfo).toStrictEqual(contextVersion);
@@ -119,7 +119,7 @@ describe("wrapper test", () => {
     test("should not invoke dbms.components if neo4jDatabaseInfo is already initialised", async () => {
         const resolverDecorator = wrapResolver(wrapResolverArgs);
         const resolvedResult = "Resolved value";
-        const resolver = (root, args, context: Context, info) => {
+        const resolver = (_root, _args, context: Context) => {
             expect(context).toBeDefined();
             expect(context.neo4jDatabaseInfo).toBeDefined();
             expect(context.neo4jDatabaseInfo).toEqual(new Neo4jDatabaseInfo("4.3.0", "enterprise"));

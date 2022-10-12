@@ -19,7 +19,7 @@
 
 import { Button, HeroIcon, IconButton, Label } from "@neo4j-ndl/react";
 import { Fragment, useContext } from "react";
-import { DEFAULT_BOLT_URL } from "src/constants";
+import { DEFAULT_BOLT_URL } from "../../constants";
 // @ts-ignore - SVG Import
 import Neo4jLogoIcon from "../../assets/neo4j-logo-color.svg";
 import { CustomSelect } from "../../components/CustomSelect";

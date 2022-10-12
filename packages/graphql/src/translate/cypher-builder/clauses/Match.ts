@@ -26,7 +26,7 @@ import { WithWhere } from "./mixins/WithWhere";
 import { WithSet } from "./mixins/WithSet";
 import { WithWith } from "./mixins/WithWith";
 import { DeleteClause, DeleteInput } from "./sub-clauses/Delete";
-import type { PropertyRef } from "../expressions/PropertyRef";
+import type { PropertyRef } from "../variables/PropertyRef";
 import { RemoveClause } from "./sub-clauses/Remove";
 import type { CypherEnvironment } from "../Environment";
 

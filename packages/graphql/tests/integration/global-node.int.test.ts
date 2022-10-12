@@ -20,7 +20,7 @@
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import type { Driver } from "neo4j-driver";
 import { graphql } from "graphql";
-import gql from "graphql-tag";
+import { gql } from "graphql-tag";
 import Neo4j from "./neo4j";
 import { Neo4jGraphQL } from "../../src/classes";
 import { toGlobalId } from "../../src/utils/global-ids";
@@ -49,7 +49,7 @@ describe("Global node resolution", () => {
 
         const typeDefs = `type ${typeFilm.name} {
             dbId: ID! @id(global:true) @alias(property: "id")
-            title: String! 
+            title: String!
         }`;
 
         const neoSchema = new Neo4jGraphQL({
@@ -189,7 +189,7 @@ describe("Global node resolution", () => {
         type ${typeFilm.name} {
           dbId: ID! @id(autogenerate: false, global: true) @alias(property: "id")
           title: String!
-          createdBy: ${typeUser.name}! @relationship(type: "CREATED_BY", direction: OUT) 
+          createdBy: ${typeUser.name}! @relationship(type: "CREATED_BY", direction: OUT)
         }
 
         type ${typeUser.name} {
@@ -270,7 +270,7 @@ describe("Global node resolution", () => {
         type ${typeFilm.name} {
           dbId: Int! @id(autogenerate: false, global: true) @alias(property: "id")
           title: String!
-          createdBy: ${typeUser.name}! @relationship(type: "CREATED_BY", direction: OUT) 
+          createdBy: ${typeUser.name}! @relationship(type: "CREATED_BY", direction: OUT)
         }
 
         type ${typeUser.name} {
@@ -349,7 +349,7 @@ describe("Global node resolution", () => {
     test("sends and returns the correct selectionSet for the node", async () => {
         const typeDefs = `
         type ${typeFilm.name} {
-          title: ID! @id(autogenerate: false, global: true) 
+          title: ID! @id(autogenerate: false, global: true)
           website: String
         }
 
@@ -453,7 +453,7 @@ describe("Global node resolution", () => {
           }
 
           type ${typeFilm.name} {
-            title: ID! @id(global: true, autogenerate: false)  
+            title: ID! @id(global: true, autogenerate: false)
             creator: ${typeUser.name}! @relationship(type: "CREATED", direction: IN)
           }
 
@@ -571,7 +571,7 @@ describe("Global node resolution", () => {
         }
 
         extend type ${typeUser.name} @auth(rules: [
-          { allow: { OR: [{ roles: ["admin"] }, { dbId: "$jwt.sub" } ] } } 
+          { allow: { OR: [{ roles: ["admin"] }, { dbId: "$jwt.sub" } ] } }
         ])
     `;
 
