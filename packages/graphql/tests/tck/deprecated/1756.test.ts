@@ -29,7 +29,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
     beforeAll(() => {
         typeDefs = gql`
             interface INode {
-                id: ID @populatedBy(operations: [CREATE], callback: "nanoid")
+                id: ID @callback(operations: [CREATE], name: "nanoid")
             }
 
             type Product implements INode {

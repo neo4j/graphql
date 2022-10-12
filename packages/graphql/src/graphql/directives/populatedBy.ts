@@ -18,25 +18,22 @@
  */
 
 import { DirectiveLocation, GraphQLDirective, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
-import { CallbackOperationEnum } from "./arguments/enums/CallbackOperation";
+import { PopulatedByOperationEnum } from "./arguments/enums/PopulatedByOperation";
 
-const description = "NOTE: this directive has been deprecated and will be removed in @neo4j/graphql version 4.0." +
-    "Instructs @neo4j/graphql to invoke the specified callback function when updating or creating the properties on a node or relationship."
-
-/** Deprecated in favour of @populatedBy */
-export const callbackDirective = new GraphQLDirective({
-    name: "callback",
-    description,
+export const populatedByDirective = new GraphQLDirective({
+    name: "populatedBy",
+    description:
+        "Instructs @neo4j/graphql to invoke the specified callback function when updating or creating the properties on a node or relationship.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
     args: {
+        callback: {
+            description: "The name of the callback function that will be used to populate the fields values.",
+            type: new GraphQLNonNull(GraphQLString),
+        },
         operations: {
             description: "Which events to invoke the callback on.",
-            defaultValue: CallbackOperationEnum.getValues().map((v) => v.value),
-            type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(CallbackOperationEnum))),
-        },
-        name: {
-            description: "The name of the callback function.",
-            type: new GraphQLNonNull(GraphQLString),
+            defaultValue: PopulatedByOperationEnum.getValues().map((v) => v.value),
+            type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(PopulatedByOperationEnum))),
         },
     },
 });
