@@ -88,7 +88,11 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
             RETURN count(aggr_node) = $aggr_count
             \\", { this_admins0: this_admins0, aggr_count: $aggr_count })
             WITH this, collect(DISTINCT this_admins0) as this_admins0_to_delete
-            FOREACH(x IN this_admins0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_admins0_to_delete
+            	UNWIND this_admins0_to_delete AS x
+            	DETACH DELETE x
+            }
             DETACH DELETE this"
         `);
 

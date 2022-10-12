@@ -822,7 +822,11 @@ describe("Cypher Auth Where with Roles", () => {
             WITH this, this_posts0
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this, collect(DISTINCT this_posts0) as this_posts0_to_delete
-            FOREACH(x IN this_posts0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_posts0_to_delete
+            	UNWIND this_posts0_to_delete AS x
+            	DETACH DELETE x
+            }
             WITH this
             CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"user\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) OR any(auth_var3 IN [\\"admin\\"] WHERE any(auth_var2 IN $auth.roles WHERE auth_var2 = auth_var3)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             DETACH DELETE this"

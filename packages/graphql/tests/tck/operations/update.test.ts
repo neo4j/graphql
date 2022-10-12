@@ -697,7 +697,11 @@ describe("Cypher Update", () => {
             OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
             WHERE (this_delete_actors0_relationship.screenTime = $updateMovies_args_delete_actors0_where_Actorparam0 AND this_delete_actors0.name = $updateMovies_args_delete_actors0_where_Actorparam1)
             WITH this, collect(DISTINCT this_delete_actors0) as this_delete_actors0_to_delete
-            FOREACH(x IN this_delete_actors0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_delete_actors0_to_delete
+            	UNWIND this_delete_actors0_to_delete AS x
+            	DETACH DELETE x
+            }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -776,7 +780,11 @@ describe("Cypher Update", () => {
             OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
             WHERE this_delete_actors0.name = $updateMovies_args_delete_actors0_where_Actorparam0
             WITH this, collect(DISTINCT this_delete_actors0) as this_delete_actors0_to_delete
-            FOREACH(x IN this_delete_actors0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_delete_actors0_to_delete
+            	UNWIND this_delete_actors0_to_delete AS x
+            	DETACH DELETE x
+            }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -853,7 +861,11 @@ describe("Cypher Update", () => {
             OPTIONAL MATCH (this)<-[this_actors0_delete0_relationship:ACTED_IN]-(this_actors0_delete0:Actor)
             WHERE this_actors0_delete0.name = $updateMovies_args_update_actors0_delete0_where_Actorparam0
             WITH this, collect(DISTINCT this_actors0_delete0) as this_actors0_delete0_to_delete
-            FOREACH(x IN this_actors0_delete0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_actors0_delete0_to_delete
+            	UNWIND this_actors0_delete0_to_delete AS x
+            	DETACH DELETE x
+            }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -921,9 +933,17 @@ describe("Cypher Update", () => {
             OPTIONAL MATCH (this_actors0_delete0)-[this_actors0_delete0_movies0_relationship:ACTED_IN]->(this_actors0_delete0_movies0:Movie)
             WHERE this_actors0_delete0_movies0.id = $updateMovies_args_update_actors0_delete0_delete_movies0_where_Movieparam0
             WITH this, this_actors0_delete0, collect(DISTINCT this_actors0_delete0_movies0) as this_actors0_delete0_movies0_to_delete
-            FOREACH(x IN this_actors0_delete0_movies0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_actors0_delete0_movies0_to_delete
+            	UNWIND this_actors0_delete0_movies0_to_delete AS x
+            	DETACH DELETE x
+            }
             WITH this, collect(DISTINCT this_actors0_delete0) as this_actors0_delete0_to_delete
-            FOREACH(x IN this_actors0_delete0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_actors0_delete0_to_delete
+            	UNWIND this_actors0_delete0_to_delete AS x
+            	DETACH DELETE x
+            }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 

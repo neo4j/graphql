@@ -573,7 +573,11 @@ describe("Cypher Auth isAuthenticated", () => {
             WITH this, this_posts0
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this, collect(DISTINCT this_posts0) as this_posts0_to_delete
-            FOREACH(x IN this_posts0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_posts0_to_delete
+            	UNWIND this_posts0_to_delete AS x
+            	DETACH DELETE x
+            }
             WITH this
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             DETACH DELETE this"

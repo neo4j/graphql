@@ -547,7 +547,11 @@ describe("@auth allow when inherited from interface", () => {
             WITH this, this_posts0
             CALL apoc.util.validate(NOT ((exists((this_posts0)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this_posts0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this, collect(DISTINCT this_posts0) as this_posts0_to_delete
-            FOREACH(x IN this_posts0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_posts0_to_delete
+            	UNWIND this_posts0_to_delete AS x
+            	DETACH DELETE x
+            }
             WITH this
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             DETACH DELETE this"

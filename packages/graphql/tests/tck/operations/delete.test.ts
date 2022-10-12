@@ -95,7 +95,11 @@ describe("Cypher Delete", () => {
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
             WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
-            FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_actors0_to_delete
+            	UNWIND this_actors0_to_delete AS x
+            	DETACH DELETE x
+            }
             DETACH DELETE this"
         `);
 
@@ -151,12 +155,20 @@ describe("Cypher Delete", () => {
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:Actor)
             WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
             WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
-            FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_actors0_to_delete
+            	UNWIND this_actors0_to_delete AS x
+            	DETACH DELETE x
+            }
             WITH this
             OPTIONAL MATCH (this)<-[this_actors1_relationship:ACTED_IN]-(this_actors1:Actor)
             WHERE this_actors1.name = $this_deleteMovies_args_delete_actors1_where_Actorparam0
             WITH this, collect(DISTINCT this_actors1) as this_actors1_to_delete
-            FOREACH(x IN this_actors1_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_actors1_to_delete
+            	UNWIND this_actors1_to_delete AS x
+            	DETACH DELETE x
+            }
             DETACH DELETE this"
         `);
 
@@ -223,9 +235,17 @@ describe("Cypher Delete", () => {
             OPTIONAL MATCH (this_actors0)-[this_actors0_movies0_relationship:ACTED_IN]->(this_actors0_movies0:Movie)
             WHERE this_actors0_movies0.id = $this_deleteMovies_args_delete_actors0_delete_movies0_where_Movieparam0
             WITH this, this_actors0, collect(DISTINCT this_actors0_movies0) as this_actors0_movies0_to_delete
-            FOREACH(x IN this_actors0_movies0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_actors0_movies0_to_delete
+            	UNWIND this_actors0_movies0_to_delete AS x
+            	DETACH DELETE x
+            }
             WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
-            FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_actors0_to_delete
+            	UNWIND this_actors0_to_delete AS x
+            	DETACH DELETE x
+            }
             DETACH DELETE this"
         `);
 
@@ -304,11 +324,23 @@ describe("Cypher Delete", () => {
             OPTIONAL MATCH (this_actors0_movies0)<-[this_actors0_movies0_actors0_relationship:ACTED_IN]-(this_actors0_movies0_actors0:Actor)
             WHERE this_actors0_movies0_actors0.name = $this_deleteMovies_args_delete_actors0_delete_movies0_delete_actors0_where_Actorparam0
             WITH this, this_actors0, this_actors0_movies0, collect(DISTINCT this_actors0_movies0_actors0) as this_actors0_movies0_actors0_to_delete
-            FOREACH(x IN this_actors0_movies0_actors0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_actors0_movies0_actors0_to_delete
+            	UNWIND this_actors0_movies0_actors0_to_delete AS x
+            	DETACH DELETE x
+            }
             WITH this, this_actors0, collect(DISTINCT this_actors0_movies0) as this_actors0_movies0_to_delete
-            FOREACH(x IN this_actors0_movies0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_actors0_movies0_to_delete
+            	UNWIND this_actors0_movies0_to_delete AS x
+            	DETACH DELETE x
+            }
             WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
-            FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_actors0_to_delete
+            	UNWIND this_actors0_to_delete AS x
+            	DETACH DELETE x
+            }
             DETACH DELETE this"
         `);
 

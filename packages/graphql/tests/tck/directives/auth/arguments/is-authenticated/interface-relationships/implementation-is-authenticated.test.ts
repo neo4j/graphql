@@ -453,13 +453,21 @@ describe("Cypher Auth isAuthenticated", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
             WITH this, collect(DISTINCT this_content_Comment0) as this_content_Comment0_to_delete
-            FOREACH(x IN this_content_Comment0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_content_Comment0_to_delete
+            	UNWIND this_content_Comment0_to_delete AS x
+            	DETACH DELETE x
+            }
             WITH this
             OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
             WITH this, this_content_Post0
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this, collect(DISTINCT this_content_Post0) as this_content_Post0_to_delete
-            FOREACH(x IN this_content_Post0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_content_Post0_to_delete
+            	UNWIND this_content_Post0_to_delete AS x
+            	DETACH DELETE x
+            }
             DETACH DELETE this"
         `);
 
