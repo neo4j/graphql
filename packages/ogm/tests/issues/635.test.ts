@@ -76,7 +76,7 @@ describe("issues/635", () => {
             email: String! @unique
             firstName: String!
             lastName: String!
-            fullName: String! @computed
+            fullName: String! @customResolver
             role: Role!
             hashedPassword: String! @private
             createdAt: DateTime! @timestamp(operations: [CREATE])
@@ -166,7 +166,7 @@ describe("issues/635", () => {
             email: String!
             firstName: String!
             lastName: String!
-            fullName: String! @computed
+            fullName: String! @customResolver
             phoneNumber: String!
             servicer: Company @relationship(type: "CUSTOMER_AT", direction: OUT)
             vehicles: [Customer!]! @relationship(type: "VEHICLE_OWNED_BY", direction: IN)

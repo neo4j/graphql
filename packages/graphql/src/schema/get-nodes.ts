@@ -125,7 +125,7 @@ function getNodes(definitionNodes: DefinitionNodes, options: { callbacks?: Neo4j
 
         // Ensure that all required fields are returning either a scalar type or an enum
 
-        const violativeRequiredField = nodeFields.computedFields
+        const violativeRequiredField = nodeFields.customResolverFields
             .filter((f) => f.requiredFields.length)
             .map((f) => f.requiredFields)
             .flat()

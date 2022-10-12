@@ -28,7 +28,6 @@ import type {
     CustomScalarField,
     CypherField,
     FullText,
-    ComputedField,
     InterfaceField,
     ObjectField,
     PointField,
@@ -62,7 +61,6 @@ export interface NodeConstructor extends GraphElementConstructor {
     objectFields: ObjectField[];
     temporalFields: TemporalField[];
     pointFields: PointField[];
-    computedFields: ComputedField[];
     plural?: string;
     auth?: Auth;
     fulltextDirective?: FullText;
