@@ -26,7 +26,7 @@ describe("@customResolver directive", () => {
     test("passes fields directly through with no generation", async () => {
         const typeDefs = gql`
             interface UserInterface {
-                computed: String @customResolver
+                customResolver: String @customResolver
             }
 
             type User implements UserInterface {
@@ -34,7 +34,7 @@ describe("@customResolver directive", () => {
                 username: String!
                 password: String!
                 nickname: String! @customResolver
-                computed: String
+                customResolver: String
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -114,7 +114,7 @@ describe("@customResolver directive", () => {
             }
 
             type User implements UserInterface {
-              computed: String
+              customResolver: String
               id: ID!
               nickname: String!
               password: String!
@@ -140,7 +140,7 @@ describe("@customResolver directive", () => {
             }
 
             interface UserInterface {
-              computed: String
+              customResolver: String
             }
 
             input UserOptions {
