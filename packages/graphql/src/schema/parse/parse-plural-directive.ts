@@ -25,5 +25,8 @@ import type { DirectiveNode, StringValueNode } from "graphql";
  * @returns The plural value.
  */
 export default function parsePluralDirective(pluralDirective: DirectiveNode | undefined): string | undefined {
-    return (pluralDirective?.arguments?.find((argument) => argument.name.value === "value")?.value as StringValueNode)?.value || undefined;
+    return (
+        (pluralDirective?.arguments?.find((argument) => argument.name.value === "value")?.value as StringValueNode)
+            ?.value || undefined
+    );
 }

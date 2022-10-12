@@ -17,10 +17,13 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode} from "graphql";
+import type { DirectiveNode } from "graphql";
 import { valueFromASTUntyped } from "graphql";
 import { NodeDirective } from "../classes/NodeDirective";
 
+const deprecationWarning =
+    "The plural argument has been deprecated and will be removed in version 4.0." +
+    "Please use the @plural directive instead.";
 let pluralDeprecationWarningShown = false;
 
 function parseNodeDirective(nodeDirective: DirectiveNode | undefined) {
@@ -30,7 +33,7 @@ function parseNodeDirective(nodeDirective: DirectiveNode | undefined) {
 
     const plural = getArgumentValue<string>(nodeDirective, "plural");
     if (plural && !pluralDeprecationWarningShown) {
-        console.warn("The plural argument has been deprecated and will be removed in version 4.0. Please use the @plural directive instead.");
+        console.warn(deprecationWarning);
         pluralDeprecationWarningShown = true;
     }
 

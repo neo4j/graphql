@@ -19,8 +19,9 @@
 
 import { DirectiveLocation, GraphQLDirective, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
 
-const pluralDescription = "NOTE: The plural argument has been deprecated and will be removed in version 4.0." +
-    "Please use the @plural directive instead. Allows for the specification of the plural of the type name."
+const pluralDescription =
+    "NOTE: The plural argument has been deprecated and will be removed in version 4.0." +
+    "Please use the @plural directive instead. Allows for the specification of the plural of the type name.";
 
 export const nodeDirective = new GraphQLDirective({
     name: "node",

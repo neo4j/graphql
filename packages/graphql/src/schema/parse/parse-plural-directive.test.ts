@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode, ObjectTypeDefinitionNode} from "graphql";
+import type { DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
 import { parse } from "graphql";
 import parsePluralDirective from "./parse-plural-directive";
 
