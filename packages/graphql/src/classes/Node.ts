@@ -61,6 +61,7 @@ export interface NodeConstructor extends GraphElementConstructor {
     objectFields: ObjectField[];
     temporalFields: TemporalField[];
     pointFields: PointField[];
+    plural?: string;
     auth?: Auth;
     fulltextDirective?: FullText;
     exclude?: Exclude;
@@ -163,7 +164,7 @@ class Node extends GraphElement {
         this._idField = input.globalIdField;
         this._idFieldIsInt = input.globalIdFieldIsInt;
         this.singular = this.generateSingular();
-        this.plural = this.generatePlural();
+        this.plural = this.generatePlural(input.plural);
     }
 
     // Fields you can set in a create or update mutation
@@ -307,9 +308,9 @@ class Node extends GraphElement {
         return `${this.leadingUnderscores(this.name)}${singular}`;
     }
 
-    private generatePlural(): string {
-        const name = this.nodeDirective?.plural || this.name;
-        const plural = this.nodeDirective?.plural ? camelcase(name) : pluralize(camelcase(name));
+    private generatePlural(inputPlural: string | undefined): string {
+        const name = inputPlural || this.nodeDirective?.plural || this.name;
+        const plural = inputPlural || this.nodeDirective?.plural ? camelcase(name) : pluralize(camelcase(name));
 
         return `${this.leadingUnderscores(name)}${plural}`;
     }

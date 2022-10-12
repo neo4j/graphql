@@ -49,6 +49,7 @@ function checkDirectiveCombinations(directives: readonly DirectiveNode[] = []): 
         writeonly: ["cypher", "computed", "customResolver"],
         // OBJECT
         node: [],
+        plural: [],
         // INTERFACE
         relationshipProperties: [],
         // OBJECT and INTERFACE

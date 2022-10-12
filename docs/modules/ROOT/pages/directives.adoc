@@ -77,9 +77,20 @@ Reference: xref::type-definitions/autogeneration.adoc#type-definitions-autogener
 
 == `@node`
 
+NOTE: The plural argument of the `@node` directive has been deprecated and will be removed in version 4.0.
+Please use the xref::directives.adoc#plural-directive[`@plural` directive] instead.
+
 The `@node` directive is used to specify the configuration of a GraphQL object type which represents a Neo4j node.
 
 Reference: xref::type-definitions/database-mapping.adoc#type-definitions-node[`@node`]
+
+[[plural-directive]]
+== `@plural`
+
+The `@plural` directive redefines how to compose the plural of the type for the generated operations.
+This is particularly useful for types that are not correctly pluralized or are non-English words.
+
+Reference: xref::type-definitions/database-mapping.adoc#type-definitions-plural[`@plural`]
 
 [[populated-by-directive]]
 == `@populatedBy`
