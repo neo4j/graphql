@@ -17,22 +17,13 @@
  * limitations under the License.
  */
 
-export type ProfileResult = {
-    maxRows: number;
-    dbHits: number;
-    cache: {
-        hits: number;
-        misses: number;
-    };
-};
+import { GraphQLEnumType } from "graphql";
 
-export type Result = ProfileResult & { time: number };
-
-export type TestDisplayData = {
-    name: string;
-    result: Result;
-    file: string;
-    type: "cypher" | "graphql";
-};
-
-export type TestInfo = { query: string; name: string; filename: string; type: "query" | "mutation" | "cypher" };
+export const PopulatedByOperationEnum = new GraphQLEnumType({
+    name: "PopulatedByOperation",
+    description: "*For use in the @populatedBy directive only*",
+    values: {
+        CREATE: {},
+        UPDATE: {},
+    },
+});

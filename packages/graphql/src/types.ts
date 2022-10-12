@@ -118,7 +118,7 @@ export interface Unique {
 
 export interface Callback {
     operations: CallbackOperations[];
-    name: string;
+    callbackName: string;
 }
 
 /**
