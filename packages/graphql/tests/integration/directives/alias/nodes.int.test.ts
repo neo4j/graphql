@@ -104,7 +104,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[name]], [[nameAgain]] on type ${typeDirector.name}`
         );
         expect((gqlResult?.data as any)?.[typeDirector.operations.create]?.[typeDirector.plural]).toBeUndefined();
     });
@@ -181,7 +181,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[name]], [[nameAgain]] on type ${typeDirector.name}`
         );
         expect((gqlResult?.data as any)?.[typeDirector.operations.create]?.[typeDirector.plural]).toBeUndefined();
     });
@@ -265,7 +265,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`
         );
         expect((gqlResult?.data as any)?.[typeDirector.operations.create]?.[typeDirector.plural]).toBeUndefined();
     });
@@ -365,7 +365,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[name]], [[nameAgain]] on type ${typeDirector.name}`
         );
         expect((gqlResult?.data as any)?.[typeDirector.operations.create]?.[typeDirector.plural]).toBeUndefined();
     });
@@ -391,7 +391,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[name]], [[nameAgain]] on type ${typeDirector.name}`
         );
         expect((gqlResult?.data as any)?.[typeDirector.operations.update]?.[typeDirector.plural]).toBeUndefined();
     });
@@ -452,7 +452,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[name]], [[nameAgain]] on type ${typeDirector.name}`
         );
         expect((gqlResult?.data as any)?.[typeDirector.operations.update]?.[typeDirector.plural]).toBeUndefined();
     });
@@ -488,7 +488,7 @@ describe("@alias directive", () => {
 
         expect(gqlResult.errors).toBeUndefined();
     });
-    test("Update mutation with alias on connection referring to existing field, include both field as inputs", async () => {
+    test("Update mutation with alias on connection referring to existing field, include both fields as inputs", async () => {
         const userMutation = `
             mutation {
                 ${typeDirector.operations.update}(where: {name_CONTAINS: "Tim Burton"}, update:{
@@ -524,7 +524,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`
         );
         expect((gqlResult?.data as any)?.[typeDirector.operations.update]?.[typeDirector.plural]).toBeUndefined();
     });
@@ -574,7 +574,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`
         );
         expect((gqlResult?.data as any)?.[typeDirector.operations.update]?.[typeDirector.plural]).toBeUndefined();
     });
@@ -674,7 +674,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[name]], [[nameAgain]] on type ${typeDirector.name}`
         );
         expect((gqlResult?.data as any)?.[typeDirector.operations.update]?.[typeDirector.plural]).toBeUndefined();
     });
@@ -743,7 +743,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`
         );
         expect((gqlResult?.data as any)?.[typeDirector.operations.update]?.[typeDirector.plural]).toBeUndefined();
     });
@@ -768,7 +768,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`
         );
         expect((gqlResult?.data as any)?.[typeDirector.operations.update]?.[typeDirector.plural]).toBeUndefined();
     });

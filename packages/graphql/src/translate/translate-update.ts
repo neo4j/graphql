@@ -18,7 +18,6 @@
  */
 
 import type { Node, Relationship } from "../classes";
-import { Neo4jGraphQLError } from "../classes/Error";
 import type { Context, RelationField } from "../types";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
@@ -34,8 +33,6 @@ import createRelationshipValidationStr from "./create-relationship-validation-st
 import { CallbackBucket } from "../classes/CallbackBucket";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { compileCypherIfExists } from "./cypher-builder/utils/utils";
-import { doDbPropertiesClash } from "../utils/is-property-clash";
-import { asArray } from "../utils/utils";
 
 export default async function translateUpdate({
     node,
@@ -273,13 +270,6 @@ export default async function translateUpdate({
 
                 const creates = relationField.typeMeta.array ? v : [v];
                 creates.forEach((create, index) => {
-                    const isMutationPropertiesClash = doDbPropertiesClash({ node, input: create.node });
-                    if (isMutationPropertiesClash) {
-                        throw new Neo4jGraphQLError(
-                            "Conflicting modification of the same database property multiple times"
-                        );
-                    }
-
                     const baseName = `${varName}_create_${entry[0]}${
                         relationField.union || relationField.interface ? `_${refNode.name}` : ""
                     }${index}`;
@@ -365,19 +355,6 @@ export default async function translateUpdate({
             }
 
             refNodes.forEach((refNode) => {
-                const connectOrCreateTopLevelInput = input[refNode.name] || input;
-                asArray(connectOrCreateTopLevelInput).forEach((connectOrCreateItem) => {
-                    const isMutationPropertiesClash = doDbPropertiesClash({
-                        node: refNode,
-                        input: connectOrCreateItem.onCreate?.node,
-                    });
-                    if (isMutationPropertiesClash) {
-                        throw new Neo4jGraphQLError(
-                            "Conflicting modification of the same database property multiple times"
-                        );
-                    }
-                });
-
                 const { cypher, params } = createConnectOrCreateAndParams({
                     input: input[refNode.name] || input, // Deals with different input from update -> connectOrCreate
                     varName: `${varName}_connectOrCreate_${key}${relationField.union ? `_${refNode.name}` : ""}`,

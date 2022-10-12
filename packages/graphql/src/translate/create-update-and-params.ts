@@ -40,8 +40,7 @@ import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { buildMathStatements, matchMathField, mathDescriptorBuilder } from "./utils/math";
 import { indentBlock } from "./utils/indent-block";
 import { wrapStringInApostrophes } from "../utils/wrap-string-in-apostrophes";
-import { doDbPropertiesClash } from "../utils/is-property-clash";
-import { asArray } from "../utils/utils";
+import { findConflictingProperties } from "../utils/is-property-clash";
 
 interface Res {
     strs: string[];
@@ -80,9 +79,13 @@ export default function createUpdateAndParams({
 }): [string, any] {
     let hasAppliedTimeStamps = false;
 
-    const isMutationPropertiesClash = doDbPropertiesClash({ node, input: updateInput });
-    if (isMutationPropertiesClash) {
-        throw new Neo4jGraphQLError("Conflicting modification of the same database property multiple times");
+    const conflictingProperties = findConflictingProperties({ node, input: updateInput });
+    if (conflictingProperties.length > 0) {
+        throw new Neo4jGraphQLError(
+            `Conflicting modification of ${conflictingProperties.map((n) => `[[${n}]]`).join(", ")} on type ${
+                node.name
+            }`
+        );
     }
 
     function reducer(res: Res, [key, value]: [string, any]) {
@@ -343,21 +346,8 @@ export default function createUpdateAndParams({
                     }
 
                     if (update.connectOrCreate) {
-                        const connectOrCreateInput = update.connectOrCreate;
-                        asArray(connectOrCreateInput).forEach((connectOrCreateItem) => {
-                            const isMutationPropertiesClash = doDbPropertiesClash({
-                                node: refNode,
-                                input: connectOrCreateItem.onCreate?.node,
-                            });
-                            if (isMutationPropertiesClash) {
-                                throw new Neo4jGraphQLError(
-                                    "Conflicting modification of the same database property multiple times"
-                                );
-                            }
-                        });
-
                         const { cypher, params } = createConnectOrCreateAndParams({
-                            input: connectOrCreateInput,
+                            input: update.connectOrCreate,
                             varName: `${variableName}_connectOrCreate`,
                             parentVar: varName,
                             relationField,

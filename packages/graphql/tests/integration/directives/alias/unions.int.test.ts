@@ -142,7 +142,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`
         );
         expect((gqlResult?.data as any)?.createDirectors?.directors).toBeUndefined();
     });
@@ -197,7 +197,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeSeries.name}`
         );
         expect((gqlResult?.data as any)?.createDirectors?.directors).toBeUndefined();
     });
@@ -343,7 +343,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`
         );
         expect((gqlResult?.data as any)?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
     });
@@ -395,7 +395,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeSeries.name}`
         );
         expect((gqlResult?.data as any)?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
     });
@@ -447,7 +447,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[name]], [[nameAgain]] on type ${typeActor.name}`
         );
         expect((gqlResult?.data as any)?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
     });
@@ -551,7 +551,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeMovie.name}`
         );
         expect((gqlResult?.data as any)?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
     });
@@ -606,7 +606,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[title]], [[titleAgain]] on type ${typeSeries.name}`
         );
         expect((gqlResult?.data as any)?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
     });
@@ -661,7 +661,7 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0].message).toBe(
-            `Conflicting modification of the same database property multiple times`
+            `Conflicting modification of [[name]], [[nameAgain]] on type ${typeActor.name}`
         );
         expect((gqlResult?.data as any)?.[typeActor.operations.update]?.[typeActor.plural]).toBeUndefined();
     });
