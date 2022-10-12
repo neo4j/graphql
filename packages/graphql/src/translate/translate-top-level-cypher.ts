@@ -172,7 +172,7 @@ export function translateTopLevelCypher({
     } else {
         cypherStrs.push(`
             CALL apoc.cypher.doIt("${statement}", ${apocParamsStr}) YIELD value
-            WITH [k in keys(value) | value[k]][0] as this
+            WITH [k in keys(value) | value[k]][0] AS this
             `);
     }
 
