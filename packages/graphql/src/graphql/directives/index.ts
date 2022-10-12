@@ -27,6 +27,7 @@ export { excludeDirective } from "./exclude";
 export { fulltextDirective } from "./fulltext";
 export { idDirective } from "./id";
 export { nodeDirective } from "./node";
+export { pluralDirective } from "./plural";
 export { populatedByDirective } from "./populatedBy";
 export { privateDirective } from "./private";
 export { queryOptionsDirective } from "./query-options";

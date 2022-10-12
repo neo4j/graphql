@@ -26,9 +26,7 @@ export const REQUIRED_APOC_FUNCTIONS = [
     "apoc.util.validatePredicate",
     "apoc.cypher.runFirstColumnSingle",
     "apoc.cypher.runFirstColumnMany",
-    "apoc.coll.flatten",
     "apoc.date.convertFormat",
-    "apoc.map.values",
 ];
 export const REQUIRED_APOC_PROCEDURES = ["apoc.util.validate", "apoc.do.when", "apoc.cypher.doIt"];
 export const DEBUG_ALL = `${DEBUG_PREFIX}:*`;
