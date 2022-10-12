@@ -115,9 +115,105 @@ type User {
     lastModified: DateTime! @timestamp(operations: [CREATE, UPDATE])
 }
 ----
+[[type-definitions-autogeneration-populated-by]]
+== `@populatedBy`
+
+The `@populatedBy` directive is used to specify a callback function that gets executed during GraphQL query parsing,
+to populate fields which have not been provided within the input.
+
+For non-required values, callbacks may return `undefined` (meaning that nothing will be changed or added to the property) or `null` (meaning that the property will be removed).
+
+=== Definition
+
+[source, graphql, indent=0]
+----
+enum PopulatedByOperation {
+    CREATE
+    UPDATE
+}
+
+"""Instructs @neo4j/graphql to invoke the specified callback function to populate the field when updating or creating the properties on a node or relationship."""
+directive @populatedBy(
+    """The name of the callback function."""
+    callback: String!
+    """Which events to invoke the callback on."""
+    operations: [PopulatedByOperation!]! = [CREATE, UPDATE]
+) on FIELD_DEFINITION
+----
+
+=== Usage
+
+Type Definitions:
+
+[source, graphql, indent=0]
+----
+type Product {
+    name: String!
+    slug: String! @populatedBy(callback: "slug", operations: [CREATE, UPDATE])
+}
+----
+
+Schema Construction:
+
+> Note that the callback is asynchronous!
+
+[source, javascript, indent=0]
+----
+const slugCallback = async (root) => {
+    return `${root.name}_slug`
+}
+
+new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    config: {
+        callbacks: {
+            slug: slugCallback
+        }
+    }
+})
+----
+
+==== Using GraphQL context values
+
+The GraphQL context for the request is available as the third argument in a callback. This maps to the argument pattern for GraphQL resolvers.
+
+For example, if you wanted a field `modifiedBy`:
+
+[source, graphql, indent=0]
+----
+type Record {
+    content: String!
+    modifiedBy: @populatedBy(callback: "modifiedBy", operations: [CREATE, UPDATE])
+}
+----
+
+If the username is located in `context.username`, you could define a callback such as:
+
+[source, javascript, indent=0]
+----
+const modifiedByCallback = async (_parent, _args, context) => {
+    return context.username;
+}
+
+new Neo4jGraphQL({
+    typeDefs,
+    driver,
+    config: {
+        callbacks: {
+            modifiedBy: modifiedByCallback
+        }
+    }
+})
+----
+
+NOTE: The second positional argument, in this case `_args`, has a type of `Record<string, never>`, and as such will always be an empty object.
+
 
 [[type-definitions-autogeneration-callback]]
 == `@callback`
+
+NOTE: The `@callback` directive has been deprecated and will be removed in version 4.0. Please use xref::type-definitions/autogeneration.adoc#type-definitions-autogeneration-populated-by[`@populatedBy`] instead.
 
 The `@callback` directive is used to specify a function that will be invoked when updating or creating the properties on a node or relationship.
 
