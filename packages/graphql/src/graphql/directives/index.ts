@@ -21,6 +21,7 @@ export { aliasDirective } from "./alias";
 export { callbackDirective } from "./callback";
 export { coalesceDirective } from "./coalesce";
 export { computedDirective } from "./computed";
+export { customResolverDirective } from "./customResolver";
 export { cypherDirective } from "./cypher";
 export { defaultDirective } from "./default";
 export { excludeDirective } from "./exclude";
