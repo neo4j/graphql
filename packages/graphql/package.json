@@ -62,7 +62,7 @@
         "apollo-server": "3.10.3",
         "apollo-server-express": "3.10.3",
         "dedent": "0.7.0",
-        "graphql-middleware": "6.1.32",
+        "graphql-middleware": "6.1.33",
         "graphql-tag": "2.12.6",
         "graphql-ws": "5.11.2",
         "is-uuid": "1.0.2",
