@@ -61,7 +61,7 @@ import type {
 import parseValueNode from "./parse-value-node";
 import checkDirectiveCombinations from "./check-directive-combinations";
 import { upperFirst } from "../utils/upper-first";
-import { getCallbackMeta, getPopulatedByMeta } from "./get-callback-meta";
+import { getCallbackMeta, getPopulatedByMeta } from "./get-populated-by-meta";
 
 export interface ObjectFields {
     relationFields: RelationField[];
