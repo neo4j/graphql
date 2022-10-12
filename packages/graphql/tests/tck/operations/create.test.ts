@@ -278,11 +278,13 @@ describe("Cypher Create", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
             	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_actors_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_actors_connect0_node
+            		MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
+            	}
             	RETURN count(*) AS connect_this0_actors_connect_Actor
             }
             RETURN this0
@@ -335,11 +337,13 @@ describe("Cypher Create", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_movies_connect0_node:Movie)
             	WHERE this0_movies_connect0_node.id = $this0_movies_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_movies_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_movies_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_movies_connect0_node
+            		MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
+            	}
             	RETURN count(*) AS connect_this0_movies_connect_Movie
             }
             RETURN this0

@@ -105,4 +105,5 @@ export enum RelationshipQueryDirectionOption {
 export const META_CYPHER_VARIABLE = "meta";
 export const META_OLD_PROPS_CYPHER_VARIABLE = "oldProps";
 
-export const DBMS_COMPONENTS_QUERY = "CALL dbms.components() YIELD versions, edition UNWIND versions AS version RETURN version, edition";
+export const DBMS_COMPONENTS_QUERY =
+    "CALL dbms.components() YIELD versions, edition UNWIND versions AS version RETURN version, edition";

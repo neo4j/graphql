@@ -75,11 +75,13 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_activeOrganization0_node:Organization)
             	WHERE this_connect_activeOrganization0_node._id = $this_connect_activeOrganization0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_activeOrganization0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:ACTIVELY_MANAGING]->(this_connect_activeOrganization0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_activeOrganization0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_activeOrganization0_node
+            		MERGE (this)-[:ACTIVELY_MANAGING]->(this_connect_activeOrganization0_node)
+            	}
             	RETURN count(*) AS connect_this_connect_activeOrganization_Organization
             }
             WITH this

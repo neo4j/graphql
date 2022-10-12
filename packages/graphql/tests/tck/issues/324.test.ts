@@ -107,11 +107,13 @@ describe("#324", () => {
             	WITH this, this_car0, this_car0_manufacturer0
             	OPTIONAL MATCH (this_car0_manufacturer0_logo0_connect0_node:Logo)
             	WHERE this_car0_manufacturer0_logo0_connect0_node.identifier = $this_car0_manufacturer0_logo0_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this_car0_manufacturer0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_car0_manufacturer0_logo0_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this_car0_manufacturer0)-[:LOGO]->(this_car0_manufacturer0_logo0_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH this, this_car0, collect(this_car0_manufacturer0_logo0_connect0_node) as connectedNodes, collect(this_car0_manufacturer0) as parentNodes
+            		UNWIND parentNodes as this_car0_manufacturer0
+            		UNWIND connectedNodes as this_car0_manufacturer0_logo0_connect0_node
+            		MERGE (this_car0_manufacturer0)-[:LOGO]->(this_car0_manufacturer0_logo0_connect0_node)
+            	}
             	RETURN count(*) AS connect_this_car0_manufacturer0_logo0_connect_Logo
             }
             WITH this, this_car0, this_car0_manufacturer0

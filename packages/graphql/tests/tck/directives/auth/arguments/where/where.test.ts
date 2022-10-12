@@ -717,11 +717,13 @@ describe("Cypher Auth Where", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_posts_connect0_node:Post)
             	WHERE (exists((this0_posts_connect0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this0_posts_connect0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this0_posts_connect0_nodeauth_param0)))
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_posts_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_posts_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_posts_connect0_node
+            		MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            	}
             	RETURN count(*) AS connect_this0_posts_connect_Post
             }
             RETURN this0
@@ -777,11 +779,13 @@ describe("Cypher Auth Where", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_posts_connect0_node:Post)
             	WHERE this0_posts_connect0_node.id = $this0_posts_connect0_node_param0 AND (exists((this0_posts_connect0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this0_posts_connect0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this0_posts_connect0_nodeauth_param0)))
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_posts_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_posts_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_posts_connect0_node
+            		MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            	}
             	RETURN count(*) AS connect_this0_posts_connect_Post
             }
             RETURN this0
@@ -828,11 +832,13 @@ describe("Cypher Auth Where", () => {
             	WITH this
             	OPTIONAL MATCH (this_posts0_connect0_node:Post)
             	WHERE (exists((this_posts0_connect0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_posts0_connect0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts0_connect0_nodeauth_param0)))
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_posts0_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_posts0_connect0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_posts0_connect0_node
+            		MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            	}
             	RETURN count(*) AS connect_this_posts0_connect_Post
             }
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -873,11 +879,13 @@ describe("Cypher Auth Where", () => {
             	WITH this
             	OPTIONAL MATCH (this_posts0_connect0_node:Post)
             	WHERE this_posts0_connect0_node.id = $this_posts0_connect0_node_param0 AND (exists((this_posts0_connect0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_posts0_connect0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts0_connect0_nodeauth_param0)))
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_posts0_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_posts0_connect0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_posts0_connect0_node
+            		MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            	}
             	RETURN count(*) AS connect_this_posts0_connect_Post
             }
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -919,11 +927,13 @@ describe("Cypher Auth Where", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_posts0_node:Post)
             	WHERE (exists((this_connect_posts0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_posts0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_posts0_nodeauth_param0)))
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_posts0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_posts0_node
+            		MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            	}
             	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *
@@ -965,11 +975,13 @@ describe("Cypher Auth Where", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_posts0_node:Post)
             	WHERE this_connect_posts0_node.id = $this_connect_posts0_node_param0 AND (exists((this_connect_posts0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_posts0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_posts0_nodeauth_param0)))
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_posts0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_posts0_node
+            		MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            	}
             	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *

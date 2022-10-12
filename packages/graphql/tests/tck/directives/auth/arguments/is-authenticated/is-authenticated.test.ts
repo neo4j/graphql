@@ -420,11 +420,13 @@ describe("Cypher Auth isAuthenticated", () => {
             	OPTIONAL MATCH (this_connect_posts0_node:Post)
             	WITH this, this_connect_posts0_node
             	CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_posts0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_posts0_node
+            		MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            	}
             	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *

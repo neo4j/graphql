@@ -426,11 +426,13 @@ describe("Cypher Auth Roles", () => {
             	OPTIONAL MATCH (this_connect_posts0_node:Post)
             	WITH this, this_connect_posts0_node
             	CALL apoc.util.validate(NOT (any(auth_var1 IN [\\"super-admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND any(auth_var1 IN [\\"admin\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_posts0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_posts0_node
+            		MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            	}
             	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *
@@ -488,11 +490,13 @@ describe("Cypher Auth Roles", () => {
             	WHERE this_post0_creator0_connect0_node.id = $this_post0_creator0_connect0_node_param0
             	WITH this, this_post0, this_post0_creator0_connect0_node
             	CALL apoc.util.validate(NOT (any(auth_var1 IN [\\\\\\"admin\\\\\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND any(auth_var1 IN [\\\\\\"super-admin\\\\\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1))), \\\\\\"@neo4j/graphql/FORBIDDEN\\\\\\", [0])
-            	FOREACH(_ IN CASE WHEN this_post0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_post0_creator0_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this_post0)-[:HAS_POST]->(this_post0_creator0_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH this, collect(this_post0_creator0_connect0_node) as connectedNodes, collect(this_post0) as parentNodes
+            		UNWIND parentNodes as this_post0
+            		UNWIND connectedNodes as this_post0_creator0_connect0_node
+            		MERGE (this_post0)-[:HAS_POST]->(this_post0_creator0_connect0_node)
+            	}
             	RETURN count(*) AS connect_this_post0_creator0_connect_User
             }
             WITH this, this_post0

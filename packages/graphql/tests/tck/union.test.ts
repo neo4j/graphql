@@ -317,11 +317,13 @@ describe("Cypher Union", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_search_Genre_connect0_node:Genre)
             	WHERE this0_search_Genre_connect0_node.name = $this0_search_Genre_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_search_Genre_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_search_Genre_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_search_Genre_connect0_node
+            		MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
+            	}
             	RETURN count(*) AS connect_this0_search_Genre_connect_Genre
             }
             RETURN this0
@@ -572,11 +574,13 @@ describe("Cypher Union", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_search_Genre0_node:Genre)
             	WHERE this_connect_search_Genre0_node.name = $this_connect_search_Genre0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_search_Genre0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_search_Genre0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_search_Genre0_node
+            		MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
+            	}
             	RETURN count(*) AS connect_this_connect_search_Genre_Genre
             }
             WITH *

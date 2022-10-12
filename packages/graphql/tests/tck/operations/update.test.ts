@@ -284,11 +284,13 @@ describe("Cypher Update", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)
             	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actors0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actors0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actors0_node
+            		MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+            	}
             	RETURN count(*) AS connect_this_connect_actors_Actor
             }
             WITH *
@@ -333,11 +335,13 @@ describe("Cypher Update", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)
             	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actors0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actors0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actors0_node
+            		MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+            	}
             	RETURN count(*) AS connect_this_connect_actors_Actor
             }
             WITH this
@@ -345,11 +349,13 @@ describe("Cypher Update", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors1_node:Actor)
             	WHERE this_connect_actors1_node.name = $this_connect_actors1_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actors1_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)<-[this_connect_actors1_relationship:ACTED_IN]-(this_connect_actors1_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actors1_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actors1_node
+            		MERGE (this)<-[this_connect_actors1_relationship:ACTED_IN]-(this_connect_actors1_node)
+            	}
             	RETURN count(*) AS connect_this_connect_actors_Actor
             }
             WITH *

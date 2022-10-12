@@ -87,24 +87,28 @@ describe("Interface Relationships - Update connect", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
             	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actedIn0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actedIn0_node
+            		MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
-            		)
-            	)
+            	}
             	RETURN count(*) AS connect_this_connect_actedIn_Movie
             }
             CALL {
             		WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
             	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actedIn0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actedIn0_node
+            		MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
-            		)
-            	)
+            	}
             	RETURN count(*) AS connect_this_connect_actedIn_Series
             }
             WITH *
@@ -154,23 +158,27 @@ describe("Interface Relationships - Update connect", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
             	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actedIn0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actedIn0_node
+            		MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
-            		)
-            	)
+            	}
             WITH this, this_connect_actedIn0_node
             CALL {
             	WITH this, this_connect_actedIn0_node
             	OPTIONAL MATCH (this_connect_actedIn0_node_actors0_node:Actor)
             	WHERE this_connect_actedIn0_node_actors0_node.name = $this_connect_actedIn0_node_actors0_node_param0
-            	FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node_actors0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_actors0_node)
+            	CALL {
+            		WITH *
+            		WITH this, collect(this_connect_actedIn0_node_actors0_node) as connectedNodes, collect(this_connect_actedIn0_node) as parentNodes
+            		UNWIND parentNodes as this_connect_actedIn0_node
+            		UNWIND connectedNodes as this_connect_actedIn0_node_actors0_node
+            		MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_actors0_node)
             SET this_connect_actedIn0_node_actors0_relationship.screenTime = $this_connect_actedIn0_node_actors0_relationship_screenTime
-            		)
-            	)
+            	}
             	RETURN count(*) AS connect_this_connect_actedIn0_node_actors_Actor
             }
             	RETURN count(*) AS connect_this_connect_actedIn_Movie
@@ -179,23 +187,27 @@ describe("Interface Relationships - Update connect", () => {
             		WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
             	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actedIn0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actedIn0_node
+            		MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
-            		)
-            	)
+            	}
             WITH this, this_connect_actedIn0_node
             CALL {
             	WITH this, this_connect_actedIn0_node
             	OPTIONAL MATCH (this_connect_actedIn0_node_actors0_node:Actor)
             	WHERE this_connect_actedIn0_node_actors0_node.name = $this_connect_actedIn0_node_actors0_node_param0
-            	FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node_actors0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_actors0_node)
+            	CALL {
+            		WITH *
+            		WITH this, collect(this_connect_actedIn0_node_actors0_node) as connectedNodes, collect(this_connect_actedIn0_node) as parentNodes
+            		UNWIND parentNodes as this_connect_actedIn0_node
+            		UNWIND connectedNodes as this_connect_actedIn0_node_actors0_node
+            		MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_actors0_node)
             SET this_connect_actedIn0_node_actors0_relationship.screenTime = $this_connect_actedIn0_node_actors0_relationship_screenTime
-            		)
-            	)
+            	}
             	RETURN count(*) AS connect_this_connect_actedIn0_node_actors_Actor
             }
             	RETURN count(*) AS connect_this_connect_actedIn_Series
@@ -256,23 +268,27 @@ describe("Interface Relationships - Update connect", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
             	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actedIn0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actedIn0_node
+            		MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
-            		)
-            	)
+            	}
             WITH this, this_connect_actedIn0_node
             CALL {
             	WITH this, this_connect_actedIn0_node
             	OPTIONAL MATCH (this_connect_actedIn0_node_on_Movie0_actors0_node:Actor)
             	WHERE this_connect_actedIn0_node_on_Movie0_actors0_node.name = $this_connect_actedIn0_node_on_Movie0_actors0_node_param0
-            	FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node_on_Movie0_actors0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_on_Movie0_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_on_Movie0_actors0_node)
+            	CALL {
+            		WITH *
+            		WITH this, collect(this_connect_actedIn0_node_on_Movie0_actors0_node) as connectedNodes, collect(this_connect_actedIn0_node) as parentNodes
+            		UNWIND parentNodes as this_connect_actedIn0_node
+            		UNWIND connectedNodes as this_connect_actedIn0_node_on_Movie0_actors0_node
+            		MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_on_Movie0_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_on_Movie0_actors0_node)
             SET this_connect_actedIn0_node_on_Movie0_actors0_relationship.screenTime = $this_connect_actedIn0_node_on_Movie0_actors0_relationship_screenTime
-            		)
-            	)
+            	}
             	RETURN count(*) AS connect_this_connect_actedIn0_node_on_Movie0_actors_Actor
             }
             	RETURN count(*) AS connect_this_connect_actedIn_Movie
@@ -281,12 +297,14 @@ describe("Interface Relationships - Update connect", () => {
             		WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
             	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actedIn0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actedIn0_node
+            		MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
-            		)
-            	)
+            	}
             	RETURN count(*) AS connect_this_connect_actedIn_Series
             }
             WITH *
@@ -351,23 +369,27 @@ describe("Interface Relationships - Update connect", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Movie)
             	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actedIn0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actedIn0_node
+            		MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
-            		)
-            	)
+            	}
             WITH this, this_connect_actedIn0_node
             CALL {
             	WITH this, this_connect_actedIn0_node
             	OPTIONAL MATCH (this_connect_actedIn0_node_on_Movie0_actors0_node:Actor)
             	WHERE this_connect_actedIn0_node_on_Movie0_actors0_node.name = $this_connect_actedIn0_node_on_Movie0_actors0_node_param0
-            	FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node_on_Movie0_actors0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_on_Movie0_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_on_Movie0_actors0_node)
+            	CALL {
+            		WITH *
+            		WITH this, collect(this_connect_actedIn0_node_on_Movie0_actors0_node) as connectedNodes, collect(this_connect_actedIn0_node) as parentNodes
+            		UNWIND parentNodes as this_connect_actedIn0_node
+            		UNWIND connectedNodes as this_connect_actedIn0_node_on_Movie0_actors0_node
+            		MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_on_Movie0_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_on_Movie0_actors0_node)
             SET this_connect_actedIn0_node_on_Movie0_actors0_relationship.screenTime = $this_connect_actedIn0_node_on_Movie0_actors0_relationship_screenTime
-            		)
-            	)
+            	}
             	RETURN count(*) AS connect_this_connect_actedIn0_node_on_Movie0_actors_Actor
             }
             	RETURN count(*) AS connect_this_connect_actedIn_Movie
@@ -376,23 +398,27 @@ describe("Interface Relationships - Update connect", () => {
             		WITH this
             	OPTIONAL MATCH (this_connect_actedIn0_node:Series)
             	WHERE this_connect_actedIn0_node.title STARTS WITH $this_connect_actedIn0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actedIn0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actedIn0_node
+            		MERGE (this)-[this_connect_actedIn0_relationship:ACTED_IN]->(this_connect_actedIn0_node)
             SET this_connect_actedIn0_relationship.screenTime = $this_connect_actedIn0_relationship_screenTime
-            		)
-            	)
+            	}
             WITH this, this_connect_actedIn0_node
             CALL {
             	WITH this, this_connect_actedIn0_node
             	OPTIONAL MATCH (this_connect_actedIn0_node_actors0_node:Actor)
             	WHERE this_connect_actedIn0_node_actors0_node.name = $this_connect_actedIn0_node_actors0_node_param0
-            	FOREACH(_ IN CASE WHEN this_connect_actedIn0_node IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actedIn0_node_actors0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_actors0_node)
+            	CALL {
+            		WITH *
+            		WITH this, collect(this_connect_actedIn0_node_actors0_node) as connectedNodes, collect(this_connect_actedIn0_node) as parentNodes
+            		UNWIND parentNodes as this_connect_actedIn0_node
+            		UNWIND connectedNodes as this_connect_actedIn0_node_actors0_node
+            		MERGE (this_connect_actedIn0_node)<-[this_connect_actedIn0_node_actors0_relationship:ACTED_IN]-(this_connect_actedIn0_node_actors0_node)
             SET this_connect_actedIn0_node_actors0_relationship.screenTime = $this_connect_actedIn0_node_actors0_relationship_screenTime
-            		)
-            	)
+            	}
             	RETURN count(*) AS connect_this_connect_actedIn0_node_actors_Actor
             }
             	RETURN count(*) AS connect_this_connect_actedIn_Series

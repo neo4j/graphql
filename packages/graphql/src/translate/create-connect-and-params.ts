@@ -210,7 +210,7 @@ function createConnectAndParams({
         subquery.push("\tCALL {");
         subquery.push("\t\tWITH *");
         subquery.push(
-            `\t\tWITH  ${[
+            `\t\tWITH ${[
                 ...withVars.filter((v) => v !== parentVar),
                 `collect(${nodeName}) as connectedNodes`,
                 `collect(${parentVar}) as parentNodes`,
@@ -218,9 +218,6 @@ function createConnectAndParams({
         );
         subquery.push(`\t\tUNWIND parentNodes as ${parentVar}`);
         subquery.push(`\t\tUNWIND connectedNodes as ${nodeName}`);
-        // subquery.push(`\tFOREACH(_ IN CASE WHEN ${parentVar} IS NULL THEN [] ELSE [1] END | `);
-        // subquery.push(`\t\tFOREACH(_ IN CASE WHEN ${nodeName} IS NULL THEN [] ELSE [1] END | `);
-        // subquery.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
         subquery.push(`\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
         if (relationField.properties) {
@@ -238,8 +235,6 @@ function createConnectAndParams({
             params = { ...params, ...setA[1] };
         }
         subquery.push("\t}");
-        // subquery.push(`\t\t)`); // close FOREACH
-        // subquery.push(`\t)`); // close FOREACH
 
         if (includeRelationshipValidation) {
             const relValidationStrs: string[] = [];

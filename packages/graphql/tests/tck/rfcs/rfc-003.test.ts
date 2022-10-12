@@ -930,11 +930,13 @@ describe("tck/rfs/003", () => {
                         	WITH this0
                         	OPTIONAL MATCH (this0_director_connect0_node:Director)
                         	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_param0
-                        	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-                        		FOREACH(_ IN CASE WHEN this0_director_connect0_node IS NULL THEN [] ELSE [1] END |
-                        			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
-                        		)
-                        	)
+                        	CALL {
+                        		WITH *
+                        		WITH collect(this0_director_connect0_node) as connectedNodes, collect(this0) as parentNodes
+                        		UNWIND parentNodes as this0
+                        		UNWIND connectedNodes as this0_director_connect0_node
+                        		MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
+                        	}
                         	RETURN count(*) AS connect_this0_director_connect_Director
                         }
                         WITH this0
@@ -999,11 +1001,13 @@ describe("tck/rfs/003", () => {
                         	WITH this0
                         	OPTIONAL MATCH (this0_director_connect0_node:Director)
                         	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_param0
-                        	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-                        		FOREACH(_ IN CASE WHEN this0_director_connect0_node IS NULL THEN [] ELSE [1] END |
-                        			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
-                        		)
-                        	)
+                        	CALL {
+                        		WITH *
+                        		WITH collect(this0_director_connect0_node) as connectedNodes, collect(this0) as parentNodes
+                        		UNWIND parentNodes as this0
+                        		UNWIND connectedNodes as this0_director_connect0_node
+                        		MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
+                        	}
                         	RETURN count(*) AS connect_this0_director_connect_Director
                         }
                         WITH this0
@@ -1086,21 +1090,25 @@ describe("tck/rfs/003", () => {
                             	WITH this0
                             	OPTIONAL MATCH (this0_director_connect0_node:Director)
                             	WHERE this0_director_connect0_node.id = $this0_director_connect0_node_param0
-                            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-                            		FOREACH(_ IN CASE WHEN this0_director_connect0_node IS NULL THEN [] ELSE [1] END |
-                            			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
-                            		)
-                            	)
+                            	CALL {
+                            		WITH *
+                            		WITH collect(this0_director_connect0_node) as connectedNodes, collect(this0) as parentNodes
+                            		UNWIND parentNodes as this0
+                            		UNWIND connectedNodes as this0_director_connect0_node
+                            		MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
+                            	}
                             WITH this0, this0_director_connect0_node
                             CALL {
                             	WITH this0, this0_director_connect0_node
                             	OPTIONAL MATCH (this0_director_connect0_node_address0_node:Address)
                             	WHERE this0_director_connect0_node_address0_node.street = $this0_director_connect0_node_address0_node_param0
-                            	FOREACH(_ IN CASE WHEN this0_director_connect0_node IS NULL THEN [] ELSE [1] END |
-                            		FOREACH(_ IN CASE WHEN this0_director_connect0_node_address0_node IS NULL THEN [] ELSE [1] END |
-                            			MERGE (this0_director_connect0_node)-[:HAS_ADDRESS]->(this0_director_connect0_node_address0_node)
-                            		)
-                            	)
+                            	CALL {
+                            		WITH *
+                            		WITH this0, collect(this0_director_connect0_node_address0_node) as connectedNodes, collect(this0_director_connect0_node) as parentNodes
+                            		UNWIND parentNodes as this0_director_connect0_node
+                            		UNWIND connectedNodes as this0_director_connect0_node_address0_node
+                            		MERGE (this0_director_connect0_node)-[:HAS_ADDRESS]->(this0_director_connect0_node_address0_node)
+                            	}
                             	WITH this0, this0_director_connect0_node, this0_director_connect0_node_address0_node
                             CALL {
                             	WITH this0_director_connect0_node
@@ -1270,11 +1278,13 @@ describe("tck/rfs/003", () => {
                         	WITH this
                         	OPTIONAL MATCH (this_connect_director0_node:Director)
                         	WHERE this_connect_director0_node.id = $this_connect_director0_node_param0
-                        	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-                        		FOREACH(_ IN CASE WHEN this_connect_director0_node IS NULL THEN [] ELSE [1] END |
-                        			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
-                        		)
-                        	)
+                        	CALL {
+                        		WITH *
+                        		WITH collect(this_connect_director0_node) as connectedNodes, collect(this) as parentNodes
+                        		UNWIND parentNodes as this
+                        		UNWIND connectedNodes as this_connect_director0_node
+                        		MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
+                        	}
                         	RETURN count(*) AS connect_this_connect_director_Director
                         }
                         WITH this
@@ -1379,11 +1389,13 @@ describe("tck/rfs/003", () => {
                         	WITH this
                         	OPTIONAL MATCH (this_connect_director0_node:Director)
                         	WHERE this_connect_director0_node.id = $this_connect_director0_node_param0
-                        	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-                        		FOREACH(_ IN CASE WHEN this_connect_director0_node IS NULL THEN [] ELSE [1] END |
-                        			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
-                        		)
-                        	)
+                        	CALL {
+                        		WITH *
+                        		WITH collect(this_connect_director0_node) as connectedNodes, collect(this) as parentNodes
+                        		UNWIND parentNodes as this
+                        		UNWIND connectedNodes as this_connect_director0_node
+                        		MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
+                        	}
                         	RETURN count(*) AS connect_this_connect_director_Director
                         }
                         WITH this

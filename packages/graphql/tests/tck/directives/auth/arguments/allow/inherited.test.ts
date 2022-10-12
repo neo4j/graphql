@@ -763,11 +763,13 @@ describe("@auth allow when inherited from interface", () => {
             	WHERE this_connect_posts0_node.id = $this_connect_posts0_node_param0
             	WITH this, this_connect_posts0_node
             	CALL apoc.util.validate(NOT ((exists((this_connect_posts0_node)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this_connect_posts0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_posts0_nodeauth_param0))) AND (this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_posts0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_posts0_node
+            		MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            	}
             	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *
