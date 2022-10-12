@@ -26,7 +26,8 @@ export const customResolverDirective = new GraphQLDirective({
     locations: [DirectiveLocation.FIELD_DEFINITION],
     args: {
         requires: {
-            description: "Fields that the custom resolver will depend on. These are passed as an object to the first argument of the custom resolver.",
+            description:
+                "Fields that the custom resolver will depend on. These are passed as an object to the first argument of the custom resolver.",
             type: new GraphQLList(new GraphQLNonNull(GraphQLString)),
         },
     },

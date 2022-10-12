@@ -47,15 +47,14 @@ function getCustomResolverMeta(
 
     const directive =
         field.directives?.find((x) => x.name.value === "customResolver") ||
-        interfaceField?.directives?.find((x) => x.name.value === "customResolver") ||
-        deprecatedDirective;
+        interfaceField?.directives?.find((x) => x.name.value === "customResolver");
 
-    if (!directive) {
+    if (!directive && !deprecatedDirective) {
         return undefined;
     }
 
     const directiveFromArgument =
-        directive.arguments?.find((arg) => arg.name.value === "requires") ||
+        directive?.arguments?.find((arg) => arg.name.value === "requires") ||
         deprecatedDirective?.arguments?.find((arg) => arg.name.value === "from");
 
     if (!directiveFromArgument) {
