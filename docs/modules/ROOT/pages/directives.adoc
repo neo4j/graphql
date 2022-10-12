@@ -43,7 +43,7 @@ Reference: xref::custom-resolvers.adoc#custom-resolvers-computed[`@computed`]
 The `@customResolver` directive specifies that a field will be resolved by a custom resolver, and allows the specification
 of any required fields that will be passed as arguments to the custom resolver.
 
-Reference: xref::custom-resolvers.adoc#custom-resolvers-directive[`@customResolver`]
+Reference: xref::custom-resolvers.adoc#custom-resolver-directive[`@customResolver`]
 
 == `@cypher`
 

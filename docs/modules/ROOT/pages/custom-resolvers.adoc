@@ -35,7 +35,7 @@ Here `fullName` is a value that is resolved from the fields `firstName` and `las
 
 The inclusion of the fields `firstName` and `lastName` in the `requires` argument means that in the definition of the resolver, the properties `firstName` and `lastName` will always be defined on the `source` object. If these fields are not specified, this cannot be guaranteed.
 
-[[custom-resolvers-directive]]
+[[custom-resolver-directive]]
 === `@customResolver`
 
 This field will essentially be completely ignored during the generation of Query and Mutation fields, and will require a custom resolver to resolve the field.
@@ -57,7 +57,7 @@ directive @customResolver(
 [[custom-resolvers-computed]]
 === `@computed`
 
-NOTE: The `@computed` directive has been deprecated and will be removed in version 4.0. Please use the xref::custom-resolvers.adoc#custom-resolvers-directive[`@customResolver` directive] instead.
+NOTE: The `@computed` directive has been deprecated and will be removed in version 4.0. Please use the xref::custom-resolvers.adoc#custom-resolver-directive[`@customResolver` directive] instead.
 
 This field will essentially be completely ignored during the generation of Query and Mutation fields, and will require another way to resolve the field, such as through the use of a custom resolver.
 
