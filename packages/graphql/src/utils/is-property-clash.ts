@@ -18,6 +18,7 @@
  */
 
 import type { Node } from "../classes";
+import mapToDbProperty from "./map-to-db-property";
 
 /* returns conflicting mutation input properties */
 export function findConflictingProperties({
@@ -30,13 +31,9 @@ export function findConflictingProperties({
     if (!input) {
         return [];
     }
-    const primitiveFieldNameToDbNameMap = node.primitiveFields.reduce((acc, el) => {
-        acc[el.fieldName] = el.dbPropertyName;
-        return acc;
-    }, {});
     const dbPropertiesToInputFieldNames: Record<string, string[]> = Object.keys(input).reduce((acc, fieldName) => {
-        const dbName = primitiveFieldNameToDbNameMap[fieldName];
-        // some input fields are not primitive fields (eg relation fields) => no corresponding db name in the map
+        const dbName = mapToDbProperty(node, fieldName);
+        // some input fields (eg relation fields) have no corresponding db name in the map
         if (!dbName) {
             return acc;
         }
