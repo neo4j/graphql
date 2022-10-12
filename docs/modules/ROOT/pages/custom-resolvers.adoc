@@ -5,7 +5,7 @@ The library will autogenerate Query and Mutation resolvers, so you don’t need 
 
 == Custom object type field resolver
 
-If you would like to add a field to an object type which is resolved from existing values in the type, rather than storing new values, you should mark it with the `@computed` directive (see below) and define a custom resolver for it. Take for instance a simple schema:
+If you would like to add a field to an object type which is resolved from existing values in the type, rather than storing new values, you should mark it with the `@customResolver` directive (see below) and define a custom resolver for it. Take for instance a simple schema:
 
 [source, javascript, indent=0]
 ----
@@ -13,7 +13,7 @@ const typeDefs = `
     type User {
         firstName: String!
         lastName: String!
-        fullName: String! @computed(from: ["firstName", "lastName"])
+        fullName: String! @customResolver(requires: ["firstName", "lastName"])
     }
 `;
 
@@ -31,18 +31,40 @@ const neoSchema = new Neo4jGraphQL({
 });
 ----
 
-Here `fullName` is a computed value from the fields `firstName` and `lastName`. Specifying the `@computed` directive on the field definition keeps `fullName` from being included in any `Query` or `Mutation` fields and hence as a property on the `:User` node in the database.
+Here `fullName` is a value that is resolved from the fields `firstName` and `lastName`. Specifying the `@customResolver` directive on the field definition keeps `fullName` from being included in any `Query` or `Mutation` fields and hence as a property on the `:User` node in the database.
 
-The inclusion of the fields `firstName` and `lastName` in the `from` argument means that in the definition of the resolver the properties `firstName` and `lastName` will always be defined on the `source` object. If these fields are not specified, this cannot be guaranteed.
+The inclusion of the fields `firstName` and `lastName` in the `requires` argument means that in the definition of the resolver, the properties `firstName` and `lastName` will always be defined on the `source` object. If these fields are not specified, this cannot be guaranteed.
+
+[[custom-resolvers-directive]]
+=== `@customResolver`
+
+This field will essentially be completely ignored during the generation of Query and Mutation fields, and will require a custom resolver to resolve the field.
+
+Any fields that the custom resolver depends on should be passed to the `requires` argument to ensure that during the Cypher generation process those properties are selected from the database.
+Allowable fields are any returning a Scalar or Enum type including those defined using the xref::type-definitions/cypher.adoc#type-definitions-cypher[`@cypher`] directive.
+
+==== Definition
+
+[source, graphql, indent=0]
+----
+"""Informs @neo4j/graphql that a field will be resolved by a custom resolver, and allows specification of any field dependencies."""
+directive @customResolver(
+    """Fields that the custom resolver will depend on."""
+    requires: [String!]
+) on FIELD_DEFINITION
+----
 
 [[custom-resolvers-computed]]
 === `@computed`
 
+NOTE: The `@computed` directive has been deprecated and will be removed in version 4.0. Please use the xref::custom-resolvers.adoc#custom-resolvers-directive[`@customResolver` directive] instead.
+
 This field will essentially be completely ignored during the generation of Query and Mutation fields, and will require another way to resolve the field, such as through the use of a custom resolver.
 
-Any fields that the custom resolver depends on should be passed to the `from` argument to ensure that during the Cypher generation process those properties are selected from the database. Allowable fields are any returning a Scalar or Enum type including those defined using the xref::type-definitions/cypher.adoc#type-definitions-cypher[`@cypher`] directive.
+Any fields that the custom resolver depends on should be passed to the `from` argument to ensure that during the Cypher generation process those properties are selected from the database.
+Allowable fields are any returning a Scalar or Enum type including those defined using the xref::type-definitions/cypher.adoc#type-definitions-cypher[`@cypher`] directive.
 
-=== Definition
+==== Definition
 
 [source, graphql, indent=0]
 ----

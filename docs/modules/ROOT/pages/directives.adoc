@@ -29,10 +29,21 @@ Reference: xref::type-definitions/default-values.adoc#type-definitions-default-v
 
 == `@computed`
 
+NOTE: The `@computed` directive has been deprecated and will be removed in version 4.0.
+Please use the xref::directives.adoc#custom-resolver-directive[`@customResolver` directive] instead.
+
 The `@computed` directive specifies that a field will be resolved by a custom resolver, and allows the specification
 of any field dependencies.
 
 Reference: xref::custom-resolvers.adoc#custom-resolvers-computed[`@computed`]
+
+[[custom-resolver-directive]]
+== `@customResolver`
+
+The `@customResolver` directive specifies that a field will be resolved by a custom resolver, and allows the specification
+of any required fields that will be passed as arguments to the custom resolver.
+
+Reference: xref::custom-resolvers.adoc#custom-resolvers-directive[`@customResolver`]
 
 == `@cypher`
 
