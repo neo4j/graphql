@@ -17,13 +17,27 @@
  * limitations under the License.
  */
 
-import type { FieldDefinitionNode } from "graphql";
+import type { FieldDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
 import { Kind } from "graphql";
 import getCustomResolverMeta, { ERROR_MESSAGE } from "./get-custom-resolver-meta";
 
 describe("getCustomResolverMeta", () => {
+    const fieldName = "someFieldName";
+    const objectName = "someObjectName";
+    const object: ObjectTypeDefinitionNode = {
+        kind: Kind.OBJECT_TYPE_DEFINITION,
+        name: {
+            kind: Kind.NAME,
+            value: objectName,
+        },
+    };
+
+    const resolvers = {
+        [fieldName]: () => 25,
+    };
     test("should return undefined if no directive found", () => {
         // @ts-ignore
+
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -45,15 +59,11 @@ describe("getCustomResolverMeta", () => {
             ],
             name: {
                 kind: Kind.NAME,
-                value: "someFieldName",
+                value: fieldName,
             },
         };
 
-        const resolvers = {
-            someFieldName: () => 25,
-        };
-
-        const result = getCustomResolverMeta(field, resolvers);
+        const result = getCustomResolverMeta(field, object, resolvers);
 
         expect(result).toBeUndefined();
     });
@@ -91,15 +101,11 @@ describe("getCustomResolverMeta", () => {
             ],
             name: {
                 kind: Kind.NAME,
-                value: "someFieldName",
+                value: fieldName,
             },
         };
 
-        const resolvers = {
-            someFieldName: () => 25,
-        };
-
-        expect(() => getCustomResolverMeta(field, resolvers)).toThrow(ERROR_MESSAGE);
+        expect(() => getCustomResolverMeta(field, object, resolvers)).toThrow(ERROR_MESSAGE);
     });
 
     test("should throw if requires not a list of strings", () => {
@@ -142,15 +148,11 @@ describe("getCustomResolverMeta", () => {
             ],
             name: {
                 kind: Kind.NAME,
-                value: "someFieldName",
+                value: fieldName,
             },
         };
 
-        const resolvers = {
-            someFieldName: () => [],
-        };
-
-        expect(() => getCustomResolverMeta(field, resolvers)).toThrow(ERROR_MESSAGE);
+        expect(() => getCustomResolverMeta(field, object, resolvers)).toThrow(ERROR_MESSAGE);
     });
 
     test("should return the correct meta if no requires argument", () => {
@@ -178,15 +180,11 @@ describe("getCustomResolverMeta", () => {
             ],
             name: {
                 kind: Kind.NAME,
-                value: "someFieldName",
+                value: fieldName,
             },
         };
 
-        const resolvers = {
-            someFieldName: () => "someValue",
-        };
-
-        const result = getCustomResolverMeta(field, resolvers);
+        const result = getCustomResolverMeta(field, object, resolvers);
 
         expect(result).toMatchObject({
             requiredFields: [],
@@ -233,21 +231,31 @@ describe("getCustomResolverMeta", () => {
             ],
             name: {
                 kind: Kind.NAME,
-                value: "someFieldName",
+                value: fieldName,
             },
         };
 
-        const resolvers = {
-            someFieldName: () => 1.01,
-        };
-
-        const result = getCustomResolverMeta(field, resolvers);
+        const result = getCustomResolverMeta(field, object, resolvers);
 
         expect(result).toMatchObject({
             requiredFields,
         });
     });
     // TODO
+    // throws error if no customResolver
+
+    // throws error if resolver not a functions
+
+    // str custom resolver
+
+    // number custom resolver
+
+    // promise custom resolver
+
+    // object custom resolver
+
+    // func custom resolver
+
     // throws error if no customResolver
 
     // throws error if resolver not a functions

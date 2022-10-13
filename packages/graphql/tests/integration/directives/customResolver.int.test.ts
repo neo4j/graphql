@@ -293,4 +293,32 @@ describe("@customResolver directive", () => {
             }).rejects.toThrow("Custom resolver for fullName has not been provided");
         });
     });
+    // TODO
+    // throws error if no customResolver
+
+    // throws error if resolver not a functions
+
+    // str custom resolver
+
+    // number custom resolver
+
+    // promise custom resolver
+
+    // object custom resolver
+
+    // func custom resolver
+
+    // falsey custom resolver
+
+    // interface has custom resolver
+
+    // obj has custom resolver (not interface)
+
+    // neither interface or obj have customResolver
+
+    // throws error if no customResolver
+
+    // throws error if resolver not a function
+
+    // reolver for interface
 });

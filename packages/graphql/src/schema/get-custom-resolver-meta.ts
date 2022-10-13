@@ -18,11 +18,16 @@
  */
 
 import type { IResolvers } from "@graphql-tools/utils";
-import type { FieldDefinitionNode, StringValueNode } from "graphql";
+import type {
+    FieldDefinitionNode,
+    StringValueNode,
+    InterfaceTypeDefinitionNode,
+    ObjectTypeDefinitionNode,
+} from "graphql";
 import { Kind } from "graphql";
 import { removeDuplicates } from "../utils/utils";
 
-type IgnoreMeta = {
+type CustomResolverMeta = {
     requiredFields: string[];
 };
 
@@ -33,11 +38,20 @@ export const ERROR_MESSAGE = "Required fields of @customResolver must be a list 
 
 let deprecationWarningShown = false;
 
+/**
+ * Gets the fields required by the custom resolver and checks a custom resolver has been provided.
+ * @param field The field to gather meta data for.
+ * @param object The object that the field belongs to.
+ * @param customResolvers The custom resolvers provided by the user.
+ * @param interfaceField The corresponding field from the interface that is being implemented.
+ * @returns An object containing the fields required by the customResolver.
+ */
 function getCustomResolverMeta(
     field: FieldDefinitionNode,
-    customResolvers?: IResolvers | Array<IResolvers>,
+    object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    customResolvers?: IResolvers | IResolvers[],
     interfaceField?: FieldDefinitionNode
-): IgnoreMeta | undefined {
+): CustomResolverMeta | undefined {
     const deprecatedDirective =
         field.directives?.find((x) => x.name.value === "computed") ||
         interfaceField?.directives?.find((x) => x.name.value === "computed");
@@ -54,8 +68,9 @@ function getCustomResolverMeta(
     if (!directive && !deprecatedDirective) {
         return undefined;
     }
-    
-    if (directive && !customResolvers?.[field.name.value]) {
+
+    // TODO: remove check for directive when removing @computed
+    if (object.kind !== Kind.INTERFACE_TYPE_DEFINITION && directive && !customResolvers?.[field.name.value]) {
         throw new Error(`Custom resolver for ${field.name.value} has not been provided`);
     }
 

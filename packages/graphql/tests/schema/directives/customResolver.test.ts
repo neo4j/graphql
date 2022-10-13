@@ -41,6 +41,7 @@ describe("@customResolver directive", () => {
         const resolvers = {
             User: {
                 nickname: () => "The user's nickname",
+                customResolver: () => "Custom resolver output",
             },
         };
 
