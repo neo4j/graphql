@@ -43,14 +43,22 @@ describe("getCustomResolverMeta", () => {
                     name: { value: "RANDOM 4" },
                 },
             ],
+            name: {
+                kind: Kind.NAME,
+                value: "someFieldName",
+            },
         };
 
-        const result = getCustomResolverMeta(field);
+        const resolvers = {
+            someFieldName: () => 25,
+        };
+
+        const result = getCustomResolverMeta(field, resolvers);
 
         expect(result).toBeUndefined();
     });
 
-    test("should throw if requires not a list", () => {
+    test("should throw if requires not a list 123", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -81,9 +89,17 @@ describe("getCustomResolverMeta", () => {
                     name: { value: "RANDOM 4" },
                 },
             ],
+            name: {
+                kind: Kind.NAME,
+                value: "someFieldName",
+            },
         };
 
-        expect(() => getCustomResolverMeta(field)).toThrow(ERROR_MESSAGE);
+        const resolvers = {
+            someFieldName: () => 25,
+        };
+
+        expect(() => getCustomResolverMeta(field, resolvers)).toThrow(ERROR_MESSAGE);
     });
 
     test("should throw if requires not a list of strings", () => {
@@ -124,9 +140,17 @@ describe("getCustomResolverMeta", () => {
                     name: { value: "RANDOM 4" },
                 },
             ],
+            name: {
+                kind: Kind.NAME,
+                value: "someFieldName",
+            },
         };
 
-        expect(() => getCustomResolverMeta(field)).toThrow(ERROR_MESSAGE);
+        const resolvers = {
+            someFieldName: () => [],
+        };
+
+        expect(() => getCustomResolverMeta(field, resolvers)).toThrow(ERROR_MESSAGE);
     });
 
     test("should return the correct meta if no requires argument", () => {
@@ -152,9 +176,17 @@ describe("getCustomResolverMeta", () => {
                     name: { value: "RANDOM 4" },
                 },
             ],
+            name: {
+                kind: Kind.NAME,
+                value: "someFieldName",
+            },
         };
 
-        const result = getCustomResolverMeta(field);
+        const resolvers = {
+            someFieldName: () => "someValue",
+        };
+
+        const result = getCustomResolverMeta(field, resolvers);
 
         expect(result).toMatchObject({
             requiredFields: [],
@@ -199,12 +231,24 @@ describe("getCustomResolverMeta", () => {
                     name: { value: "RANDOM 4" },
                 },
             ],
+            name: {
+                kind: Kind.NAME,
+                value: "someFieldName",
+            },
         };
 
-        const result = getCustomResolverMeta(field);
+        const resolvers = {
+            someFieldName: () => 1.01,
+        };
+
+        const result = getCustomResolverMeta(field, resolvers);
 
         expect(result).toMatchObject({
             requiredFields,
         });
     });
+    // TODO
+    // throws error if no customResolver
+
+    // throws error if resolver not a functions
 });

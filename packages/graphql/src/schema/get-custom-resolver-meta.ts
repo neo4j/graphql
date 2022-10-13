@@ -55,7 +55,7 @@ function getCustomResolverMeta(
         return undefined;
     }
     
-    if (!customResolvers?.[field.name.value]) {
+    if (directive && !customResolvers?.[field.name.value]) {
         throw new Error(`Custom resolver for ${field.name.value} has not been provided`);
     }
 
