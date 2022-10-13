@@ -20,15 +20,31 @@
 import type { Driver } from "neo4j-driver";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
-import { generate } from "randomstring";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-
-const testLabel = generate({ charset: "alphabetic" });
+import { generateUniqueType } from "../../utils/graphql-types";
 
 describe("@customResolver directive", () => {
     let driver: Driver;
     let neo4j: Neo4j;
+
+    const user = {
+        id: "An-ID",
+        firstName: "someFirstName",
+        lastName: "a second name!",
+    };
+
+    const testType = generateUniqueType("User");
+    const customResolverField = "fullName";
+
+    const typeDefs = `
+        type ${testType} {
+            id: ID!
+            firstName: String!
+            lastName: String!
+            ${customResolverField}: String @customResolver(requires: ["firstName", "lastName"])
+        }
+    `;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -40,27 +56,12 @@ describe("@customResolver directive", () => {
     });
 
     describe("Scalar fields", () => {
-        const typeDefs = `
-            type User {
-                id: ID!
-                firstName: String!
-                lastName: String!
-                fullName: String @customResolver(requires: ["firstName", "lastName"])
-            }
-        `;
-
-        const user = {
-            id: generate(),
-            firstName: generate({ charset: "alphabetic" }),
-            lastName: generate({ charset: "alphabetic" }),
-        };
-
         let schema: GraphQLSchema;
 
         const fullName = ({ firstName, lastName }) => `${firstName} ${lastName}`;
 
         const resolvers = {
-            User: { fullName },
+            [testType.name]: { [customResolverField]: fullName },
         };
 
         beforeAll(async () => {
@@ -71,7 +72,7 @@ describe("@customResolver directive", () => {
 
             await session.run(
                 `
-                CREATE (user:User:${testLabel}) SET user = $user
+                CREATE (user:${testType.name}) SET user = $user
             `,
                 { user }
             );
@@ -80,14 +81,14 @@ describe("@customResolver directive", () => {
 
         afterAll(async () => {
             const session = await neo4j.getSession();
-            await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
+            await session.run(`MATCH (n:${testType}) DETACH DELETE n`);
             await session.close();
         });
 
         test("removes a field from all but its object type, and resolves with a custom resolver", async () => {
             const source = `
-                query Users($userId: ID!) {
-                    users(where: { id: $userId }) {
+                query ${testType.name}($userId: ID!) {
+                    ${testType.plural}(where: { id: $userId }) {
                         id
                         firstName
                         lastName
@@ -104,7 +105,7 @@ describe("@customResolver directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).users[0]).toEqual({
+            expect((gqlResult.data as any)[testType.plural][0]).toEqual({
                 ...user,
                 fullName: fullName(user),
             });
@@ -112,8 +113,8 @@ describe("@customResolver directive", () => {
 
         test("resolves field with custom resolver without required fields in selection set", async () => {
             const source = `
-                query Users($userId: ID!) {
-                    users(where: { id: $userId }) {
+                query ${testType.name}($userId: ID!) {
+                    ${testType.plural}(where: { id: $userId }) {
                         id
                         fullName
                     }
@@ -128,7 +129,7 @@ describe("@customResolver directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).users[0]).toEqual({
+            expect((gqlResult.data as any)[testType.plural][0]).toEqual({
                 id: user.id,
                 fullName: fullName(user),
             });
@@ -136,8 +137,8 @@ describe("@customResolver directive", () => {
 
         test("resolves field with custom resolver with required field(s) aliased in selection set", async () => {
             const source = `
-                query Users($userId: ID!) {
-                    users(where: { id: $userId }) {
+                query ${testType.name}($userId: ID!) {
+                    ${testType.plural}(where: { id: $userId }) {
                         id
                         f: firstName
                         fullName
@@ -153,28 +154,16 @@ describe("@customResolver directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).users[0]).toEqual({
+            expect((gqlResult.data as any)[testType.plural][0]).toEqual({
                 id: user.id,
                 f: user.firstName,
                 fullName: fullName(user),
             });
         });
-        test("Throws error if customResolver is not provided", async () => {
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            await expect(async () => {
-                await neoSchema.getSchema();
-            }).rejects.toThrow("Custom resolver for fullName has not been provided");
-        });
     });
     describe("Cypher fields", () => {
-        const user = {
-            id: generate(),
-            firstName: generate({ charset: "alphabetic" }),
-            lastName: generate({ charset: "alphabetic" }),
-        };
-
         const typeDefs = `
-            type User {
+            type ${testType.name} {
                 id: ID!
                 firstName: String! @cypher(statement: "RETURN '${user.firstName}'")
                 lastName: String! @cypher(statement: "RETURN '${user.lastName}'")
@@ -185,7 +174,7 @@ describe("@customResolver directive", () => {
         const fullName = ({ firstName, lastName }) => `${firstName} ${lastName}`;
 
         const resolvers = {
-            User: { fullName },
+            [testType.name]: { [customResolverField]: fullName },
         };
 
         let schema: GraphQLSchema;
@@ -198,7 +187,7 @@ describe("@customResolver directive", () => {
 
             await session.run(
                 `
-                CREATE (user:User:${testLabel}) SET user.id = $userId
+                CREATE (user:${testType.name}) SET user.id = $userId
             `,
                 { userId: user.id }
             );
@@ -207,14 +196,14 @@ describe("@customResolver directive", () => {
 
         afterAll(async () => {
             const session = await neo4j.getSession();
-            await session.run(`MATCH (n:${testLabel}) DETACH DELETE n`);
+            await session.run(`MATCH (n:${testType.name}) DETACH DELETE n`);
             await session.close();
         });
 
         test("removes a field from all but its object type, and resolves with a custom resolver", async () => {
             const source = `
-                query Users($userId: ID!) {
-                    users(where: { id: $userId }) {
+                query ${testType.name}($userId: ID!) {
+                    ${testType.plural}(where: { id: $userId }) {
                         id
                         firstName
                         lastName
@@ -231,7 +220,7 @@ describe("@customResolver directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).users[0]).toEqual({
+            expect((gqlResult.data as any)[testType.plural][0]).toEqual({
                 ...user,
                 fullName: fullName(user),
             });
@@ -239,8 +228,8 @@ describe("@customResolver directive", () => {
 
         test("resolves field with custom resolver without required fields in selection set", async () => {
             const source = `
-                query Users($userId: ID!) {
-                    users(where: { id: $userId }) {
+                query ${testType.name}($userId: ID!) {
+                    ${testType.plural}(where: { id: $userId }) {
                         id
                         fullName
                     }
@@ -255,7 +244,7 @@ describe("@customResolver directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).users[0]).toEqual({
+            expect((gqlResult.data as any)[testType.plural][0]).toEqual({
                 id: user.id,
                 fullName: fullName(user),
             });
@@ -263,8 +252,8 @@ describe("@customResolver directive", () => {
 
         test("resolves field with custom resolver with required field(s) aliased in selection set", async () => {
             const source = `
-                query Users($userId: ID!) {
-                    users(where: { id: $userId }) {
+                query ${testType.name}($userId: ID!) {
+                    ${testType.plural}(where: { id: $userId }) {
                         id
                         f: firstName
                         fullName
@@ -280,45 +269,45 @@ describe("@customResolver directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data as any).users[0]).toEqual({
+            expect((gqlResult.data as any)[testType.plural][0]).toEqual({
                 id: user.id,
                 f: user.firstName,
                 fullName: fullName(user),
             });
         });
-        test("Throws error if customResolver is not provided", async () => {
+    });
+    describe("Custom resolver checks", () => {
+        test("Check throws error if customResolver is not provided", async () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
             await expect(async () => {
                 await neoSchema.getSchema();
-            }).rejects.toThrow("Custom resolver for fullName has not been provided");
+            }).rejects.toThrow(`Custom resolver for ${customResolverField} has not been provided`);
+        });
+        test("Check throws error if custom resolver defined for interface", async () => {
+            const interfaceType = generateUniqueType("UserInterface");
+            const typeDefs = `
+                interface ${interfaceType.name} {
+                    ${customResolverField}: String @customResolver(requires: ["firstName", "lastName"])
+                }
+
+                type ${testType} implements ${interfaceType.name} {
+                    id: ID!
+                    firstName: String!
+                    lastName: String!
+                    ${customResolverField}: String
+                }
+            `;
+            
+            const testResolver = () => "Some value";
+            const resolvers = {
+                [interfaceType.name]: {
+                    [customResolverField]: testResolver,
+                },
+            };
+            const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
+            await expect(async () => {
+                await neoSchema.getSchema();
+            }).rejects.toThrow(`Custom resolver for ${customResolverField} has not been provided`);
         });
     });
-    // TODO
-    // throws error if no customResolver
-
-    // throws error if resolver not a functions
-
-    // str custom resolver
-
-    // number custom resolver
-
-    // promise custom resolver
-
-    // object custom resolver
-
-    // func custom resolver
-
-    // falsey custom resolver
-
-    // interface has custom resolver
-
-    // obj has custom resolver (not interface)
-
-    // neither interface or obj have customResolver
-
-    // throws error if no customResolver
-
-    // throws error if resolver not a function
-
-    // reolver for interface
 });
