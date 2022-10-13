@@ -37,7 +37,7 @@ import getAuth from "./get-auth";
 import getAliasMeta from "./get-alias-meta";
 import getCypherMeta from "./get-cypher-meta";
 import getFieldTypeMeta from "./get-field-type-meta";
-import getComputedMeta from "./get-computed-meta";
+import getCustomResolverMeta from "./get-custom-resolver-meta";
 import getRelationshipMeta from "./get-relationship-meta";
 import getUniqueMeta from "./parse/get-unique-meta";
 import { SCALAR_TYPES } from "../constants";
@@ -55,7 +55,7 @@ import type {
     PointField,
     TimeStampOperations,
     ConnectionField,
-    ComputedField,
+    CustomResolverField,
     Neo4jGraphQLCallbacks,
 } from "../types";
 import parseValueNode from "./parse-value-node";
@@ -75,7 +75,7 @@ export interface ObjectFields {
     objectFields: ObjectField[];
     temporalFields: TemporalField[];
     pointFields: PointField[];
-    computedFields: ComputedField[];
+    customResolverFields: CustomResolverField[];
 }
 
 let callbackDeprecatedWarningShown = false;
@@ -122,7 +122,7 @@ function getObjFieldMeta({
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
-            const computedMeta = getComputedMeta(field, interfaceField);
+            const customResolverMeta = getCustomResolverMeta(field, interfaceField);
             const typeMeta = getFieldTypeMeta(field.type);
             const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
@@ -155,6 +155,7 @@ function getObjFieldMeta({
                             "readonly",
                             "writeonly",
                             "computed",
+                            "customResolver",
                             "default",
                             "coalesce",
                             "timestamp",
@@ -315,8 +316,8 @@ function getObjFieldMeta({
                     isScalar: !!fieldScalar || SCALAR_TYPES.includes(typeMeta.name),
                 };
                 res.cypherFields.push(cypherField);
-            } else if (computedMeta) {
-                res.computedFields.push({ ...baseField, ...computedMeta });
+            } else if (customResolverMeta) {
+                res.customResolverFields.push({ ...baseField, ...customResolverMeta });
             } else if (fieldScalar) {
                 if (defaultDirective) {
                     throw new Error("@default directive can only be used on primitive type fields");
@@ -574,7 +575,7 @@ function getObjFieldMeta({
             objectFields: [],
             temporalFields: [],
             pointFields: [],
-            computedFields: [],
+            customResolverFields: [],
         }
     ) as ObjectFields;
 }

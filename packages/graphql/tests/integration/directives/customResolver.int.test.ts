@@ -25,7 +25,8 @@ import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 
 const testLabel = generate({ charset: "alphabetic" });
-describe("@computed directive", () => {
+
+describe("@customResolver directive", () => {
     let driver: Driver;
     let neo4j: Neo4j;
 
@@ -44,7 +45,7 @@ describe("@computed directive", () => {
                 id: ID!
                 firstName: String!
                 lastName: String!
-                fullName: String @computed(from: ["firstName", "lastName"])
+                fullName: String @customResolver(requires: ["firstName", "lastName"])
             }
         `;
 
@@ -172,7 +173,7 @@ describe("@computed directive", () => {
                 id: ID!
                 firstName: String! @cypher(statement: "RETURN '${user.firstName}'")
                 lastName: String! @cypher(statement: "RETURN '${user.lastName}'")
-                fullName: String @computed(from: ["firstName", "lastName"])
+                fullName: String @customResolver(requires: ["firstName", "lastName"])
             }
         `;
 

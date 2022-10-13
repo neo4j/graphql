@@ -19,18 +19,15 @@
 
 import { DirectiveLocation, GraphQLDirective, GraphQLList, GraphQLNonNull, GraphQLString } from "graphql";
 
-const description =
-    "NOTE: The computed directive has been deprecated and will be removed in version 4.0. " +
-    "Please use the @customResolver directive instead. Informs @neo4j/graphql that a field will be resolved by a " +
-    "custom resolver, and allows specification of any field dependencies.";
-
-export const computedDirective = new GraphQLDirective({
-    name: "computed",
-    description,
+export const customResolverDirective = new GraphQLDirective({
+    name: "customResolver",
+    description:
+        "Informs @neo4j/graphql that a field will be resolved by a custom resolver, and allows specification of any field dependencies.",
     locations: [DirectiveLocation.FIELD_DEFINITION],
     args: {
-        from: {
-            description: "Fields that the custom resolver will depend on.",
+        requires: {
+            description:
+                "Fields that the custom resolver will depend on. These are passed as an object to the first argument of the custom resolver.",
             type: new GraphQLList(new GraphQLNonNull(GraphQLString)),
         },
     },
