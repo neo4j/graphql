@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type { IResolvers } from "@graphql-tools/utils";
 import type { FieldDefinitionNode, StringValueNode } from "graphql";
 import { Kind } from "graphql";
 import { removeDuplicates } from "../utils/utils";
@@ -34,6 +35,7 @@ let deprecationWarningShown = false;
 
 function getCustomResolverMeta(
     field: FieldDefinitionNode,
+    customResolvers?: IResolvers | Array<IResolvers>,
     interfaceField?: FieldDefinitionNode
 ): IgnoreMeta | undefined {
     const deprecatedDirective =
@@ -51,6 +53,10 @@ function getCustomResolverMeta(
 
     if (!directive && !deprecatedDirective) {
         return undefined;
+    }
+    
+    if (!customResolvers?.[field.name.value]) {
+        throw new Error(`Custom resolver for ${field.name.value} has not been provided`);
     }
 
     const directiveFromArgument =

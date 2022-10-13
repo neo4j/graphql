@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type { IResolvers } from "@graphql-tools/utils";
 import type {
     BooleanValueNode,
     EnumTypeDefinitionNode,
@@ -88,6 +89,7 @@ function getObjFieldMeta({
     unions,
     enums,
     callbacks,
+    customResolvers,
 }: {
     obj: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
     objects: ObjectTypeDefinitionNode[];
@@ -96,6 +98,7 @@ function getObjFieldMeta({
     scalars: ScalarTypeDefinitionNode[];
     enums: EnumTypeDefinitionNode[];
     callbacks?: Neo4jGraphQLCallbacks;
+    customResolvers?: IResolvers | Array<IResolvers>;
 }) {
     const objInterfaceNames = [...(obj.interfaces || [])] as NamedTypeNode[];
     const objInterfaces = interfaces.filter((i) => objInterfaceNames.map((n) => n.name.value).includes(i.name.value));
@@ -122,7 +125,7 @@ function getObjFieldMeta({
 
             const relationshipMeta = getRelationshipMeta(field, interfaceField);
             const cypherMeta = getCypherMeta(field, interfaceField);
-            const customResolverMeta = getCustomResolverMeta(field, interfaceField);
+            const customResolverMeta = getCustomResolverMeta(field, customResolvers, interfaceField);
             const typeMeta = getFieldTypeMeta(field.type);
             const authDirective = directives.find((x) => x.name.value === "auth");
             const idDirective = directives.find((x) => x.name.value === "id");
@@ -459,7 +462,9 @@ function getObjFieldMeta({
 
                     if (callbackDirective) {
                         if (!callbackDeprecatedWarningShown) {
-                            console.warn("The @callback directive has been deprecated and will be removed in version 4.0. Please use @populatedBy instead.");
+                            console.warn(
+                                "The @callback directive has been deprecated and will be removed in version 4.0. Please use @populatedBy instead."
+                            );
                             callbackDeprecatedWarningShown = true;
                         }
                         const callback = getCallbackMeta(callbackDirective, callbacks);

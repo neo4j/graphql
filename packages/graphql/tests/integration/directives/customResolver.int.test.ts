@@ -159,11 +159,11 @@ describe("@customResolver directive", () => {
                 fullName: fullName(user),
             });
         });
-        test("Throws error if customResolver is not provided", () => {
+        test("Throws error if customResolver is not provided", async () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            expect(async () => {
+            await expect(async () => {
                 await neoSchema.getSchema();
-            }).toThrow("Custom resolver for User.fullname has not been provided");
+            }).rejects.toThrow("Custom resolver for fullName has not been provided");
         });
     });
     describe("Cypher fields", () => {
@@ -286,11 +286,11 @@ describe("@customResolver directive", () => {
                 fullName: fullName(user),
             });
         });
-        test("Throws error if customResolver is not provided", () => {
+        test("Throws error if customResolver is not provided", async () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            expect(async () => {
+            await expect(async () => {
                 await neoSchema.getSchema();
-            }).toThrow("Custom resolver for User.fullname has not been provided");
+            }).rejects.toThrow("Custom resolver for fullName has not been provided");
         });
     });
 });
