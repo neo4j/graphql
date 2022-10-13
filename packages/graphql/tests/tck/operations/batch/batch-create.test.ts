@@ -335,6 +335,109 @@ describe("Batch Create", () => {
         `);
     });
 
+    test("Simple connect", async () => {
+        const query = gql`
+            mutation {
+                createMovies(
+                    input: [
+                        { id: "1", actors: { connect: { where: { node: { id: "3" } } } } }
+                        { id: "2", actors: { connect: { where: { node: { id: "4" } } } } }
+                    ]
+                ) {
+                    movies {
+                        id
+                        actors {
+                            name
+                        }
+                    }
+                }
+            }
+        `;
+
+        const req = createJwtRequest("secret", {});
+        const result = await translateQuery(neoSchema, query, {
+            req,
+        });
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CALL {
+            CREATE (this0:Movie)
+            SET this0.id = $this0_id
+            WITH this0
+            CALL {
+            	WITH this0
+            	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
+            	WHERE this0_actors_connect0_node.id = $this0_actors_connect0_node_param0
+            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this0_actors_connect0_node IS NULL THEN [] ELSE [1] END |
+            			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
+            		)
+            	)
+            	RETURN count(*) AS connect_this0_actors_connect_Actor
+            }
+            WITH this0
+            CALL {
+            	WITH this0
+            	MATCH (this0)-[this0_website_Website_unique:HAS_WEBSITE]->(:Website)
+            	WITH count(this0_website_Website_unique) as c
+            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
+            	RETURN c AS this0_website_Website_unique_ignored
+            }
+            RETURN this0
+            }
+            CALL {
+            CREATE (this1:Movie)
+            SET this1.id = $this1_id
+            WITH this1
+            CALL {
+            	WITH this1
+            	OPTIONAL MATCH (this1_actors_connect0_node:Actor)
+            	WHERE this1_actors_connect0_node.id = $this1_actors_connect0_node_param0
+            	FOREACH(_ IN CASE WHEN this1 IS NULL THEN [] ELSE [1] END |
+            		FOREACH(_ IN CASE WHEN this1_actors_connect0_node IS NULL THEN [] ELSE [1] END |
+            			MERGE (this1)<-[this1_actors_connect0_relationship:ACTED_IN]-(this1_actors_connect0_node)
+            		)
+            	)
+            	RETURN count(*) AS connect_this1_actors_connect_Actor
+            }
+            WITH this1
+            CALL {
+            	WITH this1
+            	MATCH (this1)-[this1_website_Website_unique:HAS_WEBSITE]->(:Website)
+            	WITH count(this1_website_Website_unique) as c
+            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.website must be less than or equal to one', [0])
+            	RETURN c AS this1_website_Website_unique_ignored
+            }
+            RETURN this1
+            }
+            CALL {
+                WITH this0
+                MATCH (this0_actors:\`Actor\`)-[create_this0:ACTED_IN]->(this0)
+                WITH this0_actors { .name } AS this0_actors
+                RETURN collect(this0_actors) AS this0_actors
+            }
+            CALL {
+                WITH this1
+                MATCH (this1_actors:\`Actor\`)-[create_this0:ACTED_IN]->(this1)
+                WITH this1_actors { .name } AS this1_actors
+                RETURN collect(this1_actors) AS this1_actors
+            }
+            RETURN [
+            this0 { .id, actors: this0_actors },
+            this1 { .id, actors: this1_actors }] AS data"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this0_id\\": \\"1\\",
+                \\"this0_actors_connect0_node_param0\\": \\"3\\",
+                \\"this1_id\\": \\"2\\",
+                \\"this1_actors_connect0_node_param0\\": \\"4\\",
+                \\"resolvedCallbacks\\": {}
+            }"
+        `);
+    });
+
     test("non-uniform batch", async () => {
         const query = gql`
             mutation {

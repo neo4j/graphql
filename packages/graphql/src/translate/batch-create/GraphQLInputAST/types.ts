@@ -1,0 +1,44 @@
+import type { TreeDescriptor } from "../types";
+import type { RelationField } from "../../../types";
+import type { Node } from "../../../classes";
+
+export interface IAST {
+    childrens: IAST[];
+    addChildren: (children: IAST) => void;
+    accept: <R>(visitor: Visitor<R>) => R;
+}
+
+export interface IConnectAST extends IAST {
+    parent: Node;
+    edgeProperties: string[];
+    where: TreeDescriptor;
+    connect: TreeDescriptor;
+}
+
+export interface IConnectOrCreateAST extends IAST {
+    parent: Node;
+    where: TreeDescriptor;
+    onCreate: TreeDescriptor;
+}
+
+export interface ICreateAST extends IAST {
+    nodeProperties: string[];
+    node: Node;
+}
+
+export interface INestedCreateAST extends IAST {
+    node: Node;
+    parent: Node;
+    nodeProperties: string[];
+    edgeProperties: string[];
+    relationshipPropertyPath: string;
+    relationship: [RelationField | undefined, Node[]];
+}
+
+export interface Visitor<R> {
+    visitNode: (ast: IAST) => R;
+    visitCreate: (create: ICreateAST) => R;
+    visitNestedCreate: (nestedCreate: INestedCreateAST) => R;
+    visitConnect: (connect: IConnectAST) => R;
+    visitConnectOrCreate: (connectOrCreate: IConnectOrCreateAST) => R;
+}
