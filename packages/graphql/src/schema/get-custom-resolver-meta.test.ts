@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import type { FieldDefinitionNode} from "graphql";
+import type { FieldDefinitionNode } from "graphql";
 import { Kind } from "graphql";
-import getComputedMeta, { ERROR_MESSAGE } from "./get-computed-meta";
+import getCustomResolverMeta, { ERROR_MESSAGE } from "./get-custom-resolver-meta";
 
-describe("getComputedMeta", () => {
+describe("getCustomResolverMeta", () => {
     test("should return undefined if no directive found", () => {
         // @ts-ignore
         const field: FieldDefinitionNode = {
@@ -45,24 +45,24 @@ describe("getComputedMeta", () => {
             ],
         };
 
-        const result = getComputedMeta(field);
+        const result = getCustomResolverMeta(field);
 
         expect(result).toBeUndefined();
     });
 
-    test("should throw if from not a list", () => {
+    test("should throw if requires not a list", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
                     // @ts-ignore
                     name: {
-                        value: "computed",
+                        value: "customResolver",
                         // @ts-ignore
                     },
                     arguments: [
                         {
                             // @ts-ignore
-                            name: { value: "from" },
+                            name: { value: "requires" },
                             // @ts-ignore
                             value: { kind: Kind.BOOLEAN },
                         },
@@ -83,22 +83,22 @@ describe("getComputedMeta", () => {
             ],
         };
 
-        expect(() => getComputedMeta(field)).toThrow(ERROR_MESSAGE);
+        expect(() => getCustomResolverMeta(field)).toThrow(ERROR_MESSAGE);
     });
 
-    test("should throw if from not a list of strings", () => {
+    test("should throw if requires not a list of strings", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
                     // @ts-ignore
                     name: {
-                        value: "computed",
+                        value: "customResolver",
                         // @ts-ignore
                     },
                     arguments: [
                         {
                             // @ts-ignore
-                            name: { value: "from" },
+                            name: { value: "requires" },
                             // @ts-ignore
                             value: {
                                 kind: Kind.LIST,
@@ -126,16 +126,16 @@ describe("getComputedMeta", () => {
             ],
         };
 
-        expect(() => getComputedMeta(field)).toThrow(ERROR_MESSAGE);
+        expect(() => getCustomResolverMeta(field)).toThrow(ERROR_MESSAGE);
     });
 
-    test("should return the correct meta if no from argument", () => {
+    test("should return the correct meta if no requires argument", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
                     // @ts-ignore
                     name: {
-                        value: "computed",
+                        value: "customResolver",
                         // @ts-ignore
                     },
                 },
@@ -154,27 +154,27 @@ describe("getComputedMeta", () => {
             ],
         };
 
-        const result = getComputedMeta(field);
+        const result = getCustomResolverMeta(field);
 
         expect(result).toMatchObject({
             requiredFields: [],
         });
     });
 
-    test("should return the correct meta with from argument", () => {
+    test("should return the correct meta with requires argument", () => {
         const requiredFields = ["field1", "field2", "field3"];
         const field: FieldDefinitionNode = {
             directives: [
                 {
                     // @ts-ignore
                     name: {
-                        value: "computed",
+                        value: "customResolver",
                         // @ts-ignore
                     },
                     arguments: [
                         {
                             // @ts-ignore
-                            name: { value: "from" },
+                            name: { value: "requires" },
                             // @ts-ignore
                             value: {
                                 kind: Kind.LIST,
@@ -201,7 +201,7 @@ describe("getComputedMeta", () => {
             ],
         };
 
-        const result = getComputedMeta(field);
+        const result = getCustomResolverMeta(field);
 
         expect(result).toMatchObject({
             requiredFields,

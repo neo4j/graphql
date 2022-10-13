@@ -252,7 +252,7 @@ function createConnectionFields({
                       primitiveFields: relFields.primitiveFields,
                       enumFields: relFields.enumFields,
                       pointFields: relFields.pointFields,
-                      computedFields: relFields.computedFields,
+                      customResolverFields: relFields.customResolverFields,
                   }
                 : {}),
         });
