@@ -524,6 +524,7 @@ function makeAugmentedSchema(
         }
     });
 
+    let fulltextScoreWhereCreated = false;
     nodes.forEach((node) => {
         const nodeFields = objectFieldsToComposeFields([
             ...node.primitiveFields,
@@ -637,8 +638,9 @@ function makeAugmentedSchema(
             },
         });
 
+        const nodeWhereTypeName = `${node.name}Where`;
         composer.createInputTC({
-            name: `${node.name}Where`,
+            name: nodeWhereTypeName,
             fields: node.isGlobalNode ? { id: "ID", ...queryFields } : queryFields,
         });
 
@@ -656,15 +658,35 @@ function makeAugmentedSchema(
                 {}
             );
 
-            const resultType = `${node.name}FulltextResult`;
+            const resultTypeName = `${node.name}FulltextResult`;
+            const fulltextWhereTypeName = `${node.name}FulltextWhere`;
 
             composer.createInputTC({
                 name: `${node.name}Fulltext`,
                 fields,
             });
 
+            if (!fulltextScoreWhereCreated) {
+                composer.createInputTC({
+                    name: "FulltextScoreWhere",
+                    fields: {
+                        min: "Float",
+                        max: "Float",
+                    },
+                });
+                fulltextScoreWhereCreated = true;
+            }
+
+            composer.createInputTC({
+                name: fulltextWhereTypeName,
+                fields: {
+                    score: "FulltextScoreWhere",
+                    [node.name]: nodeWhereTypeName,
+                },
+            });
+
             composer.createObjectTC({
-                name: resultType,
+                name: resultTypeName,
                 fields: {
                     score: "Float!",
                     [node.name]: `${node.name}!`,
@@ -673,7 +695,11 @@ function makeAugmentedSchema(
 
             node.fulltextDirective.indexes.forEach((index) => {
                 composer.Query.addFields({
-                    [`${node.plural}Fulltext${index.name}`]: fulltextResolver({ node }, resultType),
+                    [`${node.plural}Fulltext${index.name}`]: fulltextResolver(
+                        { node },
+                        resultTypeName,
+                        fulltextWhereTypeName
+                    ),
                 });
             });
         }
