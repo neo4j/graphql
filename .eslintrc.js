@@ -37,6 +37,13 @@ module.exports = {
                 "@typescript-eslint/no-unsafe-member-access": "off",
                 "@typescript-eslint/no-unsafe-return": "off",
             },
+            settings: {
+                "import/resolver": {
+                    typescript: {
+                        project: "./**/tsconfig.json",
+                    },
+                },
+            },
         },
         {
             files: ["jest.test-setup.js", "**/*.test.ts"],

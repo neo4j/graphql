@@ -109,6 +109,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req }),
                 });
 
+                console.log(gqlResult.errors);
                 expect(gqlResult.errors).toBeUndefined();
 
                 const users = (gqlResult.data as any)[userType.operations.update][userType.plural] as any[];
@@ -256,7 +257,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
         const actorType = generateUniqueType("Actor");
         const movieType = generateUniqueType("Movie");
         const tvShowType = generateUniqueType("TVShow");
-        const movieOrTVShowType = generateUniqueType("MovieOrTVShow")
+        const movieOrTVShowType = generateUniqueType("MovieOrTVShow");
 
         const typeDefs = `
             type ${actorType.name} {
@@ -370,28 +371,22 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             });
 
             expect(gqlResult.errors).toBeUndefined();
-            expect(gqlResult.data).toEqual({
-                [actorType.plural]: [
-                    {
-                        movieOrTVShow: [
-                            {
-                                title: sharedTitle,
-                                numSeasons: numberOfSeasons,
-                                topActor: {
-                                    name: actorName,
-                                },
-                            },
-                            {
-                                title: sharedTitle,
-                                topActor: {
-                                    name: actorName,
-                                    age: actorAge,
-                                },
-                            },
-                        ],
+            expect((gqlResult.data as any)?.[actorType.plural]?.[0].movieOrTVShow).toIncludeSameMembers([
+                {
+                    title: sharedTitle,
+                    numSeasons: numberOfSeasons,
+                    topActor: {
+                        name: actorName,
                     },
-                ],
-            });
+                },
+                {
+                    title: sharedTitle,
+                    topActor: {
+                        name: actorName,
+                        age: actorAge,
+                    },
+                },
+            ]);
         } finally {
             await session.close();
         }
@@ -432,8 +427,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
          * @returns A graphql query.
          */
         function getQuery(mutationType: string, movieTypePlural: string): string {
-            let argType = "update"
-    
+            let argType = "update";
+
             if (mutationType.startsWith("create")) {
                 argType = "input";
             }
@@ -492,14 +487,14 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
         test("Create with createOrConnect and CONNECT operation rule - invalid auth", async () => {
             const [movieType, , typeDefs] = getTypedef("[CONNECT]");
             const createOperation = movieType.operations.create;
-            
+
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 plugins: { auth: jwtPlugin },
             });
 
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
-            
+
             try {
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
@@ -507,7 +502,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: invalidReq }),
                 });
 
-                expect(((gqlResult as any).errors[0].message as string)).toBe(forbiddenMessage);
+                expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
             } finally {
                 await session.close();
             }
@@ -515,7 +510,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
         test("Create with createOrConnect and CREATE operation rule - valid auth", async () => {
             const [movieType, , typeDefs] = getTypedef("[CREATE]");
             const createOperation = movieType.operations.create;
-            
+
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 plugins: { auth: jwtPlugin },
@@ -547,7 +542,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
         test("Create with createOrConnect and CREATE operation rule - invalid auth", async () => {
             const [movieType, , typeDefs] = getTypedef("[CREATE]");
             const createOperation = movieType.operations.create;
-            
+
             const neoSchema = new Neo4jGraphQL({
                 typeDefs,
                 plugins: { auth: jwtPlugin },
@@ -562,7 +557,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: invalidReq }),
                 });
 
-                expect(((gqlResult as any).errors[0].message as string)).toBe(forbiddenMessage);
+                expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
             } finally {
                 await session.close();
             }
@@ -617,7 +612,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: invalidReq }),
                 });
 
-                expect(((gqlResult as any).errors[0].message as string)).toBe(forbiddenMessage);
+                expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
             } finally {
                 await session.close();
             }
@@ -673,7 +668,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                     source: getQuery(updateOperation, movieType.plural),
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: validReq }),
                 });
-    
+
                 expect(gqlResult.errors).toBeUndefined();
                 expect(gqlResult.data).toEqual({
                     [updateOperation]: {
@@ -708,7 +703,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: invalidReq }),
                 });
 
-                expect(((gqlResult as any).errors[0].message as string)).toBe(forbiddenMessage);
+                expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
             } finally {
                 await session.close();
             }
@@ -767,7 +762,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: invalidReq }),
                 });
 
-                expect(((gqlResult as any).errors[0].message as string)).toBe(forbiddenMessage);
+                expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
             } finally {
                 await session.close();
             }
@@ -826,7 +821,7 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                     contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark(), { req: invalidReq }),
                 });
 
-                expect(((gqlResult as any).errors[0].message as string)).toBe(forbiddenMessage);
+                expect((gqlResult as any).errors[0].message as string).toBe(forbiddenMessage);
             } finally {
                 await session.close();
             }
@@ -913,7 +908,6 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             try {
-
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
@@ -936,8 +930,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                                 },
                                 title: filmName2,
                             },
-                        ]
-                    }
+                        ],
+                    },
                 });
             } finally {
                 await session.close();
@@ -970,7 +964,6 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
             const session = await neo4j.getSession({ defaultAccessMode: "WRITE" });
 
             try {
-
                 const gqlResult = await graphql({
                     schema: await neoSchema.getSchema(),
                     source: query,
@@ -993,8 +986,8 @@ describe("https://github.com/neo4j/graphql/pull/2068", () => {
                                 },
                                 title: filmName2,
                             },
-                        ]
-                    }
+                        ],
+                    },
                 });
             } finally {
                 await session.close();
