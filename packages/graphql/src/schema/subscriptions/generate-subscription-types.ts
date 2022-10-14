@@ -262,7 +262,6 @@ export function generateSubscriptionTypes({
                         const isThisTo = trueSource.toTypename === node.name;
                         const props = isThisTo ? trueSource.properties.from : trueSource.properties.to;
                         const thisRel = node.relationFields.find((f) => f.type === trueSource.relationshipName);
-                        console.log("is this to? ", isThisTo, props);
 
                         return {
                             [thisRel!.fieldName]: {
@@ -280,7 +279,6 @@ export function generateSubscriptionTypes({
                 [subscriptionEventPayloadFieldNames.disconnect]: {
                     type: eventPayload.NonNull,
                     resolve: (source: SubscriptionsEvent) => {
-                        console.log(1);
                         if ((source as RelationSubscriptionsEvent).fromTypename === node.name) {
                             return (source as RelationSubscriptionsEvent).properties.from;
                         }
@@ -305,12 +303,10 @@ export function generateSubscriptionTypes({
                 relationship: {
                     type: relationsEventPayload.NonNull,
                     resolve: (source: SubscriptionsEvent) => {
-                        console.log(3, source, node);
                         const trueSource = source as RelationSubscriptionsEvent;
                         const isThisTo = trueSource.toTypename === node.name;
                         const props = isThisTo ? trueSource.properties.from : trueSource.properties.to;
                         const thisRel = node.relationFields.find((f) => f.type === trueSource.relationshipName);
-                        console.log("is this to? ", isThisTo, props);
 
                         return {
                             [thisRel!.fieldName]: {
@@ -346,7 +342,6 @@ export function generateSubscriptionTypes({
             },
         });
 
-        console.log(10);
         if (node.relationFields.length > 0) {
             subscriptionComposer.addFields({
                 [subscribeOperation.connected]: {
