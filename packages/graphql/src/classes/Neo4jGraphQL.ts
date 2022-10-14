@@ -66,7 +66,7 @@ export interface Neo4jGraphQLConstructor extends IExecutableSchemaDefinition {
     features?: Neo4jFeaturesSettings;
     config?: Neo4jGraphQLConfig;
     driver?: Driver;
-    plugins?: Neo4jGraphQLPlugins;
+    plugins?: Omit<Neo4jGraphQLPlugins, "federation">;
 }
 
 class Neo4jGraphQL {
@@ -238,10 +238,18 @@ class Neo4jGraphQL {
             this._nodes = nodes;
             this._relationships = relationships;
 
-            const resolverlessSchema = makeExecutableSchema({
-                ...this.schemaDefinition,
-                typeDefs,
-            });
+            let resolverlessSchema: GraphQLSchema;
+            if (this.plugins?.federation) {
+                resolverlessSchema = this.plugins.federation.getSchema({
+                    ...this.schemaDefinition,
+                    typeDefs,
+                });
+            } else {
+                resolverlessSchema = makeExecutableSchema({
+                    ...this.schemaDefinition,
+                    typeDefs,
+                });
+            }
 
             // Wrap the generated resolvers, which adds a context including the schema to every request
             const wrappedResolvers = this.wrapResolvers(resolvers, { schema: resolverlessSchema });

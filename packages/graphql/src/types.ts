@@ -25,6 +25,7 @@ import type { Node, Relationship } from "./classes";
 import type { Neo4jDatabaseInfo } from "./classes/Neo4jDatabaseInfo";
 import type { RelationshipQueryDirectionOption } from "./constants";
 import type { Executor } from "./classes/Executor";
+import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 
 export { Node } from "./classes";
 
@@ -354,6 +355,10 @@ export interface Neo4jGraphQLAuthPlugin {
 
     decode<T>(token: string): Promise<T | undefined>;
 }
+export interface Neo4jGraphQLFederationPlugin {
+    getResolveReference();
+    getSchema(modulesOrSDL: IExecutableSchemaDefinition<any>): GraphQLSchema;
+}
 
 /** Raw event metadata returned from queries */
 export type EventMeta = {
@@ -403,6 +408,7 @@ export interface Neo4jGraphQLSubscriptionsPlugin {
 
 export interface Neo4jGraphQLPlugins {
     auth?: Neo4jGraphQLAuthPlugin;
+    federation?: Neo4jGraphQLFederationPlugin;
     subscriptions?: Neo4jGraphQLSubscriptionsPlugin;
 }
 
