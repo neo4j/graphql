@@ -678,6 +678,7 @@ describe("Cypher Auth Where", () => {
             	WITH this_posts0_to_delete
             	UNWIND this_posts0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             DETACH DELETE this"
         `);

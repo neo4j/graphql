@@ -88,6 +88,7 @@ describe("Interface Relationships - Update delete", () => {
             	WITH this_delete_actedIn_Movie0_to_delete
             	UNWIND this_delete_actedIn_Movie0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH this
             OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:ACTED_IN]->(this_delete_actedIn_Series0:Series)
@@ -97,6 +98,7 @@ describe("Interface Relationships - Update delete", () => {
             	WITH this_delete_actedIn_Series0_to_delete
             	UNWIND this_delete_actedIn_Series0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
@@ -162,12 +164,14 @@ describe("Interface Relationships - Update delete", () => {
             	WITH this_delete_actedIn_Movie0_actors0_to_delete
             	UNWIND this_delete_actedIn_Movie0_actors0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH this, collect(DISTINCT this_delete_actedIn_Movie0) as this_delete_actedIn_Movie0_to_delete
             CALL {
             	WITH this_delete_actedIn_Movie0_to_delete
             	UNWIND this_delete_actedIn_Movie0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH this
             OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:ACTED_IN]->(this_delete_actedIn_Series0:Series)
@@ -180,12 +184,14 @@ describe("Interface Relationships - Update delete", () => {
             	WITH this_delete_actedIn_Series0_actors0_to_delete
             	UNWIND this_delete_actedIn_Series0_actors0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH this, collect(DISTINCT this_delete_actedIn_Series0) as this_delete_actedIn_Series0_to_delete
             CALL {
             	WITH this_delete_actedIn_Series0_to_delete
             	UNWIND this_delete_actedIn_Series0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
@@ -263,12 +269,14 @@ describe("Interface Relationships - Update delete", () => {
             	WITH this_delete_actedIn_Movie0_actors0_to_delete
             	UNWIND this_delete_actedIn_Movie0_actors0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH this, collect(DISTINCT this_delete_actedIn_Movie0) as this_delete_actedIn_Movie0_to_delete
             CALL {
             	WITH this_delete_actedIn_Movie0_to_delete
             	UNWIND this_delete_actedIn_Movie0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH this
             OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:ACTED_IN]->(this_delete_actedIn_Series0:Series)
@@ -278,6 +286,7 @@ describe("Interface Relationships - Update delete", () => {
             	WITH this_delete_actedIn_Series0_to_delete
             	UNWIND this_delete_actedIn_Series0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"
@@ -364,12 +373,14 @@ describe("Interface Relationships - Update delete", () => {
             	WITH this_delete_actedIn_Movie0_actors0_to_delete
             	UNWIND this_delete_actedIn_Movie0_actors0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH this, collect(DISTINCT this_delete_actedIn_Movie0) as this_delete_actedIn_Movie0_to_delete
             CALL {
             	WITH this_delete_actedIn_Movie0_to_delete
             	UNWIND this_delete_actedIn_Movie0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH this
             OPTIONAL MATCH (this)-[this_delete_actedIn_Series0_relationship:ACTED_IN]->(this_delete_actedIn_Series0:Series)
@@ -382,12 +393,14 @@ describe("Interface Relationships - Update delete", () => {
             	WITH this_delete_actedIn_Series0_actors0_to_delete
             	UNWIND this_delete_actedIn_Series0_actors0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH this, collect(DISTINCT this_delete_actedIn_Series0) as this_delete_actedIn_Series0_to_delete
             CALL {
             	WITH this_delete_actedIn_Series0_to_delete
             	UNWIND this_delete_actedIn_Series0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH *
             RETURN collect(DISTINCT this { .name }) AS data"

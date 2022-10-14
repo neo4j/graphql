@@ -496,6 +496,7 @@ describe("Label in Node directive", () => {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             DETACH DELETE this"
         `);

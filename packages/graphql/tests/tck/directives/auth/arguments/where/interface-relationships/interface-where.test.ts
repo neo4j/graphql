@@ -568,6 +568,7 @@ describe("Cypher Auth Where", () => {
             	WITH this_content_Comment0_to_delete
             	UNWIND this_content_Comment0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH this
             OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
@@ -577,6 +578,7 @@ describe("Cypher Auth Where", () => {
             	WITH this_content_Post0_to_delete
             	UNWIND this_content_Post0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             DETACH DELETE this"
         `);

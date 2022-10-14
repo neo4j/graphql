@@ -724,12 +724,14 @@ describe("tck/rfs/003", () => {
                             	WITH this_delete_director0_address0_to_delete
                             	UNWIND this_delete_director0_address0_to_delete AS x
                             	DETACH DELETE x
+                            	RETURN count(x)
                             }
                             WITH this, collect(DISTINCT this_delete_director0) as this_delete_director0_to_delete
                             CALL {
                             	WITH this_delete_director0_to_delete
                             	UNWIND this_delete_director0_to_delete AS x
                             	DETACH DELETE x
+                            	RETURN count(x)
                             }
                             WITH *
                             WITH *
@@ -845,12 +847,14 @@ describe("tck/rfs/003", () => {
                             	WITH this_delete_director0_address0_to_delete
                             	UNWIND this_delete_director0_address0_to_delete AS x
                             	DETACH DELETE x
+                            	RETURN count(x)
                             }
                             WITH this, collect(DISTINCT this_delete_director0) as this_delete_director0_to_delete
                             CALL {
                             	WITH this_delete_director0_to_delete
                             	UNWIND this_delete_director0_to_delete AS x
                             	DETACH DELETE x
+                            	RETURN count(x)
                             }
                             WITH *
                             WITH *

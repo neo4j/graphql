@@ -632,6 +632,7 @@ describe("Cypher Union", () => {
             	WITH this_delete_search_Genre0_to_delete
             	UNWIND this_delete_search_Genre0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH *
             RETURN collect(DISTINCT this { .title }) AS data"

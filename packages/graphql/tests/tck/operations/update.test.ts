@@ -710,6 +710,7 @@ describe("Cypher Update", () => {
             	WITH this_delete_actors0_to_delete
             	UNWIND this_delete_actors0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -793,6 +794,7 @@ describe("Cypher Update", () => {
             	WITH this_delete_actors0_to_delete
             	UNWIND this_delete_actors0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -874,6 +876,7 @@ describe("Cypher Update", () => {
             	WITH this_actors0_delete0_to_delete
             	UNWIND this_actors0_delete0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -946,12 +949,14 @@ describe("Cypher Update", () => {
             	WITH this_actors0_delete0_movies0_to_delete
             	UNWIND this_actors0_delete0_movies0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH this, collect(DISTINCT this_actors0_delete0) as this_actors0_delete0_to_delete
             CALL {
             	WITH this_actors0_delete0_to_delete
             	UNWIND this_actors0_delete0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);

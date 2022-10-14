@@ -112,6 +112,7 @@ describe("Subscriptions metadata on delete", () => {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             DETACH DELETE this
             WITH meta
@@ -188,6 +189,7 @@ describe("Subscriptions metadata on delete", () => {
             	WITH this_actors0_movies0_actors0_to_delete
             	UNWIND this_actors0_movies0_actors0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH this, meta, this_actors0, collect(DISTINCT this_actors0_movies0) as this_actors0_movies0_to_delete
             WITH this, this_actors0, this_actors0_movies0_to_delete, REDUCE(m=meta, n IN this_actors0_movies0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Movie\\" }) AS meta
@@ -195,6 +197,7 @@ describe("Subscriptions metadata on delete", () => {
             	WITH this_actors0_movies0_to_delete
             	UNWIND this_actors0_movies0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             WITH this, meta, collect(DISTINCT this_actors0) as this_actors0_to_delete
             WITH this, this_actors0_to_delete, REDUCE(m=meta, n IN this_actors0_to_delete | m + { event: \\"delete\\", id: id(n), properties: { old: n { .* }, new: null }, timestamp: timestamp(), typename: \\"Actor\\" }) AS meta
@@ -202,6 +205,7 @@ describe("Subscriptions metadata on delete", () => {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
+            	RETURN count(x)
             }
             DETACH DELETE this
             WITH meta
