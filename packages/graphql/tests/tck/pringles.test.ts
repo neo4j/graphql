@@ -301,6 +301,7 @@ describe("Cypher Create Pringles", () => {
             	WITH collect(this_photos0_color0_disconnect0) as this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel
             	UNWIND this_photos0_color0_disconnect0 as x
             	DELETE this_photos0_color0_disconnect0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_photos0_color0_disconnect_Color
             }

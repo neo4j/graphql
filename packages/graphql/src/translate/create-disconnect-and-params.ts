@@ -163,6 +163,7 @@ function createDisconnectAndParams({
         subquery.push(`\tWITH collect(${variableName}) as ${variableName}, ${variableName}_rel`);
         subquery.push(`\tUNWIND ${variableName} as x`);
         subquery.push(`\tDELETE ${variableName}_rel`);
+        subquery.push(`\tRETURN count(*)`); // Avoids CANNOT END WITH DETACH DELETE ERROR
         subquery.push(`}`); // close FOREACH
 
         // TODO - relationship validation - Blocking, if this were to be enforced it would stop someone from 'reconnecting'

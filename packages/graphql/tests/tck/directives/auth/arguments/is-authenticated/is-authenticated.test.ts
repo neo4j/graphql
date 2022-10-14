@@ -482,6 +482,7 @@ describe("Cypher Auth isAuthenticated", () => {
             	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel
             	UNWIND this_disconnect_posts0 as x
             	DELETE this_disconnect_posts0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
@@ -581,7 +582,7 @@ describe("Cypher Auth isAuthenticated", () => {
             	WITH this_posts0_to_delete
             	UNWIND this_posts0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             WITH this
             CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])

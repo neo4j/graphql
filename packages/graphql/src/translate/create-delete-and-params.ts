@@ -234,7 +234,7 @@ function createDeleteAndParams({
                     res.strs.push(`\tWITH ${variableName}_to_delete`);
                     res.strs.push(`\tUNWIND ${variableName}_to_delete AS x`);
                     res.strs.push(`\tDETACH DELETE x`);
-                    res.strs.push("\tRETURN count(x)"); // Avoids CANNOT END WITH DETACH DELETE ERROR, using count to avoid cardinality
+                    res.strs.push("\tRETURN count(*)"); // Avoids CANNOT END WITH DETACH DELETE ERROR
                     res.strs.push("}");
                     // TODO - relationship validation
                 });

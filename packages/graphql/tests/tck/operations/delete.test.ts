@@ -99,7 +99,7 @@ describe("Cypher Delete", () => {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             DETACH DELETE this"
         `);
@@ -160,7 +160,7 @@ describe("Cypher Delete", () => {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             WITH this
             OPTIONAL MATCH (this)<-[this_actors1_relationship:ACTED_IN]-(this_actors1:Actor)
@@ -170,7 +170,7 @@ describe("Cypher Delete", () => {
             	WITH this_actors1_to_delete
             	UNWIND this_actors1_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             DETACH DELETE this"
         `);
@@ -242,14 +242,14 @@ describe("Cypher Delete", () => {
             	WITH this_actors0_movies0_to_delete
             	UNWIND this_actors0_movies0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
             CALL {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             DETACH DELETE this"
         `);
@@ -333,21 +333,21 @@ describe("Cypher Delete", () => {
             	WITH this_actors0_movies0_actors0_to_delete
             	UNWIND this_actors0_movies0_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             WITH this, this_actors0, collect(DISTINCT this_actors0_movies0) as this_actors0_movies0_to_delete
             CALL {
             	WITH this_actors0_movies0_to_delete
             	UNWIND this_actors0_movies0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
             CALL {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             DETACH DELETE this"
         `);

@@ -404,6 +404,7 @@ describe("Cypher Update", () => {
             	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel
             	UNWIND this_disconnect_actors0 as x
             	DELETE this_disconnect_actors0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_actors_Actor
             }
@@ -469,6 +470,7 @@ describe("Cypher Update", () => {
             	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel
             	UNWIND this_disconnect_actors0 as x
             	DELETE this_disconnect_actors0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_actors_Actor
             }
@@ -482,6 +484,7 @@ describe("Cypher Update", () => {
             	WITH collect(this_disconnect_actors1) as this_disconnect_actors1, this_disconnect_actors1_rel
             	UNWIND this_disconnect_actors1 as x
             	DELETE this_disconnect_actors1_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_actors_Actor
             }
@@ -713,7 +716,7 @@ describe("Cypher Update", () => {
             	WITH this_delete_actors0_to_delete
             	UNWIND this_delete_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -797,7 +800,7 @@ describe("Cypher Update", () => {
             	WITH this_delete_actors0_to_delete
             	UNWIND this_delete_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -879,7 +882,7 @@ describe("Cypher Update", () => {
             	WITH this_actors0_delete0_to_delete
             	UNWIND this_actors0_delete0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -952,14 +955,14 @@ describe("Cypher Update", () => {
             	WITH this_actors0_delete0_movies0_to_delete
             	UNWIND this_actors0_delete0_movies0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             WITH this, collect(DISTINCT this_actors0_delete0) as this_actors0_delete0_to_delete
             CALL {
             	WITH this_actors0_delete0_to_delete
             	UNWIND this_actors0_delete0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);

@@ -678,7 +678,7 @@ describe("Cypher Auth Where", () => {
             	WITH this_posts0_to_delete
             	UNWIND this_posts0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             DETACH DELETE this"
         `);
@@ -1040,6 +1040,7 @@ describe("Cypher Auth Where", () => {
             	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel
             	UNWIND this_posts0_disconnect0 as x
             	DELETE this_posts0_disconnect0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_posts0_disconnect_Post
             }
@@ -1086,6 +1087,7 @@ describe("Cypher Auth Where", () => {
             	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel
             	UNWIND this_posts0_disconnect0 as x
             	DELETE this_posts0_disconnect0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_posts0_disconnect_Post
             }
@@ -1152,6 +1154,7 @@ describe("Cypher Auth Where", () => {
             	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel
             	UNWIND this_disconnect_posts0 as x
             	DELETE this_disconnect_posts0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
@@ -1210,6 +1213,7 @@ describe("Cypher Auth Where", () => {
             	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel
             	UNWIND this_disconnect_posts0 as x
             	DELETE this_disconnect_posts0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }

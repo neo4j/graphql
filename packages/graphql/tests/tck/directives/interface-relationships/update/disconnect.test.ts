@@ -90,6 +90,7 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
             	UNWIND this_disconnect_actedIn0 as x
             	DELETE this_disconnect_actedIn0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_actedIn_Movie
             }
@@ -102,6 +103,7 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
             	UNWIND this_disconnect_actedIn0 as x
             	DELETE this_disconnect_actedIn0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_actedIn_Series
             }
@@ -168,6 +170,7 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
             	UNWIND this_disconnect_actedIn0 as x
             	DELETE this_disconnect_actedIn0_rel
+            	RETURN count(*)
             }
             WITH this, this_disconnect_actedIn0
             CALL {
@@ -179,6 +182,7 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
             	UNWIND this_disconnect_actedIn0_actors0 as x
             	DELETE this_disconnect_actedIn0_actors0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
             }
@@ -193,6 +197,7 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
             	UNWIND this_disconnect_actedIn0 as x
             	DELETE this_disconnect_actedIn0_rel
+            	RETURN count(*)
             }
             WITH this, this_disconnect_actedIn0
             CALL {
@@ -204,6 +209,7 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
             	UNWIND this_disconnect_actedIn0_actors0 as x
             	DELETE this_disconnect_actedIn0_actors0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
             }
@@ -284,6 +290,7 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
             	UNWIND this_disconnect_actedIn0 as x
             	DELETE this_disconnect_actedIn0_rel
+            	RETURN count(*)
             }
             WITH this, this_disconnect_actedIn0
             CALL {
@@ -295,6 +302,7 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
             	UNWIND this_disconnect_actedIn0_actors0 as x
             	DELETE this_disconnect_actedIn0_actors0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
             }
@@ -309,6 +317,7 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
             	UNWIND this_disconnect_actedIn0 as x
             	DELETE this_disconnect_actedIn0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_actedIn_Series
             }
@@ -396,6 +405,7 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
             	UNWIND this_disconnect_actedIn0 as x
             	DELETE this_disconnect_actedIn0_rel
+            	RETURN count(*)
             }
             WITH this, this_disconnect_actedIn0
             CALL {
@@ -407,6 +417,7 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
             	UNWIND this_disconnect_actedIn0_actors0 as x
             	DELETE this_disconnect_actedIn0_actors0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
             }
@@ -421,6 +432,7 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
             	UNWIND this_disconnect_actedIn0 as x
             	DELETE this_disconnect_actedIn0_rel
+            	RETURN count(*)
             }
             WITH this, this_disconnect_actedIn0
             CALL {
@@ -432,6 +444,7 @@ describe("Interface Relationships - Update disconnect", () => {
             	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
             	UNWIND this_disconnect_actedIn0_actors0 as x
             	DELETE this_disconnect_actedIn0_actors0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
             }

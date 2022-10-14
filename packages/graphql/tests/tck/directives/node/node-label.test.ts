@@ -414,6 +414,7 @@ describe("Label in Node directive", () => {
             	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel
             	UNWIND this_disconnect_actors0 as x
             	DELETE this_disconnect_actors0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_actors_Actor
             }
@@ -497,7 +498,7 @@ describe("Label in Node directive", () => {
             	WITH this_actors0_to_delete
             	UNWIND this_actors0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             DETACH DELETE this"
         `);

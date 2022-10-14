@@ -95,6 +95,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             	WITH collect(this_disconnect_activeOrganization0) as this_disconnect_activeOrganization0, this_disconnect_activeOrganization0_rel
             	UNWIND this_disconnect_activeOrganization0 as x
             	DELETE this_disconnect_activeOrganization0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_activeOrganization_Organization
             }

@@ -439,7 +439,7 @@ describe("@auth allow with interface relationships", () => {
             	WITH this_content_Comment0_to_delete
             	UNWIND this_content_Comment0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             WITH this
             OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
@@ -451,7 +451,7 @@ describe("@auth allow with interface relationships", () => {
             	WITH this_content_Post0_to_delete
             	UNWIND this_content_Post0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             WITH this
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -516,6 +516,7 @@ describe("@auth allow with interface relationships", () => {
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_content_Comment
             }
@@ -530,6 +531,7 @@ describe("@auth allow with interface relationships", () => {
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_content_Post
             }
@@ -605,6 +607,7 @@ describe("@auth allow with interface relationships", () => {
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_content_Comment
             }
@@ -619,6 +622,7 @@ describe("@auth allow with interface relationships", () => {
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
             	UNWIND this_disconnect_content0 as x
             	DELETE this_disconnect_content0_rel
+            	RETURN count(*)
             }
             WITH this, this_disconnect_content0
             CALL {
@@ -632,6 +636,7 @@ describe("@auth allow with interface relationships", () => {
             	WITH collect(this_disconnect_content0_comments0) as this_disconnect_content0_comments0, this_disconnect_content0_comments0_rel
             	UNWIND this_disconnect_content0_comments0 as x
             	DELETE this_disconnect_content0_comments0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_content0_comments_Comment
             }

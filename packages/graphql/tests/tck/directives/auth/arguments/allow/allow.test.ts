@@ -558,7 +558,7 @@ describe("Cypher Auth Allow", () => {
             	WITH this_posts0_to_delete
             	UNWIND this_posts0_to_delete AS x
             	DETACH DELETE x
-            	RETURN count(x)
+            	RETURN count(*)
             }
             WITH this
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -621,6 +621,7 @@ describe("Cypher Auth Allow", () => {
             	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel
             	UNWIND this_disconnect_posts0 as x
             	DELETE this_disconnect_posts0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
@@ -691,6 +692,7 @@ describe("Cypher Auth Allow", () => {
             	WITH collect(this_post0_disconnect0) as this_post0_disconnect0, this_post0_disconnect0_rel
             	UNWIND this_post0_disconnect0 as x
             	DELETE this_post0_disconnect0_rel
+            	RETURN count(*)
             }
             WITH this, this_post0_disconnect0
             CALL {
@@ -704,6 +706,7 @@ describe("Cypher Auth Allow", () => {
             	WITH collect(this_post0_disconnect0_creator0) as this_post0_disconnect0_creator0, this_post0_disconnect0_creator0_rel
             	UNWIND this_post0_disconnect0_creator0 as x
             	DELETE this_post0_disconnect0_creator0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this_post0_disconnect0_creator_User
             }
