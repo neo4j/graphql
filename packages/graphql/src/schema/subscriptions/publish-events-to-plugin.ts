@@ -19,7 +19,13 @@
 
 import type { ExecuteResult } from "../../utils/execute";
 import { serializeNeo4jValue } from "../../utils/neo4j-serializers";
-import type { EventMeta, Neo4jGraphQLSubscriptionsPlugin, SubscriptionsEvent } from "../../types";
+import type {
+    EventMeta,
+    Neo4jGraphQLSubscriptionsPlugin,
+    NodeMeta,
+    RelationMeta,
+    SubscriptionsEvent,
+} from "../../types";
 
 export function publishEventsToPlugin(
     executeResult: ExecuteResult,
@@ -30,22 +36,47 @@ export function publishEventsToPlugin(
 
         for (const rawEvent of metadata) {
             const subscriptionsEvent = serializeEvent(rawEvent);
+            if (!subscriptionsEvent) {
+                // unsupported event type
+                return;
+            }
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             plugin.publish(subscriptionsEvent);
         }
     }
 }
 
-function serializeEvent(event: EventMeta): SubscriptionsEvent {
+function serializeEvent(event: EventMeta): SubscriptionsEvent | undefined {
+    let properties = {},
+        extraFields = {};
+    if (["create", "update", "delete"].includes(event.event)) {
+        extraFields = {
+            typename: (event as NodeMeta).typename,
+        };
+        properties = {
+            old: serializeProperties((event as NodeMeta).properties.old),
+            new: serializeProperties((event as NodeMeta).properties.new),
+        };
+    } else if (["connect", "disconnect"].includes(event.event)) {
+        properties = {
+            from: serializeProperties((event as RelationMeta).properties.from),
+            to: serializeProperties((event as RelationMeta).properties.to),
+            relationship: serializeProperties((event as RelationMeta).properties.relationship),
+        };
+        extraFields = {
+            id_from: serializeNeo4jValue((event as RelationMeta).id_from),
+            id_to: serializeNeo4jValue((event as RelationMeta).id_to),
+            fromTypename: serializeNeo4jValue((event as RelationMeta).fromTypename),
+            toTypename: serializeNeo4jValue((event as RelationMeta).toTypename),
+            relationshipName: (event as RelationMeta).relationshipName,
+        };
+    }
     return {
         id: serializeNeo4jValue(event.id),
+        ...extraFields,
         timestamp: serializeNeo4jValue(event.timestamp),
         event: event.event,
-        properties: {
-            old: serializeProperties(event.properties.old),
-            new: serializeProperties(event.properties.new),
-        },
-        typename: event.typename,
+        properties,
     } as SubscriptionsEvent; // Casting here because ts is not smart enough to get the difference between create|update|delete
 }
 

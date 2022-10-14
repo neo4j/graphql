@@ -356,21 +356,47 @@ export interface Neo4jGraphQLAuthPlugin {
 }
 
 /** Raw event metadata returned from queries */
-export type EventMeta = {
+export type NodeMeta = {
     event: "create" | "update" | "delete";
+    typename: string;
     properties: {
         old: Record<string, any>;
         new: Record<string, any>;
     };
-    typename: string;
+};
+export type RelationMeta = {
+    event: "connect" | "disconnect";
+    relationshipName: string;
+    id_from: Integer | string | number;
+    id_to: Integer | string | number;
+    fromTypename: string;
+    toTypename: string;
+    properties: {
+        from: Record<string, any>;
+        to: Record<string, any>;
+        relationship: Record<string, any>;
+    };
+};
+export type EventMeta = (NodeMeta | RelationMeta) & {
     id: Integer | string | number;
     timestamp: Integer | string | number;
 };
 
-/** Serialized subscription event */
-export type SubscriptionsEvent = (
+// export type EventMeta = {
+//     event: "create" | "update" | "delete";
+//     properties: {
+//         old: Record<string, any>;
+//         new: Record<string, any>;
+//     };
+//     typename: string;
+//     id: Integer | string | number;
+//     timestamp: Integer | string | number;
+// };
+
+export type NodeSubscriptionsEvent =
     | {
           event: "create";
+          typename: string;
           properties: {
               old: undefined;
               new: Record<string, any>;
@@ -378,6 +404,7 @@ export type SubscriptionsEvent = (
       }
     | {
           event: "update";
+          typename: string;
           properties: {
               old: Record<string, any>;
               new: Record<string, any>;
@@ -385,12 +412,44 @@ export type SubscriptionsEvent = (
       }
     | {
           event: "delete";
+          typename: string;
           properties: {
               old: Record<string, any>;
               new: undefined;
           };
+      };
+export type RelationSubscriptionsEvent =
+    | {
+          event: "connect";
+          relationshipName: string;
+          properties: {
+              from: Record<string, any>;
+              to: Record<string, any>;
+              relationship: Record<string, any>;
+          };
+          id_from: number;
+          id_to: number;
+          fromTypename: string;
+          toTypename: string;
       }
-) & { id: number; timestamp: number; typename: string };
+    | {
+          event: "disconnect";
+          relationshipName: string;
+          properties: {
+              from: Record<string, any>;
+              to: Record<string, any>;
+              relationship: Record<string, any>;
+          };
+          id_from: number;
+          id_to: number;
+          fromTypename: string;
+          toTypename: string;
+      };
+/** Serialized subscription event */
+export type SubscriptionsEvent = (NodeSubscriptionsEvent | RelationSubscriptionsEvent) & {
+    id: number;
+    timestamp: number;
+};
 
 export interface Neo4jGraphQLSubscriptionsPlugin {
     events: EventEmitter;

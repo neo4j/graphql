@@ -27,11 +27,11 @@ import type {
     ObjectTypeDefinitionNode,
 } from "graphql";
 import { GraphQLID, GraphQLNonNull, Kind, parse, print } from "graphql";
-import type { ObjectTypeComposer } from "graphql-compose";
+import type { InterfaceTypeComposer, ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
 import pluralize from "pluralize";
 import { validateDocument } from "./validation";
-import type { BaseField, Neo4jGraphQLCallbacks, Neo4jFeaturesSettings } from "../types";
+import type { BaseField, Neo4jGraphQLCallbacks, Neo4jFeaturesSettings, InterfaceField } from "../types";
 import { cypherResolver } from "./resolvers/field/cypher";
 import { numericalResolver } from "./resolvers/field/numerical";
 import { aggregateResolver } from "./resolvers/query/aggregate";
@@ -87,7 +87,7 @@ import { addArrayMethodsToITC } from "./array-methods";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
-    {   
+    {
         features,
         enableRegex,
         skipValidateTypeDefs,
@@ -166,6 +166,7 @@ function makeAugmentedSchema(
     );
 
     const relationshipFields = new Map<string, ObjectFields>();
+    const interfaceFieldsabc = new Map<string, ObjectFields>();
 
     relationshipProperties.forEach((relationship) => {
         const authDirective = (relationship.directives || []).find((x) => x.name.value === "auth");
@@ -252,7 +253,7 @@ function makeAugmentedSchema(
                 primitiveFields: relFields.primitiveFields,
             },
             enableRegex,
-            features
+            features,
         });
 
         composer.createInputTC({
@@ -304,6 +305,9 @@ function makeAugmentedSchema(
             fields: objectComposeFields,
         });
 
+        //   TODO
+        interfaceFieldsabc.set(interfaceRelationship.name.value, interfaceFields);
+
         const interfaceOptionsInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Options`, (tc) => {
             tc.addFields({
                 limit: "Int",
@@ -350,7 +354,7 @@ function makeAugmentedSchema(
             },
             enableRegex,
             isInterface: true,
-            features
+            features,
         });
 
         const [
@@ -605,7 +609,7 @@ function makeAugmentedSchema(
                 primitiveFields: node.primitiveFields,
                 scalarFields: node.scalarFields,
             },
-            features
+            features,
         });
 
         const countField = {
@@ -774,7 +778,7 @@ function makeAugmentedSchema(
     });
 
     if (generateSubscriptions) {
-        generateSubscriptionTypes({ schemaComposer: composer, nodes });
+        generateSubscriptionTypes({ schemaComposer: composer, nodes, relationshipFields, interfaceFieldsabc });
     }
 
     ["Mutation", "Query"].forEach((type) => {

@@ -41,7 +41,7 @@ import type Exclude from "./Exclude";
 import type { GraphElementConstructor } from "./GraphElement";
 import { GraphElement } from "./GraphElement";
 import type { NodeDirective } from "./NodeDirective";
-import type { DecodedGlobalId} from "../utils/global-ids";
+import type { DecodedGlobalId } from "../utils/global-ids";
 import { fromGlobalId, toGlobalId } from "../utils/global-ids";
 import type { QueryOptionsDirective } from "./QueryOptionsDirective";
 import { upperFirst } from "../utils/upper-first";
@@ -106,6 +106,8 @@ export type RootTypeFieldNames = {
         created: string;
         updated: string;
         deleted: string;
+        connected: string;
+        disconnected: string;
     };
 };
 
@@ -123,6 +125,8 @@ export type SubscriptionEvents = {
     create: string;
     update: string;
     delete: string;
+    connect: string;
+    disconnect: string;
 };
 
 class Node extends GraphElement {
@@ -232,6 +236,8 @@ class Node extends GraphElement {
                 created: `${this.singular}Created`,
                 updated: `${this.singular}Updated`,
                 deleted: `${this.singular}Deleted`,
+                connected: `${this.singular}Connected`,
+                disconnected: `${this.singular}Disconnected`,
             },
         };
     }
@@ -259,6 +265,8 @@ class Node extends GraphElement {
             create: `${pascalCaseSingular}CreatedEvent`,
             update: `${pascalCaseSingular}UpdatedEvent`,
             delete: `${pascalCaseSingular}DeletedEvent`,
+            connect: `${pascalCaseSingular}ConnectedEvent`,
+            disconnect: `${pascalCaseSingular}DisconnectedEvent`,
         };
     }
 
@@ -269,6 +277,8 @@ class Node extends GraphElement {
             create: `created${pascalCaseSingular}`,
             update: `updated${pascalCaseSingular}`,
             delete: `deleted${pascalCaseSingular}`,
+            connect: `connected${pascalCaseSingular}`,
+            disconnect: `disconnected${pascalCaseSingular}`,
         };
     }
 

@@ -32,5 +32,8 @@ export function subscriptionWhere(
     if (event.event === "create") {
         return filterByProperties(node, where, event.properties.new);
     }
-    return filterByProperties(node, where, event.properties.old);
+    if (event.event === "update" || event.event === "delete") {
+        return filterByProperties(node, where, event.properties.old);
+    }
+    return false;
 }

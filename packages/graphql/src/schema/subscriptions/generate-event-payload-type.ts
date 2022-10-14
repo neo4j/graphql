@@ -30,8 +30,14 @@ export function generateEventPayloadType(node: Node, schemaComposer: SchemaCompo
         ...node.pointFields,
     ]);
 
-    return schemaComposer.createObjectTC({
-        name: `${node.name}EventPayload`,
-        fields: nodeFields,
+    return schemaComposer.getOrCreateOTC(`${node.name}EventPayload`, (tc) => {
+        tc.addFields(nodeFields);
+        return tc;
     });
+
+    // TODO:
+    // return schemaComposer.createObjectTC({
+    //     name: `${node.name}EventPayload`,
+    //     fields: nodeFields,
+    // });
 }
