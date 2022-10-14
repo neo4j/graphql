@@ -49,6 +49,6 @@ export function fulltextResolver(
     return {
         type: `[${resultTypeName}!]!`,
         resolve,
-        args: { phrase: "String!", where: `${whereTypeName}!`, sort: `${sortTypeName}!`, limit: "Int", offset: "Int" },
+        args: { phrase: "String!", where: `${whereTypeName}`, sort: `${sortTypeName}`, limit: "Int", offset: "Int" },
     };
 }
