@@ -25,7 +25,7 @@ import type { Create, Expr, Merge, Variable } from "../CypherBuilder";
 import type { DeleteClause } from "./sub-clauses/Delete";
 import type { SetClause } from "./sub-clauses/Set";
 import type { RemoveClause } from "./sub-clauses/Remove";
-import { padBlock } from "../utils/utils";
+import { compileCypherIfExists, padBlock } from "../utils/utils";
 
 export interface Foreach extends WithWith {}
 
@@ -49,7 +49,10 @@ export class Foreach extends Clause {
         const variableStr = this.variable.getCypher(env);
         const listExpr = this.listExpr.getCypher(env);
         const mapClauseStr = this.mapClause.getCypher(env);
+        const withStr = compileCypherIfExists(this.withStatement, env, { prefix: "\n" });
 
-        return [`FOREACH (${variableStr} IN ${listExpr} |`, padBlock(mapClauseStr), `)`].join("\n");
+        const foreachStr = [`FOREACH (${variableStr} IN ${listExpr} |`, padBlock(mapClauseStr), `)`].join("\n");
+
+        return `${foreachStr}${withStr}`;
     }
 }

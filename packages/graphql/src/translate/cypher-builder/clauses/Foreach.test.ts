@@ -27,7 +27,7 @@ describe("Foreach", () => {
         const movieNode = new CypherBuilder.Node({ labels: ["Movie"] });
         const createMovie = new CypherBuilder.Create(movieNode).set([movieNode.property("id"), variable]);
 
-        const foreachClause = new CypherBuilder.Foreach(variable, list, createMovie);
+        const foreachClause = new CypherBuilder.Foreach(variable, list, createMovie).with("*");
 
         const queryResult = foreachClause.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
@@ -35,7 +35,8 @@ describe("Foreach", () => {
                 CREATE (this1:\`Movie\`)
                 SET
                     this1.id = var0
-            )"
+            )
+            WITH *"
         `);
 
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
