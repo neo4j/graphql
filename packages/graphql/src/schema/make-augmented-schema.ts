@@ -568,20 +568,21 @@ function makeAugmentedSchema(
             {}
         );
 
+        const nodeSortTypeName = `${node.name}Sort`;
         if (Object.keys(sortFields).length) {
             const sortInput = composer.createInputTC({
-                name: `${node.name}Sort`,
+                name: nodeSortTypeName,
                 fields: sortFields,
                 description: `Fields to sort ${upperFirst(
                     node.plural
-                )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${`${node.name}Sort`} object.`,
+                )} by. The order in which sorts are applied is not guaranteed when specifying many fields in one ${nodeSortTypeName} object.`,
             });
 
             composer.createInputTC({
                 name: `${node.name}Options`,
                 fields: {
                     sort: {
-                        description: `Specify one or more ${`${node.name}Sort`} objects to sort ${upperFirst(
+                        description: `Specify one or more ${nodeSortTypeName} objects to sort ${upperFirst(
                             node.plural
                         )} by. The sorts will be applied in the order in which they are arranged in the array.`,
                         type: sortInput.NonNull.List,
@@ -658,8 +659,12 @@ function makeAugmentedSchema(
                 {}
             );
 
-            const resultTypeName = `${node.name}FulltextResult`;
+            const fulltextResultTypeName = `${node.name}FulltextResult`;
             const fulltextWhereTypeName = `${node.name}FulltextWhere`;
+            const fulltextSortTypeName = `${node.name}FulltextSort`;
+            const fulltextResultDescription = `The result of a fulltext search on an index of ${node.name}`;
+            const fulltextWhereDescription = `The input for filtering a fulltext query on an index of ${node.name}`;
+            const fulltextSortDescription = `The input for sorting a fulltext query on an index of ${node.name}`;
 
             composer.createInputTC({
                 name: `${node.name}Fulltext`,
@@ -669,6 +674,7 @@ function makeAugmentedSchema(
             if (!fulltextScoreWhereCreated) {
                 composer.createInputTC({
                     name: "FulltextScoreWhere",
+                    description: "The input for filtering the score of a fulltext search",
                     fields: {
                         min: "Float",
                         max: "Float",
@@ -678,7 +684,17 @@ function makeAugmentedSchema(
             }
 
             composer.createInputTC({
+                name: fulltextSortTypeName,
+                description: fulltextSortDescription,
+                fields: {
+                    score: "SortDirection",
+                    [node.name]: nodeSortTypeName,
+                },
+            });
+
+            composer.createInputTC({
                 name: fulltextWhereTypeName,
+                description: fulltextWhereDescription,
                 fields: {
                     score: "FulltextScoreWhere",
                     [node.name]: nodeWhereTypeName,
@@ -686,7 +702,8 @@ function makeAugmentedSchema(
             });
 
             composer.createObjectTC({
-                name: resultTypeName,
+                name: fulltextResultTypeName,
+                description: fulltextResultDescription,
                 fields: {
                     score: "Float!",
                     [node.name]: `${node.name}!`,
@@ -695,10 +712,11 @@ function makeAugmentedSchema(
 
             node.fulltextDirective.indexes.forEach((index) => {
                 composer.Query.addFields({
-                    [`${node.plural}Fulltext${index.name}`]: fulltextResolver(
+                    [`${node.plural}Fulltext${upperFirst(index.name)}`]: fulltextResolver(
                         { node },
-                        resultTypeName,
-                        fulltextWhereTypeName
+                        fulltextResultTypeName,
+                        fulltextWhereTypeName,
+                        fulltextSortTypeName,
                     ),
                 });
             });
