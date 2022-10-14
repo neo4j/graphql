@@ -18,7 +18,7 @@
  */
 
 import pluralize from "pluralize";
-import type { Node, Relationship } from "../classes";
+import { Neo4jGraphQLError, Node, Relationship } from "../classes";
 import type { BaseField, Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
@@ -40,6 +40,7 @@ import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { buildMathStatements, matchMathField, mathDescriptorBuilder } from "./utils/math";
 import { indentBlock } from "./utils/indent-block";
 import { wrapStringInApostrophes } from "../utils/wrap-string-in-apostrophes";
+import { findConflictingProperties } from "../utils/is-property-clash";
 
 interface Res {
     strs: string[];
@@ -77,6 +78,15 @@ export default function createUpdateAndParams({
     includeRelationshipValidation?: boolean;
 }): [string, any] {
     let hasAppliedTimeStamps = false;
+
+    const conflictingProperties = findConflictingProperties({ node, input: updateInput });
+    if (conflictingProperties.length > 0) {
+        throw new Neo4jGraphQLError(
+            `Conflicting modification of ${conflictingProperties.map((n) => `[[${n}]]`).join(", ")} on type ${
+                node.name
+            }`
+        );
+    }
 
     function reducer(res: Res, [key, value]: [string, any]) {
         let param: string;

@@ -69,6 +69,7 @@ describe("@alias directive", () => {
                 name: String! @alias(property: "dbName")
             }
         `;
+
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             plugins: {
