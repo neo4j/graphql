@@ -20,22 +20,39 @@
 import type { DirectiveNode, ArgumentNode, ListValueNode, StringValueNode } from "graphql";
 import type { Callback, CallbackOperations, Neo4jGraphQLCallbacks } from "../types";
 
-function getCallbackMeta(directive: DirectiveNode, callbacks?: Neo4jGraphQLCallbacks): Callback {
+/** Deprecated in favour of populatedBy */
+export function getCallbackMeta(directive: DirectiveNode, callbacks?: Neo4jGraphQLCallbacks): Callback {
     const operationsArg = directive.arguments?.find((x) => x.name.value === "operations") as ArgumentNode;
     const nameArg = directive.arguments?.find((x) => x.name.value === "name") as ArgumentNode;
 
     const operationsList = operationsArg.value as ListValueNode;
     const operations = operationsList.values.map((value) => (value as StringValueNode).value) as CallbackOperations[];
-    const name = (nameArg.value as StringValueNode).value;
+    const callbackName = (nameArg.value as StringValueNode).value;
 
-    if (typeof (callbacks || {})[name] !== "function") {
-        throw new Error(`Directive callback '${name}' must be of type function`);
+    if (typeof (callbacks || {})[callbackName] !== "function") {
+        throw new Error(`Directive callback '${callbackName}' must be of type function`);
     }
 
     return {
         operations,
-        name,
+        callbackName,
     };
 }
 
-export default getCallbackMeta;
+export function getPopulatedByMeta(directive: DirectiveNode, callbacks?: Neo4jGraphQLCallbacks): Callback {
+    const operationsArg = directive.arguments?.find((x) => x.name.value === "operations") as ArgumentNode;
+    const callbackArg = directive.arguments?.find((x) => x.name.value === "callback") as ArgumentNode;
+
+    const operationsList = operationsArg.value as ListValueNode;
+    const operations = operationsList.values.map((value) => (value as StringValueNode).value) as CallbackOperations[];
+    const callbackName = (callbackArg?.value as StringValueNode)?.value;
+
+    if (typeof (callbacks || {})[callbackName] !== "function") {
+        throw new Error(`PopulatedBy callback '${callbackName}' must be of type function`);
+    }
+
+    return {
+        operations,
+        callbackName,
+    };
+}

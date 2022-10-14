@@ -22,22 +22,34 @@ import type { DirectiveNode } from "graphql";
 function checkDirectiveCombinations(directives: readonly DirectiveNode[] = []): void {
     const invalidCombinations = {
         // FIELD_DEFINITION
-        alias: ["cypher", "computed", "relationship"],
-        auth: ["computed"],
+        alias: ["cypher", "computed", "customResolver", "relationship"],
+        auth: ["computed", "customResolver"],
         callback: ["id", "default", "relationship"],
         coalesce: [],
+        computed: ["alias", "auth", "id", "readonly", "relationship", "writeonly"],
         cypher: [],
         default: [],
-        id: ["cypher", "computed", "relationship", "timestamp", "unique"],
-        computed: ["alias", "auth", "id", "readonly", "relationship", "writeonly"],
+        id: ["cypher", "computed", "customResolver", "relationship", "timestamp", "unique"],
+        populatedBy: ["id", "default", "relationship"],
         private: [],
-        readonly: ["cypher", "computed"],
-        relationship: ["alias", "callback", "coalesce", "cypher", "default", "id", "computed", "readonly"],
+        readonly: ["cypher", "computed", "customResolver"],
+        relationship: [
+            "alias",
+            "callback",
+            "coalesce",
+            "cypher",
+            "default",
+            "id",
+            "computed",
+            "customResolver",
+            "readonly",
+        ],
         timestamp: ["id", "unique"],
-        unique: ["cypher", "id", "computed", "relationship", "timestamp"],
-        writeonly: ["cypher", "computed"],
+        unique: ["cypher", "id", "computed", "customResolver", "relationship", "timestamp"],
+        writeonly: ["cypher", "computed", "customResolver"],
         // OBJECT
         node: [],
+        plural: [],
         // INTERFACE
         relationshipProperties: [],
         // OBJECT and INTERFACE

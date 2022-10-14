@@ -17,14 +17,16 @@
  * limitations under the License.
  */
 
-import { GraphQLEnumType } from "graphql";
+import { DirectiveLocation, GraphQLDirective, GraphQLString, GraphQLNonNull } from "graphql";
 
-/** Deprecated in favour of @populatedBy */
-export const CallbackOperationEnum = new GraphQLEnumType({
-    name: "CallbackOperation",
-    description: "*For use in the @callback directive only*",
-    values: {
-        CREATE: {},
-        UPDATE: {},
+export const pluralDirective = new GraphQLDirective({
+    name: "plural",
+    description: "Instructs @neo4j/graphql to use the given value as the plural of the type name",
+    locations: [DirectiveLocation.OBJECT],
+    args: {
+        value: {
+            description: "The value to use as the plural of the type name.",
+            type: new GraphQLNonNull(GraphQLString),
+        },
     },
 });
