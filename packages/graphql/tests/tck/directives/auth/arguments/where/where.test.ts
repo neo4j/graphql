@@ -728,6 +728,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this0
             		UNWIND connectedNodes as this0_posts_connect0_node
             		MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this0_posts_connect_Post
             }
@@ -790,6 +791,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this0
             		UNWIND connectedNodes as this0_posts_connect0_node
             		MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this0_posts_connect_Post
             }
@@ -843,6 +845,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this
             		UNWIND connectedNodes as this_posts0_connect0_node
             		MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this_posts0_connect_Post
             }
@@ -890,6 +893,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this
             		UNWIND connectedNodes as this_posts0_connect0_node
             		MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this_posts0_connect_Post
             }
@@ -938,6 +942,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this
             		UNWIND connectedNodes as this_connect_posts0_node
             		MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this_connect_posts_Post
             }
@@ -986,6 +991,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this
             		UNWIND connectedNodes as this_connect_posts0_node
             		MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this_connect_posts_Post
             }

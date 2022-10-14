@@ -629,6 +629,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this0
             		UNWIND connectedNodes as this0_content_connect0_node
             		MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this0_content_connect_Comment
             }
@@ -642,6 +643,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this0
             		UNWIND connectedNodes as this0_content_connect0_node
             		MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this0_content_connect_Post
             }
@@ -704,6 +706,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this0
             		UNWIND connectedNodes as this0_content_connect0_node
             		MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this0_content_connect_Comment
             }
@@ -717,6 +720,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this0
             		UNWIND connectedNodes as this0_content_connect0_node
             		MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this0_content_connect_Post
             }
@@ -773,6 +777,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this
             		UNWIND connectedNodes as this_content0_connect0_node
             		MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this_content0_connect_Comment
             }
@@ -793,6 +798,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this
             		UNWIND connectedNodes as this_content0_connect0_node
             		MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this_content0_connect_Post
             }
@@ -845,6 +851,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this
             		UNWIND connectedNodes as this_content0_connect0_node
             		MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this_content0_connect_Comment
             }
@@ -865,6 +872,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this
             		UNWIND connectedNodes as this_content0_connect0_node
             		MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this_content0_connect_Post
             }
@@ -915,6 +923,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this
             		UNWIND connectedNodes as this_connect_content0_node
             		MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this_connect_content_Comment
             }
@@ -928,6 +937,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this
             		UNWIND connectedNodes as this_connect_content0_node
             		MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this_connect_content_Post
             }
@@ -976,6 +986,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this
             		UNWIND connectedNodes as this_connect_content0_node
             		MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this_connect_content_Comment
             }
@@ -989,6 +1000,7 @@ describe("Cypher Auth Where", () => {
             		UNWIND parentNodes as this
             		UNWIND connectedNodes as this_connect_content0_node
             		MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this_connect_content_Post
             }

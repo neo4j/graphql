@@ -96,6 +96,7 @@ describe("Relationship Properties Connect Cypher", () => {
             		UNWIND connectedNodes as this0_actors_connect0_node
             		MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
             SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this0_actors_connect_Actor
             }
@@ -172,6 +173,7 @@ describe("Relationship Properties Connect Cypher", () => {
             		UNWIND connectedNodes as this0_actors_connect0_node
             		MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
             SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this0_actors_connect_Actor
             }
@@ -240,6 +242,7 @@ describe("Relationship Properties Connect Cypher", () => {
             		UNWIND connectedNodes as this_connect_actors0_node
             		MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
             SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this_connect_actors_Actor
             }
@@ -309,6 +312,7 @@ describe("Relationship Properties Connect Cypher", () => {
             		UNWIND connectedNodes as this_connect_actors0_node
             		MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
             SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this_connect_actors_Actor
             }

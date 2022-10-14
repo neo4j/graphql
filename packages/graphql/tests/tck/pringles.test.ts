@@ -173,6 +173,7 @@ describe("Cypher Create Pringles", () => {
             		UNWIND parentNodes as this0_photos1_node
             		UNWIND connectedNodes as this0_photos1_node_color_connect0_node
             		MERGE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this0_photos1_node_color_connect_Color
             }
@@ -201,6 +202,7 @@ describe("Cypher Create Pringles", () => {
             		UNWIND parentNodes as this0_photos2_node
             		UNWIND connectedNodes as this0_photos2_node_color_connect0_node
             		MERGE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this0_photos2_node_color_connect_Color
             }
@@ -313,6 +315,7 @@ describe("Cypher Create Pringles", () => {
             		UNWIND parentNodes as this_photos0
             		UNWIND connectedNodes as this_photos0_color0_connect0_node
             		MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this_photos0_color0_connect_Color
             }

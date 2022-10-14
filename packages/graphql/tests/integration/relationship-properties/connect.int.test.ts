@@ -309,7 +309,7 @@ describe("Relationship properties - connect", () => {
         }
     });
 
-    test("should update an actor while connecting a relationship that has properties(with Union)", async () => {
+    test.only("should update an actor while connecting a relationship that has properties(with Union)", async () => {
         const typeDefs = gql`
             type Movie {
                 title: String!

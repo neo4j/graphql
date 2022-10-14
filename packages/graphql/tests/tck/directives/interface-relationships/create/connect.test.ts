@@ -109,6 +109,7 @@ describe("Interface Relationships - Create connect", () => {
             		UNWIND connectedNodes as this0_actedIn_connect0_node
             		MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
             SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this0_actedIn_connect_Movie
             }
@@ -123,6 +124,7 @@ describe("Interface Relationships - Create connect", () => {
             		UNWIND connectedNodes as this0_actedIn_connect0_node
             		MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
             SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
+            		RETURN count(*)
             	}
             	RETURN count(*) AS connect_this0_actedIn_connect_Series
             }

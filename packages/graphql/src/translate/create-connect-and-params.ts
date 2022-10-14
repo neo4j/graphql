@@ -234,6 +234,7 @@ function createConnectAndParams({
             subquery.push(setA[0]);
             params = { ...params, ...setA[1] };
         }
+        subquery.push(`\t\tRETURN count(*)`);
         subquery.push("\t}");
 
         if (includeRelationshipValidation) {

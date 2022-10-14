@@ -345,6 +345,7 @@ describe("Cypher Auth Allow", () => {
             		UNWIND parentNodes as this
             		UNWIND connectedNodes as this_connect_creator0_node
             		MERGE (this)<-[:HAS_POST]-(this_connect_creator0_node)
+            		RETURN count(*)
             	}
             	WITH this, this_connect_creator0_node
             	CALL apoc.util.validate(NOT ((exists((this_connect_creator0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_creator0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_creator0_nodeauth_param0))) AND (this_connect_creator0_node.id IS NOT NULL AND this_connect_creator0_node.id = $this_connect_creator0_nodeauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])

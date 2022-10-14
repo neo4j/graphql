@@ -406,6 +406,7 @@ describe("Cypher Auth Allow", () => {
             		UNWIND parentNodes as this
             		UNWIND connectedNodes as this_connect_content0_node
             		MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		RETURN count(*)
             	}
             	WITH this, this_connect_content0_node
             	CALL apoc.util.validate(NOT ((this_connect_content0_node.id IS NOT NULL AND this_connect_content0_node.id = $this_connect_content0_nodeauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -421,6 +422,7 @@ describe("Cypher Auth Allow", () => {
             		UNWIND parentNodes as this
             		UNWIND connectedNodes as this_connect_content0_node
             		MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		RETURN count(*)
             	}
             	WITH this, this_connect_content0_node
             	CALL apoc.util.validate(NOT ((this_connect_content0_node.id IS NOT NULL AND this_connect_content0_node.id = $this_connect_content0_nodeauth_param0) AND (exists((this_connect_content0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_content0_nodeauth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
