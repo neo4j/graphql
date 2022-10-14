@@ -1,0 +1,35 @@
+{
+    "name": "@neo4j/cypher-builder",
+    "version": "0.1.0",
+    "private": true,
+    "description": "A cypher builder",
+    "exports": "./dist/index.js",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**/*.ts",
+        "dist/**/*.ts.map",
+        "dist/**/*.js",
+        "dist/**/*.js.map"
+    ],
+    "scripts": {
+        "test": "jest",
+        "build": "tsc --build src/tsconfig.production.json"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/neo4j/graphql.git"
+    },
+    "keywords": [
+        "neo4j",
+        "cypher",
+        "query",
+        "builder"
+    ],
+    "author": "Neo4j Inc.",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/neo4j/graphql/issues"
+    },
+    "homepage": "https://github.com/neo4j/graphql#readme"
+}

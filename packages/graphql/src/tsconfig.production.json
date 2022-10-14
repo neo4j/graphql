@@ -7,6 +7,7 @@
     "exclude": ["**/*.test.ts"],
     "references": [
         // allows for the import of package.json without it being bundled into dist
-        { "path": "../tsconfig.package.json" }
+        { "path": "../tsconfig.package.json" },
+        { "path": "../../cypher-builder/tsconfig.json" }
     ]
 }
