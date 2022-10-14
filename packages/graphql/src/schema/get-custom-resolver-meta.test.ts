@@ -47,7 +47,6 @@ describe("getCustomResolverMeta", () => {
     };
     test("should return undefined if no directive found", () => {
         // @ts-ignore
-
         const field: FieldDefinitionNode = {
             directives: [
                 {
@@ -351,7 +350,4 @@ describe("getCustomResolverMeta", () => {
             `Custom resolver for ${fieldName} has not been provided`
         );
     });
-    // TODO
-    // throws error if no customResolver
-    // throws error if customResolver on interface
 });

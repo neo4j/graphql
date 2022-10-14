@@ -38,14 +38,6 @@ export const ERROR_MESSAGE = "Required fields of @customResolver must be a list 
 
 let deprecationWarningShown = false;
 
-/**
- * Gets the fields required by the custom resolver and checks a custom resolver has been provided.
- * @param field The field to gather meta data for.
- * @param object The object that the field belongs to.
- * @param customResolvers The custom resolvers provided by the user.
- * @param interfaceField The corresponding field from the interface that is being implemented.
- * @returns An object containing the fields required by the customResolver.
- */
 function getCustomResolverMeta(
     field: FieldDefinitionNode,
     object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
