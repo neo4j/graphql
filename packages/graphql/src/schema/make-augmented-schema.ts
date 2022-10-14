@@ -37,6 +37,7 @@ import { numericalResolver } from "./resolvers/field/numerical";
 import { aggregateResolver } from "./resolvers/query/aggregate";
 import { findResolver } from "./resolvers/query/read";
 import { rootConnectionResolver } from "./resolvers/query/root-connection";
+import { fulltextResolver } from "./resolvers/query/fulltext";
 import { createResolver } from "./resolvers/mutation/create";
 import { deleteResolver } from "./resolvers/mutation/delete";
 import { updateResolver } from "./resolvers/mutation/update";
@@ -655,9 +656,25 @@ function makeAugmentedSchema(
                 {}
             );
 
+            const resultType = `${node.name}FulltextResult`;
+
             composer.createInputTC({
                 name: `${node.name}Fulltext`,
                 fields,
+            });
+
+            composer.createObjectTC({
+                name: resultType,
+                fields: {
+                    score: "Float!",
+                    [node.name]: `${node.name}!`,
+                },
+            });
+
+            node.fulltextDirective.indexes.forEach((index) => {
+                composer.Query.addFields({
+                    [`${node.plural}Fulltext${index.name}`]: fulltextResolver({ node }, resultType),
+                });
             });
         }
 
