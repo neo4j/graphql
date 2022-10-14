@@ -22,18 +22,17 @@ import type { GraphQLResolveInfo } from "graphql";
 import { execute } from "../../../utils";
 import { translateRead } from "../../../translate";
 import type { Node } from "../../../classes";
-import type { Context } from "../../../types";
+import type { Context, FullTextIndex } from "../../../types";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 
 export function fulltextResolver(
     { node }: { node: Node },
-    resultTypeName: string,
-    whereTypeName: string,
-    sortTypeName: string
+    index: FullTextIndex
 ): ObjectTypeComposerFieldConfigDefinition<any, any, any> {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         context.resolveTree = getNeo4jResolveTree(info, { args });
+        context.fullTextIndex = index;
 
         const { cypher, params } = translateRead({ context, node });
         const executeResult = await execute({
@@ -47,8 +46,14 @@ export function fulltextResolver(
     }
 
     return {
-        type: `[${resultTypeName}!]!`,
+        type: `[${node.fulltextTypeNames.result}!]!`,
         resolve,
-        args: { phrase: "String!", where: `${whereTypeName}`, sort: `${sortTypeName}`, limit: "Int", offset: "Int" },
+        args: {
+            phrase: "String!",
+            where: node.fulltextTypeNames.where,
+            sort: node.fulltextTypeNames.sort,
+            limit: "Int",
+            offset: "Int",
+        },
     };
 }

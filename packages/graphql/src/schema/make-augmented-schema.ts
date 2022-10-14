@@ -659,9 +659,6 @@ function makeAugmentedSchema(
                 {}
             );
 
-            const fulltextResultTypeName = `${node.name}FulltextResult`;
-            const fulltextWhereTypeName = `${node.name}FulltextWhere`;
-            const fulltextSortTypeName = `${node.name}FulltextSort`;
             const fulltextResultDescription = `The result of a fulltext search on an index of ${node.name}`;
             const fulltextWhereDescription = `The input for filtering a fulltext query on an index of ${node.name}`;
             const fulltextSortDescription = `The input for sorting a fulltext query on an index of ${node.name}`;
@@ -684,7 +681,7 @@ function makeAugmentedSchema(
             }
 
             composer.createInputTC({
-                name: fulltextSortTypeName,
+                name: node.fulltextTypeNames.sort,
                 description: fulltextSortDescription,
                 fields: {
                     score: "SortDirection",
@@ -693,7 +690,7 @@ function makeAugmentedSchema(
             });
 
             composer.createInputTC({
-                name: fulltextWhereTypeName,
+                name: node.fulltextTypeNames.where,
                 description: fulltextWhereDescription,
                 fields: {
                     score: "FulltextScoreWhere",
@@ -702,21 +699,20 @@ function makeAugmentedSchema(
             });
 
             composer.createObjectTC({
-                name: fulltextResultTypeName,
+                name: node.fulltextTypeNames.result,
                 description: fulltextResultDescription,
                 fields: {
-                    score: "Float!",
-                    [node.name]: `${node.name}!`,
+                    score: "Float",
+                    [node.name]: `${node.name}`,
                 },
             });
 
             node.fulltextDirective.indexes.forEach((index) => {
+                const queryName = `${node.plural}Fulltext${upperFirst(index.name)}`;
                 composer.Query.addFields({
-                    [`${node.plural}Fulltext${upperFirst(index.name)}`]: fulltextResolver(
+                    [queryName]: fulltextResolver(
                         { node },
-                        fulltextResultTypeName,
-                        fulltextWhereTypeName,
-                        fulltextSortTypeName,
+                        index,
                     ),
                 });
             });
