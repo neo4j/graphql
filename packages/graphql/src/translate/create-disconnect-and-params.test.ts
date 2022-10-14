@@ -114,6 +114,7 @@ describe("createDisconnectAndParams", () => {
             	WITH collect(this0) as this0, this0_rel
             	UNWIND this0 as x
             	DELETE this0_rel
+            	RETURN count(*)
             }
             WITH this, this0
             CALL {
@@ -125,6 +126,7 @@ describe("createDisconnectAndParams", () => {
             	WITH collect(this0_similarMovies0) as this0_similarMovies0, this0_similarMovies0_rel
             	UNWIND this0_similarMovies0 as x
             	DELETE this0_similarMovies0_rel
+            	RETURN count(*)
             }
             RETURN count(*) AS disconnect_this0_similarMovies_Movie
             }
