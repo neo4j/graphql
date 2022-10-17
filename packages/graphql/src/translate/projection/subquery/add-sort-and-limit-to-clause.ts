@@ -19,14 +19,14 @@
 
 import { toNumber } from "../../../utils/utils";
 import type { GraphQLOptionsArg, GraphQLSortArg } from "../../../types";
-import type * as CypherBuilder from "../../cypher-builder/CypherBuilder";
+import type { Cypher } from "../../cypher-builder/CypherBuilder";
 
 export function addLimitOrOffsetOptionsToClause({
     optionsInput,
     projectionClause,
 }: {
     optionsInput: GraphQLOptionsArg;
-    projectionClause: CypherBuilder.Return | CypherBuilder.With;
+    projectionClause: Cypher.Return | Cypher.With;
 }): void {
     if (optionsInput.limit) {
         projectionClause.limit(toNumber(optionsInput.limit));
@@ -42,8 +42,8 @@ export function addSortAndLimitOptionsToClause({
     projectionClause,
 }: {
     optionsInput: GraphQLOptionsArg;
-    target: CypherBuilder.Variable | CypherBuilder.PropertyRef;
-    projectionClause: CypherBuilder.Return | CypherBuilder.With;
+    target: Cypher.Variable | Cypher.PropertyRef;
+    projectionClause: Cypher.Return | Cypher.With;
 }): void {
     if (optionsInput.sort) {
         const orderByParams = createOrderByParams({
@@ -65,8 +65,8 @@ function createOrderByParams({
     target,
 }: {
     optionsInput: GraphQLOptionsArg;
-    target: CypherBuilder.Variable | CypherBuilder.PropertyRef;
-}): Array<[CypherBuilder.Expr, CypherBuilder.Order]> {
+    target: Cypher.Variable | Cypher.PropertyRef;
+}): Array<[Cypher.Expr, Cypher.Order]> {
     const orderList = (optionsInput.sort || []).flatMap((arg: GraphQLSortArg): Array<[string, "ASC" | "DESC"]> => {
         return Object.entries(arg);
     });

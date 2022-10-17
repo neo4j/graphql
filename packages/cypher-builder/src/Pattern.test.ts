@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "./Cypher";
+import { Cypher } from "./Cypher";
 import { CypherEnvironment } from "./Environment";
 import { Pattern } from "./Pattern";
 

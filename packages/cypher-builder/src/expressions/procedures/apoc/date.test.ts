@@ -18,7 +18,7 @@
  */
 
 import { TestClause } from "../../../utils/TestClause";
-import * as CypherBuilder from "../../../Cypher";
+import { Cypher } from "../../../Cypher";
 
 describe("apoc.date", () => {
     test("convertFormat", () => {

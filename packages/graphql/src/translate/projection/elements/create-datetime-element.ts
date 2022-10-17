@@ -19,7 +19,7 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { TemporalField } from "../../../types";
-import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
+import { Cypher } from "../../cypher-builder/CypherBuilder";
 
 /** Deprecated in favor of createDatetimeExpression */
 export function createDatetimeElement({
@@ -50,23 +50,21 @@ export function createDatetimeExpression({
 }: {
     resolveTree: ResolveTree;
     field: TemporalField;
-    variable: CypherBuilder.Variable;
-}): CypherBuilder.Expr {
+    variable: Cypher.Variable;
+}): Cypher.Expr {
     const dbFieldName = field.dbPropertyName || resolveTree.name;
 
     const fieldProperty = variable.property(dbFieldName);
 
     if (field.typeMeta.array) {
-        const comprehensionVariable = new CypherBuilder.Variable();
+        const comprehensionVariable = new Cypher.Variable();
         const apocFormat = createApocConvertFormat(comprehensionVariable);
 
-        return new CypherBuilder.ListComprehension(comprehensionVariable).in(fieldProperty).map(apocFormat);
+        return new Cypher.ListComprehension(comprehensionVariable).in(fieldProperty).map(apocFormat);
     }
     return createApocConvertFormat(fieldProperty);
 }
 
-function createApocConvertFormat(
-    variableOrProperty: CypherBuilder.Variable | CypherBuilder.PropertyRef
-): CypherBuilder.Expr {
-    return CypherBuilder.apoc.date.convertFormat(variableOrProperty, "iso_zoned_date_time", "iso_offset_date_time");
+function createApocConvertFormat(variableOrProperty: Cypher.Variable | Cypher.PropertyRef): Cypher.Expr {
+    return Cypher.apoc.date.convertFormat(variableOrProperty, "iso_zoned_date_time", "iso_offset_date_time");
 }

@@ -18,7 +18,7 @@
  */
 
 import type { Context } from "../../../types";
-import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
+import { Cypher } from "../../cypher-builder/CypherBuilder";
 import { GraphElement, Node } from "../../../classes";
 import { whereRegEx, WhereRegexGroups } from "../utils";
 import mapToDbProperty from "../../../utils/map-to-db-property";
@@ -43,9 +43,9 @@ export function createPropertyWhere({
     key: string;
     value: any;
     element: GraphElement;
-    targetElement: CypherBuilder.Variable;
+    targetElement: Cypher.Variable;
     context: Context;
-}): CypherBuilder.Predicate | undefined {
+}): Cypher.Predicate | undefined {
     const match = whereRegEx.exec(key);
     if (!match) {
         throw new Error(`Failed to match key in filter: ${key}`);
@@ -68,7 +68,7 @@ export function createPropertyWhere({
         dbFieldName = `${prefix}${dbFieldName}`;
     }
 
-    let propertyRef: CypherBuilder.PropertyRef | CypherBuilder.Function = targetElement.property(dbFieldName);
+    let propertyRef: Cypher.PropertyRef | Cypher.Function = targetElement.property(dbFieldName);
 
     if (element instanceof Node) {
         const node = element;
@@ -82,9 +82,9 @@ export function createPropertyWhere({
         }
 
         if (coalesceValue) {
-            propertyRef = CypherBuilder.coalesce(
+            propertyRef = Cypher.coalesce(
                 propertyRef,
-                new CypherBuilder.RawCypher(`${coalesceValue}`) // TODO: move into CypherBuilder.literal
+                new Cypher.RawCypher(`${coalesceValue}`) // TODO: move into Cypher.literal
             );
         }
 
@@ -97,7 +97,7 @@ export function createPropertyWhere({
                 relationField,
                 context,
                 value,
-                parentNode: targetElement as CypherBuilder.Node,
+                parentNode: targetElement as Cypher.Node,
             });
         }
 
@@ -105,7 +105,7 @@ export function createPropertyWhere({
             return createRelationshipOperation({
                 relationField,
                 context,
-                parentNode: targetElement as CypherBuilder.Node,
+                parentNode: targetElement as Cypher.Node,
                 operator,
                 value,
                 isNot,
@@ -118,16 +118,16 @@ export function createPropertyWhere({
                 value,
                 connectionField,
                 context,
-                parentNode: targetElement as CypherBuilder.Node,
+                parentNode: targetElement as Cypher.Node,
                 operator,
             });
         }
 
         if (value === null) {
             if (isNot) {
-                return CypherBuilder.isNotNull(propertyRef);
+                return Cypher.isNotNull(propertyRef);
             }
-            return CypherBuilder.isNull(propertyRef);
+            return Cypher.isNull(propertyRef);
         }
     }
     const pointField = element.pointFields.find((x) => x.fieldName === fieldName);
@@ -137,14 +137,14 @@ export function createPropertyWhere({
 
     const comparisonOp = createComparisonOperation({
         propertyRefOrCoalesce: propertyRef,
-        param: new CypherBuilder.Param(value),
+        param: new Cypher.Param(value),
         operator,
         durationField,
         pointField,
         neo4jDatabaseInfo: context.neo4jDatabaseInfo,
     });
     if (isNot) {
-        return CypherBuilder.not(comparisonOp);
+        return Cypher.not(comparisonOp);
     }
     return comparisonOp;
 }

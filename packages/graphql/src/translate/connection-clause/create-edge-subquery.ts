@@ -22,7 +22,7 @@ import type { ConnectionField, ConnectionWhereArg, Context } from "../../types";
 import type { Node } from "../../classes";
 import type Relationship from "../../classes/Relationship";
 import { createAuthPredicates } from "../create-auth-and-params";
-import * as CypherBuilder from "../cypher-builder/CypherBuilder";
+import { Cypher } from "../cypher-builder/CypherBuilder";
 import { createConnectionWherePropertyOperation } from "../where/property-operations/create-connection-operation";
 import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
 import { getPattern } from "../utils/get-pattern";
@@ -49,18 +49,18 @@ export function createEdgeSubquery({
     context: Context;
     parentNode: string;
     relatedNode: Node;
-    returnVariable: CypherBuilder.Variable;
+    returnVariable: Cypher.Variable;
     whereInput: ConnectionWhereArg;
     resolveType?: boolean;
     ignoreSort?: boolean;
-}): CypherBuilder.Clause | undefined {
+}): Cypher.Clause | undefined {
     const parentNodeRef = getOrCreateCypherNode(parentNode);
 
-    const relatedNodeRef = new CypherBuilder.NamedNode(`${parentNode}_${relatedNode.name}`, {
+    const relatedNodeRef = new Cypher.NamedNode(`${parentNode}_${relatedNode.name}`, {
         labels: relatedNode.getLabels(context),
     });
 
-    const relationshipRef = new CypherBuilder.Relationship({
+    const relationshipRef = new Cypher.Relationship({
         source: parentNodeRef,
         target: relatedNodeRef,
         type: field.relationship.type,
@@ -72,7 +72,7 @@ export function createEdgeSubquery({
         resolveTree,
     });
 
-    const matchClause = new CypherBuilder.Match(relPattern);
+    const matchClause = new Cypher.Match(relPattern);
     if (whereInput) {
         const relationship = context.relationships.find((r) => r.name === field.relationshipTypeName) as Relationship;
         const wherePredicate = createConnectionWherePropertyOperation({
@@ -107,9 +107,7 @@ export function createEdgeSubquery({
     });
 
     if (authAllowPredicate) {
-        matchClause.where(
-            new CypherBuilder.apoc.ValidatePredicate(CypherBuilder.not(authAllowPredicate), AUTH_FORBIDDEN_ERROR)
-        );
+        matchClause.where(new Cypher.apoc.ValidatePredicate(Cypher.not(authAllowPredicate), AUTH_FORBIDDEN_ERROR));
     }
 
     const projection = createEdgeProjection({
@@ -123,9 +121,9 @@ export function createEdgeSubquery({
         extraFields: getEdgeSortFieldKeys(resolveTree),
     });
 
-    const withReturn = new CypherBuilder.With([projection.projection, returnVariable]);
+    const withReturn = new Cypher.With([projection.projection, returnVariable]);
 
-    let withSortClause: CypherBuilder.Clause | undefined;
+    let withSortClause: Cypher.Clause | undefined;
     if (!ignoreSort) {
         withSortClause = createSortAndLimitProjection({
             resolveTree,
@@ -137,5 +135,5 @@ export function createEdgeSubquery({
         });
     }
 
-    return CypherBuilder.concat(matchClause, withSortClause, ...projection.subqueries, withReturn);
+    return Cypher.concat(matchClause, withSortClause, ...projection.subqueries, withReturn);
 }

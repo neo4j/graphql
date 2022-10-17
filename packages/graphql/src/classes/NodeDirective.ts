@@ -20,7 +20,7 @@
 import { Neo4jGraphQLError } from "./Error";
 import type { Context } from "../types";
 import ContextParser from "../utils/context-parser";
-import { escapeLabel } from "../translate/cypher-builder/utils/utils";
+import { Cypher } from "@neo4j/cypher-builder";
 
 export interface NodeDirectiveConstructor {
     label?: string;
@@ -69,6 +69,6 @@ export class NodeDirective {
     }
 
     private escapeLabel(label: string): string {
-        return escapeLabel(label);
+        return Cypher.Utils.escapeLabel(label);
     }
 }

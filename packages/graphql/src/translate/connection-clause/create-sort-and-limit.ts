@@ -21,7 +21,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import type { Integer } from "neo4j-driver";
 import { isNeoInt, isString, toNumber } from "../../utils/utils";
-import * as CypherBuilder from "../cypher-builder/CypherBuilder";
+import { Cypher } from "../cypher-builder/CypherBuilder";
 import {
     addSortAndLimitOptionsToClause,
     addLimitOrOffsetOptionsToClause,
@@ -37,18 +37,18 @@ export function createSortAndLimitProjection({
     ignoreSkipLimit = false,
 }: {
     resolveTree: ResolveTree;
-    relationshipRef: CypherBuilder.Relationship | CypherBuilder.Variable;
-    nodeRef: CypherBuilder.Node | CypherBuilder.Variable | CypherBuilder.PropertyRef;
+    relationshipRef: Cypher.Relationship | Cypher.Variable;
+    nodeRef: Cypher.Node | Cypher.Variable | Cypher.PropertyRef;
     limit: Integer | number | undefined;
-    extraFields?: CypherBuilder.Variable[];
+    extraFields?: Cypher.Variable[];
     ignoreSkipLimit?: boolean;
-}): CypherBuilder.With | undefined {
+}): Cypher.With | undefined {
     const nodeAndEdgeSortFields = getSortFields(resolveTree);
     if (nodeAndEdgeSortFields.length === 0 && !limit) {
         return undefined;
     }
 
-    const withStatement = new CypherBuilder.With(relationshipRef, ...extraFields);
+    const withStatement = new Cypher.With(relationshipRef, ...extraFields);
     let firstArg = resolveTree.args.first as Integer | number | undefined;
     const afterArg = resolveTree.args.after as string | undefined;
     let offset = isString(afterArg) ? cursorToOffset(afterArg) + 1 : undefined;

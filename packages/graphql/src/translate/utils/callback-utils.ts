@@ -19,7 +19,7 @@
 
 import type { CallbackBucket } from "../../classes/CallbackBucket";
 import type { PrimitiveField } from "../../types";
-import * as CypherBuilder from "../cypher-builder/CypherBuilder";
+import { Cypher } from "../cypher-builder/CypherBuilder";
 
 export const addCallbackAndSetParam = (
     field: PrimitiveField,
@@ -46,18 +46,18 @@ export const addCallbackAndSetParam = (
 
 export const addCallbackAndSetParamCypher = (
     field: PrimitiveField,
-    variable: CypherBuilder.Variable,
+    variable: Cypher.Variable,
     parent: any,
     callbackBucket: CallbackBucket,
     operation: "CREATE" | "UPDATE",
-    node: CypherBuilder.Node
-): [CypherBuilder.PropertyRef, CypherBuilder.RawCypher] | [] => {
+    node: Cypher.Node
+): [Cypher.PropertyRef, Cypher.RawCypher] | [] => {
     if (!field.callback || !field.callback.operations.includes(operation)) {
         return [];
     }
 
     const propRef = node.property(field.dbPropertyName as string);
-    const rawCypherStatement = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+    const rawCypherStatement = new Cypher.RawCypher((env: Cypher.Environment) => {
         const variableCypher = variable.getCypher(env);
         const paramName = `${variableCypher}_${field.fieldName}_${field.callback?.callbackName}`;
 

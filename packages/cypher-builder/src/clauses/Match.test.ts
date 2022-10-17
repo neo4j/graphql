@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../Cypher";
+import { Cypher } from "../Cypher";
 
 describe("CypherBuilder Match", () => {
     test("Match node", () => {

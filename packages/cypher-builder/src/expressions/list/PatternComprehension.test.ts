@@ -18,7 +18,7 @@
  */
 
 import { TestClause } from "../../utils/TestClause";
-import * as CypherBuilder from "../../Cypher";
+import { Cypher } from "../../Cypher";
 
 describe("Pattern comprehension", () => {
     test("comprehension with filter", () => {

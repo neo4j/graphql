@@ -24,8 +24,7 @@ import type { Context } from "../types";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
-import * as CypherBuilder from "./cypher-builder/CypherBuilder";
-import { compileCypherIfExists } from "./cypher-builder/utils/utils";
+import { Cypher } from "./cypher-builder/CypherBuilder";
 
 export default async function translateCreate({
     context,
@@ -102,7 +101,7 @@ export default async function translateCreate({
         projectionWith.push(`${metaNames.join(" + ")} AS meta`);
     }
 
-    let projectionSubquery: CypherBuilder.Clause | undefined;
+    let projectionSubquery: Cypher.Clause | undefined;
     if (nodeProjection) {
         let projAuth = "";
         const projection = createProjectionAndParams({
@@ -111,7 +110,7 @@ export default async function translateCreate({
             resolveTree: nodeProjection,
             varName: "REPLACE_ME",
         });
-        projectionSubquery = CypherBuilder.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
+        projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
         if (projection.meta?.authValidateStrs?.length) {
             projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
                 " AND "
@@ -184,8 +183,8 @@ export default async function translateCreate({
     const returnStatement = generateCreateReturnStatement(projectionStr, context.subscriptionsEnabled);
     const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
 
-    const createQuery = new CypherBuilder.RawCypher((env) => {
-        const projectionSubqueryStr = compileCypherIfExists(projectionSubquery, env);
+    const createQuery = new Cypher.RawCypher((env) => {
+        const projectionSubqueryStr = projectionSubquery ? `\n${projectionSubquery.getCypher(env)}` : "";
         // TODO: avoid REPLACE_ME
         const replacedProjectionSubqueryStrs = createStrs.length
             ? createStrs.map((_, i) => {

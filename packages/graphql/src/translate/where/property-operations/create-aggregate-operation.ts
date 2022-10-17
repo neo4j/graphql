@@ -19,7 +19,7 @@
 
 import createAggregateWhereAndParams from "../../create-aggregate-where-and-params";
 import type { Context, RelationField } from "../../../types";
-import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
+import { Cypher } from "../../cypher-builder/CypherBuilder";
 import type { Node, Relationship } from "../../../classes";
 
 /** Translates an atomic aggregation operation */
@@ -32,12 +32,12 @@ export function createAggregateOperation({
     relationField: RelationField;
     context: Context;
     value: any;
-    parentNode: CypherBuilder.Node;
-}): CypherBuilder.RawCypher {
+    parentNode: Cypher.Node;
+}): Cypher.RawCypher {
     const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
     const relationship = context.relationships.find((x) => x.properties === relationField.properties) as Relationship;
 
-    const aggregateStatement = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+    const aggregateStatement = new Cypher.RawCypher((env: Cypher.Environment) => {
         const varName = env.getReferenceId(parentNode);
 
         // TODO: use cypher builder instead of rawCypher

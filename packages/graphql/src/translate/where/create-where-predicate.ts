@@ -19,7 +19,7 @@
 
 import type { GraphQLWhereArg, Context } from "../../types";
 import type { GraphElement } from "../../classes";
-import * as CypherBuilder from "../cypher-builder/CypherBuilder";
+import { Cypher } from "../cypher-builder/CypherBuilder";
 // Recursive function
 
 import { createPropertyWhere } from "./property-operations/create-property-where";
@@ -37,14 +37,14 @@ export function createWherePredicate({
     context,
     element,
 }: {
-    targetElement: CypherBuilder.Variable;
+    targetElement: Cypher.Variable;
     whereInput: GraphQLWhereArg;
     context: Context;
     element: GraphElement;
-}): CypherBuilder.Predicate | undefined {
+}): Cypher.Predicate | undefined {
     const whereFields = Object.entries(whereInput);
 
-    const predicates = whereFields.map(([key, value]): CypherBuilder.Predicate | undefined => {
+    const predicates = whereFields.map(([key, value]): Cypher.Predicate | undefined => {
         if (isWhereOperator(key)) {
             return createNestedPredicate({
                 key,
@@ -59,7 +59,7 @@ export function createWherePredicate({
     });
 
     // Implicit AND
-    return CypherBuilder.and(...predicates);
+    return Cypher.and(...predicates);
 }
 
 function createNestedPredicate({
@@ -72,14 +72,14 @@ function createNestedPredicate({
     key: WhereOperators;
     value: Array<GraphQLWhereArg>;
     element: GraphElement;
-    targetElement: CypherBuilder.Variable;
+    targetElement: Cypher.Variable;
     context: Context;
-}): CypherBuilder.Predicate | undefined {
+}): Cypher.Predicate | undefined {
     const nested = value.map((v) => {
         return createWherePredicate({ whereInput: v, element, targetElement, context });
     });
     if (key === "OR") {
-        return CypherBuilder.or(...nested);
+        return Cypher.or(...nested);
     }
-    return CypherBuilder.and(...nested);
+    return Cypher.and(...nested);
 }
