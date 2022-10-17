@@ -24,6 +24,7 @@ import { Clause } from "./Clause";
 import { WithWith } from "./mixins/WithWith";
 import { mixin } from "./utils/mixin";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Unwind extends WithWith {}
 
 @mixin(WithWith)

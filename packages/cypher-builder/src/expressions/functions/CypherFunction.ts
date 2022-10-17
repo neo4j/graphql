@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
+import type { Variable } from "../../variables/Variable";
 import { CypherASTNode } from "../../CypherASTNode";
-import type { Variable } from "../..";
 import type { CypherEnvironment } from "../../Environment";
 import type { Expr } from "../../types";
 

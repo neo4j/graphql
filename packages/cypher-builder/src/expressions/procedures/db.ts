@@ -18,14 +18,16 @@
  */
 
 import { dedent } from "graphql-compose";
-import type { Predicate, Variable } from "../../CypherBuilder";
 import type { CypherEnvironment } from "../../Environment";
 import { Where } from "../../clauses/sub-clauses/Where";
 import type { NodeRef } from "../../variables/NodeRef";
 import { Clause } from "../../clauses/Clause";
 import { WithReturn } from "../../clauses/mixins/WithReturn";
 import { mixin } from "../../clauses/utils/mixin";
+import type { Variable } from "../../variables/Variable";
+import type { Predicate } from "../../types";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface FullTextQueryNodes extends WithReturn {}
 
 @mixin(WithReturn)

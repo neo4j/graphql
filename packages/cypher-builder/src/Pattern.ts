@@ -18,7 +18,8 @@
  */
 
 import { stringifyObject } from "./utils/stringify-object";
-import { escapeLabel, padLeft } from "./utils/utils";
+import { escapeLabel } from "./utils/escape-label";
+import { padLeft } from "./utils/utils";
 import type { NodeRef } from "./variables/NodeRef";
 import type { RelationshipRef } from "./variables/RelationshipRef";
 import type { CypherEnvironment } from "./Environment";

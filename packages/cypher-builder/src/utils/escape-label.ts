@@ -17,22 +17,7 @@
  * limitations under the License.
  */
 
-import type { Expr } from "../types";
-import type { CypherEnvironment } from "../Environment";
-
-export function serializeMap(
-    env: CypherEnvironment,
-    obj: Record<string, Expr | undefined>,
-    omitCurlyBraces = false
-): string {
-    const valuesList = Object.entries(obj)
-        .filter(([, value]) => value !== undefined)
-        .map(([key, value]) => {
-            return `${key}: ${(value as Expr).getCypher(env)}`; // TODO: improve Typings
-        });
-
-    const serializedContent = valuesList.join(", ");
-    if (omitCurlyBraces) return serializedContent;
-
-    return `{ ${serializedContent} }`;
+export function escapeLabel(label: string): string {
+    const escapedLabel = label.replace(/\\u0060/g, "`").replace(/`/g, "``");
+    return `\`${escapedLabel}\``;
 }

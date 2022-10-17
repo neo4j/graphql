@@ -21,12 +21,16 @@ import type { CypherEnvironment } from "../Environment";
 import { Clause } from "./Clause";
 import { WithWith } from "./mixins/WithWith";
 import { mixin } from "./utils/mixin";
-import type { Create, Expr, Merge, Variable } from "../CypherBuilder";
 import type { DeleteClause } from "./sub-clauses/Delete";
 import type { SetClause } from "./sub-clauses/Set";
 import type { RemoveClause } from "./sub-clauses/Remove";
 import { compileCypherIfExists, padBlock } from "../utils/utils";
+import type { Create } from "./Create";
+import type { Merge } from "./Merge";
+import type { Variable } from "../variables/Variable";
+import type { Expr } from "../types";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Foreach extends WithWith {}
 
 // TODO: Set, Remove and Delete cannot be used as they are not directly exposed

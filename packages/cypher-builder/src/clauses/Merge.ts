@@ -26,6 +26,7 @@ import { OnCreate, OnCreateParam } from "./sub-clauses/OnCreate";
 import { WithReturn } from "./mixins/WithReturn";
 import { mixin } from "./utils/mixin";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Merge extends WithReturn {}
 
 @mixin(WithReturn)

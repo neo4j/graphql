@@ -24,6 +24,7 @@ import type { CypherEnvironment } from "../Environment";
 import { Clause } from "./Clause";
 import { compileCypherIfExists } from "../utils/utils";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Return extends WithOrder {}
 
 @mixin(WithOrder)

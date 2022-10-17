@@ -26,11 +26,6 @@ export function padLeft(str: string | undefined): string {
     return ` ${str}`;
 }
 
-export function escapeLabel(label: string): string {
-    const escapedLabel = label.replace(/\\u0060/g, "`").replace(/`/g, "``");
-    return `\`${escapedLabel}\``;
-}
-
 export function padBlock(block: string, spaces = 4): string {
     const paddingStr = " ".repeat(spaces);
     const paddedNewLines = block.replace(/\n/g, `\n${paddingStr}`);
