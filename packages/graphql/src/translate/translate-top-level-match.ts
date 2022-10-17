@@ -58,6 +58,21 @@ export function translateTopLevelMatch({
 
         const andChecks = CypherBuilder.and(...labelsChecks);
         if (andChecks) matchQuery.where(andChecks);
+    } else if (context.fulltextIndex) {
+        const phraseParam = new CypherBuilder.Param(resolveTree.args.phrase);
+
+        matchQuery = new CypherBuilder.db.FullTextQueryNodes(
+            matchNode,
+            context.fulltextIndex.name,
+            phraseParam,
+        );
+
+        const labelsChecks = node.getLabels(context).map((label) => {
+            return CypherBuilder.in(new CypherBuilder.Literal(label), CypherBuilder.labels(matchNode));
+        });
+
+        const andChecks = CypherBuilder.and(...labelsChecks);
+        if (andChecks) matchQuery.where(andChecks);
     } else {
         matchQuery = new CypherBuilder.Match(matchNode);
     }

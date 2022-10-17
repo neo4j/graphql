@@ -20,7 +20,7 @@
 import type { ObjectTypeComposerFieldConfigDefinition } from "graphql-compose";
 import type { GraphQLResolveInfo } from "graphql";
 import { execute } from "../../../utils";
-import { translateRead } from "../../../translate";
+import { translateFulltext } from "../../../translate";
 import type { Node } from "../../../classes";
 import type { Context, FulltextIndex } from "../../../types";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
@@ -34,7 +34,7 @@ export function fulltextResolver(
         context.resolveTree = getNeo4jResolveTree(info, { args });
         context.fulltextIndex = index;
 
-        const { cypher, params } = translateRead({ context, node });
+        const { cypher, params } = translateFulltext({ context, node });
         const executeResult = await execute({
             cypher,
             params,
@@ -42,7 +42,7 @@ export function fulltextResolver(
             context,
         });
 
-        return executeResult.records.map((x) => x.this);
+        return executeResult.records;
     }
 
     return {

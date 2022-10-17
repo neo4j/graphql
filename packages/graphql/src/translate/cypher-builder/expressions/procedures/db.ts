@@ -56,14 +56,13 @@ export class FullTextQueryNodes extends Clause {
 
     public getCypher(env: CypherEnvironment): string {
         const targetId = env.getReferenceId(this.targetNode);
-
         const whereStr = this.whereClause?.getCypher(env) || "";
         const returnStr = this.returnStatement?.getCypher(env) || "";
 
         const textSearchStr = dedent`CALL db.index.fulltext.queryNodes(
             "${this.indexName}",
             ${this.phrase.getCypher(env)}
-        ) YIELD node as ${targetId}`;
+        ) YIELD node AS ${targetId}, score`;
 
         return `${textSearchStr}\n
             ${whereStr}\n

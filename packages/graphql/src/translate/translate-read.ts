@@ -36,10 +36,8 @@ export function translateRead({
     context: Context;
     node: Node;
     isRootConnectionField?: boolean;
-}): CypherBuilder.CypherResult {
+}, varName = "this"): CypherBuilder.CypherResult {
     const { resolveTree } = context;
-    const varName = "this";
-
     let matchAndWhereStr = "";
     let authStr = "";
     let projAuth = "";
