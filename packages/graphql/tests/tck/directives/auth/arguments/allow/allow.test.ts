@@ -554,7 +554,12 @@ describe("Cypher Auth Allow", () => {
             WITH this, this_posts0
             CALL apoc.util.validate(NOT ((exists((this_posts0)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this_posts0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this, collect(DISTINCT this_posts0) as this_posts0_to_delete
-            FOREACH(x IN this_posts0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_posts0_to_delete
+            	UNWIND this_posts0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*)
+            }
             WITH this
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             DETACH DELETE this"
@@ -611,9 +616,13 @@ describe("Cypher Auth Allow", () => {
             WHERE this_disconnect_posts0.id = $updateUsers_args_disconnect_posts0_where_Postparam0
             WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0) AND (exists((this_disconnect_posts0)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this_disconnect_posts0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_posts0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            FOREACH(_ IN CASE WHEN this_disconnect_posts0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_posts0_rel
-            )
+            CALL {
+            	WITH this_disconnect_posts0, this_disconnect_posts0_rel
+            	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel
+            	UNWIND this_disconnect_posts0 as x
+            	DELETE this_disconnect_posts0_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_disconnect_posts_Post
             }
             WITH *
@@ -678,9 +687,13 @@ describe("Cypher Auth Allow", () => {
             OPTIONAL MATCH (this)<-[this_post0_disconnect0_rel:HAS_COMMENT]-(this_post0_disconnect0:Post)
             WITH this, this_post0_disconnect0, this_post0_disconnect0_rel
             CALL apoc.util.validate(NOT ((exists((this)<-[:HAS_COMMENT]-(:\`User\`)) AND any(auth_this0 IN [(this)<-[:HAS_COMMENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0))) AND (exists((this_post0_disconnect0)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this_post0_disconnect0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_post0_disconnect0auth_param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            FOREACH(_ IN CASE WHEN this_post0_disconnect0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_post0_disconnect0_rel
-            )
+            CALL {
+            	WITH this_post0_disconnect0, this_post0_disconnect0_rel
+            	WITH collect(this_post0_disconnect0) as this_post0_disconnect0, this_post0_disconnect0_rel
+            	UNWIND this_post0_disconnect0 as x
+            	DELETE this_post0_disconnect0_rel
+            	RETURN count(*)
+            }
             WITH this, this_post0_disconnect0
             CALL {
             WITH this, this_post0_disconnect0
@@ -688,9 +701,13 @@ describe("Cypher Auth Allow", () => {
             WHERE this_post0_disconnect0_creator0.id = $updateComments_args_update_post_disconnect_disconnect_creator_where_Userparam0
             WITH this, this_post0_disconnect0, this_post0_disconnect0_creator0, this_post0_disconnect0_creator0_rel
             CALL apoc.util.validate(NOT ((exists((this_post0_disconnect0)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this_post0_disconnect0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_post0_disconnect0auth_param0))) AND (this_post0_disconnect0_creator0.id IS NOT NULL AND this_post0_disconnect0_creator0.id = $this_post0_disconnect0_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            FOREACH(_ IN CASE WHEN this_post0_disconnect0_creator0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_post0_disconnect0_creator0_rel
-            )
+            CALL {
+            	WITH this_post0_disconnect0_creator0, this_post0_disconnect0_creator0_rel
+            	WITH collect(this_post0_disconnect0_creator0) as this_post0_disconnect0_creator0, this_post0_disconnect0_creator0_rel
+            	UNWIND this_post0_disconnect0_creator0 as x
+            	DELETE this_post0_disconnect0_creator0_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_post0_disconnect0_creator_User
             }
             RETURN count(*) AS disconnect_this_post0_disconnect_Post
@@ -770,11 +787,14 @@ describe("Cypher Auth Allow", () => {
             	WHERE this_connect_posts0_node.id = $this_connect_posts0_node_param0
             	WITH this, this_connect_posts0_node
             	CALL apoc.util.validate(NOT ((exists((this_connect_posts0_node)<-[:HAS_POST]-(:\`User\`)) AND any(auth_this0 IN [(this_connect_posts0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_posts0_nodeauth_param0))) AND (this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_posts0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_posts0_node
+            		MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this_connect_posts_Post
             }
             WITH *

@@ -284,11 +284,14 @@ describe("Cypher Update", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)
             	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actors0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actors0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actors0_node
+            		MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this_connect_actors_Actor
             }
             WITH *
@@ -333,11 +336,14 @@ describe("Cypher Update", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)
             	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actors0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actors0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actors0_node
+            		MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this_connect_actors_Actor
             }
             WITH this
@@ -345,11 +351,14 @@ describe("Cypher Update", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors1_node:Actor)
             	WHERE this_connect_actors1_node.name = $this_connect_actors1_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actors1_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)<-[this_connect_actors1_relationship:ACTED_IN]-(this_connect_actors1_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actors1_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actors1_node
+            		MERGE (this)<-[this_connect_actors1_relationship:ACTED_IN]-(this_connect_actors1_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this_connect_actors_Actor
             }
             WITH *
@@ -390,9 +399,13 @@ describe("Cypher Update", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
             WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actorparam0
-            FOREACH(_ IN CASE WHEN this_disconnect_actors0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_actors0_rel
-            )
+            CALL {
+            	WITH this_disconnect_actors0, this_disconnect_actors0_rel
+            	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel
+            	UNWIND this_disconnect_actors0 as x
+            	DELETE this_disconnect_actors0_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_disconnect_actors_Actor
             }
             WITH *
@@ -452,9 +465,13 @@ describe("Cypher Update", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:Actor)
             WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actorparam0
-            FOREACH(_ IN CASE WHEN this_disconnect_actors0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_actors0_rel
-            )
+            CALL {
+            	WITH this_disconnect_actors0, this_disconnect_actors0_rel
+            	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel
+            	UNWIND this_disconnect_actors0 as x
+            	DELETE this_disconnect_actors0_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_disconnect_actors_Actor
             }
             WITH this
@@ -462,9 +479,13 @@ describe("Cypher Update", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors1_rel:ACTED_IN]-(this_disconnect_actors1:Actor)
             WHERE this_disconnect_actors1.name = $updateMovies_args_disconnect_actors1_where_Actorparam0
-            FOREACH(_ IN CASE WHEN this_disconnect_actors1 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_actors1_rel
-            )
+            CALL {
+            	WITH this_disconnect_actors1, this_disconnect_actors1_rel
+            	WITH collect(this_disconnect_actors1) as this_disconnect_actors1, this_disconnect_actors1_rel
+            	UNWIND this_disconnect_actors1 as x
+            	DELETE this_disconnect_actors1_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_disconnect_actors_Actor
             }
             WITH *
@@ -691,7 +712,12 @@ describe("Cypher Update", () => {
             OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
             WHERE (this_delete_actors0_relationship.screenTime = $updateMovies_args_delete_actors0_where_Actorparam0 AND this_delete_actors0.name = $updateMovies_args_delete_actors0_where_Actorparam1)
             WITH this, collect(DISTINCT this_delete_actors0) as this_delete_actors0_to_delete
-            FOREACH(x IN this_delete_actors0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_delete_actors0_to_delete
+            	UNWIND this_delete_actors0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*)
+            }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -770,7 +796,12 @@ describe("Cypher Update", () => {
             OPTIONAL MATCH (this)<-[this_delete_actors0_relationship:ACTED_IN]-(this_delete_actors0:Actor)
             WHERE this_delete_actors0.name = $updateMovies_args_delete_actors0_where_Actorparam0
             WITH this, collect(DISTINCT this_delete_actors0) as this_delete_actors0_to_delete
-            FOREACH(x IN this_delete_actors0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_delete_actors0_to_delete
+            	UNWIND this_delete_actors0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*)
+            }
             WITH *
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
@@ -847,7 +878,12 @@ describe("Cypher Update", () => {
             OPTIONAL MATCH (this)<-[this_actors0_delete0_relationship:ACTED_IN]-(this_actors0_delete0:Actor)
             WHERE this_actors0_delete0.name = $updateMovies_args_update_actors0_delete0_where_Actorparam0
             WITH this, collect(DISTINCT this_actors0_delete0) as this_actors0_delete0_to_delete
-            FOREACH(x IN this_actors0_delete0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_actors0_delete0_to_delete
+            	UNWIND this_actors0_delete0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*)
+            }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -915,9 +951,19 @@ describe("Cypher Update", () => {
             OPTIONAL MATCH (this_actors0_delete0)-[this_actors0_delete0_movies0_relationship:ACTED_IN]->(this_actors0_delete0_movies0:Movie)
             WHERE this_actors0_delete0_movies0.id = $updateMovies_args_update_actors0_delete0_delete_movies0_where_Movieparam0
             WITH this, this_actors0_delete0, collect(DISTINCT this_actors0_delete0_movies0) as this_actors0_delete0_movies0_to_delete
-            FOREACH(x IN this_actors0_delete0_movies0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_actors0_delete0_movies0_to_delete
+            	UNWIND this_actors0_delete0_movies0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*)
+            }
             WITH this, collect(DISTINCT this_actors0_delete0) as this_actors0_delete0_to_delete
-            FOREACH(x IN this_actors0_delete0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_actors0_delete0_to_delete
+            	UNWIND this_actors0_delete0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*)
+            }
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 

@@ -110,21 +110,27 @@ describe("Nested Unions", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors_LeadActor0_node:LeadActor)
             	WHERE this_connect_actors_LeadActor0_node.name = $this_connect_actors_LeadActor0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actors_LeadActor0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)<-[:ACTED_IN]-(this_connect_actors_LeadActor0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actors_LeadActor0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actors_LeadActor0_node
+            		MERGE (this)<-[:ACTED_IN]-(this_connect_actors_LeadActor0_node)
+            		RETURN count(*)
+            	}
             WITH this, this_connect_actors_LeadActor0_node
             CALL {
             	WITH this, this_connect_actors_LeadActor0_node
             	OPTIONAL MATCH (this_connect_actors_LeadActor0_node_actedIn_Series0_node:Series)
             	WHERE this_connect_actors_LeadActor0_node_actedIn_Series0_node.name = $this_connect_actors_LeadActor0_node_actedIn_Series0_node_param0
-            	FOREACH(_ IN CASE WHEN this_connect_actors_LeadActor0_node IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actors_LeadActor0_node_actedIn_Series0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this_connect_actors_LeadActor0_node)-[:ACTED_IN]->(this_connect_actors_LeadActor0_node_actedIn_Series0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH this, collect(this_connect_actors_LeadActor0_node_actedIn_Series0_node) as connectedNodes, collect(this_connect_actors_LeadActor0_node) as parentNodes
+            		UNWIND parentNodes as this_connect_actors_LeadActor0_node
+            		UNWIND connectedNodes as this_connect_actors_LeadActor0_node_actedIn_Series0_node
+            		MERGE (this_connect_actors_LeadActor0_node)-[:ACTED_IN]->(this_connect_actors_LeadActor0_node_actedIn_Series0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this_connect_actors_LeadActor0_node_actedIn_Series_Series
             }
             	RETURN count(*) AS connect_this_connect_actors_LeadActor_LeadActor
@@ -219,17 +225,25 @@ describe("Nested Unions", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors_LeadActor0_rel:ACTED_IN]-(this_disconnect_actors_LeadActor0:LeadActor)
             WHERE this_disconnect_actors_LeadActor0.name = $updateMovies_args_disconnect_actors_LeadActor0_where_LeadActorparam0
-            FOREACH(_ IN CASE WHEN this_disconnect_actors_LeadActor0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_actors_LeadActor0_rel
-            )
+            CALL {
+            	WITH this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel
+            	WITH collect(this_disconnect_actors_LeadActor0) as this_disconnect_actors_LeadActor0, this_disconnect_actors_LeadActor0_rel
+            	UNWIND this_disconnect_actors_LeadActor0 as x
+            	DELETE this_disconnect_actors_LeadActor0_rel
+            	RETURN count(*)
+            }
             WITH this, this_disconnect_actors_LeadActor0
             CALL {
             WITH this, this_disconnect_actors_LeadActor0
             OPTIONAL MATCH (this_disconnect_actors_LeadActor0)-[this_disconnect_actors_LeadActor0_actedIn_Series0_rel:ACTED_IN]->(this_disconnect_actors_LeadActor0_actedIn_Series0:Series)
             WHERE this_disconnect_actors_LeadActor0_actedIn_Series0.name = $updateMovies_args_disconnect_actors_LeadActor0_disconnect_actedIn_Series0_where_Seriesparam0
-            FOREACH(_ IN CASE WHEN this_disconnect_actors_LeadActor0_actedIn_Series0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_actors_LeadActor0_actedIn_Series0_rel
-            )
+            CALL {
+            	WITH this_disconnect_actors_LeadActor0_actedIn_Series0, this_disconnect_actors_LeadActor0_actedIn_Series0_rel
+            	WITH collect(this_disconnect_actors_LeadActor0_actedIn_Series0) as this_disconnect_actors_LeadActor0_actedIn_Series0, this_disconnect_actors_LeadActor0_actedIn_Series0_rel
+            	UNWIND this_disconnect_actors_LeadActor0_actedIn_Series0 as x
+            	DELETE this_disconnect_actors_LeadActor0_actedIn_Series0_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_disconnect_actors_LeadActor0_actedIn_Series_Series
             }
             RETURN count(*) AS disconnect_this_disconnect_actors_LeadActor_LeadActor
