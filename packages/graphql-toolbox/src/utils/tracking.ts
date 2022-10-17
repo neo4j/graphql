@@ -28,7 +28,7 @@ class Tracking {
     private fireTrackingEvent = (eventCategory: string, eventLabel: string, eventProperties = {}) => {
         const trackingConsent = Storage.retrieve(LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING);
         if (trackingConsent !== "true") {
-            console.log("No tracking consent.");
+            console.log("No tracking consent."); // TODO: remove this after initial tests
             return;
         }
 
