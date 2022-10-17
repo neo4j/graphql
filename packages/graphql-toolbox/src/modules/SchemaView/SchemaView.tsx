@@ -46,6 +46,7 @@ import { SchemaEditor } from "./SchemaEditor";
 import { ConstraintState, Favorite } from "../../types";
 import { Favorites } from "./Favorites";
 import { IntrospectionPrompt } from "./IntrospectionPrompt";
+import { tracking } from "../../utils/tracking";
 
 export interface Props {
     hasSchema: boolean;
@@ -81,6 +82,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
         ];
         setFavorites(newFavorites);
         Storage.storeJSON(LOCAL_STATE_FAVORITES, newFavorites);
+        tracking.trackFavorites();
     };
 
     const setTypeDefsFromFavorite = (typeDefs: string) => {

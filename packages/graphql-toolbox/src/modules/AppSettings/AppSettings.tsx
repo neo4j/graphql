@@ -85,7 +85,7 @@ export const AppSettings = ({ onClickClose }: Props) => {
                     <Checkbox
                         data-test-enable-product-usage-tracking
                         className="m-0"
-                        label="Product usage"
+                        label="Product usage (More text!)"
                         checked={appSettings.enableProductUsageTracking}
                         onChange={onChangeProductUsage}
                     />
