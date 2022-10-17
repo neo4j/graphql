@@ -32,10 +32,14 @@ type UniqueTypeOperations = {
         created: string;
         updated: string;
         deleted: string;
+        connected: string;
+        disconnected: string;
         payload: {
             created: string;
             updated: string;
             deleted: string;
+            connected: string;
+            disconnected: string;
         };
     };
 };
@@ -70,10 +74,14 @@ export class UniqueType {
                 created: `${singular}Created`,
                 updated: `${singular}Updated`,
                 deleted: `${singular}Deleted`,
+                connected: `${singular}Connected`,
+                disconnected: `${singular}Disconnected`,
                 payload: {
                     created: `created${pascalCaseSingular}`,
                     updated: `updated${pascalCaseSingular}`,
                     deleted: `deleted${pascalCaseSingular}`,
+                    connected: `connected${pascalCaseSingular}`,
+                    disconnected: `disconnected${pascalCaseSingular}`,
                 },
             },
         };

@@ -136,6 +136,8 @@ export function generateSubscriptionTypes({
         // n.relationFields[x].fieldName
         // n.relationFields[x].properties => relationshipFields.get
         // n.relationFields[x].typeMeta.name
+
+        // TODO: refactor
         const connectedTypes = nodeRelationFields
             .map((rf) => {
                 const fieldName = rf.fieldName;
@@ -149,11 +151,9 @@ export function generateSubscriptionTypes({
                             types: unionNodeTypes?.map((typeName) => nodeNameToEventPayloadTypes[typeName]),
                             resolveType(value) {
                                 // TODO:
-                                return value;
+                                return `${value}EventPayload`;
                             },
                         });
-                        const rm = schemaComposer.getResolveMethods();
-                        console.log("rm", relationNodeType, rm);
                     }
                     const intNodeTypes = rf.interface?.implementations;
                     if (intNodeTypes) {
@@ -166,7 +166,6 @@ export function generateSubscriptionTypes({
                         });
                         intNodeTypes?.forEach((typeName) => {
                             const tr = nodeNameToEventPayloadTypes[typeName];
-                            // TODO:
                             toNode.addTypeResolver(tr, (value) => `${value}EventPayload`);
                         });
                     }
@@ -261,13 +260,14 @@ export function generateSubscriptionTypes({
                         const trueSource = source as RelationSubscriptionsEvent;
                         const isThisTo = trueSource.toTypename === node.name;
                         const props = isThisTo ? trueSource.properties.from : trueSource.properties.to;
+                        const typename = isThisTo ? trueSource.fromTypename : trueSource.toTypename;
                         const thisRel = node.relationFields.find((f) => f.type === trueSource.relationshipName);
-
                         return {
                             [thisRel!.fieldName]: {
                                 ...trueSource.properties.relationship,
                                 node: {
                                     ...props,
+                                    __typename: `${typename}EventPayload`,
                                 },
                             },
                         };

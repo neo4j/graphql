@@ -33,6 +33,8 @@ import createRelationshipValidationStr from "./create-relationship-validation-st
 import { CallbackBucket } from "../classes/CallbackBucket";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { compileCypherIfExists } from "./cypher-builder/utils/utils";
+import { createRelEventMeta } from "../translate/subscriptions/rel-create-event-meta";
+import { filterMetaVariable } from "../translate/subscriptions/filter-meta-variable";
 
 export default async function translateUpdate({
     node,
@@ -309,6 +311,28 @@ export default async function translateUpdate({
                         });
                         createStrs.push(setA[0]);
                         cypherParams = { ...cypherParams, ...setA[1] };
+                    }
+
+                    // TODO:
+                    // improve namings
+                    if (context.subscriptionsEnabled) {
+                        const [fromVariable, toVariable] =
+                            relationField.direction === "IN" ? [nodeName, varName] : [varName, nodeName];
+                        const [fromTypename, toTypename] =
+                            relationField.direction === "IN" ? [refNode.name, node.name] : [node.name, refNode.name];
+                        const eventWithMetaStr = createRelEventMeta({
+                            event: "connect",
+                            relVariable: propertiesName,
+                            fromVariable,
+                            toVariable,
+                            typename: relationField.type,
+                            fromTypename,
+                            toTypename,
+                        });
+                        const withStrs = [eventWithMetaStr];
+                        createStrs.push(
+                            `WITH ${withStrs.join(", ")}, ${filterMetaVariable([...withVars, nodeName]).join(", ")}`
+                        );
                     }
                 });
             });

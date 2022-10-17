@@ -33,6 +33,7 @@ import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 import { createEventMeta } from "./subscriptions/create-event-meta";
+import { createRelEventMeta } from "./subscriptions/rel-create-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { escapeQuery } from "./utils/escape-query";
 import type { CallbackBucket } from "../classes/CallbackBucket";
@@ -410,6 +411,32 @@ export default function createUpdateAndParams({
                                     }[${index}].create[${i}].edge`,
                                 });
                                 subquery.push(setA);
+                            }
+
+                            // TODO:
+                            // improve namings
+                            if (context.subscriptionsEnabled) {
+                                const [fromVariable, toVariable] =
+                                    relationField.direction === "IN" ? [nodeName, varName] : [varName, nodeName];
+                                const [fromTypename, toTypename] =
+                                    relationField.direction === "IN"
+                                        ? [refNode.name, node.name]
+                                        : [node.name, refNode.name];
+                                const eventWithMetaStr = createRelEventMeta({
+                                    event: "connect",
+                                    relVariable: propertiesName,
+                                    fromVariable,
+                                    toVariable,
+                                    typename: relationField.type,
+                                    fromTypename,
+                                    toTypename,
+                                });
+                                const withStrs = [eventWithMetaStr];
+                                subquery.push(
+                                    `WITH ${withStrs.join(", ")}, ${filterMetaVariable([...withVars, nodeName]).join(
+                                        ", "
+                                    )}`
+                                );
                             }
 
                             const relationshipValidationStr = createRelationshipValidationStr({

@@ -305,7 +305,7 @@ function makeAugmentedSchema(
             fields: objectComposeFields,
         });
 
-        //   TODO
+        //   TODO: rename map
         interfaceFieldsabc.set(interfaceRelationship.name.value, interfaceFields);
 
         const interfaceOptionsInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Options`, (tc) => {

@@ -273,6 +273,7 @@ function createCreateAndParams({
             return res;
         }
 
+        // FIXME: value is object for interfaces
         res.creates.push(`SET ${varName}.${dbFieldName} = $${varNameKey}`);
         res.params[varNameKey] = value;
 

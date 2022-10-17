@@ -35,12 +35,13 @@ export function generateSubscriptionResolver(
         if (!payload) {
             throw new Neo4jGraphQLError("Payload is undefined. Can't call subscriptions resolver directly.");
         }
+        // TODO delete this?
         if (["connect", "disconnect"].includes(type)) {
             const relationEventPayload = payload[0] as RelationSubscriptionsEvent;
             const relationFieldName = node.relationFields.find(
                 (r) => r.type === relationEventPayload.relationshipName
             )?.fieldName;
-            // TODO what if relationFieldName undefinecd
+
             const relationship = {
                 [relationFieldName as string]: {
                     ...relationEventPayload.properties.relationship,
@@ -85,11 +86,17 @@ export function generateSubscribeMethod(node: Node, type: "create" | "update" | 
 
         if (["connect", "disconnect"].includes(type)) {
             return filterAsyncIterator<[SubscriptionsEvent]>(iterable, (data) => {
-                // TODO: filter out if no relationship of type data.relationshipName exists on node
-                return (
-                    (data[0] as RelationSubscriptionsEvent).toTypename === node.name ||
-                    (data[0] as RelationSubscriptionsEvent).fromTypename === node.name
-                );
+                const relationEventPayload = data[0] as RelationSubscriptionsEvent;
+                const isOfRelevantType =
+                    relationEventPayload.toTypename === node.name || relationEventPayload.fromTypename === node.name;
+                if (!isOfRelevantType) {
+                    return false;
+                }
+                const relationFieldName = node.relationFields.find(
+                    (r) => r.type === relationEventPayload.relationshipName
+                )?.fieldName;
+
+                return !!relationFieldName;
             });
         }
 
