@@ -18,10 +18,8 @@
  */
 
 import { useContext } from "react";
-import { Switch, Radio } from "@neo4j-ndl/react";
+import { Checkbox, Radio } from "@neo4j-ndl/react";
 import { Theme, ThemeContext } from "../../contexts/theme";
-import { LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING, LOCAL_STATE_SHOW_LINT_MARKERS } from "../../constants";
-import { Storage } from "../../utils/storage";
 import { AppSettingsContext } from "../..//contexts/appsettings";
 
 interface Props {
@@ -39,15 +37,10 @@ export const AppSettings = ({ onClickClose }: Props) => {
 
     const onChangeShowLintMarkers = (): void => {
         appSettings.setShowLintMarkers(!appSettings.showLintMarkers);
-        Storage.store(LOCAL_STATE_SHOW_LINT_MARKERS, Boolean(!appSettings.showLintMarkers).toString());
     };
 
     const onChangeProductUsage = (): void => {
         appSettings.setEnableProductUsageTracking(!appSettings.enableProductUsageTracking);
-        Storage.store(
-            LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING,
-            Boolean(!appSettings.enableProductUsageTracking).toString()
-        );
     };
 
     return (
@@ -76,7 +69,7 @@ export const AppSettings = ({ onClickClose }: Props) => {
                         onChange={handleOnChangeEditorTheme}
                     />
                     <div className="mt-4">
-                        <Switch
+                        <Checkbox
                             data-test-show-lint-markers
                             className="m-0"
                             label="Show lint markers"
@@ -89,8 +82,8 @@ export const AppSettings = ({ onClickClose }: Props) => {
             <div className="pt-9">
                 <span className="h6">Product Analytics</span>
                 <div className="pt-3">
-                    <Switch
-                        data-test-enable-tracking
+                    <Checkbox
+                        data-test-enable-product-usage-tracking
                         className="m-0"
                         label="Product usage"
                         checked={appSettings.enableProductUsageTracking}

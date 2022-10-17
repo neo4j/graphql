@@ -36,6 +36,7 @@ export const LOCAL_STATE_SELECTED_DATABASE_NAME = "neo4j.graphql.selectedDatabas
 export const LOCAL_STATE_HIDE_INTROSPECTION_PROMPT = "neo4j.graphql.hideIntrospectionPrompt";
 export const LOCAL_STATE_GRID_STATE = "neo4j.graphql.gridState";
 export const LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING = "neo4j.graphql.enableProductUsageTracking";
+export const LOCAL_STATE_HIDE_PRODUCT_USAGE_MESSAGE = "neo4j.graphql.hideProductUsageMessage";
 
 export const SCHEMA_EDITOR_INPUT = "SCHEMA_EDITOR_INPUT";
 export const EDITOR_QUERY_INPUT = "EDITOR_QUERY_INPUT";
