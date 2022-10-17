@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { filterTruthy } from "../../../../utils/utils";
+import { filterTruthy } from "../../utils/filter-truthy";
 import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import type { Predicate } from "../../types";

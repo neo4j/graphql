@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { stringifyObject } from "../utils/stringify-object";
+import { stringifyObject } from "./utils/stringify-object";
 import { escapeLabel, padLeft } from "./utils/utils";
 import type { NodeRef } from "./variables/NodeRef";
 import type { RelationshipRef } from "./variables/RelationshipRef";
