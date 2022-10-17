@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { toNumber } from "../../../utils/utils";
 import type { GraphQLOptionsArg, GraphQLSortArg } from "../../../types";
-import type * as CypherBuilder from "../../cypher-builder/CypherBuilder";
+import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
+import * as neo4j from "neo4j-driver";
 
 export function addLimitOrOffsetOptionsToClause({
     optionsInput,
@@ -29,10 +29,10 @@ export function addLimitOrOffsetOptionsToClause({
     projectionClause: CypherBuilder.Return | CypherBuilder.With;
 }): void {
     if (optionsInput.limit) {
-        projectionClause.limit(toNumber(optionsInput.limit));
+        projectionClause.limit(new CypherBuilder.Param(neo4j.int(optionsInput.limit)));
     }
     if (optionsInput.offset) {
-        projectionClause.skip(toNumber(optionsInput.offset));
+        projectionClause.skip(new CypherBuilder.Param(neo4j.int(optionsInput.offset)));
     }
 }
 

@@ -31,7 +31,7 @@ import { RemoveClause } from "./sub-clauses/Remove";
 import type { CypherEnvironment } from "../Environment";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface Match<T extends MatchableElement> extends WithReturn, WithWhere, WithSet, WithWith {}
+export interface Match<T extends MatchableElement = any> extends WithReturn, WithWhere, WithSet, WithWith {}
 
 @mixin(WithReturn, WithWhere, WithSet, WithWith)
 export class Match<T extends MatchableElement> extends Clause {

@@ -96,7 +96,7 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-            RETURN this { .id } as this"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -123,7 +123,7 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE (this.name = $param0 AND (this.id IS NOT NULL AND this.id = $thisauth_param0))
-            RETURN this { .id } as this"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -156,18 +156,18 @@ describe("Cypher Auth Where", () => {
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:HAS_POST]->(this_posts:\`Post\`)
-                WHERE (exists((this_posts)<-[:HAS_POST]-(:\`User\`)) AND all(thisthis1 IN [(this_posts)<-[:HAS_POST]-(thisthis1:\`User\`) | thisthis1] WHERE (thisthis1.id IS NOT NULL AND thisthis1.id = $thisparam0)))
+                MATCH (this)-[this0:HAS_POST]->(this_posts:\`Post\`)
+                WHERE (exists((this_posts)<-[:HAS_POST]-(:\`User\`)) AND all(this1 IN [(this_posts)<-[:HAS_POST]-(this1:\`User\`) | this1] WHERE (this1.id IS NOT NULL AND this1.id = $param1)))
                 WITH this_posts { .content } AS this_posts
                 RETURN collect(this_posts) AS this_posts
             }
-            RETURN this { .id, posts: this_posts } as this"
+            RETURN this { .id, posts: this_posts } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"thisauth_param0\\": \\"id-01\\",
-                \\"thisparam0\\": \\"id-01\\"
+                \\"param1\\": \\"id-01\\"
             }"
         `);
     });
@@ -205,7 +205,7 @@ describe("Cypher Auth Where", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_postsConnection
             }
-            RETURN this { .id, postsConnection: this_postsConnection } as this"
+            RETURN this { .id, postsConnection: this_postsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -249,7 +249,7 @@ describe("Cypher Auth Where", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_postsConnection
             }
-            RETURN this { .id, postsConnection: this_postsConnection } as this"
+            RETURN this { .id, postsConnection: this_postsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -283,19 +283,19 @@ describe("Cypher Auth Where", () => {
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:HAS_POST]->(this_posts:\`Post\`)
-                WHERE (this_posts.content = $thisparam0 AND (exists((this_posts)<-[:HAS_POST]-(:\`User\`)) AND all(thisthis1 IN [(this_posts)<-[:HAS_POST]-(thisthis1:\`User\`) | thisthis1] WHERE (thisthis1.id IS NOT NULL AND thisthis1.id = $thisparam1))))
+                MATCH (this)-[this0:HAS_POST]->(this_posts:\`Post\`)
+                WHERE (this_posts.content = $param1 AND (exists((this_posts)<-[:HAS_POST]-(:\`User\`)) AND all(this1 IN [(this_posts)<-[:HAS_POST]-(this1:\`User\`) | this1] WHERE (this1.id IS NOT NULL AND this1.id = $param2))))
                 WITH this_posts { .content } AS this_posts
                 RETURN collect(this_posts) AS this_posts
             }
-            RETURN this { .id, posts: this_posts } as this"
+            RETURN this { .id, posts: this_posts } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"thisauth_param0\\": \\"id-01\\",
-                \\"thisparam0\\": \\"cool\\",
-                \\"thisparam1\\": \\"id-01\\"
+                \\"param1\\": \\"cool\\",
+                \\"param2\\": \\"id-01\\"
             }"
         `);
     });
@@ -326,21 +326,21 @@ describe("Cypher Auth Where", () => {
                 WITH this
                 CALL {
                     WITH this
-                    MATCH (this)-[thisthis0:HAS_POST]->(this_content:\`Post\`)
-                    WHERE (exists((this_content)<-[:HAS_POST]-(:\`User\`)) AND all(thisthis1 IN [(this_content)<-[:HAS_POST]-(thisthis1:\`User\`) | thisthis1] WHERE (thisthis1.id IS NOT NULL AND thisthis1.id = $thisparam0)))
+                    MATCH (this)-[this0:HAS_POST]->(this_content:\`Post\`)
+                    WHERE (exists((this_content)<-[:HAS_POST]-(:\`User\`)) AND all(this1 IN [(this_content)<-[:HAS_POST]-(this1:\`User\`) | this1] WHERE (this1.id IS NOT NULL AND this1.id = $param1)))
                     WITH this_content  { __resolveType: \\"Post\\",  .id } AS this_content
                     RETURN this_content AS this_content
                 }
                 WITH this_content
                 RETURN collect(this_content) AS this_content
             }
-            RETURN this { .id, content: this_content } as this"
+            RETURN this { .id, content: this_content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"thisauth_param0\\": \\"id-01\\",
-                \\"thisparam0\\": \\"id-01\\"
+                \\"param1\\": \\"id-01\\"
             }"
         `);
     });
@@ -384,7 +384,7 @@ describe("Cypher Auth Where", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_contentConnection
             }
-            RETURN this { .id, contentConnection: this_contentConnection } as this"
+            RETURN this { .id, contentConnection: this_contentConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -434,7 +434,7 @@ describe("Cypher Auth Where", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_contentConnection
             }
-            RETURN this { .id, contentConnection: this_contentConnection } as this"
+            RETURN this { .id, contentConnection: this_contentConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
