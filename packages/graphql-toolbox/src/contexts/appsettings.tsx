@@ -18,13 +18,19 @@
  */
 
 import React, { Dispatch, useState, SetStateAction, useEffect } from "react";
-import { LOCAL_STATE_CONSTRAINT, LOCAL_STATE_SHOW_LINT_MARKERS } from "../constants";
+import {
+    LOCAL_STATE_CONSTRAINT,
+    LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING,
+    LOCAL_STATE_SHOW_LINT_MARKERS,
+} from "../constants";
 import { ConstraintState } from "../types";
 import { Storage } from "../utils/storage";
 
 export interface State {
     showLintMarkers: boolean;
+    enableProductUsageTracking: boolean;
     setShowLintMarkers: (v: boolean) => void;
+    setEnableProductUsageTracking: (v: boolean) => void;
 }
 
 export const AppSettingsContext = React.createContext({} as State);
@@ -32,8 +38,12 @@ export const AppSettingsContext = React.createContext({} as State);
 export function AppSettingsProvider(props: React.PropsWithChildren<any>) {
     const [value, setValue]: [value: State | undefined, setValue: Dispatch<SetStateAction<State>>] = useState<State>({
         showLintMarkers: Storage.retrieve(LOCAL_STATE_SHOW_LINT_MARKERS) === "true",
+        enableProductUsageTracking: Storage.retrieve(LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING) === "true",
         setShowLintMarkers: (nextState: boolean) => {
             setValue((values) => ({ ...values, showLintMarkers: nextState }));
+        },
+        setEnableProductUsageTracking: (nextState: boolean) => {
+            setValue((values) => ({ ...values, enableProductUsageTracking: nextState }));
         },
     });
 

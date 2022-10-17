@@ -18,9 +18,9 @@
  */
 
 import { useContext } from "react";
-import { Checkbox, Radio } from "@neo4j-ndl/react";
+import { Switch, Radio } from "@neo4j-ndl/react";
 import { Theme, ThemeContext } from "../../contexts/theme";
-import { LOCAL_STATE_SHOW_LINT_MARKERS } from "../../constants";
+import { LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING, LOCAL_STATE_SHOW_LINT_MARKERS } from "../../constants";
 import { Storage } from "../../utils/storage";
 import { AppSettingsContext } from "../..//contexts/appsettings";
 
@@ -37,9 +37,17 @@ export const AppSettings = ({ onClickClose }: Props) => {
         theme.setTheme(next);
     };
 
-    const onChangeShowLintMarkersCheckbox = (): void => {
+    const onChangeShowLintMarkers = (): void => {
         appSettings.setShowLintMarkers(!appSettings.showLintMarkers);
         Storage.store(LOCAL_STATE_SHOW_LINT_MARKERS, Boolean(!appSettings.showLintMarkers).toString());
+    };
+
+    const onChangeProductUsage = (): void => {
+        appSettings.setEnableProductUsageTracking(!appSettings.enableProductUsageTracking);
+        Storage.store(
+            LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING,
+            Boolean(!appSettings.enableProductUsageTracking).toString()
+        );
     };
 
     return (
@@ -68,14 +76,26 @@ export const AppSettings = ({ onClickClose }: Props) => {
                         onChange={handleOnChangeEditorTheme}
                     />
                     <div className="mt-4">
-                        <Checkbox
-                            data-test-show-lint-markers-checkbox
+                        <Switch
+                            data-test-show-lint-markers
                             className="m-0"
                             label="Show lint markers"
                             checked={appSettings.showLintMarkers}
-                            onChange={onChangeShowLintMarkersCheckbox}
+                            onChange={onChangeShowLintMarkers}
                         />
                     </div>
+                </div>
+            </div>
+            <div className="pt-9">
+                <span className="h6">Product Analytics</span>
+                <div className="pt-3">
+                    <Switch
+                        data-test-enable-tracking
+                        className="m-0"
+                        label="Product usage"
+                        checked={appSettings.enableProductUsageTracking}
+                        onChange={onChangeProductUsage}
+                    />
                 </div>
             </div>
             <div className="absolute bottom-2 right-28 font-bold text-xs flex flex-col">
