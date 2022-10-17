@@ -77,13 +77,14 @@ export interface Auth {
     type: "JWT";
 }
 
-export type FullTextIndex = {
+export type FulltextIndex = {
     name: string;
     fields: string[];
+    queryType: string;
 };
 
 export type FullText = {
-    indexes: FullTextIndex[];
+    indexes: FulltextIndex[];
 };
 
 /**

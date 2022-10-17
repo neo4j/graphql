@@ -22,17 +22,17 @@ import type { GraphQLResolveInfo } from "graphql";
 import { execute } from "../../../utils";
 import { translateRead } from "../../../translate";
 import type { Node } from "../../../classes";
-import type { Context, FullTextIndex } from "../../../types";
+import type { Context, FulltextIndex } from "../../../types";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 
 export function fulltextResolver(
     { node }: { node: Node },
-    index: FullTextIndex
+    index: FulltextIndex
 ): ObjectTypeComposerFieldConfigDefinition<any, any, any> {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         context.resolveTree = getNeo4jResolveTree(info, { args });
-        context.fullTextIndex = index;
+        context.fulltextIndex = index;
 
         const { cypher, params } = translateRead({ context, node });
         const executeResult = await execute({
