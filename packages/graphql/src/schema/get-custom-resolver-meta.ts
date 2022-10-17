@@ -25,17 +25,37 @@ type IgnoreMeta = {
     requiredFields: string[];
 };
 
-export const ERROR_MESSAGE = "Required fields of @computed must be a list of strings";
+const DEPRECATION_WARNING =
+    "The @computed directive has been deprecated and will be removed in version 4.0. Please use " +
+    "the @customResolver directive instead.";
+export const ERROR_MESSAGE = "Required fields of @customResolver must be a list of strings";
 
-function getComputedMeta(field: FieldDefinitionNode, interfaceField?: FieldDefinitionNode): IgnoreMeta | undefined {
-    const directive =
+let deprecationWarningShown = false;
+
+function getCustomResolverMeta(
+    field: FieldDefinitionNode,
+    interfaceField?: FieldDefinitionNode
+): IgnoreMeta | undefined {
+    const deprecatedDirective =
         field.directives?.find((x) => x.name.value === "computed") ||
         interfaceField?.directives?.find((x) => x.name.value === "computed");
-    if (!directive) {
+
+    if (deprecatedDirective && !deprecationWarningShown) {
+        console.warn(DEPRECATION_WARNING);
+        deprecationWarningShown = true;
+    }
+
+    const directive =
+        field.directives?.find((x) => x.name.value === "customResolver") ||
+        interfaceField?.directives?.find((x) => x.name.value === "customResolver");
+
+    if (!directive && !deprecatedDirective) {
         return undefined;
     }
 
-    const directiveFromArgument = directive.arguments?.find((arg) => arg.name.value === "from");
+    const directiveFromArgument =
+        directive?.arguments?.find((arg) => arg.name.value === "requires") ||
+        deprecatedDirective?.arguments?.find((arg) => arg.name.value === "from");
 
     if (!directiveFromArgument) {
         return {
@@ -50,8 +70,6 @@ function getComputedMeta(field: FieldDefinitionNode, interfaceField?: FieldDefin
         throw new Error(ERROR_MESSAGE);
     }
 
-    // `@computed(from: [String!])`
-    // Create a set from array of argument `require`
     const requiredFields = removeDuplicates(
         directiveFromArgument.value.values.map((v) => (v as StringValueNode).value) ?? []
     );
@@ -61,4 +79,4 @@ function getComputedMeta(field: FieldDefinitionNode, interfaceField?: FieldDefin
     };
 }
 
-export default getComputedMeta;
+export default getCustomResolverMeta;

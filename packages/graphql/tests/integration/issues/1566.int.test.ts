@@ -111,7 +111,6 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
             });
 
             expect(result.errors).toBeUndefined();
-            console.log(result.data);
             expect((result.data as any)?.[testCommunity.plural]?.[0]).toEqual({
                 id: 111111,
                 feedItem: {

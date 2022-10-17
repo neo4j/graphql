@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: "Download built UI"
-        uses: actions/github-script@v6.3.2
+        uses: actions/github-script@v6.3.3
         with:
           script: |
             var artifacts = await github.rest.actions.listWorkflowRunArtifacts({
@@ -47,7 +47,7 @@ jobs:
           npm install -g surge
           surge . neo4j-graphql-toolbox-stage-${{ steps.get-pr-number.outputs.pr-number }}.surge.sh --token ${{ secrets.SURGE_TOKEN }}
       - name: Comment on PR
-        uses: marocchino/sticky-pull-request-comment@39c5b5dc7717447d0cba270cd115037d32d28443 # renovate: tag=v2.2.0
+        uses: marocchino/sticky-pull-request-comment@97bddef64db61b9d80edc69593cc4e4c415c3362 # tag=v2.2.1
         with:
           number: ${{ steps.get-pr-number.outputs.pr-number }}
           message: |

@@ -102,24 +102,30 @@ describe("Interface Relationships - Create connect", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect0_node:Movie)
             	WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_actedIn_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_actedIn_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_actedIn_connect0_node
+            		MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
             SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
-            		)
-            	)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_actedIn_connect_Movie
             }
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect0_node:Series)
             	WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_actedIn_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_actedIn_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_actedIn_connect0_node
+            		MERGE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
             SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
-            		)
-            	)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_actedIn_connect_Series
             }
             RETURN this0

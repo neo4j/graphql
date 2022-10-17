@@ -362,11 +362,14 @@ describe("Label in Node directive", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:\`Person\`)
             	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actors0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actors0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actors0_node
+            		MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this_connect_actors_Actor
             }
             WITH *
@@ -406,9 +409,13 @@ describe("Label in Node directive", () => {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_actors0_rel:ACTED_IN]-(this_disconnect_actors0:\`Person\`)
             WHERE this_disconnect_actors0.name = $updateMovies_args_disconnect_actors0_where_Actorparam0
-            FOREACH(_ IN CASE WHEN this_disconnect_actors0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_actors0_rel
-            )
+            CALL {
+            	WITH this_disconnect_actors0, this_disconnect_actors0_rel
+            	WITH collect(this_disconnect_actors0) as this_disconnect_actors0, this_disconnect_actors0_rel
+            	UNWIND this_disconnect_actors0 as x
+            	DELETE this_disconnect_actors0_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_disconnect_actors_Actor
             }
             WITH *
@@ -487,7 +494,12 @@ describe("Label in Node directive", () => {
             OPTIONAL MATCH (this)<-[this_actors0_relationship:ACTED_IN]-(this_actors0:\`Person\`)
             WHERE this_actors0.name = $this_deleteMovies_args_delete_actors0_where_Actorparam0
             WITH this, collect(DISTINCT this_actors0) as this_actors0_to_delete
-            FOREACH(x IN this_actors0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_actors0_to_delete
+            	UNWIND this_actors0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*)
+            }
             DETACH DELETE this"
         `);
 

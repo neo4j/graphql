@@ -87,7 +87,7 @@ import { addArrayMethodsToITC } from "./array-methods";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
-    {   
+    {
         features,
         enableRegex,
         skipValidateTypeDefs,
@@ -252,7 +252,7 @@ function makeAugmentedSchema(
                 primitiveFields: relFields.primitiveFields,
             },
             enableRegex,
-            features
+            features,
         });
 
         composer.createInputTC({
@@ -350,7 +350,7 @@ function makeAugmentedSchema(
             },
             enableRegex,
             isInterface: true,
-            features
+            features,
         });
 
         const [
@@ -534,7 +534,7 @@ function makeAugmentedSchema(
             ...node.unionFields,
             ...node.temporalFields,
             ...node.pointFields,
-            ...node.computedFields,
+            ...node.customResolverFields,
         ]);
 
         const composeNode = composer.createObjectTC({
@@ -605,7 +605,7 @@ function makeAugmentedSchema(
                 primitiveFields: node.primitiveFields,
                 scalarFields: node.scalarFields,
             },
-            features
+            features,
         });
 
         const countField = {
