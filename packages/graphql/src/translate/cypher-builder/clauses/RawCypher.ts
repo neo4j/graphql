@@ -45,10 +45,8 @@ export class RawCypher extends Clause {
         }
 
         const cypherParams = convertToCypherParams(params);
+        env.addExtraParams(cypherParams);
 
-        Object.entries(cypherParams).forEach(([key, param]) => {
-            env.addNamedParamReference(key, param);
-        });
         return query;
     }
 

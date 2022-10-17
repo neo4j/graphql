@@ -105,7 +105,7 @@ describe("#387", () => {
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"return ['' + '']\\", { this: this, auth: $auth }) AS this_url_array_fails
                 RETURN collect(this_url_array_fails) AS this_url_array_fails
             }
-            RETURN this { url_works: this_url_works, url_fails: this_url_fails, url_array_works: this_url_array_works, url_array_fails: this_url_array_fails } as this"
+            RETURN this { url_works: this_url_works, url_fails: this_url_fails, url_array_works: this_url_array_works, url_array_fails: this_url_array_fails } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

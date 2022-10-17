@@ -74,7 +74,7 @@ describe("#582", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Entity\`)
             WHERE (this.type = $param0 AND size([(this)-[this0:EDGE]->(this1:\`Entity\`) WHERE (this1.type = $param1 AND size([(this3:\`Entity\`)-[this2:EDGE]->(this1) WHERE this3.type = $param2 | 1]) > 0) | 1]) > 0)
-            RETURN this { .type } as this"
+            RETURN this { .type } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -121,7 +121,7 @@ describe("#582", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Entity\`)
             WHERE (this.type = $param0 AND size([(this)-[this0:EDGE]->(this1:\`Entity\`) WHERE (this1.type = $param1 AND size([(this3:\`Entity\`)-[this2:EDGE]->(this1) WHERE (this3.type = $param2 AND size([(this3)-[this4:EDGE]->(this5:\`Entity\`) WHERE this5.type = $param3 | 1]) > 0) | 1]) > 0) | 1]) > 0)
-            RETURN this { .type } as this"
+            RETURN this { .type } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

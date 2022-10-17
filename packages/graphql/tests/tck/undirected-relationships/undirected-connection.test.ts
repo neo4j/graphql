@@ -70,7 +70,7 @@ describe("Undirected connections", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_friendsConnection
             }
-            RETURN this { friendsConnection: this_friendsConnection } as this"
+            RETURN this { friendsConnection: this_friendsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

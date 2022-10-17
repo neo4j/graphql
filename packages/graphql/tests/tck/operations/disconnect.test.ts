@@ -119,25 +119,37 @@ describe("Cypher Disconnect", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_colors0_disconnect0_rel:HAS_COLOR]->(this_colors0_disconnect0:Color)
             WHERE this_colors0_disconnect0.name = $updateProducts_args_update_colors0_disconnect0_where_Colorparam0
-            FOREACH(_ IN CASE WHEN this_colors0_disconnect0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_colors0_disconnect0_rel
-            )
+            CALL {
+            	WITH this_colors0_disconnect0, this_colors0_disconnect0_rel
+            	WITH collect(this_colors0_disconnect0) as this_colors0_disconnect0, this_colors0_disconnect0_rel
+            	UNWIND this_colors0_disconnect0 as x
+            	DELETE this_colors0_disconnect0_rel
+            	RETURN count(*)
+            }
             WITH this, this_colors0_disconnect0
             CALL {
             WITH this, this_colors0_disconnect0
             OPTIONAL MATCH (this_colors0_disconnect0)<-[this_colors0_disconnect0_photos0_rel:OF_COLOR]-(this_colors0_disconnect0_photos0:Photo)
             WHERE this_colors0_disconnect0_photos0.id = $updateProducts_args_update_colors0_disconnect0_disconnect_photos0_where_Photoparam0
-            FOREACH(_ IN CASE WHEN this_colors0_disconnect0_photos0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_colors0_disconnect0_photos0_rel
-            )
+            CALL {
+            	WITH this_colors0_disconnect0_photos0, this_colors0_disconnect0_photos0_rel
+            	WITH collect(this_colors0_disconnect0_photos0) as this_colors0_disconnect0_photos0, this_colors0_disconnect0_photos0_rel
+            	UNWIND this_colors0_disconnect0_photos0 as x
+            	DELETE this_colors0_disconnect0_photos0_rel
+            	RETURN count(*)
+            }
             WITH this, this_colors0_disconnect0, this_colors0_disconnect0_photos0
             CALL {
             WITH this, this_colors0_disconnect0, this_colors0_disconnect0_photos0
             OPTIONAL MATCH (this_colors0_disconnect0_photos0)-[this_colors0_disconnect0_photos0_color0_rel:OF_COLOR]->(this_colors0_disconnect0_photos0_color0:Color)
             WHERE this_colors0_disconnect0_photos0_color0.id = $updateProducts_args_update_colors0_disconnect0_disconnect_photos_disconnect_color_where_Colorparam0
-            FOREACH(_ IN CASE WHEN this_colors0_disconnect0_photos0_color0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_colors0_disconnect0_photos0_color0_rel
-            )
+            CALL {
+            	WITH this_colors0_disconnect0_photos0_color0, this_colors0_disconnect0_photos0_color0_rel
+            	WITH collect(this_colors0_disconnect0_photos0_color0) as this_colors0_disconnect0_photos0_color0, this_colors0_disconnect0_photos0_color0_rel
+            	UNWIND this_colors0_disconnect0_photos0_color0 as x
+            	DELETE this_colors0_disconnect0_photos0_color0_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_colors0_disconnect0_photos0_color_Color
             }
             RETURN count(*) AS disconnect_this_colors0_disconnect0_photos_Photo
@@ -149,17 +161,25 @@ describe("Cypher Disconnect", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_photos0_disconnect0_rel:HAS_PHOTO]->(this_photos0_disconnect0:Photo)
             WHERE this_photos0_disconnect0.id = $updateProducts_args_update_photos0_disconnect0_where_Photoparam0
-            FOREACH(_ IN CASE WHEN this_photos0_disconnect0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_photos0_disconnect0_rel
-            )
+            CALL {
+            	WITH this_photos0_disconnect0, this_photos0_disconnect0_rel
+            	WITH collect(this_photos0_disconnect0) as this_photos0_disconnect0, this_photos0_disconnect0_rel
+            	UNWIND this_photos0_disconnect0 as x
+            	DELETE this_photos0_disconnect0_rel
+            	RETURN count(*)
+            }
             WITH this, this_photos0_disconnect0
             CALL {
             WITH this, this_photos0_disconnect0
             OPTIONAL MATCH (this_photos0_disconnect0)-[this_photos0_disconnect0_color0_rel:OF_COLOR]->(this_photos0_disconnect0_color0:Color)
             WHERE this_photos0_disconnect0_color0.name = $updateProducts_args_update_photos0_disconnect_disconnect_color_where_Colorparam0
-            FOREACH(_ IN CASE WHEN this_photos0_disconnect0_color0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_photos0_disconnect0_color0_rel
-            )
+            CALL {
+            	WITH this_photos0_disconnect0_color0, this_photos0_disconnect0_color0_rel
+            	WITH collect(this_photos0_disconnect0_color0) as this_photos0_disconnect0_color0, this_photos0_disconnect0_color0_rel
+            	UNWIND this_photos0_disconnect0_color0 as x
+            	DELETE this_photos0_disconnect0_color0_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_photos0_disconnect0_color_Color
             }
             RETURN count(*) AS disconnect_this_photos0_disconnect_Photo
@@ -169,17 +189,25 @@ describe("Cypher Disconnect", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_photos0_disconnect1_rel:HAS_PHOTO]->(this_photos0_disconnect1:Photo)
             WHERE this_photos0_disconnect1.id = $updateProducts_args_update_photos0_disconnect1_where_Photoparam0
-            FOREACH(_ IN CASE WHEN this_photos0_disconnect1 IS NULL THEN [] ELSE [1] END |
-            DELETE this_photos0_disconnect1_rel
-            )
+            CALL {
+            	WITH this_photos0_disconnect1, this_photos0_disconnect1_rel
+            	WITH collect(this_photos0_disconnect1) as this_photos0_disconnect1, this_photos0_disconnect1_rel
+            	UNWIND this_photos0_disconnect1 as x
+            	DELETE this_photos0_disconnect1_rel
+            	RETURN count(*)
+            }
             WITH this, this_photos0_disconnect1
             CALL {
             WITH this, this_photos0_disconnect1
             OPTIONAL MATCH (this_photos0_disconnect1)-[this_photos0_disconnect1_color0_rel:OF_COLOR]->(this_photos0_disconnect1_color0:Color)
             WHERE this_photos0_disconnect1_color0.name = $updateProducts_args_update_photos0_disconnect_disconnect_color_where_Colorparam0
-            FOREACH(_ IN CASE WHEN this_photos0_disconnect1_color0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_photos0_disconnect1_color0_rel
-            )
+            CALL {
+            	WITH this_photos0_disconnect1_color0, this_photos0_disconnect1_color0_rel
+            	WITH collect(this_photos0_disconnect1_color0) as this_photos0_disconnect1_color0, this_photos0_disconnect1_color0_rel
+            	UNWIND this_photos0_disconnect1_color0 as x
+            	DELETE this_photos0_disconnect1_color0_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_photos0_disconnect1_color_Color
             }
             RETURN count(*) AS disconnect_this_photos0_disconnect_Photo

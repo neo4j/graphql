@@ -75,11 +75,11 @@ describe("#190", () => {
             }
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:HAS_DEMOGRAPHIC]->(this_demographics:\`UserDemographics\`)
+                MATCH (this)-[this1:HAS_DEMOGRAPHIC]->(this_demographics:\`UserDemographics\`)
                 WITH this_demographics { .type, .value } AS this_demographics
                 RETURN collect(this_demographics) AS this_demographics
             }
-            RETURN this { .uid, demographics: this_demographics } as this"
+            RETURN this { .uid, demographics: this_demographics } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -120,11 +120,11 @@ describe("#190", () => {
             }
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:HAS_DEMOGRAPHIC]->(this_demographics:\`UserDemographics\`)
+                MATCH (this)-[this1:HAS_DEMOGRAPHIC]->(this_demographics:\`UserDemographics\`)
                 WITH this_demographics { .type, .value } AS this_demographics
                 RETURN collect(this_demographics) AS this_demographics
             }
-            RETURN this { .uid, demographics: this_demographics } as this"
+            RETURN this { .uid, demographics: this_demographics } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

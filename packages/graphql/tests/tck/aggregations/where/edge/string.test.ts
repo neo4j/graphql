@@ -69,7 +69,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_edge.someString = $aggr_edge_someString_EQUAL
             \\", { this: this, aggr_edge_someString_EQUAL: $aggr_edge_someString_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -98,7 +98,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_edge._someStringAlias = $aggr_edge_someStringAlias_EQUAL
             \\", { this: this, aggr_edge_someStringAlias_EQUAL: $aggr_edge_someStringAlias_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -127,7 +127,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN size(aggr_edge.someString) > $aggr_edge_someString_GT
             \\", { this: this, aggr_edge_someString_GT: $aggr_edge_someString_GT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -159,7 +159,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN size(aggr_edge.someString) >= $aggr_edge_someString_GTE
             \\", { this: this, aggr_edge_someString_GTE: $aggr_edge_someString_GTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -191,7 +191,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN size(aggr_edge.someString) < $aggr_edge_someString_LT
             \\", { this: this, aggr_edge_someString_LT: $aggr_edge_someString_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -223,7 +223,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN size(aggr_edge.someString) <= $aggr_edge_someString_LTE
             \\", { this: this, aggr_edge_someString_LTE: $aggr_edge_someString_LTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -256,7 +256,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WITH aggr_node, aggr_edge, size(aggr_edge.someString) AS aggr_edge_someString_SHORTEST_EQUAL_SIZE
             RETURN min(aggr_edge_someString_SHORTEST_EQUAL_SIZE) = $aggr_edge_someString_SHORTEST_EQUAL
             \\", { this: this, aggr_edge_someString_SHORTEST_EQUAL: $aggr_edge_someString_SHORTEST_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -289,7 +289,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WITH aggr_node, aggr_edge, size(aggr_edge.someString) AS aggr_edge_someString_SHORTEST_GT_SIZE
             RETURN min(aggr_edge_someString_SHORTEST_GT_SIZE) > $aggr_edge_someString_SHORTEST_GT
             \\", { this: this, aggr_edge_someString_SHORTEST_GT: $aggr_edge_someString_SHORTEST_GT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -322,7 +322,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WITH aggr_node, aggr_edge, size(aggr_edge.someString) AS aggr_edge_someString_SHORTEST_GTE_SIZE
             RETURN min(aggr_edge_someString_SHORTEST_GTE_SIZE) >= $aggr_edge_someString_SHORTEST_GTE
             \\", { this: this, aggr_edge_someString_SHORTEST_GTE: $aggr_edge_someString_SHORTEST_GTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -355,7 +355,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WITH aggr_node, aggr_edge, size(aggr_edge.someString) AS aggr_edge_someString_SHORTEST_LT_SIZE
             RETURN min(aggr_edge_someString_SHORTEST_LT_SIZE) < $aggr_edge_someString_SHORTEST_LT
             \\", { this: this, aggr_edge_someString_SHORTEST_LT: $aggr_edge_someString_SHORTEST_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -388,7 +388,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WITH aggr_node, aggr_edge, size(aggr_edge.someString) AS aggr_edge_someString_SHORTEST_LTE_SIZE
             RETURN min(aggr_edge_someString_SHORTEST_LTE_SIZE) <= $aggr_edge_someString_SHORTEST_LTE
             \\", { this: this, aggr_edge_someString_SHORTEST_LTE: $aggr_edge_someString_SHORTEST_LTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -421,7 +421,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WITH aggr_node, aggr_edge, size(aggr_edge.someString) AS aggr_edge_someString_LONGEST_EQUAL_SIZE
             RETURN max(aggr_edge_someString_LONGEST_EQUAL_SIZE) = $aggr_edge_someString_LONGEST_EQUAL
             \\", { this: this, aggr_edge_someString_LONGEST_EQUAL: $aggr_edge_someString_LONGEST_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -454,7 +454,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WITH aggr_node, aggr_edge, size(aggr_edge.someString) AS aggr_edge_someString_LONGEST_GT_SIZE
             RETURN max(aggr_edge_someString_LONGEST_GT_SIZE) > $aggr_edge_someString_LONGEST_GT
             \\", { this: this, aggr_edge_someString_LONGEST_GT: $aggr_edge_someString_LONGEST_GT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -487,7 +487,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WITH aggr_node, aggr_edge, size(aggr_edge.someString) AS aggr_edge_someString_LONGEST_GTE_SIZE
             RETURN max(aggr_edge_someString_LONGEST_GTE_SIZE) >= $aggr_edge_someString_LONGEST_GTE
             \\", { this: this, aggr_edge_someString_LONGEST_GTE: $aggr_edge_someString_LONGEST_GTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -520,7 +520,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WITH aggr_node, aggr_edge, size(aggr_edge.someString) AS aggr_edge_someString_LONGEST_LT_SIZE
             RETURN max(aggr_edge_someString_LONGEST_LT_SIZE) < $aggr_edge_someString_LONGEST_LT
             \\", { this: this, aggr_edge_someString_LONGEST_LT: $aggr_edge_someString_LONGEST_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -553,7 +553,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WITH aggr_node, aggr_edge, size(aggr_edge.someString) AS aggr_edge_someString_LONGEST_LTE_SIZE
             RETURN max(aggr_edge_someString_LONGEST_LTE_SIZE) <= $aggr_edge_someString_LONGEST_LTE
             \\", { this: this, aggr_edge_someString_LONGEST_LTE: $aggr_edge_someString_LONGEST_LTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -586,7 +586,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WITH aggr_node, aggr_edge, size(aggr_edge.someString) AS aggr_edge_someString_AVERAGE_EQUAL_SIZE
             RETURN avg(aggr_edge_someString_AVERAGE_EQUAL_SIZE) = toFloat($aggr_edge_someString_AVERAGE_EQUAL)
             \\", { this: this, aggr_edge_someString_AVERAGE_EQUAL: $aggr_edge_someString_AVERAGE_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -616,7 +616,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WITH aggr_node, aggr_edge, size(aggr_edge.someString) AS aggr_edge_someString_AVERAGE_GT_SIZE
             RETURN avg(aggr_edge_someString_AVERAGE_GT_SIZE) > toFloat($aggr_edge_someString_AVERAGE_GT)
             \\", { this: this, aggr_edge_someString_AVERAGE_GT: $aggr_edge_someString_AVERAGE_GT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -646,7 +646,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WITH aggr_node, aggr_edge, size(aggr_edge.someString) AS aggr_edge_someString_AVERAGE_GTE_SIZE
             RETURN avg(aggr_edge_someString_AVERAGE_GTE_SIZE) >= toFloat($aggr_edge_someString_AVERAGE_GTE)
             \\", { this: this, aggr_edge_someString_AVERAGE_GTE: $aggr_edge_someString_AVERAGE_GTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -676,7 +676,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WITH aggr_node, aggr_edge, size(aggr_edge.someString) AS aggr_edge_someString_AVERAGE_LT_SIZE
             RETURN avg(aggr_edge_someString_AVERAGE_LT_SIZE) < toFloat($aggr_edge_someString_AVERAGE_LT)
             \\", { this: this, aggr_edge_someString_AVERAGE_LT: $aggr_edge_someString_AVERAGE_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -706,7 +706,7 @@ describe("Cypher Aggregations where edge with String", () => {
             WITH aggr_node, aggr_edge, size(aggr_edge.someString) AS aggr_edge_someString_AVERAGE_LTE_SIZE
             RETURN avg(aggr_edge_someString_AVERAGE_LTE_SIZE) <= toFloat($aggr_edge_someString_AVERAGE_LTE)
             \\", { this: this, aggr_edge_someString_AVERAGE_LTE: $aggr_edge_someString_AVERAGE_LTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -69,7 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Team\`)
-            RETURN this { accepted: { count: size([(this)-[this_accepted_this1:OWNS_RISK]->(this_accepted_this0:\`Risk\`) WHERE $this_accepted_param0 IN this_accepted_this0.mitigationState | this_accepted_this0]) }, identified: { count: size([(this)-[this_identified_this1:OWNS_RISK]->(this_identified_this0:\`Risk\`) WHERE $this_identified_param0 IN this_identified_this0.mitigationState | this_identified_this0]) } } as this"
+            RETURN this { accepted: { count: size([(this)-[this_accepted_this1:OWNS_RISK]->(this_accepted_this0:\`Risk\`) WHERE $this_accepted_param0 IN this_accepted_this0.mitigationState | this_accepted_this0]) }, identified: { count: size([(this)-[this_identified_this1:OWNS_RISK]->(this_identified_this0:\`Risk\`) WHERE $this_identified_param0 IN this_identified_this0.mitigationState | this_identified_this0]) } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
