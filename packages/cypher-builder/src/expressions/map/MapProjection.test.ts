@@ -18,7 +18,7 @@
  */
 
 import { TestClause } from "../../utils/TestClause";
-import * as CypherBuilder from "../..";
+import * as CypherBuilder from "../../Cypher";
 
 describe("Map Projection", () => {
     test("Project empty map", () => {

@@ -17,11 +17,11 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../src";
+import { Cypher } from "../src";
 
 describe("Cypher.Utils", () => {
     test("escapeLabel", () => {
-        const label = CypherBuilder.Utils.escapeLabel("TestLabel");
+        const label = Cypher.Utils.escapeLabel("TestLabel");
         expect(label).toBe("`TestLabel`");
     });
 });

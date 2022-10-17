@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "..";
+import * as CypherBuilder from "../Cypher";
 import { TestClause } from "../utils/TestClause";
 
 describe("RelationshipRef", () => {

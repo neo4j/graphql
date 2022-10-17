@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "..";
+import { Cypher } from "../../src";
 
 describe("CypherBuilder RawCypher Examples", () => {
     test("Creating a custom query with RawCypher", () => {
-        const releasedParam = new CypherBuilder.Param(1999);
+        const releasedParam = new Cypher.Param(1999);
 
-        const rawCypher = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+        const rawCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
             // The environment is available, so CypherBuilder params can be used in RawCypher along with custom params
             const releasedParamId = releasedParam.getCypher(env); // Gets the raw Cypher for the param
 
