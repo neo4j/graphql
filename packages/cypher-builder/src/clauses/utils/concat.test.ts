@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../../CypherBuilder";
+import * as CypherBuilder from "../..";
 
 describe("CypherBuilder concat", () => {
     it("Should concatenate 2 clauses", () => {

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../CypherBuilder";
+import * as CypherBuilder from "..";
 
 describe("CypherBuilder Call", () => {
     test("Wraps query inside Call", () => {

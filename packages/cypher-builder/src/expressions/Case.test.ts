@@ -18,7 +18,7 @@
  */
 
 import { TestClause } from "../utils/TestClause";
-import * as CypherBuilder from "../CypherBuilder";
+import * as CypherBuilder from "..";
 
 describe("Case", () => {
     test("case ... then ... else with comparator", () => {

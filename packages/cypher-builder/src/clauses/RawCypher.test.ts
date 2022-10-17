@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../CypherBuilder";
+import * as CypherBuilder from "..";
 
 describe("RawCypher", () => {
     it("Return a simple string as a clause", () => {

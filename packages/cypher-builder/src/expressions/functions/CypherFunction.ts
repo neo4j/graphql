@@ -18,7 +18,7 @@
  */
 
 import { CypherASTNode } from "../../CypherASTNode";
-import type { Variable } from "../../CypherBuilder";
+import type { Variable } from "../..";
 import type { CypherEnvironment } from "../../Environment";
 import type { Expr } from "../../types";
 

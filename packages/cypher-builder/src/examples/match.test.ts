@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../CypherBuilder";
+import * as CypherBuilder from "..";
 
 describe("CypherBuilder Match Examples", () => {
     test("Match movies by actor name and released date", () => {
