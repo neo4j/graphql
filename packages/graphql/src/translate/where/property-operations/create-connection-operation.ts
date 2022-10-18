@@ -18,7 +18,7 @@
  */
 
 import type { ConnectionField, ConnectionWhereArg, Context } from "../../../types";
-import { Cypher } from "../../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../../../classes";
 import { getListPredicate } from "../utils";
 import { listPredicateToSizeFunction } from "../list-predicate-to-size-function";

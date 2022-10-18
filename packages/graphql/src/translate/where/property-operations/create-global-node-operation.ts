@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Cypher } from "../../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../../../classes";
 import mapToDbProperty from "../../../utils/map-to-db-property";
 

@@ -18,7 +18,7 @@
  */
 
 import type { Context, GraphQLWhereArg, RelationField } from "../../../types";
-import { Cypher } from "../../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 // Recursive function
 
 import { createWherePredicate } from "../create-where-predicate";

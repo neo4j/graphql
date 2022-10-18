@@ -20,7 +20,7 @@
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
 import type { RelationField } from "../../types";
-import type { Cypher } from "../cypher-builder/CypherBuilder";
+import type Cypher from "@neo4j/cypher-builder";
 
 /** Returns a CypherBuilder pattern taking field direction params into account */
 export function getPattern({

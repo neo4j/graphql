@@ -20,7 +20,7 @@
 import { Neo4jGraphQLError } from "./Error";
 import type { Context } from "../types";
 import ContextParser from "../utils/context-parser";
-import { Cypher } from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 
 export interface NodeDirectiveConstructor {
     label?: string;

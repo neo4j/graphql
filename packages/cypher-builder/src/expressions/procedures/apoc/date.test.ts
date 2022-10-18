@@ -18,12 +18,12 @@
  */
 
 import { TestClause } from "../../../utils/TestClause";
-import { Cypher } from "../../../Cypher";
+import Cypher from "../../..";
 
 describe("apoc.date", () => {
     test("convertFormat", () => {
-        const converFormat = CypherBuilder.apoc.date.convertFormat(
-            new CypherBuilder.Variable(),
+        const converFormat = Cypher.apoc.date.convertFormat(
+            new Cypher.Variable(),
             "iso_zoned_date_time",
             "iso_offset_date_time"
         );

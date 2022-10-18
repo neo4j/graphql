@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import { Cypher } from "../Cypher";
+import Cypher from "..";
 
 describe("CypherBuilder Return", () => {
     test("Return columns", () => {
-        const node = new CypherBuilder.Node({
+        const node = new Cypher.Node({
             labels: ["MyLabel"],
         });
-        const returnQuery = new CypherBuilder.Return(node, new CypherBuilder.Literal(10));
+        const returnQuery = new Cypher.Return(node, new Cypher.Literal(10));
 
         const queryResult = returnQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`"RETURN this0, 10"`);
@@ -32,7 +32,7 @@ describe("CypherBuilder Return", () => {
     });
 
     test("Return *", () => {
-        const returnQuery = new CypherBuilder.Return("*");
+        const returnQuery = new Cypher.Return("*");
 
         const queryResult = returnQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`"RETURN *"`);
@@ -40,10 +40,10 @@ describe("CypherBuilder Return", () => {
     });
 
     test("Alias with a variable", () => {
-        const node = new CypherBuilder.Node({
+        const node = new Cypher.Node({
             labels: ["MyLabel"],
         });
-        const returnQuery = new CypherBuilder.Return([node, new CypherBuilder.Variable()]);
+        const returnQuery = new Cypher.Return([node, new Cypher.Variable()]);
 
         const queryResult = returnQuery.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`"RETURN this0 AS var1"`);

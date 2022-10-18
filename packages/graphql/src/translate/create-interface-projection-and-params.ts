@@ -25,7 +25,7 @@ import { createAuthPredicates } from "./create-auth-and-params";
 
 import createProjectionAndParams from "./create-projection-and-params";
 import { getRelationshipDirection } from "../utils/get-relationship-direction";
-import { Cypher } from "./cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 import type { Node } from "../classes";
 import { createWherePredicate } from "./where/create-where-predicate";

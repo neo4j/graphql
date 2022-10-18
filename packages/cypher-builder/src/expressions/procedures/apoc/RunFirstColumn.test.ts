@@ -18,9 +18,9 @@
  */
 
 import { TestClause } from "../../../utils/TestClause";
-import { Cypher } from "../../../Cypher";
 import { CypherEnvironment } from "../../../Environment";
 import { MapExpr } from "../../map/MapExpr";
+import Cypher from "../../..";
 
 describe("RunFirstColumn", () => {
     let env: CypherEnvironment;
@@ -30,10 +30,10 @@ describe("RunFirstColumn", () => {
     });
 
     test("Simple subquery", () => {
-        const node = new CypherBuilder.Node({ labels: ["Movie"] });
-        const subquery = new CypherBuilder.Match(node).return(node);
+        const node = new Cypher.Node({ labels: ["Movie"] });
+        const subquery = new Cypher.Match(node).return(node);
 
-        const apocCall = new CypherBuilder.apoc.RunFirstColumn(subquery, [node]);
+        const apocCall = new Cypher.apoc.RunFirstColumn(subquery, [node]);
 
         expect(apocCall.getCypher(env)).toMatchInlineSnapshot(`
             "apoc.cypher.runFirstColumnMany(\\"MATCH (this0:\`Movie\`)
@@ -42,24 +42,22 @@ describe("RunFirstColumn", () => {
     });
 
     test("Complex subQuery with scoped env and params", () => {
-        const node = new CypherBuilder.Node({ labels: ["Movie"] });
-        const param1 = new CypherBuilder.Param("The Matrix");
+        const node = new Cypher.Node({ labels: ["Movie"] });
+        const param1 = new Cypher.Param("The Matrix");
 
-        const topQuery = new CypherBuilder.Match(node).where(CypherBuilder.eq(node.property("title"), param1));
+        const topQuery = new Cypher.Match(node).where(Cypher.eq(node.property("title"), param1));
 
         const nestedPattern = node.pattern({
             source: {
                 labels: false,
             },
         });
-        const releasedParam = new CypherBuilder.Param(1999);
-        const subQuery = new CypherBuilder.Match(nestedPattern)
-            .set([node.property("released"), releasedParam])
-            .return(node);
-        const apocCall = new CypherBuilder.apoc.RunFirstColumn(subQuery, [node, releasedParam]);
+        const releasedParam = new Cypher.Param(1999);
+        const subQuery = new Cypher.Match(nestedPattern).set([node.property("released"), releasedParam]).return(node);
+        const apocCall = new Cypher.apoc.RunFirstColumn(subQuery, [node, releasedParam]);
 
         topQuery.return(
-            new CypherBuilder.Map({
+            new Cypher.Map({
                 result: apocCall,
             })
         );
@@ -83,11 +81,11 @@ describe("RunFirstColumn", () => {
     });
 
     test("String subquery with mapExpr for params", () => {
-        const node = new CypherBuilder.Node({ labels: ["Movie"] });
+        const node = new Cypher.Node({ labels: ["Movie"] });
 
-        const releasedParam = new CypherBuilder.Param(1999);
+        const releasedParam = new Cypher.Param(1999);
 
-        const apocCall = new CypherBuilder.apoc.RunFirstColumn(
+        const apocCall = new Cypher.apoc.RunFirstColumn(
             "MATCH (n) RETURN n",
             new MapExpr({
                 releasedParam,

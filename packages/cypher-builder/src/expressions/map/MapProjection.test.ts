@@ -18,11 +18,11 @@
  */
 
 import { TestClause } from "../../utils/TestClause";
-import { Cypher } from "../../Cypher";
+import Cypher from "../..";
 
 describe("Map Projection", () => {
     test("Project empty map", () => {
-        const mapProjection = new CypherBuilder.MapProjection(new CypherBuilder.Variable(), []);
+        const mapProjection = new Cypher.MapProjection(new Cypher.Variable(), []);
 
         const queryResult = new TestClause(mapProjection).build();
 
@@ -32,11 +32,11 @@ describe("Map Projection", () => {
     });
 
     test("Project map with variables and nodes in projection", () => {
-        const var1 = new CypherBuilder.Variable();
-        const var2 = new CypherBuilder.NamedVariable("NamedVar");
-        const node = new CypherBuilder.Node({});
+        const var1 = new Cypher.Variable();
+        const var2 = new Cypher.NamedVariable("NamedVar");
+        const node = new Cypher.Node({});
 
-        const mapProjection = new CypherBuilder.MapProjection(new CypherBuilder.Variable(), [var1, var2, node]);
+        const mapProjection = new Cypher.MapProjection(new Cypher.Variable(), [var1, var2, node]);
 
         const queryResult = new TestClause(mapProjection).build();
 
@@ -46,10 +46,10 @@ describe("Map Projection", () => {
     });
 
     test("Project map with extra values only", () => {
-        const var1 = new CypherBuilder.Variable();
-        const var2 = new CypherBuilder.NamedVariable("NamedVar");
+        const var1 = new Cypher.Variable();
+        const var2 = new Cypher.NamedVariable("NamedVar");
 
-        const mapProjection = new CypherBuilder.MapProjection(new CypherBuilder.Variable(), [], {
+        const mapProjection = new Cypher.MapProjection(new Cypher.Variable(), [], {
             myValue: var1,
             namedValue: var2,
         });
@@ -62,12 +62,12 @@ describe("Map Projection", () => {
     });
 
     test("Project map with variables in projection and extra values", () => {
-        const var1 = new CypherBuilder.Variable();
-        const var2 = new CypherBuilder.NamedVariable("NamedVar");
-        const node = new CypherBuilder.Node({});
+        const var1 = new Cypher.Variable();
+        const var2 = new Cypher.NamedVariable("NamedVar");
+        const node = new Cypher.Node({});
 
-        const mapProjection = new CypherBuilder.MapProjection(new CypherBuilder.Variable(), [var1, var2], {
-            namedValue: CypherBuilder.count(node),
+        const mapProjection = new Cypher.MapProjection(new Cypher.Variable(), [var1, var2], {
+            namedValue: Cypher.count(node),
         });
         const queryResult = new TestClause(mapProjection).build();
 
@@ -77,16 +77,16 @@ describe("Map Projection", () => {
     });
 
     test("Map Projection in return", () => {
-        const mapVar = new CypherBuilder.Variable();
-        const var1 = new CypherBuilder.Variable();
-        const var2 = new CypherBuilder.NamedVariable("NamedVar");
-        const node = new CypherBuilder.Node({});
+        const mapVar = new Cypher.Variable();
+        const var1 = new Cypher.Variable();
+        const var2 = new Cypher.NamedVariable("NamedVar");
+        const node = new Cypher.Node({});
 
-        const mapProjection = new CypherBuilder.MapProjection(mapVar, [var1, var2], {
-            namedValue: CypherBuilder.count(node),
+        const mapProjection = new Cypher.MapProjection(mapVar, [var1, var2], {
+            namedValue: Cypher.count(node),
         });
 
-        const queryResult = new CypherBuilder.Return([mapProjection, mapVar]).build();
+        const queryResult = new Cypher.Return([mapProjection, mapVar]).build();
 
         expect(queryResult.cypher).toMatchInlineSnapshot(
             `"RETURN var0 { .var2, .NamedVar, namedValue: count(this1) } AS var0"`

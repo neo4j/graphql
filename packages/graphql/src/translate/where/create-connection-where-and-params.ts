@@ -19,7 +19,7 @@
 
 import type { Node, Relationship } from "../../classes";
 import type { ConnectionWhereArg, Context } from "../../types";
-import { Cypher } from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { createConnectionWherePropertyOperation } from "./property-operations/create-connection-operation";
 
 export default function createConnectionWhereAndParams({

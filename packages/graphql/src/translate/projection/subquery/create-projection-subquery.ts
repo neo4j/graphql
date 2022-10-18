@@ -19,7 +19,7 @@
 
 import type { Node } from "../../../classes";
 import type { Context, GraphQLOptionsArg, GraphQLWhereArg, RelationField } from "../../../types";
-import { Cypher } from "../../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../../where/create-where-predicate";
 import type { RelationshipDirection } from "../../../utils/get-relationship-direction";
 import { createAuthPredicates } from "../../create-auth-and-params";

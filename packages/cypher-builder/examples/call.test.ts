@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Cypher } from "../../src";
+import Cypher from "../src";
 
 describe("CypherBuilder Call Examples", () => {
     test("Wraps a match in call", () => {

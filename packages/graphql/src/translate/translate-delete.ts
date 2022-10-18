@@ -24,7 +24,7 @@ import { createAuthAndParams } from "./create-auth-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import { createEventMeta } from "./subscriptions/create-event-meta";
-import { Cypher } from "./cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 
 export function translateDelete({ context, node }: { context: Context; node: Node }): Cypher.CypherResult {
     const { resolveTree } = context;

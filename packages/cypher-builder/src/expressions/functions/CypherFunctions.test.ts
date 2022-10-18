@@ -18,15 +18,15 @@
  */
 
 import { TestClause } from "../../utils/TestClause";
-import { Cypher } from "../../Cypher";
+import Cypher from "../..";
 
 describe("Functions", () => {
     test("coalesce", () => {
-        const testParam = new CypherBuilder.Param("Hello");
-        const nullParam = CypherBuilder.Null;
-        const literal = new CypherBuilder.Literal("arthur");
+        const testParam = new Cypher.Param("Hello");
+        const nullParam = Cypher.Null;
+        const literal = new Cypher.Literal("arthur");
 
-        const coalesceFunction = CypherBuilder.coalesce(nullParam, testParam, literal);
+        const coalesceFunction = Cypher.coalesce(nullParam, testParam, literal);
         const queryResult = new TestClause(coalesceFunction).build();
 
         expect(queryResult.cypher).toMatchInlineSnapshot(`"coalesce(NULL, $param0, \\"arthur\\")"`);
@@ -39,7 +39,7 @@ describe("Functions", () => {
     });
 
     test("cypherDatetime", () => {
-        const datetimeFn = CypherBuilder.datetime();
+        const datetimeFn = Cypher.datetime();
         const queryResult = new TestClause(datetimeFn).build();
 
         expect(queryResult.cypher).toMatchInlineSnapshot(`"datetime()"`);

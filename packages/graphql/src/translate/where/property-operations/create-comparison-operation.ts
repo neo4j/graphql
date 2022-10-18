@@ -19,7 +19,7 @@
 
 import type { Neo4jDatabaseInfo } from "../../../classes/Neo4jDatabaseInfo";
 import type { PointField, PrimitiveField } from "../../../types";
-import { Cypher } from "../../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { createPointComparisonOperation } from "./create-point-comparison-operation";
 
 /** Translates an atomic comparison operation (e.g. "this0 <= $param0") */

@@ -19,7 +19,7 @@
 
 import type { GraphQLWhereArg, Context } from "../../types";
 import type { GraphElement } from "../../classes";
-import { Cypher } from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 // Recursive function
 
 import { createPropertyWhere } from "./property-operations/create-property-where";

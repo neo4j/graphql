@@ -17,4 +17,8 @@
  * limitations under the License.
  */
 
-export * as Cypher from "./Cypher";
+import * as Cypher from "./Cypher";
+
+export * from "./Cypher";
+
+export default Cypher;

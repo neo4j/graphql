@@ -17,18 +17,16 @@
  * limitations under the License.
  */
 
-import { Cypher } from "../../Cypher";
+import Cypher from "../..";
 
 describe("CypherBuilder concat", () => {
     it("Should concatenate 2 clauses", () => {
-        const node = new CypherBuilder.Node({ labels: ["Movie"] });
+        const node = new Cypher.Node({ labels: ["Movie"] });
 
-        const clause = new CypherBuilder.Match(node).where(
-            CypherBuilder.eq(new CypherBuilder.Param("aa"), new CypherBuilder.Param("bb"))
-        );
-        const returnClause = new CypherBuilder.Return([node.property("title"), "movie"]);
+        const clause = new Cypher.Match(node).where(Cypher.eq(new Cypher.Param("aa"), new Cypher.Param("bb")));
+        const returnClause = new Cypher.Return([node.property("title"), "movie"]);
 
-        const query = CypherBuilder.concat(clause, returnClause);
+        const query = Cypher.concat(clause, returnClause);
 
         const queryResult = query.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`

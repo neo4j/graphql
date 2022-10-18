@@ -19,7 +19,7 @@
 
 import type { Neo4jDatabaseInfo } from "../../../classes/Neo4jDatabaseInfo";
 import type { PointField } from "../../../types";
-import { Cypher } from "../../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 
 /** Translates a point comparison operation */
 export function createPointComparisonOperation({

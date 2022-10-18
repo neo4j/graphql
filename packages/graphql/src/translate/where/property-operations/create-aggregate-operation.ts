@@ -19,7 +19,7 @@
 
 import createAggregateWhereAndParams from "../../create-aggregate-where-and-params";
 import type { Context, RelationField } from "../../../types";
-import { Cypher } from "../../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../../../classes";
 
 /** Translates an atomic aggregation operation */

@@ -27,7 +27,7 @@ import type Relationship from "../../classes/Relationship";
 import { createRelationshipPropertyValue } from "../projection/elements/create-relationship-property-element";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { generateMissingOrAliasedFields } from "../utils/resolveTree";
-import { Cypher } from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 
 export function createEdgeProjection({
     resolveTree,

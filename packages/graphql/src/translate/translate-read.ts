@@ -26,7 +26,7 @@ import type { GraphQLOptionsArg, GraphQLSortArg, Context } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { translateTopLevelMatch } from "./translate-top-level-match";
-import { Cypher } from "./cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 
 export function translateRead({
     node,

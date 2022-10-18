@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { Result, Session } from "neo4j-driver";
 import type { UniqueType } from "./graphql-types";
 import { runCypher } from "./run-cypher";
-import { Cypher } from "../../src/translate/cypher-builder/CypherBuilder";
 
 /** Removes all nodes with the given labels from the database */
 export async function cleanNodes(session: Session, labels: Array<string | UniqueType>): Promise<Result> {

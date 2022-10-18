@@ -19,7 +19,7 @@
 
 import type { CypherEnvironment } from "../../../Environment";
 import { CypherASTNode } from "../../../CypherASTNode";
-import type { PropertyRef, Variable } from "../../../Cypher";
+import type { PropertyRef, Variable } from "../../..";
 
 export class ConvertFormat extends CypherASTNode {
     private temporalParam: Variable | PropertyRef;

@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
-import { Cypher } from "../../Cypher";
+import Cypher from "../..";
 import { TestClause } from "../../utils/TestClause";
 import { OrderBy } from "./OrderBy";
 
 describe("CypherBuilder OrderBy", () => {
     test("OrderBy with skip and limit", () => {
-        const movieNode = new CypherBuilder.Node({
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 

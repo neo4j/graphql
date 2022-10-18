@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import { getOrCreateCypherVariable } from "../../utils/get-or-create-cypher-variable";
 import type { PointField } from "../../../types";
-import { Cypher } from "../../cypher-builder/CypherBuilder";
 
 export default function createPointElement({
     resolveTree,

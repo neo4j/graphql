@@ -31,7 +31,7 @@ import { translateTopLevelMatch } from "./translate-top-level-match";
 import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 import { CallbackBucket } from "../classes/CallbackBucket";
-import { Cypher } from "./cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 
 export default async function translateUpdate({
     node,

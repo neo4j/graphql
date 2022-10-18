@@ -38,7 +38,7 @@ import { serializeParamsForApocRun, wrapInApocRunFirstColumn } from "../utils/ap
 import { FieldAggregationSchemaTypes } from "../../schema/aggregations/field-aggregation-composer";
 import { upperFirst } from "../../utils/upper-first";
 import { getRelationshipDirectionStr } from "../../utils/get-relationship-direction";
-import { Cypher } from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { createCountExpression } from "./create-count-expression";
 
 const subqueryNodeAlias = "n";

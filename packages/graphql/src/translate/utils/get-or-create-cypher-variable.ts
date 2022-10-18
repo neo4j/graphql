@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Cypher } from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 
 export function getOrCreateCypherNode(nameOrNode: Cypher.Node | string): Cypher.Node {
     if (typeof nameOrNode === "string") return new Cypher.NamedNode(nameOrNode);

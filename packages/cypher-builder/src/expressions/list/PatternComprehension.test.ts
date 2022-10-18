@@ -18,14 +18,14 @@
  */
 
 import { TestClause } from "../../utils/TestClause";
-import { Cypher } from "../../Cypher";
+import Cypher from "../..";
 
 describe("Pattern comprehension", () => {
     test("comprehension with filter", () => {
-        const node = new CypherBuilder.Node({ labels: ["Movie"] });
-        const andExpr = CypherBuilder.eq(node.property("released"), new CypherBuilder.Param(1999));
+        const node = new Cypher.Node({ labels: ["Movie"] });
+        const andExpr = Cypher.eq(node.property("released"), new Cypher.Param(1999));
 
-        const comprehension = new CypherBuilder.PatternComprehension(node.pattern(), andExpr);
+        const comprehension = new Cypher.PatternComprehension(node.pattern(), andExpr);
 
         const queryResult = new TestClause(comprehension).build();
 
@@ -39,9 +39,9 @@ describe("Pattern comprehension", () => {
     });
 
     test("comprehension without filter", () => {
-        const node = new CypherBuilder.Node({ labels: ["Movie"] });
+        const node = new Cypher.Node({ labels: ["Movie"] });
 
-        const comprehension = new CypherBuilder.PatternComprehension(node.pattern());
+        const comprehension = new Cypher.PatternComprehension(node.pattern());
 
         const queryResult = new TestClause(comprehension).build();
 

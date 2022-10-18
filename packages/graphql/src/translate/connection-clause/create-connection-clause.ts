@@ -22,7 +22,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConnectionField, ConnectionWhereArg, Context } from "../../types";
 import type { Node } from "../../classes";
 import { filterTruthy } from "../../utils/utils";
-import { Cypher } from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { hasExplicitNodeInInterfaceWhere } from "../where/property-operations/create-connection-operation";
 import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
 import { createSortAndLimitProjection } from "./create-sort-and-limit";

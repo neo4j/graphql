@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
 import { Neo4jGraphQLAuthenticationError } from "../classes";
 import type { AuthOperations, BaseField, AuthRule, BaseAuthRule, Context, RelationField } from "../types";
@@ -24,7 +25,6 @@ import { isPredicateJoin, PREDICATE_JOINS } from "../utils/join-predicates";
 import ContextParser from "../utils/context-parser";
 import { isString } from "../utils/utils";
 import { NodeAuth } from "../classes/NodeAuth";
-import { Cypher } from "./cypher-builder/CypherBuilder";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import { getOrCreateCypherNode } from "./utils/get-or-create-cypher-variable";

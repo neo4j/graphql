@@ -17,19 +17,17 @@
  * limitations under the License.
  */
 
-import { Cypher } from "../Cypher";
+import Cypher from "..";
 
 describe("CypherBuilder Call", () => {
     test("Wraps query inside Call", () => {
-        const idParam = new CypherBuilder.Param("my-id");
-        const movieNode = new CypherBuilder.Node({
+        const idParam = new Cypher.Param("my-id");
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const createQuery = new CypherBuilder.Create(movieNode)
-            .set([movieNode.property("id"), idParam])
-            .return(movieNode);
-        const queryResult = new CypherBuilder.Call(createQuery).build();
+        const createQuery = new Cypher.Create(movieNode).set([movieNode.property("id"), idParam]).return(movieNode);
+        const queryResult = new Cypher.Call(createQuery).build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
                 "CALL {
                     CREATE (this0:\`Movie\`)
@@ -46,16 +44,14 @@ describe("CypherBuilder Call", () => {
     });
 
     test("Nested Call", () => {
-        const idParam = new CypherBuilder.Param("my-id");
-        const movieNode = new CypherBuilder.Node({
+        const idParam = new Cypher.Param("my-id");
+        const movieNode = new Cypher.Node({
             labels: ["Movie"],
         });
 
-        const createQuery = new CypherBuilder.Create(movieNode)
-            .set([movieNode.property("id"), idParam])
-            .return(movieNode);
-        const nestedCall = new CypherBuilder.Call(createQuery);
-        const call = new CypherBuilder.Call(nestedCall);
+        const createQuery = new Cypher.Create(movieNode).set([movieNode.property("id"), idParam]).return(movieNode);
+        const nestedCall = new Cypher.Call(createQuery);
+        const call = new Cypher.Call(nestedCall);
         const queryResult = call.build();
 
         expect(queryResult.cypher).toMatchInlineSnapshot(`
@@ -76,13 +72,13 @@ describe("CypherBuilder Call", () => {
     });
 
     it("CALL with with", () => {
-        const node = new CypherBuilder.Node({ labels: ["Movie"] });
+        const node = new Cypher.Node({ labels: ["Movie"] });
 
-        const matchClause = new CypherBuilder.Match(node)
-            .where(CypherBuilder.eq(new CypherBuilder.Param("aa"), new CypherBuilder.Param("bb")))
+        const matchClause = new Cypher.Match(node)
+            .where(Cypher.eq(new Cypher.Param("aa"), new Cypher.Param("bb")))
             .return([node.property("title"), "movie"]);
 
-        const clause = new CypherBuilder.Call(matchClause).innerWith(node);
+        const clause = new Cypher.Call(matchClause).innerWith(node);
         const queryResult = clause.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`
             "CALL {

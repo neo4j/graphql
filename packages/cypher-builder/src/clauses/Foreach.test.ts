@@ -17,17 +17,17 @@
  * limitations under the License.
  */
 
-import { Cypher } from "../Cypher";
+import Cypher from "..";
 
 describe("Foreach", () => {
     test("Foreach create", () => {
-        const list = new CypherBuilder.Literal([1, 2, 3]);
-        const variable = new CypherBuilder.Variable();
+        const list = new Cypher.Literal([1, 2, 3]);
+        const variable = new Cypher.Variable();
 
-        const movieNode = new CypherBuilder.Node({ labels: ["Movie"] });
-        const createMovie = new CypherBuilder.Create(movieNode).set([movieNode.property("id"), variable]);
+        const movieNode = new Cypher.Node({ labels: ["Movie"] });
+        const createMovie = new Cypher.Create(movieNode).set([movieNode.property("id"), variable]);
 
-        const foreachClause = new CypherBuilder.Foreach(variable, list, createMovie).with("*");
+        const foreachClause = new Cypher.Foreach(variable, list, createMovie).with("*");
 
         const queryResult = foreachClause.build();
         expect(queryResult.cypher).toMatchInlineSnapshot(`

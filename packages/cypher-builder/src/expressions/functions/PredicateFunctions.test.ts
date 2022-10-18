@@ -18,12 +18,12 @@
  */
 
 import { TestClause } from "../../utils/TestClause";
-import { Cypher } from "../../Cypher";
+import Cypher from "../..";
 
 describe("Predicate Functions", () => {
     test("exists", () => {
-        const node = new CypherBuilder.Node({ labels: ["Movie"] });
-        const existsFn = CypherBuilder.exists(node.pattern());
+        const node = new Cypher.Node({ labels: ["Movie"] });
+        const existsFn = Cypher.exists(node.pattern());
 
         const queryResult = new TestClause(existsFn).build();
 
@@ -32,12 +32,12 @@ describe("Predicate Functions", () => {
     });
 
     test("all with filter", () => {
-        const variable = new CypherBuilder.Variable();
-        const exprVariable = new CypherBuilder.Param([1, 2, 5]);
+        const variable = new Cypher.Variable();
+        const exprVariable = new Cypher.Param([1, 2, 5]);
 
-        const filter = CypherBuilder.eq(variable, new CypherBuilder.Literal(5));
+        const filter = Cypher.eq(variable, new Cypher.Literal(5));
 
-        const allFn = CypherBuilder.all(variable, exprVariable, filter);
+        const allFn = Cypher.all(variable, exprVariable, filter);
         const queryResult = new TestClause(allFn).build();
 
         expect(queryResult.cypher).toMatchInlineSnapshot(`"all(var0 IN $param0 WHERE var0 = 5)"`);
@@ -53,15 +53,15 @@ describe("Predicate Functions", () => {
     });
 
     test("Using functions as predicates", () => {
-        const node = new CypherBuilder.Node({ labels: ["Movie"] });
+        const node = new Cypher.Node({ labels: ["Movie"] });
 
-        const variable = new CypherBuilder.Variable();
-        const exprVariable = new CypherBuilder.Param([1, 2, 5]);
+        const variable = new Cypher.Variable();
+        const exprVariable = new Cypher.Param([1, 2, 5]);
 
-        const anyFn = CypherBuilder.all(variable, exprVariable);
-        const existsFn = CypherBuilder.exists(node.pattern());
+        const anyFn = Cypher.all(variable, exprVariable);
+        const existsFn = Cypher.exists(node.pattern());
 
-        const andExpr = CypherBuilder.and(anyFn, existsFn);
+        const andExpr = Cypher.and(anyFn, existsFn);
 
         const queryResult = new TestClause(andExpr).build();
 

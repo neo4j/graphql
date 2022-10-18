@@ -19,7 +19,7 @@
 
 import type { CallbackBucket } from "../../classes/CallbackBucket";
 import type { PrimitiveField } from "../../types";
-import { Cypher } from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 
 export const addCallbackAndSetParam = (
     field: PrimitiveField,

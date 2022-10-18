@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Cypher } from "../../src";
+import Cypher from "../../src";
 
 describe("CypherBuilder RawCypher Examples", () => {
     test("Creating a custom query with RawCypher", () => {

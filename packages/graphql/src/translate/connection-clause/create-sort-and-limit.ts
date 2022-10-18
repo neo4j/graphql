@@ -21,7 +21,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { cursorToOffset } from "graphql-relay";
 import type { Integer } from "neo4j-driver";
 import { isNeoInt, isString, toNumber } from "../../utils/utils";
-import { Cypher } from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import {
     addSortAndLimitOptionsToClause,
     addLimitOrOffsetOptionsToClause,

@@ -18,7 +18,7 @@
  */
 
 import type { GraphQLOptionsArg } from "../../../types";
-import { Cypher } from "../../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { addSortAndLimitOptionsToClause } from "./add-sort-and-limit-to-clause";
 
 export function collectUnionSubqueriesResults({

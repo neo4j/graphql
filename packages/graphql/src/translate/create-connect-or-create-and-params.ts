@@ -23,7 +23,7 @@ import type { CallbackBucket } from "../classes/CallbackBucket";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { asArray, omitFields } from "../utils/utils";
-import { Cypher } from "./cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { addCallbackAndSetParamCypher } from "./utils/callback-utils";
 import { findConflictingProperties } from "../utils/is-property-clash";
 

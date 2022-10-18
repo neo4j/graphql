@@ -20,7 +20,7 @@
 import type { GraphQLWhereArg, Context } from "../../types";
 import type { Node } from "../../classes";
 import { createWherePredicate } from "./create-where-predicate";
-import { Cypher } from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 
 // TODO: Remove this method and replace for directly using createWherePredicate
 /** Wraps createCypherWhereParams with the old interface for compatibility with old way of composing cypher */

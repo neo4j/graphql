@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
+import type Cypher from "@neo4j/cypher-builder";
 import { toNumber } from "../../../utils/utils";
 import type { GraphQLOptionsArg, GraphQLSortArg } from "../../../types";
-import type { Cypher } from "../../cypher-builder/CypherBuilder";
 
 export function addLimitOrOffsetOptionsToClause({
     optionsInput,
