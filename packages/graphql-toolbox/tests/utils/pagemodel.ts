@@ -24,6 +24,7 @@ import { Login } from "../pages/Login";
 import { TopBar } from "../pages/TopBar";
 import { SchemaEditor } from "../pages/SchemaEditor";
 import { SchemaSettings } from "../pages/SchemaSettings";
+import { ApplicationSettings } from "../pages/ApplicationSettings";
 
 type Pages = {
     editorPage: Editor;
@@ -31,6 +32,7 @@ type Pages = {
     loginPage: Login;
     schemaEditorPage: SchemaEditor;
     schemaSettingsPage: SchemaSettings;
+    applicationSettingsPage: ApplicationSettings;
     topBarPage: TopBar;
 };
 
@@ -54,6 +56,9 @@ const test = base.test.extend<Pages>({
     },
     schemaSettingsPage: async ({ page }, use) => {
         use(new SchemaSettings(page));
+    },
+    applicationSettingsPage: async ({ page }, use) => {
+        use(new ApplicationSettings(page));
     },
     topBarPage: async ({ page }, use) => {
         use(new TopBar(page));

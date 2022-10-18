@@ -47,7 +47,7 @@ export const AppSettings = ({ onClickClose }: Props) => {
         <div className="p-6 w-full">
             <div className="pb-6 flex justify-between items-center">
                 <span className="h5">Settings</span>
-                <span className="text-lg cursor-pointer" onClick={onClickClose}>
+                <span data-test-settings-close-button className="text-lg cursor-pointer" onClick={onClickClose}>
                     {"\u2715"}
                 </span>
             </div>
@@ -86,7 +86,11 @@ export const AppSettings = ({ onClickClose }: Props) => {
                     <Checkbox
                         data-test-enable-product-usage-tracking
                         aria-label="Product Analytics"
-                        className="mt-1"
+                        className={`mt-1 ${
+                            appSettings.enableProductUsageTracking
+                                ? "data-test-enable-product-usage-tracking-checked"
+                                : ""
+                        }`}
                         checked={appSettings.enableProductUsageTracking}
                         onChange={onChangeProductUsage}
                     />
