@@ -62,7 +62,7 @@ module.exports = {
     plugins: [
         new Dotenv(),
         new DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+            "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
             "process.env.VERSION": JSON.stringify(packageJson.version),
             "process.env.NEO4J_GRAPHQL_VERSION": JSON.stringify(packageJson.dependencies["@neo4j/graphql"]),
         }),

@@ -68,10 +68,11 @@ export const AppSettings = ({ onClickClose }: Props) => {
                         checked={theme.theme === Theme.DARK}
                         onChange={handleOnChangeEditorTheme}
                     />
-                    <div className="mt-4">
+                    <div className="mt-3">
                         <Checkbox
                             data-test-show-lint-markers
                             className="m-0"
+                            aria-label="Show lint markers"
                             label="Show lint markers"
                             checked={appSettings.showLintMarkers}
                             onChange={onChangeShowLintMarkers}
@@ -81,14 +82,21 @@ export const AppSettings = ({ onClickClose }: Props) => {
             </div>
             <div className="pt-9">
                 <span className="h6">Product Analytics</span>
-                <div className="pt-3">
+                <div className="pt-3 flex">
                     <Checkbox
                         data-test-enable-product-usage-tracking
-                        className="m-0"
-                        label="Product usage (More text!)"
+                        aria-label="Product Analytics"
+                        className="mt-1"
                         checked={appSettings.enableProductUsageTracking}
                         onChange={onChangeProductUsage}
                     />
+                    <div className="ml-3">
+                        <p>Product usage</p>
+                        <p className="text-xs">
+                            This data helps us prioritize features and improvements. No personal information is
+                            collected or sent.
+                        </p>
+                    </div>
                 </div>
             </div>
             <div className="absolute bottom-2 right-28 font-bold text-xs flex flex-col">
