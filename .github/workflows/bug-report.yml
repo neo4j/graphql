@@ -18,7 +18,7 @@ jobs:
           repo-token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
           action: add
       - name: Add comment
-        uses: peter-evans/create-or-update-comment@c9fcb64660bc90ec1cc535646af190c992007c32 # renovate: tag=v2.0.0
+        uses: peter-evans/create-or-update-comment@2b2c85d0bf1b8a7b4e7e344bd5c71dc4b9196e9f # tag=v2.0.1
         with:
           token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
           issue-number: ${{ github.event.issue.number }}

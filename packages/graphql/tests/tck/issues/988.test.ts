@@ -153,7 +153,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_brandConnection
             }
-            RETURN this { .name, .current, manufacturerConnection: this_manufacturerConnection, brandConnection: this_brandConnection } as this"
+            RETURN this { .name, .current, manufacturerConnection: this_manufacturerConnection, brandConnection: this_brandConnection } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

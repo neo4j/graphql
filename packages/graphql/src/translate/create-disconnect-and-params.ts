@@ -157,13 +157,14 @@ function createDisconnectAndParams({
             params = { ...params, ...preAuth.params };
         }
 
-        /*
-        Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
-        https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
-        */
-        subquery.push(`FOREACH(_ IN CASE WHEN ${variableName} IS NULL THEN [] ELSE [1] END | `);
-        subquery.push(`DELETE ${variableName}_rel`);
-        subquery.push(`)`); // close FOREACH
+        subquery.push("CALL {");
+        // Trick to avoid execution on null values
+        subquery.push(`\tWITH ${variableName}, ${variableName}_rel`);
+        subquery.push(`\tWITH collect(${variableName}) as ${variableName}, ${variableName}_rel`);
+        subquery.push(`\tUNWIND ${variableName} as x`);
+        subquery.push(`\tDELETE ${variableName}_rel`);
+        subquery.push(`\tRETURN count(*)`); // Avoids CANNOT END WITH DETACH DELETE ERROR
+        subquery.push(`}`); // close FOREACH
 
         // TODO - relationship validation - Blocking, if this were to be enforced it would stop someone from 'reconnecting'
 

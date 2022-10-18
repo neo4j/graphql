@@ -20,6 +20,9 @@
 import { Order, OrderBy } from "../sub-clauses/OrderBy";
 import { ClauseMixin } from "./ClauseMixin";
 import type { Expr } from "../../types";
+import type { Param } from "../../variables/Param";
+import type { Literal } from "../../variables/Literal";
+import type { Integer } from "neo4j-driver";
 
 const DEFAULT_ORDER = "ASC";
 
@@ -40,13 +43,13 @@ export abstract class WithOrder extends ClauseMixin {
         return this;
     }
 
-    public skip(value: number): this {
+    public skip(value: number | Param<Integer> | Literal<number>): this {
         const orderByStatement = this.getOrCreateOrderBy();
         orderByStatement.skip(value);
         return this;
     }
 
-    public limit(value: number): this {
+    public limit(value: number | Param<Integer> | Literal<number>): this {
         const orderByStatement = this.getOrCreateOrderBy();
         orderByStatement.limit(value);
         return this;
