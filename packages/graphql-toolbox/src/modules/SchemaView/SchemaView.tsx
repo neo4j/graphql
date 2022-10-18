@@ -218,11 +218,11 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                             />
                             {!appSettings.hideProductUsageMessage ? (
                                 <Alert
-                                    className="absolute bottom-7 ml-4 w-[50rem] z-40"
+                                    className="absolute bottom-7 ml-4 w-[57rem] z-40"
                                     closeable
                                     name="ProductUsageMessage"
                                     title={<strong>Product analytics</strong>}
-                                    description="To help make Neo4j better we collect data on product usage. Review your settings at any time."
+                                    description="To help make the Neo4j GraphQL Toolbox better we collect data on product usage. Review your settings at any time."
                                     onClose={() => appSettings.setHideProductUsageMessage(true)}
                                 />
                             ) : null}

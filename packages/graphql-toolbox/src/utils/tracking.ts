@@ -27,17 +27,13 @@ class Tracking {
 
     private fireTrackingEvent = (eventCategory: string, eventLabel: string, eventProperties = {}) => {
         const trackingConsent = Storage.retrieve(LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING);
-        if (trackingConsent !== "true") {
-            console.log("No tracking consent."); // TODO: remove this after initial tests
-            return;
-        }
 
-        if (!window.analytics || !window.analytics.track) {
-            console.log("Analytics (Segment) is not loaded.");
-            return;
-        }
+        if (trackingConsent !== "true") return;
+        if (!window.analytics || !window.analytics.track) return;
 
         const enrichedEventProperties = {
+            graphQLToolboxVersion: process.env.VERSION,
+            neo4jGraphQLLibraryVersion: process.env.NEO4J_GRAPHQL_VERSION,
             ...eventProperties,
         };
         window.analytics.track(`${eventCategory}-${eventLabel}`, enrichedEventProperties);
