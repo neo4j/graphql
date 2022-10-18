@@ -95,7 +95,7 @@ export const AppSettings = ({ onClickClose }: Props) => {
                         onChange={onChangeProductUsage}
                     />
                     <div className="ml-3">
-                        <p>Product usage</p>
+                        <p className="text-sm">Product usage</p>
                         <p className="text-xs">
                             This data helps us prioritize features and improvements. No personal information is
                             collected or sent.
