@@ -62,7 +62,7 @@ export class FullTextQueryNodes extends Clause {
         const textSearchStr = dedent`CALL db.index.fulltext.queryNodes(
             "${this.indexName}",
             ${this.phrase.getCypher(env)}
-        ) YIELD node AS ${targetId}, score`;
+        ) YIELD node AS ${targetId}, score AS ${targetId}_fulltext_score`;
 
         return `${textSearchStr}\n
             ${whereStr}\n

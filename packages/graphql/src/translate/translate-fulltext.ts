@@ -35,7 +35,7 @@ export function translateFulltext({ node, context }: { node: Node; context: Cont
         result = translateRead({ node, context }, node.name);
     }
     if (resolveTree.fieldsByTypeName[node.fulltextTypeNames.result].score) {
-        result.cypher = `${result.cypher}, score`;
+        result.cypher = `${result.cypher}, ${node.name}_fulltext_score AS score`;
     } 
     return result;
 }
