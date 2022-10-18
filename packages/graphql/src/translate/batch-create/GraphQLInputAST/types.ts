@@ -9,10 +9,13 @@ export interface IAST {
 }
 
 export interface IConnectAST extends IAST {
+    node: Node;
     parent: Node;
     edgeProperties: string[];
     where: TreeDescriptor;
     connect: TreeDescriptor;
+    relationshipPropertyPath: string;
+    relationship: [RelationField | undefined, Node[]];
 }
 
 export interface IConnectOrCreateAST extends IAST {

@@ -49,7 +49,7 @@ export function inputTreeToCypherMap(
 export function getTreeDescriptor(input: CreateInput, node: Node, context: Context): TreeDescriptor {
     return Object.entries(input).reduce(
         (previous, [key, value]) => {
-            const [relationField, relatedNodes] = getRelationshipFields(node, key as string, {}, context);
+            const [relationField, relatedNodes] = getRelationshipFields(node, key as string, value, context);
             const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
             const temporalFields = node.temporalFields.find((x) => key === x.fieldName);
             const pointField = node.pointFields.find((x) => key === x.fieldName);
@@ -106,15 +106,21 @@ function parser(input: TreeDescriptor, node: Node, context: Context, parentASTNo
                             ])
                         );
                         break;
+                    /*
                     case "connect":
-                        parentASTNode.addChildren(parseConnect(description, relatedNodes[0], context, node));
+                         parentASTNode.addChildren(
+                            parseConnect(description, relatedNodes[0], context, node, key, [
+                                relationField,
+                                relatedNodes,
+                            ])
+                        ); 
                         break;
                     case "connectOrCreate":
-                        parentASTNode.addChildren(parseConnectOrCreate(description, relatedNodes[0], context, node));
+                         parentASTNode.addChildren(parseConnectOrCreate(description, relatedNodes[0], context, node)); 
                         break;
+                    */
                     default:
-                        // throw?
-                        break;
+                        throw new Error(`Not supported operation: ${operation}`);
                 }
             });
         }
@@ -152,31 +158,35 @@ function parseNestedCreate(
     }
     return nestedCreateAST;
 }
-/* 
-input ActorMoviesConnectFieldInput {
-    where: MovieConnectWhere
-    connect: [MovieConnectInput!]
-    edge: ActedInCreateInput
-} */
-function parseConnect(input: TreeDescriptor, node: Node, context: Context, parentNode: Node) {
+
+
+function parseConnect(
+    input: TreeDescriptor,
+    node: Node,
+    context: Context,
+    parentNode: Node,
+    relationshipPropertyPath: string,
+    relationship: [RelationField | undefined, Node[]]
+) {
     const edgeProperties = input.childrens.edge ? input.childrens.edge.properties : [];
     const where = input.childrens.where;
     const connect = input.childrens.connect;
-    const connectAST = new ConnectAST(parentNode, [...edgeProperties], where, connect);
-    // parser(input.childrens.node, node, context, connectAST);
+    const connectAST = new ConnectAST(
+        node,
+        parentNode,
+        [...edgeProperties],
+        where,
+        connect,
+        relationshipPropertyPath,
+        relationship
+    );
     return connectAST;
 }
 
-/* 
-input ActorMoviesConnectOrCreateFieldInput {
-    where: MovieConnectOrCreateWhere!
-    onCreate: ActorMoviesConnectOrCreateFieldInputOnCreate!
-}
-*/
+
 function parseConnectOrCreate(input: TreeDescriptor, node: Node, context: Context, parentNode: Node) {
     const where = input.childrens.where;
     const onCreate = input.childrens.onCreate;
     const connectOrCreateAST = new ConnectOrCreateAST(parentNode, where, onCreate);
-    // parser(input.childrens.node, node, context, connectOrCreateAST);
     return connectOrCreateAST;
 }
