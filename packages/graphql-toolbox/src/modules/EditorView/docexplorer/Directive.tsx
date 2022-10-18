@@ -5,18 +5,17 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import { DirectiveNode } from 'graphql';
+import { DirectiveNode } from "graphql";
 
 type DirectiveProps = {
-  directive: DirectiveNode;
+    directive: DirectiveNode;
 };
 
 export default function Directive({ directive }: DirectiveProps) {
-  return (
-    <span className="doc-category-item" id={directive.name.value}>
-      {'@'}
-      {directive.name.value}
-    </span>
-  );
+    return (
+        <span className="doc-category-item" id={directive.name.value}>
+            {"@"}
+            {directive.name.value}
+        </span>
+    );
 }

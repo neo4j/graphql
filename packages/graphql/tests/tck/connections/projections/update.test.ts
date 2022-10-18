@@ -86,14 +86,14 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
             WHERE this.title = $param0
             WITH *
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN collect(DISTINCT this { .title, actorsConnection }) AS data"
+            RETURN collect(DISTINCT this { .title, actorsConnection: this_actorsConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

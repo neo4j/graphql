@@ -68,7 +68,7 @@ describe("Field Level Aggregations Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { .title, actorsAggregate: { count: size([(this_actorsAggregate_this0:\`Person\`)-[this_actorsAggregate_this1:ACTED_IN]->(this) WHERE this_actorsAggregate_this0.age > $this_actorsAggregate_param0 | this_actorsAggregate_this0]) } } as this"
+            RETURN this { .title, actorsAggregate: { count: size([(this_actorsAggregate_this0:\`Person\`)-[this_actorsAggregate_this1:ACTED_IN]->(this) WHERE this_actorsAggregate_this0.age > $this_actorsAggregate_param0 | this_actorsAggregate_this0]) } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -103,7 +103,7 @@ describe("Field Level Aggregations Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            RETURN this { .title, actorsAggregate: { count: size([(this_actorsAggregate_this0:\`Person\`)-[this_actorsAggregate_this1:ACTED_IN]->(this) WHERE this_actorsAggregate_this0.name CONTAINS $this_actorsAggregate_param0 | this_actorsAggregate_this0]) }, directorsAggregate: { count: size([(this_directorsAggregate_this0:\`Person\`)-[this_directorsAggregate_this1:DIRECTED]->(this) WHERE this_directorsAggregate_this0.name CONTAINS $this_directorsAggregate_param0 | this_directorsAggregate_this0]) } } as this"
+            RETURN this { .title, actorsAggregate: { count: size([(this_actorsAggregate_this0:\`Person\`)-[this_actorsAggregate_this1:ACTED_IN]->(this) WHERE this_actorsAggregate_this0.name CONTAINS $this_actorsAggregate_param0 | this_actorsAggregate_this0]) }, directorsAggregate: { count: size([(this_directorsAggregate_this0:\`Person\`)-[this_directorsAggregate_this1:DIRECTED]->(this) WHERE this_directorsAggregate_this0.name CONTAINS $this_directorsAggregate_param0 | this_directorsAggregate_this0]) } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

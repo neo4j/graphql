@@ -266,16 +266,15 @@ describe("Math operators", () => {
                 WITH this_actedIn { .title } AS this_actedIn
                 RETURN collect(this_actedIn) AS this_actedIn
             }
-            WITH *
             CALL {
-            WITH this
-            MATCH (this)-[this_acted_in_relationship:ACTED_IN]->(this_movie:Movie)
-            WITH collect({ pay: this_acted_in_relationship.pay }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                WITH this
+                MATCH (this)-[this_connection_actedInConnectionthis0:ACTED_IN]->(this_Movie:\`Movie\`)
+                WITH { pay: this_connection_actedInConnectionthis0.pay } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
             }
-            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection }) AS data"
+            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection: this_actedInConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -322,6 +321,7 @@ describe("Math operators", () => {
             "MATCH (this:\`Actor\`)
             WITH this
             CALL {
+            	 WITH this
             WITH this
             OPTIONAL MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)
             CALL apoc.do.when(this_marriedWith0 IS NOT NULL, \\"
@@ -412,6 +412,7 @@ describe("Math operators", () => {
             "MATCH (this:\`Actor\`)
             WITH this
             CALL {
+            	 WITH this
             WITH this
             OPTIONAL MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)
             CALL apoc.do.when(this_marriedWith0 IS NOT NULL, \\"

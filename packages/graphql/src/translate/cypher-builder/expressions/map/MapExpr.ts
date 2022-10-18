@@ -23,14 +23,20 @@ import { serializeMap } from "../../utils/serialize-map";
 
 /** Represents a Map */
 export class MapExpr implements CypherCompilable {
-    private value: Record<string, Expr>;
+    private value: Record<string, Expr | undefined>;
 
-    constructor(value: Record<string, Expr> = {}) {
+    constructor(value: Record<string, Expr | undefined> = {}) {
         this.value = value;
     }
 
-    public set(values: Record<string, Expr>): void {
-        this.value = { ...this.value, ...values };
+    public set(key: string, value: Expr): void;
+    public set(values: Record<string, Expr>): void;
+    public set(keyOrValues: Record<string, Expr> | string, value?: Expr): void {
+        if (typeof keyOrValues === "string") {
+            this.value[keyOrValues] = value as Expr;
+        } else {
+            this.value = { ...this.value, ...keyOrValues };
+        }
     }
 
     public getCypher(env: CypherEnvironment): string {

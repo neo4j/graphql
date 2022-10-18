@@ -17,8 +17,7 @@
  * limitations under the License.
  */
 
-import type { Variable } from "./variables/Variable";
-import type { PropertyRef } from "./expressions/PropertyRef";
+import type { PropertyRef } from "./variables/PropertyRef";
 import type { CypherFunction } from "./expressions/functions/CypherFunction";
 import type { Literal } from "./variables/Literal";
 import type { Exists } from "./expressions/Exists";
@@ -28,22 +27,24 @@ import type { BooleanOp } from "./expressions/operations/boolean";
 import type { ComparisonOp } from "./expressions/operations/comparison";
 import type { RawCypher } from "./clauses/RawCypher";
 import type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
-import type { RunFirstColumn, ValidatePredicate } from "./expressions/procedures/apoc/apoc";
+import type { ApocExpr, ApocPredicate } from "./expressions/procedures/apoc/apoc";
 import type { Case } from "./expressions/Case";
 import type { MathOp } from "./expressions/operations/math";
 import type { ListComprehension } from "./expressions/list/ListComprehension";
 import type { PatternComprehension } from "./expressions/list/PatternComprehension";
 import type { ListExpr } from "./expressions/list/ListExpr";
 import type { MapProjection } from "./CypherBuilder";
+import type { HasLabel } from "./expressions/HasLabel";
+import type { Reference } from "./variables/Reference";
 
 export type Operation = BooleanOp | ComparisonOp | MathOp;
 
+export type VariableLike = Reference | Literal | PropertyRef;
+
 export type Expr =
     | Operation
-    | Variable
-    | PropertyRef
+    | VariableLike
     | CypherFunction
-    | Literal
     | Predicate
     | ListComprehension
     | PatternComprehension
@@ -51,6 +52,7 @@ export type Expr =
     | MapProjection // NOTE this cannot be set as a property in a node
     | ListExpr
     | RunFirstColumn;
+    | ApocExpr;
 
 /** Represents a predicate statement (i.e returns a boolean). Note that RawCypher is only added for compatibility */
 export type Predicate =
@@ -59,9 +61,10 @@ export type Predicate =
     | RawCypher
     | Exists
     | PredicateFunction
-    | ValidatePredicate
+    | ApocPredicate
     | Literal<boolean>
-    | Case;
+    | Case
+    | HasLabel;
 
 /** Represents a procedure invocable with the CALL statement */
 export type Procedure = ValidatePredicate;

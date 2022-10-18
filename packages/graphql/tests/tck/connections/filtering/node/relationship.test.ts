@@ -77,34 +77,23 @@ describe("Cypher -> Connections -> Filtering -> Node -> Relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE EXISTS {
-                MATCH (this_actor)-[:ACTED_IN]->(this_actorsConnection_args_where_Actorthis0:\`Movie\`)
-                WHERE this_actorsConnection_args_where_Actorthis0.title = $this_actorsConnection_args_where_Actorparam0
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE EXISTS {
+                    MATCH (this_Actor)-[:ACTED_IN]->(this_connection_actorsConnectionthis1:\`Movie\`)
+                    WHERE this_connection_actorsConnectionthis1.title = $this_connection_actorsConnectionparam0
+                }
+                WITH { node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            WITH collect({ node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
-            }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Forrest Gump\\",
-                \\"this_actorsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"movies\\": {
-                                    \\"title\\": \\"Forrest Gump\\"
-                                }
-                            }
-                        }
-                    }
-                }
+                \\"this_connection_actorsConnectionparam0\\": \\"Forrest Gump\\"
             }"
         `);
     });

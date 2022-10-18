@@ -28,6 +28,7 @@ export { RawCypher } from "./clauses/RawCypher";
 export { With } from "./clauses/With";
 export { Unwind } from "./clauses/Unwind";
 export { Union } from "./clauses/Union";
+export { Foreach } from "./clauses/Foreach";
 
 export { concat } from "./clauses/utils/concat";
 
@@ -93,7 +94,7 @@ export { any, all, exists, single } from "./expressions/functions/PredicateFunct
 
 // Types
 export type { CypherResult } from "./types";
-export type { PropertyRef } from "./expressions/PropertyRef";
+export type { PropertyRef } from "./variables/PropertyRef";
 export type { Clause } from "./clauses/Clause";
 export type { CypherEnvironment as Environment } from "./Environment";
 export type { ComparisonOp } from "./expressions/operations/comparison";

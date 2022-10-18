@@ -22,6 +22,11 @@ import type { CypherEnvironment } from "../../Environment";
 import { CypherASTNode } from "../../CypherASTNode";
 import type { Expr } from "../../types";
 import { compileCypherIfExists } from "../../utils/utils";
+import type { Param } from "../../variables/Param";
+import type { Variable } from "../../variables/Variable";
+import type { Literal } from "../../CypherBuilder";
+import { normalizeVariable } from "../../utils/normalize-variable";
+import type { Integer } from "neo4j-driver";
 
 export type Order = "ASC" | "DESC";
 
@@ -33,16 +38,18 @@ export class OrderBy extends CypherASTNode {
     private skipClause: Skip | undefined;
     private limitClause: Limit | undefined;
 
-    public setOrderElements(exprs: OrderProjectionElement[]): void {
-        this.exprs = exprs;
+    public addOrderElements(exprs: OrderProjectionElement[]): void {
+        this.exprs.push(...exprs);
     }
 
-    public skip(offset: number): void {
-        this.skipClause = new Skip(offset);
+    public skip(offset: number | Param<Integer> | Literal<number>): void {
+        const offsetVar = normalizeVariable(offset);
+        this.skipClause = new Skip(offsetVar);
     }
 
-    public limit(limit: number): void {
-        this.limitClause = new Limit(limit);
+    public limit(limit: number | Param<Integer> | Literal<number>): void {
+        const limitVar = normalizeVariable(limit);
+        this.limitClause = new Limit(limitVar);
     }
 
     private hasOrder(): boolean {
@@ -51,8 +58,8 @@ export class OrderBy extends CypherASTNode {
 
     public getCypher(env: CypherEnvironment): string {
         let orderStr = "";
-        const limitStr = compileCypherIfExists(this.limitClause, env, { prefix: "\n" });
         const skipStr = compileCypherIfExists(this.skipClause, env, { prefix: "\n" });
+        const limitStr = compileCypherIfExists(this.limitClause, env, { prefix: "\n" });
 
         if (this.hasOrder()) {
             const exprStr = this.exprs
@@ -69,27 +76,29 @@ export class OrderBy extends CypherASTNode {
 }
 
 class Skip extends CypherASTNode {
-    private value: number;
+    private value: Variable | Param | Literal;
 
-    constructor(value: number) {
+    constructor(value: Variable | Param | Literal) {
         super();
         this.value = value;
     }
 
     public getCypher(env: CypherEnvironment): string {
-        return `SKIP ${this.value}`;
+        const valueStr = this.value.getCypher(env);
+        return `SKIP ${valueStr}`;
     }
 }
 
 class Limit extends CypherASTNode {
-    private value: number;
+    private value: Variable | Param | Literal;
 
-    constructor(value: number) {
+    constructor(value: Variable | Param | Literal) {
         super();
         this.value = value;
     }
 
     public getCypher(env: CypherEnvironment): string {
-        return `LIMIT ${this.value}`;
+        const valueStr = this.value.getCypher(env);
+        return `LIMIT ${valueStr}`;
     }
 }

@@ -18,9 +18,9 @@
  */
 
 import type { CypherEnvironment } from "../Environment";
-import { Variable } from "./Variable";
+import { Reference } from "./Reference";
 
-export class Param<T = any> extends Variable {
+export class Param<T = any> extends Reference {
     public readonly value: T;
 
     constructor(value: T) {
@@ -38,7 +38,7 @@ export class Param<T = any> extends Variable {
             return "NULL";
         }
 
-        return `$${env.getVariableId(this)}`;
+        return `$${env.getReferenceId(this)}`;
     }
 
     public get isNull(): boolean {

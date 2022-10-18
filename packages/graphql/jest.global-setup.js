@@ -1,4 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
+ 
 const setTZ = require("set-tz");
 const neo4j = require("neo4j-driver");
 
@@ -33,9 +33,9 @@ module.exports = async function globalSetup() {
             error.message.includes("Unsupported administration command") ||
             error.message.includes("Unable to route write operation to leader for database 'system'")
         ) {
-            console.log(`\nJest /packages/graphql setup: Will NOT create a separate integration test database as the command is not supported in the current environment.`); // eslint-disable-line no-console
+            console.log(`\nJest /packages/graphql setup: Will NOT create a separate integration test database as the command is not supported in the current environment.`);  
         } else {
-            console.log(`\nJest /packages/graphql setup: Setup failure on neo4j @ ${NEO_URL}, cypher: "${cypherCreateDb}", Error: ${error.message}`); // eslint-disable-line no-console
+            console.log(`\nJest /packages/graphql setup: Setup failure on neo4j @ ${NEO_URL}, cypher: "${cypherCreateDb}", Error: ${error.message}`);  
         }
     } finally {
         if (session) await session.close();

@@ -71,7 +71,7 @@ describe("Cypher NULL", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title IS NULL
-            RETURN this { .title } as this"
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -94,7 +94,7 @@ describe("Cypher NULL", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title IS NOT NULL
-            RETURN this { .title } as this"
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -119,7 +119,7 @@ describe("Cypher NULL", () => {
             WHERE NOT (EXISTS {
                 MATCH (this0:\`Actor\`)-[:ACTED_IN]->(this)
             })
-            RETURN this { .title } as this"
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -144,7 +144,7 @@ describe("Cypher NULL", () => {
             WHERE EXISTS {
                 MATCH (this0:\`Actor\`)-[:ACTED_IN]->(this)
             }
-            RETURN this { .title } as this"
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

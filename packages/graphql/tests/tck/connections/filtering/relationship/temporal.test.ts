@@ -86,25 +86,25 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE (this_acted_in_relationship.startDate > $this_actorsConnection_args_where_Actorparam0 AND this_acted_in_relationship.endDateTime < $this_actorsConnection_args_where_Actorparam1)
-            WITH collect({ startDate: this_acted_in_relationship.startDate, endDateTime: apoc.date.convertFormat(toString(this_acted_in_relationship.endDateTime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE (this_connection_actorsConnectionthis0.startDate > $this_connection_actorsConnectionparam0 AND this_connection_actorsConnectionthis0.endDateTime < $this_connection_actorsConnectionparam1)
+                WITH { startDate: this_connection_actorsConnectionthis0.startDate, endDateTime: apoc.date.convertFormat(toString(this_connection_actorsConnectionthis0.endDateTime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actorsConnection_args_where_Actorparam0\\": {
+                \\"this_connection_actorsConnectionparam0\\": {
                     \\"year\\": 2000,
                     \\"month\\": 1,
                     \\"day\\": 1
                 },
-                \\"this_actorsConnection_args_where_Actorparam1\\": {
+                \\"this_connection_actorsConnectionparam1\\": {
                     \\"year\\": 2010,
                     \\"month\\": 1,
                     \\"day\\": 1,
@@ -113,29 +113,6 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
                     \\"second\\": 0,
                     \\"nanosecond\\": 0,
                     \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"this_actorsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"edge\\": {
-                                \\"startDate_GT\\": {
-                                    \\"year\\": 2000,
-                                    \\"month\\": 1,
-                                    \\"day\\": 1
-                                },
-                                \\"endDateTime_LT\\": {
-                                    \\"year\\": 2010,
-                                    \\"month\\": 1,
-                                    \\"day\\": 1,
-                                    \\"hour\\": 0,
-                                    \\"minute\\": 0,
-                                    \\"second\\": 0,
-                                    \\"nanosecond\\": 0,
-                                    \\"timeZoneOffsetSeconds\\": 0
-                                }
-                            }
-                        }
-                    }
                 }
             }"
         `);

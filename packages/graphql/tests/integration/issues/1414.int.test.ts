@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/1414", () => {
 
         const typeDefs = `
             interface ${testProduct.name} {
-                id: ID! @callback(operations: [CREATE], name: "nanoid")
+                id: ID! @populatedBy(operations: [CREATE], callback: "nanoid")
                 productTitle: String!
             }
 

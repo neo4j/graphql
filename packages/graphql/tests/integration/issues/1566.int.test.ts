@@ -50,6 +50,13 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
 
             type ${testCommunity.name} {
                 id: Int!
+                feedItem: FeedItem
+                    @cypher(
+                        statement: """
+                        Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag)
+                        return pag
+                        """
+                    )
                 hasFeedItems(limit: Int = 10, page: Int = 0): [FeedItem!]!
                     @cypher(
                         statement: """
@@ -68,6 +75,52 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
 
     afterAll(async () => {
         await driver.close();
+    });
+
+    test("single value is returned for custom Cypher field of Union type", async () => {
+        const query = `
+            query {
+                ${testCommunity.plural}(where: { id: 111111 }) {
+                    id
+                    feedItem {
+                        __typename
+                        ... on ${testContent.name} {
+                            name
+                        }
+                        ... on ${testProject.name} {
+                            name
+                        }
+                    }
+                }
+            }
+        `;
+
+        const cypher = `
+            CREATE (c:${testCommunity.name} { id: 111111 })-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES]->(:${testContent.name} { name: "content1" })
+        `;
+
+        const session = await neo4j.getSession();
+
+        try {
+            await session.run(cypher);
+
+            const result = await graphql({
+                schema,
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            });
+
+            expect(result.errors).toBeUndefined();
+            expect((result.data as any)?.[testCommunity.plural]?.[0]).toEqual({
+                id: 111111,
+                feedItem: {
+                    __typename: testContent.name,
+                    name: "content1",
+                },
+            });
+        } finally {
+            await session.close();
+        }
     });
 
     test("multiple values are returned for custom Cypher field of list of Union types", async () => {

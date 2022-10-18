@@ -65,7 +65,7 @@ describe("execute", () => {
 
                                 return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
                             },
-                            commit() {},
+                            commit: () => true,
                         };
 
                         return {
@@ -140,7 +140,7 @@ describe("execute", () => {
 
                             return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
                         },
-                        commit() {},
+                        commit: () => true,
                     };
 
                     return {
@@ -219,7 +219,7 @@ describe("execute", () => {
 
                             return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
                         },
-                        commit() {},
+                        commit: () => true,
                     };
 
                     return {
@@ -274,5 +274,4 @@ describe("execute", () => {
             expect(executeResult.records).toEqual([{ title }]);
         });
     });
-
 });

@@ -89,26 +89,29 @@ describe("Relationship Properties Connect Cypher", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_actors_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_actors_connect0_node
+            		MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
             SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
-            		)
-            	)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_actors_connect_Actor
             }
             RETURN this0
             }
             CALL {
-            WITH this0
-            MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
-            WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this0
+                MATCH (this0)<-[this0_connection_actorsConnectionthis0:ACTED_IN]-(this0_Actor:\`Actor\`)
+                WITH { screenTime: this0_connection_actorsConnectionthis0.screenTime, node: { name: this0_Actor.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this0_actorsConnection
             }
             RETURN [
-            this0 { .title, actorsConnection }] AS data"
+            this0 { .title, actorsConnection: this0_actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -163,26 +166,29 @@ describe("Relationship Properties Connect Cypher", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
             	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_actors_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_actors_connect0_node
+            		MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
             SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
-            		)
-            	)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_actors_connect_Actor
             }
             RETURN this0
             }
             CALL {
-            WITH this0
-            MATCH (this0)<-[this0_acted_in_relationship:ACTED_IN]-(this0_actor:Actor)
-            WITH collect({ screenTime: this0_acted_in_relationship.screenTime, node: { name: this0_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this0
+                MATCH (this0)<-[this0_connection_actorsConnectionthis0:ACTED_IN]-(this0_Actor:\`Actor\`)
+                WITH { screenTime: this0_connection_actorsConnectionthis0.screenTime, node: { name: this0_Actor.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this0_actorsConnection
             }
             RETURN [
-            this0 { .title, actorsConnection }] AS data"
+            this0 { .title, actorsConnection: this0_actorsConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -229,25 +235,27 @@ describe("Relationship Properties Connect Cypher", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actors0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actors0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actors0_node
+            		MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
             SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
-            		)
-            	)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this_connect_actors_Actor
             }
             WITH *
-            WITH *
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN collect(DISTINCT this { .title, actorsConnection }) AS data"
+            RETURN collect(DISTINCT this { .title, actorsConnection: this_actorsConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -297,25 +305,27 @@ describe("Relationship Properties Connect Cypher", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_actors0_node:Actor)
             	WHERE this_connect_actors0_node.name = $this_connect_actors0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_actors0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_actors0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_actors0_node
+            		MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
             SET this_connect_actors0_relationship.screenTime = $this_connect_actors0_relationship_screenTime
-            		)
-            	)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this_connect_actors_Actor
             }
             WITH *
-            WITH *
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN collect(DISTINCT this { .title, actorsConnection }) AS data"
+            RETURN collect(DISTINCT this { .title, actorsConnection: this_actorsConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

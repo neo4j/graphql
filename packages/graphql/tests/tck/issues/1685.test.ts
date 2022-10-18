@@ -70,40 +70,23 @@ describe("https://github.com/neo4j/graphql/issues/1685", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Genre\`)
             CALL {
-            WITH this
-            CALL {
-            WITH this
-            MATCH (this)<-[this_has_genre_relationship:HAS_GENRE]-(this_Movie:Movie)
-            WHERE size([(this_Movie)-[this_moviesConnection_args_where_Moviethis0:HAS_GENRE]->(this_moviesConnection_args_where_Moviethis1:\`Genre\`) WHERE this_moviesConnection_args_where_Moviethis1.name = $this_moviesConnection_args_where_Movieparam0 | 1]) > 0
-            WITH { node: { __resolveType: \\"Movie\\" } } AS edge
-            RETURN edge
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this_connection_moviesConnectionthis0:HAS_GENRE]-(this_Movie:\`Movie\`)
+                    WHERE size([(this_Movie)-[this_connection_moviesConnectionthis1:HAS_GENRE]->(this_connection_moviesConnectionthis2:\`Genre\`) WHERE this_connection_moviesConnectionthis2.name = $this_connection_moviesConnectionparam0 | 1]) > 0
+                    WITH { node: { __resolveType: \\"Movie\\" } } AS edge
+                    RETURN edge
+                }
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_moviesConnection
             }
-            WITH collect(edge) as edges
-            WITH size(edges) AS totalCount
-            RETURN { totalCount: totalCount } AS moviesConnection
-            }
-            RETURN this { moviesConnection, .name } as this"
+            RETURN this { moviesConnection: this_moviesConnection, .name } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_moviesConnection_args_where_Movieparam0\\": \\"Action\\",
-                \\"this_moviesConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"_on\\": {
-                                    \\"Movie\\": {
-                                        \\"genresConnection_SOME\\": {
-                                            \\"node\\": {
-                                                \\"name\\": \\"Action\\"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                \\"this_connection_moviesConnectionparam0\\": \\"Action\\"
             }"
         `);
     });

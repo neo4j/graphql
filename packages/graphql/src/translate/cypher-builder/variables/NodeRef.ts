@@ -17,16 +17,17 @@
  * limitations under the License.
  */
 
+import { HasLabel } from "../expressions/HasLabel";
 import { MatchPatternOptions, Pattern } from "../Pattern";
+import { NamedReference, Reference } from "./Reference";
 import { RelationshipRef } from "./RelationshipRef";
-import { Variable } from "./Variable";
 
 type NodeRefOptions = {
     labels?: string[];
 };
 
 /** Represents a Node reference */
-export class NodeRef extends Variable {
+export class NodeRef extends Reference {
     public labels: string[];
 
     constructor(options: NodeRefOptions) {
@@ -41,15 +42,29 @@ export class NodeRef extends Variable {
         });
     }
 
+    public hasLabels(...labels: string[]): HasLabel {
+        return new HasLabel(this, labels);
+    }
+
+    public hasLabel(label: string): HasLabel {
+        return new HasLabel(this, [label]);
+    }
+
     /** Creates a new Pattern from this node */
     public pattern(options: Pick<MatchPatternOptions, "source"> = {}): Pattern<NodeRef> {
         return new Pattern(this, options);
     }
 }
 
-export class NamedNode extends NodeRef {
+export class NamedNode extends NodeRef implements NamedReference {
+    public readonly id: string;
+
     constructor(id: string, options?: NodeRefOptions) {
         super(options || {});
         this.id = id;
+    }
+
+    public get name(): string {
+        return this.id;
     }
 }

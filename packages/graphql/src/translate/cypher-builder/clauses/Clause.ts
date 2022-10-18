@@ -17,27 +17,39 @@
  * limitations under the License.
  */
 
+import util from "util";
 import { CypherASTNode } from "../CypherASTNode";
 import { CypherEnvironment, EnvPrefix } from "../Environment";
 import type { CypherResult } from "../types";
+import { convertToCypherParams } from "../utils/convert-to-cypher-params";
+import { padBlock } from "../utils/utils";
 
 /** Represents a clause AST node */
 export abstract class Clause extends CypherASTNode {
     /** Compiles a clause into Cypher and params */
-    public build(prefix?: string | EnvPrefix): CypherResult {
+    public build(prefix?: string | EnvPrefix | undefined, extraParams: Record<string, any> = {}): CypherResult {
         if (this.isRoot) {
             const env = this.getEnv(prefix);
             const cypher = this.getCypher(env);
+
+            const cypherParams = convertToCypherParams(extraParams);
+            env.addExtraParams(cypherParams);
             return {
                 cypher,
                 params: env.getParams(),
             };
         }
         const root = this.getRoot() as Clause;
-        return root.build(prefix);
+        return root.build(prefix, extraParams);
     }
 
     private getEnv(prefix?: string | EnvPrefix): CypherEnvironment {
         return new CypherEnvironment(prefix);
+    }
+
+    /** Custom log for console.log */
+    [util.inspect.custom](): string {
+        const cypher = padBlock(this.build().cypher);
+        return `<Clause ${this.constructor.name}> """\n${cypher}\n"""`;
     }
 }

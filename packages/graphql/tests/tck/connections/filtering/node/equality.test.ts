@@ -82,29 +82,20 @@ describe("Cypher -> Connections -> Filtering -> Node -> Equality", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name = $this_actorsConnection_args_where_Actorparam0
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE this_Actor.name = $this_connection_actorsConnectionparam0
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Tom Hanks\\",
-                \\"this_actorsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"name\\": \\"Tom Hanks\\"
-                            }
-                        }
-                    }
-                }
+                \\"this_connection_actorsConnectionparam0\\": \\"Tom Hanks\\"
             }"
         `);
     });
@@ -134,29 +125,20 @@ describe("Cypher -> Connections -> Filtering -> Node -> Equality", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE NOT (this_actor.name = $this_actorsConnection_args_where_Actorparam0)
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE NOT (this_Actor.name = $this_connection_actorsConnectionparam0)
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actorsConnection_args_where_Actorparam0\\": \\"Tom Hanks\\",
-                \\"this_actorsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"name_NOT\\": \\"Tom Hanks\\"
-                            }
-                        }
-                    }
-                }
+                \\"this_connection_actorsConnectionparam0\\": \\"Tom Hanks\\"
             }"
         `);
     });

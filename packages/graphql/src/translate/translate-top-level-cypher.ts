@@ -19,10 +19,9 @@
 
 import { GraphQLResolveInfo, GraphQLUnionType } from "graphql";
 import createProjectionAndParams from "./create-projection-and-params";
-import type { Context, ConnectionField, CypherField } from "../types";
+import type { Context, CypherField } from "../types";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import createConnectionAndParams from "./connection/create-connection-and-params";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
 import createAuthParam from "./create-auth-param";
@@ -69,31 +68,13 @@ export function translateTopLevelCypher({
             varName: `this`,
         });
 
-        const { projection: str, params: p, meta, subqueries } = recurse;
+        const { projection: str, params: p, meta, subqueries, subqueriesBeforeSort } = recurse;
         projectionStr = str;
-        projectionSubqueries.push(...subqueries);
+        projectionSubqueries.push(...subqueriesBeforeSort, ...subqueries);
         params = { ...params, ...p };
 
         if (meta.authValidateStrs?.length) {
             projectionAuthStrs.push(...projectionAuthStrs, meta.authValidateStrs.join(" AND "));
-        }
-
-        if (meta.connectionFields?.length) {
-            meta.connectionFields.forEach((connectionResolveTree) => {
-                const connectionField = referenceNode.connectionFields.find(
-                    (x) => x.fieldName === connectionResolveTree.name
-                ) as ConnectionField;
-
-                const nestedConnection = createConnectionAndParams({
-                    resolveTree: connectionResolveTree,
-                    field: connectionField,
-                    context,
-                    nodeVariable: "this",
-                });
-                const [nestedStr, nestedP] = nestedConnection;
-                connectionProjectionStrs.push(nestedStr);
-                params = { ...params, ...nestedP };
-            });
         }
     }
 
@@ -191,8 +172,8 @@ export function translateTopLevelCypher({
     } else {
         cypherStrs.push(`
             CALL apoc.cypher.doIt("${statement}", ${apocParamsStr}) YIELD value
-            WITH apoc.map.values(value, [keys(value)[0]])[0] AS this
-        `);
+            WITH [k in keys(value) | value[k]][0] AS this
+            `);
     }
 
     if (unionWhere.length) {

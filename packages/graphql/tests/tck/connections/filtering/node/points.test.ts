@@ -93,43 +93,28 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE distance(this_actor.currentLocation, point($this_actorsConnection_args_where_Actorparam0.point)) = $this_actorsConnection_args_where_Actorparam0.distance
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name, currentLocation: (CASE
-                WHEN this_actor.currentLocation IS NOT NULL THEN { point: this_actor.currentLocation }
-                ELSE NULL
-            END) } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                WITH this
+                MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE distance(this_Actor.currentLocation, point($this_connection_actorsConnectionparam0.point)) = $this_connection_actorsConnectionparam0.distance
+                WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name, currentLocation: (CASE
+                    WHEN this_Actor.currentLocation IS NOT NULL THEN { point: this_Actor.currentLocation }
+                    ELSE NULL
+                END) } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actorsConnection_args_where_Actorparam0\\": {
+                \\"this_connection_actorsConnectionparam0\\": {
                     \\"point\\": {
                         \\"longitude\\": 1,
                         \\"latitude\\": 2
                     },
                     \\"distance\\": 3
-                },
-                \\"this_actorsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"currentLocation_DISTANCE\\": {
-                                    \\"point\\": {
-                                        \\"longitude\\": 1,
-                                        \\"latitude\\": 2
-                                    },
-                                    \\"distance\\": 3
-                                }
-                            }
-                        }
-                    }
                 }
             }"
         `);

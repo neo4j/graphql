@@ -24,8 +24,11 @@ import { MatchParams, Pattern } from "../Pattern";
 import { Clause } from "./Clause";
 import { OnCreate, OnCreateParam } from "./sub-clauses/OnCreate";
 import { WithReturn } from "./mixins/WithReturn";
-import { applyMixins } from "./utils/apply-mixin";
+import { mixin } from "./utils/mixin";
 
+export interface Merge extends WithReturn {}
+
+@mixin(WithReturn)
 export class Merge<T extends NodeRef | RelationshipRef = any> extends Clause {
     private pattern: Pattern<T>;
     private onCreateClause: OnCreate;
@@ -61,7 +64,3 @@ export class Merge<T extends NodeRef | RelationshipRef = any> extends Clause {
         return `${mergeStr}${separator}${onCreateStatement}${returnCypher}`;
     }
 }
-
-export interface Merge extends WithReturn {}
-
-applyMixins(Merge, [WithReturn]);

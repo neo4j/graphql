@@ -63,13 +63,14 @@ describe("Undirected connections", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             CALL {
-            WITH this
-            MATCH (this)-[this_friends_with_relationship:FRIENDS_WITH]-(this_user:User)
-            WITH collect({  }) AS edges
-            WITH size(edges) AS totalCount
-            RETURN { totalCount: totalCount } AS friendsConnection
+                WITH this
+                MATCH (this)-[this_connection_friendsConnectionthis0:FRIENDS_WITH]-(this_User:\`User\`)
+                WITH { node: { __resolveType: \\"User\\" } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_friendsConnection
             }
-            RETURN this { friendsConnection } as this"
+            RETURN this { friendsConnection: this_friendsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

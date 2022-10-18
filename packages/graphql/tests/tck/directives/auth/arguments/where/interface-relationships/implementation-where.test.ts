@@ -103,7 +103,7 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
             WHERE (exists((this)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0)))
-            RETURN this { .id } as this"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -130,7 +130,7 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Post\`)
             WHERE (this.content = $param0 AND (exists((this)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0))))
-            RETURN this { .id } as this"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -168,23 +168,23 @@ describe("Cypher Auth Where", () => {
             WITH this
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
+                MATCH (this)-[this0:HAS_CONTENT]->(this_Comment:\`Comment\`)
                 RETURN { __resolveType: \\"Comment\\" } AS this_content
                 UNION
                 WITH this
-                MATCH (this)-[thisthis1:HAS_CONTENT]->(this_Post:\`Post\`)
-                WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(thisthis2 IN [(this_Post)<-[:HAS_CONTENT]-(thisthis2:\`User\`) | thisthis2] WHERE (thisthis2.id IS NOT NULL AND thisthis2.id = $thisparam0)))
+                MATCH (this)-[this1:HAS_CONTENT]->(this_Post:\`Post\`)
+                WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this2 IN [(this_Post)<-[:HAS_CONTENT]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param1)))
                 RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS this_content
             }
             RETURN collect(this_content) AS this_content
             }
-            RETURN this { .id, content: this_content } as this"
+            RETURN this { .id, content: this_content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"thisauth_param0\\": \\"id-01\\",
-                \\"thisparam0\\": \\"id-01\\"
+                \\"param1\\": \\"id-01\\"
             }"
         `);
     });
@@ -216,30 +216,30 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:\`User\`)
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             CALL {
-            WITH this
-            CALL {
-            WITH this
-            MATCH (this)-[this_has_content_relationship:HAS_CONTENT]->(this_Comment:Comment)
-            WITH { node: { __resolveType: \\"Comment\\" } } AS edge
-            RETURN edge
-            UNION
-            WITH this
-            MATCH (this)-[this_has_content_relationship:HAS_CONTENT]->(this_Post:Post)
-            WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_Post)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Postauth_param0)))
-            WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
-            RETURN edge
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this_connection_contentConnectionthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
+                    WITH { node: { __resolveType: \\"Comment\\" } } AS edge
+                    RETURN edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_connection_contentConnectionthis1:HAS_CONTENT]->(this_Post:\`Post\`)
+                    WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis2 IN [(this_Post)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis2:\`User\`) | this_connection_contentConnectionthis2] WHERE (this_connection_contentConnectionthis2.id IS NOT NULL AND this_connection_contentConnectionthis2.id = $this_connection_contentConnectionparam0)))
+                    WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    RETURN edge
+                }
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_contentConnection
             }
-            WITH collect(edge) as edges
-            WITH edges, size(edges) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS contentConnection
-            }
-            RETURN this { .id, contentConnection } as this"
+            RETURN this { .id, contentConnection: this_contentConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"thisauth_param0\\": \\"id-01\\",
-                \\"this_Postauth_param0\\": \\"id-01\\"
+                \\"this_connection_contentConnectionparam0\\": \\"id-01\\"
             }"
         `);
     });
@@ -271,42 +271,33 @@ describe("Cypher Auth Where", () => {
             "MATCH (this:\`User\`)
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             CALL {
-            WITH this
-            CALL {
-            WITH this
-            MATCH (this)-[this_has_content_relationship:HAS_CONTENT]->(this_Comment:Comment)
-            WHERE this_Comment.id = $this_contentConnection_args_where_Commentparam0
-            WITH { node: { __resolveType: \\"Comment\\" } } AS edge
-            RETURN edge
-            UNION
-            WITH this
-            MATCH (this)-[this_has_content_relationship:HAS_CONTENT]->(this_Post:Post)
-            WHERE this_Post.id = $this_contentConnection_args_where_Postparam0 AND (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_Post)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_Postauth_param0)))
-            WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
-            RETURN edge
+                WITH this
+                CALL {
+                    WITH this
+                    MATCH (this)-[this_connection_contentConnectionthis0:HAS_CONTENT]->(this_Comment:\`Comment\`)
+                    WHERE this_Comment.id = $this_connection_contentConnectionparam0
+                    WITH { node: { __resolveType: \\"Comment\\" } } AS edge
+                    RETURN edge
+                    UNION
+                    WITH this
+                    MATCH (this)-[this_connection_contentConnectionthis1:HAS_CONTENT]->(this_Post:\`Post\`)
+                    WHERE (this_Post.id = $this_connection_contentConnectionparam1 AND (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this_connection_contentConnectionthis2 IN [(this_Post)<-[:HAS_CONTENT]-(this_connection_contentConnectionthis2:\`User\`) | this_connection_contentConnectionthis2] WHERE (this_connection_contentConnectionthis2.id IS NOT NULL AND this_connection_contentConnectionthis2.id = $this_connection_contentConnectionparam2))))
+                    WITH { node: { __resolveType: \\"Post\\", id: this_Post.id } } AS edge
+                    RETURN edge
+                }
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_contentConnection
             }
-            WITH collect(edge) as edges
-            WITH edges, size(edges) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS contentConnection
-            }
-            RETURN this { .id, contentConnection } as this"
+            RETURN this { .id, contentConnection: this_contentConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"thisauth_param0\\": \\"id-01\\",
-                \\"this_contentConnection_args_where_Commentparam0\\": \\"some-id\\",
-                \\"this_contentConnection_args_where_Postparam0\\": \\"some-id\\",
-                \\"this_Postauth_param0\\": \\"id-01\\",
-                \\"this_contentConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"id\\": \\"some-id\\"
-                            }
-                        }
-                    }
-                }
+                \\"this_connection_contentConnectionparam0\\": \\"some-id\\",
+                \\"this_connection_contentConnectionparam1\\": \\"some-id\\",
+                \\"this_connection_contentConnectionparam2\\": \\"id-01\\"
             }"
         `);
     });
@@ -413,6 +404,7 @@ describe("Cypher Auth Where", () => {
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
             CALL {
+            	 WITH this
             WITH this
             OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
             CALL apoc.do.when(this_content0 IS NOT NULL, \\"
@@ -431,6 +423,7 @@ describe("Cypher Auth Where", () => {
             RETURN count(*) AS update_this_Comment
             }
             CALL {
+            	 WITH this
             	WITH this
             OPTIONAL MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
             WHERE (exists((this_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content0auth_param0)))
@@ -564,12 +557,22 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_content_Comment0_relationship:HAS_CONTENT]->(this_content_Comment0:Comment)
             WITH this, collect(DISTINCT this_content_Comment0) as this_content_Comment0_to_delete
-            FOREACH(x IN this_content_Comment0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_content_Comment0_to_delete
+            	UNWIND this_content_Comment0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*)
+            }
             WITH this
             OPTIONAL MATCH (this)-[this_content_Post0_relationship:HAS_CONTENT]->(this_content_Post0:Post)
             WHERE (exists((this_content_Post0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_content_Post0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content_Post0auth_param0)))
             WITH this, collect(DISTINCT this_content_Post0) as this_content_Post0_to_delete
-            FOREACH(x IN this_content_Post0_to_delete | DETACH DELETE x)
+            CALL {
+            	WITH this_content_Post0_to_delete
+            	UNWIND this_content_Post0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*)
+            }
             DETACH DELETE this"
         `);
 
@@ -611,22 +614,28 @@ describe("Cypher Auth Where", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_content_connect0_node:Comment)
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_content_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_content_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_content_connect0_node
+            		MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_content_connect_Comment
             }
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_content_connect0_node:Post)
             	WHERE (exists((this0_content_connect0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this0_content_connect0_node)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this0_content_connect0_nodeauth_param0)))
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_content_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_content_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_content_connect0_node
+            		MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_content_connect_Post
             }
             RETURN this0
@@ -682,22 +691,28 @@ describe("Cypher Auth Where", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_content_connect0_node:Comment)
             	WHERE this0_content_connect0_node.id = $this0_content_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_content_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_content_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_content_connect0_node
+            		MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_content_connect_Comment
             }
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_content_connect0_node:Post)
             	WHERE this0_content_connect0_node.id = $this0_content_connect0_node_param0 AND (exists((this0_content_connect0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this0_content_connect0_node)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this0_content_connect0_nodeauth_param0)))
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_content_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_content_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_content_connect0_node
+            		MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_content_connect_Post
             }
             RETURN this0
@@ -739,22 +754,27 @@ describe("Cypher Auth Where", () => {
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
             CALL {
+            	 WITH this
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Comment)
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_content0_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_content0_connect0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_content0_connect0_node
+            		MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this_content0_connect_Comment
             }
             RETURN count(*) AS update_this_Comment
             }
             CALL {
+            	 WITH this
             	WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
@@ -762,11 +782,14 @@ describe("Cypher Auth Where", () => {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Post)
             	WHERE (exists((this_content0_connect0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_content0_connect0_node)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content0_connect0_nodeauth_param0)))
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_content0_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_content0_connect0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_content0_connect0_node
+            		MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this_content0_connect_Post
             }
             RETURN count(*) AS update_this_Post
@@ -804,6 +827,7 @@ describe("Cypher Auth Where", () => {
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
             CALL {
+            	 WITH this
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
@@ -811,16 +835,20 @@ describe("Cypher Auth Where", () => {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Comment)
             	WHERE this_content0_connect0_node.id = $this_content0_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_content0_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_content0_connect0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_content0_connect0_node
+            		MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this_content0_connect_Comment
             }
             RETURN count(*) AS update_this_Comment
             }
             CALL {
+            	 WITH this
             	WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
@@ -828,11 +856,14 @@ describe("Cypher Auth Where", () => {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Post)
             	WHERE this_content0_connect0_node.id = $this_content0_connect0_node_param0 AND (exists((this_content0_connect0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_content0_connect0_node)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content0_connect0_nodeauth_param0)))
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_content0_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_content0_connect0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_content0_connect0_node
+            		MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this_content0_connect_Post
             }
             RETURN count(*) AS update_this_Post
@@ -875,22 +906,28 @@ describe("Cypher Auth Where", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Comment)
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_content0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_content0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_content0_node
+            		MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this_connect_content_Comment
             }
             CALL {
             		WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
             	WHERE (exists((this_connect_content0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_content0_nodeauth_param0)))
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_content0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_content0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_content0_node
+            		MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this_connect_content_Post
             }
             WITH *
@@ -932,22 +969,28 @@ describe("Cypher Auth Where", () => {
             	WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Comment)
             	WHERE this_connect_content0_node.id = $this_connect_content0_node_param0
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_content0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_content0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_content0_node
+            		MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this_connect_content_Comment
             }
             CALL {
             		WITH this
             	OPTIONAL MATCH (this_connect_content0_node:Post)
             	WHERE this_connect_content0_node.id = $this_connect_content0_node_param0 AND (exists((this_connect_content0_node)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_content0_node)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_content0_nodeauth_param0)))
-            	FOREACH(_ IN CASE WHEN this IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this_connect_content0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_content0_node) as connectedNodes, collect(this) as parentNodes
+            		UNWIND parentNodes as this
+            		UNWIND connectedNodes as this_connect_content0_node
+            		MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this_connect_content_Post
             }
             WITH *
@@ -985,20 +1028,26 @@ describe("Cypher Auth Where", () => {
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
             CALL {
+            	 WITH this
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Comment)
-            FOREACH(_ IN CASE WHEN this_content0_disconnect0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_content0_disconnect0_rel
-            )
+            CALL {
+            	WITH this_content0_disconnect0, this_content0_disconnect0_rel
+            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel
+            	UNWIND this_content0_disconnect0 as x
+            	DELETE this_content0_disconnect0_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_content0_disconnect_Comment
             }
             RETURN count(*) AS update_this_Comment
             }
             CALL {
+            	 WITH this
             	WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
@@ -1006,9 +1055,13 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
             WHERE (exists((this_content0_disconnect0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content0_disconnect0auth_param0)))
-            FOREACH(_ IN CASE WHEN this_content0_disconnect0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_content0_disconnect0_rel
-            )
+            CALL {
+            	WITH this_content0_disconnect0, this_content0_disconnect0_rel
+            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel
+            	UNWIND this_content0_disconnect0 as x
+            	DELETE this_content0_disconnect0_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_content0_disconnect_Post
             }
             RETURN count(*) AS update_this_Post
@@ -1046,6 +1099,7 @@ describe("Cypher Auth Where", () => {
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
             CALL {
+            	 WITH this
             WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
@@ -1053,14 +1107,19 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Comment)
             WHERE this_content0_disconnect0.id = $updateUsers_args_update_content0_disconnect0_where_Commentparam0
-            FOREACH(_ IN CASE WHEN this_content0_disconnect0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_content0_disconnect0_rel
-            )
+            CALL {
+            	WITH this_content0_disconnect0, this_content0_disconnect0_rel
+            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel
+            	UNWIND this_content0_disconnect0 as x
+            	DELETE this_content0_disconnect0_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_content0_disconnect_Comment
             }
             RETURN count(*) AS update_this_Comment
             }
             CALL {
+            	 WITH this
             	WITH this
             WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
             WITH this
@@ -1068,9 +1127,13 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
             WHERE this_content0_disconnect0.id = $updateUsers_args_update_content0_disconnect0_where_Postparam0 AND (exists((this_content0_disconnect0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_content0_disconnect0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_content0_disconnect0auth_param0)))
-            FOREACH(_ IN CASE WHEN this_content0_disconnect0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_content0_disconnect0_rel
-            )
+            CALL {
+            	WITH this_content0_disconnect0, this_content0_disconnect0_rel
+            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel
+            	UNWIND this_content0_disconnect0 as x
+            	DELETE this_content0_disconnect0_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_content0_disconnect_Post
             }
             RETURN count(*) AS update_this_Post
@@ -1133,18 +1196,26 @@ describe("Cypher Auth Where", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
-            FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_content0_rel
-            )
+            CALL {
+            	WITH this_disconnect_content0, this_disconnect_content0_rel
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	UNWIND this_disconnect_content0 as x
+            	DELETE this_disconnect_content0_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_disconnect_content_Comment
             }
             CALL {
             	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             WHERE (exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_content0auth_param0)))
-            FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_content0_rel
-            )
+            CALL {
+            	WITH this_disconnect_content0, this_disconnect_content0_rel
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	UNWIND this_disconnect_content0 as x
+            	DELETE this_disconnect_content0_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_disconnect_content_Post
             }
             WITH *
@@ -1197,18 +1268,26 @@ describe("Cypher Auth Where", () => {
             WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Comment)
             WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Commentparam0
-            FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_content0_rel
-            )
+            CALL {
+            	WITH this_disconnect_content0, this_disconnect_content0_rel
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	UNWIND this_disconnect_content0 as x
+            	DELETE this_disconnect_content0_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_disconnect_content_Comment
             }
             CALL {
             	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
             WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Postparam0 AND (exists((this_disconnect_content0)<-[:HAS_CONTENT]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_content0)<-[:HAS_CONTENT]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_content0auth_param0)))
-            FOREACH(_ IN CASE WHEN this_disconnect_content0 IS NULL THEN [] ELSE [1] END |
-            DELETE this_disconnect_content0_rel
-            )
+            CALL {
+            	WITH this_disconnect_content0, this_disconnect_content0_rel
+            	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel
+            	UNWIND this_disconnect_content0 as x
+            	DELETE this_disconnect_content0_rel
+            	RETURN count(*)
+            }
             RETURN count(*) AS disconnect_this_disconnect_content_Post
             }
             WITH *

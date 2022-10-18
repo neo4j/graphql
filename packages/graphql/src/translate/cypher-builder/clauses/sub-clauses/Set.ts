@@ -21,7 +21,7 @@ import { CypherASTNode } from "../../CypherASTNode";
 import type { MapProjection } from "../../CypherBuilder";
 import type { CypherEnvironment } from "../../Environment";
 import type { MapExpr } from "../../expressions/map/MapExpr";
-import type { PropertyRef } from "../../expressions/PropertyRef";
+import type { PropertyRef } from "../../variables/PropertyRef";
 import type { Expr } from "../../types";
 import { padBlock } from "../../utils/utils";
 

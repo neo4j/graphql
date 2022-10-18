@@ -5,9 +5,12 @@ module.exports = {
     displayName: "@neo4j/introspector",
     roots: ["<rootDir>/packages/introspector/src/", "<rootDir>/packages/introspector/tests/"],
     coverageDirectory: "<rootDir>/packages/introspector/coverage/",
-    globals: {
-        "ts-jest": {
-            tsconfig: "<rootDir>/packages/introspector/tsconfig.json",
-        },
+    transform: {
+        "^.+\\.ts$": [
+            "ts-jest",
+            {
+                tsconfig: "<rootDir>/packages/introspector/tsconfig.json",
+            },
+        ],
     },
 };

@@ -20,9 +20,8 @@
 import type { Node } from "../classes";
 import createProjectionAndParams from "./create-projection-and-params";
 import createCreateAndParams from "./create-create-and-params";
-import type { Context, ConnectionField } from "../types";
+import type { Context } from "../types";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
-import createConnectionAndParams from "./connection/create-connection-and-params";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
@@ -36,6 +35,7 @@ export default async function translateCreateOld({
     node: Node;
 }): Promise<{ cypher: string; params: Record<string, any> }> {
     const { resolveTree } = context;
+    const mutationInputs = resolveTree.args.input as any[];
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
     const projectionWith: string[] = [];
@@ -45,7 +45,7 @@ export default async function translateCreateOld({
     const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
-    const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
+    const { createStrs, params } = mutationInputs.reduce(
         (res, input, index) => {
             const varName = `this${index}`;
             const create = [`CALL {`];
@@ -98,7 +98,7 @@ export default async function translateCreateOld({
             resolveTree: nodeProjection,
             varName: "REPLACE_ME",
         });
-        projectionSubquery = CypherBuilder.concat(...projection.subqueries);
+        projectionSubquery = CypherBuilder.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
         if (projection.meta?.authValidateStrs?.length) {
             projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
                 " AND "
@@ -121,25 +121,8 @@ export default async function translateCreateOld({
         authCalls = createStrs
             .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
             .join("\n");
-        const withVars = context.subscriptionsEnabled ? [META_CYPHER_VARIABLE] : [];
-        if (projection.meta?.connectionFields?.length) {
-            projection.meta.connectionFields.forEach((connectionResolveTree) => {
-                const connectionField = node.connectionFields.find(
-                    (x) => x.fieldName === connectionResolveTree.name
-                ) as ConnectionField;
-                const connection = createConnectionAndParams({
-                    resolveTree: connectionResolveTree,
-                    field: connectionField,
-                    context,
-                    nodeVariable: "REPLACE_ME",
-                    withVars,
-                });
-                connectionStrs.push(connection[0]);
-                if (!connectionParams) connectionParams = {};
-                connectionParams = { ...connectionParams, ...connection[1] };
-            });
-        }
     }
+  
     const replacedConnectionStrs = connectionStrs.length
         ? createStrs.map((_, i) => {
               return connectionStrs

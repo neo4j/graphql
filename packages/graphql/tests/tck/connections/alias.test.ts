@@ -69,13 +69,14 @@ describe("Connections Alias", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WITH collect({  }) AS edges
-            WITH size(edges) AS totalCount
-            RETURN { totalCount: totalCount } AS actors
+                WITH this
+                MATCH (this)<-[this_connection_actorsthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WITH { node: { __resolveType: \\"Actor\\" } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_actors
             }
-            RETURN this { actors } as this"
+            RETURN this { actors: this_actors } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -115,49 +116,31 @@ describe("Connections Alias", () => {
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name = $this_hanks_args_where_Actorparam0
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS hanks
+                WITH this
+                MATCH (this)<-[this_connection_hanksthis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE this_Actor.name = $this_connection_hanksparam0
+                WITH { screenTime: this_connection_hanksthis0.screenTime, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_hanks
             }
             CALL {
-            WITH this
-            MATCH (this)<-[this_acted_in_relationship:ACTED_IN]-(this_actor:Actor)
-            WHERE this_actor.name = $this_jenny_args_where_Actorparam0
-            WITH collect({ screenTime: this_acted_in_relationship.screenTime, node: { name: this_actor.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS jenny
+                WITH this
+                MATCH (this)<-[this_connection_jennythis0:ACTED_IN]-(this_Actor:\`Actor\`)
+                WHERE this_Actor.name = $this_connection_jennyparam0
+                WITH { screenTime: this_connection_jennythis0.screenTime, node: { name: this_Actor.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_jenny
             }
-            RETURN this { .title, hanks, jenny } as this"
+            RETURN this { .title, hanks: this_hanks, jenny: this_jenny } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"this_hanks_args_where_Actorparam0\\": \\"Tom Hanks\\",
-                \\"this_hanks\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"name\\": \\"Tom Hanks\\"
-                            }
-                        }
-                    }
-                },
-                \\"this_jenny_args_where_Actorparam0\\": \\"Robin Wright\\",
-                \\"this_jenny\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"name\\": \\"Robin Wright\\"
-                            }
-                        }
-                    }
-                }
+                \\"this_connection_hanksparam0\\": \\"Tom Hanks\\",
+                \\"this_connection_jennyparam0\\": \\"Robin Wright\\"
             }"
         `);
     });

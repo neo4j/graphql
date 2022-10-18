@@ -94,22 +94,28 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_subjects_connect0_node
+            		MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_subjects_connect_Person
             }
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_subjects_connect0_node
+            		MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_subjects_connect_Place
             }
             WITH this0
@@ -117,22 +123,28 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Person)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_objects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_objects_connect0_node
+            		MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_objects_connect_Person
             }
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Place)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_objects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_objects_connect0_node
+            		MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_objects_connect_Place
             }
             RETURN this0
@@ -146,22 +158,28 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	WITH this1
             	OPTIONAL MATCH (this1_subjects_connect0_node:Person)
             	WHERE this1_subjects_connect0_node.id IN $this1_subjects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this1 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this1_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this1_subjects_connect0_node) as connectedNodes, collect(this1) as parentNodes
+            		UNWIND parentNodes as this1
+            		UNWIND connectedNodes as this1_subjects_connect0_node
+            		MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this1_subjects_connect_Person
             }
             CALL {
             		WITH this1
             	OPTIONAL MATCH (this1_subjects_connect0_node:Place)
             	WHERE this1_subjects_connect0_node.id IN $this1_subjects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this1 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this1_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this1_subjects_connect0_node) as connectedNodes, collect(this1) as parentNodes
+            		UNWIND parentNodes as this1
+            		UNWIND connectedNodes as this1_subjects_connect0_node
+            		MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this1_subjects_connect_Place
             }
             WITH this1
@@ -169,22 +187,28 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	WITH this1
             	OPTIONAL MATCH (this1_objects_connect0_node:Person)
             	WHERE this1_objects_connect0_node.id IN $this1_objects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this1 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this1_objects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this1_objects_connect0_node) as connectedNodes, collect(this1) as parentNodes
+            		UNWIND parentNodes as this1
+            		UNWIND connectedNodes as this1_objects_connect0_node
+            		MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this1_objects_connect_Person
             }
             CALL {
             		WITH this1
             	OPTIONAL MATCH (this1_objects_connect0_node:Place)
             	WHERE this1_objects_connect0_node.id IN $this1_objects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this1 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this1_objects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this1_objects_connect0_node) as connectedNodes, collect(this1) as parentNodes
+            		UNWIND parentNodes as this1
+            		UNWIND connectedNodes as this1_objects_connect0_node
+            		MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this1_objects_connect_Place
             }
             RETURN this1
@@ -251,22 +275,28 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_subjects_connect0_node
+            		MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_subjects_connect_Person
             }
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_subjects_connect0_node
+            		MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_subjects_connect_Place
             }
             WITH this0
@@ -274,22 +304,28 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Person)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_objects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_objects_connect0_node
+            		MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_objects_connect_Person
             }
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Place)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_objects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_objects_connect0_node
+            		MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_objects_connect_Place
             }
             RETURN this0
@@ -347,22 +383,28 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_subjects_connect0_node
+            		MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_subjects_connect_Person
             }
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_subjects_connect0_node
+            		MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_subjects_connect_Place
             }
             WITH this0
@@ -370,22 +412,28 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Person)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_objects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_objects_connect0_node
+            		MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_objects_connect_Person
             }
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Place)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_objects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_objects_connect0_node
+            		MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_objects_connect_Place
             }
             RETURN this0
@@ -454,22 +502,28 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_subjects_connect0_node
+            		MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_subjects_connect_Person
             }
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_subjects_connect0_node
+            		MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_subjects_connect_Place
             }
             WITH this0
@@ -477,22 +531,28 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Person)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_objects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_objects_connect0_node
+            		MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_objects_connect_Person
             }
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Place)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_objects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_objects_connect0_node
+            		MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_objects_connect_Place
             }
             RETURN this0
@@ -506,22 +566,28 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	WITH this1
             	OPTIONAL MATCH (this1_subjects_connect0_node:Person)
             	WHERE this1_subjects_connect0_node.id IN $this1_subjects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this1 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this1_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this1_subjects_connect0_node) as connectedNodes, collect(this1) as parentNodes
+            		UNWIND parentNodes as this1
+            		UNWIND connectedNodes as this1_subjects_connect0_node
+            		MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this1_subjects_connect_Person
             }
             CALL {
             		WITH this1
             	OPTIONAL MATCH (this1_subjects_connect0_node:Place)
             	WHERE this1_subjects_connect0_node.id IN $this1_subjects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this1 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this1_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this1_subjects_connect0_node) as connectedNodes, collect(this1) as parentNodes
+            		UNWIND parentNodes as this1
+            		UNWIND connectedNodes as this1_subjects_connect0_node
+            		MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this1_subjects_connect_Place
             }
             WITH this1
@@ -529,22 +595,28 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	WITH this1
             	OPTIONAL MATCH (this1_objects_connect0_node:Person)
             	WHERE this1_objects_connect0_node.id IN $this1_objects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this1 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this1_objects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this1_objects_connect0_node) as connectedNodes, collect(this1) as parentNodes
+            		UNWIND parentNodes as this1
+            		UNWIND connectedNodes as this1_objects_connect0_node
+            		MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this1_objects_connect_Person
             }
             CALL {
             		WITH this1
             	OPTIONAL MATCH (this1_objects_connect0_node:Place)
             	WHERE this1_objects_connect0_node.id IN $this1_objects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this1 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this1_objects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this1_objects_connect0_node) as connectedNodes, collect(this1) as parentNodes
+            		UNWIND parentNodes as this1
+            		UNWIND connectedNodes as this1_objects_connect0_node
+            		MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this1_objects_connect_Place
             }
             RETURN this1
@@ -664,22 +736,28 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_subjects_connect0_node
+            		MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_subjects_connect_Person
             }
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Place)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_subjects_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_subjects_connect0_node
+            		MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_subjects_connect_Place
             }
             RETURN this0

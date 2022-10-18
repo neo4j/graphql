@@ -100,18 +100,21 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
         const result = await translateQuery(neoSchema, query, { req });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            MATCH (this:\`Movie\`)
-            WITH COLLECT(this) as edges
-            WITH edges, size(edges) as totalCount
-            UNWIND edges as this
-            WITH this, totalCount, { } as edges
-            RETURN this, totalCount, edges
-            ORDER BY this.title ASC
+            "MATCH (this:\`Movie\`)
+            WITH collect(this) AS edges
+            WITH edges, size(edges) AS totalCount
+            UNWIND edges AS this
+            WITH this, totalCount
+            CALL {
+                WITH this
+                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
+                RETURN count(DISTINCT genre)\\", { this: this, auth: $auth }) AS this_totalGenres
+                RETURN head(collect(this_totalGenres)) AS this_totalGenres
             }
-            WITH COLLECT({ node: this { .title, totalGenres:  apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-            RETURN count(DISTINCT genre)\\", {this: this, auth: $auth}) } }) as edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } as this"
+            WITH { node: this { .title, totalGenres: this_totalGenres } } AS edge, totalCount, this
+            ORDER BY this.title ASC
+            WITH collect(edge) AS edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
     });
 
@@ -133,18 +136,21 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
         const result = await translateQuery(neoSchema, query, { req });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            MATCH (this:\`Movie\`)
-            WITH COLLECT(this) as edges
-            WITH edges, size(edges) as totalCount
-            UNWIND edges as this
-            WITH this, totalCount, { totalGenres:  apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-            RETURN count(DISTINCT genre)\\", {this: this, auth: $auth})} as edges
-            RETURN this, totalCount, edges
-            ORDER BY edges.totalGenres ASC
+            "MATCH (this:\`Movie\`)
+            WITH collect(this) AS edges
+            WITH edges, size(edges) AS totalCount
+            UNWIND edges AS this
+            WITH this, totalCount
+            CALL {
+                WITH this
+                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
+                RETURN count(DISTINCT genre)\\", { this: this, auth: $auth }) AS this_totalGenres
+                RETURN head(collect(this_totalGenres)) AS this_totalGenres
             }
-            WITH COLLECT({ node: this { .title, totalGenres: edges.totalGenres } }) as edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } as this"
+            WITH { node: this { .title, totalGenres: this_totalGenres } } AS edge, totalCount, this
+            ORDER BY edge.node.totalGenres ASC
+            WITH collect(edge) AS edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
     });
 
@@ -167,19 +173,27 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
         const result = await translateQuery(neoSchema, query, { req });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            MATCH (this:\`Movie\`)
-            WITH COLLECT(this) as edges
-            WITH edges, size(edges) as totalCount
-            UNWIND edges as this
-            WITH this, totalCount, { totalGenres:  apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-            RETURN count(DISTINCT genre)\\", {this: this, auth: $auth})} as edges
-            RETURN this, totalCount, edges
-            ORDER BY edges.totalGenres ASC
+            "MATCH (this:\`Movie\`)
+            WITH collect(this) AS edges
+            WITH edges, size(edges) AS totalCount
+            UNWIND edges AS this
+            WITH this, totalCount
+            CALL {
+                WITH this
+                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)-[:HAS_GENRE]->(genre:Genre)
+                RETURN count(DISTINCT genre)\\", { this: this, auth: $auth }) AS this_totalGenres
+                RETURN head(collect(this_totalGenres)) AS this_totalGenres
             }
-            WITH COLLECT({ node: this { .title, totalGenres: edges.totalGenres, totalActors:  apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-            RETURN count(DISTINCT actor)\\", {this: this, auth: $auth}) } }) as edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } as this"
+            CALL {
+                WITH this
+                UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                RETURN count(DISTINCT actor)\\", { this: this, auth: $auth }) AS this_totalActors
+                RETURN head(collect(this_totalActors)) AS this_totalActors
+            }
+            WITH { node: this { .title, totalGenres: this_totalGenres, totalActors: this_totalActors } } AS edge, totalCount, this
+            ORDER BY edge.node.totalGenres ASC
+            WITH collect(edge) AS edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
     });
 });

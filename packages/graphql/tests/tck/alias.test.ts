@@ -84,12 +84,17 @@ describe("Cypher Alias", () => {
             "MATCH (this:\`Movie\`)
             CALL {
                 WITH this
-                MATCH (this_actors:\`Actor\`)-[thisthis0:ACTED_IN]->(this)
+                MATCH (this_actors:\`Actor\`)-[this0:ACTED_IN]->(this)
                 WITH this_actors { aliasActorsName: this_actors.name } AS this_actors
                 RETURN collect(this_actors) AS this_actors
             }
-            RETURN this { movieId: this.id, actors: this_actors, custom: [this_custom IN apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie)
-            RETURN m\\", {this: this, auth: $auth}) | this_custom { aliasCustomId: this_custom.id }] } as this"
+            CALL {
+                WITH this
+                UNWIND apoc.cypher.runFirstColumnMany(\\"MATCH (m:Movie)
+                RETURN m\\", { this: this, auth: $auth }) AS this_custom
+                RETURN collect(this_custom { aliasCustomId: this_custom.id }) AS this_custom
+            }
+            RETURN this { movieId: this.id, actors: this_actors, custom: this_custom } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

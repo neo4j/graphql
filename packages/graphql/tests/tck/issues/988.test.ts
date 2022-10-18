@@ -138,22 +138,22 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
             "MATCH (this:\`Series\`)
             WHERE (((size([(this)-[this0:MANUFACTURER]->(this1:\`Manufacturer\`) WHERE (this0.current = $param0 AND this1.name = $param1) | 1]) > 0 OR size([(this)-[this2:MANUFACTURER]->(this3:\`Manufacturer\`) WHERE (this2.current = $param2 AND this3.name = $param3) | 1]) > 0) AND size([(this)-[this4:BRAND]->(this5:\`Brand\`) WHERE (this4.current = $param4 AND this5.name = $param5) | 1]) > 0) AND this.current = $param6)
             CALL {
-            WITH this
-            MATCH (this)-[this_manufacturer_relationship:MANUFACTURER]->(this_manufacturer:Manufacturer)
-            WITH collect({ current: this_manufacturer_relationship.current, node: { name: this_manufacturer.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS manufacturerConnection
+                WITH this
+                MATCH (this)-[this_connection_manufacturerConnectionthis0:MANUFACTURER]->(this_Manufacturer:\`Manufacturer\`)
+                WITH { current: this_connection_manufacturerConnectionthis0.current, node: { name: this_Manufacturer.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_manufacturerConnection
             }
             CALL {
-            WITH this
-            MATCH (this)-[this_brand_relationship:BRAND]->(this_brand:Brand)
-            WITH collect({ current: this_brand_relationship.current, node: { name: this_brand.name } }) AS edges
-            UNWIND edges as edge
-            WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS brandConnection
+                WITH this
+                MATCH (this)-[this_connection_brandConnectionthis0:BRAND]->(this_Brand:\`Brand\`)
+                WITH { current: this_connection_brandConnectionthis0.current, node: { name: this_Brand.name } } AS edge
+                WITH collect(edge) AS edges
+                WITH edges, size(edges) AS totalCount
+                RETURN { edges: edges, totalCount: totalCount } AS this_brandConnection
             }
-            RETURN this { .name, .current, manufacturerConnection, brandConnection } as this"
+            RETURN this { .name, .current, manufacturerConnection: this_manufacturerConnection, brandConnection: this_brandConnection } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

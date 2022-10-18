@@ -469,14 +469,14 @@ describe("Update Subscriptions", () => {
     test("create subscription with where OR nested match 1", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { 
+            ${typeMovie.operations.subscribe.updated}(where: {
                 OR: [
-                    { title: "movie1" }, 
+                    { title: "movie1" },
                     { AND: [
-                        { title: "movie2" },  
+                        { title: "movie2" },
                         { title: "movie3" }
                     ]}
-                ] 
+                ]
             }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
                     title
@@ -503,14 +503,14 @@ describe("Update Subscriptions", () => {
     test("create subscription with where OR nested match some", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { 
+            ${typeMovie.operations.subscribe.updated}(where: {
                 OR: [
-                    { title: "movie1" }, 
+                    { title: "movie1" },
                     { AND: [
-                        { title: "movie2" },  
+                        { title: "movie2" },
                         { releasedIn: 2000 }
                     ]}
-                ] 
+                ]
             }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
                     title
@@ -544,14 +544,14 @@ describe("Update Subscriptions", () => {
     test("create subscription with where OR nested match all", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { 
+            ${typeMovie.operations.subscribe.updated}(where: {
                 OR: [
-                    { title: "movie1" }, 
+                    { title: "movie1" },
                     { AND: [
-                        { title: "movie2" },  
+                        { title: "movie2" },
                         { releasedIn_GTE: 2000 }
                     ]}
-                ] 
+                ]
             }) {
                 ${typeMovie.operations.subscribe.payload.updated} {
                     title
@@ -1024,7 +1024,7 @@ describe("Update Subscriptions", () => {
         similarTitles?: string[];
     }): Promise<Response> {
         const movieInput = Object.entries(all)
-            .filter(([_, v]) => v)
+            .filter(([, v]) => v)
             .map(([k, v]) => {
                 return `${k}: ${makeTypedFieldValue(v)}`;
             })

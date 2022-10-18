@@ -66,8 +66,8 @@ Additionally, prerelease version numbers may have additional suffixes, for examp
 [[introduction-requirements]]
 == Requirements
 
-1. https://neo4j.com/[Neo4j Database] 4.3.2+ with https://neo4j.com/developer/neo4j-apoc/[APOC] plugin:
-2. https://nodejs.org/en/[Node.js] 14+
+1. https://neo4j.com/[Neo4j Database] 4.3.x (with `x` being latest patch) with https://neo4j.com/developer/neo4j-apoc/[APOC] plugin:
+2. https://nodejs.org/en/[Node.js] 16+
 
 For help installing the APOC plugin, see https://neo4j.com/labs/apoc/4.4/installation/[this page].
 

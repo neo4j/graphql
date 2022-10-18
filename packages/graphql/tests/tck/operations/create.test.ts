@@ -278,11 +278,14 @@ describe("Cypher Create", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
             	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_actors_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_actors_connect0_node
+            		MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_actors_connect_Actor
             }
             RETURN this0
@@ -335,11 +338,14 @@ describe("Cypher Create", () => {
             	WITH this0
             	OPTIONAL MATCH (this0_movies_connect0_node:Movie)
             	WHERE this0_movies_connect0_node.id = $this0_movies_connect0_node_param0
-            	FOREACH(_ IN CASE WHEN this0 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this0_movies_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this0_movies_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		UNWIND parentNodes as this0
+            		UNWIND connectedNodes as this0_movies_connect0_node
+            		MERGE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
+            		RETURN count(*)
+            	}
             	RETURN count(*) AS connect_this0_movies_connect_Movie
             }
             RETURN this0
@@ -348,15 +354,15 @@ describe("Cypher Create", () => {
                 WITH this0
                 MATCH (this0)-[create_this0:ACTED_IN]->(this0_movies:\`Movie\`)
                 CALL {
-                WITH this0_movies
-                MATCH (this0_movies)<-[this0_movies_acted_in_relationship:ACTED_IN]-(this0_movies_actor:Actor)
-                WHERE this0_movies_actor.name = $projection_movies_actorsConnection_args_where_Actorparam0
-                WITH collect({ node: { name: this0_movies_actor.name } }) AS edges
-                UNWIND edges as edge
-                WITH collect(edge) AS edges, size(collect(edge)) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                    WITH this0_movies
+                    MATCH (this0_movies)<-[this0_movies_connection_actorsConnectionthis0:ACTED_IN]-(this0_movies_Actor:\`Actor\`)
+                    WHERE this0_movies_Actor.name = $projection_movies_connection_actorsConnectionparam0
+                    WITH { node: { name: this0_movies_Actor.name } } AS edge
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS this0_movies_actorsConnection
                 }
-                WITH this0_movies { actorsConnection: actorsConnection } AS this0_movies
+                WITH this0_movies { actorsConnection: this0_movies_actorsConnection } AS this0_movies
                 RETURN collect(this0_movies) AS this0_movies
             }
             RETURN [
@@ -367,16 +373,7 @@ describe("Cypher Create", () => {
             "{
                 \\"this0_name\\": \\"Dan\\",
                 \\"this0_movies_connect0_node_param0\\": \\"1\\",
-                \\"projection_movies_actorsConnection_args_where_Actorparam0\\": \\"Dan\\",
-                \\"projection_movies_actorsConnection\\": {
-                    \\"args\\": {
-                        \\"where\\": {
-                            \\"node\\": {
-                                \\"name\\": \\"Dan\\"
-                            }
-                        }
-                    }
-                },
+                \\"projection_movies_connection_actorsConnectionparam0\\": \\"Dan\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
