@@ -25,10 +25,15 @@ import type { Node } from "../classes";
 export function translateFulltext({ node, context }: { node: Node; context: Context }): CypherBuilder.CypherResult {
     const scoreVariable = new CypherBuilder.Variable();
     const { resolveTree } = context;
-    context.fulltextIndex.scoreVariable = scoreVariable;
-    context.resolveTree = { ...resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.name] };
-    context.resolveTree.args = { ...resolveTree.args };
-    const result = translateRead({ node, context }, node.name);
+    let result: CypherBuilder.CypherResult;
+    if (resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.name]) {
+        context.fulltextIndex.scoreVariable = scoreVariable;
+        context.resolveTree = { ...resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.name] };
+        context.resolveTree.args = { ...resolveTree.args };
+        result = translateRead({ node, context }, node.name);
+    } else {
+        result = translateRead({ node, context }, node.name);
+    }
     if (resolveTree.fieldsByTypeName[node.fulltextTypeNames.result].score) {
         result.cypher = `${result.cypher}, score`;
     } 
