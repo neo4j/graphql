@@ -33,7 +33,11 @@ export const Main = () => {
     const [schema, setSchema] = useState<GraphQLSchema | undefined>(undefined);
 
     useEffect(() => {
-        const segmentKey = process.env.NODE_ENV === "production" ? "PROD" : "DEV";
+        const segmentKey =
+            process.env.NODE_ENV === "production"
+                ? process.env.SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE
+                : process.env.SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE;
+        if (!segmentKey) return;
         invokeSegmentAnalytics(segmentKey);
     }, []);
 

@@ -1,9 +1,9 @@
 export {};
 
 type Analytics = {
-    SNIPPET_VERSION: string;
     _writeKey: string;
     _loadOptions: unknown;
+    SNIPPET_VERSION: string;
     initialize: boolean;
     invoked: boolean;
     methods: string[];
