@@ -79,37 +79,37 @@ describe("Interface Relationships - Update disconnect", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
-            WITH this
-            CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Movie)
-            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Movieparam0
-            CALL {
-            	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel
-            	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
-            	UNWIND this_disconnect_actedIn0 as x
-            	DELETE this_disconnect_actedIn0_rel
-            	RETURN count(*)
-            }
-            RETURN count(*) AS disconnect_this_disconnect_actedIn_Movie
-            }
-            CALL {
-            	WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
-            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Seriesparam0
-            CALL {
-            	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel
-            	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
-            	UNWIND this_disconnect_actedIn0 as x
-            	DELETE this_disconnect_actedIn0_rel
-            	RETURN count(*)
-            }
-            RETURN count(*) AS disconnect_this_disconnect_actedIn_Series
-            }
-            WITH *
-            RETURN collect(DISTINCT this { .name }) AS data"
-        `);
+"MATCH (this:\`Actor\`)
+WITH this
+CALL {
+WITH this
+OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Movie)
+WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Movieparam0
+CALL {
+	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+	UNWIND this_disconnect_actedIn0 as x
+	DELETE this_disconnect_actedIn0_rel
+	RETURN count(*) AS _
+}
+RETURN count(*) AS disconnect_this_disconnect_actedIn_Movie
+}
+CALL {
+	WITH this
+OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
+WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Seriesparam0
+CALL {
+	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+	UNWIND this_disconnect_actedIn0 as x
+	DELETE this_disconnect_actedIn0_rel
+	RETURN count(*) AS _
+}
+RETURN count(*) AS disconnect_this_disconnect_actedIn_Series
+}
+WITH *
+RETURN collect(DISTINCT this { .name }) AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -159,65 +159,65 @@ describe("Interface Relationships - Update disconnect", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
-            WITH this
-            CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Movie)
-            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Movieparam0
-            CALL {
-            	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel
-            	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
-            	UNWIND this_disconnect_actedIn0 as x
-            	DELETE this_disconnect_actedIn0_rel
-            	RETURN count(*)
-            }
-            WITH this, this_disconnect_actedIn0
-            CALL {
-            WITH this, this_disconnect_actedIn0
-            OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
-            WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect_actors0_where_Actorparam0
-            CALL {
-            	WITH this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
-            	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
-            	UNWIND this_disconnect_actedIn0_actors0 as x
-            	DELETE this_disconnect_actedIn0_actors0_rel
-            	RETURN count(*)
-            }
-            RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
-            }
-            RETURN count(*) AS disconnect_this_disconnect_actedIn_Movie
-            }
-            CALL {
-            	WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
-            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Seriesparam0
-            CALL {
-            	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel
-            	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
-            	UNWIND this_disconnect_actedIn0 as x
-            	DELETE this_disconnect_actedIn0_rel
-            	RETURN count(*)
-            }
-            WITH this, this_disconnect_actedIn0
-            CALL {
-            WITH this, this_disconnect_actedIn0
-            OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
-            WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect_actors0_where_Actorparam0
-            CALL {
-            	WITH this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
-            	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
-            	UNWIND this_disconnect_actedIn0_actors0 as x
-            	DELETE this_disconnect_actedIn0_actors0_rel
-            	RETURN count(*)
-            }
-            RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
-            }
-            RETURN count(*) AS disconnect_this_disconnect_actedIn_Series
-            }
-            WITH *
-            RETURN collect(DISTINCT this { .name }) AS data"
-        `);
+"MATCH (this:\`Actor\`)
+WITH this
+CALL {
+WITH this
+OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Movie)
+WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Movieparam0
+CALL {
+	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+	UNWIND this_disconnect_actedIn0 as x
+	DELETE this_disconnect_actedIn0_rel
+	RETURN count(*) AS _
+}
+WITH this, this_disconnect_actedIn0
+CALL {
+WITH this, this_disconnect_actedIn0
+OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
+WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect_actors0_where_Actorparam0
+CALL {
+	WITH this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
+	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
+	UNWIND this_disconnect_actedIn0_actors0 as x
+	DELETE this_disconnect_actedIn0_actors0_rel
+	RETURN count(*) AS _
+}
+RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
+}
+RETURN count(*) AS disconnect_this_disconnect_actedIn_Movie
+}
+CALL {
+	WITH this
+OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
+WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Seriesparam0
+CALL {
+	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+	UNWIND this_disconnect_actedIn0 as x
+	DELETE this_disconnect_actedIn0_rel
+	RETURN count(*) AS _
+}
+WITH this, this_disconnect_actedIn0
+CALL {
+WITH this, this_disconnect_actedIn0
+OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
+WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect_actors0_where_Actorparam0
+CALL {
+	WITH this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
+	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
+	UNWIND this_disconnect_actedIn0_actors0 as x
+	DELETE this_disconnect_actedIn0_actors0_rel
+	RETURN count(*) AS _
+}
+RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
+}
+RETURN count(*) AS disconnect_this_disconnect_actedIn_Series
+}
+WITH *
+RETURN collect(DISTINCT this { .name }) AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -279,51 +279,51 @@ describe("Interface Relationships - Update disconnect", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
-            WITH this
-            CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Movie)
-            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Movieparam0
-            CALL {
-            	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel
-            	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
-            	UNWIND this_disconnect_actedIn0 as x
-            	DELETE this_disconnect_actedIn0_rel
-            	RETURN count(*)
-            }
-            WITH this, this_disconnect_actedIn0
-            CALL {
-            WITH this, this_disconnect_actedIn0
-            OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
-            WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect__on_Movie0_actors0_where_Actorparam0
-            CALL {
-            	WITH this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
-            	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
-            	UNWIND this_disconnect_actedIn0_actors0 as x
-            	DELETE this_disconnect_actedIn0_actors0_rel
-            	RETURN count(*)
-            }
-            RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
-            }
-            RETURN count(*) AS disconnect_this_disconnect_actedIn_Movie
-            }
-            CALL {
-            	WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
-            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Seriesparam0
-            CALL {
-            	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel
-            	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
-            	UNWIND this_disconnect_actedIn0 as x
-            	DELETE this_disconnect_actedIn0_rel
-            	RETURN count(*)
-            }
-            RETURN count(*) AS disconnect_this_disconnect_actedIn_Series
-            }
-            WITH *
-            RETURN collect(DISTINCT this { .name }) AS data"
-        `);
+"MATCH (this:\`Actor\`)
+WITH this
+CALL {
+WITH this
+OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Movie)
+WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Movieparam0
+CALL {
+	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+	UNWIND this_disconnect_actedIn0 as x
+	DELETE this_disconnect_actedIn0_rel
+	RETURN count(*) AS _
+}
+WITH this, this_disconnect_actedIn0
+CALL {
+WITH this, this_disconnect_actedIn0
+OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
+WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect__on_Movie0_actors0_where_Actorparam0
+CALL {
+	WITH this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
+	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
+	UNWIND this_disconnect_actedIn0_actors0 as x
+	DELETE this_disconnect_actedIn0_actors0_rel
+	RETURN count(*) AS _
+}
+RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
+}
+RETURN count(*) AS disconnect_this_disconnect_actedIn_Movie
+}
+CALL {
+	WITH this
+OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
+WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Seriesparam0
+CALL {
+	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+	UNWIND this_disconnect_actedIn0 as x
+	DELETE this_disconnect_actedIn0_rel
+	RETURN count(*) AS _
+}
+RETURN count(*) AS disconnect_this_disconnect_actedIn_Series
+}
+WITH *
+RETURN collect(DISTINCT this { .name }) AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -394,65 +394,65 @@ describe("Interface Relationships - Update disconnect", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
-            WITH this
-            CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Movie)
-            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Movieparam0
-            CALL {
-            	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel
-            	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
-            	UNWIND this_disconnect_actedIn0 as x
-            	DELETE this_disconnect_actedIn0_rel
-            	RETURN count(*)
-            }
-            WITH this, this_disconnect_actedIn0
-            CALL {
-            WITH this, this_disconnect_actedIn0
-            OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
-            WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect__on_Movie0_actors0_where_Actorparam0
-            CALL {
-            	WITH this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
-            	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
-            	UNWIND this_disconnect_actedIn0_actors0 as x
-            	DELETE this_disconnect_actedIn0_actors0_rel
-            	RETURN count(*)
-            }
-            RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
-            }
-            RETURN count(*) AS disconnect_this_disconnect_actedIn_Movie
-            }
-            CALL {
-            	WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
-            WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Seriesparam0
-            CALL {
-            	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel
-            	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
-            	UNWIND this_disconnect_actedIn0 as x
-            	DELETE this_disconnect_actedIn0_rel
-            	RETURN count(*)
-            }
-            WITH this, this_disconnect_actedIn0
-            CALL {
-            WITH this, this_disconnect_actedIn0
-            OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
-            WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect_actors0_where_Actorparam0
-            CALL {
-            	WITH this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
-            	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
-            	UNWIND this_disconnect_actedIn0_actors0 as x
-            	DELETE this_disconnect_actedIn0_actors0_rel
-            	RETURN count(*)
-            }
-            RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
-            }
-            RETURN count(*) AS disconnect_this_disconnect_actedIn_Series
-            }
-            WITH *
-            RETURN collect(DISTINCT this { .name }) AS data"
-        `);
+"MATCH (this:\`Actor\`)
+WITH this
+CALL {
+WITH this
+OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Movie)
+WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Movieparam0
+CALL {
+	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+	UNWIND this_disconnect_actedIn0 as x
+	DELETE this_disconnect_actedIn0_rel
+	RETURN count(*) AS _
+}
+WITH this, this_disconnect_actedIn0
+CALL {
+WITH this, this_disconnect_actedIn0
+OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
+WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect__on_Movie0_actors0_where_Actorparam0
+CALL {
+	WITH this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
+	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
+	UNWIND this_disconnect_actedIn0_actors0 as x
+	DELETE this_disconnect_actedIn0_actors0_rel
+	RETURN count(*) AS _
+}
+RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
+}
+RETURN count(*) AS disconnect_this_disconnect_actedIn_Movie
+}
+CALL {
+	WITH this
+OPTIONAL MATCH (this)-[this_disconnect_actedIn0_rel:ACTED_IN]->(this_disconnect_actedIn0:Series)
+WHERE this_disconnect_actedIn0.title STARTS WITH $updateActors_args_disconnect_actedIn0_where_Seriesparam0
+CALL {
+	WITH this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+	WITH collect(this_disconnect_actedIn0) as this_disconnect_actedIn0, this_disconnect_actedIn0_rel
+	UNWIND this_disconnect_actedIn0 as x
+	DELETE this_disconnect_actedIn0_rel
+	RETURN count(*) AS _
+}
+WITH this, this_disconnect_actedIn0
+CALL {
+WITH this, this_disconnect_actedIn0
+OPTIONAL MATCH (this_disconnect_actedIn0)<-[this_disconnect_actedIn0_actors0_rel:ACTED_IN]-(this_disconnect_actedIn0_actors0:Actor)
+WHERE this_disconnect_actedIn0_actors0.name = $updateActors_args_disconnect_actedIn0_disconnect_actors0_where_Actorparam0
+CALL {
+	WITH this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
+	WITH collect(this_disconnect_actedIn0_actors0) as this_disconnect_actedIn0_actors0, this_disconnect_actedIn0_actors0_rel
+	UNWIND this_disconnect_actedIn0_actors0 as x
+	DELETE this_disconnect_actedIn0_actors0_rel
+	RETURN count(*) AS _
+}
+RETURN count(*) AS disconnect_this_disconnect_actedIn0_actors_Actor
+}
+RETURN count(*) AS disconnect_this_disconnect_actedIn_Series
+}
+WITH *
+RETURN collect(DISTINCT this { .name }) AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
