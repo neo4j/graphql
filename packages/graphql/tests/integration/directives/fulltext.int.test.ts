@@ -437,4 +437,108 @@ describe("@fulltext directive", () => {
             },
         ]);
     });
+    test("Filters score with max score of 0", async () => {
+        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
+        const query = `
+            query {
+                ${queryType}(phrase: "a different name", where: { score: { max: 0 } }) {
+                    score
+                    ${personType.name} {
+                        name
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([]);
+    });
+    test("Throws error if score filtered with a non-number", async () => {
+        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
+        const query = `
+            query {
+                ${queryType}(phrase: "a different name", where: { score: { max: "not a number" } }) {
+                    score
+                    ${personType.name} {
+                        name
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+    });
+    test("Filters a related node to multiple values", async () => {
+        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
+        const query = `
+            query {
+                ${queryType}(phrase: "a different name", where: { ${personType.name}: { actedInMovies_SOME: { title: "${movie1.title}" } } }) {
+                    score
+                    ${personType.name} {
+                        name
+                        actedInMovies {
+                            title
+                            released
+                        }
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            {
+                score: 0.62690669298172,
+                [personType.name]: {
+                    name: "This is a different name",
+                    actedInMovies: [
+                        {
+                            title: "Some Title",
+                            released: 2001,
+                        },
+                    ],
+                },
+            },
+            {
+                score: 0.26449739933013916,
+                [personType.name]: {
+                    name: "this is a name",
+                    actedInMovies: [
+                        {
+                            title: "Another Title",
+                            released: 2002,
+                        },
+                        {
+                            title: "Some Title",
+                            released: 2001,
+                        },
+                    ],
+                },
+            },
+        ]);
+    });
 });
