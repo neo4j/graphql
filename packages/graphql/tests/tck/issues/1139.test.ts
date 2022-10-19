@@ -99,7 +99,7 @@ describe("https://github.com/neo4j/graphql/issues/1139", () => {
                     WHEN this_updates:\`User\` THEN this_updates { __resolveType: \\"User\\" }
                 END) AS this_updates
             }
-            RETURN this { updates: this_updates } as this"
+            RETURN this { updates: this_updates } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

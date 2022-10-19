@@ -90,7 +90,7 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
             "MATCH (this:\`Community\`:\`UNIVERSAL\`)
             CALL {
                 WITH this
-                UNWIND apoc.cypher.runFirstColumnMany(\\"Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag) return pag SKIP ($limit * $pageIndex) LIMIT $limit\\", { limit: $thisparam0, pageIndex: $thisparam1, this: this, auth: $auth }) AS this_hasFeedItems
+                UNWIND apoc.cypher.runFirstColumnMany(\\"Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag) return pag SKIP ($limit * $pageIndex) LIMIT $limit\\", { limit: $param0, pageIndex: $param1, this: this, auth: $auth }) AS this_hasFeedItems
                 WITH *
                 WHERE ((this_hasFeedItems:\`ContentPiece\` AND this_hasFeedItems:\`UNIVERSAL\`) OR (this_hasFeedItems:\`Project\` AND this_hasFeedItems:\`UNIVERSAL\`))
                 RETURN collect(CASE
@@ -98,16 +98,16 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
                     WHEN (this_hasFeedItems:\`Project\` AND this_hasFeedItems:\`UNIVERSAL\`) THEN this_hasFeedItems { __resolveType: \\"Project\\",  .id }
                 END) AS this_hasFeedItems
             }
-            RETURN this { .id, hasFeedItems: this_hasFeedItems } as this"
+            RETURN this { .id, hasFeedItems: this_hasFeedItems } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"thisparam0\\": {
+                \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"thisparam1\\": {
+                \\"param1\\": {
                     \\"low\\": 0,
                     \\"high\\": 0
                 },

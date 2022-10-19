@@ -94,7 +94,7 @@ describe("Mixed nesting", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -166,7 +166,7 @@ describe("Mixed nesting", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            RETURN this { .title, actorsConnection: this_actorsConnection } as this"
+            RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -209,8 +209,8 @@ describe("Mixed nesting", () => {
             WHERE this.title = $param0
             CALL {
                 WITH this
-                MATCH (this_actors:\`Actor\`)-[thisthis0:ACTED_IN]->(this)
-                WHERE this_actors.name = $thisparam0
+                MATCH (this_actors:\`Actor\`)-[this0:ACTED_IN]->(this)
+                WHERE this_actors.name = $param1
                 CALL {
                     WITH this_actors
                     MATCH (this_actors)-[this_actors_connection_moviesConnectionthis0:ACTED_IN]->(this_actors_Movie:\`Movie\`)
@@ -223,14 +223,14 @@ describe("Mixed nesting", () => {
                 WITH this_actors { .name, moviesConnection: this_actors_moviesConnection } AS this_actors
                 RETURN collect(this_actors) AS this_actors
             }
-            RETURN this { .title, actors: this_actors } as this"
+            RETURN this { .title, actors: this_actors } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"this_actors_connection_moviesConnectionparam0\\": \\"Forrest Gump\\",
-                \\"thisparam0\\": \\"Tom Hanks\\"
+                \\"param1\\": \\"Tom Hanks\\",
+                \\"this_actors_connection_moviesConnectionparam0\\": \\"Forrest Gump\\"
             }"
         `);
     });

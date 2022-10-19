@@ -80,7 +80,7 @@ export const GraphQLQueryEditor = ({
                 minFoldSize: 4,
             },
             lint: {
-                // @ts-ignore
+                // @ts-ignore - Mismatch of types, can be ignored
                 schema: schema,
                 validationRules: [],
             },
@@ -108,9 +108,11 @@ export const GraphQLQueryEditor = ({
                 "Shift-Space": showHint,
                 "Shift-Alt-Space": showHint,
                 "Cmd-Enter": () => {
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     executeQuery(mirror.getValue());
                 },
                 "Ctrl-Enter": () => {
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     executeQuery(mirror.getValue());
                 },
                 "Ctrl-L": () => {

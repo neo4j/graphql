@@ -99,7 +99,7 @@ describe("Cypher coalesce()", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE (coalesce(this.id, \\"00000000-00000000-00000000-00000000\\") = $param0 AND coalesce(this.name, \\"Jane Smith\\") =~ $param1 AND NOT (this.verified = $param2) AND this.numberOfFriends > $param3 AND coalesce(this.rating, 2.5) < $param4 AND coalesce(this.fromInterface, \\"From Interface\\") = $param5 AND coalesce(this.toBeOverridden, \\"Overridden\\") = $param6)
-            RETURN this { .name } as this"
+            RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -155,7 +155,7 @@ describe("Cypher coalesce()", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE coalesce(this.status, \\"ACTIVE\\") = $param0
-            RETURN this { .id, .status } as this"
+            RETURN this { .id, .status } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -220,7 +220,7 @@ describe("Cypher coalesce()", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_moviesConnection
             }
-            RETURN this { moviesConnection: this_moviesConnection } as this"
+            RETURN this { moviesConnection: this_moviesConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -63,23 +63,23 @@ describe("https://github.com/neo4j/graphql/issues/1779", () => {
             "MATCH (this:\`Person\`)
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:attends]->(this_attends:\`School\`)
+                MATCH (this)-[this0:attends]->(this_attends:\`School\`)
                 WHERE (EXISTS {
-                    MATCH (thisthis1:\`Person\`)-[:attends]->(this_attends)
-                    WHERE thisthis1.age > $thisparam0
+                    MATCH (this1:\`Person\`)-[:attends]->(this_attends)
+                    WHERE this1.age > $param0
                 } AND NOT (EXISTS {
-                    MATCH (thisthis1:\`Person\`)-[:attends]->(this_attends)
-                    WHERE NOT (thisthis1.age > $thisparam0)
+                    MATCH (this1:\`Person\`)-[:attends]->(this_attends)
+                    WHERE NOT (this1.age > $param0)
                 }))
                 WITH this_attends { .name } AS this_attends
                 RETURN collect(this_attends) AS this_attends
             }
-            RETURN this { .name, attends: this_attends } as this"
+            RETURN this { .name, attends: this_attends } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"thisparam0\\": {
+                \\"param0\\": {
                     \\"low\\": 23,
                     \\"high\\": 0
                 }

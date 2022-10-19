@@ -47,7 +47,13 @@ export const AppSettings = ({ onClickClose }: Props) => {
         <div className="p-6 w-full">
             <div className="pb-6 flex justify-between items-center">
                 <span className="h5">Settings</span>
-                <span data-test-settings-close-button className="text-lg cursor-pointer" onClick={onClickClose}>
+                <span
+                    className="text-lg cursor-pointer"
+                    onClick={onClickClose}
+                    onKeyDown={onClickClose}
+                    role="button"
+                    tabIndex={0}
+                >
                     {"\u2715"}
                 </span>
             </div>

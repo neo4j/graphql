@@ -91,16 +91,16 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`ArtPiece\`)
-            WITH COLLECT(this) as edges
-            WITH edges, size(edges) as totalCount
-            UNWIND edges as this
+            WITH collect(this) AS edges
+            WITH edges, size(edges) AS totalCount
+            UNWIND edges AS this
             WITH this, totalCount
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:SOLD_AT_AUCTION_AS]->(this_auction:\`AuctionItem\`)
+                MATCH (this)-[this0:SOLD_AT_AUCTION_AS]->(this_auction:\`AuctionItem\`)
                 CALL {
                     WITH this_auction
-                    MATCH (this_auction_buyer:\`Organization\`)-[thisthis1:BOUGHT_ITEM_AT_AUCTION]->(this_auction)
+                    MATCH (this_auction_buyer:\`Organization\`)-[this1:BOUGHT_ITEM_AT_AUCTION]->(this_auction)
                     WITH this_auction_buyer { .name, dbId: this_auction_buyer.id } AS this_auction_buyer
                     RETURN head(collect(this_auction_buyer)) AS this_auction_buyer
                 }
@@ -109,13 +109,13 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
             }
             CALL {
                 WITH this
-                MATCH (this)-[thisthis2:OWNED_BY]->(this_owner:\`Organization\`)
+                MATCH (this)-[this2:OWNED_BY]->(this_owner:\`Organization\`)
                 WITH this_owner { .name, dbId: this_owner.id } AS this_owner
                 RETURN head(collect(this_owner)) AS this_owner
             }
-            WITH { node: this { .title, auction: this_auction, owner: this_owner, dbId: this.id } } as edge, totalCount, this
-            WITH COLLECT(edge) as edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } as this"
+            WITH { node: this { .title, auction: this_auction, owner: this_owner, dbId: this.id } } AS edge, totalCount, this
+            WITH collect(edge) AS edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

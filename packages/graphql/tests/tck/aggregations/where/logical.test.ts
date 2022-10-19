@@ -64,7 +64,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN (count(aggr_node) > $aggr_AND_0_count_GT AND count(aggr_node) < $aggr_AND_1_count_LT)
             \\", { this: this, aggr_AND_0_count_GT: $aggr_AND_0_count_GT, aggr_AND_1_count_LT: $aggr_AND_1_count_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -100,7 +100,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN (count(aggr_node) > $aggr_OR_0_count_GT OR count(aggr_node) < $aggr_OR_1_count_LT)
             \\", { this: this, aggr_OR_0_count_GT: $aggr_OR_0_count_GT, aggr_OR_1_count_LT: $aggr_OR_1_count_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -143,7 +143,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN (count(aggr_node) > $aggr_AND_0_count_GT AND count(aggr_node) < $aggr_AND_1_count_LT) AND (count(aggr_node) > $aggr_OR_0_count_GT OR count(aggr_node) < $aggr_OR_1_count_LT)
             \\", { this: this, aggr_AND_0_count_GT: $aggr_AND_0_count_GT, aggr_AND_1_count_LT: $aggr_AND_1_count_LT, aggr_OR_0_count_GT: $aggr_OR_0_count_GT, aggr_OR_1_count_LT: $aggr_OR_1_count_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
