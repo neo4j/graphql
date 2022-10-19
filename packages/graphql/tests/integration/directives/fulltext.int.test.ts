@@ -17,21 +17,64 @@
  * limitations under the License.
  */
 
-import type { Driver } from "neo4j-driver";
+import type { Driver, Session } from "neo4j-driver";
+import { graphql, GraphQLSchema } from "graphql";
 import { generate } from "randomstring";
-import { graphql } from "graphql";
-import { gql } from "apollo-server";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { generateUniqueType } from "../../utils/graphql-types";
+import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { upperFirst } from "../../../src/utils/upper-first";
 import { delay } from "../../../src/utils/utils";
 import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
+
+function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): string {
+    return `
+        type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }]) {
+            name: String!
+            born: Int!
+            actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+        }
+
+        type ${movieType.name} {
+            title: String!
+            released: Int!
+            actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+        }
+    `;
+}
 
 describe("@fulltext directive", () => {
     let driver: Driver;
     let neo4j: Neo4j;
+    let session: Session;
+    let neoSchema: Neo4jGraphQL;
+    let generatedSchema: GraphQLSchema;
+    let personType: UniqueType;
+    let movieType: UniqueType;
     let databaseName: string;
+
     let MULTIDB_SUPPORT = true;
+
+    const person1 = {
+        name: "this is a name",
+        born: 1984,
+    };
+    const person2 = {
+        name: "This is a different name",
+        born: 1985,
+    };
+    const person3 = {
+        name: "Another name",
+        born: 1986,
+    };
+    const movie1 = {
+        title: "Some Title",
+        released: 2001,
+    };
+    const movie2 = {
+        title: "Another Title",
+        released: 2002,
+    };
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -71,675 +114,73 @@ describe("@fulltext directive", () => {
                 await session.close();
             }
         }
-
         await driver.close();
     });
 
-    test("should create index if it doesn't exist and then query using the index", async () => {
-        // Skip if multi-db not supported
-        if (!MULTIDB_SUPPORT) {
-            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-            return;
-        }
+    beforeEach(async () => {
+        personType = generateUniqueType("Person");
+        movieType = generateUniqueType("Movie");
+        const typeDefs = generatedTypeDefs(personType, movieType);
 
-        const title = generate({ readable: true, charset: "alphabetic" });
-        const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
+        neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            driver,
+        });
+        generatedSchema = await neoSchema.getSchema();
+        await neoSchema.assertIndexesAndConstraints({
+            driver,
+            driverConfig: { database: databaseName },
+            options: { create: true },
+        });
 
-        const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
-                title: String!
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
-
-        await expect(
-            neoSchema.assertIndexesAndConstraints({
-                driver,
-                driverConfig: { database: databaseName },
-                options: { create: true },
-            })
-        ).resolves.not.toThrow();
-
-        const session = driver.session({ database: databaseName });
-
-        const cypher = `
-            SHOW INDEXES yield
-                name AS name,
-                type AS type,
-                entityType AS entityType,
-                labelsOrTypes AS labelsOrTypes,
-                properties AS properties
-            WHERE name = "${indexName}"
-            RETURN {
-                 name: name,
-                 type: type,
-                 entityType: entityType,
-                 labelsOrTypes: labelsOrTypes,
-                 properties: properties
-            } as result
-        `;
+        session = driver.session({ database: databaseName });
 
         try {
-            const result = await session.run(cypher);
-
-            const record = result.records[0].get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
-
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([type.name]);
-            expect(record.properties).toEqual(["title"]);
-
-            await session.run(`
-                CREATE (:${type.name} { title: "${title}" })
-            `);
-        } finally {
-            await session.close();
-        }
-
-        const query = `
-            query {
-                ${type.plural}(fulltext: { ${indexName}: { phrase: "${title}" } }) {
-                    title
-                }
-            }
-        `;
-
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: {
-                driver,
-                driverConfig: { database: databaseName },
-            },
-        });
-
-        expect(gqlResult.errors).toBeFalsy();
-
-        expect(gqlResult.data).toEqual({
-            [type.plural]: [{ title }],
-        });
-    });
-
-    test("should create two index's if they dont exist and then throw and error when users queries both at once", async () => {
-        // Skip if multi-db not supported
-        if (!MULTIDB_SUPPORT) {
-            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-            return;
-        }
-
-        const title = generate({ readable: true, charset: "alphabetic" });
-        const indexName1 = generate({ readable: true, charset: "alphabetic" });
-        const indexName2 = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
-
-        const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }, { name: "${indexName2}", fields: ["description"] }]) {
-                title: String!
-                description: String!
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
-
-        await expect(
-            neoSchema.assertIndexesAndConstraints({
-                driver,
-                driverConfig: { database: databaseName },
-                options: { create: true },
-            })
-        ).resolves.not.toThrow();
-
-        const query = `
-            query {
-                ${type.plural}(fulltext: { ${indexName1}: { phrase: "${title}" }, ${indexName2}: { phrase: "${title}" } }) {
-                    title
-                }
-            }
-        `;
-
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: {
-                driver,
-                driverConfig: { database: databaseName },
-            },
-        });
-
-        expect(gqlResult.errors && gqlResult.errors[0].message).toBe("Can only call one search at any given time");
-    });
-
-    test("should create index if it doesn't exist (using node label) and then query using the index", async () => {
-        // Skip if multi-db not supported
-        if (!MULTIDB_SUPPORT) {
-            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-            return;
-        }
-
-        const title = generate({ readable: true, charset: "alphabetic" });
-        const indexName = generate({ readable: true, charset: "alphabetic" });
-        const label = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
-
-        const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(label: "${label}") {
-                title: String!
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
-
-        await expect(
-            neoSchema.assertIndexesAndConstraints({
-                driver,
-                driverConfig: { database: databaseName },
-                options: { create: true },
-            })
-        ).resolves.not.toThrow();
-
-        const session = driver.session({ database: databaseName });
-
-        const cypher = `
-            SHOW INDEXES yield
-                name AS name,
-                type AS type,
-                entityType AS entityType,
-                labelsOrTypes AS labelsOrTypes,
-                properties AS properties
-            WHERE name = "${indexName}"
-            RETURN {
-                 name: name,
-                 type: type,
-                 entityType: entityType,
-                 labelsOrTypes: labelsOrTypes,
-                 properties: properties
-            } as result
-        `;
-
-        try {
-            const result = await session.run(cypher);
-
-            const record = result.records[0].get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
-
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([label]);
-            expect(record.properties).toEqual(["title"]);
-
-            await session.run(`
-                CREATE (:${label} { title: "${title}" })
-            `);
-        } finally {
-            await session.close();
-        }
-
-        const query = `
-            query {
-                ${type.plural}(fulltext: { ${indexName}: { phrase: "${title}" } }) {
-                    title
-                }
-            }
-        `;
-
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: {
-                driver,
-                driverConfig: { database: databaseName },
-            },
-        });
-
-        expect(gqlResult.errors).toBeFalsy();
-
-        expect(gqlResult.data).toEqual({
-            [type.plural]: [{ title }],
-        });
-    });
-
-    test("should create index if it doesn't exist (using field alias) and then query using the index", async () => {
-        // Skip if multi-db not supported
-        if (!MULTIDB_SUPPORT) {
-            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-            return;
-        }
-
-        const title = generate({ readable: true, charset: "alphabetic" });
-        const indexName = generate({ readable: true, charset: "alphabetic" });
-        const label = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
-
-        const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node(label: "${label}") {
-                title: String! @alias(property: "newTitle")
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
-
-        await expect(
-            neoSchema.assertIndexesAndConstraints({
-                driver,
-                driverConfig: { database: databaseName },
-                options: { create: true },
-            })
-        ).resolves.not.toThrow();
-
-        const session = driver.session({ database: databaseName });
-
-        const cypher = `
-            SHOW INDEXES yield
-                name AS name,
-                type AS type,
-                entityType AS entityType,
-                labelsOrTypes AS labelsOrTypes,
-                properties AS properties
-            WHERE name = "${indexName}"
-            RETURN {
-                 name: name,
-                 type: type,
-                 entityType: entityType,
-                 labelsOrTypes: labelsOrTypes,
-                 properties: properties
-            } as result
-        `;
-
-        try {
-            const result = await session.run(cypher);
-
-            const record = result.records[0].get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
-
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([label]);
-            expect(record.properties).toEqual(["newTitle"]);
-
-            await session.run(`
-                CREATE (:${label} { newTitle: "${title}" })
-            `);
-        } finally {
-            await session.close();
-        }
-
-        const query = `
-            query {
-                ${type.plural}(fulltext: { ${indexName}: { phrase: "${title}" } }) {
-                    title
-                }
-            }
-        `;
-
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: {
-                driver,
-                driverConfig: { database: databaseName },
-            },
-        });
-
-        expect(gqlResult.errors).toBeFalsy();
-
-        expect(gqlResult.data).toEqual({
-            [type.plural]: [{ title }],
-        });
-    });
-
-    test("should throw when missing index", async () => {
-        // Skip if multi-db not supported
-        if (!MULTIDB_SUPPORT) {
-            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-            return;
-        }
-
-        const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
-
-        const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
-                title: String!
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        await neoSchema.getSchema();
-
-        await expect(
-            neoSchema.assertIndexesAndConstraints({
-                driver,
-                driverConfig: { database: databaseName },
-            })
-        ).rejects.toThrow(`Missing @fulltext index '${indexName}' on Node '${type.name}'`);
-    });
-
-    test("should throw when index is missing fields", async () => {
-        // Skip if multi-db not supported
-        if (!MULTIDB_SUPPORT) {
-            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-            return;
-        }
-
-        const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
-
-        const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
-                title: String!
-                description: String!
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        await neoSchema.getSchema();
-
-        const session = driver.session({ database: databaseName });
-
-        try {
-            await session.run(
-                [`CREATE FULLTEXT INDEX ${indexName}`, `IF NOT EXISTS FOR (n:${type.name})`, `ON EACH [n.title]`].join(
-                    " "
-                )
+            const test = await session.run(
+                `
+                CREATE (person1:${personType.name})-[:ACTED_IN]->(movie1:${movieType.name})
+                CREATE (person1)-[:ACTED_IN]->(movie2:${movieType.name})
+                CREATE (person2:${personType.name})-[:ACTED_IN]->(movie1)
+                CREATE (person3:${personType.name})-[:ACTED_IN]->(movie2)
+                SET person1 = $person1
+                SET person2 = $person2
+                SET person3 = $person3
+                SET movie1 = $movie1
+                SET movie2 = $movie2
+            `,
+                { person1, person2, person3, movie1, movie2 }
             );
-        } finally {
-            await session.close();
-        }
-
-        await expect(
-            neoSchema.assertIndexesAndConstraints({
-                driver,
-                driverConfig: { database: databaseName },
-            })
-        ).rejects.toThrow(`@fulltext index '${indexName}' on Node '${type.name}' is missing field 'description'`);
-    });
-
-    test("should throw when index is missing fields (using field alias)", async () => {
-        // Skip if multi-db not supported
-        if (!MULTIDB_SUPPORT) {
-            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-            return;
-        }
-
-        const indexName = generate({ readable: true, charset: "alphabetic" });
-        const alias = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
-
-        const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
-                title: String!
-                description: String! @alias(property: "${alias}")
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        await neoSchema.getSchema();
-
-        const session = driver.session({ database: databaseName });
-
-        try {
-            await session.run(
-                [
-                    `CREATE FULLTEXT INDEX ${indexName}`,
-                    `IF NOT EXISTS FOR (n:${type.name})`,
-                    `ON EACH [n.title, n.description]`,
-                ].join(" ")
-            );
-        } finally {
-            await session.close();
-        }
-
-        await expect(
-            neoSchema.assertIndexesAndConstraints({
-                driver,
-                driverConfig: { database: databaseName },
-            })
-        ).rejects.toThrow(
-            `@fulltext index '${indexName}' on Node '${type.name}' is missing field 'description' aliased to field '${alias}'`
-        );
-    });
-
-    test("should create index if it doesn't exist and not throw if it does exist, and then query using the index", async () => {
-        // Skip if multi-db not supported
-        if (!MULTIDB_SUPPORT) {
-            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-            return;
-        }
-
-        const title = generate({ readable: true, charset: "alphabetic" });
-        const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
-
-        const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) {
-                title: String!
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        await neoSchema.getSchema();
-
-        await expect(
-            neoSchema.assertIndexesAndConstraints({
-                driver,
-                driverConfig: { database: databaseName },
-                options: { create: true },
-            })
-        ).resolves.not.toThrow();
-
-        // Previously this would have thrown, but the operation should be idempotent
-        await expect(
-            neoSchema.assertIndexesAndConstraints({
-                driver,
-                driverConfig: { database: databaseName },
-                options: { create: true },
-            })
-        ).resolves.not.toThrow();
-
-        const session = driver.session({ database: databaseName });
-
-        const cypher = `
-            SHOW INDEXES yield
-                name AS name,
-                type AS type,
-                entityType AS entityType,
-                labelsOrTypes AS labelsOrTypes,
-                properties AS properties
-            WHERE name = "${indexName}"
-            RETURN {
-                 name: name,
-                 type: type,
-                 entityType: entityType,
-                 labelsOrTypes: labelsOrTypes,
-                 properties: properties
-            } as result
-        `;
-
-        try {
-            const result = await session.run(cypher);
-
-            const record = result.records[0].get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
-
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([type.name]);
-            expect(record.properties).toEqual(["title"]);
-
-            await session.run(`
-                CREATE (:${type.name} { title: "${title}" })
-            `);
+            console.log(test);
         } finally {
             await session.close();
         }
     });
 
-    test("should throw when index is missing fields when used with create option", async () => {
-        // Skip if multi-db not supported
-        if (!MULTIDB_SUPPORT) {
-            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-            return;
-        }
-
-        const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
-
-        const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) {
-                title: String!
-                description: String!
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        await neoSchema.getSchema();
-
-        const session = driver.session({ database: databaseName });
-
-        try {
-            await session.run(
-                [`CREATE FULLTEXT INDEX ${indexName}`, `IF NOT EXISTS FOR (n:${type.name})`, `ON EACH [n.title]`].join(
-                    " "
-                )
-            );
-        } finally {
-            await session.close();
-        }
-
-        await expect(
-            neoSchema.assertIndexesAndConstraints({
-                driver,
-                driverConfig: { database: databaseName },
-                options: { create: true },
-            })
-        ).rejects.toThrow(
-            `@fulltext index '${indexName}' on Node '${type.name}' already exists, but is missing field 'description'`
-        );
-    });
-
-    test("should create index for ID field if it doesn't exist and then query using the index", async () => {
-        // Skip if multi-db not supported
-        if (!MULTIDB_SUPPORT) {
-            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-            return;
-        }
-
-        const id = generate({ readable: true, charset: "alphabetic" });
-        const indexName = generate({ readable: true, charset: "alphabetic" });
-        const type = generateUniqueType("Movie");
-
-        const typeDefs = gql`
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["id"] }]) {
-                id: ID!
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
-        const schema = await neoSchema.getSchema();
-
-        await expect(
-            neoSchema.assertIndexesAndConstraints({
-                driver,
-                driverConfig: { database: databaseName },
-                options: { create: true },
-            })
-        ).resolves.not.toThrow();
-
-        const session = driver.session({ database: databaseName });
-
-        const cypher = `
-            SHOW INDEXES yield
-                name AS name,
-                type AS type,
-                entityType AS entityType,
-                labelsOrTypes AS labelsOrTypes,
-                properties AS properties
-            WHERE name = "${indexName}"
-            RETURN {
-                 name: name,
-                 type: type,
-                 entityType: entityType,
-                 labelsOrTypes: labelsOrTypes,
-                 properties: properties
-            } as result
-        `;
-
-        try {
-            const result = await session.run(cypher);
-
-            const record = result.records[0].get("result") as {
-                name: string;
-                type: string;
-                entityType: string;
-                labelsOrTypes: string[];
-                properties: string[];
-            };
-
-            expect(record.name).toEqual(indexName);
-            expect(record.type).toBe("FULLTEXT");
-            expect(record.entityType).toBe("NODE");
-            expect(record.labelsOrTypes).toEqual([type.name]);
-            expect(record.properties).toEqual(["id"]);
-
-            await session.run(`
-                CREATE (:${type.name} { id: "${id}" })
-            `);
-        } finally {
-            await session.close();
-        }
-
+    test("my test", async () => {
         const query = `
             query {
-                ${type.plural}(fulltext: { ${indexName}: { phrase: "${id}" } }) {
-                    id
+                ${personType.plural}Fulltext${upperFirst(personType.name)}Index(phrase: "a different name") {
+                    score
+                    ${personType.name} {
+                        name
+                    } 
                 }
             }
         `;
 
-        const gqlResult = await graphql({
-            schema,
-            source: query,
-            contextValue: {
-                driver,
-                driverConfig: { database: databaseName },
-            },
-        });
+        try {
+            const gqlResult = await graphql({
+                schema: generatedSchema,
+                source: query,
+                contextValue: {
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
 
-        expect(gqlResult.errors).toBeFalsy();
-
-        expect(gqlResult.data).toEqual({
-            [type.plural]: [{ id }],
-        });
+            expect(gqlResult.errors).toBeFalsy();
+        } finally {
+            await session.close();
+        }
     });
 });
