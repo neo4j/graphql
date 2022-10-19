@@ -33,14 +33,15 @@ export class FullTextQueryNodes extends Clause {
     private targetNode: NodeRef;
     private indexName: string;
     private phrase: Variable;
-
+    private scoreVar: Variable | undefined;
     private whereClause: Where | undefined;
 
-    constructor(targetNode: NodeRef, indexName: string, phrase: Variable, parent?: Clause) {
+    constructor(targetNode: NodeRef, indexName: string, phrase: Variable, parent?: Clause, scoreVar?: Variable) {
         super(parent);
         this.targetNode = targetNode;
         this.indexName = indexName;
         this.phrase = phrase;
+        this.scoreVar = scoreVar;
     }
 
     public where(input: Predicate): this {
@@ -56,13 +57,18 @@ export class FullTextQueryNodes extends Clause {
 
     public getCypher(env: CypherEnvironment): string {
         const targetId = env.getReferenceId(this.targetNode);
+        let scoreYield = "";
+        if (this.scoreVar) {
+            const scoreId = env.getReferenceId(this.scoreVar);
+            scoreYield = `, score AS ${scoreId}`;
+        }
         const whereStr = this.whereClause?.getCypher(env) || "";
         const returnStr = this.returnStatement?.getCypher(env) || "";
 
         const textSearchStr = dedent`CALL db.index.fulltext.queryNodes(
             "${this.indexName}",
             ${this.phrase.getCypher(env)}
-        ) YIELD node AS ${targetId}, score AS ${targetId}_fulltext_score`;
+        ) YIELD node AS ${targetId}${scoreYield}`;
 
         return `${textSearchStr}\n
             ${whereStr}\n

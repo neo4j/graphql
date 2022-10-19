@@ -52,12 +52,11 @@ export function createMatchClause({
     operation: AuthOperations;
 }): CypherBuilder.Match | CypherBuilder.db.FullTextQueryNodes {
     const { resolveTree } = context;
-    const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
-
     const matchNode = new CypherBuilder.NamedNode(varName, { labels: node.getLabels(context) });
 
     let matchQuery: CypherBuilder.Match<CypherBuilder.Node> | CypherBuilder.db.FullTextQueryNodes;
+    let whereInput = resolveTree.args.where as GraphQLWhereArg | undefined;
 
     if (Object.entries(fulltextInput).length) {
         // This is only for fulltext search
@@ -77,16 +76,32 @@ export function createMatchClause({
         if (andChecks) matchQuery.where(andChecks);
     } else if (context.fulltextIndex) {
         const phraseParam = new CypherBuilder.Param(resolveTree.args.phrase);
+        const scoreVar = new CypherBuilder.Variable();
 
         matchQuery = new CypherBuilder.db.FullTextQueryNodes(
             matchNode,
             context.fulltextIndex.name,
             phraseParam,
+            undefined,
+            scoreVar
         );
 
         const labelsChecks = node.getLabels(context).map((label) => {
             return CypherBuilder.in(new CypherBuilder.Literal(label), CypherBuilder.labels(matchNode));
         });
+
+        if (whereInput?.score) {
+            if (whereInput.score.min || whereInput.score.min === 0) {
+                const scoreMinOp = CypherBuilder.gte(scoreVar, new CypherBuilder.Param(whereInput.score.min));
+                if (scoreMinOp) matchQuery.where(scoreMinOp);
+            }
+            if (whereInput.score.max || whereInput.score.max === 0) {
+                const scoreMaxOp = CypherBuilder.lte(scoreVar, new CypherBuilder.Param(whereInput.score.max));
+                if (scoreMaxOp) matchQuery.where(scoreMaxOp);
+            }
+        }
+
+        whereInput = whereInput?.[node.name];
 
         const andChecks = CypherBuilder.and(...labelsChecks);
         if (andChecks) matchQuery.where(andChecks);
@@ -96,10 +111,10 @@ export function createMatchClause({
 
     if (whereInput) {
         const whereOp = createWherePredicate({
-            whereInput,
-            element: node,
-            context,
             targetElement: matchNode,
+            whereInput,
+            context,
+            element: node,
         });
 
         if (whereOp) matchQuery.where(whereOp);

@@ -28,17 +28,19 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createMatchClause } from "./translate-top-level-match";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 
-export function translateRead({
-    node,
-    context,
-    isRootConnectionField,
-}: {
-    context: Context;
-    node: Node;
-    isRootConnectionField?: boolean;
-}): CypherBuilder.CypherResult {
+export function translateRead(
+    {
+        node,
+        context,
+        isRootConnectionField,
+    }: {
+        context: Context;
+        node: Node;
+        isRootConnectionField?: boolean;
+    },
+    varName = "this"
+): CypherBuilder.CypherResult {
     const { resolveTree } = context;
-    const varName = "this";
     const nodeVarRef = new CypherBuilder.NamedNode(varName);
 
     let projAuth: CypherBuilder.Clause | undefined;

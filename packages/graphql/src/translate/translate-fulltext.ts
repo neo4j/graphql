@@ -30,12 +30,12 @@ export function translateFulltext({ node, context }: { node: Node; context: Cont
         context.fulltextIndex.scoreVariable = scoreVariable;
         context.resolveTree = { ...resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.name] };
         context.resolveTree.args = { ...resolveTree.args };
-        result = translateRead({ node, context });
+        result = translateRead({ node, context }, node.name);
     } else {
-        result = translateRead({ node, context });
+        result = translateRead({ node, context }, node.name);
     }
     if (resolveTree.fieldsByTypeName[node.fulltextTypeNames.result].score) {
-        result.cypher = `${result.cypher}, ${node.name}_fulltext_score AS score`;
-    } 
+        result.cypher = `${result.cypher}, var0 AS score`;
+    }
     return result;
 }
