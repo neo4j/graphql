@@ -59,9 +59,9 @@ describe("Cypher customResolver directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
-            RETURN this { .firstName, .lastName, .fullName } as this"
-        `);
+"MATCH (this:\`User\`)
+RETURN this { .firstName, .lastName, .fullName } AS this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -81,9 +81,9 @@ describe("Cypher customResolver directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
-            RETURN this { .fullName, .firstName, .lastName } as this"
-        `);
+"MATCH (this:\`User\`)
+RETURN this { .fullName, .firstName, .lastName } AS this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });

@@ -69,6 +69,12 @@ export class CypherEnvironment {
         this.addParam(name, param);
     }
 
+    public addExtraParams(params: Record<string, Param>): void {
+        Object.entries(params).forEach(([key, param]) => {
+            this.addNamedParamReference(key, param);
+        });
+    }
+
     public getParamsSize(): number {
         return this.params.length;
     }

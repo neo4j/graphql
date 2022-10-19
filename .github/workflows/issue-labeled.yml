@@ -12,13 +12,13 @@ jobs:
 
     steps:
       - name: Add comment
-        uses: peter-evans/create-or-update-comment@c9fcb64660bc90ec1cc535646af190c992007c32 # renovate: tag=v2.0.0
+        uses: peter-evans/create-or-update-comment@2b2c85d0bf1b8a7b4e7e344bd5c71dc4b9196e9f # tag=v2.0.1
         with:
           token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
           body: |
             We've been able to confirm this bug using the steps to reproduce that you provided - many thanks @${{ github.event.issue.user.login }}! :pray: We will now prioritise the bug and address it appropriately.
-      - uses: alex-page/github-project-automation-plus@bb266ff4dde9242060e2d5418e120a133586d488 # renovate: tag=v0.8.1
+      - uses: alex-page/github-project-automation-plus@1f8873e97e3c8f58161a323b7c568c1f623a1c4d # tag=v0.8.2
         with:
           project: Bug Triage
           column: Confirmed
@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Add comment
-        uses: peter-evans/create-or-update-comment@c9fcb64660bc90ec1cc535646af190c992007c32 # renovate: tag=v2.0.0
+        uses: peter-evans/create-or-update-comment@2b2c85d0bf1b8a7b4e7e344bd5c71dc4b9196e9f # tag=v2.0.1
         with:
           token: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
           issue-number: ${{ github.event.issue.number }}

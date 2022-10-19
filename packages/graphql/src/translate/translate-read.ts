@@ -23,9 +23,9 @@ import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
 import createProjectionAndParams, { ProjectionResult } from "./create-projection-and-params";
 import type { GraphQLOptionsArg, GraphQLSortArg, Context } from "../types";
-import { createAuthAndParams } from "./create-auth-and-params";
+import { createAuthPredicates } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
-import { translateTopLevelMatch } from "./translate-top-level-match";
+import { createMatchClause } from "./translate-top-level-match";
 import Cypher from "@neo4j/cypher-builder";
 
 export function translateRead({
@@ -40,21 +40,16 @@ export function translateRead({
     const { resolveTree } = context;
     const varName = "this";
 
-    let matchAndWhereStr = "";
-    let authStr = "";
-    let projAuth = "";
+    const nodeVarRef = new Cypher.NamedNode(varName);
 
-    let cypherParams: { [k: string]: any } = context.cypherParams ? { cypherParams: context.cypherParams } : {};
-    const interfaceStrs: string[] = [];
+    let projAuth: Cypher.Clause | undefined;
 
-    const topLevelMatch = translateTopLevelMatch({
+    const topLevelMatch = createMatchClause({
         node,
         context,
         varName,
         operation: "READ",
     });
-    matchAndWhereStr = topLevelMatch.cypher;
-    cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
     const projection = createProjectionAndParams({
         node,
@@ -63,15 +58,15 @@ export function translateRead({
         varName,
     });
 
-    cypherParams = { ...cypherParams, ...projection.params };
-
     if (projection.meta?.authValidateStrs?.length) {
-        projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
-            " AND "
-        )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+        projAuth = new Cypher.RawCypher(
+            `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
+                " AND "
+            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`
+        );
     }
 
-    const allowAndParams = createAuthAndParams({
+    const authPredicates = createAuthPredicates({
         operations: "READ",
         entity: node,
         context,
@@ -80,79 +75,83 @@ export function translateRead({
             varName,
         },
     });
-    if (allowAndParams[0]) {
-        cypherParams = { ...cypherParams, ...allowAndParams[1] };
-        authStr = `CALL apoc.util.validate(NOT (${allowAndParams[0]}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
+
+    if (authPredicates) {
+        topLevelMatch.where(new Cypher.apoc.ValidatePredicate(Cypher.not(authPredicates), AUTH_FORBIDDEN_ERROR));
     }
 
     const projectionSubqueries = Cypher.concat(...projection.subqueries);
     const projectionSubqueriesBeforeSort = Cypher.concat(...projection.subqueriesBeforeSort);
 
-    // TODO: concatenate with "translateTopLevelMatch" result to avoid param collision
-    const readQuery = new Cypher.RawCypher((env: Cypher.Environment) => {
-        const projectionSubqueriesStr = projectionSubqueries.getCypher(env);
-        const subqueriesBeforeSort = projectionSubqueriesBeforeSort.getCypher(env);
+    let withAndOrder: Cypher.Clause | undefined;
 
-        if (isRootConnectionField) {
-            return translateRootConnectionField({
-                context,
-                varName,
-                projection,
-                subStr: {
-                    projectionSubqueries: projectionSubqueriesStr,
-                    matchAndWhereStr,
-                    authStr,
-                    projAuth,
-                    interfaceStrs,
-                    subqueriesBeforeSort,
-                },
-            });
-        }
+    const optionsInput = (resolveTree.args.options || {}) as GraphQLOptionsArg;
 
-        return translateRootField({
+    if (node.queryOptions) {
+        optionsInput.limit = node.queryOptions.getLimit(optionsInput.limit); // TODO: improve this
+    }
+
+    if (optionsInput.sort || optionsInput.limit || optionsInput.offset) {
+        withAndOrder = getSortClause({
             context,
             varName,
-            projection,
             node,
-            subStr: {
-                projectionSubqueries: projectionSubqueriesStr,
-                matchAndWhereStr,
-                authStr,
-                projAuth,
-                interfaceStrs,
-                subqueriesBeforeSort,
-            },
         });
+    }
+
+    const projectionExpression = new Cypher.RawCypher(() => {
+        return [`${varName} ${projection.projection}`, projection.params];
     });
-    const result = readQuery.build(varName);
-    return {
-        cypher: result.cypher,
-        params: { ...cypherParams, ...result.params },
-    };
+
+    let projectionClause: Cypher.Clause = new Cypher.Return([projectionExpression, varName]); // TODO: avoid reassign
+
+    let connectionPreClauses: Cypher.Clause | undefined;
+
+    if (isRootConnectionField) {
+        // TODO: unify with createConnectionClause
+        const edgesVar = new Cypher.NamedVariable("edges");
+        const edgeVar = new Cypher.NamedVariable("edge");
+        const totalCountVar = new Cypher.NamedVariable("totalCount");
+
+        const withCollect = new Cypher.With([Cypher.collect(nodeVarRef), edgesVar]).with(edgesVar, [
+            Cypher.size(edgesVar),
+            totalCountVar,
+        ]);
+
+        const unwind = new Cypher.Unwind([edgesVar, nodeVarRef]).with(nodeVarRef, totalCountVar);
+        connectionPreClauses = Cypher.concat(withCollect, unwind);
+
+        const connectionEdge = new Cypher.Map({
+            node: projectionExpression,
+        });
+
+        const withTotalCount = new Cypher.With([connectionEdge, edgeVar], totalCountVar, nodeVarRef);
+        const connectionClause = getConnectionSortClause({ context, projection, varName });
+        const returnClause = new Cypher.With([Cypher.collect(edgeVar), edgesVar], totalCountVar).return([
+            new Cypher.Map({
+                edges: edgesVar,
+                totalCount: totalCountVar,
+            }),
+            nodeVarRef,
+        ]);
+
+        projectionClause = Cypher.concat(withTotalCount, connectionClause, returnClause);
+    }
+    const readQuery = Cypher.concat(
+        topLevelMatch,
+        projAuth,
+        connectionPreClauses,
+        projectionSubqueriesBeforeSort,
+        withAndOrder,
+        projectionSubqueries,
+        projectionClause
+    );
+
+    return readQuery.build(undefined, context.cypherParams ? { cypherParams: context.cypherParams } : {});
 }
 
-function translateRootField({
-    context,
-    varName,
-    projection,
-    node,
-    subStr,
-}: {
-    node: Node;
-    context: Context;
-    varName: string;
-    projection: ProjectionResult;
-    subStr: {
-        matchAndWhereStr: string;
-        authStr: string;
-        projAuth: string;
-        interfaceStrs: string[];
-        projectionSubqueries: string;
-        subqueriesBeforeSort: string;
-    };
-}): [string, Record<string, any>] {
+function getSortClause({ context, varName, node }: { context: Context; varName: string; node: Node }): Cypher.Clause {
     const { resolveTree } = context;
-
     const optionsInput = (resolveTree.args.options || {}) as GraphQLOptionsArg;
 
     let limit: number | Integer | undefined = optionsInput.limit;
@@ -192,42 +191,20 @@ function translateRootField({
         sortOffsetLimit.push(`LIMIT $${varName}_limit`);
     }
 
-    const withStrs = subStr.projAuth ? [`WITH *`, subStr.projAuth] : [];
-
-    const returnStrs = [`RETURN ${varName} ${projection.projection} as ${varName}`];
-
-    const cypher: string[] = [
-        subStr.matchAndWhereStr,
-        subStr.subqueriesBeforeSort,
-        ...(sortOffsetLimit.length > 1 ? sortOffsetLimit : []),
-        subStr.authStr,
-        ...withStrs,
-        ...subStr.interfaceStrs,
-        subStr.projectionSubqueries,
-        ...returnStrs,
-    ];
-
-    return [cypher.filter(Boolean).join("\n"), params];
+    return new Cypher.RawCypher(() => {
+        return [sortOffsetLimit.join("\n"), params];
+    });
 }
 
-function translateRootConnectionField({
+function getConnectionSortClause({
     context,
-    varName,
-    subStr,
     projection,
+    varName,
 }: {
     context: Context;
-    varName: string;
     projection: ProjectionResult;
-    subStr: {
-        matchAndWhereStr: string;
-        authStr: string;
-        projAuth: string;
-        interfaceStrs: string[];
-        projectionSubqueries: string;
-        subqueriesBeforeSort: string;
-    };
-}): [string, Record<string, any>] {
+    varName: string;
+}): Cypher.Clause {
     const { resolveTree } = context;
 
     const afterInput = resolveTree.args.after as string | undefined;
@@ -273,25 +250,7 @@ function translateRootConnectionField({
         cypherParams[`${varName}_limit`] = firstInput;
     }
 
-    const withStrs = subStr.projAuth ? [`WITH ${varName}`, subStr.projAuth] : [];
-    const cypher = [
-        subStr.matchAndWhereStr,
-        subStr.authStr,
-        ...withStrs,
-        `WITH COLLECT(this) as edges`,
-        `WITH edges, size(edges) as totalCount`,
-        `UNWIND edges as ${varName}`,
-        `WITH ${varName}, totalCount`,
-        subStr.subqueriesBeforeSort,
-        subStr.projectionSubqueries,
-        `WITH { node: ${varName} ${projection.projection} } as edge, totalCount, ${varName}`,
-        ...(sortStr ? [sortStr] : []),
-        ...(offsetStr ? [offsetStr] : []),
-        ...(limitStr ? [limitStr] : []),
-        `WITH COLLECT(edge) as edges, totalCount`,
-        ...subStr.interfaceStrs,
-        `RETURN { edges: edges, totalCount: totalCount } as ${varName}`,
-    ];
-
-    return [cypher.filter(Boolean).join("\n"), cypherParams];
+    return new Cypher.RawCypher(() => {
+        return [[sortStr, offsetStr, limitStr].join("\n"), cypherParams];
+    });
 }

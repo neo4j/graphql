@@ -97,7 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
                 WITH collect(edge) AS edges, totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_moviesConnection
             }
-            RETURN this { moviesConnection: this_moviesConnection } as this"
+            RETURN this { moviesConnection: this_moviesConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
