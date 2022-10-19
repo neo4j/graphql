@@ -76,7 +76,7 @@ describe("getCustomResolverMeta", () => {
 
         expect(result).toBeUndefined();
     });
-    test("should throw if requires not a list 123", () => {
+    test("should throw if requires not a list - all strings", () => {
         const field: FieldDefinitionNode = {
             directives: [
                 {
