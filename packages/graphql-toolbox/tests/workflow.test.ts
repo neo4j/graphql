@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 
-import { generate } from "randomstring";
 import * as neo4j from "neo4j-driver";
-import { test, describe, expect, beforeAll, afterAll } from "./utils/pagemodel";
+import * as base from "@playwright/test";
+import { generate } from "randomstring";
+import { test, expect, beforeAll, afterAll } from "./utils/pagemodel";
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
-describe("workflow", () => {
+base.test.describe("workflow", () => {
     const id = generate({
         charset: "alphabetic",
     });

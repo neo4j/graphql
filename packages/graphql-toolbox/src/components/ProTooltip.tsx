@@ -50,7 +50,13 @@ export const ProTooltip = ({
     };
 
     return (
-        <div className="relative" onMouseOver={() => onMouseAction(true)} onMouseOut={() => onMouseAction(false)}>
+        <div
+            className="relative"
+            onFocus={() => onMouseAction(true)}
+            onMouseOver={() => onMouseAction(true)}
+            onBlur={() => onMouseAction(false)}
+            onMouseOut={() => onMouseAction(false)}
+        >
             {children}
             {visible ? (
                 <Tooltip
