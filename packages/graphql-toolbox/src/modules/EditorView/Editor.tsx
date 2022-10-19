@@ -208,6 +208,7 @@ export const Editor = ({ schema }: Props) => {
                                                         aria-label="Execute query"
                                                         color="primary"
                                                         clean
+                                                        // eslint-disable-next-line @typescript-eslint/no-misused-promises
                                                         onClick={() => onSubmit()}
                                                         disabled={!schema || loading}
                                                     >
