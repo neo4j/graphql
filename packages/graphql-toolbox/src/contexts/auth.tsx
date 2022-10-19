@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { Dispatch, useState, SetStateAction, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import * as neo4j from "neo4j-driver";
 import {
     LOCAL_STATE_CONNECTION_URL,
@@ -61,47 +61,9 @@ export interface State {
 export const AuthContext = React.createContext({} as State);
 
 export function AuthProvider(props: any) {
-    let value: State | undefined;
-    let setValue: Dispatch<SetStateAction<State>>;
     let intervalId: number;
 
-    const checkForDatabaseUpdates = async (driver: neo4j.Driver, setValue: any) => {
-        try {
-            await driver.verifyConnectivity();
-            const databases = await getDatabases(driver);
-            setValue((values) => ({ ...values, isConnected: true, databases: databases || [] }));
-        } catch (err) {
-            setValue((values) => ({ ...values, isConnected: false }));
-        }
-    };
-
-    const processLoginPayload = (value: State | undefined, loginPayloadFromDesktop: LoginPayload | null) => {
-        let loginPayload: LoginPayload | null = null;
-        if (loginPayloadFromDesktop) {
-            loginPayload = loginPayloadFromDesktop;
-            setValue((v) => ({ ...v, isNeo4jDesktop: true }));
-        } else {
-            const storedConnectionUsername = Storage.retrieve(LOCAL_STATE_CONNECTION_USERNAME);
-            const storedConnectionUrl = Storage.retrieve(LOCAL_STATE_CONNECTION_URL);
-            if (storedConnectionUrl && storedConnectionUsername) {
-                loginPayload = {
-                    username: storedConnectionUsername,
-                    url: storedConnectionUrl,
-                };
-            }
-        }
-        if (loginPayload?.password && value && !value.driver) {
-            value
-                .login({
-                    username: loginPayload.username,
-                    password: loginPayload.password,
-                    url: loginPayload.url,
-                })
-                .catch(() => {});
-        }
-    };
-
-    [value, setValue] = useState<State>({
+    const [value, setValue] = useState<State>({
         login: async (options: LoginOptions) => {
             const auth = neo4j.auth.basic(options.username, options.password);
             const protocol = getURLProtocolFromText(options.url);
@@ -125,8 +87,9 @@ export function AuthProvider(props: any) {
             Storage.store(LOCAL_STATE_CONNECTION_USERNAME, options.username);
             Storage.store(LOCAL_STATE_CONNECTION_URL, options.url);
 
-            intervalId = window.setInterval(() => {
-                checkForDatabaseUpdates(driver, setValue);
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            intervalId = window.setInterval(async () => {
+                await checkForDatabaseUpdates(driver, setValue);
             }, VERIFY_CONNECTION_INTERVAL_MS);
 
             setValue((v) => ({
@@ -170,5 +133,41 @@ export function AuthProvider(props: any) {
         resolveNeo4jDesktopLoginPayload().then(processLoginPayload.bind(null, value)).catch(console.error);
     }, []);
 
-    return <AuthContext.Provider value={value }>{props.children}</AuthContext.Provider>;
+    const checkForDatabaseUpdates = async (driver: neo4j.Driver, setValue: any) => {
+        try {
+            await driver.verifyConnectivity();
+            const databases = await getDatabases(driver);
+            setValue((values) => ({ ...values, isConnected: true, databases: databases || [] }));
+        } catch (err) {
+            setValue((values) => ({ ...values, isConnected: false }));
+        }
+    };
+
+    const processLoginPayload = (value: State | undefined, loginPayloadFromDesktop: LoginPayload | null) => {
+        let loginPayload: LoginPayload | null = null;
+        if (loginPayloadFromDesktop) {
+            loginPayload = loginPayloadFromDesktop;
+            setValue((v) => ({ ...v, isNeo4jDesktop: true }));
+        } else {
+            const storedConnectionUsername = Storage.retrieve(LOCAL_STATE_CONNECTION_USERNAME);
+            const storedConnectionUrl = Storage.retrieve(LOCAL_STATE_CONNECTION_URL);
+            if (storedConnectionUrl && storedConnectionUsername) {
+                loginPayload = {
+                    username: storedConnectionUsername,
+                    url: storedConnectionUrl,
+                };
+            }
+        }
+        if (loginPayload?.password && value && !value.driver) {
+            value
+                .login({
+                    username: loginPayload.username,
+                    password: loginPayload.password,
+                    url: loginPayload.url,
+                })
+                .catch((error) => console.log(error));
+        }
+    };
+
+    return <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>;
 }
