@@ -47,11 +47,11 @@ describe("@fulltext directive", () => {
     let driver: Driver;
     let neo4j: Neo4j;
     let session: Session;
+    let databaseName: string;
     let neoSchema: Neo4jGraphQL;
     let generatedSchema: GraphQLSchema;
     let personType: UniqueType;
     let movieType: UniqueType;
-    let databaseName: string;
 
     let MULTIDB_SUPPORT = true;
 
@@ -120,6 +120,7 @@ describe("@fulltext directive", () => {
     beforeEach(async () => {
         personType = generateUniqueType("Person");
         movieType = generateUniqueType("Movie");
+
         const typeDefs = generatedTypeDefs(personType, movieType);
 
         neoSchema = new Neo4jGraphQL({
@@ -136,7 +137,7 @@ describe("@fulltext directive", () => {
         session = driver.session({ database: databaseName });
 
         try {
-            const test = await session.run(
+            await session.run(
                 `
                 CREATE (person1:${personType.name})-[:ACTED_IN]->(movie1:${movieType.name})
                 CREATE (person1)-[:ACTED_IN]->(movie2:${movieType.name})
@@ -150,16 +151,15 @@ describe("@fulltext directive", () => {
             `,
                 { person1, person2, person3, movie1, movie2 }
             );
-            console.log(test);
         } finally {
             await session.close();
         }
     });
-
-    test("my test", async () => {
+    test("Orders by score DESC as default", async () => {
+        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
         const query = `
             query {
-                ${personType.plural}Fulltext${upperFirst(personType.name)}Index(phrase: "a different name") {
+                ${queryType}(phrase: "a different name") {
                     score
                     ${personType.name} {
                         name
@@ -167,20 +167,243 @@ describe("@fulltext directive", () => {
                 }
             }
         `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
 
-        try {
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            {
+                score: 0.62690669298172,
+                [personType.name]: {
+                    name: "This is a different name",
                 },
-            });
+            },
+            {
+                score: 0.26449739933013916,
+                [personType.name]: {
+                    name: "this is a name",
+                },
+            },
+            {
+                score: 0.07456067204475403,
+                [personType.name]: {
+                    name: "Another name",
+                },
+            },
+        ]);
+    });
+    test("No results if phrase doesn't match", async () => {
+        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
+        const query = `
+            query {
+                ${queryType}(phrase: "should not match") {
+                    score
+                    ${personType.name} {
+                        name
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
 
-            expect(gqlResult.errors).toBeFalsy();
-        } finally {
-            await session.close();
-        }
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([]);
+    });
+    test("Filters node to single result", async () => {
+        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
+        const query = `
+            query {
+                ${queryType}(phrase: "a different name", where: { ${personType.name}: { name: "${person1.name}" } }) {
+                    score
+                    ${personType.name} {
+                        name
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            {
+                score: 0.26449739933013916,
+                [personType.name]: {
+                    name: person1.name,
+                },
+            },
+        ]);
+    });
+    test("Filters node to multiple results", async () => {
+        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
+        const query = `
+            query {
+                ${queryType}(phrase: "a different name", where: { ${personType.name}: { born_GTE: ${person2.born} } }) {
+                    score
+                    ${personType.name} {
+                        name
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            {
+                score: 0.62690669298172,
+                [personType.name]: {
+                    name: "This is a different name",
+                },
+            },
+            {
+                score: 0.07456067204475403,
+                [personType.name]: {
+                    name: "Another name",
+                },
+            },
+        ]);
+    });
+    test("Filters node to no results", async () => {
+        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
+        const query = `
+            query {
+                ${queryType}(phrase: "a different name", where: { ${personType.name}: { name_CONTAINS: "not in anything!!" } }) {
+                    score
+                    ${personType.name} {
+                        name
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([]);
+    });
+    test("Filters score to single result", async () => {
+        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
+        const query = `
+            query {
+                ${queryType}(phrase: "a different name", where: { score: { min: 0.5 } }) {
+                    score
+                    ${personType.name} {
+                        name
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            {
+                score: 0.62690669298172,
+                [personType.name]: {
+                    name: "This is a different name",
+                },
+            },
+        ]);
+    });
+    test("Filters score to multiple results", async () => {
+        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
+        const query = `
+            query {
+                ${queryType}(phrase: "a different name", where: { score: { max: 0.5 } }) {
+                    score
+                    ${personType.name} {
+                        name
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            {
+                score: 0.26449739933013916,
+                [personType.name]: {
+                    name: "this is a name",
+                },
+            },
+            {
+                score: 0.07456067204475403,
+                [personType.name]: {
+                    name: "Another name",
+                },
+            },
+        ]);
+    });
+    test("Filters score to no results", async () => {
+        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
+        const query = `
+            query {
+                ${queryType}(phrase: "a different name", where: { score: { min: 100 } }) {
+                    score
+                    ${personType.name} {
+                        name
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([]);
     });
 });
