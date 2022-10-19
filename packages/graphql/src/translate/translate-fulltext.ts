@@ -30,6 +30,9 @@ export function translateFulltext({ node, context }: { node: Node; context: Cont
         context.fulltextIndex.scoreVariable = scoreVariable;
         context.resolveTree = { ...resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.name] };
         context.resolveTree.args = { ...resolveTree.args };
+        // Sort context
+        context.resolveTree.args.options = context.resolveTree.args.options || {};
+        (context.resolveTree.args.options as Record<string, any>).sort = [{ ...(resolveTree.args.sort?.[node.name] as Record<string, any>) }];
         result = translateRead({ node, context }, node.name);
     } else {
         result = translateRead({ node, context }, node.name);
