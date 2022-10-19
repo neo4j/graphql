@@ -104,12 +104,14 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
         });
 
         expect(mutationResult.errors).toBeFalsy();
-        expect(mutationResult.data).toEqual([
-            {
-                movies: {
-                    title: "John Wick",
-                },
+        expect(mutationResult.data).toEqual({
+            [Movie.operations.update]: {
+                [Movie.plural]: [
+                    {
+                        title: "John Wick",
+                    },
+                ],
             },
-        ]);
+        });
     });
 });
