@@ -538,7 +538,7 @@ function makeAugmentedSchema(
             ...node.unionFields,
             ...node.temporalFields,
             ...node.pointFields,
-            ...node.computedFields,
+            ...node.customResolverFields,
         ]);
 
         const composeNode = composer.createObjectTC({

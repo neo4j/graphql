@@ -22,7 +22,7 @@ import type { DocumentNode } from "graphql";
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
-describe("https://github.com/neo4j/graphql/issues/1429", () => {
+describe("https://github.com/neo4j/graphql/issues/1249", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -86,7 +86,7 @@ describe("https://github.com/neo4j/graphql/issues/1429", () => {
             "MATCH (this:\`Bulk\`:\`BULK\`)
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:MATERIAL_BULK]->(this_material:\`Material\`)
+                MATCH (this)-[this0:MATERIAL_BULK]->(this_material:\`Material\`)
                 CALL {
                     WITH this_material
                     MATCH (this_material)-[this_material_connection_suppliersConnectionthis0:MATERIAL_SUPPLIER]->(this_material_Supplier:\`Supplier\`)
@@ -98,7 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/1429", () => {
                 WITH this_material { .id, suppliersConnection: this_material_suppliersConnection } AS this_material
                 RETURN head(collect(this_material)) AS this_material
             }
-            RETURN this { .supplierMaterialNumber, material: this_material } as this"
+            RETURN this { .supplierMaterialNumber, material: this_material } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

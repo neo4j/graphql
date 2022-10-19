@@ -27,6 +27,7 @@ export { RawCypher } from "./clauses/RawCypher";
 export { With } from "./clauses/With";
 export { Unwind } from "./clauses/Unwind";
 export { Union } from "./clauses/Union";
+export { Foreach } from "./clauses/Foreach";
 
 export { concat } from "./clauses/utils/concat";
 

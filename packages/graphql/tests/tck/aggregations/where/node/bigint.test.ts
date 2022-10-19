@@ -65,7 +65,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_node.someBigInt = $aggr_node_someBigInt_EQUAL
             \\", { this: this, aggr_node_someBigInt_EQUAL: $aggr_node_someBigInt_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -97,7 +97,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_node._someBigIntAlias = $aggr_node_someBigIntAlias_EQUAL
             \\", { this: this, aggr_node_someBigIntAlias_EQUAL: $aggr_node_someBigIntAlias_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -129,7 +129,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_node.someBigInt > $aggr_node_someBigInt_GT
             \\", { this: this, aggr_node_someBigInt_GT: $aggr_node_someBigInt_GT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -161,7 +161,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_node.someBigInt >= $aggr_node_someBigInt_GTE
             \\", { this: this, aggr_node_someBigInt_GTE: $aggr_node_someBigInt_GTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -193,7 +193,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_node.someBigInt < $aggr_node_someBigInt_LT
             \\", { this: this, aggr_node_someBigInt_LT: $aggr_node_someBigInt_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -225,7 +225,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_node.someBigInt <= $aggr_node_someBigInt_LTE
             \\", { this: this, aggr_node_someBigInt_LTE: $aggr_node_someBigInt_LTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -257,7 +257,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN avg(aggr_node.someBigInt) = $aggr_node_someBigInt_AVERAGE_EQUAL
             \\", { this: this, aggr_node_someBigInt_AVERAGE_EQUAL: $aggr_node_someBigInt_AVERAGE_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -289,7 +289,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN avg(aggr_node.someBigInt) > $aggr_node_someBigInt_AVERAGE_GT
             \\", { this: this, aggr_node_someBigInt_AVERAGE_GT: $aggr_node_someBigInt_AVERAGE_GT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -321,7 +321,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN avg(aggr_node.someBigInt) >= $aggr_node_someBigInt_AVERAGE_GTE
             \\", { this: this, aggr_node_someBigInt_AVERAGE_GTE: $aggr_node_someBigInt_AVERAGE_GTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -353,7 +353,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN avg(aggr_node.someBigInt) < $aggr_node_someBigInt_AVERAGE_LT
             \\", { this: this, aggr_node_someBigInt_AVERAGE_LT: $aggr_node_someBigInt_AVERAGE_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -385,7 +385,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN avg(aggr_node.someBigInt) <= $aggr_node_someBigInt_AVERAGE_LTE
             \\", { this: this, aggr_node_someBigInt_AVERAGE_LTE: $aggr_node_someBigInt_AVERAGE_LTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -417,7 +417,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN sum(aggr_node.someBigInt) = toFloat($aggr_node_someBigInt_SUM_EQUAL)
             \\", { this: this, aggr_node_someBigInt_SUM_EQUAL: $aggr_node_someBigInt_SUM_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -449,7 +449,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN sum(aggr_node.someBigInt) > toFloat($aggr_node_someBigInt_SUM_GT)
             \\", { this: this, aggr_node_someBigInt_SUM_GT: $aggr_node_someBigInt_SUM_GT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -481,7 +481,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN sum(aggr_node.someBigInt) >= toFloat($aggr_node_someBigInt_SUM_GTE)
             \\", { this: this, aggr_node_someBigInt_SUM_GTE: $aggr_node_someBigInt_SUM_GTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -513,7 +513,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN sum(aggr_node.someBigInt) < toFloat($aggr_node_someBigInt_SUM_LT)
             \\", { this: this, aggr_node_someBigInt_SUM_LT: $aggr_node_someBigInt_SUM_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -545,7 +545,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN sum(aggr_node.someBigInt) <= toFloat($aggr_node_someBigInt_SUM_LTE)
             \\", { this: this, aggr_node_someBigInt_SUM_LTE: $aggr_node_someBigInt_SUM_LTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -577,7 +577,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  min(aggr_node.someBigInt) = $aggr_node_someBigInt_MIN_EQUAL
             \\", { this: this, aggr_node_someBigInt_MIN_EQUAL: $aggr_node_someBigInt_MIN_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -609,7 +609,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  min(aggr_node.someBigInt) > $aggr_node_someBigInt_MIN_GT
             \\", { this: this, aggr_node_someBigInt_MIN_GT: $aggr_node_someBigInt_MIN_GT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -641,7 +641,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  min(aggr_node.someBigInt) >= $aggr_node_someBigInt_MIN_GTE
             \\", { this: this, aggr_node_someBigInt_MIN_GTE: $aggr_node_someBigInt_MIN_GTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -673,7 +673,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  min(aggr_node.someBigInt) < $aggr_node_someBigInt_MIN_LT
             \\", { this: this, aggr_node_someBigInt_MIN_LT: $aggr_node_someBigInt_MIN_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -705,7 +705,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  min(aggr_node.someBigInt) <= $aggr_node_someBigInt_MIN_LTE
             \\", { this: this, aggr_node_someBigInt_MIN_LTE: $aggr_node_someBigInt_MIN_LTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -737,7 +737,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  max(aggr_node.someBigInt) = $aggr_node_someBigInt_MAX_EQUAL
             \\", { this: this, aggr_node_someBigInt_MAX_EQUAL: $aggr_node_someBigInt_MAX_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -769,7 +769,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  max(aggr_node.someBigInt) > $aggr_node_someBigInt_MAX_GT
             \\", { this: this, aggr_node_someBigInt_MAX_GT: $aggr_node_someBigInt_MAX_GT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -801,7 +801,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  max(aggr_node.someBigInt) >= $aggr_node_someBigInt_MAX_GTE
             \\", { this: this, aggr_node_someBigInt_MAX_GTE: $aggr_node_someBigInt_MAX_GTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -833,7 +833,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  max(aggr_node.someBigInt) < $aggr_node_someBigInt_MAX_LT
             \\", { this: this, aggr_node_someBigInt_MAX_LT: $aggr_node_someBigInt_MAX_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -865,7 +865,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  max(aggr_node.someBigInt) <= $aggr_node_someBigInt_MAX_LTE
             \\", { this: this, aggr_node_someBigInt_MAX_LTE: $aggr_node_someBigInt_MAX_LTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

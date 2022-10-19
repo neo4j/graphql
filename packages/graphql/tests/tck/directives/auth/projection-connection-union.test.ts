@@ -90,7 +90,7 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 CALL {
@@ -113,14 +113,14 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_contentConnection
             }
-            RETURN this { contentConnection: this_contentConnection } as this"
+            RETURN this { contentConnection: this_contentConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"param0\\": \\"super_admin\\",
                 \\"this_connection_contentConnectionparam0\\": \\"super_admin\\",
-                \\"this_Post_connection_creatorConnectionparam0\\": \\"super_admin\\",
-                \\"thisauth_param0\\": \\"super_admin\\"
+                \\"this_Post_connection_creatorConnectionparam0\\": \\"super_admin\\"
             }"
         `);
     });

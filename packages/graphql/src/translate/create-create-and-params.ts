@@ -18,6 +18,7 @@
  */
 
 import type { Node, Relationship } from "../classes";
+import { Neo4jGraphQLError } from "../classes/Error";
 import type { CallbackBucket } from "../classes/CallbackBucket";
 import type { Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
@@ -31,6 +32,7 @@ import { createEventMeta } from "./subscriptions/create-event-meta";
 import { createRelEventMeta } from "./subscriptions/rel-create-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
+import { findConflictingProperties } from "../utils/is-property-clash";
 
 interface Res {
     creates: string[];
@@ -63,6 +65,15 @@ function createCreateAndParams({
     includeRelationshipValidation?: boolean;
     topLevelNodeVariable?: string;
 }): [string, any] {
+    const conflictingProperties = findConflictingProperties({ node, input });
+    if (conflictingProperties.length > 0) {
+        throw new Neo4jGraphQLError(
+            `Conflicting modification of ${conflictingProperties.map((n) => `[[${n}]]`).join(", ")} on type ${
+                node.name
+            }`
+        );
+    }
+
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const varNameKey = `${varName}_${key}`;
         const relationField = node.relationFields.find((x) => key === x.fieldName);

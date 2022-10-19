@@ -118,7 +118,7 @@ export interface Unique {
 
 export interface Callback {
     operations: CallbackOperations[];
-    name: string;
+    callbackName: string;
 }
 
 /**
@@ -192,7 +192,7 @@ export interface UnionField extends BaseField {
     nodes?: string[];
 }
 
-export interface ComputedField extends BaseField {
+export interface CustomResolverField extends BaseField {
     requiredFields: string[];
 }
 

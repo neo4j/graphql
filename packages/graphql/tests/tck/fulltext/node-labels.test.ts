@@ -53,7 +53,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
                 $param0
             ) YIELD node as this
                         WHERE (\\"Movie\\" IN labels(this) AND \\"AnotherLabel\\" IN labels(this))
-            RETURN this { .title } as this"
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -104,7 +104,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
                 $param0
             ) YIELD node as this
                         WHERE (\\"Movie\\" IN labels(this) AND \\"some-label\\" IN labels(this))
-            RETURN this { .title } as this"
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

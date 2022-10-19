@@ -69,13 +69,13 @@ describe("Root Connection Query tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title = $param0
-            WITH COLLECT(this) as edges
-            WITH edges, size(edges) as totalCount
-            UNWIND edges as this
+            WITH collect(this) AS edges
+            WITH edges, size(edges) AS totalCount
+            UNWIND edges AS this
             WITH this, totalCount
-            WITH { node: this { .title } } as edge, totalCount, this
-            WITH COLLECT(edge) as edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } as this"
+            WITH { node: this { .title } } AS edge, totalCount, this
+            WITH collect(edge) AS edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -102,15 +102,15 @@ describe("Root Connection Query tests", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH COLLECT(this) as edges
-            WITH edges, size(edges) as totalCount
-            UNWIND edges as this
+            WITH collect(this) AS edges
+            WITH edges, size(edges) AS totalCount
+            UNWIND edges AS this
             WITH this, totalCount
-            WITH { node: this { .title } } as edge, totalCount, this
+            WITH { node: this { .title } } AS edge, totalCount, this
             ORDER BY this.title ASC
             LIMIT $this_limit
-            WITH COLLECT(edge) as edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } as this"
+            WITH collect(edge) AS edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -139,15 +139,15 @@ describe("Root Connection Query tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE this.title CONTAINS $param0
-            WITH COLLECT(this) as edges
-            WITH edges, size(edges) as totalCount
-            UNWIND edges as this
+            WITH collect(this) AS edges
+            WITH edges, size(edges) AS totalCount
+            UNWIND edges AS this
             WITH this, totalCount
-            WITH { node: this { .title } } as edge, totalCount, this
+            WITH { node: this { .title } } AS edge, totalCount, this
             ORDER BY this.title ASC
             LIMIT $this_limit
-            WITH COLLECT(edge) as edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } as this"
+            WITH collect(edge) AS edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -183,9 +183,9 @@ describe("Root Connection Query tests", () => {
         const result = await translateQuery(neoSchema, query, { req });
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
-            WITH COLLECT(this) as edges
-            WITH edges, size(edges) as totalCount
-            UNWIND edges as this
+            WITH collect(this) AS edges
+            WITH edges, size(edges) AS totalCount
+            UNWIND edges AS this
             WITH this, totalCount
             CALL {
                 WITH this
@@ -195,11 +195,11 @@ describe("Root Connection Query tests", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
-            WITH { node: this { .title, actorsConnection: this_actorsConnection } } as edge, totalCount, this
+            WITH { node: this { .title, actorsConnection: this_actorsConnection } } AS edge, totalCount, this
             ORDER BY this.title ASC
             LIMIT $this_limit
-            WITH COLLECT(edge) as edges, totalCount
-            RETURN { edges: edges, totalCount: totalCount } as this"
+            WITH collect(edge) AS edges, totalCount
+            RETURN { edges: edges, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
