@@ -406,4 +406,35 @@ describe("@fulltext directive", () => {
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data?.[queryType]).toEqual([]);
     });
+    test("Filters score with combined min and max", async () => {
+        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
+        const query = `
+            query {
+                ${queryType}(phrase: "a different name", where: { score: { min: 0.201, max: 0.57 } }) {
+                    score
+                    ${personType.name} {
+                        name
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            {
+                score: 0.26449739933013916,
+                [personType.name]: {
+                    name: "this is a name",
+                },
+            },
+        ]);
+    });
 });
