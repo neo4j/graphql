@@ -317,29 +317,29 @@ describe("Cypher Union", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.title = $this0_title
-            WITH this0
-            CALL {
-            	WITH this0
-            	OPTIONAL MATCH (this0_search_Genre_connect0_node:Genre)
-            	WHERE this0_search_Genre_connect0_node.name = $this0_search_Genre_connect0_node_param0
-            	CALL {
-            		WITH *
-            		WITH collect(this0_search_Genre_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		UNWIND parentNodes as this0
-            		UNWIND connectedNodes as this0_search_Genre_connect0_node
-            		MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
-            		RETURN count(*)
-            	}
-            	RETURN count(*) AS connect_this0_search_Genre_connect_Genre
-            }
-            RETURN this0
-            }
-            RETURN [
-            this0 { .title }] AS data"
-        `);
+"CALL {
+CREATE (this0:Movie)
+SET this0.title = $this0_title
+WITH this0
+CALL {
+	WITH this0
+	OPTIONAL MATCH (this0_search_Genre_connect0_node:Genre)
+	WHERE this0_search_Genre_connect0_node.name = $this0_search_Genre_connect0_node_param0
+	CALL {
+		WITH *
+		WITH collect(this0_search_Genre_connect0_node) as connectedNodes, collect(this0) as parentNodes
+		UNWIND parentNodes as this0
+		UNWIND connectedNodes as this0_search_Genre_connect0_node
+		MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
+		RETURN count(*) AS _
+	}
+	RETURN count(*) AS connect_this0_search_Genre_connect_Genre
+}
+RETURN this0
+}
+RETURN [
+this0 { .title }] AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -449,24 +449,24 @@ describe("Cypher Union", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
-            WITH this
-            CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_search_Genre0_disconnect0_rel:SEARCH]->(this_search_Genre0_disconnect0:Genre)
-            WHERE this_search_Genre0_disconnect0.name = $updateMovies_args_update_search_Genre0_disconnect0_where_Genreparam0
-            CALL {
-            	WITH this_search_Genre0_disconnect0, this_search_Genre0_disconnect0_rel
-            	WITH collect(this_search_Genre0_disconnect0) as this_search_Genre0_disconnect0, this_search_Genre0_disconnect0_rel
-            	UNWIND this_search_Genre0_disconnect0 as x
-            	DELETE this_search_Genre0_disconnect0_rel
-            	RETURN count(*)
-            }
-            RETURN count(*) AS disconnect_this_search_Genre0_disconnect_Genre
-            }
-            RETURN collect(DISTINCT this { .title }) AS data"
-        `);
+"MATCH (this:\`Movie\`)
+WHERE this.title = $param0
+WITH this
+CALL {
+WITH this
+OPTIONAL MATCH (this)-[this_search_Genre0_disconnect0_rel:SEARCH]->(this_search_Genre0_disconnect0:Genre)
+WHERE this_search_Genre0_disconnect0.name = $updateMovies_args_update_search_Genre0_disconnect0_where_Genreparam0
+CALL {
+	WITH this_search_Genre0_disconnect0, this_search_Genre0_disconnect0_rel
+	WITH collect(this_search_Genre0_disconnect0) as this_search_Genre0_disconnect0, this_search_Genre0_disconnect0_rel
+	UNWIND this_search_Genre0_disconnect0 as x
+	DELETE this_search_Genre0_disconnect0_rel
+	RETURN count(*) AS _
+}
+RETURN count(*) AS disconnect_this_search_Genre0_disconnect_Genre
+}
+RETURN collect(DISTINCT this { .title }) AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -518,25 +518,25 @@ describe("Cypher Union", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
-            WITH this
-            CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_disconnect_search_Genre0_rel:SEARCH]->(this_disconnect_search_Genre0:Genre)
-            WHERE this_disconnect_search_Genre0.name = $updateMovies_args_disconnect_search_Genre0_where_Genreparam0
-            CALL {
-            	WITH this_disconnect_search_Genre0, this_disconnect_search_Genre0_rel
-            	WITH collect(this_disconnect_search_Genre0) as this_disconnect_search_Genre0, this_disconnect_search_Genre0_rel
-            	UNWIND this_disconnect_search_Genre0 as x
-            	DELETE this_disconnect_search_Genre0_rel
-            	RETURN count(*)
-            }
-            RETURN count(*) AS disconnect_this_disconnect_search_Genre_Genre
-            }
-            WITH *
-            RETURN collect(DISTINCT this { .title }) AS data"
-        `);
+"MATCH (this:\`Movie\`)
+WHERE this.title = $param0
+WITH this
+CALL {
+WITH this
+OPTIONAL MATCH (this)-[this_disconnect_search_Genre0_rel:SEARCH]->(this_disconnect_search_Genre0:Genre)
+WHERE this_disconnect_search_Genre0.name = $updateMovies_args_disconnect_search_Genre0_where_Genreparam0
+CALL {
+	WITH this_disconnect_search_Genre0, this_disconnect_search_Genre0_rel
+	WITH collect(this_disconnect_search_Genre0) as this_disconnect_search_Genre0, this_disconnect_search_Genre0_rel
+	UNWIND this_disconnect_search_Genre0 as x
+	DELETE this_disconnect_search_Genre0_rel
+	RETURN count(*) AS _
+}
+RETURN count(*) AS disconnect_this_disconnect_search_Genre_Genre
+}
+WITH *
+RETURN collect(DISTINCT this { .title }) AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -584,26 +584,26 @@ describe("Cypher Union", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
-            WITH this
-            CALL {
-            	WITH this
-            	OPTIONAL MATCH (this_connect_search_Genre0_node:Genre)
-            	WHERE this_connect_search_Genre0_node.name = $this_connect_search_Genre0_node_param0
-            	CALL {
-            		WITH *
-            		WITH collect(this_connect_search_Genre0_node) as connectedNodes, collect(this) as parentNodes
-            		UNWIND parentNodes as this
-            		UNWIND connectedNodes as this_connect_search_Genre0_node
-            		MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
-            		RETURN count(*)
-            	}
-            	RETURN count(*) AS connect_this_connect_search_Genre_Genre
-            }
-            WITH *
-            RETURN collect(DISTINCT this { .title }) AS data"
-        `);
+"MATCH (this:\`Movie\`)
+WHERE this.title = $param0
+WITH this
+CALL {
+	WITH this
+	OPTIONAL MATCH (this_connect_search_Genre0_node:Genre)
+	WHERE this_connect_search_Genre0_node.name = $this_connect_search_Genre0_node_param0
+	CALL {
+		WITH *
+		WITH collect(this_connect_search_Genre0_node) as connectedNodes, collect(this) as parentNodes
+		UNWIND parentNodes as this
+		UNWIND connectedNodes as this_connect_search_Genre0_node
+		MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
+		RETURN count(*) AS _
+	}
+	RETURN count(*) AS connect_this_connect_search_Genre_Genre
+}
+WITH *
+RETURN collect(DISTINCT this { .title }) AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -634,21 +634,21 @@ describe("Cypher Union", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
-            WITH this
-            OPTIONAL MATCH (this)-[this_delete_search_Genre0_relationship:SEARCH]->(this_delete_search_Genre0:Genre)
-            WHERE this_delete_search_Genre0.name = $updateMovies_args_delete_search_Genre0_where_Genreparam0
-            WITH this, collect(DISTINCT this_delete_search_Genre0) as this_delete_search_Genre0_to_delete
-            CALL {
-            	WITH this_delete_search_Genre0_to_delete
-            	UNWIND this_delete_search_Genre0_to_delete AS x
-            	DETACH DELETE x
-            	RETURN count(*)
-            }
-            WITH *
-            RETURN collect(DISTINCT this { .title }) AS data"
-        `);
+"MATCH (this:\`Movie\`)
+WHERE this.title = $param0
+WITH this
+OPTIONAL MATCH (this)-[this_delete_search_Genre0_relationship:SEARCH]->(this_delete_search_Genre0:Genre)
+WHERE this_delete_search_Genre0.name = $updateMovies_args_delete_search_Genre0_where_Genreparam0
+WITH this, collect(DISTINCT this_delete_search_Genre0) as this_delete_search_Genre0_to_delete
+CALL {
+	WITH this_delete_search_Genre0_to_delete
+	UNWIND this_delete_search_Genre0_to_delete AS x
+	DETACH DELETE x
+	RETURN count(*) AS _
+}
+WITH *
+RETURN collect(DISTINCT this { .title }) AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

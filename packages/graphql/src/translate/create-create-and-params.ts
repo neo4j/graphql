@@ -72,7 +72,6 @@ function createCreateAndParams({
             }`
         );
     }
-
     function reducer(res: Res, [key, value]: [string, any]): Res {
         const varNameKey = `${varName}_${key}`;
         const relationField = node.relationFields.find((x) => key === x.fieldName);
