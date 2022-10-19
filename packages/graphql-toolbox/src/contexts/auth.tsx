@@ -92,8 +92,8 @@ export function AuthProvider(props: any) {
                 await checkForDatabaseUpdates(driver, setValue);
             }, VERIFY_CONNECTION_INTERVAL_MS);
 
-            setValue((v) => ({
-                ...v,
+            setValue((values) => ({
+                ...values,
                 driver,
                 username: options.username,
                 connectUrl: options.url,
@@ -147,7 +147,7 @@ export function AuthProvider(props: any) {
         let loginPayload: LoginPayload | null = null;
         if (loginPayloadFromDesktop) {
             loginPayload = loginPayloadFromDesktop;
-            setValue((v) => ({ ...v, isNeo4jDesktop: true }));
+            setValue((values) => ({ ...values, isNeo4jDesktop: true }));
         } else {
             const storedConnectionUsername = Storage.retrieve(LOCAL_STATE_CONNECTION_USERNAME);
             const storedConnectionUrl = Storage.retrieve(LOCAL_STATE_CONNECTION_URL);
