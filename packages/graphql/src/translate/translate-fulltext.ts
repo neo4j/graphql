@@ -35,6 +35,7 @@ export function translateFulltext({ node, context }: { node: Node; context: Cont
         result = translateRead({ node, context }, node.name);
     }
     if (resolveTree.fieldsByTypeName[node.fulltextTypeNames.result].score) {
+        // TODO move into translateRead so var0 can be replaced by the actual var reference
         result.cypher = `${result.cypher}, var0 AS score`;
     }
     return result;
