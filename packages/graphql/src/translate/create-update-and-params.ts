@@ -267,7 +267,7 @@ export default function createUpdateAndParams({
                             );
                             if (context.subscriptionsEnabled) {
                                 updateStrs.push("YIELD value");
-                                updateStrs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, value.meta AS meta`);
+                                updateStrs.push(`WITH *, value.meta AS meta`);
                             } else {
                                 updateStrs.push("YIELD value AS _");
                             }
