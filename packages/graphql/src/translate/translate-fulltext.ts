@@ -50,6 +50,8 @@ export function translateFulltext({ node, context }: { node: Node; context: Cont
     if ((resolveTree.args.sort as Record<string, string>)?.score) {
         // TODO move into translateRead so this can be done with cypher builder
         result.cypher = `${result.cypher}\nORDER BY score ${(resolveTree.args.sort as Record<string, string>)?.score}`;
+    } else {
+        result.cypher = `${result.cypher}\nORDER BY score DESC`;
     }
     return result;
 }
