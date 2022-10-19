@@ -103,7 +103,7 @@ describe("Cypher -> Connections -> Unions", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_publicationsConnection
             }
-            RETURN this { .name, publicationsConnection: this_publicationsConnection } as this"
+            RETURN this { .name, publicationsConnection: this_publicationsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -162,7 +162,7 @@ describe("Cypher -> Connections -> Unions", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_publicationsConnection
             }
-            RETURN this { .name, publicationsConnection: this_publicationsConnection } as this"
+            RETURN this { .name, publicationsConnection: this_publicationsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -223,7 +223,7 @@ describe("Cypher -> Connections -> Unions", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_publicationsConnection
             }
-            RETURN this { .name, publicationsConnection: this_publicationsConnection } as this"
+            RETURN this { .name, publicationsConnection: this_publicationsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -293,7 +293,7 @@ describe("Cypher -> Connections -> Unions", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_publicationsConnection
             }
-            RETURN this { .name, publicationsConnection: this_publicationsConnection } as this"
+            RETURN this { .name, publicationsConnection: this_publicationsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -362,7 +362,7 @@ describe("Cypher -> Connections -> Unions", () => {
                 WITH collect(edge) AS edges, totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_publicationsConnection
             }
-            RETURN this { .name, publicationsConnection: this_publicationsConnection } as this"
+            RETURN this { .name, publicationsConnection: this_publicationsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

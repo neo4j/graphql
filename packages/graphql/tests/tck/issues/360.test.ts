@@ -65,7 +65,7 @@ describe("#360", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Event\`)
             WHERE (this.start >= $param0 AND this.start <= $param1)
-            RETURN this { start: apoc.date.convertFormat(toString(this.start), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), .activity } as this"
+            RETURN this { start: apoc.date.convertFormat(toString(this.start), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), .activity } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -113,7 +113,7 @@ describe("#360", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Event\`)
             WHERE (this.start >= $param0 OR this.start <= $param1)
-            RETURN this { start: apoc.date.convertFormat(toString(this.start), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), .activity } as this"
+            RETURN this { start: apoc.date.convertFormat(toString(this.start), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), .activity } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -87,7 +87,7 @@ describe("Cypher directive", () => {
                 }
                 RETURN collect(this_movies { actorsConnection: this_movies_actorsConnection }) AS this_movies
             }
-            RETURN this { movies: this_movies } as this"
+            RETURN this { movies: this_movies } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

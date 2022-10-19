@@ -105,7 +105,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_architectureConnection
             }
-            RETURN this { .id, architectureConnection: this_architectureConnection } as this"
+            RETURN this { .id, architectureConnection: this_architectureConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -222,7 +222,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_mainConnection
             }
-            RETURN this { .id, mainConnection: this_mainConnection } as this"
+            RETURN this { .id, mainConnection: this_mainConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
