@@ -59,7 +59,7 @@ export function createMatchClause({
     let whereInput = resolveTree.args.where as GraphQLWhereArg | undefined;
 
     if (Object.entries(fulltextInput).length) {
-        // This is only for fulltext search
+        // This is only for deprecated fulltext searches
         if (Object.entries(fulltextInput).length > 1) {
             throw new Error("Can only call one search at any given time");
         }
@@ -75,36 +75,8 @@ export function createMatchClause({
         const andChecks = CypherBuilder.and(...labelsChecks);
         if (andChecks) matchQuery.where(andChecks);
     } else if (context.fulltextIndex) {
-        const phraseParam = new CypherBuilder.Param(resolveTree.args.phrase);
-        const scoreVar = new CypherBuilder.Variable();
-
-        matchQuery = new CypherBuilder.db.FullTextQueryNodes(
-            matchNode,
-            context.fulltextIndex.name,
-            phraseParam,
-            undefined,
-            scoreVar
-        );
-
-        const labelsChecks = node.getLabels(context).map((label) => {
-            return CypherBuilder.in(new CypherBuilder.Literal(label), CypherBuilder.labels(matchNode));
-        });
-
-        if (whereInput?.score) {
-            if (whereInput.score.min || whereInput.score.min === 0) {
-                const scoreMinOp = CypherBuilder.gte(scoreVar, new CypherBuilder.Param(whereInput.score.min));
-                if (scoreMinOp) matchQuery.where(scoreMinOp);
-            }
-            if (whereInput.score.max || whereInput.score.max === 0) {
-                const scoreMaxOp = CypherBuilder.lte(scoreVar, new CypherBuilder.Param(whereInput.score.max));
-                if (scoreMaxOp) matchQuery.where(scoreMaxOp);
-            }
-        }
-
+        matchQuery = createFulltextMatchClause(matchNode, whereInput, node, context);
         whereInput = whereInput?.[node.name];
-
-        const andChecks = CypherBuilder.and(...labelsChecks);
-        if (andChecks) matchQuery.where(andChecks);
     } else {
         matchQuery = new CypherBuilder.Match(matchNode);
     }
@@ -133,6 +105,44 @@ export function createMatchClause({
 
         matchQuery.where(authQuery);
     }
+
+    return matchQuery;
+}
+
+function createFulltextMatchClause(
+    matchNode: CypherBuilder.NamedNode,
+    whereInput: GraphQLWhereArg | undefined,
+    node: Node,
+    context: Context
+): CypherBuilder.db.FullTextQueryNodes {
+    const phraseParam = new CypherBuilder.Param(context.resolveTree.args.phrase);
+    const scoreVar = new CypherBuilder.Variable();
+
+    const matchQuery = new CypherBuilder.db.FullTextQueryNodes(
+        matchNode,
+        context.fulltextIndex.name,
+        phraseParam,
+        undefined,
+        scoreVar
+    );
+
+    const labelsChecks = node.getLabels(context).map((label) => {
+        return CypherBuilder.in(new CypherBuilder.Literal(label), CypherBuilder.labels(matchNode));
+    });
+
+    if (whereInput?.score) {
+        if (whereInput.score.min || whereInput.score.min === 0) {
+            const scoreMinOp = CypherBuilder.gte(scoreVar, new CypherBuilder.Param(whereInput.score.min));
+            if (scoreMinOp) matchQuery.where(scoreMinOp);
+        }
+        if (whereInput.score.max || whereInput.score.max === 0) {
+            const scoreMaxOp = CypherBuilder.lte(scoreVar, new CypherBuilder.Param(whereInput.score.max));
+            if (scoreMaxOp) matchQuery.where(scoreMaxOp);
+        }
+    }
+
+    const andChecks = CypherBuilder.and(...labelsChecks);
+    if (andChecks) matchQuery.where(andChecks);
 
     return matchQuery;
 }
