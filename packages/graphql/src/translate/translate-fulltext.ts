@@ -32,7 +32,13 @@ export function translateFulltext({ node, context }: { node: Node; context: Cont
         context.resolveTree.args = { ...resolveTree.args };
         // Sort context
         context.resolveTree.args.options = context.resolveTree.args.options || {};
-        (context.resolveTree.args.options as Record<string, any>).sort = [{ ...(resolveTree.args.sort?.[node.name] as Record<string, any>) }];
+        if (resolveTree.args.sort?.[node.name]) {
+            (context.resolveTree.args.options as Record<string, any>).sort = [
+                {
+                    ...resolveTree.args.sort?.[node.name],
+                },
+            ];
+        }
         result = translateRead({ node, context }, node.name);
     } else {
         result = translateRead({ node, context }, node.name);
@@ -40,6 +46,10 @@ export function translateFulltext({ node, context }: { node: Node; context: Cont
     if (resolveTree.fieldsByTypeName[node.fulltextTypeNames.result].score) {
         // TODO move into translateRead so var0 can be replaced by the actual var reference
         result.cypher = `${result.cypher}, var0 AS score`;
+    }
+    if ((resolveTree.args.sort as Record<string, string>)?.score) {
+        // TODO move into translateRead so this can be done with cypher builder
+        result.cypher = `${result.cypher}\nORDER BY score ${(resolveTree.args.sort as Record<string, string>)?.score}`;
     }
     return result;
 }
