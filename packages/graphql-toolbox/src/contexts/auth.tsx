@@ -112,8 +112,8 @@ export function AuthProvider(props: any) {
                 clearInterval(intervalId);
             }
 
-            setValue((v) => ({
-                ...v,
+            setValue((values) => ({
+                ...values,
                 driver: undefined,
                 connectUrl: undefined,
                 isConnected: false,
@@ -122,10 +122,10 @@ export function AuthProvider(props: any) {
         },
         setSelectedDatabaseName: (databaseName: string) => {
             Storage.store(LOCAL_STATE_SELECTED_DATABASE_NAME, databaseName);
-            setValue((v) => ({ ...v, selectedDatabaseName: databaseName }));
+            setValue((values) => ({ ...values, selectedDatabaseName: databaseName }));
         },
         setShowIntrospectionPrompt: (nextState: boolean) => {
-            setValue((v) => ({ ...v, showIntrospectionPrompt: nextState }));
+            setValue((values) => ({ ...values, showIntrospectionPrompt: nextState }));
         },
     });
 
