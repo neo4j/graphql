@@ -52,6 +52,7 @@ describe("@fulltext directive", () => {
     let generatedSchema: GraphQLSchema;
     let personType: UniqueType;
     let movieType: UniqueType;
+    let queryType: string;
 
     let MULTIDB_SUPPORT = true;
 
@@ -120,6 +121,7 @@ describe("@fulltext directive", () => {
     beforeEach(async () => {
         personType = generateUniqueType("Person");
         movieType = generateUniqueType("Movie");
+        queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
 
         const typeDefs = generatedTypeDefs(personType, movieType);
 
@@ -156,7 +158,6 @@ describe("@fulltext directive", () => {
         }
     });
     test("Orders by score DESC as default", async () => {
-        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
         const query = `
             query {
                 ${queryType}(phrase: "a different name") {
@@ -198,8 +199,49 @@ describe("@fulltext directive", () => {
             },
         ]);
     });
+    test("Scores update when using a different phrase", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "some name") {
+                    score
+                    ${personType.name} {
+                        name
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            {
+                score: 0.07456067204475403,
+                [personType.name]: {
+                    name: "Another name",
+                },
+            },
+            {
+                score: 0.05851973593235016,
+                [personType.name]: {
+                    name: "this is a name",
+                },
+            },
+            {
+                score: 0.052836157381534576,
+                [personType.name]: {
+                    name: "This is a different name",
+                },
+            },
+        ]);
+    });
     test("No results if phrase doesn't match", async () => {
-        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
         const query = `
             query {
                 ${queryType}(phrase: "should not match") {
@@ -223,7 +265,6 @@ describe("@fulltext directive", () => {
         expect(gqlResult.data?.[queryType]).toEqual([]);
     });
     test("Filters node to single result", async () => {
-        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
         const query = `
             query {
                 ${queryType}(phrase: "a different name", where: { ${personType.name}: { name: "${person1.name}" } }) {
@@ -254,7 +295,6 @@ describe("@fulltext directive", () => {
         ]);
     });
     test("Filters node to multiple results", async () => {
-        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
         const query = `
             query {
                 ${queryType}(phrase: "a different name", where: { ${personType.name}: { born_GTE: ${person2.born} } }) {
@@ -291,7 +331,6 @@ describe("@fulltext directive", () => {
         ]);
     });
     test("Filters node to no results", async () => {
-        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
         const query = `
             query {
                 ${queryType}(phrase: "a different name", where: { ${personType.name}: { name_CONTAINS: "not in anything!!" } }) {
@@ -315,7 +354,6 @@ describe("@fulltext directive", () => {
         expect(gqlResult.data?.[queryType]).toEqual([]);
     });
     test("Filters score to single result", async () => {
-        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
         const query = `
             query {
                 ${queryType}(phrase: "a different name", where: { score: { min: 0.5 } }) {
@@ -346,7 +384,6 @@ describe("@fulltext directive", () => {
         ]);
     });
     test("Filters score to multiple results", async () => {
-        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
         const query = `
             query {
                 ${queryType}(phrase: "a different name", where: { score: { max: 0.5 } }) {
@@ -383,7 +420,6 @@ describe("@fulltext directive", () => {
         ]);
     });
     test("Filters score to no results", async () => {
-        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
         const query = `
             query {
                 ${queryType}(phrase: "a different name", where: { score: { min: 100 } }) {
@@ -407,7 +443,6 @@ describe("@fulltext directive", () => {
         expect(gqlResult.data?.[queryType]).toEqual([]);
     });
     test("Filters score with combined min and max", async () => {
-        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
         const query = `
             query {
                 ${queryType}(phrase: "a different name", where: { score: { min: 0.201, max: 0.57 } }) {
@@ -438,7 +473,6 @@ describe("@fulltext directive", () => {
         ]);
     });
     test("Filters score with max score of 0", async () => {
-        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
         const query = `
             query {
                 ${queryType}(phrase: "a different name", where: { score: { max: 0 } }) {
@@ -462,7 +496,6 @@ describe("@fulltext directive", () => {
         expect(gqlResult.data?.[queryType]).toEqual([]);
     });
     test("Throws error if score filtered with a non-number", async () => {
-        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
         const query = `
             query {
                 ${queryType}(phrase: "a different name", where: { score: { max: "not a number" } }) {
@@ -485,14 +518,13 @@ describe("@fulltext directive", () => {
         expect(gqlResult.errors).toBeDefined();
     });
     test("Filters a related node to multiple values", async () => {
-        const queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
         const query = `
             query {
                 ${queryType}(phrase: "a different name", where: { ${personType.name}: { actedInMovies_SOME: { title: "${movie1.title}" } } }) {
                     score
                     ${personType.name} {
                         name
-                        actedInMovies {
+                        actedInMovies(options: { sort: [{ released: DESC }] }) {
                             title
                             released
                         }
@@ -540,5 +572,124 @@ describe("@fulltext directive", () => {
                 },
             },
         ]);
+    });
+    test("Filters a related node to a single value", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "a different name", where: { ${personType.name}: { actedInMovies_ALL: { released: ${movie1.released} } } }) {
+                    score
+                    ${personType.name} {
+                        name
+                        actedInMovies {
+                            title
+                            released
+                        }
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            {
+                score: 0.62690669298172,
+                [personType.name]: {
+                    name: "This is a different name",
+                    actedInMovies: [
+                        {
+                            title: "Some Title",
+                            released: 2001,
+                        },
+                    ],
+                },
+            },
+        ]);
+    });
+    test("Filters a related node to no values", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "a different name", where: { ${personType.name}: { actedInMovies_ALL: { released_NOT_IN: [${movie1.released}, ${movie2.released}] } } }) {
+                    score
+                    ${personType.name} {
+                        name
+                        actedInMovies {
+                            title
+                            released
+                        }
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([]);
+    });
+    test("Throws an error for a non-string phrase", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: ["not", "a", "string"]) {
+                    score
+                    ${personType.name} {
+                        name
+                        actedInMovies {
+                            title
+                            released
+                        }
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+    });
+    test("Throws an error for an invalid where", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "some name", where: { ${personType.name}: { not_a_field: "invalid" } }) {
+                    score
+                    ${personType.name} {
+                        name
+                        actedInMovies {
+                            title
+                            released
+                        }
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeDefined();
     });
 });
