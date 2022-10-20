@@ -87,7 +87,7 @@ describe("https://github.com/neo4j/graphql/issues/2269", () => {
         await driver.close();
     });
 
-    test("nested update with create should generate", async () => {
+    test("nested update with create should generate a single relationship with the nested value", async () => {
         await session.run(`CREATE(:${Movie} {title: "John Wick"})`);
 
         const mutation = `
