@@ -80,15 +80,18 @@ export const Keybindings = ({ onClickClose, onClickBack }: Props): JSX.Element =
     return (
         <div data-test-help-drawer-keybindings-list>
             <div className="flex items-center justify-between">
-                <img
-                    src={ArrowLeft}
-                    alt="arrow left"
-                    className="inline w-5 h-5 text-lg cursor-pointer"
-                    data-test-help-drawer-keybindings-back
-                    onClick={onClickBack}
-                />
+                <button data-test-help-drawer-keybindings-back onClick={onClickBack} aria-label="Back to Help drawer">
+                    <img src={ArrowLeft} alt="arrow left" className="inline w-5 h-5 text-lg cursor-pointer" />
+                </button>
                 <span className="h5">Keybindings</span>
-                <span className="text-lg cursor-pointer" data-test-help-drawer-keybindings-close onClick={onClickClose}>
+                <span
+                    className="text-lg cursor-pointer"
+                    data-test-help-drawer-keybindings-close
+                    onClick={onClickClose}
+                    onKeyDown={onClickClose}
+                    role="button"
+                    tabIndex={0}
+                >
                     {"\u2715"}
                 </span>
             </div>

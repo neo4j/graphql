@@ -90,7 +90,7 @@ export const SchemaEditor = ({
                 minFoldSize: 4,
             },
             lint: {
-                // @ts-ignore
+                // @ts-ignore - Mismatch of types, can be ignored
                 schema: schemaForLintAndAutocompletion,
                 validationRules: [],
             },
@@ -182,6 +182,7 @@ export const SchemaEditor = ({
                                 color="primary"
                                 fill="outlined"
                                 buttonSize="small"
+                                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                                 onClick={introspect}
                                 disabled={loading}
                                 loading={isIntrospecting}
