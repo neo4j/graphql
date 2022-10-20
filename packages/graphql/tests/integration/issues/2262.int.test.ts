@@ -21,7 +21,6 @@ import type { Driver, Session } from "neo4j-driver";
 import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
-import { Neo4jGraphQLSubscriptionsSingleInstancePlugin } from "../../../src";
 import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 
 describe("https://github.com/neo4j/graphql/issues/2262", () => {
@@ -30,9 +29,8 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
     let neoSchema: Neo4jGraphQL;
     let session: Session;
 
-    let Movie: UniqueType;
-    let Person: UniqueType;
-    let Actor: UniqueType;
+    let Component: UniqueType;
+    let Process: UniqueType;
 
     beforeAll(async () => {
         neo4j = new Neo4j();
@@ -40,31 +38,28 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
     });
 
     beforeEach(async () => {
-        Movie = generateUniqueType("Movie");
-        Person = generateUniqueType("Person");
-        Person = generateUniqueType("Actor");
+        Component = generateUniqueType("Component");
+        Process = generateUniqueType("Process");
+
         session = await neo4j.getSession();
 
         const typeDefs = `
-            type Component {
+            type ${Component} {
                 uuid: String
-                upstreamProcess: Process @relationship(type: "OUTPUT", direction: IN)
-                downstreamProcesses: [Process!]! @relationship(type: "INPUT", direction: OUT)
+                upstreamProcess: ${Process} @relationship(type: "OUTPUT", direction: IN)
+                downstreamProcesses: [${Process}!]! @relationship(type: "INPUT", direction: OUT)
             }
 
-            type Process {
+            type ${Process} {
                 uuid: String
-                componentOutputs: [Component!]! @relationship(type: "OUTPUT", direction: OUT)
-                componentInputs: [Component!]! @relationship(type: "INPUT", direction: IN)
+                componentOutputs: [${Component}!]! @relationship(type: "OUTPUT", direction: OUT)
+                componentInputs: [${Component}!]! @relationship(type: "INPUT", direction: IN)
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
             driver,
-            plugins: {
-                subscriptions: new Neo4jGraphQLSubscriptionsSingleInstancePlugin(),
-            },
         });
     });
 
@@ -77,10 +72,10 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
     });
 
     test("nested update with create while using subscriptions should generate valid Cypher", async () => {
-        await session.run(`CREATE(:Component {uuid: "c1"})<-[:OUTPUT]-(:Process {uuid: "p1"})`);
+        await session.run(`CREATE(:${Component} {uuid: "c1"})<-[:OUTPUT]-(:${Process} {uuid: "p1"})`);
         const query = `
             query ComponentsProcesses {
-                components(where: { uuid: "c1" }) {
+                ${Component.plural}(where: { uuid: "c1" }) {
                     uuid
                     upstreamProcessConnection {
                         edges {
@@ -108,7 +103,7 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            components: [
+            [Component.plural]: [
                 {
                     uuid: "c1",
                     upstreamProcessConnection: {
@@ -126,6 +121,5 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
                 },
             ],
         });
-        // {"components":[{"uuid":"c1","upstreamProcessConnection":{"edges":[{"node":{"uuid":"p1","componentInputsConnection":{"edges":[]}}}]}}]}
     });
 });
