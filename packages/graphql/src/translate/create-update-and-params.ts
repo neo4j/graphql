@@ -390,15 +390,26 @@ export default function createUpdateAndParams({
                             const nodeName = `${baseName}_node`;
                             const propertiesName = `${baseName}_relationship`;
 
+                            let createNodeAndInputParams = {
+                                node: refNode,
+                                input: create.node,
+                            };
+                            if (relationField.interface) {
+                                createNodeAndInputParams = {
+                                    node: node,
+                                    input: { [key]: create.node },
+                                };
+                            }
+
                             const createAndParams = createCreateAndParams({
                                 context,
                                 callbackBucket,
-                                node: refNode,
-                                input: create.node,
                                 varName: nodeName,
                                 withVars: [...withVars, nodeName],
                                 includeRelationshipValidation: false,
+                                ...createNodeAndInputParams,
                             });
+
                             subquery.push(createAndParams[0]);
                             res.params = { ...res.params, ...createAndParams[1] };
                             subquery.push(

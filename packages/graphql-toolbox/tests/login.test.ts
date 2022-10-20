@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import { test, describe } from "./utils/pagemodel";
+import * as base from "@playwright/test";
+import { test } from "./utils/pagemodel";
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
-describe("login", () => {
+base.test.describe("login", () => {
     test("should log in", async ({ loginPage }) => {
         await loginPage.setUsername(NEO_USER);
         await loginPage.setPassword(NEO_PASSWORD);

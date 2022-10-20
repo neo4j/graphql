@@ -41,7 +41,8 @@ const CannyFeedbackButton = (): JSX.Element => {
             data-test-help-drawer-canny-button
             className="flex justify-start items-center"
             href="https://feedback.neo4j.com/graphql"
-            target="_blank" rel="noreferrer"
+            target="_blank"
+            rel="noreferrer"
         >
             <HeroIcon className="h-6 w-6 mr-2" type="outline" iconName="ChatIcon" />
             <p className="p-0 m-0">Send feedback</p>
@@ -62,6 +63,9 @@ const EditorScreenTiles = ({
                 data-test-help-drawer-schema-doc-tile
                 className="n-bg-primary-50 p-4 pb-6 rounded-2xl cursor-pointer text-white w-1/2 mr-2 flex"
                 onClick={onClickShowDocs}
+                onKeyDown={onClickShowDocs}
+                role="button"
+                tabIndex={0}
             >
                 <HeroIcon className="h-6 w-6 mr-2 flex-1" type="outline" iconName="ColorSwatchIcon" />
                 <span className="flex-1">Current schema documentation</span>
@@ -71,6 +75,9 @@ const EditorScreenTiles = ({
                 data-test-help-drawer-keybindings-tile-editor-view
                 className="n-bg-neutral-20 p-4 pb-6 rounded-2xl cursor-pointer w-1/2 flex"
                 onClick={onClickShowKeybindings}
+                onKeyDown={onClickShowKeybindings}
+                role="button"
+                tabIndex={0}
             >
                 <HeroIcon className="h-6 w-6 mr-2" type="outline" iconName="DesktopComputerIcon" />
                 <span>List of keybindings</span>
@@ -98,6 +105,9 @@ const SchemaScreenDrawer = ({
                         data-test-help-drawer-keybindings-tile-schema-view
                         className="n-bg-neutral-20 p-4 pb-6 mb-8 rounded-2xl cursor-pointer flex text-sm"
                         onClick={() => setShowSubComponent(true)}
+                        onKeyDown={() => setShowSubComponent(true)}
+                        role="button"
+                        tabIndex={0}
                     >
                         <HeroIcon className="h-6 w-6 mr-2" type="outline" iconName="DesktopComputerIcon" />
                         <span>List of keybindings</span>
@@ -169,7 +179,14 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
                 <div className="pb-6 flex justify-between items-center" data-test-help-drawer-title>
                     <Fragment>
                         <span className="h5">Help &#38; learn</span>
-                        <span className="text-lg cursor-pointer" data-test-help-drawer-close onClick={onClickClose}>
+                        <span
+                            className="text-lg cursor-pointer"
+                            data-test-help-drawer-close
+                            onClick={onClickClose}
+                            onKeyDown={onClickClose}
+                            role="button"
+                            tabIndex={0}
+                        >
                             {"\u2715"}
                         </span>
                     </Fragment>
