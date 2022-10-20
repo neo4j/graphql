@@ -39,7 +39,7 @@ export const AppSettings = ({ onClickClose }: Props) => {
         appSettings.setShowLintMarkers(!appSettings.showLintMarkers);
     };
 
-    const onChangeProductUsage = (): void => {
+    const onChangeProductUsageTracking = (): void => {
         appSettings.setEnableProductUsageTracking(!appSettings.enableProductUsageTracking);
     };
 
@@ -92,14 +92,14 @@ export const AppSettings = ({ onClickClose }: Props) => {
                 <div className="pt-3 flex">
                     <Checkbox
                         data-test-enable-product-usage-tracking
-                        aria-label="Product Analytics"
+                        aria-label="Product usage tracking toggle"
                         className={`mt-1 ${
                             appSettings.enableProductUsageTracking
                                 ? "data-test-enable-product-usage-tracking-checked"
                                 : ""
                         }`}
                         checked={appSettings.enableProductUsageTracking}
-                        onChange={onChangeProductUsage}
+                        onChange={onChangeProductUsageTracking}
                     />
                     <div className="ml-3">
                         <p className="text-sm">Product usage</p>
