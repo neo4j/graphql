@@ -47,11 +47,12 @@ export function translateFulltext({ node, context }: { node: Node; context: Cont
         // TODO move into translateRead so var0 can be replaced by the actual var reference
         result.cypher = `${result.cypher}, var0 AS score`;
     }
-    if ((resolveTree.args.sort as Record<string, string>)?.score) {
-        // TODO move into translateRead so this can be done with cypher builder
-        result.cypher = `${result.cypher}\nORDER BY score ${(resolveTree.args.sort as Record<string, string>)?.score}`;
-    } else {
-        result.cypher = `${result.cypher}\nORDER BY score DESC`;
-    }
+    // TODO fix this broken sort code.
+    // if ((resolveTree.args.sort as Record<string, string>)?.score) {
+    //     // TODO move into translateRead so this can be done with cypher builder
+    //     result.cypher = `${result.cypher}\nORDER BY score ${(resolveTree.args.sort as Record<string, string>)?.score}`;
+    // } else {
+    //     result.cypher = `${result.cypher}\nORDER BY score DESC`;
+    // }
     return result;
 }

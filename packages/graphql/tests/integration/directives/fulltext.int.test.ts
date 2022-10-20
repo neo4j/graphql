@@ -241,6 +241,112 @@ describe("@fulltext directive", () => {
             },
         ]);
     });
+    test("Score isn't returned if not requested", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "some name") {
+                    ${personType.name} {
+                        name
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            {
+                [personType.name]: {
+                    name: "Another name",
+                },
+            },
+            {
+                [personType.name]: {
+                    name: "this is a name",
+                },
+            },
+            {
+                [personType.name]: {
+                    name: "This is a different name",
+                },
+            },
+        ]);
+    });
+    test("Nodes aren't returned if not requested", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "some name") {
+                    score
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            {
+                score: 0.07456067204475403,
+            },
+            {
+                score: 0.05851973593235016,
+            },
+            {
+                score: 0.052836157381534576,
+            },
+        ]);
+    });
+    test("Throws error if no return is requested", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "some name") {}
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+    });
+    test("Throws error if no phrase argument", async () => {
+        const query = `
+            query {
+                ${queryType} {
+                    ${personType.name} {
+                        name
+                    }
+                } 
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+    });
     test("No results if phrase doesn't match", async () => {
         const query = `
             query {
@@ -691,5 +797,199 @@ describe("@fulltext directive", () => {
         });
 
         expect(gqlResult.errors).toBeDefined();
+    });
+    test("Sorting by score ascending", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "a different name", sort: { score: ASC }) {
+                    score
+                    ${personType.name} {
+                        name
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            {
+                score: 0.07456067204475403,
+                [personType.name]: {
+                    name: "Another name",
+                },
+            },
+            {
+                score: 0.26449739933013916,
+                [personType.name]: {
+                    name: "this is a name",
+                },
+            },
+            {
+                score: 0.62690669298172,
+                [personType.name]: {
+                    name: "This is a different name",
+                },
+            },
+        ]);
+    });
+    test("Sorting by node", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "a different name", sort: { ${personType.name}: { name: DESC } }) {
+                    score
+                    ${personType.name} {
+                        name
+                        born
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            {
+                score: 0.07456067204475403,
+                [personType.name]: {
+                    name: "Another name",
+                },
+            },
+            {
+                score: 0.62690669298172,
+                [personType.name]: {
+                    name: "This is a different name",
+                },
+            },
+            {
+                score: 0.26449739933013916,
+                [personType.name]: {
+                    name: "this is a name",
+                },
+            },
+        ]);
+    });
+    test("Unordered sorting node", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "this is", sort: { ${personType.name}: { born: ASC, name: DESC } }) {
+                    score
+                    ${personType.name} {
+                        name
+                        born
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            [
+                {
+                    score: 0.4119553565979004,
+                    [personType.name]: {
+                        name: "this is a name",
+                        born: 1984,
+                    },
+                },
+                {
+                    score: 0.37194526195526123,
+                    [personType.name]: {
+                        name: "This is a different name",
+                        born: 1985,
+                    },
+                },
+            ],
+        ]);
+    });
+    test("Sort on nested field", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "a name") {
+                    score
+                    ${personType.name} {
+                        name
+                        actedInMovies(options: { sort: [{ released: ASC }] }) {
+                            title
+                            released
+                        }
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            {
+                score: 0.26449739933013916,
+                [personType.name]: {
+                    name: "this is a name",
+                    actedInMovies: [
+                        {
+                            title: "Some Title",
+                            released: 2001,
+                        },
+                        {
+                            title: "Another Title",
+                            released: 2002,
+                        },
+                    ],
+                },
+            },
+            {
+                score: 0.2388087809085846,
+                [personType.name]: {
+                    name: "This is a different name",
+                    actedInMovies: [
+                        {
+                            title: "Some Title",
+                            released: 2001,
+                        },
+                    ],
+                },
+            },
+            {
+                score: 0.07456067204475403,
+                [personType.name]: {
+                    name: "Another name",
+                    actedInMovies: [
+                        {
+                            title: "Another Title",
+                            released: 2002,
+                        },
+                    ],
+                },
+            },
+        ]);
     });
 });
