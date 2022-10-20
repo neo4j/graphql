@@ -883,7 +883,7 @@ describe("@fulltext directive", () => {
             },
         ]);
     });
-    test("Unordered sorting node", async () => {
+    test("Unordered sorting", async () => {
         const query = `
             query {
                 ${queryType}(phrase: "this is", sort: { ${personType.name}: { born: ASC, name: DESC } }) {
@@ -923,6 +923,54 @@ describe("@fulltext directive", () => {
                 },
             ],
         ]);
+    });
+    test("Ordered sorting", async () => {
+        session = driver.session({ database: databaseName });
+
+        try {
+            const person1 = {
+                name: "a b c",
+                born: 123,
+            };
+            const person2 = {
+                name: "b c d",
+                born: 234,
+            };
+
+            await session.run(
+                `
+                CREATE (person1:${personType.name})
+                CREATE (person2:${personType.name})
+                SET person1 = $person1
+                SET person2 = $person2
+            `,
+                { person1, person2 }
+            );
+        } finally {
+            await session.close();
+        }
+
+        const query = `
+            query {
+                ${queryType}(phrase: "b", sort: [{ ${personType.name}: { born: DESC }, { ${personType.name}: { name: ASC }] }) {
+                    ${personType.name} {
+                        name
+                        born
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([{ [personType.name]: person2 }, { [personType.name]: person1 }]);
     });
     test("Sort on nested field", async () => {
         const query = `
@@ -991,5 +1039,224 @@ describe("@fulltext directive", () => {
                 },
             },
         ]);
+    });
+    test("Combined filter and sort", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "a name", sort: { score: ASC }, where: { score: { min: 0.2 } }) {
+                    score
+                    ${personType.name} {
+                        name
+                        born
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            {
+                score: 0.2388087809085846,
+                [personType.name]: {
+                    name: "This is a different name",
+                    born: 1985,
+                },
+            },
+            {
+                score: 0.26449739933013916,
+                [personType.name]: {
+                    name: "this is a name",
+                    born: 1984,
+                },
+            },
+        ]);
+    });
+    test("Limiting is possible", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "a name", limit: 2) {
+                    score
+                    ${personType.name} {
+                        name
+                        born
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toBeArrayOfSize(2);
+    });
+    test("Offesetting is possible", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "a name", offset: 2) {
+                    score
+                    ${personType.name} {
+                        name
+                        born
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            {
+                score: 0.07456067204475403,
+                [personType.name]: {
+                    name: "Another name",
+                    born: 1986,
+                },
+            },
+        ]);
+    });
+    test("Combined limiting and offesetting is possible", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "a name", limit: 1, offset: 1) {
+                    score
+                    ${personType.name} {
+                        name
+                        born
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult.data?.[queryType]).toEqual([
+            {
+                score: 0.2388087809085846,
+                [personType.name]: {
+                    name: "This is a different name",
+                    born: 1985,
+                },
+            },
+        ]);
+    });
+    test("Throws error if invalid sort", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "a name", sort: { score: "not valid" }) {
+                    score
+                    ${personType.name} {
+                        name
+                        born
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+    });
+    test("Throws error if invalid offset", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "a name", offset: 0.5) {
+                    score
+                    ${personType.name} {
+                        name
+                        born
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+    });
+    test("Throws error if invalid limit", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "a name", limit: 0.5) {
+                    score
+                    ${personType.name} {
+                        name
+                        born
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+    });
+    test("Throws error if if invalid argument is suplied", async () => {
+        const query = `
+            query {
+                ${queryType}(phrase: "a name", not_a_valid_argument: [1, 2, 3]) {
+                    score
+                    ${personType.name} {
+                        name
+                        born
+                    } 
+                }
+            }
+        `;
+        const gqlResult = await graphql({
+            schema: generatedSchema,
+            source: query,
+            contextValue: {
+                driver,
+                driverConfig: { database: databaseName },
+            },
+        });
+
+        expect(gqlResult.errors).toBeDefined();
     });
 });
