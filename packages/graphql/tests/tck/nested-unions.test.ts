@@ -139,17 +139,17 @@ WITH *
 CALL {
     WITH this
     CALL {
-        WITH this
+        WITH *
         MATCH (this_actors:\`LeadActor\`)-[update_this0:ACTED_IN]->(this)
         CALL {
             WITH this_actors
             CALL {
-                WITH this_actors
+                WITH *
                 MATCH (this_actors)-[update_this1:ACTED_IN]->(this_actors_actedIn:\`Movie\`)
                 WITH this_actors_actedIn { __resolveType: \\"Movie\\" } AS this_actors_actedIn
                 RETURN this_actors_actedIn AS this_actors_actedIn
                 UNION
-                WITH this_actors
+                WITH *
                 MATCH (this_actors)-[update_this2:ACTED_IN]->(this_actors_actedIn:\`Series\`)
                 WITH this_actors_actedIn  { __resolveType: \\"Series\\",  .name } AS this_actors_actedIn
                 RETURN this_actors_actedIn AS this_actors_actedIn
@@ -160,7 +160,7 @@ CALL {
         WITH this_actors  { __resolveType: \\"LeadActor\\",  .name, actedIn: this_actors_actedIn } AS this_actors
         RETURN this_actors AS this_actors
         UNION
-        WITH this
+        WITH *
         MATCH (this_actors:\`Extra\`)-[update_this3:ACTED_IN]->(this)
         WITH this_actors { __resolveType: \\"Extra\\" } AS this_actors
         RETURN this_actors AS this_actors
@@ -252,17 +252,17 @@ WITH *
 CALL {
     WITH this
     CALL {
-        WITH this
+        WITH *
         MATCH (this_actors:\`LeadActor\`)-[update_this0:ACTED_IN]->(this)
         CALL {
             WITH this_actors
             CALL {
-                WITH this_actors
+                WITH *
                 MATCH (this_actors)-[update_this1:ACTED_IN]->(this_actors_actedIn:\`Movie\`)
                 WITH this_actors_actedIn { __resolveType: \\"Movie\\" } AS this_actors_actedIn
                 RETURN this_actors_actedIn AS this_actors_actedIn
                 UNION
-                WITH this_actors
+                WITH *
                 MATCH (this_actors)-[update_this2:ACTED_IN]->(this_actors_actedIn:\`Series\`)
                 WITH this_actors_actedIn  { __resolveType: \\"Series\\",  .name } AS this_actors_actedIn
                 RETURN this_actors_actedIn AS this_actors_actedIn
@@ -273,7 +273,7 @@ CALL {
         WITH this_actors  { __resolveType: \\"LeadActor\\",  .name, actedIn: this_actors_actedIn } AS this_actors
         RETURN this_actors AS this_actors
         UNION
-        WITH this
+        WITH *
         MATCH (this_actors:\`Extra\`)-[update_this3:ACTED_IN]->(this)
         WITH this_actors { __resolveType: \\"Extra\\" } AS this_actors
         RETURN this_actors AS this_actors

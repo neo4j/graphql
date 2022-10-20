@@ -80,7 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/2261", () => {
         await driver.close();
     });
 
-    test("nested query with top level @cypher directive should return valid Cypher", async () => {
+    test("nested query with top level @cypher directive with subscriptions should return valid Cypher", async () => {
         await session.run(`CREATE (e:${Edition} {id: "ed-id"})<-[:HAS_EDITION]-(p:${ProgrammeItem} {id: "p-id"})`);
 
         const query = `
