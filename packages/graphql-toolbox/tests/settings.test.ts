@@ -17,9 +17,10 @@
  * limitations under the License.
  */
 
-import { test, describe } from "./utils/pagemodel";
+import * as base from "@playwright/test";
+import { test } from "./utils/pagemodel";
 
-describe("settings", () => {
+base.test.describe("settings", () => {
     test("should be able to enable and disable product usage tracking", async ({
         loginPage,
         applicationSettingsPage,
