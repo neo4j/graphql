@@ -28,6 +28,7 @@ import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
 import { createSortAndLimitProjection } from "./create-sort-and-limit";
 
 import { createEdgeSubquery } from "./create-edge-subquery";
+import { sort } from "semver";
 
 export function createConnectionClause({
     resolveTree,
@@ -68,28 +69,30 @@ export function createConnectionClause({
     });
 
     const edgesList = new CypherBuilder.NamedVariable("edges");
-    const totalCountItem = new CypherBuilder.NamedVariable("totalCount");
+    const totalCount = new CypherBuilder.NamedVariable("totalCount");
     const withClause = new CypherBuilder.With([CypherBuilder.collect(edgeItem), edgesList]).with(edgesList, [
         CypherBuilder.size(edgesList),
-        totalCountItem,
+        totalCount,
     ]);
 
-    const totalCount = new CypherBuilder.NamedVariable("totalCount");
     const withSortAfterUnwindClause = createSortAndLimitProjection({
         resolveTree,
         relationshipRef: edgeItem,
         nodeRef: edgeItem.property("node"),
         limit: relatedNode?.queryOptions?.getLimit(firstArg), // `first` specified on connection field in query needs to be compared with existing `@queryOptions`-imposed limit
-        extraFields: [totalCountItem],
     });
 
     let unwindSortClause: CypherBuilder.Clause | undefined;
     if (withSortAfterUnwindClause) {
+        const sortedEdges = new CypherBuilder.Variable();
         const unwind = new CypherBuilder.Unwind([edgesList, edgeItem]);
 
-        const collectEdges = new CypherBuilder.With([CypherBuilder.collect(edgeItem), edgesList], totalCountItem);
+        const collectEdges = new CypherBuilder.Return([CypherBuilder.collect(edgeItem), sortedEdges]);
 
-        unwindSortClause = CypherBuilder.concat(unwind, withSortAfterUnwindClause, collectEdges);
+        // This subquery (CALL) is required due to the edge case of having cardinality 0 in the Cypher Match
+        unwindSortClause = new CypherBuilder.Call(CypherBuilder.concat(unwind, withSortAfterUnwindClause, collectEdges))
+            .innerWith(edgesList)
+            .with([sortedEdges, edgesList], totalCount);
     }
 
     const returnClause = new CypherBuilder.Return([
