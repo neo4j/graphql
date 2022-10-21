@@ -63,6 +63,12 @@ describe("@fulltext schema", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"The input for filtering the score of a fulltext search\\"\\"\\"
+            input FulltextScoreWhere {
+              max: Float
+              min: Float
+            }
+
             type Movie {
               description: String
               title: String
@@ -168,6 +174,8 @@ describe("@fulltext schema", () => {
               movies(fulltext: MovieFulltext, options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(fulltext: MovieFulltext, where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, fulltext: MovieFulltext, sort: [MovieSort], where: MovieWhere): MoviesConnection!
+              moviesFulltextMovieDescription(limit: Int, offset: Int, phrase: String!, sort: [movieFulltextSort!], where: movieFulltextWhere): [movieFulltextResult!]!
+              moviesFulltextMovieTitle(limit: Int, offset: Int, phrase: String!, sort: [movieFulltextSort!], where: movieFulltextWhere): [movieFulltextResult!]!
             }
 
             enum SortDirection {
@@ -193,6 +201,24 @@ describe("@fulltext schema", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
+            }
+
+            \\"\\"\\"The result of a fulltext search on an index of Movie\\"\\"\\"
+            type movieFulltextResult {
+              Movie: Movie
+              score: Float
+            }
+
+            \\"\\"\\"The input for sorting a fulltext query on an index of Movie\\"\\"\\"
+            input movieFulltextSort {
+              Movie: MovieSort
+              score: SortDirection
+            }
+
+            \\"\\"\\"The input for filtering a fulltext query on an index of Movie\\"\\"\\"
+            input movieFulltextWhere {
+              Movie: MovieWhere
+              score: FulltextScoreWhere
             }"
         `);
     });

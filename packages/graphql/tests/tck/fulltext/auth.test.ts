@@ -67,7 +67,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
                 $param1
-            ) YIELD node as this
+            ) YIELD node AS this
                         WHERE (\\"Movie\\" IN labels(this) AND (exists((this)<-[:DIRECTED]-(:\`Person\`)) AND all(auth_this0 IN [(this)<-[:DIRECTED]-(auth_this0:\`Person\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0))))
             RETURN this { .title } AS this"
         `);
@@ -123,7 +123,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
                 $param1
-            ) YIELD node as this
+            ) YIELD node AS this
                         WHERE (\\"Movie\\" IN labels(this) AND apoc.util.validatePredicate(NOT ((exists((this)<-[:DIRECTED]-(:\`Person\`)) AND any(this0 IN [(this)<-[:DIRECTED]-(this0:\`Person\`) | this0] WHERE (this0.id IS NOT NULL AND this0.id = $param0)))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             RETURN this { .title } AS this"
         `);

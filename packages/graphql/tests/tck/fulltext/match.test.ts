@@ -53,7 +53,7 @@ describe("Cypher -> fulltext -> Match", () => {
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
                 $param0
-            ) YIELD node as this
+            ) YIELD node AS this
                         WHERE \\"Movie\\" IN labels(this)
             RETURN this { .title } AS this"
         `);
@@ -83,7 +83,7 @@ describe("Cypher -> fulltext -> Match", () => {
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
                 $param1
-            ) YIELD node as this
+            ) YIELD node AS this
                         WHERE (\\"Movie\\" IN labels(this) AND this.title = $param0)
             RETURN this { .title } AS this"
         `);

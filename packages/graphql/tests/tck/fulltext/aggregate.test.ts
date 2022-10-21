@@ -53,7 +53,7 @@ describe("Cypher -> fulltext -> Aggregate", () => {
             "CALL db.index.fulltext.queryNodes(
                 \\"MovieTitle\\",
                 $param0
-            ) YIELD node as this
+            ) YIELD node AS this
                         WHERE \\"Movie\\" IN labels(this)
             RETURN { count: count(this) }"
         `);
