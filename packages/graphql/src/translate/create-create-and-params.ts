@@ -143,7 +143,9 @@ function createCreateAndParams({
 
                         const inStr = relationField.direction === "IN" ? "<-" : "-";
                         const outStr = relationField.direction === "OUT" ? "->" : "-";
-                        const relTypeStr = `[${propertiesName}:${relationField.type}]`;
+                        const relationVarName =
+                            relationField.properties || context.subscriptionsEnabled ? propertiesName : "";
+                        const relTypeStr = `[${relationVarName}:${relationField.type}]`;
                         res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
                         if (relationField.properties) {
@@ -180,9 +182,8 @@ function createCreateAndParams({
                                 fromTypename,
                                 toTypename,
                             });
-                            const withStrs = [eventWithMetaStr];
                             res.creates.push(
-                                `WITH ${withStrs.join(", ")}, ${filterMetaVariable([...withVars, nodeName]).join(", ")}`
+                                `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, nodeName]).join(", ")}`
                             );
                         }
 
@@ -223,6 +224,7 @@ function createCreateAndParams({
                         parentVar: varName,
                         relationField,
                         refNode,
+                        node,
                         context,
                         withVars,
                         callbackBucket,
@@ -283,7 +285,6 @@ function createCreateAndParams({
             return res;
         }
 
-        // FIXME: value is object for interfaces
         res.creates.push(`SET ${varName}.${dbFieldName} = $${varNameKey}`);
         res.params[varNameKey] = value;
 

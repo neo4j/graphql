@@ -19,6 +19,7 @@
 
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
+import { cleanNodes } from "../../../utils/clean-nodes";
 import { Neo4jGraphQL } from "../../../../src";
 import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
 import { TestSubscriptionsPlugin } from "../../../utils/TestSubscriptionPlugin";
@@ -105,6 +106,12 @@ describe("Subscriptions connect with create", () => {
         });
     });
 
+    afterEach(async () => {
+        const session = await neo4j.getSession();
+        await cleanNodes(session, [typeActor, typeMovie, typePerson, typeInfluencer]);
+        await session.close();
+    });
+
     afterAll(async () => {
         await driver.close();
     });
@@ -185,100 +192,102 @@ describe("Subscriptions connect with create", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect(plugin.eventList.filter((event) => event.event === "connect")).toIncludeSameMembers([
-            {
-                id: expect.any(Number),
-                id_from: expect.any(Number),
-                id_to: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "connect",
-                properties: {
-                    from: {
-                        name: "Actor 1",
-                        id: "1",
+        expect(plugin.eventList).toEqual(
+            expect.arrayContaining([
+                {
+                    id: expect.any(Number),
+                    id_from: expect.any(Number),
+                    id_to: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "connect",
+                    properties: {
+                        from: {
+                            name: "Actor 1",
+                            id: "1",
+                        },
+                        to: {
+                            title: "Movie 1",
+                            id: "11",
+                        },
+                        relationship: {
+                            screenTime: 100,
+                        },
                     },
-                    to: {
-                        title: "Movie 1",
-                        id: "11",
-                    },
-                    relationship: {
-                        screenTime: 100,
-                    },
+                    relationshipName: "ACTED_IN",
+                    fromTypename: typeActor.name,
+                    toTypename: typeMovie.name,
                 },
-                relationshipName: "ACTED_IN",
-                fromTypename: typeActor.name,
-                toTypename: typeMovie.name,
-            },
-            {
-                id: expect.any(Number),
-                id_from: expect.any(Number),
-                id_to: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "connect",
-                properties: {
-                    from: {
-                        name: "Actor 2",
-                        id: "2",
+                {
+                    id: expect.any(Number),
+                    id_from: expect.any(Number),
+                    id_to: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "connect",
+                    properties: {
+                        from: {
+                            name: "Actor 2",
+                            id: "2",
+                        },
+                        to: {
+                            title: "Movie 1",
+                            id: "11",
+                        },
+                        relationship: {
+                            screenTime: 199,
+                        },
                     },
-                    to: {
-                        title: "Movie 1",
-                        id: "11",
-                    },
-                    relationship: {
-                        screenTime: 199,
-                    },
+                    relationshipName: "ACTED_IN",
+                    fromTypename: typeActor.name,
+                    toTypename: typeMovie.name,
                 },
-                relationshipName: "ACTED_IN",
-                fromTypename: typeActor.name,
-                toTypename: typeMovie.name,
-            },
-            {
-                id: expect.any(Number),
-                id_from: expect.any(Number),
-                id_to: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "connect",
-                properties: {
-                    from: {
-                        name: "Actor 3",
-                        id: "3",
+                {
+                    id: expect.any(Number),
+                    id_from: expect.any(Number),
+                    id_to: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "connect",
+                    properties: {
+                        from: {
+                            name: "Actor 3",
+                            id: "3",
+                        },
+                        to: {
+                            title: "Movie 2",
+                            id: "12",
+                        },
+                        relationship: {
+                            screenTime: 202,
+                        },
                     },
-                    to: {
-                        title: "Movie 2",
-                        id: "12",
-                    },
-                    relationship: {
-                        screenTime: 202,
-                    },
+                    relationshipName: "ACTED_IN",
+                    fromTypename: typeActor.name,
+                    toTypename: typeMovie.name,
                 },
-                relationshipName: "ACTED_IN",
-                fromTypename: typeActor.name,
-                toTypename: typeMovie.name,
-            },
-            {
-                id: expect.any(Number),
-                id_from: expect.any(Number),
-                id_to: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "connect",
-                properties: {
-                    from: {
-                        name: "Actor 4",
-                        id: "4",
+                {
+                    id: expect.any(Number),
+                    id_from: expect.any(Number),
+                    id_to: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "connect",
+                    properties: {
+                        from: {
+                            name: "Actor 4",
+                            id: "4",
+                        },
+                        to: {
+                            title: "Movie 2",
+                            id: "12",
+                        },
+                        relationship: {
+                            screenTime: 90,
+                        },
                     },
-                    to: {
-                        title: "Movie 2",
-                        id: "12",
-                    },
-                    relationship: {
-                        screenTime: 90,
-                    },
+                    relationshipName: "ACTED_IN",
+                    fromTypename: typeActor.name,
+                    toTypename: typeMovie.name,
                 },
-                relationshipName: "ACTED_IN",
-                fromTypename: typeActor.name,
-                toTypename: typeMovie.name,
-            },
-        ]);
+            ])
+        );
     });
 
     test("creates connection to union type", async () => {
@@ -344,55 +353,57 @@ describe("Subscriptions connect with create", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect(plugin.eventList.filter((event) => event.event === "connect")).toIncludeSameMembers([
-            {
-                id: expect.any(Number),
-                id_from: expect.any(Number),
-                id_to: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "connect",
-                properties: {
-                    from: {
-                        name: "ActorDirector",
-                        id: "1",
+        expect(plugin.eventList).toEqual(
+            expect.arrayContaining([
+                {
+                    id: expect.any(Number),
+                    id_from: expect.any(Number),
+                    id_to: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "connect",
+                    properties: {
+                        from: {
+                            name: "ActorDirector",
+                            id: "1",
+                        },
+                        to: {
+                            title: "Movie",
+                            id: "11",
+                        },
+                        relationship: {
+                            year: 1999,
+                        },
                     },
-                    to: {
-                        title: "Movie",
-                        id: "11",
-                    },
-                    relationship: {
-                        year: 1999,
-                    },
+                    relationshipName: "DIRECTED",
+                    fromTypename: typeActor.name,
+                    toTypename: typeMovie.name,
                 },
-                relationshipName: "DIRECTED",
-                fromTypename: typeActor.name,
-                toTypename: typeMovie.name,
-            },
-            {
-                id: expect.any(Number),
-                id_from: expect.any(Number),
-                id_to: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "connect",
-                properties: {
-                    from: {
-                        name: "PersonDirector",
-                        reputation: 100,
-                        id: "2",
+                {
+                    id: expect.any(Number),
+                    id_from: expect.any(Number),
+                    id_to: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "connect",
+                    properties: {
+                        from: {
+                            name: "PersonDirector",
+                            reputation: 100,
+                            id: "2",
+                        },
+                        to: {
+                            title: "Movie",
+                            id: "11",
+                        },
+                        relationship: {
+                            year: 1990,
+                        },
                     },
-                    to: {
-                        title: "Movie",
-                        id: "11",
-                    },
-                    relationship: {
-                        year: 1990,
-                    },
+                    relationshipName: "DIRECTED",
+                    fromTypename: typePerson.name,
+                    toTypename: typeMovie.name,
                 },
-                relationshipName: "DIRECTED",
-                fromTypename: typePerson.name,
-                toTypename: typeMovie.name,
-            },
-        ]);
+            ])
+        );
     });
 
     test("creates connection to interface type", async () => {
@@ -450,56 +461,58 @@ describe("Subscriptions connect with create", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect(plugin.eventList.filter((event) => event.event === "connect")).toIncludeSameMembers([
-            {
-                id: expect.any(Number),
-                id_from: expect.any(Number),
-                id_to: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "connect",
-                properties: {
-                    from: {
-                        name: "PersonReviewer",
-                        id: "1",
-                        reputation: 420,
+        expect(plugin.eventList).toEqual(
+            expect.arrayContaining([
+                {
+                    id: expect.any(Number),
+                    id_from: expect.any(Number),
+                    id_to: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "connect",
+                    properties: {
+                        from: {
+                            name: "PersonReviewer",
+                            id: "1",
+                            reputation: 420,
+                        },
+                        to: {
+                            title: "Movie",
+                            id: "11",
+                        },
+                        relationship: {
+                            score: 42,
+                        },
                     },
-                    to: {
-                        title: "Movie",
-                        id: "11",
-                    },
-                    relationship: {
-                        score: 42,
-                    },
+                    relationshipName: "REVIEWED",
+                    fromTypename: typePerson.name,
+                    toTypename: typeMovie.name,
                 },
-                relationshipName: "REVIEWED",
-                fromTypename: typePerson.name,
-                toTypename: typeMovie.name,
-            },
-            {
-                id: expect.any(Number),
-                id_from: expect.any(Number),
-                id_to: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "connect",
-                properties: {
-                    from: {
-                        reputation: 1,
-                        id: "2",
-                        url: "dummy",
+                {
+                    id: expect.any(Number),
+                    id_from: expect.any(Number),
+                    id_to: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "connect",
+                    properties: {
+                        from: {
+                            reputation: 1,
+                            id: "2",
+                            url: "dummy",
+                        },
+                        to: {
+                            title: "Movie",
+                            id: "11",
+                        },
+                        relationship: {
+                            score: 42,
+                        },
                     },
-                    to: {
-                        title: "Movie",
-                        id: "11",
-                    },
-                    relationship: {
-                        score: 42,
-                    },
+                    relationshipName: "REVIEWED",
+                    fromTypename: typeInfluencer.name,
+                    toTypename: typeMovie.name,
                 },
-                relationshipName: "REVIEWED",
-                fromTypename: typeInfluencer.name,
-                toTypename: typeMovie.name,
-            },
-        ]);
+            ])
+        );
     });
 
     test("nested create with connection include normal, union, interface types", async () => {
@@ -632,195 +645,197 @@ describe("Subscriptions connect with create", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect(plugin.eventList.filter((event) => event.event === "connect")).toIncludeSameMembers([
-            {
-                id: expect.any(Number),
-                id_from: expect.any(Number),
-                id_to: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "connect",
-                properties: {
-                    from: {
-                        name: "PersonDirector",
-                        id: "7",
-                        reputation: 100,
+        expect(plugin.eventList).toEqual(
+            expect.arrayContaining([
+                {
+                    id: expect.any(Number),
+                    id_from: expect.any(Number),
+                    id_to: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "connect",
+                    properties: {
+                        from: {
+                            name: "PersonDirector",
+                            id: "7",
+                            reputation: 100,
+                        },
+                        to: {
+                            title: "Movie",
+                            id: "11",
+                        },
+                        relationship: {
+                            year: 2000,
+                        },
                     },
-                    to: {
-                        title: "Movie",
-                        id: "11",
-                    },
-                    relationship: {
-                        year: 2000,
-                    },
+                    relationshipName: "DIRECTED",
+                    fromTypename: typePerson.name,
+                    toTypename: typeMovie.name,
                 },
-                relationshipName: "DIRECTED",
-                fromTypename: typePerson.name,
-                toTypename: typeMovie.name,
-            },
-            {
-                id: expect.any(Number),
-                id_from: expect.any(Number),
-                id_to: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "connect",
-                properties: {
-                    from: {
-                        name: "ActorDirector",
-                        id: "4",
+                {
+                    id: expect.any(Number),
+                    id_from: expect.any(Number),
+                    id_to: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "connect",
+                    properties: {
+                        from: {
+                            name: "ActorDirector",
+                            id: "4",
+                        },
+                        to: {
+                            title: "Movie",
+                            id: "11",
+                        },
+                        relationship: {
+                            year: 2020,
+                        },
                     },
-                    to: {
-                        title: "Movie",
-                        id: "11",
-                    },
-                    relationship: {
-                        year: 2020,
-                    },
+                    relationshipName: "DIRECTED",
+                    fromTypename: typeActor.name,
+                    toTypename: typeMovie.name,
                 },
-                relationshipName: "DIRECTED",
-                fromTypename: typeActor.name,
-                toTypename: typeMovie.name,
-            },
-            {
-                id: expect.any(Number),
-                id_from: expect.any(Number),
-                id_to: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "connect",
-                properties: {
-                    from: {
-                        name: "ActorDirector",
-                        id: "4",
+                {
+                    id: expect.any(Number),
+                    id_from: expect.any(Number),
+                    id_to: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "connect",
+                    properties: {
+                        from: {
+                            name: "ActorDirector",
+                            id: "4",
+                        },
+                        to: {
+                            title: "Other Movie",
+                            id: "12",
+                        },
+                        relationship: {
+                            screenTime: 360,
+                        },
                     },
-                    to: {
-                        title: "Other Movie",
-                        id: "12",
-                    },
-                    relationship: {
-                        screenTime: 360,
-                    },
+                    relationshipName: "ACTED_IN",
+                    fromTypename: typeActor.name,
+                    toTypename: typeMovie.name,
                 },
-                relationshipName: "ACTED_IN",
-                fromTypename: typeActor.name,
-                toTypename: typeMovie.name,
-            },
-            {
-                id: expect.any(Number),
-                id_from: expect.any(Number),
-                id_to: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "connect",
-                properties: {
-                    from: {
-                        name: "OtherActorDirector",
-                        id: "5",
+                {
+                    id: expect.any(Number),
+                    id_from: expect.any(Number),
+                    id_to: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "connect",
+                    properties: {
+                        from: {
+                            name: "OtherActorDirector",
+                            id: "5",
+                        },
+                        to: {
+                            title: "Other Movie",
+                            id: "12",
+                        },
+                        relationship: {
+                            year: 1990,
+                        },
                     },
-                    to: {
-                        title: "Other Movie",
-                        id: "12",
-                    },
-                    relationship: {
-                        year: 1990,
-                    },
+                    relationshipName: "DIRECTED",
+                    fromTypename: typeActor.name,
+                    toTypename: typeMovie.name,
                 },
-                relationshipName: "DIRECTED",
-                fromTypename: typeActor.name,
-                toTypename: typeMovie.name,
-            },
-            {
-                id: expect.any(Number),
-                id_from: expect.any(Number),
-                id_to: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "connect",
-                properties: {
-                    from: {
-                        name: "OtherPersonDirector",
-                        id: "6",
-                        reputation: 120,
+                {
+                    id: expect.any(Number),
+                    id_from: expect.any(Number),
+                    id_to: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "connect",
+                    properties: {
+                        from: {
+                            name: "OtherPersonDirector",
+                            id: "6",
+                            reputation: 120,
+                        },
+                        to: {
+                            title: "Other Movie",
+                            id: "12",
+                        },
+                        relationship: {
+                            year: 1990,
+                        },
                     },
-                    to: {
-                        title: "Other Movie",
-                        id: "12",
-                    },
-                    relationship: {
-                        year: 1990,
-                    },
+                    relationshipName: "DIRECTED",
+                    fromTypename: typePerson.name,
+                    toTypename: typeMovie.name,
                 },
-                relationshipName: "DIRECTED",
-                fromTypename: typePerson.name,
-                toTypename: typeMovie.name,
-            },
-            {
-                id: expect.any(Number),
-                id_from: expect.any(Number),
-                id_to: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "connect",
-                properties: {
-                    from: {
-                        name: "PersonReviewer",
-                        id: "2",
-                        reputation: 142,
+                {
+                    id: expect.any(Number),
+                    id_from: expect.any(Number),
+                    id_to: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "connect",
+                    properties: {
+                        from: {
+                            name: "PersonReviewer",
+                            id: "2",
+                            reputation: 142,
+                        },
+                        to: {
+                            title: "Movie",
+                            id: "11",
+                        },
+                        relationship: {
+                            score: 10,
+                        },
                     },
-                    to: {
-                        title: "Movie",
-                        id: "11",
-                    },
-                    relationship: {
-                        score: 10,
-                    },
+                    relationshipName: "REVIEWED",
+                    fromTypename: typePerson.name,
+                    toTypename: typeMovie.name,
                 },
-                relationshipName: "REVIEWED",
-                fromTypename: typePerson.name,
-                toTypename: typeMovie.name,
-            },
-            {
-                id: expect.any(Number),
-                id_from: expect.any(Number),
-                id_to: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "connect",
-                properties: {
-                    from: {
-                        url: "InfluencerReviewerUrl",
-                        id: "3",
-                        reputation: 0,
+                {
+                    id: expect.any(Number),
+                    id_from: expect.any(Number),
+                    id_to: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "connect",
+                    properties: {
+                        from: {
+                            url: "InfluencerReviewerUrl",
+                            id: "3",
+                            reputation: 0,
+                        },
+                        to: {
+                            title: "Movie",
+                            id: "11",
+                        },
+                        relationship: {
+                            score: 10,
+                        },
                     },
-                    to: {
-                        title: "Movie",
-                        id: "11",
-                    },
-                    relationship: {
-                        score: 10,
-                    },
+                    relationshipName: "REVIEWED",
+                    fromTypename: typeInfluencer.name,
+                    toTypename: typeMovie.name,
                 },
-                relationshipName: "REVIEWED",
-                fromTypename: typeInfluencer.name,
-                toTypename: typeMovie.name,
-            },
-            {
-                id: expect.any(Number),
-                id_from: expect.any(Number),
-                id_to: expect.any(Number),
-                timestamp: expect.any(Number),
-                event: "connect",
-                properties: {
-                    from: {
-                        name: "Actor",
-                        id: "1",
+                {
+                    id: expect.any(Number),
+                    id_from: expect.any(Number),
+                    id_to: expect.any(Number),
+                    timestamp: expect.any(Number),
+                    event: "connect",
+                    properties: {
+                        from: {
+                            name: "Actor",
+                            id: "1",
+                        },
+                        to: {
+                            title: "Movie",
+                            id: "11",
+                        },
+                        relationship: {
+                            screenTime: 10,
+                        },
                     },
-                    to: {
-                        title: "Movie",
-                        id: "11",
-                    },
-                    relationship: {
-                        screenTime: 10,
-                    },
+                    relationshipName: "ACTED_IN",
+                    fromTypename: typeActor.name,
+                    toTypename: typeMovie.name,
                 },
-                relationshipName: "ACTED_IN",
-                fromTypename: typeActor.name,
-                toTypename: typeMovie.name,
-            },
-        ]);
+            ])
+        );
     });
 });

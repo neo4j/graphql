@@ -27,6 +27,8 @@ import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { convertToCypherParams } from "./cypher-builder/utils/convert-to-cypher-params";
 import { addCallbackAndSetParamCypher } from "./utils/callback-utils";
 import { findConflictingProperties } from "../utils/is-property-clash";
+import { createRelEventMeta } from "./subscriptions/rel-create-event-meta";
+import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 
 type CreateOrConnectInput = {
     where?: {
@@ -44,6 +46,7 @@ export function createConnectOrCreateAndParams({
     parentVar,
     relationField,
     refNode,
+    node,
     context,
     withVars,
     callbackBucket,
@@ -53,6 +56,7 @@ export function createConnectOrCreateAndParams({
     parentVar: string;
     relationField: RelationField;
     refNode: Node;
+    node: Node;
     context: Context;
     withVars: string[];
     callbackBucket: CallbackBucket;
@@ -81,21 +85,36 @@ export function createConnectOrCreateAndParams({
             parentVar,
             relationField,
             refNode,
+            node,
             context,
             callbackBucket,
+            withVars,
         });
         return result;
     });
 
     const wrappedQueries = statements.map((statement) => {
-        const countResult = new CypherBuilder.RawCypher(() => "COUNT(*) AS _");
+        const countResult = new CypherBuilder.RawCypher(() => {
+            if (context.subscriptionsEnabled) {
+                return "meta as update_meta";
+            }
+            return "COUNT(*) AS _";
+        });
         const returnStatement = new CypherBuilder.Return(countResult);
         const withStatement = new CypherBuilder.With(...withVarsVariables);
         const callStatement = new CypherBuilder.Call(CypherBuilder.concat(statement, returnStatement)).innerWith(
             ...withVarsVariables
         );
+        const subqueryClause = CypherBuilder.concat(withStatement, callStatement);
+        if (context.subscriptionsEnabled) {
+            const afterCallWithStatement = new CypherBuilder.With("*", [
+                new CypherBuilder.NamedVariable("update_meta"),
+                "meta",
+            ]);
+            CypherBuilder.concat(subqueryClause, afterCallWithStatement);
+        }
 
-        return CypherBuilder.concat(withStatement, callStatement);
+        return subqueryClause;
     });
 
     const query = CypherBuilder.concat(...wrappedQueries);
@@ -109,25 +128,31 @@ function createConnectOrCreatePartialStatement({
     parentVar,
     relationField,
     refNode,
+    node,
     context,
     callbackBucket,
+    withVars,
 }: {
     input: CreateOrConnectInput;
     baseName: string;
     parentVar: string;
     relationField: RelationField;
     refNode: Node;
+    node: Node;
     context: Context;
     callbackBucket: CallbackBucket;
+    withVars: string[];
 }): CypherBuilder.Clause {
     const mergeQuery = mergeStatement({
         input,
         refNode,
+        parentRefNode: node,
         context,
         relationField,
         parentNode: new CypherBuilder.NamedNode(parentVar),
         varName: baseName,
         callbackBucket,
+        withVars,
     });
 
     const authQuery = createAuthStatement({
@@ -145,19 +170,23 @@ function createConnectOrCreatePartialStatement({
 function mergeStatement({
     input,
     refNode,
+    parentRefNode,
     context,
     relationField,
     parentNode,
     varName,
     callbackBucket,
+    withVars,
 }: {
     input: CreateOrConnectInput;
     refNode: Node;
+    parentRefNode: Node;
     context: Context;
     relationField: RelationField;
-    parentNode: CypherBuilder.Node;
+    parentNode: CypherBuilder.NamedNode;
     varName: string;
     callbackBucket: CallbackBucket;
+    withVars: string[];
 }): CypherBuilder.Clause {
     const whereNodeParameters = getCypherParameters(input.where?.node, refNode);
     const onCreateNodeParameters = getCypherParameters(input.onCreate?.node, refNode);
@@ -219,7 +248,29 @@ function mergeStatement({
     );
 
     const relationshipMerge = new CypherBuilder.Merge(relationship).onCreate(...onCreateRelationshipParams);
-    return CypherBuilder.concat(merge, relationshipMerge);
+
+    // TODO:
+    // improve namings
+    let withClause: CypherBuilder.Clause | undefined;
+    if (context.subscriptionsEnabled) {
+        const [fromTypename, toTypename] =
+            relationField.direction === "IN" ? [refNode.name, parentRefNode.name] : [parentRefNode.name, refNode.name];
+
+        withClause = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+            const eventWithMetaStr = createRelEventMeta({
+                event: "connect",
+                relVariable: relationship.getCypher(env),
+                fromVariable: relationship.source.getCypher(env),
+                toVariable: relationship.target.getCypher(env),
+                typename: relationField.type,
+                fromTypename,
+                toTypename,
+            });
+            return `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, varName]).join(", ")}`;
+        });
+    }
+
+    return CypherBuilder.concat(merge, relationshipMerge, withClause);
 }
 
 function createAuthStatement({

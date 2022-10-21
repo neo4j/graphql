@@ -20,6 +20,7 @@
 import { gql } from "apollo-server";
 import { graphql } from "graphql";
 import type { Driver, Session } from "neo4j-driver";
+import { cleanNodes } from "../../../utils/clean-nodes";
 import { Neo4jGraphQL } from "../../../../src";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { generateUniqueType } from "../../../utils/graphql-types";
@@ -73,6 +74,7 @@ describe("Subscriptions update", () => {
     });
 
     afterEach(async () => {
+        await cleanNodes(session, [typeActor, typeMovie]);
         await session.close();
     });
 
@@ -391,7 +393,7 @@ describe("Subscriptions update", () => {
         });
 
         expect(plugin.eventList).toEqual(
-            expect.toIncludeSameMembers([
+            expect.arrayContaining([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -532,7 +534,7 @@ describe("Subscriptions update", () => {
         });
 
         expect(plugin.eventList).toEqual(
-            expect.toIncludeSameMembers([
+            expect.arrayContaining([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),
@@ -633,7 +635,7 @@ describe("Subscriptions update", () => {
         });
 
         expect(plugin.eventList).toEqual(
-            expect.toIncludeSameMembers([
+            expect.arrayContaining([
                 {
                     id: expect.any(Number),
                     timestamp: expect.any(Number),

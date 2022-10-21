@@ -277,7 +277,9 @@ export default async function translateUpdate({
                     }${index}`;
                     const nodeName = `${baseName}_node${relationField.interface ? `_${refNode.name}` : ""}`;
                     const propertiesName = `${baseName}_relationship`;
-                    const relTypeStr = `[${relationField.properties ? propertiesName : ""}:${relationField.type}]`;
+                    const relationVarName =
+                        relationField.properties || context.subscriptionsEnabled ? propertiesName : "";
+                    const relTypeStr = `[${relationVarName}:${relationField.type}]`;
 
                     if (!relationField.typeMeta.array) {
                         const validateRelationshipExistance = `CALL apoc.util.validate(EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name})),'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
@@ -329,9 +331,8 @@ export default async function translateUpdate({
                             fromTypename,
                             toTypename,
                         });
-                        const withStrs = [eventWithMetaStr];
                         createStrs.push(
-                            `WITH ${withStrs.join(", ")}, ${filterMetaVariable([...withVars, nodeName]).join(", ")}`
+                            `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, nodeName]).join(", ")}`
                         );
                     }
                 });
@@ -385,6 +386,7 @@ export default async function translateUpdate({
                     parentVar: varName,
                     relationField,
                     refNode,
+                    node,
                     context,
                     withVars,
                     callbackBucket,

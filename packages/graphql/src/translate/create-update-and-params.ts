@@ -125,11 +125,13 @@ export default function createUpdateAndParams({
             const outStr = relationField.direction === "OUT" ? "->" : "-";
 
             const subqueries: string[] = [];
+            const intermediateWithMetaStatements: string[] = [];
 
-            refNodes.forEach((refNode) => {
+            refNodes.forEach((refNode, idx) => {
                 const v = relationField.union ? value[refNode.name] : value;
                 const updates = relationField.typeMeta.array ? v : [v];
                 const subquery: string[] = [];
+                let returnMetaStatement = "";
 
                 updates.forEach((update, index) => {
                     const relationshipVariable = `${varName}_${relationField.type.toLowerCase()}${index}_relationship`;
@@ -353,6 +355,7 @@ export default function createUpdateAndParams({
                             parentVar: varName,
                             relationField,
                             refNode,
+                            node,
                             context,
                             withVars,
                             callbackBucket,
@@ -413,10 +416,9 @@ export default function createUpdateAndParams({
 
                             subquery.push(createAndParams[0]);
                             res.params = { ...res.params, ...createAndParams[1] };
+                            const relationVarName = create.edge || context.subscriptionsEnabled ? propertiesName : "";
                             subquery.push(
-                                `MERGE (${parentVar})${inStr}[${create.edge ? propertiesName : ""}:${
-                                    relationField.type
-                                }]${outStr}(${nodeName})`
+                                `MERGE (${parentVar})${inStr}[${relationVarName}:${relationField.type}]${outStr}(${nodeName})`
                             );
 
                             if (create.edge) {
@@ -452,12 +454,13 @@ export default function createUpdateAndParams({
                                     fromTypename,
                                     toTypename,
                                 });
-                                const withStrs = [eventWithMetaStr];
                                 subquery.push(
-                                    `WITH ${withStrs.join(", ")}, ${filterMetaVariable([...withVars, nodeName]).join(
+                                    `WITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, nodeName]).join(
                                         ", "
                                     )}`
                                 );
+                                returnMetaStatement = `meta as update${idx}_meta`;
+                                intermediateWithMetaStatements.push(`WITH *, update${idx}_meta as meta`);
                             }
 
                             const relationshipValidationStr = createRelationshipValidationStr({
@@ -473,7 +476,12 @@ export default function createUpdateAndParams({
                     }
 
                     if (relationField.interface) {
-                        subquery.push(`RETURN count(*) AS update_${varName}_${refNode.name}`);
+                        const returnStatement = `RETURN count(*) AS update_${varName}_${refNode.name}`;
+                        if (context.subscriptionsEnabled) {
+                            subquery.push(returnStatement.concat(", ").concat(returnMetaStatement));
+                        } else {
+                            subquery.push(returnStatement);
+                        }
                     }
                 });
 
@@ -484,8 +492,11 @@ export default function createUpdateAndParams({
             if (relationField.interface) {
                 res.strs.push(`WITH ${withVars.join(", ")}`);
                 res.strs.push(`CALL {\n\t WITH ${withVars.join(", ")}\n\t`);
-                res.strs.push(subqueries.join(`\n}\nCALL {\n\t WITH ${withVars.join(", ")}\n\t`));
-                res.strs.push("}");
+                // TODO:
+                const subqueriesWithMetaPassedOn = subqueries.map(
+                    (each, i) => each + `\n}\n${intermediateWithMetaStatements[i] || ""}`
+                );
+                res.strs.push(subqueriesWithMetaPassedOn.join(`\nCALL {\n\t WITH ${withVars.join(", ")}\n\t`));
             } else {
                 res.strs.push(subqueries.join("\n"));
             }
