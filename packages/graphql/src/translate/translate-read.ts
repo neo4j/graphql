@@ -93,6 +93,7 @@ export function translateRead({
         optionsInput.limit = node.queryOptions.getLimit(optionsInput.limit); // TODO: improve this
     }
 
+    // TODO: check performance tests to see if this can be removed in some places
     if (optionsInput.sort || optionsInput.limit || optionsInput.offset) {
         withAndOrder = getSortClause({
             preStatements: ["WITH *"],
