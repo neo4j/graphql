@@ -108,7 +108,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
             WITH *
             WITH *
             CALL {
-            WITH this
+            WITH *
             CALL {
                 WITH this
                 MATCH (this)<-[update_this0:REVIEWED]-(this_Person:\`Person\`)
