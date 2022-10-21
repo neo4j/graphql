@@ -161,15 +161,15 @@ describe("@fulltext directive", () => {
         });
         test("Orders by score DESC as default", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a different name") {
-                    score
-                    ${personType.name} {
-                        name
-                    } 
+                query {
+                    ${queryType}(phrase: "a different name") {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -203,15 +203,15 @@ describe("@fulltext directive", () => {
         });
         test("Scores update when using a different phrase", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "some name") {
-                    score
-                    ${personType.name} {
-                        name
-                    } 
+                query {
+                    ${queryType}(phrase: "some name") {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -245,14 +245,14 @@ describe("@fulltext directive", () => {
         });
         test("Score isn't returned if not requested", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "some name") {
-                    ${personType.name} {
-                        name
-                    } 
+                query {
+                    ${queryType}(phrase: "some name") {
+                        ${personType.name} {
+                            name
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -283,12 +283,12 @@ describe("@fulltext directive", () => {
         });
         test("Nodes aren't returned if not requested", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "some name") {
-                    score
+                query {
+                    ${queryType}(phrase: "some name") {
+                        score
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -313,10 +313,10 @@ describe("@fulltext directive", () => {
         });
         test("Throws error if no return is requested", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "some name") {}
-            }
-        `;
+                query {
+                    ${queryType}(phrase: "some name") {}
+                }
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -330,14 +330,14 @@ describe("@fulltext directive", () => {
         });
         test("Throws error if no phrase argument", async () => {
             const query = `
-            query {
-                ${queryType} {
-                    ${personType.name} {
-                        name
-                    }
-                } 
-            }
-        `;
+                query {
+                    ${queryType} {
+                        ${personType.name} {
+                            name
+                        }
+                    } 
+                }
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -351,15 +351,15 @@ describe("@fulltext directive", () => {
         });
         test("No results if phrase doesn't match", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "should not match") {
-                    score
-                    ${personType.name} {
-                        name
-                    } 
+                query {
+                    ${queryType}(phrase: "should not match") {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -374,15 +374,15 @@ describe("@fulltext directive", () => {
         });
         test("Filters node to single result", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a different name", where: { ${personType.name}: { name: "${person1.name}" } }) {
-                    score
-                    ${personType.name} {
-                        name
-                    } 
+                query {
+                    ${queryType}(phrase: "a different name", where: { ${personType.name}: { name: "${person1.name}" } }) {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -404,15 +404,15 @@ describe("@fulltext directive", () => {
         });
         test("Filters node to multiple results", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a different name", where: { ${personType.name}: { born_GTE: ${person2.born} } }) {
-                    score
-                    ${personType.name} {
-                        name
-                    } 
+                query {
+                    ${queryType}(phrase: "a different name", where: { ${personType.name}: { born_GTE: ${person2.born} } }) {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -440,15 +440,15 @@ describe("@fulltext directive", () => {
         });
         test("Filters node to no results", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a different name", where: { ${personType.name}: { name_CONTAINS: "not in anything!!" } }) {
-                    score
-                    ${personType.name} {
-                        name
-                    } 
+                query {
+                    ${queryType}(phrase: "a different name", where: { ${personType.name}: { name_CONTAINS: "not in anything!!" } }) {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -463,15 +463,15 @@ describe("@fulltext directive", () => {
         });
         test("Filters score to single result", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a different name", where: { score: { min: 0.5 } }) {
-                    score
-                    ${personType.name} {
-                        name
-                    } 
+                query {
+                    ${queryType}(phrase: "a different name", where: { score: { min: 0.5 } }) {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -493,15 +493,15 @@ describe("@fulltext directive", () => {
         });
         test("Filters score to multiple results", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a different name", where: { score: { max: 0.5 } }) {
-                    score
-                    ${personType.name} {
-                        name
-                    } 
+                query {
+                    ${queryType}(phrase: "a different name", where: { score: { max: 0.5 } }) {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -529,15 +529,15 @@ describe("@fulltext directive", () => {
         });
         test("Filters score to no results", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a different name", where: { score: { min: 100 } }) {
-                    score
-                    ${personType.name} {
-                        name
-                    } 
+                query {
+                    ${queryType}(phrase: "a different name", where: { score: { min: 100 } }) {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -552,15 +552,15 @@ describe("@fulltext directive", () => {
         });
         test("Filters score with combined min and max", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a different name", where: { score: { min: 0.201, max: 0.57 } }) {
-                    score
-                    ${personType.name} {
-                        name
-                    } 
+                query {
+                    ${queryType}(phrase: "a different name", where: { score: { min: 0.201, max: 0.57 } }) {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -582,15 +582,15 @@ describe("@fulltext directive", () => {
         });
         test("Filters score with max score of 0", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a different name", where: { score: { max: 0 } }) {
-                    score
-                    ${personType.name} {
-                        name
-                    } 
+                query {
+                    ${queryType}(phrase: "a different name", where: { score: { max: 0 } }) {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -605,15 +605,15 @@ describe("@fulltext directive", () => {
         });
         test("Throws error if score filtered with a non-number", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a different name", where: { score: { max: "not a number" } }) {
-                    score
-                    ${personType.name} {
-                        name
-                    } 
+                query {
+                    ${queryType}(phrase: "a different name", where: { score: { max: "not a number" } }) {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -627,19 +627,19 @@ describe("@fulltext directive", () => {
         });
         test("Filters a related node to multiple values", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a different name", where: { ${personType.name}: { actedInMovies_SOME: { title: "${movie1.title}" } } }) {
-                    score
-                    ${personType.name} {
-                        name
-                        actedInMovies(options: { sort: [{ released: DESC }] }) {
-                            title
-                            released
-                        }
-                    } 
+                query {
+                    ${queryType}(phrase: "a different name", where: { ${personType.name}: { actedInMovies_SOME: { title: "${movie1.title}" } } }) {
+                        score
+                        ${personType.name} {
+                            name
+                            actedInMovies(options: { sort: [{ released: DESC }] }) {
+                                title
+                                released
+                            }
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -683,19 +683,19 @@ describe("@fulltext directive", () => {
         });
         test("Filters a related node to a single value", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a different name", where: { ${personType.name}: { actedInMovies_ALL: { released: ${movie1.released} } } }) {
-                    score
-                    ${personType.name} {
-                        name
-                        actedInMovies {
-                            title
-                            released
-                        }
-                    } 
+                query {
+                    ${queryType}(phrase: "a different name", where: { ${personType.name}: { actedInMovies_ALL: { released: ${movie1.released} } } }) {
+                        score
+                        ${personType.name} {
+                            name
+                            actedInMovies {
+                                title
+                                released
+                            }
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -723,19 +723,19 @@ describe("@fulltext directive", () => {
         });
         test("Filters a related node to no values", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a different name", where: { ${personType.name}: { actedInMovies_ALL: { released_NOT_IN: [${movie1.released}, ${movie2.released}] } } }) {
-                    score
-                    ${personType.name} {
-                        name
-                        actedInMovies {
-                            title
-                            released
-                        }
-                    } 
+                query {
+                    ${queryType}(phrase: "a different name", where: { ${personType.name}: { actedInMovies_ALL: { released_NOT_IN: [${movie1.released}, ${movie2.released}] } } }) {
+                        score
+                        ${personType.name} {
+                            name
+                            actedInMovies {
+                                title
+                                released
+                            }
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -750,19 +750,19 @@ describe("@fulltext directive", () => {
         });
         test("Throws an error for a non-string phrase", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: ["not", "a", "string"]) {
-                    score
-                    ${personType.name} {
-                        name
-                        actedInMovies {
-                            title
-                            released
-                        }
-                    } 
+                query {
+                    ${queryType}(phrase: ["not", "a", "string"]) {
+                        score
+                        ${personType.name} {
+                            name
+                            actedInMovies {
+                                title
+                                released
+                            }
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -776,19 +776,19 @@ describe("@fulltext directive", () => {
         });
         test("Throws an error for an invalid where", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "some name", where: { ${personType.name}: { not_a_field: "invalid" } }) {
-                    score
-                    ${personType.name} {
-                        name
-                        actedInMovies {
-                            title
-                            released
-                        }
-                    } 
+                query {
+                    ${queryType}(phrase: "some name", where: { ${personType.name}: { not_a_field: "invalid" } }) {
+                        score
+                        ${personType.name} {
+                            name
+                            actedInMovies {
+                                title
+                                released
+                            }
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -802,15 +802,15 @@ describe("@fulltext directive", () => {
         });
         test("Sorting by score ascending", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a different name", sort: { score: ASC }) {
-                    score
-                    ${personType.name} {
-                        name
-                    } 
+                query {
+                    ${queryType}(phrase: "a different name", sort: { score: ASC }) {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -844,16 +844,16 @@ describe("@fulltext directive", () => {
         });
         test("Sorting by node", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a different name", sort: { ${personType.name}: { name: DESC } }) {
-                    score
-                    ${personType.name} {
-                        name
-                        born
-                    } 
+                query {
+                    ${queryType}(phrase: "a different name", sort: { ${personType.name}: { name: DESC } }) {
+                        score
+                        ${personType.name} {
+                            name
+                            born
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -887,16 +887,16 @@ describe("@fulltext directive", () => {
         });
         test("Unordered sorting", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "this is", sort: { ${personType.name}: { born: ASC, name: DESC } }) {
-                    score
-                    ${personType.name} {
-                        name
-                        born
-                    } 
+                query {
+                    ${queryType}(phrase: "this is", sort: { ${personType.name}: { born: ASC, name: DESC } }) {
+                        score
+                        ${personType.name} {
+                            name
+                            born
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -953,15 +953,15 @@ describe("@fulltext directive", () => {
             }
 
             const query = `
-            query {
-                ${queryType}(phrase: "b", sort: [{ ${personType.name}: { born: DESC }, { ${personType.name}: { name: ASC }] }) {
-                    ${personType.name} {
-                        name
-                        born
-                    } 
+                query {
+                    ${queryType}(phrase: "b", sort: [{ ${personType.name}: { born: DESC }, { ${personType.name}: { name: ASC }] }) {
+                        ${personType.name} {
+                            name
+                            born
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -979,19 +979,19 @@ describe("@fulltext directive", () => {
         });
         test("Sort on nested field", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a name") {
-                    score
-                    ${personType.name} {
-                        name
-                        actedInMovies(options: { sort: [{ released: ASC }] }) {
-                            title
-                            released
-                        }
-                    } 
+                query {
+                    ${queryType}(phrase: "a name") {
+                        score
+                        ${personType.name} {
+                            name
+                            actedInMovies(options: { sort: [{ released: ASC }] }) {
+                                title
+                                released
+                            }
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -1047,16 +1047,16 @@ describe("@fulltext directive", () => {
         });
         test("Combined filter and sort", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a name", sort: { score: ASC }, where: { score: { min: 0.2 } }) {
-                    score
-                    ${personType.name} {
-                        name
-                        born
-                    } 
+                query {
+                    ${queryType}(phrase: "a name", sort: { score: ASC }, where: { score: { min: 0.2 } }) {
+                        score
+                        ${personType.name} {
+                            name
+                            born
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -1086,16 +1086,16 @@ describe("@fulltext directive", () => {
         });
         test("Limiting is possible", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a name", limit: 2) {
-                    score
-                    ${personType.name} {
-                        name
-                        born
-                    } 
+                query {
+                    ${queryType}(phrase: "a name", limit: 2) {
+                        score
+                        ${personType.name} {
+                            name
+                            born
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -1110,16 +1110,16 @@ describe("@fulltext directive", () => {
         });
         test("Offesetting is possible", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a name", offset: 2) {
-                    score
-                    ${personType.name} {
-                        name
-                        born
-                    } 
+                query {
+                    ${queryType}(phrase: "a name", offset: 2) {
+                        score
+                        ${personType.name} {
+                            name
+                            born
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -1142,16 +1142,16 @@ describe("@fulltext directive", () => {
         });
         test("Combined limiting and offesetting is possible", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a name", limit: 1, offset: 1) {
-                    score
-                    ${personType.name} {
-                        name
-                        born
-                    } 
+                query {
+                    ${queryType}(phrase: "a name", limit: 1, offset: 1) {
+                        score
+                        ${personType.name} {
+                            name
+                            born
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -1174,16 +1174,16 @@ describe("@fulltext directive", () => {
         });
         test("Throws error if invalid sort", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a name", sort: { score: "not valid" }) {
-                    score
-                    ${personType.name} {
-                        name
-                        born
-                    } 
+                query {
+                    ${queryType}(phrase: "a name", sort: { score: "not valid" }) {
+                        score
+                        ${personType.name} {
+                            name
+                            born
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -1197,16 +1197,16 @@ describe("@fulltext directive", () => {
         });
         test("Throws error if invalid offset", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a name", offset: 0.5) {
-                    score
-                    ${personType.name} {
-                        name
-                        born
-                    } 
+                query {
+                    ${queryType}(phrase: "a name", offset: 0.5) {
+                        score
+                        ${personType.name} {
+                            name
+                            born
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -1220,16 +1220,16 @@ describe("@fulltext directive", () => {
         });
         test("Throws error if invalid limit", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a name", limit: 0.5) {
-                    score
-                    ${personType.name} {
-                        name
-                        born
-                    } 
+                query {
+                    ${queryType}(phrase: "a name", limit: 0.5) {
+                        score
+                        ${personType.name} {
+                            name
+                            born
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
@@ -1243,16 +1243,16 @@ describe("@fulltext directive", () => {
         });
         test("Throws error if if invalid argument is suplied", async () => {
             const query = `
-            query {
-                ${queryType}(phrase: "a name", not_a_valid_argument: [1, 2, 3]) {
-                    score
-                    ${personType.name} {
-                        name
-                        born
-                    } 
+                query {
+                    ${queryType}(phrase: "a name", not_a_valid_argument: [1, 2, 3]) {
+                        score
+                        ${personType.name} {
+                            name
+                            born
+                        } 
+                    }
                 }
-            }
-        `;
+            `;
             const gqlResult = await graphql({
                 schema: generatedSchema,
                 source: query,
