@@ -26,9 +26,7 @@ import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { hasExplicitNodeInInterfaceWhere } from "../where/property-operations/create-connection-operation";
 import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
 import { createSortAndLimitProjection } from "./create-sort-and-limit";
-
 import { createEdgeSubquery } from "./create-edge-subquery";
-import { sort } from "semver";
 
 export function createConnectionClause({
     resolveTree,
