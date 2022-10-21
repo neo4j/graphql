@@ -91,10 +91,14 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
                 WITH { node: { title: this_Movie.title, actorsCount: this_Movie_actorsCount } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                UNWIND edges AS edge
-                WITH edge, totalCount
-                ORDER BY edge.node.actorsCount DESC
-                WITH collect(edge) AS edges, totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge
+                    ORDER BY edge.node.actorsCount DESC
+                    RETURN collect(edge) AS this_connection_moviesConnectionvar1
+                }
+                WITH this_connection_moviesConnectionvar1 AS edges, totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_moviesConnection
             }
             RETURN this { moviesConnection: this_moviesConnection } AS this"

@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
+import type { IResolvers } from "@graphql-tools/utils";
 import type { DirectiveNode, NamedTypeNode } from "graphql";
-import type { Exclude} from "../classes";
+import type { Exclude } from "../classes";
 import { Node } from "../classes";
 import type { NodeDirective } from "../classes/NodeDirective";
 import type { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
@@ -40,7 +41,10 @@ type Nodes = {
     interfaceRelationshipNames: Set<string>;
 };
 
-function getNodes(definitionNodes: DefinitionNodes, options: { callbacks?: Neo4jGraphQLCallbacks }): Nodes {
+function getNodes(
+    definitionNodes: DefinitionNodes,
+    options: { callbacks?: Neo4jGraphQLCallbacks; userCustomResolvers?: IResolvers | Array<IResolvers> }
+): Nodes {
     let pointInTypeDefs = false;
     let cartesianPointInTypeDefs = false;
 
@@ -121,6 +125,7 @@ function getNodes(definitionNodes: DefinitionNodes, options: { callbacks?: Neo4j
             scalars: definitionNodes.scalarTypes,
             unions: definitionNodes.unionTypes,
             callbacks: options.callbacks,
+            customResolvers: options.userCustomResolvers?.[definition.name.value],
         });
 
         // Ensure that all required fields are returning either a scalar type or an enum

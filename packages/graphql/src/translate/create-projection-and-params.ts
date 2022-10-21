@@ -208,7 +208,7 @@ export default function createProjectionAndParams({
                         collect: false,
                     });
 
-                    const unionWith = new CypherBuilder.With(parentNode);
+                    const unionWith = new CypherBuilder.With("*");
                     unionSubqueries.push(CypherBuilder.concat(unionWith, subquery));
                 }
 
