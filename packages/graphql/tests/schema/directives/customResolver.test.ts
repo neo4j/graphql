@@ -37,7 +37,15 @@ describe("@customResolver directive", () => {
                 customResolver: String
             }
         `;
-        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const resolvers = {
+            User: {
+                nickname: () => "The user's nickname",
+                customResolver: () => "Custom resolver output",
+            },
+        };
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs, resolvers });
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`

@@ -17,11 +17,17 @@
  * limitations under the License.
  */
 
-import type { FieldDefinitionNode, StringValueNode } from "graphql";
+import type { IResolvers } from "@graphql-tools/utils";
+import type {
+    FieldDefinitionNode,
+    StringValueNode,
+    InterfaceTypeDefinitionNode,
+    ObjectTypeDefinitionNode,
+} from "graphql";
 import { Kind } from "graphql";
 import { removeDuplicates } from "../utils/utils";
 
-type IgnoreMeta = {
+type CustomResolverMeta = {
     requiredFields: string[];
 };
 
@@ -34,8 +40,10 @@ let deprecationWarningShown = false;
 
 function getCustomResolverMeta(
     field: FieldDefinitionNode,
+    object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode,
+    customResolvers?: IResolvers | IResolvers[],
     interfaceField?: FieldDefinitionNode
-): IgnoreMeta | undefined {
+): CustomResolverMeta | undefined {
     const deprecatedDirective =
         field.directives?.find((x) => x.name.value === "computed") ||
         interfaceField?.directives?.find((x) => x.name.value === "computed");
@@ -51,6 +59,11 @@ function getCustomResolverMeta(
 
     if (!directive && !deprecatedDirective) {
         return undefined;
+    }
+
+    // TODO: remove check for directive when removing @computed
+    if (object.kind !== Kind.INTERFACE_TYPE_DEFINITION && directive && !customResolvers?.[field.name.value]) {
+        throw new Error(`Custom resolver for ${field.name.value} has not been provided`);
     }
 
     const directiveFromArgument =
