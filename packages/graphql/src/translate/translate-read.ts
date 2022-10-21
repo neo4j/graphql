@@ -140,6 +140,16 @@ export function translateRead(
 
         projectionClause = CypherBuilder.concat(withTotalCount, connectionClause, returnClause);
     }
+
+    if (context.fulltextIndex.scoreVariable) {
+        projectionClause = CypherBuilder.concat(
+            projectionClause,
+            new CypherBuilder.RawCypher((env) => {
+                return `, ${env.getReferenceId(context.fulltextIndex.scoreVariable)} as score`;
+            })
+        );
+    }
+
     const readQuery = CypherBuilder.concat(
         topLevelMatch,
         projAuth,

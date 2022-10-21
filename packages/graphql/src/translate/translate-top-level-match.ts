@@ -116,14 +116,14 @@ function createFulltextMatchClause(
     context: Context
 ): CypherBuilder.db.FullTextQueryNodes {
     const phraseParam = new CypherBuilder.Param(context.resolveTree.args.phrase);
-    const scoreVar = new CypherBuilder.Variable();
+    const scoreVar = context.fulltextIndex.scoreVariable;
 
     const matchQuery = new CypherBuilder.db.FullTextQueryNodes(
         matchNode,
         context.fulltextIndex.name,
         phraseParam,
         undefined,
-        scoreVar
+        scoreVar,
     );
 
     const labelsChecks = node.getLabels(context).map((label) => {

@@ -20,10 +20,11 @@
 import type { ObjectTypeComposerFieldConfigDefinition } from "graphql-compose";
 import type { GraphQLResolveInfo } from "graphql";
 import { execute } from "../../../utils";
-import { translateFulltext } from "../../../translate";
+import { translateRead } from "../../../translate";
 import type { Node } from "../../../classes";
 import type { Context, FulltextIndex } from "../../../types";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import * as CypherBuilder from "../../../translate/cypher-builder/CypherBuilder"
 
 export function fulltextResolver(
     { node }: { node: Node },
@@ -33,8 +34,9 @@ export function fulltextResolver(
         const context = _context as Context;
         context.resolveTree = getNeo4jResolveTree(info, { args });
         context.fulltextIndex = index;
+        context.fulltextIndex.scoreVariable = new CypherBuilder.Variable();
 
-        const { cypher, params } = translateFulltext({ context, node });
+        const { cypher, params } = translateRead({ context, node }, node.name);
         const executeResult = await execute({
             cypher,
             params,
