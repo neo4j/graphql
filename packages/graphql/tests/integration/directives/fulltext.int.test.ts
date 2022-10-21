@@ -923,7 +923,7 @@ describe("@fulltext directive", () => {
                 },
             ]);
         });
-        test("Ordered sorting", async () => {
+        test("Ordered sorting, no score", async () => {
             const person1 = {
                 name: "a b c",
                 born: 123,
@@ -995,6 +995,94 @@ describe("@fulltext directive", () => {
             expect(gqlResult2.data?.[queryType]).toEqual([
                 { [personType.name]: person1 },
                 { [personType.name]: person2 },
+            ]);
+        });
+        test("Ordered sorting, with score", async () => {
+            const person1 = {
+                name: "a b c",
+                born: 123,
+            };
+            const person2 = {
+                name: "b c d",
+                born: 234,
+            };
+
+            session = driver.session({ database: databaseName });
+
+            try {
+                await session.run(
+                    `
+                CREATE (person1:${personType.name})
+                CREATE (person2:${personType.name})
+                SET person1 = $person1
+                SET person2 = $person2
+            `,
+                    { person1, person2 }
+                );
+            } finally {
+                await session.close();
+            }
+
+            const query1 = `
+                query {
+                    ${queryType}(phrase: "b d", sort: [{ score: DESC }, { ${personType.name}: { name: ASC } }]) {
+                        score
+                        ${personType.name} {
+                            name
+                            born
+                        } 
+                    }
+                }
+            `;
+            const query2 = `
+                query {
+                    ${queryType}(phrase: "b d", sort: [{ ${personType.name}: { name: ASC } }, { score: DESC }]) {
+                        score
+                        ${personType.name} {
+                            name
+                            born
+                        } 
+                    }
+                }
+            `;
+            const gqlResult1 = await graphql({
+                schema: generatedSchema,
+                source: query1,
+                contextValue: {
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+            const gqlResult2 = await graphql({
+                schema: generatedSchema,
+                source: query2,
+                contextValue: {
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+
+            expect(gqlResult1.errors).toBeFalsy();
+            expect(gqlResult2.errors).toBeFalsy();
+            expect(gqlResult1.data?.[queryType]).toEqual([
+                {
+                    score: 1.0800554752349854,
+                    [personType.name]: person2,
+                },
+                {
+                    score: 0.41806092858314514,
+                    [personType.name]: person1,
+                },
+            ]);
+            expect(gqlResult2.data?.[queryType]).toEqual([
+                {
+                    score: 0.41806092858314514,
+                    [personType.name]: person1,
+                },
+                {
+                    score: 1.0800554752349854,
+                    [personType.name]: person2,
+                },
             ]);
         });
         test("Sort on nested field", async () => {
@@ -1283,6 +1371,128 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeDefined();
+        });
+        test("Sorting by score when the score is not returned", async () => {
+            const query = `
+                query {
+                    ${queryType}(phrase: "a different name", sort: { score: ASC }) {
+                        ${personType.name} {
+                            name
+                        } 
+                    }
+                }
+            `;
+            const gqlResult = await graphql({
+                schema: generatedSchema,
+                source: query,
+                contextValue: {
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data?.[queryType]).toEqual([
+                {
+                    [personType.name]: {
+                        name: "Another name",
+                    },
+                },
+                {
+                    [personType.name]: {
+                        name: "this is a name",
+                    },
+                },
+                {
+                    [personType.name]: {
+                        name: "This is a different name",
+                    },
+                },
+            ]);
+        });
+        test("Sort by node when node is not returned", async () => {
+            const query = `
+                query {
+                    ${queryType}(phrase: "this is", sort: { ${personType.name}: { born: ASC } }) {
+                        score
+                    }
+                }
+            `;
+            const gqlResult = await graphql({
+                schema: generatedSchema,
+                source: query,
+                contextValue: {
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data?.[queryType]).toEqual([
+                {
+                    score: 0.4119553565979004,
+                },
+                {
+                    score: 0.37194526195526123,
+                },
+            ]);
+        });
+        test("Filters by node when node is not returned", async () => {
+            const query = `
+                query {
+                    ${queryType}(phrase: "a different name", where: { ${personType.name}: { name: "${person1.name}" } }) {
+                        score
+                    }
+                }
+            `;
+            const gqlResult = await graphql({
+                schema: generatedSchema,
+                source: query,
+                contextValue: {
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data?.[queryType]).toEqual([
+                {
+                    score: 0.26449739933013916,
+                },
+            ]);
+        });
+        test("Filters by score when no score is returned", async () => {
+            const query = `
+                query {
+                    ${queryType}(phrase: "a different name", where: { score: { max: 0.5 } }) {
+                        ${personType.name} {
+                            name
+                        } 
+                    }
+                }
+            `;
+            const gqlResult = await graphql({
+                schema: generatedSchema,
+                source: query,
+                contextValue: {
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data?.[queryType]).toEqual([
+                {
+                    [personType.name]: {
+                        name: "this is a name",
+                    },
+                },
+                {
+                    [personType.name]: {
+                        name: "Another name",
+                    },
+                },
+            ]);
         });
     });
     describe("Index Creation", () => {
@@ -1715,9 +1925,4 @@ describe("@fulltext directive", () => {
             }
         });
     });
-    // filter node when node not returned
-    // filter score when not returned
-    // sort score when not returned
-    // sort node when not returned
-    // nested unordered sort
 });
