@@ -2500,7 +2500,7 @@ __metadata:
     npm-run-all: 4.1.5
     pluralize: 8.0.0
     prettier: ^2.7.1
-    randomstring: 1.2.2
+    randomstring: 1.2.3
     semver: 7.3.8
     ts-jest: 29.0.3
     typescript: 4.8.4
@@ -2544,7 +2544,7 @@ __metadata:
     jest: 29.2.1
     neo4j-driver: 5.1.0
     pluralize: 8.0.0
-    randomstring: 1.2.2
+    randomstring: 1.2.3
     supertest: 6.3.0
     ts-jest: 29.0.3
     typescript: 4.8.4
@@ -2596,7 +2596,7 @@ __metadata:
     postcss-loader: 7.0.1
     prettier: ^2.7.1
     process: 0.11.10
-    randomstring: 1.2.2
+    randomstring: 1.2.3
     react: 18.2.0
     react-dom: 18.2.0
     react-resizable: ^3.0.4
@@ -2660,7 +2660,7 @@ __metadata:
     nock: 13.2.9
     npm-run-all: 4.1.5
     pluralize: ^8.0.0
-    randomstring: 1.2.2
+    randomstring: 1.2.3
     rimraf: 3.0.2
     semver: ^7.3.7
     supertest: 6.3.0
@@ -14310,7 +14310,7 @@ __metadata:
     jsonwebtoken: 8.5.1
     neo4j-driver: 5.1.0
     nodemon: 2.0.20
-    randomstring: 1.2.2
+    randomstring: 1.2.3
     ts-jest: 29.0.3
     ts-node: 10.9.1
     tsconfig-paths: 4.1.0
@@ -16747,15 +16747,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"randomstring@npm:1.2.2":
-  version: 1.2.2
-  resolution: "randomstring@npm:1.2.2"
+"randomstring@npm:1.2.3":
+  version: 1.2.3
+  resolution: "randomstring@npm:1.2.3"
   dependencies:
     array-uniq: 1.0.2
     randombytes: 2.0.3
   bin:
     randomstring: bin/randomstring
-  checksum: 23e8304865fdeb851a3ba75c7f4a6e12a27b9b15a65651ce18be860b3bd66b279fb46c9379a0d7a9cb3762d501af58ca5a877a66b413b9bd107511918db0269b
+  checksum: 9f201638d1a51091b0262fae062bec53a94636dd1f193c703245eaa7676ee8de22f6e7d35075cfe49ba446999f0d6f1032fb7a50a99a2a80d8c28145748a4d67
   languageName: node
   linkType: hard
 
