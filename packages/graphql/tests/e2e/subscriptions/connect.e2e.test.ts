@@ -133,7 +133,6 @@ describe("Connect Subscription", () => {
 
     // TODO next-up: connect
     // TODO next-up: connectorCreate onConnect
-    // TODO next-up: fix tests: update schema tests, fix update_meta not found [done?]
     // TODO next-up: wrap up connect events (refactor)
 
     // TODO next-up: disconnect on update
@@ -1255,8 +1254,8 @@ describe("Connect Subscription", () => {
         ]);
     });
 
-    // FIXME: uncovers bug on union
-    test.skip("connect via update - update - create subscription sends events one way: union type", async () => {
+    // FIXME: no event; apocDoWhen
+    test.only("connect via update - update - create subscription sends events one way: union type", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
@@ -2258,6 +2257,1235 @@ describe("Connect Subscription", () => {
                         },
                         directors: null,
                         reviewers: null,
+                    },
+                },
+            },
+        ]);
+    });
+
+    // TODO: replicate below for union/ interface
+    test("connect via create - connect subscription simple case", async () => {
+        // 1. create resources that will be connected
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.create}(
+                            input: [
+                                {
+                                    title: "Matrix",
+                                    imdbId: 1
+                                }
+                            ]
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        await wsClient.subscribe(`
+            subscription SubscriptionActor {
+                ${typeActor.operations.subscribe.connected} {
+                    relationshipName
+                    event
+                    direction
+                    ${typeActor.operations.subscribe.payload.connected} {
+                        name
+                    }
+                    relationship {
+                        movies {
+                            screenTime
+                            node {
+                                title
+                                imdbId
+                            }
+                        }
+                    }
+                } 
+            }                
+        `);
+
+        await wsClient2.subscribe(`
+            subscription SubscriptionMovie {
+                ${typeMovie.operations.subscribe.connected} {
+                    direction
+                    relationshipName
+                    event
+                    ${typeMovie.operations.subscribe.payload.connected} {
+                        title
+                        imdbId
+                    }
+                    relationship {
+                        reviewers {
+                            score
+                            node {
+                                ... on ${typePerson.name}EventPayload {
+                                    name
+                                }
+                                ... on ${typeInfluencer.name}EventPayload {
+                                    url
+                                }
+                                reputation
+                            }
+                        }
+                        actors {
+                            screenTime
+                            node {
+                                name
+                            }
+                        }
+                        directors {
+                            year
+                            node {
+                                ... on ${typePerson.name}EventPayload {
+                                    name
+                                    reputation
+                                }
+                                ... on ${typeActor.name}EventPayload {
+                                    name
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `);
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeActor.operations.create}(
+                            input: [
+                            {
+                              name: "Keanu",
+                              movies: {
+                                connect: [
+                                  {
+                                    where: {
+                                      node: {
+                                        title: "Matrix",
+                                        imdbId: 1
+                                      }
+                                    },
+                                    edge: {
+                                      screenTime: 250
+                                    },
+                                  }
+                                ]
+                              }
+                            }
+                        ]
+                        ) {
+                            ${typeActor.plural} {
+                                name
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient2.errors).toEqual([]);
+        expect(wsClient2.events).toHaveLength(1);
+        expect(wsClient.events).toHaveLength(1);
+        expect(wsClient2.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix", imdbId: 1 },
+                    event: "CONNECT",
+                    direction: "IN",
+                    relationshipName: "ActedIn",
+                    relationship: {
+                        actors: {
+                            screenTime: 250,
+                            node: {
+                                name: "Keanu",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeActor.operations.subscribe.connected]: {
+                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
+                    event: "CONNECT",
+                    direction: "OUT",
+                    relationshipName: "ActedIn",
+                    relationship: {
+                        movies: {
+                            screenTime: 250,
+                            node: {
+                                title: "Matrix",
+                                imdbId: 1,
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+    });
+
+    test("connect via create - connect subscription 2 levels deep + interface", async () => {
+        // 1. create resources that will be connected
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.create}(
+                            input: [
+                                {
+                                    title: "Matrix",
+                                    imdbId: 1
+                                }
+                            ]
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typePerson.operations.create}(
+                            input: [
+                                {
+                                    reputation: 100,
+                                    name: "Ana"
+                                }
+                            ]
+                        ) {
+                            ${typePerson.plural} {
+                                reputation
+                                name
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        await wsClient.subscribe(`
+            subscription SubscriptionActor {
+                ${typeActor.operations.subscribe.connected} {
+                    relationshipName
+                    event
+                    direction
+                    ${typeActor.operations.subscribe.payload.connected} {
+                        name
+                    }
+                    relationship {
+                        movies {
+                            screenTime
+                            node {
+                                title
+                                imdbId
+                            }
+                        }
+                    }
+                } 
+            }                
+        `);
+
+        await wsClient2.subscribe(`
+            subscription SubscriptionMovie {
+                ${typeMovie.operations.subscribe.connected} {
+                    direction
+                    relationshipName
+                    event
+                    ${typeMovie.operations.subscribe.payload.connected} {
+                        title
+                        imdbId
+                    }
+                    relationship {
+                        reviewers {
+                            score
+                            node {
+                                ... on ${typePerson.name}EventPayload {
+                                    name
+                                }
+                                ... on ${typeInfluencer.name}EventPayload {
+                                    url
+                                }
+                                reputation
+                            }
+                        }
+                        actors {
+                            screenTime
+                            node {
+                                name
+                            }
+                        }
+                        directors {
+                            year
+                            node {
+                                ... on ${typePerson.name}EventPayload {
+                                    name
+                                    reputation
+                                }
+                                ... on ${typeActor.name}EventPayload {
+                                    name
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `);
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeActor.operations.create}(
+                            input: [
+                            {
+                              name: "Keanu",
+                              movies: {
+                                connect: [
+                                  {
+                                    where: {
+                                      node: {
+                                        title: "Matrix",
+                                      }
+                                    },
+                                    edge: {
+                                      screenTime: 250
+                                    },
+                                    connect: [
+                                        {
+                                            reviewers: [
+                                                {
+                                                  edge: {
+                                                    score: 10
+                                                  },
+                                                  where: {
+                                                    node: {
+                                                        _on: {
+                                                            ${typePerson.name}: {
+                                                              name: "Ana"
+                                                            }
+                                                        }
+                                                    }
+                                                  },
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                        ]
+                        ) {
+                            ${typeActor.plural} {
+                                name
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient2.errors).toEqual([]);
+        expect(wsClient2.events).toHaveLength(2);
+        expect(wsClient.events).toHaveLength(1);
+        expect(wsClient2.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix", imdbId: 1 },
+                    event: "CONNECT",
+                    direction: "IN",
+                    relationshipName: "ActedIn",
+                    relationship: {
+                        actors: {
+                            screenTime: 250,
+                            node: {
+                                name: "Keanu",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix", imdbId: 1 },
+                    event: "CONNECT",
+                    direction: "IN",
+                    relationshipName: "Review",
+                    relationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            score: 10,
+                            node: {
+                                name: "Ana",
+                                reputation: 100,
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeActor.operations.subscribe.connected]: {
+                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
+                    event: "CONNECT",
+                    direction: "OUT",
+                    relationshipName: "ActedIn",
+                    relationship: {
+                        movies: {
+                            screenTime: 250,
+                            node: {
+                                title: "Matrix",
+                                imdbId: 1,
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+    });
+
+    test("connect via create - connect subscription 3 levels deep + interface (NW)", async () => {
+        // 1. create resources that will be connected
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.create}(
+                            input: [
+                                {
+                                    title: "Matrix",
+                                    imdbId: 1
+                                },
+                                {
+                                    title: "Constantine",
+                                    imdbId: 2
+                                }
+                            ]
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typePerson.operations.create}(
+                            input: [
+                                {
+                                    name: "Ana",
+                                    reputation: 100
+                                }
+                            ]
+                        ) {
+                            ${typePerson.plural} {
+                                reputation
+                                name
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        await wsClient.subscribe(`
+            subscription SubscriptionActor {
+                ${typeActor.operations.subscribe.connected} {
+                    relationshipName
+                    event
+                    direction
+                    ${typeActor.operations.subscribe.payload.connected} {
+                        name
+                    }
+                    relationship {
+                        movies {
+                            screenTime
+                            node {
+                                title
+                                imdbId
+                            }
+                        }
+                    }
+                } 
+            }                
+        `);
+
+        await wsClient2.subscribe(`
+            subscription SubscriptionMovie {
+                ${typeMovie.operations.subscribe.connected} {
+                    direction
+                    relationshipName
+                    event
+                    ${typeMovie.operations.subscribe.payload.connected} {
+                        title
+                        imdbId
+                    }
+                    relationship {
+                        reviewers {
+                            score
+                            node {
+                                ... on ${typePerson.name}EventPayload {
+                                    name
+                                }
+                                ... on ${typeInfluencer.name}EventPayload {
+                                    url
+                                }
+                                reputation
+                            }
+                        }
+                        actors {
+                            screenTime
+                            node {
+                                name
+                            }
+                        }
+                        directors {
+                            year
+                            node {
+                                ... on ${typePerson.name}EventPayload {
+                                    name
+                                    reputation
+                                }
+                                ... on ${typeActor.name}EventPayload {
+                                    name
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `);
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeActor.operations.create}(
+                            input: [
+                            {
+                              name: "Keanu",
+                              movies: {
+                                connect: [
+                                  {
+                                    where: {
+                                      node: {
+                                        title: "Matrix",
+                                        imdbId: 1
+                                      }
+                                    },
+                                    edge: {
+                                      screenTime: 250
+                                    },
+                                    connect: [
+                                        {
+                                            reviewers: [
+                                                {
+                                                  edge: {
+                                                    score: 10
+                                                  },
+                                                  where: {
+                                                    node: {
+                                                      reputation: 100
+                                                    }
+                                                  },
+                                                  connect: {
+                                                    _on: {
+                                                      ${typePerson.name}: [
+                                                        {
+                                                          movies: [
+                                                            {
+                                                              where: {
+                                                                node: {
+                                                                  title: "Constantine",
+                                                                  imdbId: 2
+                                                                }
+                                                              },
+                                                              edge: {
+                                                                score: 9
+                                                              }
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                        ]
+                        ) {
+                            ${typeActor.plural} {
+                                name
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient2.errors).toEqual([]);
+        expect(wsClient2.events).toHaveLength(1);
+        expect(wsClient.events).toHaveLength(1);
+        expect(wsClient2.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix", imdbId: 1 },
+                    event: "CONNECT",
+                    direction: "IN",
+                    relationshipName: "ActedIn",
+                    relationship: {
+                        actors: {
+                            screenTime: 250,
+                            node: {
+                                name: "Keanu",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeActor.operations.subscribe.connected]: {
+                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
+                    event: "CONNECT",
+                    direction: "OUT",
+                    relationshipName: "ActedIn",
+                    relationship: {
+                        movies: {
+                            screenTime: 250,
+                            node: {
+                                title: "Matrix",
+                                imdbId: 1,
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+    });
+
+    test("connect via create - connect subscription 3 levels deep + union", async () => {
+        // 1. create resources that will be connected
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.create}(
+                            input: [
+                                {
+                                    title: "Matrix",
+                                    imdbId: 1
+                                }
+                            ]
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeActor.operations.create}(
+                            input: [
+                                {
+                                    name: "Marion",
+                                }
+                            ]
+                        ) {
+                            ${typeActor.plural} {
+                                name
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        await wsClient.subscribe(`
+            subscription SubscriptionActor {
+                ${typeActor.operations.subscribe.connected} {
+                    relationshipName
+                    event
+                    direction
+                    ${typeActor.operations.subscribe.payload.connected} {
+                        name
+                    }
+                    relationship {
+                        movies {
+                            screenTime
+                            node {
+                                title
+                                imdbId
+                            }
+                        }
+                    }
+                } 
+            }                
+        `);
+
+        await wsClient2.subscribe(`
+            subscription SubscriptionMovie {
+                ${typeMovie.operations.subscribe.connected} {
+                    direction
+                    relationshipName
+                    event
+                    ${typeMovie.operations.subscribe.payload.connected} {
+                        title
+                        imdbId
+                    }
+                    relationship {
+                        reviewers {
+                            score
+                            node {
+                                ... on ${typePerson.name}EventPayload {
+                                    name
+                                }
+                                ... on ${typeInfluencer.name}EventPayload {
+                                    url
+                                }
+                                reputation
+                            }
+                        }
+                        actors {
+                            screenTime
+                            node {
+                                name
+                            }
+                        }
+                        directors {
+                            year
+                            node {
+                                ... on ${typePerson.name}EventPayload {
+                                    name
+                                    reputation
+                                }
+                                ... on ${typeActor.name}EventPayload {
+                                    name
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `);
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeActor.operations.create}(
+                            input: [
+                            {
+                              name: "Keanu",
+                              movies: {
+                                connect: [
+                                  {
+                                    where: {
+                                      node: {
+                                        title: "Matrix",
+                                        imdbId: 1
+                                      }
+                                    },
+                                    edge: {
+                                      screenTime: 250
+                                    },
+                                    connect: [
+                                        {
+                                            directors: {
+                                                ${typeActor.name}: [
+                                                {
+                                                  where: {
+                                                    node: {
+                                                      name: "Marion"
+                                                    }
+                                                  },
+                                                  edge: {
+                                                    year: 2015
+                                                  },
+                                                  connect: [
+                                                    {
+                                                      movies: [
+                                                        {
+                                                          where: {
+                                                            node: {
+                                                              title: "Matrix",
+                                                              imdbId: 1
+                                                            }
+                                                          },
+                                                          edge: {
+                                                            screenTime: 199
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }  
+                                        }
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                        ]
+                        ) {
+                            ${typeActor.plural} {
+                                name
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient2.errors).toEqual([]);
+        expect(wsClient2.events).toHaveLength(3);
+        expect(wsClient.events).toHaveLength(2);
+        expect(wsClient2.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix", imdbId: 1 },
+                    event: "CONNECT",
+                    direction: "IN",
+                    relationshipName: "ActedIn",
+                    relationship: {
+                        actors: {
+                            screenTime: 250,
+                            node: {
+                                name: "Keanu",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix", imdbId: 1 },
+                    event: "CONNECT",
+                    direction: "IN",
+                    relationshipName: "ActedIn",
+                    relationship: {
+                        actors: {
+                            screenTime: 199,
+                            node: {
+                                name: "Marion",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix", imdbId: 1 },
+                    event: "CONNECT",
+                    direction: "IN",
+                    relationshipName: "Directed",
+                    relationship: {
+                        actors: null,
+                        directors: {
+                            year: 2015,
+                            node: {
+                                name: "Marion",
+                            },
+                        },
+                        reviewers: null,
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeActor.operations.subscribe.connected]: {
+                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
+                    event: "CONNECT",
+                    direction: "OUT",
+                    relationshipName: "ActedIn",
+                    relationship: {
+                        movies: {
+                            screenTime: 250,
+                            node: {
+                                title: "Matrix",
+                                imdbId: 1,
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typeActor.operations.subscribe.connected]: {
+                    [typeActor.operations.subscribe.payload.connected]: { name: "Marion" },
+                    event: "CONNECT",
+                    direction: "OUT",
+                    relationshipName: "ActedIn",
+                    relationship: {
+                        movies: {
+                            screenTime: 199,
+                            node: {
+                                title: "Matrix",
+                                imdbId: 1,
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+    });
+
+    // TODO:
+    test("connect via create - connect subscription 4 levels deep + union + interface (NW)", async () => {
+        // 1. create resources that will be connected
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.create}(
+                            input: [
+                                {
+                                    title: "Matrix",
+                                    imdbId: 1
+                                }
+                            ]
+                        ) {
+                            ${typeMovie.plural} {
+                                title
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeActor.operations.create}(
+                            input: [
+                                {
+                                    name: "Marion",
+                                }
+                            ]
+                        ) {
+                            ${typeActor.plural} {
+                                name
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typePerson.operations.create}(
+                            input: [
+                                {
+                                    name: "Ana",
+                                    reputation: 100
+                                }
+                            ]
+                        ) {
+                            ${typePerson.plural} {
+                                reputation
+                                name
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        await wsClient.subscribe(`
+            subscription SubscriptionActor {
+                ${typeActor.operations.subscribe.connected} {
+                    relationshipName
+                    event
+                    direction
+                    ${typeActor.operations.subscribe.payload.connected} {
+                        name
+                    }
+                    relationship {
+                        movies {
+                            screenTime
+                            node {
+                                title
+                                imdbId
+                            }
+                        }
+                    }
+                } 
+            }                
+        `);
+
+        await wsClient2.subscribe(`
+            subscription SubscriptionMovie {
+                ${typeMovie.operations.subscribe.connected} {
+                    direction
+                    relationshipName
+                    event
+                    ${typeMovie.operations.subscribe.payload.connected} {
+                        title
+                        imdbId
+                    }
+                    relationship {
+                        reviewers {
+                            score
+                            node {
+                                ... on ${typePerson.name}EventPayload {
+                                    name
+                                }
+                                ... on ${typeInfluencer.name}EventPayload {
+                                    url
+                                }
+                                reputation
+                            }
+                        }
+                        actors {
+                            screenTime
+                            node {
+                                name
+                            }
+                        }
+                        directors {
+                            year
+                            node {
+                                ... on ${typePerson.name}EventPayload {
+                                    name
+                                    reputation
+                                }
+                                ... on ${typeActor.name}EventPayload {
+                                    name
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `);
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeActor.operations.create}(
+                            input: [
+                            {
+                              name: "Keanu",
+                              movies: {
+                                connect: [
+                                  {
+                                    where: {
+                                      node: {
+                                        title: "Matrix",
+                                        imdbId: 1
+                                      }
+                                    },
+                                    edge: {
+                                      screenTime: 250
+                                    },
+                                    connect: [
+                                        {
+                                            directors: {
+                                                ${typeActor.name}: [
+                                                {
+                                                  where: {
+                                                    node: {
+                                                      name: "Marion"
+                                                    }
+                                                  },
+                                                  edge: {
+                                                    year: 2015
+                                                  },
+                                                  connect: [
+                                                    {
+                                                      movies: [
+                                                        {
+                                                          where: {
+                                                            node: {
+                                                              title: "Matrix",
+                                                              imdbId: 1
+                                                            }
+                                                          },
+                                                          edge: {
+                                                            screenTime: 199
+                                                          }
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }  
+                                        }
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                        ]
+                        ) {
+                            ${typeActor.plural} {
+                                name
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient2.errors).toEqual([]);
+        expect(wsClient2.events).toHaveLength(3);
+        expect(wsClient.events).toHaveLength(2);
+        expect(wsClient2.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix", imdbId: 1 },
+                    event: "CONNECT",
+                    direction: "IN",
+                    relationshipName: "ActedIn",
+                    relationship: {
+                        actors: {
+                            screenTime: 250,
+                            node: {
+                                name: "Keanu",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix", imdbId: 1 },
+                    event: "CONNECT",
+                    direction: "IN",
+                    relationshipName: "ActedIn",
+                    relationship: {
+                        actors: {
+                            screenTime: 199,
+                            node: {
+                                name: "Marion",
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix", imdbId: 1 },
+                    event: "CONNECT",
+                    direction: "IN",
+                    relationshipName: "Directed",
+                    relationship: {
+                        actors: null,
+                        directors: {
+                            year: 2015,
+                            node: {
+                                name: "Marion",
+                            },
+                        },
+                        reviewers: null,
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typeActor.operations.subscribe.connected]: {
+                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
+                    event: "CONNECT",
+                    direction: "OUT",
+                    relationshipName: "ActedIn",
+                    relationship: {
+                        movies: {
+                            screenTime: 250,
+                            node: {
+                                title: "Matrix",
+                                imdbId: 1,
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typeActor.operations.subscribe.connected]: {
+                    [typeActor.operations.subscribe.payload.connected]: { name: "Marion" },
+                    event: "CONNECT",
+                    direction: "OUT",
+                    relationshipName: "ActedIn",
+                    relationship: {
+                        movies: {
+                            screenTime: 199,
+                            node: {
+                                title: "Matrix",
+                                imdbId: 1,
+                            },
+                        },
                     },
                 },
             },
