@@ -17,11 +17,10 @@
  * limitations under the License.
  */
 import type { Node } from "../classes";
-import type { Context, ConnectionField } from "../types";
+import type { Context } from "../types";
 import type { CreateInput } from "./batch-create/batch-create";
 import createProjectionAndParams from "./create-projection-and-params";
 import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
-import createConnectionAndParams from "./connection/create-connection-and-params";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
@@ -33,9 +32,9 @@ import {
     parseCreate,
     UnwindCreateVisitor,
 } from "./batch-create/batch-create";
-// import translateCreateOld from "./translate-create_old";
+import translateCreate from "./translate-create";
 
-export default async function translateCreate({
+export default async function translateCreateNew({
     context,
     node,
 }: {
@@ -53,7 +52,7 @@ export default async function translateCreate({
         parsedInput = parseCreate(treeDescriptor, node, context);
     } catch (exception) {
         // Unwind optimization is not supported for this GraphQLInput
-        // return translateCreateOld({context, node});
+        return translateCreate({context, node});
     }
     
     const connectionStrs: string[] = [];
@@ -61,8 +60,6 @@ export default async function translateCreate({
 
     const projectionWith: string[] = [];
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
-
-    let connectionParams: any = {};
 
     const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
 
@@ -94,6 +91,8 @@ export default async function translateCreate({
     let projectionSubquery: CypherBuilder.Clause | undefined;
     if (nodeProjection) {
         let projAuth = "";
+        // TODO Remove it
+        console.info(projAuth);
         const projection = createProjectionAndParams({
             node,
             context,
@@ -125,24 +124,6 @@ export default async function translateCreate({
             .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
             .join("\n"); */
 
-        const withVars = context.subscriptionsEnabled ? [META_CYPHER_VARIABLE] : [];
-        if (projection.meta?.connectionFields?.length) {
-            projection.meta.connectionFields.forEach((connectionResolveTree) => {
-                const connectionField = node.connectionFields.find(
-                    (x) => x.fieldName === connectionResolveTree.name
-                ) as ConnectionField;
-                const connection = createConnectionAndParams({
-                    resolveTree: connectionResolveTree,
-                    field: connectionField,
-                    context,
-                    nodeVariable: "REPLACE_ME",
-                    withVars,
-                });
-                connectionStrs.push(connection[0]);
-                if (!connectionParams) connectionParams = {};
-                connectionParams = { ...connectionParams, ...connection[1] };
-            });
-        }
     }
 
     const replacedConnectionStrs = connectionStrs.length

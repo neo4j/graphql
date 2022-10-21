@@ -12,7 +12,6 @@ export class CreateAST extends AST implements ICreateAST {
         this.node = node;
     }
 
-
     accept<R>(visitor: Visitor<R>): R {
         return visitor.visitCreate(this);
     }

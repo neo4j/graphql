@@ -25,10 +25,13 @@ import { Clause } from "./Clause";
 import { OnCreate, OnCreateParam } from "./sub-clauses/OnCreate";
 import { WithReturn } from "./mixins/WithReturn";
 import { mixin } from "./utils/mixin";
+import { WithSet } from "./mixins/WithSet";
+import { compileCypherIfExists } from "../utils/utils";
+import { SetClause } from "./sub-clauses/Set";
 
-export interface Merge extends WithReturn {}
+export interface Merge extends WithReturn, WithSet {}
 
-@mixin(WithReturn)
+@mixin(WithReturn, WithSet)
 export class Merge<T extends NodeRef | RelationshipRef = any> extends Clause {
     private pattern: Pattern<T>;
     private onCreateClause: OnCreate;
@@ -43,6 +46,7 @@ export class Merge<T extends NodeRef | RelationshipRef = any> extends Clause {
             target: addLabelsOption,
         }).withParams(params);
         this.onCreateClause = new OnCreate(this);
+        this.setSubClause = new SetClause(this);
     }
 
     public onCreate(...onCreateParams: OnCreateParam[]): this {
@@ -53,6 +57,7 @@ export class Merge<T extends NodeRef | RelationshipRef = any> extends Clause {
 
     public getCypher(env: CypherEnvironment): string {
         const mergeStr = `MERGE ${this.pattern.getCypher(env)}`;
+        const setCypher = compileCypherIfExists(this.setSubClause, env, { prefix: "\n" });
         const onCreateStatement = this.onCreateClause.getCypher(env);
         const separator = onCreateStatement ? "\n" : "";
 
@@ -61,6 +66,6 @@ export class Merge<T extends NodeRef | RelationshipRef = any> extends Clause {
             returnCypher = `\n${this.returnStatement.getCypher(env)}`;
         }
 
-        return `${mergeStr}${separator}${onCreateStatement}${returnCypher}`;
+        return `${mergeStr}${separator}${setCypher}${onCreateStatement}${returnCypher}`;
     }
 }

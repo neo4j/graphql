@@ -10,4 +10,4 @@ export class AST implements IAST {
     accept<R>(visitor: Visitor<R>): R {
         return visitor.visitNode(this);
     }
-} 
+}

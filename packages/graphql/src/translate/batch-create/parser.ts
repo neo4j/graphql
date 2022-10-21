@@ -1,6 +1,6 @@
 import type { Context, RelationField } from "../../types";
 import type { CreateInput, TreeDescriptor } from "./types";
-import type { Node } from "../../classes";
+import type { Node, Relationship } from "../../classes";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { getRelationshipFields } from "./utils";
 import { AST, CreateAST, NestedCreateAST, ConnectAST, ConnectOrCreateAST } from "./GraphQLInputAST/GraphQLInputAST";
@@ -46,23 +46,44 @@ export function inputTreeToCypherMap(
     return new CypherBuilder.Map(properties);
 }
 
-export function getTreeDescriptor(input: CreateInput, node: Node, context: Context): TreeDescriptor {
+function isScalar(fieldName, node, relationship?) {
+    const predicate = (x) => x.fieldName === fieldName;
+    const scalarFields = [node.primitiveFields, node.temporalFields, node.pointFields];
+    if (relationship) {
+        scalarFields.push(...[relationship.primitiveFields, relationship.temporalFields, relationship.pointFields]);
+    }
+    return scalarFields.flat().some(predicate);
+}
+
+export function getTreeDescriptor(
+    input: CreateInput,
+    node: Node,
+    context: Context,
+    relationship?: Relationship
+): TreeDescriptor {
     return Object.entries(input).reduce(
         (previous, [key, value]) => {
-            const [relationField, relatedNodes] = getRelationshipFields(node, key as string, value, context);
-            const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
-            const temporalFields = node.temporalFields.find((x) => key === x.fieldName);
-            const pointField = node.pointFields.find((x) => key === x.fieldName);
-            // TODO: supports union/interfaces
-            if (typeof value === "object" && value !== null && !primitiveField && !temporalFields && !pointField) {
+            const [relationField, relatedNodes] = getRelationshipFields(node, key, value, context);
+            if (relationField && relationField.properties) {
+                relationship = context.relationships.find(
+                    (x) => x.properties === relationField.properties
+                ) as unknown as Relationship;
+            }
+            /* 
+                TODO: Using this approach to distinguish between "Children" and "Properties"
+                could lead to bugs in case ofwith properties with same name as the Operation name.
+                For isntance: { create: {node: { create: true } } }
+            */
+            if (typeof value === "object" && value !== null && !isScalar(key, node, relationship)) {
+                // TODO: supports union/interfaces
                 const innerNode = relationField ? relatedNodes[0] : node;
                 if (Array.isArray(value)) {
                     previous.childrens[key] = mergeTreeDescriptors(
-                        value.map((el) => getTreeDescriptor(el as CreateInput, innerNode, context))
+                        value.map((el) => getTreeDescriptor(el as CreateInput, innerNode, context, relationship))
                     );
                     return previous;
                 }
-                previous.childrens[key] = getTreeDescriptor(value as CreateInput, innerNode, context);
+                previous.childrens[key] = getTreeDescriptor(value as CreateInput, innerNode, context, relationship);
                 return previous;
             }
             previous.properties.add(key);
@@ -84,7 +105,7 @@ export function mergeTreeDescriptors(input: TreeDescriptor[]): TreeDescriptor {
                         node.childrens[childrenKey] ?? ({ properties: new Set(), childrens: {} } as TreeDescriptor);
                     return [childrenKey, mergeTreeDescriptors([previousChildren, nodeChildren])];
                 }
-            ) as [string, TreeDescriptor][];
+            );
             previous.childrens = Object.fromEntries(entries);
             return previous;
         },
@@ -95,6 +116,12 @@ export function mergeTreeDescriptors(input: TreeDescriptor[]): TreeDescriptor {
 function parser(input: TreeDescriptor, node: Node, context: Context, parentASTNode: AST): AST {
     Object.entries(input.childrens).forEach(([key, value]) => {
         const [relationField, relatedNodes] = getRelationshipFields(node, key, {}, context);
+        let edge;
+        if (relationField && relationField.properties) {
+            edge = context.relationships.find(
+                (x) => x.properties === relationField.properties
+            ) as unknown as Relationship;
+        }
         if (relationField) {
             Object.entries(value.childrens).forEach(([operation, description]) => {
                 switch (operation) {
@@ -103,7 +130,7 @@ function parser(input: TreeDescriptor, node: Node, context: Context, parentASTNo
                             parseNestedCreate(description, relatedNodes[0], context, node, key, [
                                 relationField,
                                 relatedNodes,
-                            ])
+                            ], edge)
                         );
                         break;
                     /*
@@ -141,7 +168,8 @@ function parseNestedCreate(
     context: Context,
     parentNode: Node,
     relationshipPropertyPath: string,
-    relationship: [RelationField | undefined, Node[]]
+    relationship: [RelationField | undefined, Node[]],
+    edge: Relationship
 ) {
     const nodeProperties = input.childrens.node.properties;
     const edgeProperties = input.childrens.edge ? input.childrens.edge.properties : [];
@@ -151,7 +179,8 @@ function parseNestedCreate(
         [...nodeProperties],
         [...edgeProperties],
         relationshipPropertyPath,
-        relationship
+        relationship,
+        edge
     );
     if (input.childrens.node) {
         parser(input.childrens.node, node, context, nestedCreateAST);
@@ -159,8 +188,7 @@ function parseNestedCreate(
     return nestedCreateAST;
 }
 
-
-function parseConnect(
+export function parseConnect(
     input: TreeDescriptor,
     node: Node,
     context: Context,
@@ -180,13 +208,19 @@ function parseConnect(
         relationshipPropertyPath,
         relationship
     );
+    // TODO: remove it
+    console.info(context);
     return connectAST;
 }
 
-
-function parseConnectOrCreate(input: TreeDescriptor, node: Node, context: Context, parentNode: Node) {
+export function parseConnectOrCreate(input: TreeDescriptor, node: Node, context: Context, parentNode: Node) {
     const where = input.childrens.where;
     const onCreate = input.childrens.onCreate;
     const connectOrCreateAST = new ConnectOrCreateAST(parentNode, where, onCreate);
+
+    // TODO: remove it
+    console.info(node);
+    console.info(context);
+
     return connectOrCreateAST;
 }

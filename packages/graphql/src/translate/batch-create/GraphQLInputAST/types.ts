@@ -1,6 +1,6 @@
 import type { TreeDescriptor } from "../types";
 import type { RelationField } from "../../../types";
-import type { Node } from "../../../classes";
+import type { Node, Relationship } from "../../../classes";
 
 export interface IAST {
     childrens: IAST[];
@@ -8,7 +8,7 @@ export interface IAST {
     accept: <R>(visitor: Visitor<R>) => R;
 }
 
-export interface IConnectAST extends IAST {
+export interface IConnectAST extends IAST{
     node: Node;
     parent: Node;
     edgeProperties: string[];
@@ -36,6 +36,7 @@ export interface INestedCreateAST extends IAST {
     edgeProperties: string[];
     relationshipPropertyPath: string;
     relationship: [RelationField | undefined, Node[]];
+    edge: Relationship
 }
 
 export interface Visitor<R> {

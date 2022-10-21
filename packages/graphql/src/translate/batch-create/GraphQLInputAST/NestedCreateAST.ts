@@ -1,6 +1,6 @@
 import type { RelationField } from "../../../types";
 import type { Visitor, INestedCreateAST } from "./types";
-import type { Node } from "../../../classes";
+import type { Node, Relationship } from "../../../classes";
 import { AST } from "./AST";
 
 export class NestedCreateAST extends AST implements INestedCreateAST {
@@ -10,6 +10,7 @@ export class NestedCreateAST extends AST implements INestedCreateAST {
     edgeProperties: string[];
     relationshipPropertyPath: string;
     relationship: [RelationField | undefined, Node[]];
+    edge: Relationship;
 
     constructor(
         node: Node,
@@ -17,7 +18,8 @@ export class NestedCreateAST extends AST implements INestedCreateAST {
         nodeProperties: string[],
         edgeProperties: string[],
         relationshipPropertyPath: string,
-        relationship: [RelationField | undefined, Node[]]
+        relationship: [RelationField | undefined, Node[]],
+        edge: Relationship
     ) {
         super();
         this.node = node;
@@ -26,6 +28,7 @@ export class NestedCreateAST extends AST implements INestedCreateAST {
         this.edgeProperties = edgeProperties;
         this.relationshipPropertyPath = relationshipPropertyPath;
         this.relationship = relationship;
+        this.edge = edge;
     }
 
     accept<R>(visitor: Visitor<R>): R {

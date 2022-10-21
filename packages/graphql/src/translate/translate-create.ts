@@ -122,7 +122,7 @@ export default async function translateCreateOld({
             .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
             .join("\n");
     }
-  
+
     const replacedConnectionStrs = connectionStrs.length
         ? createStrs.map((_, i) => {
               return connectionStrs
