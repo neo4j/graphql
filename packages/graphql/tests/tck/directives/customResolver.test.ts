@@ -36,8 +36,15 @@ describe("Cypher customResolver directive", () => {
             }
         `;
 
+        const resolvers = {
+            User: {
+                fullName: () => "The user's full name",
+            },
+        };
+
         neoSchema = new Neo4jGraphQL({
             typeDefs,
+            resolvers,
             config: { enableRegex: true },
         });
     });
