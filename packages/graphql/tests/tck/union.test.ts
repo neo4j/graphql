@@ -76,26 +76,26 @@ describe("Cypher Union", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    MATCH (this)-[this0:SEARCH]->(this_search:\`Genre\`)
-                    WHERE apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this_search  { __resolveType: \\"Genre\\",  .name } AS this_search
-                    RETURN this_search AS this_search
-                    UNION
-                    WITH this
-                    MATCH (this)-[this1:SEARCH]->(this_search:\`Movie\`)
-                    WITH this_search  { __resolveType: \\"Movie\\",  .title } AS this_search
-                    RETURN this_search AS this_search
-                }
-                WITH this_search
-                RETURN collect(this_search) AS this_search
-            }
-            RETURN this { search: this_search } AS this"
-        `);
+"MATCH (this:\`Movie\`)
+CALL {
+    WITH this
+    CALL {
+        WITH *
+        MATCH (this)-[this0:SEARCH]->(this_search:\`Genre\`)
+        WHERE apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+        WITH this_search  { __resolveType: \\"Genre\\",  .name } AS this_search
+        RETURN this_search AS this_search
+        UNION
+        WITH *
+        MATCH (this)-[this1:SEARCH]->(this_search:\`Movie\`)
+        WITH this_search  { __resolveType: \\"Movie\\",  .title } AS this_search
+        RETURN this_search AS this_search
+    }
+    WITH this_search
+    RETURN collect(this_search) AS this_search
+}
+RETURN this { search: this_search } AS this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -123,26 +123,26 @@ describe("Cypher Union", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    MATCH (this)-[this0:SEARCH]->(this_search:\`Genre\`)
-                    WHERE apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this_search  { __resolveType: \\"Genre\\",  .name } AS this_search
-                    RETURN this_search AS this_search
-                    UNION
-                    WITH this
-                    MATCH (this)-[this1:SEARCH]->(this_search:\`Movie\`)
-                    WITH this_search { __resolveType: \\"Movie\\" } AS this_search
-                    RETURN this_search AS this_search
-                }
-                WITH this_search
-                RETURN collect(this_search) AS this_search
-            }
-            RETURN this { search: this_search } AS this"
-        `);
+"MATCH (this:\`Movie\`)
+CALL {
+    WITH this
+    CALL {
+        WITH *
+        MATCH (this)-[this0:SEARCH]->(this_search:\`Genre\`)
+        WHERE apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+        WITH this_search  { __resolveType: \\"Genre\\",  .name } AS this_search
+        RETURN this_search AS this_search
+        UNION
+        WITH *
+        MATCH (this)-[this1:SEARCH]->(this_search:\`Movie\`)
+        WITH this_search { __resolveType: \\"Movie\\" } AS this_search
+        RETURN this_search AS this_search
+    }
+    WITH this_search
+    RETURN collect(this_search) AS this_search
+}
+RETURN this { search: this_search } AS this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -176,30 +176,30 @@ describe("Cypher Union", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie\`)
-            WHERE this.title = $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    MATCH (this)-[this0:SEARCH]->(this_search:\`Genre\`)
-                    WHERE (this_search.name = $param1 AND apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $param2)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                    WITH this_search  { __resolveType: \\"Genre\\",  .name } AS this_search
-                    RETURN this_search AS this_search
-                    UNION
-                    WITH this
-                    MATCH (this)-[this1:SEARCH]->(this_search:\`Movie\`)
-                    WHERE this_search.title = $param3
-                    WITH this_search  { __resolveType: \\"Movie\\",  .title } AS this_search
-                    RETURN this_search AS this_search
-                }
-                WITH this_search
-                SKIP $param4
-                LIMIT $param5
-                RETURN collect(this_search) AS this_search
-            }
-            RETURN this { search: this_search } AS this"
-        `);
+"MATCH (this:\`Movie\`)
+WHERE this.title = $param0
+CALL {
+    WITH this
+    CALL {
+        WITH *
+        MATCH (this)-[this0:SEARCH]->(this_search:\`Genre\`)
+        WHERE (this_search.name = $param1 AND apoc.util.validatePredicate(NOT ((this_search.name IS NOT NULL AND this_search.name = $param2)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+        WITH this_search  { __resolveType: \\"Genre\\",  .name } AS this_search
+        RETURN this_search AS this_search
+        UNION
+        WITH *
+        MATCH (this)-[this1:SEARCH]->(this_search:\`Movie\`)
+        WHERE this_search.title = $param3
+        WITH this_search  { __resolveType: \\"Movie\\",  .title } AS this_search
+        RETURN this_search AS this_search
+    }
+    WITH this_search
+    SKIP $param4
+    LIMIT $param5
+    RETURN collect(this_search) AS this_search
+}
+RETURN this { search: this_search } AS this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
