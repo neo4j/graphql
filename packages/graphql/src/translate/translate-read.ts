@@ -95,6 +95,7 @@ export function translateRead({
 
     if (optionsInput.sort || optionsInput.limit || optionsInput.offset) {
         withAndOrder = getSortClause({
+            preStatements: ["WITH *"],
             context,
             varName,
             node,
@@ -139,6 +140,7 @@ export function translateRead({
 
         projectionClause = CypherBuilder.concat(withTotalCount, connectionClause, returnClause);
     }
+
     const readQuery = CypherBuilder.concat(
         topLevelMatch,
         projAuth,
@@ -149,6 +151,16 @@ export function translateRead({
         projectionClause
     );
 
+    if (!projectionSubqueries.empty && withAndOrder) {
+        const postOrder = getSortClause({
+            context,
+            varName,
+            node,
+        });
+
+        readQuery.concat(postOrder);
+    }
+
     return readQuery.build(undefined, context.cypherParams ? { cypherParams: context.cypherParams } : {});
 }
 
@@ -156,10 +168,12 @@ function getSortClause({
     context,
     varName,
     node,
+    preStatements = [],
 }: {
     context: Context;
     varName: string;
     node: Node;
+    preStatements?: string[];
 }): CypherBuilder.Clause {
     const { resolveTree } = context;
     const optionsInput = (resolveTree.args.options || {}) as GraphQLOptionsArg;
@@ -173,7 +187,8 @@ function getSortClause({
     const params = {} as Record<string, any>;
     const hasOffset = Boolean(optionsInput.offset) || optionsInput.offset === 0;
 
-    const sortOffsetLimit: string[] = [`WITH *`];
+    const sortOffsetLimit: string[] = preStatements;
+    // const sortOffsetLimit: string[] = [`WITH *`];
 
     if (optionsInput.sort && optionsInput.sort.length) {
         const sortArr = optionsInput.sort.reduce((res: string[], sort: GraphQLSortArg) => {

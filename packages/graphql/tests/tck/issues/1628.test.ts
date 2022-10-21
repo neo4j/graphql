@@ -75,7 +75,8 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
                 WITH this_dcterms__title { .value } AS this_dcterms__title
                 RETURN collect(this_dcterms__title) AS this_dcterms__title
             }
-            RETURN this { iri: this.uri, dcterms__title: this_dcterms__title } AS this"
+            RETURN this { iri: this.uri, dcterms__title: this_dcterms__title } AS this
+            LIMIT $this_limit"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

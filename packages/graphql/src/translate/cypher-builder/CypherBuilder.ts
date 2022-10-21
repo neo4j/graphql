@@ -103,3 +103,4 @@ export type { SetParam } from "./clauses/sub-clauses/Set";
 export type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
 export type { Order } from "./clauses/sub-clauses/OrderBy";
 export type { Pattern } from "./Pattern";
+export type { CompositeClause } from "./clauses/utils/concat";

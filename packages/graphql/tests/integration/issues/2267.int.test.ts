@@ -126,7 +126,7 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
         });
     });
 
-    test.only("should correctly order when requesting nested interface level fields", async () => {
+    test("should correctly order when requesting nested interface level fields", async () => {
         const query = `
         query {
             ${Place.plural}(options: {sort: {displayName: ASC}}) {
