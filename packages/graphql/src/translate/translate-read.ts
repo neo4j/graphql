@@ -22,11 +22,18 @@ import { int } from "neo4j-driver";
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
 import createProjectionAndParams, { ProjectionResult } from "./create-projection-and-params";
-import type { GraphQLOptionsArg, GraphQLSortArg, Context } from "../types";
+import type { GraphQLOptionsArg, GraphQLSortArg, SortDirection, Context } from "../types";
 import { createAuthPredicates } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createMatchClause } from "./translate-top-level-match";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+
+type NestedSortDirection = {
+    [s: string]: SortDirection;
+};
+
+// TODO add ordering/pagination to cypher builder so this can be avoided!
+const scoreVariableStringToReplace = "REPLACE_ME";
 
 export function translateRead(
     {
@@ -190,11 +197,14 @@ function getSortClause({
         const sortArr = optionsInput.sort.reduce((res: string[], sort: GraphQLSortArg) => {
             return [
                 ...res,
-                ...Object.entries(sort).map(([field, direction]) => {
+                ...Object.entries(sort).map(([field, input]) => {
                     if (node.cypherFields.some((f) => f.fieldName === field)) {
-                        return `${varName}_${field} ${direction}`;
+                        return `${varName}_${field} ${input}`;
                     }
-                    return `${varName}.${field} ${direction}`;
+                    if (context.fulltextIndex.scoreVariable) {
+                        return mapFulltextSorts(field, input, node, varName);
+                    }
+                    return `${varName}.${field} ${input}`;
                 }),
             ];
         }, []);
@@ -212,9 +222,36 @@ function getSortClause({
         sortOffsetLimit.push(`LIMIT $${varName}_limit`);
     }
 
-    return new CypherBuilder.RawCypher(() => {
-        return [sortOffsetLimit.join("\n"), params];
+    return new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+        return [
+            sortOffsetLimit
+                .join("\n")
+                .replace(scoreVariableStringToReplace, env.getReferenceId(context.fulltextIndex.scoreVariable)),
+            params,
+        ];
     });
+}
+
+function mapFulltextSorts(
+    field: string,
+    input: SortDirection | NestedSortDirection,
+    node: Node,
+    varName: string
+): string {
+    if (field === "score") {
+        return `${scoreVariableStringToReplace} ${input}`;
+    }
+    if (field === node.name) {
+        return Object.entries(input)
+            .map(([field, direction]) => {
+                if (node.cypherFields.some((f) => f.fieldName === field)) {
+                    return `${varName}_${field} ${direction}`;
+                }
+                return `${varName}.${field} ${direction}`;
+            })
+            .join(", ");
+    }
+    throw new Error(`Unknown sort argument ${field}`);
 }
 
 function getConnectionSortClause({

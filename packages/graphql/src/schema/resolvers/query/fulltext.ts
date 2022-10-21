@@ -33,6 +33,9 @@ export function fulltextResolver(
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = _context as Context;
         context.resolveTree = getNeo4jResolveTree(info, { args });
+        context.resolveTree.args.options = {
+            sort: context.resolveTree.args.sort,
+        };
         context.fulltextIndex = index;
         context.fulltextIndex.scoreVariable = new CypherBuilder.Variable();
 
@@ -53,7 +56,7 @@ export function fulltextResolver(
         args: {
             phrase: "String!",
             where: node.fulltextTypeNames.where,
-            sort: node.fulltextTypeNames.sort,
+            sort: `[${node.fulltextTypeNames.sort}!]`,
             limit: "Int",
             offset: "Int",
         },

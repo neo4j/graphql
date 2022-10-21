@@ -845,11 +845,10 @@ describe("@fulltext directive", () => {
         test("Sorting by node", async () => {
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", sort: { ${personType.name}: { name: DESC } }) {
+                    ${queryType}(phrase: "a different name", sort: [{ ${personType.name}: { name: ASC } }]) {
                         score
                         ${personType.name} {
                             name
-                            born
                         } 
                     }
                 }
@@ -908,37 +907,35 @@ describe("@fulltext directive", () => {
 
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([
-                [
-                    {
-                        score: 0.4119553565979004,
-                        [personType.name]: {
-                            name: "this is a name",
-                            born: 1984,
-                        },
+                {
+                    [personType.name]: {
+                        born: 1984,
+                        name: "this is a name",
                     },
-                    {
-                        score: 0.37194526195526123,
-                        [personType.name]: {
-                            name: "This is a different name",
-                            born: 1985,
-                        },
+                    score: 0.4119553565979004,
+                },
+                {
+                    [personType.name]: {
+                        born: 1985,
+                        name: "This is a different name",
                     },
-                ],
+                    score: 0.37194526195526123,
+                },
             ]);
         });
         test("Ordered sorting", async () => {
+            const person1 = {
+                name: "a b c",
+                born: 123,
+            };
+            const person2 = {
+                name: "b c d",
+                born: 234,
+            };
+
             session = driver.session({ database: databaseName });
 
             try {
-                const person1 = {
-                    name: "a b c",
-                    born: 123,
-                };
-                const person2 = {
-                    name: "b c d",
-                    born: 234,
-                };
-
                 await session.run(
                     `
                 CREATE (person1:${personType.name})
@@ -952,9 +949,9 @@ describe("@fulltext directive", () => {
                 await session.close();
             }
 
-            const query = `
+            const query1 = `
                 query {
-                    ${queryType}(phrase: "b", sort: [{ ${personType.name}: { born: DESC }, { ${personType.name}: { name: ASC }] }) {
+                    ${queryType}(phrase: "b", sort: [{ ${personType.name}: { born: DESC } }, { ${personType.name}: { name: ASC } }]) {
                         ${personType.name} {
                             name
                             born
@@ -962,19 +959,42 @@ describe("@fulltext directive", () => {
                     }
                 }
             `;
-            const gqlResult = await graphql({
+            const query2 = `
+                query {
+                    ${queryType}(phrase: "b", sort: [{ ${personType.name}: { name: ASC } }, { ${personType.name}: { born: DESC } }]) {
+                        ${personType.name} {
+                            name
+                            born
+                        } 
+                    }
+                }
+            `;
+            const gqlResult1 = await graphql({
                 schema: generatedSchema,
-                source: query,
+                source: query1,
+                contextValue: {
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+            const gqlResult2 = await graphql({
+                schema: generatedSchema,
+                source: query2,
                 contextValue: {
                     driver,
                     driverConfig: { database: databaseName },
                 },
             });
 
-            expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([
+            expect(gqlResult1.errors).toBeFalsy();
+            expect(gqlResult2.errors).toBeFalsy();
+            expect(gqlResult1.data?.[queryType]).toEqual([
                 { [personType.name]: person2 },
                 { [personType.name]: person1 },
+            ]);
+            expect(gqlResult2.data?.[queryType]).toEqual([
+                { [personType.name]: person1 },
+                { [personType.name]: person2 },
             ]);
         });
         test("Sort on nested field", async () => {
@@ -1695,4 +1715,9 @@ describe("@fulltext directive", () => {
             }
         });
     });
+    // filter node when node not returned
+    // filter score when not returned
+    // sort score when not returned
+    // sort node when not returned
+    // nested unordered sort
 });
