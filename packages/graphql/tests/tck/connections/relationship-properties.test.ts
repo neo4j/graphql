@@ -172,10 +172,14 @@ describe("Relationship Properties Cypher", () => {
                 WITH { screenTime: this_connection_actorsConnectionthis0.screenTime, node: { name: this_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                UNWIND edges AS edge
-                WITH edge, totalCount
-                ORDER BY edge.screenTime DESC
-                WITH collect(edge) AS edges, totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge
+                    ORDER BY edge.screenTime DESC
+                    RETURN collect(edge) AS this_connection_actorsConnectionvar1
+                }
+                WITH this_connection_actorsConnectionvar1 AS edges, totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
             RETURN this { .title, actorsConnection: this_actorsConnection } AS this"
@@ -219,10 +223,14 @@ describe("Relationship Properties Cypher", () => {
                 WITH { year: this_connection_actorsConnectionthis0.year, node: { name: this_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                UNWIND edges AS edge
-                WITH edge, totalCount
-                ORDER BY edge.year DESC, edge.node.name ASC
-                WITH collect(edge) AS edges, totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge
+                    ORDER BY edge.year DESC, edge.node.name ASC
+                    RETURN collect(edge) AS this_connection_actorsConnectionvar1
+                }
+                WITH this_connection_actorsConnectionvar1 AS edges, totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
             RETURN this { actorsConnection: this_actorsConnection } AS this"
@@ -261,10 +269,14 @@ describe("Relationship Properties Cypher", () => {
                 WITH { year: this_connection_actorsConnectionthis0.year, node: { name: this_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                UNWIND edges AS edge
-                WITH edge, totalCount
-                ORDER BY edge.node.name ASC, edge.year DESC
-                WITH collect(edge) AS edges, totalCount
+                CALL {
+                    WITH edges
+                    UNWIND edges AS edge
+                    WITH edge
+                    ORDER BY edge.node.name ASC, edge.year DESC
+                    RETURN collect(edge) AS this_connection_actorsConnectionvar1
+                }
+                WITH this_connection_actorsConnectionvar1 AS edges, totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
             }
             RETURN this { actorsConnection: this_actorsConnection } AS this"
