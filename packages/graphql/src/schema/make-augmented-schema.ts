@@ -93,12 +93,14 @@ function makeAugmentedSchema(
         skipValidateTypeDefs,
         generateSubscriptions,
         callbacks,
+        userCustomResolvers,
     }: {
         features?: Neo4jFeaturesSettings;
         enableRegex?: boolean;
         skipValidateTypeDefs?: boolean;
         generateSubscriptions?: boolean;
         callbacks?: Neo4jGraphQLCallbacks;
+        userCustomResolvers?: IResolvers | Array<IResolvers>;
     } = {}
 ): { nodes: Node[]; relationships: Relationship[]; typeDefs: DocumentNode; resolvers: IResolvers } {
     const document = getDocument(typeDefs);
@@ -147,7 +149,7 @@ function makeAugmentedSchema(
         composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: extraDefinitions }));
     }
 
-    const getNodesResult = getNodes(definitionNodes, { callbacks });
+    const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers });
 
     const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames } = getNodesResult;
 
