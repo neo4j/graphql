@@ -43,7 +43,7 @@
         "ws": "^8.8.1"
     },
     "devDependencies": {
-        "concurrently": "7.4.0",
+        "concurrently": "7.5.0",
         "parcel": "2.7.0"
     }
 }
