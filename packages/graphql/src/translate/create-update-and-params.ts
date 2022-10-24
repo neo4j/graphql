@@ -129,7 +129,6 @@ export default function createUpdateAndParams({
                 const v = relationField.union ? value[refNode.name] : value;
                 const updates = relationField.typeMeta.array ? v : [v];
                 const subquery: string[] = [];
-
                 updates.forEach((update, index) => {
                     const relationshipVariable = `${varName}_${relationField.type.toLowerCase()}${index}_relationship`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
@@ -267,7 +266,7 @@ export default function createUpdateAndParams({
                             );
                             if (context.subscriptionsEnabled) {
                                 updateStrs.push("YIELD value");
-                                updateStrs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, value.meta AS meta`);
+                                updateStrs.push(`WITH *, value.meta AS meta`);
                             } else {
                                 updateStrs.push("YIELD value AS _");
                             }
@@ -390,14 +389,27 @@ export default function createUpdateAndParams({
                             const nodeName = `${baseName}_node`;
                             const propertiesName = `${baseName}_relationship`;
 
+                            let createNodeInput = {
+                                input: create.node,
+                            };
+
+                            if (relationField.interface) {
+                                const nodeFields = create.node[refNode.name];
+                                if (!nodeFields) return; // Interface specific type not defined
+                                createNodeInput = {
+                                    input: nodeFields,
+                                };
+                            }
+
                             const createAndParams = createCreateAndParams({
                                 context,
-                                callbackBucket,
                                 node: refNode,
-                                input: create.node,
+
+                                callbackBucket,
                                 varName: nodeName,
                                 withVars: [...withVars, nodeName],
                                 includeRelationshipValidation: false,
+                                ...createNodeInput,
                             });
                             subquery.push(createAndParams[0]);
                             res.params = { ...res.params, ...createAndParams[1] };

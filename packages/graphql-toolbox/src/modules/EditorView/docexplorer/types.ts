@@ -22,7 +22,7 @@ export type FieldType = GraphQLField<unknown, unknown, unknown> | GraphQLInputFi
 export type OnClickFieldFunction = (
     field: FieldType,
     type?: GraphQLObjectType | GraphQLInterfaceType | GraphQLInputObjectType | GraphQLType,
-    event?: MouseEvent
+    event?: MouseEvent | KeyboardEvent
 ) => void;
 
 export type OnClickTypeFunction = (type: GraphQLNamedType, event?: MouseEvent<HTMLAnchorElement>) => void;

@@ -23,6 +23,9 @@ jobs:
       - name: Build graphql-toolbox
         run: yarn build
         working-directory: packages/graphql-toolbox
+        env:
+          SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE: ${{ secrets.SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE }}
+          SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE: ${{ secrets.SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE }}
       - uses: jakejarvis/s3-sync-action@be0c4ab89158cac4278689ebedd8407dd5f35a83 # renovate: tag=v0.5.1
         with:
           args: --acl public-read --follow-symlinks

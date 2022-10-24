@@ -79,30 +79,30 @@ describe("Node directive with unions", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Film\`)
-            WHERE this.title = $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    MATCH (this)-[this0:SEARCH]->(this_search:\`Category\`:\`ExtraLabel1\`:\`ExtraLabel2\`)
-                    WHERE this_search.name = $param1
-                    WITH this_search  { __resolveType: \\"Genre\\",  .name } AS this_search
-                    RETURN this_search AS this_search
-                    UNION
-                    WITH this
-                    MATCH (this)-[this1:SEARCH]->(this_search:\`Film\`)
-                    WHERE this_search.title = $param2
-                    WITH this_search  { __resolveType: \\"Movie\\",  .title } AS this_search
-                    RETURN this_search AS this_search
-                }
-                WITH this_search
-                SKIP $param3
-                LIMIT $param4
-                RETURN collect(this_search) AS this_search
-            }
-            RETURN this { search: this_search } AS this"
-        `);
+"MATCH (this:\`Film\`)
+WHERE this.title = $param0
+CALL {
+    WITH this
+    CALL {
+        WITH *
+        MATCH (this)-[this0:SEARCH]->(this_search:\`Category\`:\`ExtraLabel1\`:\`ExtraLabel2\`)
+        WHERE this_search.name = $param1
+        WITH this_search  { __resolveType: \\"Genre\\",  .name } AS this_search
+        RETURN this_search AS this_search
+        UNION
+        WITH *
+        MATCH (this)-[this1:SEARCH]->(this_search:\`Film\`)
+        WHERE this_search.title = $param2
+        WITH this_search  { __resolveType: \\"Movie\\",  .title } AS this_search
+        RETURN this_search AS this_search
+    }
+    WITH this_search
+    SKIP $param3
+    LIMIT $param4
+    RETURN collect(this_search) AS this_search
+}
+RETURN this { search: this_search } AS this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
