@@ -25,17 +25,31 @@ type AmqpApiOptions = {
     exchange: string;
 };
 
+enum Status {
+    RUNNING,
+    STOPPED,
+    CONNECTING,
+}
+
 export class AmqpApi<T> {
-    private channel: amqp.Channel | undefined;
-    private exchange: string;
-    private connection?: amqp.Connection;
+    public channel: amqp.Channel | undefined;
+    public readonly exchange: string;
+    public connection?: amqp.Connection;
+    private status: Status = Status.STOPPED;
 
     constructor({ exchange }: AmqpApiOptions) {
         this.exchange = exchange;
     }
 
     public async connect(amqpConnection: ConnectionOptions, cb: (msg: T) => void): Promise<void> {
+        this.status = Status.CONNECTING;
         this.connection = await amqp.connect(amqpConnection);
+        this.connection.on("close", () => {
+            this.channel = undefined;
+            if (this.status === Status.RUNNING) {
+                this.reconnect(amqpConnection, cb);
+            }
+        });
 
         this.channel = await this.createChannel(this.connection);
         const queueName = await this.createQueue(this.channel);
@@ -45,6 +59,15 @@ export class AmqpApi<T> {
                 this.consumeMessage(msg, cb);
             }
         });
+        this.status = Status.RUNNING;
+    }
+
+    private reconnect(amqpConnection: ConnectionOptions, cb: (msg: T) => void): void {
+        setTimeout(() => {
+            this.connect(amqpConnection, cb).catch(() => {
+                this.reconnect(amqpConnection, cb);
+            });
+        }, 1000);
     }
 
     public publish(message: T): void {
@@ -54,6 +77,7 @@ export class AmqpApi<T> {
     }
 
     public async close(): Promise<void> {
+        this.status = Status.STOPPED;
         await this.channel?.close();
         await this.connection?.close();
         this.channel = undefined;
