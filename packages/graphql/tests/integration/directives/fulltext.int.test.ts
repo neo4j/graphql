@@ -94,6 +94,12 @@ describe("@fulltext directive", () => {
         await driver.close();
     });
     describe("Functionality", () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+        
         let session: Session;
         let neoSchema: Neo4jGraphQL;
         let generatedSchema: GraphQLSchema;
@@ -1813,6 +1819,12 @@ describe("@fulltext directive", () => {
         });
     });
     describe("Index Creation", () => {
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
         let type: UniqueType;
 
         const indexName1 = "indexCreationName1";
@@ -1861,12 +1873,6 @@ describe("@fulltext directive", () => {
         });
 
         test("Creates index if it doesn't exist", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
             const typeDefs = gql`
             type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }]) {
                     title: String!
@@ -1901,12 +1907,6 @@ describe("@fulltext directive", () => {
             }
         });
         test("Creates two index's if they dont exist", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }, { name: "${indexName2}", fields: ["description"] }]) {
                     title: String!
@@ -1949,12 +1949,6 @@ describe("@fulltext directive", () => {
             }
         });
         test("When using the node label, creates index if it doesn't exist", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }]) @node(label: "${label}") {
                     title: String!
@@ -1989,12 +1983,6 @@ describe("@fulltext directive", () => {
             }
         });
         test("When using the field alias, creates index if it doesn't exist", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }]) @node(label: "${label}") {
                     title: String! @alias(property: "${aliasName}")
@@ -2029,12 +2017,6 @@ describe("@fulltext directive", () => {
             }
         });
         test("Throws when missing index (create index and constraint option not true)", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }]) {
                     title: String!
@@ -2052,12 +2034,6 @@ describe("@fulltext directive", () => {
             ).rejects.toThrow(`Missing @fulltext index '${indexName1}' on Node '${type.name}'`);
         });
         test("Throws when an index is missing fields", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title", "description"] }]) {
                     title: String!
@@ -2090,12 +2066,6 @@ describe("@fulltext directive", () => {
             ).rejects.toThrow(`@fulltext index '${indexName1}' on Node '${type.name}' is missing field 'description'`);
         });
         test("When using the field alias, throws when index is missing fields", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title", "description"] }]) {
                     title: String!
@@ -2130,12 +2100,6 @@ describe("@fulltext directive", () => {
             );
         });
         test("Doesn't throw if an index exists", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }]) {
                     title: String!
@@ -2161,12 +2125,6 @@ describe("@fulltext directive", () => {
             ).resolves.not.toThrow();
         });
         test("Throws when index is missing fields when used with create option", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title", "description"] }]) {
                     title: String!
@@ -2202,12 +2160,6 @@ describe("@fulltext directive", () => {
             );
         });
         test("Create index for ID field if it doesn't exist", async () => {
-            // Skip if multi-db not supported
-            if (!MULTIDB_SUPPORT) {
-                console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
-                return;
-            }
-
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["id"] }]) {
                     id: ID!
