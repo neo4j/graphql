@@ -78,3 +78,7 @@ export const safeParse = (str: string | null | undefined, fallback: Record<strin
         return fallback;
     }
 };
+
+export const queryIsMutation = (query: string): boolean => {
+    return (query.match(/mutation (.*?){/g) || []).length === 1;
+};

@@ -18,8 +18,9 @@
  */
 
 import { useCallback, useState, useRef, useEffect, useContext, Fragment } from "react";
-import { graphql, GraphQLSchema } from "graphql";
+import { graphql, GraphQLSchema, parse } from "graphql";
 import GraphiQLExplorer from "graphiql-explorer";
+import { getComplexity, simpleEstimator } from "graphql-query-complexity";
 import { Button, HeroIcon, IconButton, Switch } from "@neo4j-ndl/react";
 import tokens from "@neo4j-ndl/base/lib/tokens/js/tokens";
 import { EditorFromTextArea } from "codemirror";
@@ -34,7 +35,7 @@ import {
     LOCAL_STATE_TYPE_LAST_QUERY,
 } from "../../constants";
 import { Grid } from "./grid/Grid";
-import { formatCode, safeParse, ParserOptions } from "./utils";
+import { formatCode, safeParse, ParserOptions, queryIsMutation } from "./utils";
 import { Extension } from "../../components/Filename";
 import { ViewSelectorComponent } from "../../components/ViewSelectorComponent";
 import { SettingsContext } from "../../contexts/settings";
@@ -78,6 +79,22 @@ export const Editor = ({ schema }: Props) => {
             let result: string;
             setLoading(true);
             if (!schema) return;
+
+            // const isMutation = queryIsMutation(override || query || "");
+            // if (!isMutation) {
+            try {
+                const complexity = getComplexity({
+                    estimators: [simpleEstimator({ defaultComplexity: 1 })],
+                    schema,
+                    query: parse(override || query || ""),
+                    variables: safeParse(variableValues, {}),
+                });
+
+                console.log("complexity: ", complexity);
+            } catch (error) {
+                console.log("Complexity calculation for query failed");
+            }
+            // }
 
             try {
                 const response = await graphql({

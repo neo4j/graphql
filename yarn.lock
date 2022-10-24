@@ -2581,6 +2581,7 @@ __metadata:
     fork-ts-checker-webpack-plugin: 7.2.13
     graphiql-explorer: ^0.9.0
     graphql: 16.6.0
+    graphql-query-complexity: ^0.12.0
     graphql-request: ^5.0.0
     html-inline-script-webpack-plugin: 3.1.0
     html-webpack-inline-source-plugin: 0.0.10
@@ -9874,6 +9875,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"graphql-query-complexity@npm:^0.12.0":
+  version: 0.12.0
+  resolution: "graphql-query-complexity@npm:0.12.0"
+  dependencies:
+    lodash.get: ^4.4.2
+  peerDependencies:
+    graphql: ^14.6.0 || ^15.0.0 || ^16.0.0
+  checksum: 9323bebd2a3cc5d85c34a8426f6312721a5bf5f465eb00c1fceb5fd2779a1f26edc48c119a3db6cf8e000390aacfe2126de3b316a159bd6742877ae97519df2f
+  languageName: node
+  linkType: hard
+
 "graphql-relay@npm:^0.10.0":
   version: 0.10.0
   resolution: "graphql-relay@npm:0.10.0"
@@ -13015,6 +13027,13 @@ __metadata:
   version: 4.2.0
   resolution: "lodash.defaults@npm:4.2.0"
   checksum: 84923258235592c8886e29de5491946ff8c2ae5c82a7ac5cddd2e3cb697e6fbdfbbb6efcca015795c86eec2bb953a5a2ee4016e3735a3f02720428a40efbb8f1
+  languageName: node
+  linkType: hard
+
+"lodash.get@npm:^4.4.2":
+  version: 4.4.2
+  resolution: "lodash.get@npm:4.4.2"
+  checksum: e403047ddb03181c9d0e92df9556570e2b67e0f0a930fcbbbd779370972368f5568e914f913e93f3b08f6d492abc71e14d4e9b7a18916c31fa04bd2306efe545
   languageName: node
   linkType: hard
 
