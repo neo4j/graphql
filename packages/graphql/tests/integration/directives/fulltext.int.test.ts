@@ -180,28 +180,23 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([
-                {
-                    score: 0.62690669298172,
-                    [personType.name]: {
-                        name: "This is a different name",
-                    },
-                },
-                {
-                    score: 0.26449739933013916,
-                    [personType.name]: {
-                        name: "this is a name",
-                    },
-                },
-                {
-                    score: 0.07456067204475403,
-                    [personType.name]: {
-                        name: "Another name",
-                    },
-                },
-            ]);
+            expect((gqlResult.data?.[queryType] as any[])[0][personType.name]).toEqual({
+                name: "This is a different name",
+            });
+            expect((gqlResult.data?.[queryType] as any[])[1][personType.name]).toEqual({
+                name: "this is a name",
+            });
+            expect((gqlResult.data?.[queryType] as any[])[2][personType.name]).toEqual({
+                name: "Another name",
+            });
+            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1].score
+            );
+            expect((gqlResult.data?.[queryType] as any[])[1].score).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[2].score
+            );
         });
-        test("Scores update when using a different phrase", async () => {
+        test("Order updates when using a different phrase", async () => {
             const query = `
                 query {
                     ${queryType}(phrase: "some name") {
@@ -222,26 +217,21 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([
-                {
-                    score: 0.07456067204475403,
-                    [personType.name]: {
-                        name: "Another name",
-                    },
-                },
-                {
-                    score: 0.05851973593235016,
-                    [personType.name]: {
-                        name: "this is a name",
-                    },
-                },
-                {
-                    score: 0.052836157381534576,
-                    [personType.name]: {
-                        name: "This is a different name",
-                    },
-                },
-            ]);
+            expect((gqlResult.data?.[queryType] as any[])[0][personType.name]).toEqual({
+                name: "Another name",
+            });
+            expect((gqlResult.data?.[queryType] as any[])[1][personType.name]).toEqual({
+                name: "this is a name",
+            });
+            expect((gqlResult.data?.[queryType] as any[])[2][personType.name]).toEqual({
+                name: "This is a different name",
+            });
+            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1].score
+            );
+            expect((gqlResult.data?.[queryType] as any[])[1].score).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[2].score
+            );
         });
         test("Score isn't returned if not requested", async () => {
             const query = `
@@ -299,17 +289,15 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([
-                {
-                    score: 0.07456067204475403,
-                },
-                {
-                    score: 0.05851973593235016,
-                },
-                {
-                    score: 0.052836157381534576,
-                },
-            ]);
+            expect((gqlResult.data?.[queryType] as any[])[0][personType.name]).toBeUndefined();
+            expect((gqlResult.data?.[queryType] as any[])[1][personType.name]).toBeUndefined();
+            expect((gqlResult.data?.[queryType] as any[])[2][personType.name]).toBeUndefined();
+            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1].score
+            );
+            expect((gqlResult.data?.[queryType] as any[])[1].score).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[2].score
+            );
         });
         test("Throws error if no return is requested", async () => {
             const query = `
@@ -393,20 +381,14 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([
-                {
-                    score: 0.26449739933013916,
-                    [personType.name]: {
-                        name: person1.name,
-                    },
-                },
-            ]);
+            expect((gqlResult.data?.[queryType] as any[])[0][personType.name].name).toBe(person1.name);
+            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
+            expect((gqlResult.data?.[queryType] as any[])[1]).toBeUndefined();
         });
         test("Filters node to multiple results", async () => {
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", where: { ${personType.name}: { born_GTE: ${person2.born} } }) {
-                        score
                         ${personType.name} {
                             name
                         } 
@@ -425,13 +407,11 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([
                 {
-                    score: 0.62690669298172,
                     [personType.name]: {
                         name: "This is a different name",
                     },
                 },
                 {
-                    score: 0.07456067204475403,
                     [personType.name]: {
                         name: "Another name",
                     },
@@ -482,14 +462,9 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([
-                {
-                    score: 0.62690669298172,
-                    [personType.name]: {
-                        name: "This is a different name",
-                    },
-                },
-            ]);
+            expect((gqlResult.data?.[queryType] as any[])[0][personType.name].name).toBe("This is a different name");
+            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
+            expect((gqlResult.data?.[queryType] as any[])[1]).toBeUndefined();
         });
         test("Filters score to multiple results", async () => {
             const query = `
@@ -512,20 +487,12 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([
-                {
-                    score: 0.26449739933013916,
-                    [personType.name]: {
-                        name: "this is a name",
-                    },
-                },
-                {
-                    score: 0.07456067204475403,
-                    [personType.name]: {
-                        name: "Another name",
-                    },
-                },
-            ]);
+            expect((gqlResult.data?.[queryType] as any[])[0][personType.name].name).toBe("this is a name");
+            expect((gqlResult.data?.[queryType] as any[])[1][personType.name].name).toBe("Another name");
+            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[0].score
+            );
+            expect((gqlResult.data?.[queryType] as any[])[2]).toBeUndefined();
         });
         test("Filters score to no results", async () => {
             const query = `
@@ -571,14 +538,9 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([
-                {
-                    score: 0.26449739933013916,
-                    [personType.name]: {
-                        name: "this is a name",
-                    },
-                },
-            ]);
+            expect((gqlResult.data?.[queryType] as any[])[0][personType.name].name).toBe("this is a name");
+            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
+            expect((gqlResult.data?.[queryType] as any[])[1]).toBeUndefined();
         });
         test("Filters score with max score of 0", async () => {
             const query = `
@@ -650,42 +612,33 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([
+            expect((gqlResult.data?.[queryType] as any[])[0][personType.name].name).toBe("This is a different name");
+            expect((gqlResult.data?.[queryType] as any[])[0][personType.name].actedInMovies).toEqual([
                 {
-                    score: 0.62690669298172,
-                    [personType.name]: {
-                        name: "This is a different name",
-                        actedInMovies: [
-                            {
-                                title: "Some Title",
-                                released: 2001,
-                            },
-                        ],
-                    },
-                },
-                {
-                    score: 0.26449739933013916,
-                    [personType.name]: {
-                        name: "this is a name",
-                        actedInMovies: [
-                            {
-                                title: "Another Title",
-                                released: 2002,
-                            },
-                            {
-                                title: "Some Title",
-                                released: 2001,
-                            },
-                        ],
-                    },
+                    title: "Some Title",
+                    released: 2001,
                 },
             ]);
+            expect((gqlResult.data?.[queryType] as any[])[1][personType.name].name).toBe("this is a name");
+            expect((gqlResult.data?.[queryType] as any[])[1][personType.name].actedInMovies).toEqual([
+                {
+                    title: "Another Title",
+                    released: 2002,
+                },
+                {
+                    title: "Some Title",
+                    released: 2001,
+                },
+            ]);
+            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1].score
+            );
+            expect((gqlResult.data?.[queryType] as any[])[2]).toBeUndefined();
         });
         test("Filters a related node to a single value", async () => {
             const query = `
                 query {
                     ${queryType}(phrase: "a different name", where: { ${personType.name}: { actedInMovies_ALL: { released: ${movie1.released} } } }) {
-                        score
                         ${personType.name} {
                             name
                             actedInMovies {
@@ -708,7 +661,6 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([
                 {
-                    score: 0.62690669298172,
                     [personType.name]: {
                         name: "This is a different name",
                         actedInMovies: [
@@ -821,26 +773,15 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[queryType]).toEqual([
-                {
-                    score: 0.07456067204475403,
-                    [personType.name]: {
-                        name: "Another name",
-                    },
-                },
-                {
-                    score: 0.26449739933013916,
-                    [personType.name]: {
-                        name: "this is a name",
-                    },
-                },
-                {
-                    score: 0.62690669298172,
-                    [personType.name]: {
-                        name: "This is a different name",
-                    },
-                },
-            ]);
+            expect((gqlResult.data?.[queryType] as any[])[0][personType.name].name).toBe("Another name");
+            expect((gqlResult.data?.[queryType] as any[])[1][personType.name].name).toBe("this is a name");
+            expect((gqlResult.data?.[queryType] as any[])[2][personType.name].name).toBe("This is a different name");
+            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeLessThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1].score
+            );
+            expect((gqlResult.data?.[queryType] as any[])[1].score).toBeLessThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[2].score
+            );
         });
         test("Sorting by node", async () => {
             const query = `
