@@ -18,22 +18,47 @@
  */
 
 import React, { Dispatch, useState, SetStateAction, useEffect } from "react";
-import { LOCAL_STATE_CONSTRAINT, LOCAL_STATE_SHOW_LINT_MARKERS } from "../constants";
+import {
+    LOCAL_STATE_CONSTRAINT,
+    LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING,
+    LOCAL_STATE_HIDE_PRODUCT_USAGE_MESSAGE,
+    LOCAL_STATE_SHOW_LINT_MARKERS,
+} from "../constants";
 import { ConstraintState } from "../types";
 import { Storage } from "../utils/storage";
 
 export interface State {
     showLintMarkers: boolean;
+    enableProductUsageTracking: boolean;
+    hideProductUsageMessage: boolean;
     setShowLintMarkers: (v: boolean) => void;
+    setEnableProductUsageTracking: (v: boolean) => void;
+    setHideProductUsageMessage: (v: boolean) => void;
 }
 
 export const AppSettingsContext = React.createContext({} as State);
 
+const _resolveValue = (localStateLabel: string, defaultValue: boolean): boolean => {
+    const storedState = Storage.retrieve(localStateLabel);
+    return storedState !== null ? storedState === "true" : defaultValue;
+};
+
 export function AppSettingsProvider(props: React.PropsWithChildren<any>) {
     const [value, setValue]: [value: State | undefined, setValue: Dispatch<SetStateAction<State>>] = useState<State>({
         showLintMarkers: Storage.retrieve(LOCAL_STATE_SHOW_LINT_MARKERS) === "true",
+        enableProductUsageTracking: _resolveValue(LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING, true),
+        hideProductUsageMessage: _resolveValue(LOCAL_STATE_HIDE_PRODUCT_USAGE_MESSAGE, false),
         setShowLintMarkers: (nextState: boolean) => {
+            Storage.store(LOCAL_STATE_SHOW_LINT_MARKERS, String(nextState));
             setValue((values) => ({ ...values, showLintMarkers: nextState }));
+        },
+        setEnableProductUsageTracking: (nextState: boolean) => {
+            Storage.store(LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING, String(nextState));
+            setValue((values) => ({ ...values, enableProductUsageTracking: nextState }));
+        },
+        setHideProductUsageMessage: (nextState: boolean) => {
+            Storage.store(LOCAL_STATE_HIDE_PRODUCT_USAGE_MESSAGE, String(nextState));
+            setValue((values) => ({ ...values, hideProductUsageMessage: nextState }));
         },
     });
 

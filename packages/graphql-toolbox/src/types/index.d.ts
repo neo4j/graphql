@@ -17,26 +17,24 @@
  * limitations under the License.
  */
 
-import { TextInput } from "@neo4j-ndl/react";
+export {};
 
-export interface Props {
-    name: string;
-    label: string;
-    type: string;
-    testtag: string;
-    value?: string;
-    placeholder?: string;
-    defaultValue?: string;
-    autoComplete?: string;
-    required: boolean;
-    disabled?: boolean;
-    onChange?: (event: React.FormEvent<HTMLInputElement>) => void;
-}
-
-export const FormInput = (props: Props) => {
-    const options = {};
-    if (props.testtag) {
-        options[props.testtag] = true;
-    }
-    return <TextInput aria-label={props.name} fluid {...props} {...options} />;
+type Analytics = {
+    _writeKey: string;
+    _loadOptions: unknown;
+    SNIPPET_VERSION: string;
+    initialize: boolean;
+    invoked: boolean;
+    methods: string[];
+    factory: (e: string) => void;
+    push: (e: unknown) => void;
+    load: (key: string, e?: string | undefined) => void;
+    page: () => void;
+    track: (key: string, e: unknown) => void;
 };
+
+declare global {
+    interface Window {
+        analytics: Analytics;
+    }
+}
