@@ -20,6 +20,7 @@
 import { useCallback, useContext, useRef, useState } from "react";
 import { Neo4jGraphQL } from "@neo4j/graphql";
 import { toGraphQLTypeDefs } from "@neo4j/introspector";
+import { Alert } from "@neo4j-ndl/react";
 import { GraphQLError, GraphQLSchema } from "graphql";
 import * as neo4j from "neo4j-driver";
 import { EditorFromTextArea } from "codemirror";
@@ -34,6 +35,7 @@ import {
 import { formatCode, ParserOptions } from "../EditorView/utils";
 import { AuthContext } from "../../contexts/auth";
 import { SettingsContext } from "../../contexts/settings";
+import { AppSettingsContext } from "../../contexts/appsettings";
 import { AppSettings } from "../AppSettings/AppSettings";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
 import { Storage } from "../../utils/storage";
@@ -44,6 +46,7 @@ import { SchemaEditor } from "./SchemaEditor";
 import { ConstraintState, Favorite } from "../../types";
 import { Favorites } from "./Favorites";
 import { IntrospectionPrompt } from "./IntrospectionPrompt";
+import { tracking } from "../../utils/tracking";
 
 export interface Props {
     hasSchema: boolean;
@@ -53,6 +56,7 @@ export interface Props {
 export const SchemaView = ({ hasSchema, onChange }: Props) => {
     const auth = useContext(AuthContext);
     const settings = useContext(SettingsContext);
+    const appSettings = useContext(AppSettingsContext);
     const [error, setError] = useState<string | GraphQLError>("");
     const [showIntrospectionModal, setShowIntrospectionModal] = useState<boolean>(true);
     const [loading, setLoading] = useState<boolean>(false);
@@ -78,6 +82,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
         ];
         setFavorites(newFavorites);
         Storage.storeJSON(LOCAL_STATE_FAVORITES, newFavorites);
+        tracking.trackFavorites();
     };
 
     const setTypeDefsFromFavorite = (typeDefs: string) => {
@@ -213,6 +218,16 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                                 introspect={introspect}
                                 saveAsFavorite={saveAsFavorite}
                             />
+                            {!appSettings.hideProductUsageMessage ? (
+                                <Alert
+                                    className="absolute bottom-7 ml-4 w-[57rem] z-40"
+                                    closeable
+                                    name="ProductUsageMessage"
+                                    title={<strong>Product analytics</strong>}
+                                    description="To help make the Neo4j GraphQL Toolbox better we collect data on product usage. Review your settings at any time."
+                                    onClose={() => appSettings.setHideProductUsageMessage(true)}
+                                />
+                            ) : null}
                         </div>
                     </div>
                 </div>
