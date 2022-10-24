@@ -32,9 +32,9 @@ class Tracking {
         if (!window.analytics || !window.analytics.track) return;
 
         const enrichedEventProperties = {
+            ...eventProperties,
             graphQLToolboxVersion: process.env.VERSION,
             neo4jGraphQLLibraryVersion: process.env.NEO4J_GRAPHQL_VERSION,
-            ...eventProperties,
         };
         window.analytics.track(`${eventCategory}-${eventLabel}`, enrichedEventProperties);
     };
