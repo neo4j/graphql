@@ -95,6 +95,7 @@ export function translateRead(
     const projectionSubqueriesBeforeSort = CypherBuilder.concat(...projection.subqueriesBeforeSort);
 
     let withAndOrder: CypherBuilder.Clause | undefined;
+    let orderClause: CypherBuilder.Clause | undefined;
 
     const optionsInput = (resolveTree.args.options || {}) as GraphQLOptionsArg;
 
@@ -102,12 +103,16 @@ export function translateRead(
         optionsInput.limit = node.queryOptions.getLimit(optionsInput.limit); // TODO: improve this
     }
 
-    if (optionsInput.sort || optionsInput.limit || optionsInput.offset) {
-        withAndOrder = getSortClause({
+    const hasOrdering = optionsInput.sort || optionsInput.limit || optionsInput.offset;
+
+    if (hasOrdering) {
+        orderClause = getSortClause({
             context,
             varName,
             node,
         });
+
+        withAndOrder = CypherBuilder.concat(new CypherBuilder.With("*"), orderClause);
     }
 
     const projectionExpression = new CypherBuilder.RawCypher(() => {
@@ -163,10 +168,20 @@ export function translateRead(
         projAuth,
         connectionPreClauses,
         projectionSubqueriesBeforeSort,
-        withAndOrder,
+        withAndOrder, // Required for performance optimization
         projectionSubqueries,
         projectionClause
     );
+
+    if (!projectionSubqueries.empty && hasOrdering) {
+        const postOrder = getSortClause({
+            context,
+            varName,
+            node,
+        });
+
+        readQuery.concat(postOrder);
+    }
 
     return readQuery.build(undefined, context.cypherParams ? { cypherParams: context.cypherParams } : {});
 }
@@ -192,7 +207,7 @@ function getSortClause({
     const params = {} as Record<string, any>;
     const hasOffset = Boolean(optionsInput.offset) || optionsInput.offset === 0;
 
-    const sortOffsetLimit: string[] = [`WITH *`];
+    const sortOffsetLimit: string[] = [];
 
     if (optionsInput.sort && optionsInput.sort.length) {
         const sortArr = optionsInput.sort.reduce((res: string[], sort: GraphQLSortArg) => {
