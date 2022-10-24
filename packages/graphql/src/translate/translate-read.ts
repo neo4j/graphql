@@ -189,7 +189,6 @@ function getSortClause({
     const hasOffset = Boolean(optionsInput.offset) || optionsInput.offset === 0;
 
     const sortOffsetLimit: string[] = preStatements;
-    // const sortOffsetLimit: string[] = [`WITH *`];
 
     if (optionsInput.sort && optionsInput.sort.length) {
         const sortArr = optionsInput.sort.reduce((res: string[], sort: GraphQLSortArg) => {

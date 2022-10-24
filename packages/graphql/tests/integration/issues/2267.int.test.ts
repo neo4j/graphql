@@ -22,6 +22,7 @@ import { graphql } from "graphql";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
+import { cleanNodes } from "../../utils/clean-nodes";
 
 describe("https://github.com/neo4j/graphql/issues/2267", () => {
     let driver: Driver;
@@ -82,6 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
     });
 
     afterEach(async () => {
+        await cleanNodes(session, [Place, Post, Story]);
         await session.close();
     });
 
