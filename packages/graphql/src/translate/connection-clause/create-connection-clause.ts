@@ -19,14 +19,13 @@
 
 import type { Integer } from "neo4j-driver";
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import Cypher from "@neo4j/cypher-builder";
 import type { ConnectionField, ConnectionWhereArg, Context } from "../../types";
 import type { Node } from "../../classes";
 import { filterTruthy } from "../../utils/utils";
-import Cypher from "@neo4j/cypher-builder";
 import { hasExplicitNodeInInterfaceWhere } from "../where/property-operations/create-connection-operation";
 import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
 import { createSortAndLimitProjection } from "./create-sort-and-limit";
-
 import { createEdgeSubquery } from "./create-edge-subquery";
 
 export function createConnectionClause({
@@ -68,28 +67,30 @@ export function createConnectionClause({
     });
 
     const edgesList = new Cypher.NamedVariable("edges");
-    const totalCountItem = new Cypher.NamedVariable("totalCount");
+    const totalCount = new Cypher.NamedVariable("totalCount");
     const withClause = new Cypher.With([Cypher.collect(edgeItem), edgesList]).with(edgesList, [
         Cypher.size(edgesList),
-        totalCountItem,
+        totalCount,
     ]);
 
-    const totalCount = new Cypher.NamedVariable("totalCount");
     const withSortAfterUnwindClause = createSortAndLimitProjection({
         resolveTree,
         relationshipRef: edgeItem,
         nodeRef: edgeItem.property("node"),
         limit: relatedNode?.queryOptions?.getLimit(firstArg), // `first` specified on connection field in query needs to be compared with existing `@queryOptions`-imposed limit
-        extraFields: [totalCountItem],
     });
 
     let unwindSortClause: Cypher.Clause | undefined;
     if (withSortAfterUnwindClause) {
+        const sortedEdges = new Cypher.Variable();
         const unwind = new Cypher.Unwind([edgesList, edgeItem]);
 
-        const collectEdges = new Cypher.With([Cypher.collect(edgeItem), edgesList], totalCountItem);
+        const collectEdges = new Cypher.Return([Cypher.collect(edgeItem), sortedEdges]);
 
-        unwindSortClause = Cypher.concat(unwind, withSortAfterUnwindClause, collectEdges);
+        // This subquery (CALL) is required due to the edge case of having cardinality 0 in the Cypher Match
+        unwindSortClause = new Cypher.Call(Cypher.concat(unwind, withSortAfterUnwindClause, collectEdges))
+            .innerWith(edgesList)
+            .with([sortedEdges, edgesList], totalCount);
     }
 
     const returnClause = new Cypher.Return([

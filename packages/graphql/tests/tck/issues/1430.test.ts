@@ -79,26 +79,26 @@ describe("https://github.com/neo4j/graphql/issues/1430", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`ABCE\`)
-            WHERE this.id = $param0
-            CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
-            CREATE (this_create_interface_ChildOne0_node_ChildOne:ChildOne)
-            SET this_create_interface_ChildOne0_node_ChildOne.id = randomUUID()
-            SET this_create_interface_ChildOne0_node_ChildOne.name = $this_create_interface_ChildOne0_node_ChildOne_name
-            MERGE (this)-[:HAS_INTERFACE]->(this_create_interface_ChildOne0_node_ChildOne)
-            WITH *
-            WITH this
-            CALL {
-                WITH this
-                MATCH (this)-[update_this0:HAS_INTERFACE]->(this_ChildOne:\`ChildOne\`)
-                RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS this_interface
-                UNION
-                WITH this
-                MATCH (this)-[update_this1:HAS_INTERFACE]->(this_ChildTwo:\`ChildTwo\`)
-                RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS this_interface
-            }
-            RETURN collect(DISTINCT this { .id, interface: this_interface }) AS data"
-        `);
+"MATCH (this:\`ABCE\`)
+WHERE this.id = $param0
+CALL apoc.util.validate(EXISTS((this)-[:HAS_INTERFACE]->(:ChildOne)),'Relationship field \\"%s.%s\\" cannot have more than one node linked',[\\"ABCE\\",\\"interface\\"])
+CREATE (this_create_interface_ChildOne0_node_ChildOne:ChildOne)
+SET this_create_interface_ChildOne0_node_ChildOne.id = randomUUID()
+SET this_create_interface_ChildOne0_node_ChildOne.name = $this_create_interface_ChildOne0_node_ChildOne_name
+MERGE (this)-[:HAS_INTERFACE]->(this_create_interface_ChildOne0_node_ChildOne)
+WITH *
+WITH *
+CALL {
+    WITH this
+    MATCH (this)-[update_this0:HAS_INTERFACE]->(this_ChildOne:\`ChildOne\`)
+    RETURN { __resolveType: \\"ChildOne\\", id: this_ChildOne.id, name: this_ChildOne.name } AS this_interface
+    UNION
+    WITH this
+    MATCH (this)-[update_this1:HAS_INTERFACE]->(this_ChildTwo:\`ChildTwo\`)
+    RETURN { __resolveType: \\"ChildTwo\\", id: this_ChildTwo.id, name: this_ChildTwo.name } AS this_interface
+}
+RETURN collect(DISTINCT this { .id, interface: this_interface }) AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -165,7 +165,7 @@ CALL {
 	RETURN count(*) AS connect_this_connect_interface_ChildTwo
 }
 WITH *
-WITH this
+WITH *
 CALL {
     WITH this
     MATCH (this)-[update_this0:HAS_INTERFACE]->(this_ChildOne:\`ChildOne\`)

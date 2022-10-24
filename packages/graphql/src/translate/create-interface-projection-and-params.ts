@@ -85,7 +85,7 @@ export default function createInterfaceProjectionAndParams({
 
         const withStr = withClause ? `${withClause.getCypher(env)}\n` : "";
 
-        let interfaceProjection = [`WITH ${fullWithVars.join(", ")}`, subqueryStr];
+        let interfaceProjection = [`WITH *`, subqueryStr];
         if (field.typeMeta.array) {
             interfaceProjection = [
                 `WITH *`,

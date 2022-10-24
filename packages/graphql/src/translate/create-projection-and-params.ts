@@ -33,11 +33,8 @@ import { generateMissingOrAliasedFields, filterFieldsInSelection, generateProjec
 import { removeDuplicates } from "../utils/utils";
 import { createProjectionSubquery } from "./projection/subquery/create-projection-subquery";
 import { collectUnionSubqueriesResults } from "./projection/subquery/collect-union-subqueries-results";
-
 import createInterfaceProjectionAndParams from "./create-interface-projection-and-params";
-
 import { createConnectionClause } from "./connection-clause/create-connection-clause";
-
 import { translateCypherDirectiveProjection } from "./projection/subquery/translate-cypher-directive-projection";
 
 interface Res {
@@ -208,7 +205,7 @@ export default function createProjectionAndParams({
                         collect: false,
                     });
 
-                    const unionWith = new Cypher.With(parentNode);
+                    const unionWith = new Cypher.With("*");
                     unionSubqueries.push(Cypher.concat(unionWith, subquery));
                 }
 

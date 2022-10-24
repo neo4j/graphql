@@ -233,6 +233,7 @@ class Neo4jGraphQL {
                 skipValidateTypeDefs: this.config?.skipValidateTypeDefs,
                 generateSubscriptions: Boolean(this.plugins?.subscriptions),
                 callbacks: this.config.callbacks,
+                userCustomResolvers: this.schemaDefinition.resolvers,
             });
 
             this._nodes = nodes;

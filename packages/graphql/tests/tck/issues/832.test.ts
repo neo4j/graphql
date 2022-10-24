@@ -623,7 +623,7 @@ RETURN this1
 }
 WITH *
 CALL {
-WITH this0
+WITH *
 CALL {
     WITH this0
     MATCH (this0)<-[create_this0:ACTED_IN]-(this0_Person:\`Person\`)
@@ -637,7 +637,7 @@ RETURN collect(this0_subjects) AS this0_subjects
 }
 WITH *
 CALL {
-WITH this0
+WITH *
 CALL {
     WITH this0
     MATCH (this0)-[create_this2:ACTED_IN]->(this0_Person:\`Person\`)
@@ -651,7 +651,7 @@ RETURN collect(this0_objects) AS this0_objects
 }
 WITH *
 CALL {
-WITH this1
+WITH *
 CALL {
     WITH this1
     MATCH (this1)<-[create_this0:ACTED_IN]-(this1_Person:\`Person\`)
@@ -665,7 +665,7 @@ RETURN collect(this1_subjects) AS this1_subjects
 }
 WITH *
 CALL {
-WITH this1
+WITH *
 CALL {
     WITH this1
     MATCH (this1)-[create_this2:ACTED_IN]->(this1_Person:\`Person\`)

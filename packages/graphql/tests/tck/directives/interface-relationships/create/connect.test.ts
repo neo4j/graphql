@@ -132,7 +132,7 @@ RETURN this0
 }
 WITH *
 CALL {
-WITH this0
+WITH *
 CALL {
     WITH this0
     MATCH (this0)-[create_this0:ACTED_IN]->(this0_Movie:\`Movie\`)
