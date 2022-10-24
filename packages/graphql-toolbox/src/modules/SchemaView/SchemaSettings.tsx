@@ -81,6 +81,7 @@ export const SchemaSettings = ({
                 <div className="mb-1 flex items-baseline">
                     <Checkbox
                         className="m-0"
+                        aria-label="Enable Regex"
                         label="Enable Regex"
                         checked={isRegexChecked === "true"}
                         onChange={onChangeRegexCheckbox}
@@ -106,6 +107,7 @@ export const SchemaSettings = ({
                     <Checkbox
                         data-test-schema-debug-checkbox
                         className="m-0"
+                        aria-label="Enable Debug"
                         label="Enable Debug"
                         checked={isDebugChecked === "true"}
                         onChange={onChangeDebugCheckbox}
