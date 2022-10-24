@@ -10,7 +10,7 @@ export class NestedCreateAST extends AST implements INestedCreateAST {
     edgeProperties: string[];
     relationshipPropertyPath: string;
     relationship: [RelationField | undefined, Node[]];
-    edge: Relationship;
+    edge: Relationship | undefined;
 
     constructor(
         node: Node,
@@ -19,7 +19,7 @@ export class NestedCreateAST extends AST implements INestedCreateAST {
         edgeProperties: string[],
         relationshipPropertyPath: string,
         relationship: [RelationField | undefined, Node[]],
-        edge: Relationship
+        edge?: Relationship
     ) {
         super();
         this.node = node;

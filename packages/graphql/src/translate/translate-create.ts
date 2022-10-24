@@ -26,14 +26,25 @@ import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { compileCypherIfExists } from "./cypher-builder/utils/utils";
+import unwindCreate from "./unwind-create";
+import { UnsupportedUnwindOptimisation } from "./batch-create/batch-create";
 
-export default async function translateCreateOld({
+export default async function translateCreate({
     context,
     node,
 }: {
     context: Context;
     node: Node;
 }): Promise<{ cypher: string; params: Record<string, any> }> {
+    try {
+        return await unwindCreate({ context, node});
+    } catch (error) {
+        if (!(error instanceof UnsupportedUnwindOptimisation)) {
+            throw error;
+        }
+    }
+
+
     const { resolveTree } = context;
     const mutationInputs = resolveTree.args.input as any[];
     const connectionStrs: string[] = [];
@@ -199,6 +210,11 @@ export default async function translateCreateOld({
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
         cypher: createQueryCypher.cypher,
     });
+/*     console.log(`Old Cypher: ${cypher}`);
+    console.log(`Old Params: ${JSON.stringify({
+        ...createQueryCypher.params,
+        resolvedCallbacks,
+    })}`); */
     return {
         cypher,
         params: {

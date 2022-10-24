@@ -31,47 +31,44 @@ import {
     getTreeDescriptor,
     parseCreate,
     UnwindCreateVisitor,
+    UnsupportedUnwindOptimisation
 } from "./batch-create/batch-create";
-import translateCreate from "./translate-create";
 
-export default async function translateCreateNew({
+export default async function unwindCreate({
     context,
     node,
 }: {
     context: Context;
     node: Node;
 }): Promise<{ cypher: string; params: Record<string, any> }> {
+    if (context.subscriptionsEnabled) {
+        throw new UnsupportedUnwindOptimisation("Unwind does not yet support subscriptions");
+    }
+
     const { resolveTree } = context;
     const input = resolveTree.args.input as CreateInput | CreateInput[];
 
     const treeDescriptor = Array.isArray(input)
         ? mergeTreeDescriptors(input.map((el: CreateInput) => getTreeDescriptor(el, node, context)))
         : getTreeDescriptor(input, node, context);
-    let parsedInput;
-    try {
-        parsedInput = parseCreate(treeDescriptor, node, context);
-    } catch (exception) {
-        // Unwind optimization is not supported for this GraphQLInput
-        return translateCreate({context, node});
-    }
-    
+    const parsedInput = parseCreate(treeDescriptor, node, context);
+
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
 
     const projectionWith: string[] = [];
-    const callbackBucket: CallbackBucket = new CallbackBucket(context);
+    const callbackBucket = new CallbackBucket(context);
 
     const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
 
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
 
-
     const createNodeAST = parsedInput;
     const unwindVar = new CypherBuilder.Variable();
     const unwind = inputTreeToCypherMap(input, node, context);
     const unwindQuery = new CypherBuilder.Unwind([unwind, unwindVar]);
-    const unwindCreateVisitor = new UnwindCreateVisitor(unwindVar, context, input);
+    const unwindCreateVisitor = new UnwindCreateVisitor(unwindVar, callbackBucket, context, input);
     createNodeAST.accept(unwindCreateVisitor);
 
     const [rootNodeVariable, createPhase] = unwindCreateVisitor.build();
@@ -123,7 +120,6 @@ export default async function translateCreateNew({
         authCalls = createStrs
             .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
             .join("\n"); */
-
     }
 
     const replacedConnectionStrs = connectionStrs.length
@@ -203,6 +199,11 @@ export default async function translateCreateNew({
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
         cypher: createQueryCypher.cypher,
     });
+/*     console.log(`Cypher: ${cypher}`)
+    console.log(`Params: ${JSON.stringify({
+            ...createQueryCypher.params,
+            resolvedCallbacks,
+        })}`); */
     return {
         cypher,
         params: {

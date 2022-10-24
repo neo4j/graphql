@@ -18,6 +18,8 @@
  */
 
 export type { CreateInput, TreeDescriptor } from "./types";
+export { UnsupportedUnwindOptimisation } from "./types";
+
 export {
     getTreeDescriptor,
     mergeTreeDescriptors,

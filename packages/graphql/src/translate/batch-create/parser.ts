@@ -1,9 +1,11 @@
 import type { Context, RelationField } from "../../types";
 import type { CreateInput, TreeDescriptor } from "./types";
-import type { Node, Relationship } from "../../classes";
+import { UnsupportedUnwindOptimisation } from "./types";
+import { GraphElement, Neo4jGraphQLError, Node, Relationship } from "../../classes";
 import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { getRelationshipFields } from "./utils";
-import { AST, CreateAST, NestedCreateAST, ConnectAST, ConnectOrCreateAST } from "./GraphQLInputAST/GraphQLInputAST";
+import { AST, CreateAST, NestedCreateAST } from "./GraphQLInputAST/GraphQLInputAST";
+import mapToDbProperty from "../../utils/map-to-db-property";
 
 // TODO: refactor this tree traversal
 export function inputTreeToCypherMap(
@@ -46,11 +48,18 @@ export function inputTreeToCypherMap(
     return new CypherBuilder.Map(properties);
 }
 
-function isScalar(fieldName, node, relationship?) {
+function isScalar(fieldName: string, node: Node, relationship?: Relationship) {
     const predicate = (x) => x.fieldName === fieldName;
-    const scalarFields = [node.primitiveFields, node.temporalFields, node.pointFields];
+    const scalarFields = [node.primitiveFields, node.temporalFields, node.pointFields, node.scalarFields];
     if (relationship) {
-        scalarFields.push(...[relationship.primitiveFields, relationship.temporalFields, relationship.pointFields]);
+        scalarFields.push(
+            ...[
+                relationship.primitiveFields,
+                relationship.temporalFields,
+                relationship.pointFields,
+                relationship.scalarFields,
+            ]
+        );
     }
     return scalarFields.flat().some(predicate);
 }
@@ -114,23 +123,35 @@ export function mergeTreeDescriptors(input: TreeDescriptor[]): TreeDescriptor {
 }
 
 function parser(input: TreeDescriptor, node: Node, context: Context, parentASTNode: AST): AST {
+    if (node.auth) {
+        throw new UnsupportedUnwindOptimisation(`Not supported operation: Auth`);
+    }
     Object.entries(input.childrens).forEach(([key, value]) => {
         const [relationField, relatedNodes] = getRelationshipFields(node, key, {}, context);
-        let edge;
-        if (relationField && relationField.properties) {
-            edge = context.relationships.find(
-                (x) => x.properties === relationField.properties
-            ) as unknown as Relationship;
-        }
+
         if (relationField) {
+            let edge;
+            if (relationField.properties) {
+                edge = context.relationships.find(
+                    (x) => x.properties === relationField.properties
+                ) as unknown as Relationship;
+            }
+            if (relationField.interface || relationField.union) {
+                throw new UnsupportedUnwindOptimisation(`Not supported operation: Interface or Union`);
+            }
             Object.entries(value.childrens).forEach(([operation, description]) => {
                 switch (operation) {
                     case "create":
                         parentASTNode.addChildren(
-                            parseNestedCreate(description, relatedNodes[0], context, node, key, [
-                                relationField,
-                                relatedNodes,
-                            ], edge)
+                            parseNestedCreate(
+                                description,
+                                relatedNodes[0],
+                                context,
+                                node,
+                                key,
+                                [relationField, relatedNodes],
+                                edge
+                            )
                         );
                         break;
                     /*
@@ -147,7 +168,7 @@ function parser(input: TreeDescriptor, node: Node, context: Context, parentASTNo
                         break;
                     */
                     default:
-                        throw new Error(`Not supported operation: ${operation}`);
+                        throw new UnsupportedUnwindOptimisation(`Not supported operation: ${operation}`);
                 }
             });
         }
@@ -155,8 +176,29 @@ function parser(input: TreeDescriptor, node: Node, context: Context, parentASTNo
     return parentASTNode;
 }
 
+function raiseAttributeAmbiguity(properties: Set<string> | Array<string>, graphElement: GraphElement) {
+    const hash = {};
+    properties.forEach((property) => {
+        const dbName = mapToDbProperty(graphElement, property);
+        if (hash[dbName]) {            
+            throw new Neo4jGraphQLError(`Conflicting modification of ${[hash[dbName], property].map((n) => `[[${n}]]`).join(", ")} on type ${graphElement.name}`);
+        }
+        hash[dbName] = property;
+    });
+}
+
+function raiseOnNotSupportedProperty(graphElement: GraphElement) {
+    graphElement.primitiveFields.forEach((property) => {
+        if (property.callback && property.callback.operations.includes("CREATE")) {
+            throw new UnsupportedUnwindOptimisation("Not supported operation: Callback");
+        }
+    });
+}
+
 export function parseCreate(input: TreeDescriptor, node: Node, context: Context) {
     const nodeProperties = input.properties;
+    raiseOnNotSupportedProperty(node);
+    raiseAttributeAmbiguity(input.properties, node);
     const createAST = new CreateAST([...nodeProperties], node);
     parser(input, node, context, createAST);
     return createAST;
@@ -169,10 +211,17 @@ function parseNestedCreate(
     parentNode: Node,
     relationshipPropertyPath: string,
     relationship: [RelationField | undefined, Node[]],
-    edge: Relationship
+    edge?: Relationship
 ) {
     const nodeProperties = input.childrens.node.properties;
     const edgeProperties = input.childrens.edge ? input.childrens.edge.properties : [];
+    raiseOnNotSupportedProperty(node);
+    raiseAttributeAmbiguity(nodeProperties, node);
+    if (edge) {
+        raiseOnNotSupportedProperty(edge);
+        raiseAttributeAmbiguity(edgeProperties, edge);
+    }
+
     const nestedCreateAST = new NestedCreateAST(
         node,
         parentNode,
@@ -188,7 +237,7 @@ function parseNestedCreate(
     return nestedCreateAST;
 }
 
-export function parseConnect(
+/* export function parseConnect(
     input: TreeDescriptor,
     node: Node,
     context: Context,
@@ -211,8 +260,8 @@ export function parseConnect(
     // TODO: remove it
     console.info(context);
     return connectAST;
-}
-
+} */
+/* 
 export function parseConnectOrCreate(input: TreeDescriptor, node: Node, context: Context, parentNode: Node) {
     const where = input.childrens.where;
     const onCreate = input.childrens.onCreate;
@@ -224,3 +273,4 @@ export function parseConnectOrCreate(input: TreeDescriptor, node: Node, context:
 
     return connectOrCreateAST;
 }
+ */

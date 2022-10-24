@@ -36,7 +36,7 @@ export interface INestedCreateAST extends IAST {
     edgeProperties: string[];
     relationshipPropertyPath: string;
     relationship: [RelationField | undefined, Node[]];
-    edge: Relationship
+    edge: Relationship | undefined
 }
 
 export interface Visitor<R> {
