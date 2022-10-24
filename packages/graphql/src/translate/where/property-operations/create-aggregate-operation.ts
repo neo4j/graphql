@@ -38,7 +38,7 @@ export function createAggregateOperation({
     const relationship = context.relationships.find((x) => x.properties === relationField.properties) as Relationship;
 
     const aggregateStatement = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
-        const varName = env.getVariableId(parentNode);
+        const varName = env.getReferenceId(parentNode);
 
         // TODO: use cypher builder instead of rawCypher
         const aggregateWhereAndParams = createAggregateWhereAndParams({

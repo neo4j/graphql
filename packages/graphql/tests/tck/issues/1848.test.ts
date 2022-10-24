@@ -88,16 +88,26 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Community\`:\`UNIVERSAL\`)
-            RETURN this { .id, hasFeedItems: apoc.coll.flatten([this_hasFeedItems IN apoc.cypher.runFirstColumnMany(\\"Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag) return pag SKIP ($limit * $pageIndex) LIMIT $limit\\", {this: this, auth: $auth, limit: $this_hasFeedItems_limit, pageIndex: $this_hasFeedItems_pageIndex}) WHERE (this_hasFeedItems:\`ContentPiece\` AND this_hasFeedItems:\`UNIVERSAL\`) OR (this_hasFeedItems:\`Project\` AND this_hasFeedItems:\`UNIVERSAL\`)  |   [ this_hasFeedItems IN [this_hasFeedItems] WHERE (this_hasFeedItems:\`ContentPiece\` AND this_hasFeedItems:\`UNIVERSAL\`) | this_hasFeedItems { __resolveType: \\"ContentPiece\\",  .id } ] + [ this_hasFeedItems IN [this_hasFeedItems] WHERE (this_hasFeedItems:\`Project\` AND this_hasFeedItems:\`UNIVERSAL\`) | this_hasFeedItems { __resolveType: \\"Project\\",  .id } ] ]) } as this"
+            CALL {
+                WITH this
+                UNWIND apoc.cypher.runFirstColumnMany(\\"Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag) return pag SKIP ($limit * $pageIndex) LIMIT $limit\\", { limit: $param0, pageIndex: $param1, this: this, auth: $auth }) AS this_hasFeedItems
+                WITH *
+                WHERE ((this_hasFeedItems:\`ContentPiece\` AND this_hasFeedItems:\`UNIVERSAL\`) OR (this_hasFeedItems:\`Project\` AND this_hasFeedItems:\`UNIVERSAL\`))
+                RETURN collect(CASE
+                    WHEN (this_hasFeedItems:\`ContentPiece\` AND this_hasFeedItems:\`UNIVERSAL\`) THEN this_hasFeedItems { __resolveType: \\"ContentPiece\\",  .id }
+                    WHEN (this_hasFeedItems:\`Project\` AND this_hasFeedItems:\`UNIVERSAL\`) THEN this_hasFeedItems { __resolveType: \\"Project\\",  .id }
+                END) AS this_hasFeedItems
+            }
+            RETURN this { .id, hasFeedItems: this_hasFeedItems } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_hasFeedItems_limit\\": {
+                \\"param0\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"this_hasFeedItems_pageIndex\\": {
+                \\"param1\\": {
                     \\"low\\": 0,
                     \\"high\\": 0
                 },

@@ -66,7 +66,7 @@ describe("Cypher Aggregations where node with Logical AND + OR", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN (aggr_node.someFloat = $aggr_node_AND_0_someFloat_EQUAL AND aggr_node.someFloat = $aggr_node_AND_1_someFloat_EQUAL)
             \\", { this: this, aggr_node_AND_0_someFloat_EQUAL: $aggr_node_AND_0_someFloat_EQUAL, aggr_node_AND_1_someFloat_EQUAL: $aggr_node_AND_1_someFloat_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -96,7 +96,7 @@ describe("Cypher Aggregations where node with Logical AND + OR", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN (aggr_node.someFloat = $aggr_node_OR_0_someFloat_EQUAL OR aggr_node.someFloat = $aggr_node_OR_1_someFloat_EQUAL)
             \\", { this: this, aggr_node_OR_0_someFloat_EQUAL: $aggr_node_OR_0_someFloat_EQUAL, aggr_node_OR_1_someFloat_EQUAL: $aggr_node_OR_1_someFloat_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

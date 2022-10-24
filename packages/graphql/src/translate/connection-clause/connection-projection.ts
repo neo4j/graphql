@@ -21,7 +21,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { mergeDeep } from "@graphql-tools/utils";
 import type { ConnectionField, ConnectionSortArg, Context } from "../../types";
 import type { Node } from "../../classes";
-// eslint-disable-next-line import/no-cycle
+
 import createProjectionAndParams from "../create-projection-and-params";
 import type Relationship from "../../classes/Relationship";
 import { createRelationshipPropertyValue } from "../projection/elements/create-relationship-property-element";
@@ -78,7 +78,7 @@ export function createEdgeProjection({
         const nodeField = Object.values(relationshipFieldsByTypeName).find((v) => v.name === "node");
         if (nodeField) {
             const nodeProjection = createConnectionNodeProjection({
-                nodeResolveTree: nodeField as ResolveTree,
+                nodeResolveTree: nodeField,
                 context,
                 node: relatedNode,
                 resolveTree,
@@ -148,7 +148,10 @@ function createConnectionNodeProjection({
     });
 
     const projectionMeta = nodeProjectionAndParams.meta;
-    const projectionSubqueries = nodeProjectionAndParams.subqueries;
+    const projectionSubqueries = [
+        ...nodeProjectionAndParams.subqueriesBeforeSort,
+        ...nodeProjectionAndParams.subqueries,
+    ];
 
     if (projectionMeta?.authValidateStrs?.length) {
         const authStrs = projectionMeta.authValidateStrs;
@@ -159,7 +162,7 @@ function createConnectionNodeProjection({
     }
     return {
         subqueries: projectionSubqueries,
-        projection: new CypherBuilder.RawCypher((env) => {
+        projection: new CypherBuilder.RawCypher(() => {
             return [`${nodeProjectionAndParams.projection}`, nodeProjectionAndParams.params];
         }),
     };

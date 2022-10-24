@@ -17,8 +17,7 @@
  * limitations under the License.
  */
 
-import { useCallback } from "react";
-import { useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { FormInput } from "./FormInput";
 import { Button, HeroIcon } from "@neo4j-ndl/react";
 import { DEFAULT_BOLT_URL, DEFAULT_USERNAME } from "../../constants";
@@ -54,7 +53,7 @@ export const Login = () => {
                     url,
                 });
             } catch (error) {
-                setError((error as Error).message as string);
+                setError((error as Error).message);
             } finally {
                 setLoading(false);
             }
@@ -84,6 +83,7 @@ export const Login = () => {
                     <img src={Icon} alt="Neo4j Logo" className="h-12 w-12 mb-3 mx-auto" />
                     <h2 className="mt-1 text-3xl">Neo4j GraphQL Toolbox</h2>
                 </div>
+                {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
                 <form onSubmit={onSubmit} className="flex flex-col gap-4">
                     <FormInput
                         testtag="data-test-login-username"
@@ -129,6 +129,7 @@ export const Login = () => {
                             type="submit"
                             loading={loading}
                             disabled={loading}
+                            // eslint-disable-next-line @typescript-eslint/no-empty-function
                             onClick={() => {}} // INFO: To prevent warning in browser console
                         >
                             Connect
@@ -147,6 +148,7 @@ export const Login = () => {
                                                 className="underline"
                                                 href="https://neo4j.com/developer/javascript/#driver-configuration"
                                                 target="_blank"
+                                                rel="noreferrer"
                                             >
                                                 here
                                             </a>

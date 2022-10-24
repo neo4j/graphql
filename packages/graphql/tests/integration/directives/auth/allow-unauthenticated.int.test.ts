@@ -25,6 +25,7 @@ import { IncomingMessage } from "http";
 import { generate } from "randomstring";
 import Neo4j from "../../neo4j";
 import { Neo4jGraphQL } from "../../../../src/classes";
+import { generateUniqueType, UniqueType } from "../../../utils/graphql-types";
 
 // Reference: https://github.com/neo4j/graphql/pull/355
 // Reference: https://github.com/neo4j/graphql/issues/345
@@ -33,9 +34,15 @@ describe("auth/allow-unauthenticated", () => {
     let driver: Driver;
     let neo4j: Neo4j;
 
+    let Post: UniqueType;
+
     beforeAll(async () => {
         neo4j = new Neo4j();
         driver = await neo4j.getDriver();
+    });
+
+    beforeEach(() => {
+        Post = generateUniqueType("Post");
     });
 
     afterAll(async () => {
@@ -45,13 +52,13 @@ describe("auth/allow-unauthenticated", () => {
     describe("allowUnauthenticated with allow", () => {
         test("should return a Post without errors", async () => {
             const typeDefs = `
-                type Post {
+                type ${Post} {
                     id: ID!
                     publisher: String!
                     published: Boolean!
                 }
 
-                extend type Post @auth(rules: [
+                extend type ${Post} @auth(rules: [
                     { allow: { OR: [
                         { publisher: "$jwt.sub" },
                         { published: true },
@@ -63,7 +70,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const query = `
                 {
-                    posts(where: { id: "${postId}" }) {
+                    ${Post.plural}(where: { id: "${postId}" }) {
                         id
                     }
                 }
@@ -80,7 +87,7 @@ describe("auth/allow-unauthenticated", () => {
             });
 
             await session.run(`
-                CREATE (:Post {id: "${postId}", publisher: "nop", published: true})
+                CREATE (:${Post} {id: "${postId}", publisher: "nop", published: true})
             `);
 
             const socket = new Socket({ readable: true });
@@ -96,18 +103,18 @@ describe("auth/allow-unauthenticated", () => {
             expect(gqlResult.errors).toBeUndefined();
 
             // Check if returned data is what we really want
-            expect((gqlResult.data as any)?.posts?.[0]?.id).toBe(postId);
+            expect((gqlResult.data as any)?.[Post.plural]?.[0]?.id).toBe(postId);
         });
 
         test("should throw a Forbidden error", async () => {
             const typeDefs = `
-                type Post {
+                type ${Post} {
                     id: ID!
                     publisher: String!
                     published: Boolean!
                 }
 
-                extend type Post @auth(rules: [
+                extend type ${Post} @auth(rules: [
                     { allow: { OR: [
                         { publisher: "$jwt.sub" },
                         { published: true },
@@ -119,7 +126,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const query = `
                 {
-                    posts(where: { id: "${postId}" }) {
+                    ${Post.plural}(where: { id: "${postId}" }) {
                         id
                     }
                 }
@@ -136,7 +143,7 @@ describe("auth/allow-unauthenticated", () => {
             });
 
             await session.run(`
-                CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
+                CREATE (:${Post} {id: "${postId}", publisher: "nop", published: false})
             `);
 
             const socket = new Socket({ readable: true });
@@ -153,18 +160,18 @@ describe("auth/allow-unauthenticated", () => {
             expect(gqlResult.errors as any[]).toHaveLength(1);
 
             // Check if returned data is what we really want
-            expect(gqlResult.data?.posts).toBeUndefined();
+            expect(gqlResult.data?.[Post.plural]).toBeUndefined();
         });
 
         test("should throw a Forbidden error if at least one result isn't allowed", async () => {
             const typeDefs = `
-                type Post {
+                type ${Post} {
                     id: ID!
                     publisher: String!
                     published: Boolean!
                 }
 
-                extend type Post @auth(rules: [
+                extend type ${Post} @auth(rules: [
                     { allow: { OR: [
                         { publisher: "$jwt.sub" },
                         { published: true },
@@ -177,7 +184,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const query = `
                 {
-                    posts(where: { OR: [{id: "${postId}"}, {id: "${postId2}"}] }) {
+                    ${Post.plural}(where: { OR: [{id: "${postId}"}, {id: "${postId2}"}] }) {
                         id
                     }
                 }
@@ -194,8 +201,8 @@ describe("auth/allow-unauthenticated", () => {
             });
 
             await session.run(`
-                CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
-                CREATE (:Post {id: "${postId2}", publisher: "nop", published: true})
+                CREATE (:${Post} {id: "${postId}", publisher: "nop", published: false})
+                CREATE (:${Post} {id: "${postId2}", publisher: "nop", published: true})
             `);
 
             const socket = new Socket({ readable: true });
@@ -212,20 +219,20 @@ describe("auth/allow-unauthenticated", () => {
             expect(gqlResult.errors as any[]).toHaveLength(1);
 
             // Check if returned data is what we really want
-            expect(gqlResult.data?.posts).toBeUndefined();
+            expect(gqlResult.data?.[Post.plural]).toBeUndefined();
         });
     });
 
     describe("allowUnauthenticated with where", () => {
         test("should return a Post without errors", async () => {
             const typeDefs = `
-                type Post {
+                type ${Post} {
                     id: ID!
                     publisher: String!
                     published: Boolean!
                 }
 
-                extend type Post @auth(rules: [
+                extend type ${Post} @auth(rules: [
                     { where: { OR: [
                         { publisher: "$jwt.sub" },
                         { published: true },
@@ -237,7 +244,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const query = `
                 {
-                    posts(where: { id: "${postId}" }) {
+                    ${Post.plural}(where: { id: "${postId}" }) {
                         id
                     }
                 }
@@ -254,7 +261,7 @@ describe("auth/allow-unauthenticated", () => {
             });
 
             await session.run(`
-                CREATE (:Post {id: "${postId}", publisher: "nop", published: true})
+                CREATE (:${Post} {id: "${postId}", publisher: "nop", published: true})
             `);
 
             const socket = new Socket({ readable: true });
@@ -270,18 +277,18 @@ describe("auth/allow-unauthenticated", () => {
             expect(gqlResult.errors).toBeUndefined();
 
             // Check if returned data is what we really want
-            expect((gqlResult.data as any)?.posts?.[0]?.id).toBe(postId);
+            expect((gqlResult.data as any)?.[Post.plural]?.[0]?.id).toBe(postId);
         });
 
         test("should return an empty array without errors", async () => {
             const typeDefs = `
-                type Post {
+                type ${Post} {
                     id: ID!
                     publisher: String!
                     published: Boolean!
                 }
 
-                extend type Post @auth(rules: [
+                extend type ${Post} @auth(rules: [
                     { where: { OR: [
                         { publisher: "$jwt.sub" },
                         { published: true },
@@ -293,7 +300,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const query = `
                 {
-                    posts(where: { id: "${postId}" }) {
+                    ${Post.plural}(where: { id: "${postId}" }) {
                         id
                     }
                 }
@@ -310,7 +317,7 @@ describe("auth/allow-unauthenticated", () => {
             });
 
             await session.run(`
-                CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
+                CREATE (:${Post} {id: "${postId}", publisher: "nop", published: false})
             `);
 
             const socket = new Socket({ readable: true });
@@ -326,18 +333,18 @@ describe("auth/allow-unauthenticated", () => {
             expect(gqlResult.errors).toBeUndefined();
 
             // Check if returned data is what we really want
-            expect(gqlResult.data?.posts).toStrictEqual([]);
+            expect(gqlResult.data?.[Post.plural]).toStrictEqual([]);
         });
 
         test("should only return published Posts without errors", async () => {
             const typeDefs = `
-                type Post {
+                type ${Post} {
                     id: ID!
                     publisher: String!
                     published: Boolean!
                 }
 
-                extend type Post @auth(rules: [
+                extend type ${Post} @auth(rules: [
                     { where: { OR: [
                         { publisher: "$jwt.sub" },
                         { published: true },
@@ -350,7 +357,7 @@ describe("auth/allow-unauthenticated", () => {
 
             const query = `
                 {
-                    posts(where: { OR: [{id: "${postId}"}, {id: "${postId2}"}] }) {
+                    ${Post.plural}(where: { OR: [{id: "${postId}"}, {id: "${postId2}"}] }) {
                         id
                     }
                 }
@@ -367,8 +374,8 @@ describe("auth/allow-unauthenticated", () => {
             });
 
             await session.run(`
-                CREATE (:Post {id: "${postId}", publisher: "nop", published: false})
-                CREATE (:Post {id: "${postId2}", publisher: "nop", published: true})
+                CREATE (:${Post} {id: "${postId}", publisher: "nop", published: false})
+                CREATE (:${Post} {id: "${postId2}", publisher: "nop", published: true})
             `);
 
             const socket = new Socket({ readable: true });
@@ -384,19 +391,21 @@ describe("auth/allow-unauthenticated", () => {
             expect(gqlResult.errors).toBeUndefined();
 
             // Check if returned data is what we really want
-            expect(gqlResult.data?.posts).toContainEqual({ id: postId2 });
-            expect(gqlResult.data?.posts).toHaveLength(1);
+            expect(gqlResult.data?.[Post.plural]).toContainEqual({ id: postId2 });
+            expect(gqlResult.data?.[Post.plural]).toHaveLength(1);
         });
     });
 
     describe("allowUnauthenticated with bind", () => {
         test("should throw Forbiden error only", async () => {
+            const User = generateUniqueType("User");
+
             const typeDefs = `
-                type User {
+                type ${User} {
                     id: ID
                 }
 
-                extend type User @auth(rules: [{
+                extend type ${User} @auth(rules: [{
                     operations: [CREATE],
                     bind: { id: "$jwt.sub" },
                     allowUnauthenticated: true
@@ -405,8 +414,8 @@ describe("auth/allow-unauthenticated", () => {
 
             const query = `
                 mutation {
-                    createUsers(input: [{id: "not bound"}]) {
-                        users {
+                    ${User.operations.create}(input: [{id: "not bound"}]) {
+                        ${User.plural} {
                             id
                         }
                     }
@@ -436,7 +445,7 @@ describe("auth/allow-unauthenticated", () => {
             expect(gqlResult.errors as any[]).toHaveLength(1);
 
             // Check if returned data is what we really want
-            expect(gqlResult.data?.posts).toBeUndefined();
+            expect(gqlResult.data?.[Post.plural]).toBeUndefined();
         });
     });
 });

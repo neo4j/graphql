@@ -68,9 +68,9 @@ export function translateTopLevelCypher({
             varName: `this`,
         });
 
-        const { projection: str, params: p, meta, subqueries } = recurse;
+        const { projection: str, params: p, meta, subqueries, subqueriesBeforeSort } = recurse;
         projectionStr = str;
-        projectionSubqueries.push(...subqueries);
+        projectionSubqueries.push(...subqueriesBeforeSort, ...subqueries);
         params = { ...params, ...p };
 
         if (meta.authValidateStrs?.length) {
@@ -172,8 +172,8 @@ export function translateTopLevelCypher({
     } else {
         cypherStrs.push(`
             CALL apoc.cypher.doIt("${statement}", ${apocParamsStr}) YIELD value
-            WITH apoc.map.values(value, [keys(value)[0]])[0] AS this
-        `);
+            WITH [k in keys(value) | value[k]][0] AS this
+            `);
     }
 
     if (unionWhere.length) {

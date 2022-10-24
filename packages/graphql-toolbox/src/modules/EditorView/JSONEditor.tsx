@@ -67,7 +67,7 @@ export const JSONEditor = (props: Props) => {
         if (!props.readonly) {
             mirror.current.on("change", (e) => {
                 if (props.onChange) {
-                    props.onChange(e.getValue() as string);
+                    props.onChange(e.getValue());
                 }
             });
         }
@@ -77,7 +77,7 @@ export const JSONEditor = (props: Props) => {
 
     useEffect(() => {
         if (mirror.current && props.json) {
-            mirror.current.setValue(props.json as string);
+            mirror.current.setValue(props.json);
             formatCode(mirror.current as EditorFromTextArea, ParserOptions.JSON);
         }
     }, [props.json]);
@@ -85,7 +85,7 @@ export const JSONEditor = (props: Props) => {
     useEffect(() => {
         if (mirror.current && props.initialValue) {
             const cursor = mirror.current.getCursor();
-            mirror.current.setValue(props.initialValue as string);
+            mirror.current.setValue(props.initialValue);
             if (cursor) mirror.current.setCursor(cursor);
         }
     }, [props.initialValue]);

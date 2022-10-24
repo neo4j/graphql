@@ -75,11 +75,11 @@ describe("Cypher alias directive", () => {
             "MATCH (this:\`Actor\`)
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:ACTED_IN]->(this_actedIn:\`Movie\`)
+                MATCH (this)-[this0:ACTED_IN]->(this_actedIn:\`Movie\`)
                 WITH this_actedIn { .title, rating: this_actedIn.ratingPropInDb } AS this_actedIn
                 RETURN collect(this_actedIn) AS this_actedIn
             }
-            RETURN this { .name, city: this.cityPropInDb, actedIn: this_actedIn } as this"
+            RETURN this { .name, city: this.cityPropInDb, actedIn: this_actedIn } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -118,9 +118,9 @@ describe("Cypher alias directive", () => {
                 WITH { character: this_connection_actedInConnectionthis0.characterPropInDb, screenTime: this_connection_actedInConnectionthis0.screenTime, node: { title: this_Movie.title, rating: this_Movie.ratingPropInDb } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
             }
-            RETURN this { .name, city: this.cityPropInDb, actedInConnection: actedInConnection } as this"
+            RETURN this { .name, city: this.cityPropInDb, actedInConnection: this_actedInConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -196,10 +196,10 @@ describe("Cypher alias directive", () => {
                 WITH { character: this0_connection_actedInConnectionthis0.characterPropInDb, screenTime: this0_connection_actedInConnectionthis0.screenTime, node: { title: this0_Movie.title, rating: this0_Movie.ratingPropInDb } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this0_actedInConnection
             }
             RETURN [
-            this0 { .name, city: this0.cityPropInDb, actedIn: this0_actedIn, actedInConnection: actedInConnection }] AS data"
+            this0 { .name, city: this0.cityPropInDb, actedIn: this0_actedIn, actedInConnection: this0_actedInConnection }] AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

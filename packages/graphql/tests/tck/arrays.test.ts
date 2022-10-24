@@ -65,7 +65,7 @@ describe("Cypher Arrays", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE $param0 IN this.ratings
-            RETURN this { .title, .ratings } as this"
+            RETURN this { .title, .ratings } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -93,7 +93,7 @@ describe("Cypher Arrays", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Movie\`)
             WHERE NOT ($param0 IN this.ratings)
-            RETURN this { .title, .ratings } as this"
+            RETURN this { .title, .ratings } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -33,10 +33,10 @@ export const addCallbackAndSetParam = (
         return;
     }
 
-    const paramName = `${varName}_${field.fieldName}_${field.callback?.name}`;
+    const paramName = `${varName}_${field.fieldName}_${field.callback?.callbackName}`;
 
     callbackBucket.addCallback({
-        functionName: field.callback?.name,
+        functionName: field.callback?.callbackName,
         paramName,
         parent,
     });
@@ -59,10 +59,10 @@ export const addCallbackAndSetParamCypher = (
     const propRef = node.property(field.dbPropertyName as string);
     const rawCypherStatement = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
         const variableCypher = variable.getCypher(env);
-        const paramName = `${variableCypher}_${field.fieldName}_${field.callback?.name}`;
+        const paramName = `${variableCypher}_${field.fieldName}_${field.callback?.callbackName}`;
 
         callbackBucket.addCallback({
-            functionName: field.callback?.name as string,
+            functionName: field.callback?.callbackName as string,
             paramName,
             parent,
         });

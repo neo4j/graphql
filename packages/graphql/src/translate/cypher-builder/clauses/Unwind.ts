@@ -22,8 +22,11 @@ import { Projection, ProjectionColumn } from "./sub-clauses/Projection";
 import { compileCypherIfExists } from "../utils/utils";
 import { Clause } from "./Clause";
 import { WithWith } from "./mixins/WithWith";
-import { applyMixins } from "./utils/apply-mixin";
+import { mixin } from "./utils/mixin";
 
+export interface Unwind extends WithWith {}
+
+@mixin(WithWith)
 export class Unwind extends Clause {
     private projection: Projection;
 
@@ -42,6 +45,3 @@ export class Unwind extends Clause {
         return `UNWIND ${projectionStr}${withCypher}`;
     }
 }
-
-export interface Unwind extends WithWith {}
-applyMixins(Unwind, [WithWith]);

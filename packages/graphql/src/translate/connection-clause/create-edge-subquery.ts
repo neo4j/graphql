@@ -26,9 +26,9 @@ import * as CypherBuilder from "../cypher-builder/CypherBuilder";
 import { createConnectionWherePropertyOperation } from "../where/property-operations/create-connection-operation";
 import { getOrCreateCypherNode } from "../utils/get-or-create-cypher-variable";
 import { getPattern } from "../utils/get-pattern";
-// eslint-disable-next-line import/no-cycle
+
 import { createEdgeProjection } from "./connection-projection";
-import { getSortFields } from "./get-sort-fields";
+import { getEdgeSortFieldKeys } from "./get-sort-fields";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { createSortAndLimitProjection } from "./create-sort-and-limit";
 
@@ -120,7 +120,7 @@ export function createEdgeSubquery({
         relatedNodeVariableName: relatedNodeRef.name,
         context,
         resolveType,
-        extraFields: Object.keys(getSortFields(resolveTree).edge),
+        extraFields: getEdgeSortFieldKeys(resolveTree),
     });
 
     const withReturn = new CypherBuilder.With([projection.projection, returnVariable]);
@@ -137,5 +137,5 @@ export function createEdgeSubquery({
         });
     }
 
-    return CypherBuilder.concat(matchClause, ...projection.subqueries, withSortClause, withReturn);
+    return CypherBuilder.concat(matchClause, withSortClause, ...projection.subqueries, withReturn);
 }

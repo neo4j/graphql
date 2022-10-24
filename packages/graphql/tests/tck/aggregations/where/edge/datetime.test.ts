@@ -69,7 +69,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_edge.someDateTime = $aggr_edge_someDateTime_EQUAL
             \\", { this: this, aggr_edge_someDateTime_EQUAL: $aggr_edge_someDateTime_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -107,7 +107,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_edge._someDateTimeAlias = $aggr_edge_someDateTimeAlias_EQUAL
             \\", { this: this, aggr_edge_someDateTimeAlias_EQUAL: $aggr_edge_someDateTimeAlias_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -145,7 +145,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_edge.someDateTime > $aggr_edge_someDateTime_GT
             \\", { this: this, aggr_edge_someDateTime_GT: $aggr_edge_someDateTime_GT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -183,7 +183,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_edge.someDateTime >= $aggr_edge_someDateTime_GTE
             \\", { this: this, aggr_edge_someDateTime_GTE: $aggr_edge_someDateTime_GTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -221,7 +221,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_edge.someDateTime < $aggr_edge_someDateTime_LT
             \\", { this: this, aggr_edge_someDateTime_LT: $aggr_edge_someDateTime_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -259,7 +259,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_edge.someDateTime <= $aggr_edge_someDateTime_LTE
             \\", { this: this, aggr_edge_someDateTime_LTE: $aggr_edge_someDateTime_LTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -297,7 +297,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  min(aggr_edge.someDateTime) = $aggr_edge_someDateTime_MIN_EQUAL
             \\", { this: this, aggr_edge_someDateTime_MIN_EQUAL: $aggr_edge_someDateTime_MIN_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -335,7 +335,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  min(aggr_edge.someDateTime) > $aggr_edge_someDateTime_MIN_GT
             \\", { this: this, aggr_edge_someDateTime_MIN_GT: $aggr_edge_someDateTime_MIN_GT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -373,7 +373,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  min(aggr_edge.someDateTime) >= $aggr_edge_someDateTime_MIN_GTE
             \\", { this: this, aggr_edge_someDateTime_MIN_GTE: $aggr_edge_someDateTime_MIN_GTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -411,7 +411,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  min(aggr_edge.someDateTime) < $aggr_edge_someDateTime_MIN_LT
             \\", { this: this, aggr_edge_someDateTime_MIN_LT: $aggr_edge_someDateTime_MIN_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -449,7 +449,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  min(aggr_edge.someDateTime) <= $aggr_edge_someDateTime_MIN_LTE
             \\", { this: this, aggr_edge_someDateTime_MIN_LTE: $aggr_edge_someDateTime_MIN_LTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -487,7 +487,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  max(aggr_edge.someDateTime) = $aggr_edge_someDateTime_MAX_EQUAL
             \\", { this: this, aggr_edge_someDateTime_MAX_EQUAL: $aggr_edge_someDateTime_MAX_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -525,7 +525,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  max(aggr_edge.someDateTime) > $aggr_edge_someDateTime_MAX_GT
             \\", { this: this, aggr_edge_someDateTime_MAX_GT: $aggr_edge_someDateTime_MAX_GT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -563,7 +563,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  max(aggr_edge.someDateTime) >= $aggr_edge_someDateTime_MAX_GTE
             \\", { this: this, aggr_edge_someDateTime_MAX_GTE: $aggr_edge_someDateTime_MAX_GTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -601,7 +601,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  max(aggr_edge.someDateTime) < $aggr_edge_someDateTime_MAX_LT
             \\", { this: this, aggr_edge_someDateTime_MAX_LT: $aggr_edge_someDateTime_MAX_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -639,7 +639,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  max(aggr_edge.someDateTime) <= $aggr_edge_someDateTime_MAX_LTE
             \\", { this: this, aggr_edge_someDateTime_MAX_LTE: $aggr_edge_someDateTime_MAX_LTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

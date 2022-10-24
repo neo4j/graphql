@@ -205,6 +205,9 @@ describe("Comments", () => {
               averageRating_NOT: Float
               averageRating_NOT_IN: [Float]
               customScalar: CustomScalar
+              customScalar_IN: [CustomScalar]
+              customScalar_NOT: CustomScalar
+              customScalar_NOT_IN: [CustomScalar]
               genre: Genre
               genre_IN: [Genre]
               genre_NOT: Genre

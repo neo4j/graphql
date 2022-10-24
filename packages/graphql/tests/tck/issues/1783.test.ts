@@ -129,7 +129,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 WITH { node: { fullName: this_NameDetails.fullName } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_nameDetailsConnection
             }
             CALL {
                 WITH this
@@ -142,14 +142,14 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                     WITH { node: { fullName: this_MasterData_NameDetails.fullName } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS nameDetailsConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS this_MasterData_nameDetailsConnection
                 }
-                WITH { node: { nameDetailsConnection: nameDetailsConnection } } AS edge
+                WITH { node: { nameDetailsConnection: this_MasterData_nameDetailsConnection } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS architectureConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_architectureConnection
             }
-            RETURN this { .id, nameDetailsConnection: nameDetailsConnection, architectureConnection: architectureConnection } as this"
+            RETURN this { .id, nameDetailsConnection: this_nameDetailsConnection, architectureConnection: this_architectureConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -18,7 +18,7 @@
  */
 
 import pluralize from "pluralize";
-import type { Node, Relationship } from "../classes";
+import { Neo4jGraphQLError, Node, Relationship } from "../classes";
 import type { BaseField, Context } from "../types";
 import createConnectAndParams from "./create-connect-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
@@ -40,6 +40,7 @@ import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { buildMathStatements, matchMathField, mathDescriptorBuilder } from "./utils/math";
 import { indentBlock } from "./utils/indent-block";
 import { wrapStringInApostrophes } from "../utils/wrap-string-in-apostrophes";
+import { findConflictingProperties } from "../utils/is-property-clash";
 
 interface Res {
     strs: string[];
@@ -77,6 +78,15 @@ export default function createUpdateAndParams({
     includeRelationshipValidation?: boolean;
 }): [string, any] {
     let hasAppliedTimeStamps = false;
+
+    const conflictingProperties = findConflictingProperties({ node, input: updateInput });
+    if (conflictingProperties.length > 0) {
+        throw new Neo4jGraphQLError(
+            `Conflicting modification of ${conflictingProperties.map((n) => `[[${n}]]`).join(", ")} on type ${
+                node.name
+            }`
+        );
+    }
 
     function reducer(res: Res, [key, value]: [string, any]) {
         let param: string;
@@ -119,7 +129,6 @@ export default function createUpdateAndParams({
                 const v = relationField.union ? value[refNode.name] : value;
                 const updates = relationField.typeMeta.array ? v : [v];
                 const subquery: string[] = [];
-
                 updates.forEach((update, index) => {
                     const relationshipVariable = `${varName}_${relationField.type.toLowerCase()}${index}_relationship`;
                     const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
@@ -257,7 +266,7 @@ export default function createUpdateAndParams({
                             );
                             if (context.subscriptionsEnabled) {
                                 updateStrs.push("YIELD value");
-                                updateStrs.push(`WITH ${filterMetaVariable(withVars).join(", ")}, value.meta AS meta`);
+                                updateStrs.push(`WITH *, value.meta AS meta`);
                             } else {
                                 updateStrs.push("YIELD value AS _");
                             }
@@ -380,14 +389,27 @@ export default function createUpdateAndParams({
                             const nodeName = `${baseName}_node`;
                             const propertiesName = `${baseName}_relationship`;
 
+                            let createNodeInput = {
+                                input: create.node,
+                            };
+
+                            if (relationField.interface) {
+                                const nodeFields = create.node[refNode.name];
+                                if (!nodeFields) return; // Interface specific type not defined
+                                createNodeInput = {
+                                    input: nodeFields,
+                                };
+                            }
+
                             const createAndParams = createCreateAndParams({
                                 context,
-                                callbackBucket,
                                 node: refNode,
-                                input: create.node,
+
+                                callbackBucket,
                                 varName: nodeName,
                                 withVars: [...withVars, nodeName],
                                 includeRelationshipValidation: false,
+                                ...createNodeInput,
                             });
                             subquery.push(createAndParams[0]);
                             res.params = { ...res.params, ...createAndParams[1] };
@@ -433,11 +455,10 @@ export default function createUpdateAndParams({
                     subqueries.push(subquery.join("\n"));
                 }
             });
-
             if (relationField.interface) {
                 res.strs.push(`WITH ${withVars.join(", ")}`);
-                res.strs.push("CALL {");
-                res.strs.push(subqueries.join("\n}\nCALL {\n\t"));
+                res.strs.push(`CALL {\n\t WITH ${withVars.join(", ")}\n\t`);
+                res.strs.push(subqueries.join(`\n}\nCALL {\n\t WITH ${withVars.join(", ")}\n\t`));
                 res.strs.push("}");
             } else {
                 res.strs.push(subqueries.join("\n"));
@@ -582,7 +603,6 @@ export default function createUpdateAndParams({
         strs: [],
         params: {},
     });
-
     const { strs, meta = { preArrayMethodValidationStrs: [], preAuthStrs: [], postAuthStrs: [] } } = reducedUpdate;
     let params = reducedUpdate.params;
 

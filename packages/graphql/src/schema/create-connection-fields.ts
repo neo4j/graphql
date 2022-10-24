@@ -19,7 +19,7 @@
 
 import type { GraphQLResolveInfo } from "graphql";
 import type { InterfaceTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
-import type { Node} from "../classes";
+import type { Node } from "../classes";
 import { Relationship } from "../classes";
 import type { ConnectionField, ConnectionQueryArgs } from "../types";
 import type { ObjectFields } from "./get-obj-field-meta";
@@ -225,7 +225,7 @@ function createConnectionFields({
                 [connectionField.fieldName]: {
                     type: connection.NonNull,
                     args: composeNodeArgs,
-                    resolve: (source, args: ConnectionQueryArgs, ctx, info: GraphQLResolveInfo) => {
+                    resolve: (source, args: ConnectionQueryArgs, _ctx, info: GraphQLResolveInfo) => {
                         return connectionFieldResolver({
                             connectionField,
                             args,
@@ -252,7 +252,7 @@ function createConnectionFields({
                       primitiveFields: relFields.primitiveFields,
                       enumFields: relFields.enumFields,
                       pointFields: relFields.pointFields,
-                      computedFields: relFields.computedFields,
+                      customResolverFields: relFields.customResolverFields,
                   }
                 : {}),
         });

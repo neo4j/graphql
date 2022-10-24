@@ -18,12 +18,15 @@
  */
 
 import { WithOrder } from "./mixins/WithOrder";
-import { applyMixins } from "./utils/apply-mixin";
+import { mixin } from "./utils/mixin";
 import { Projection, ProjectionColumn } from "./sub-clauses/Projection";
 import type { CypherEnvironment } from "../Environment";
 import { Clause } from "./Clause";
 import { compileCypherIfExists } from "../utils/utils";
 
+export interface Return extends WithOrder {}
+
+@mixin(WithOrder)
 export class Return extends Clause {
     private projection: Projection;
     private isDistinct = false;
@@ -51,6 +54,3 @@ export class Return extends Clause {
         return `RETURN${distinctStr} ${projectionStr}${orderStr}`;
     }
 }
-
-export interface Return extends WithOrder {}
-applyMixins(Return, [WithOrder]);

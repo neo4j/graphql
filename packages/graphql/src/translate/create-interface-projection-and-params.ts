@@ -22,7 +22,7 @@ import { asArray, removeDuplicates } from "../utils/utils";
 import type { Context, GraphQLOptionsArg, InterfaceWhereArg, RelationField } from "../types";
 import { filterInterfaceNodes } from "../utils/filter-interface-nodes";
 import { createAuthPredicates } from "./create-auth-and-params";
-// eslint-disable-next-line import/no-cycle
+
 import createProjectionAndParams from "./create-projection-and-params";
 import { getRelationshipDirection } from "../utils/get-relationship-direction";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
@@ -70,10 +70,11 @@ export default function createInterfaceProjectionAndParams({
     let withClause: CypherBuilder.With | undefined;
     if (optionsInput) {
         withClause = new CypherBuilder.With("*");
+        const target = new CypherBuilder.NamedNode(returnVariable);
         addSortAndLimitOptionsToClause({
             optionsInput,
             projectionClause: withClause,
-            target: new CypherBuilder.NamedNode(returnVariable),
+            target,
         });
     }
 
@@ -84,7 +85,7 @@ export default function createInterfaceProjectionAndParams({
         const subqueryStr = call.getCypher(env);
         const withStr = compileCypherIfExists(withClause, env, { suffix: "\n" });
 
-        let interfaceProjection = [`WITH ${fullWithVars.join(", ")}`, subqueryStr];
+        let interfaceProjection = [`WITH *`, subqueryStr];
         if (field.typeMeta.array) {
             interfaceProjection = [
                 `WITH *`,
@@ -196,7 +197,11 @@ function createInterfaceSubquery({
         matchQuery.where(whereAuthPredicate);
     }
 
-    const { projection: projectionStr, subqueries: projectionSubQueries } = createProjectionAndParams({
+    const {
+        projection: projectionStr,
+        subqueries: projectionSubQueries,
+        subqueriesBeforeSort,
+    } = createProjectionAndParams({
         resolveTree,
         node: refNode,
         context,
@@ -205,7 +210,7 @@ function createInterfaceSubquery({
         resolveType: true,
     });
 
-    const projectionSubqueryClause = CypherBuilder.concat(...projectionSubQueries);
+    const projectionSubqueryClause = CypherBuilder.concat(...subqueriesBeforeSort, ...projectionSubQueries);
 
     const returnClause = new CypherBuilder.Return([
         new CypherBuilder.RawCypher(projectionStr),

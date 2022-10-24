@@ -17,13 +17,14 @@
  * limitations under the License.
  */
 
-import gql from "graphql-tag";
+import { gql } from "graphql-tag";
 import type { GraphQLSchema } from "graphql";
 import { graphql } from "graphql";
 import type { Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import { Neo4jGraphQL } from "../../../src/classes";
 import Neo4j from "../neo4j";
+import { getQuerySource } from "../../utils/get-query-source";
 
 const testLabel = generate({ charset: "alphabetic" });
 
@@ -140,7 +141,7 @@ describe("583", () => {
         `;
         const gqlResult = await graphql({
             schema,
-            source: query.loc!.source,
+            source: getQuerySource(query),
             variableValues: { actorId: actor.id },
             contextValue: neo4j.getContextValuesWithBookmarks(bookmarks),
         });

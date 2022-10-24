@@ -272,9 +272,9 @@ describe("Math operators", () => {
                 WITH { pay: this_connection_actedInConnectionthis0.pay } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
             }
-            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection: actedInConnection }) AS data"
+            RETURN collect(DISTINCT this { .name, actedIn: this_actedIn, actedInConnection: this_actedInConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -318,43 +318,44 @@ describe("Math operators", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
-            WITH this
-            CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)
-            CALL apoc.do.when(this_marriedWith0 IS NOT NULL, \\"
-            WITH this_marriedWith0, this
-            CALL {
-            WITH this_marriedWith0
-            CALL apoc.util.validate(this_marriedWith0.marriageLength IS NULL, 'Cannot %s %s to Nan', [\\\\\\"_INCREMENT\\\\\\", $this_update_marriedWith0_marriageLength_INCREMENT])
-            CALL apoc.util.validate(this_marriedWith0.marriageLength + $this_update_marriedWith0_marriageLength_INCREMENT > 2^31-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"32\\\\\\"])
-            CALL apoc.util.validate((this_marriedWith0.marriageLength + $this_update_marriedWith0_marriageLength_INCREMENT) % 1 <> 0, 'Type Mismatch: Value returned from operator %s does not match: %s', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"Int\\\\\\"])
-            SET this_marriedWith0.marriageLength = this_marriedWith0.marriageLength + $this_update_marriedWith0_marriageLength_INCREMENT
-            RETURN this_marriedWith0 as this_marriedWith0_marriageLength__INCREMENT
-            }
-            WITH this, this_marriedWith0
-            CALL {
-            	WITH this_marriedWith0
-            	MATCH (this_marriedWith0)<-[this_marriedWith0_marriedWith_Actor_unique:MARRIED_WITH]-(:Actor)
-            	WITH count(this_marriedWith0_marriedWith_Actor_unique) as c
-            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDStar.marriedWith must be less than or equal to one', [0])
-            	RETURN c AS this_marriedWith0_marriedWith_Actor_unique_ignored
-            }
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateActors: $updateActors, this_marriedWith0:this_marriedWith0, auth:$auth,this_update_marriedWith0_marriageLength_INCREMENT:$this_update_marriedWith0_marriageLength_INCREMENT})
-            YIELD value AS _
-            RETURN count(*) AS update_this_Star
-            }
-            WITH *
-            WITH this
-            CALL {
-                WITH this
-                MATCH (this)-[update_this0:MARRIED_WITH]->(this_Star:\`Star\`)
-                RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS this_marriedWith
-            }
-            RETURN collect(DISTINCT this { .name, marriedWith: this_marriedWith }) AS data"
-        `);
+"MATCH (this:\`Actor\`)
+WITH this
+CALL {
+	 WITH this
+WITH this
+OPTIONAL MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)
+CALL apoc.do.when(this_marriedWith0 IS NOT NULL, \\"
+WITH this_marriedWith0, this
+CALL {
+WITH this_marriedWith0
+CALL apoc.util.validate(this_marriedWith0.marriageLength IS NULL, 'Cannot %s %s to Nan', [\\\\\\"_INCREMENT\\\\\\", $this_update_marriedWith0_marriageLength_INCREMENT])
+CALL apoc.util.validate(this_marriedWith0.marriageLength + $this_update_marriedWith0_marriageLength_INCREMENT > 2^31-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"32\\\\\\"])
+CALL apoc.util.validate((this_marriedWith0.marriageLength + $this_update_marriedWith0_marriageLength_INCREMENT) % 1 <> 0, 'Type Mismatch: Value returned from operator %s does not match: %s', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"Int\\\\\\"])
+SET this_marriedWith0.marriageLength = this_marriedWith0.marriageLength + $this_update_marriedWith0_marriageLength_INCREMENT
+RETURN this_marriedWith0 as this_marriedWith0_marriageLength__INCREMENT
+}
+WITH this, this_marriedWith0
+CALL {
+	WITH this_marriedWith0
+	MATCH (this_marriedWith0)<-[this_marriedWith0_marriedWith_Actor_unique:MARRIED_WITH]-(:Actor)
+	WITH count(this_marriedWith0_marriedWith_Actor_unique) as c
+	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDStar.marriedWith must be less than or equal to one', [0])
+	RETURN c AS this_marriedWith0_marriedWith_Actor_unique_ignored
+}
+RETURN count(*) AS _
+\\", \\"\\", {this:this, updateActors: $updateActors, this_marriedWith0:this_marriedWith0, auth:$auth,this_update_marriedWith0_marriageLength_INCREMENT:$this_update_marriedWith0_marriageLength_INCREMENT})
+YIELD value AS _
+RETURN count(*) AS update_this_Star
+}
+WITH *
+WITH *
+CALL {
+    WITH this
+    MATCH (this)-[update_this0:MARRIED_WITH]->(this_Star:\`Star\`)
+    RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS this_marriedWith
+}
+RETURN collect(DISTINCT this { .name, marriedWith: this_marriedWith }) AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -408,43 +409,44 @@ describe("Math operators", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
-            WITH this
-            CALL {
-            WITH this
-            OPTIONAL MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)
-            CALL apoc.do.when(this_marriedWith0 IS NOT NULL, \\"
-            WITH this, this_marriedWith0
-            CALL {
-            	WITH this_marriedWith0
-            	MATCH (this_marriedWith0)<-[this_marriedWith0_marriedWith_Actor_unique:MARRIED_WITH]-(:Actor)
-            	WITH count(this_marriedWith0_marriedWith_Actor_unique) as c
-            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDStar.marriedWith must be less than or equal to one', [0])
-            	RETURN c AS this_marriedWith0_marriedWith_Actor_unique_ignored
-            }
-            WITH this_marriedWith0, this
-            CALL {
-            WITH this_marriedWith0
-            CALL apoc.util.validate(this_marriedWith0.marriageLength IS NULL, 'Cannot %s %s to Nan', [\\\\\\"_INCREMENT\\\\\\", $this_update_marriedWith0_on_Star_marriageLength_INCREMENT])
-            CALL apoc.util.validate(this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT > 2^31-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"32\\\\\\"])
-            CALL apoc.util.validate((this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT) % 1 <> 0, 'Type Mismatch: Value returned from operator %s does not match: %s', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"Int\\\\\\"])
-            SET this_marriedWith0.marriageLength = this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT
-            RETURN this_marriedWith0 as this_marriedWith0_marriageLength__INCREMENT
-            }
-            RETURN count(*) AS _
-            \\", \\"\\", {this:this, updateActors: $updateActors, this_marriedWith0:this_marriedWith0, auth:$auth,this_update_marriedWith0_on_Star_marriageLength_INCREMENT:$this_update_marriedWith0_on_Star_marriageLength_INCREMENT})
-            YIELD value AS _
-            RETURN count(*) AS update_this_Star
-            }
-            WITH *
-            WITH this
-            CALL {
-                WITH this
-                MATCH (this)-[update_this0:MARRIED_WITH]->(this_Star:\`Star\`)
-                RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS this_marriedWith
-            }
-            RETURN collect(DISTINCT this { .name, marriedWith: this_marriedWith }) AS data"
-        `);
+"MATCH (this:\`Actor\`)
+WITH this
+CALL {
+	 WITH this
+WITH this
+OPTIONAL MATCH (this)-[this_married_with0_relationship:MARRIED_WITH]->(this_marriedWith0:Star)
+CALL apoc.do.when(this_marriedWith0 IS NOT NULL, \\"
+WITH this, this_marriedWith0
+CALL {
+	WITH this_marriedWith0
+	MATCH (this_marriedWith0)<-[this_marriedWith0_marriedWith_Actor_unique:MARRIED_WITH]-(:Actor)
+	WITH count(this_marriedWith0_marriedWith_Actor_unique) as c
+	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDStar.marriedWith must be less than or equal to one', [0])
+	RETURN c AS this_marriedWith0_marriedWith_Actor_unique_ignored
+}
+WITH this_marriedWith0, this
+CALL {
+WITH this_marriedWith0
+CALL apoc.util.validate(this_marriedWith0.marriageLength IS NULL, 'Cannot %s %s to Nan', [\\\\\\"_INCREMENT\\\\\\", $this_update_marriedWith0_on_Star_marriageLength_INCREMENT])
+CALL apoc.util.validate(this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT > 2^31-1, 'Overflow: Value returned from operator %s is larger than %s bit', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"32\\\\\\"])
+CALL apoc.util.validate((this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT) % 1 <> 0, 'Type Mismatch: Value returned from operator %s does not match: %s', [\\\\\\"_INCREMENT\\\\\\", \\\\\\"Int\\\\\\"])
+SET this_marriedWith0.marriageLength = this_marriedWith0.marriageLength + $this_update_marriedWith0_on_Star_marriageLength_INCREMENT
+RETURN this_marriedWith0 as this_marriedWith0_marriageLength__INCREMENT
+}
+RETURN count(*) AS _
+\\", \\"\\", {this:this, updateActors: $updateActors, this_marriedWith0:this_marriedWith0, auth:$auth,this_update_marriedWith0_on_Star_marriageLength_INCREMENT:$this_update_marriedWith0_on_Star_marriageLength_INCREMENT})
+YIELD value AS _
+RETURN count(*) AS update_this_Star
+}
+WITH *
+WITH *
+CALL {
+    WITH this
+    MATCH (this)-[update_this0:MARRIED_WITH]->(this_Star:\`Star\`)
+    RETURN { __resolveType: \\"Star\\", marriageLength: this_Star.marriageLength } AS this_marriedWith
+}
+RETURN collect(DISTINCT this { .name, marriedWith: this_marriedWith }) AS data"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

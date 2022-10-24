@@ -19,7 +19,7 @@
 
 import type { Driver } from "neo4j-driver";
 import path from "path";
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import { gql } from "apollo-server";
 import neo4j from "./utils/neo4j";
 import { setupDatabase, cleanDatabase } from "./utils/setup-database";
@@ -28,6 +28,7 @@ import { collectTests, collectCypherTests } from "./utils/collect-test-files";
 import { ResultsWriter } from "./utils/ResultsWriter";
 import { ResultsDisplay } from "./utils/ResultsDisplay";
 import { TestRunner } from "./utils/TestRunner";
+import type * as Performance from "./types";
 
 let driver: Driver;
 
@@ -70,7 +71,17 @@ async function beforeAll() {
     neoSchema = new Neo4jGraphQL({
         typeDefs,
     });
-    await dbReset();
+    await resetDb();
+}
+
+function beforeEach(_testInfo: Performance.TestInfo): Promise<void> {
+    return Promise.resolve();
+}
+
+async function afterEach(testInfo: Performance.TestInfo): Promise<void> {
+    if (testInfo.type === "mutation") {
+        await resetDb();
+    }
 }
 
 async function afterAll() {
@@ -112,17 +123,20 @@ async function runTests(cypher: boolean) {
     const gqltests = await collectTests(path.join(__dirname, "graphql"));
     const runner = new TestRunner(driver, neoSchema);
 
-    const gqlTestsResuts = await runner.runTests(gqltests);
+    const gqlTestsResuts = await runner.runTests(gqltests, { beforeEach, afterEach });
     if (cypher) {
         const cypherTests = await collectCypherTests(path.join(__dirname, "cypher"));
-        const cypherTestsResults = await runner.runCypherTests(cypherTests);
+        const cypherTestsResults = await runner.runCypherTests(cypherTests, {
+            beforeEach,
+            afterEach,
+        });
         return [...gqlTestsResuts, ...cypherTestsResults];
     }
 
     return gqlTestsResuts;
 }
 
-async function dbReset() {
+async function resetDb() {
     const session = driver.session();
     try {
         await setupDatabase(session);

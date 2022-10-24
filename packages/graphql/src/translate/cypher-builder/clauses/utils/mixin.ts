@@ -22,17 +22,28 @@ import type { ClauseMixin } from "../mixins/ClauseMixin";
 type ConstructorType<T> = new (...args: any[]) => T;
 type AbstractConstructorType<T> = abstract new (...args: any[]) => T;
 
+export function mixin(...mixins: AbstractConstructorType<ClauseMixin>[]): any {
+    return (constructor: ConstructorType<any>) => {
+        return applyMixins(constructor, mixins);
+    };
+}
+
 // Based on https://www.typescriptlang.org/docs/handbook/mixins.html
 /** Applies mixins into a class */
-export function applyMixins(baseClass: ConstructorType<any>, mixins: AbstractConstructorType<ClauseMixin>[]): void {
+function applyMixins<T>(
+    baseClass: ConstructorType<T>,
+    mixins: AbstractConstructorType<ClauseMixin>[]
+): ConstructorType<T> {
     mixins.forEach((baseCtor) => {
         Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
             Object.defineProperty(
                 baseClass.prototype,
                 name,
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
                 Object.getOwnPropertyDescriptor(baseCtor.prototype, name) || Object.create(null)
             );
         });
     });
+
+    return baseClass;
 }

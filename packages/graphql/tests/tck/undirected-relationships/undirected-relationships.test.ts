@@ -68,17 +68,17 @@ describe("Undirected relationships", () => {
             "MATCH (this:\`User\`)
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:FRIENDS_WITH]-(this_friends:\`User\`)
+                MATCH (this)-[this0:FRIENDS_WITH]-(this_friends:\`User\`)
                 WITH this_friends { .name } AS this_friends
                 RETURN collect(this_friends) AS this_friends
             }
             CALL {
                 WITH this
-                MATCH (this)-[thisthis1:FRIENDS_WITH]->(this_directedFriends:\`User\`)
+                MATCH (this)-[this1:FRIENDS_WITH]->(this_directedFriends:\`User\`)
                 WITH this_directedFriends { .name } AS this_directedFriends
                 RETURN collect(this_directedFriends) AS this_directedFriends
             }
-            RETURN this { .name, friends: this_friends, directedFriends: this_directedFriends } as this"
+            RETURN this { .name, friends: this_friends, directedFriends: this_directedFriends } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -132,25 +132,25 @@ describe("Undirected relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    MATCH (this)-[thisthis0:HAS_CONTENT]-(this_content:\`Blog\`)
-                    WITH this_content  { __resolveType: \\"Blog\\",  .title } AS this_content
-                    RETURN this_content AS this_content
-                    UNION
-                    WITH this
-                    MATCH (this)-[thisthis1:HAS_CONTENT]-(this_content:\`Post\`)
-                    WITH this_content  { __resolveType: \\"Post\\",  .content } AS this_content
-                    RETURN this_content AS this_content
-                }
-                WITH this_content
-                RETURN collect(this_content) AS this_content
-            }
-            RETURN this { content: this_content } as this"
-        `);
+"MATCH (this:\`User\`)
+CALL {
+    WITH this
+    CALL {
+        WITH *
+        MATCH (this)-[this0:HAS_CONTENT]-(this_content:\`Blog\`)
+        WITH this_content  { __resolveType: \\"Blog\\",  .title } AS this_content
+        RETURN this_content AS this_content
+        UNION
+        WITH *
+        MATCH (this)-[this1:HAS_CONTENT]-(this_content:\`Post\`)
+        WITH this_content  { __resolveType: \\"Post\\",  .content } AS this_content
+        RETURN this_content AS this_content
+    }
+    WITH this_content
+    RETURN collect(this_content) AS this_content
+}
+RETURN this { content: this_content } AS this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -208,23 +208,23 @@ describe("Undirected relationships", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
-            WITH *
-            CALL {
-            WITH this
-            CALL {
-                WITH this
-                MATCH (this)-[thisthis0:ACTED_IN]-(this_Movie:\`Movie\`)
-                RETURN { __resolveType: \\"Movie\\", title: this_Movie.title } AS this_actedIn
-                UNION
-                WITH this
-                MATCH (this)-[thisthis1:ACTED_IN]-(this_Series:\`Series\`)
-                RETURN { __resolveType: \\"Series\\", title: this_Series.title } AS this_actedIn
-            }
-            RETURN collect(this_actedIn) AS this_actedIn
-            }
-            RETURN this { actedIn: this_actedIn } as this"
-        `);
+"MATCH (this:\`Actor\`)
+WITH *
+CALL {
+WITH *
+CALL {
+    WITH this
+    MATCH (this)-[this0:ACTED_IN]-(this_Movie:\`Movie\`)
+    RETURN { __resolveType: \\"Movie\\", title: this_Movie.title } AS this_actedIn
+    UNION
+    WITH this
+    MATCH (this)-[this1:ACTED_IN]-(this_Series:\`Series\`)
+    RETURN { __resolveType: \\"Series\\", title: this_Series.title } AS this_actedIn
+}
+RETURN collect(this_actedIn) AS this_actedIn
+}
+RETURN this { actedIn: this_actedIn } AS this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -275,17 +275,17 @@ describe("Undirected relationships", () => {
             "MATCH (this:\`Foo\`)
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:DRINKS_AT]->(this_DrinksAt:\`Bar\`)
+                MATCH (this)-[this0:DRINKS_AT]->(this_DrinksAt:\`Bar\`)
                 CALL {
                     WITH this_DrinksAt
-                    MATCH (this_DrinksAt)-[thisthis1:DRINKS_AT]-(this_DrinksAt_Customers:\`Foo\`)
+                    MATCH (this_DrinksAt)-[this1:DRINKS_AT]-(this_DrinksAt_Customers:\`Foo\`)
                     WITH this_DrinksAt_Customers { .Name } AS this_DrinksAt_Customers
                     RETURN collect(this_DrinksAt_Customers) AS this_DrinksAt_Customers
                 }
                 WITH this_DrinksAt { .id, Customers: this_DrinksAt_Customers } AS this_DrinksAt
                 RETURN head(collect(this_DrinksAt)) AS this_DrinksAt
             }
-            RETURN this { DrinksAt: this_DrinksAt } as this"
+            RETURN this { DrinksAt: this_DrinksAt } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

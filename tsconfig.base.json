@@ -1,12 +1,12 @@
 {
-    "extends": "@tsconfig/node14/tsconfig.json",
+    "extends": "@tsconfig/node16/tsconfig.json",
     "compilerOptions": {
         "composite": true,
         "declarationMap": true,
         "sourceMap": true,
-        "resolveJsonModule": true,
+        "resolveJsonModule": true, // Required for package.json import in @neo4j/graphql
         "importsNotUsedAsValues": "error",
-        // TODO Refactor so that noImplicitAny is no longer needed
-        "noImplicitAny": false
+        "experimentalDecorators": true,
+        "noImplicitAny": false // TODO: Refactor so that this can be true for monorepo
     }
 }

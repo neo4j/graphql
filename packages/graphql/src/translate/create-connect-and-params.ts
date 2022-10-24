@@ -207,9 +207,18 @@ function createConnectAndParams({
            Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
         */
-        subquery.push(`\tFOREACH(_ IN CASE WHEN ${parentVar} IS NULL THEN [] ELSE [1] END | `);
-        subquery.push(`\t\tFOREACH(_ IN CASE WHEN ${nodeName} IS NULL THEN [] ELSE [1] END | `);
-        subquery.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+        subquery.push("\tCALL {");
+        subquery.push("\t\tWITH *");
+        subquery.push(
+            `\t\tWITH ${[
+                ...withVars.filter((v) => v !== parentVar),
+                `collect(${nodeName}) as connectedNodes`,
+                `collect(${parentVar}) as parentNodes`,
+            ].join(", ")}`
+        );
+        subquery.push(`\t\tUNWIND parentNodes as ${parentVar}`);
+        subquery.push(`\t\tUNWIND connectedNodes as ${nodeName}`);
+        subquery.push(`\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
         if (relationField.properties) {
             const relationship = context.relationships.find(
@@ -225,9 +234,8 @@ function createConnectAndParams({
             subquery.push(setA[0]);
             params = { ...params, ...setA[1] };
         }
-
-        subquery.push(`\t\t)`); // close FOREACH
-        subquery.push(`\t)`); // close FOREACH
+        subquery.push(`\t\tRETURN count(*) AS _`);
+        subquery.push("\t}");
 
         if (includeRelationshipValidation) {
             const relValidationStrs: string[] = [];

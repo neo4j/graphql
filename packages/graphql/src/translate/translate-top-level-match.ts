@@ -34,6 +34,23 @@ export function translateTopLevelMatch({
     varName: string;
     operation: AuthOperations;
 }): CypherBuilder.CypherResult {
+    const matchQuery = createMatchClause({ node, context, varName, operation });
+
+    const result = matchQuery.build();
+    return result;
+}
+
+export function createMatchClause({
+    node,
+    context,
+    varName,
+    operation,
+}: {
+    context: Context;
+    node: Node;
+    varName: string;
+    operation: AuthOperations;
+}): CypherBuilder.Match | CypherBuilder.db.FullTextQueryNodes {
     const { resolveTree } = context;
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
@@ -87,6 +104,5 @@ export function translateTopLevelMatch({
         matchQuery.where(authQuery);
     }
 
-    const result = matchQuery.build();
-    return result;
+    return matchQuery;
 }

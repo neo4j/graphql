@@ -132,14 +132,14 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                     }
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS driveComponentConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS this_DriveComposition_driveComponentConnection
                 }
-                WITH { node: { driveComponentConnection: driveComponentConnection } } AS edge
+                WITH { node: { driveComponentConnection: this_DriveComposition_driveComponentConnection } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS driveCompositionsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_driveCompositionsConnection
             }
-            RETURN this { .current, driveCompositionsConnection: driveCompositionsConnection } as this"
+            RETURN this { .current, driveCompositionsConnection: this_driveCompositionsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -17,29 +17,12 @@
  * limitations under the License.
  */
 
-import type { CypherEnvironment } from "../Environment";
+import { Literal } from "../variables/Literal";
+import { isCypherCompilable } from "./is-cypher-compilable";
+import type { Param } from "../variables/Param";
 import type { Variable } from "../variables/Variable";
 
-/** Reference to a Variable property */
-export class PropertyRef {
-    private _variable: Variable;
-    private _property: string;
-
-    constructor(variable: Variable, property: string) {
-        this._variable = variable;
-        this._property = property;
-    }
-
-    public get variable(): Variable {
-        return this._variable;
-    }
-
-    public property(path: string): PropertyRef {
-        return new PropertyRef(this.variable, `${this._property}.${path}`);
-    }
-
-    public getCypher(env: CypherEnvironment): string {
-        const variableStr = this.variable.getCypher(env);
-        return `${variableStr}.${this._property}`;
-    }
+export function normalizeVariable(value: string | number | Variable | Literal | Param): Variable | Literal | Param {
+    if (isCypherCompilable(value)) return value;
+    return new Literal(value);
 }

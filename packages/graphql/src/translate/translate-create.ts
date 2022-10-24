@@ -35,6 +35,7 @@ export default async function translateCreate({
     node: Node;
 }): Promise<{ cypher: string; params: Record<string, any> }> {
     const { resolveTree } = context;
+    const mutationInputs = resolveTree.args.input as any[];
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
     const projectionWith: string[] = [];
@@ -48,7 +49,7 @@ export default async function translateCreate({
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
 
-    const { createStrs, params } = (resolveTree.args.input as any[]).reduce(
+    const { createStrs, params } = mutationInputs.reduce(
         (res, input, index) => {
             const varName = `this${index}`;
             const create = [`CALL {`];
@@ -110,7 +111,7 @@ export default async function translateCreate({
             resolveTree: nodeProjection,
             varName: "REPLACE_ME",
         });
-        projectionSubquery = CypherBuilder.concat(...projection.subqueries);
+        projectionSubquery = CypherBuilder.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
         if (projection.meta?.authValidateStrs?.length) {
             projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
                 " AND "

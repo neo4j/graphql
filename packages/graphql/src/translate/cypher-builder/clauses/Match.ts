@@ -21,15 +21,19 @@ import { MatchableElement, MatchParams, Pattern } from "../Pattern";
 import { Clause } from "./Clause";
 import { compileCypherIfExists } from "../utils/utils";
 import { WithReturn } from "./mixins/WithReturn";
-import { applyMixins } from "./utils/apply-mixin";
+import { mixin } from "./utils/mixin";
 import { WithWhere } from "./mixins/WithWhere";
 import { WithSet } from "./mixins/WithSet";
 import { WithWith } from "./mixins/WithWith";
 import { DeleteClause, DeleteInput } from "./sub-clauses/Delete";
-import type { PropertyRef } from "../expressions/PropertyRef";
+import type { PropertyRef } from "../variables/PropertyRef";
 import { RemoveClause } from "./sub-clauses/Remove";
 import type { CypherEnvironment } from "../Environment";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export interface Match<T extends MatchableElement = any> extends WithReturn, WithWhere, WithSet, WithWith {}
+
+@mixin(WithReturn, WithWhere, WithSet, WithWith)
 export class Match<T extends MatchableElement> extends Clause {
     private pattern: Pattern<T>;
     private deleteClause: DeleteClause | undefined;
@@ -85,10 +89,6 @@ export class Match<T extends MatchableElement> extends Clause {
         return this.deleteClause;
     }
 }
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface Match<T extends MatchableElement> extends WithReturn, WithWhere, WithSet, WithWith {}
-applyMixins(Match, [WithReturn, WithWhere, WithSet, WithWith]);
 
 export class OptionalMatch<T extends MatchableElement = any> extends Match<T> {
     constructor(variable: T | Pattern<T>, parameters: MatchParams<T> = {}) {

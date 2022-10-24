@@ -20,10 +20,10 @@
 import React from "react";
 import { Checkbox, HeroIcon } from "@neo4j-ndl/react";
 import { ProTooltip } from "../../components/ProTooltip";
-import { Storage } from "src/utils/storage";
-import { LOCAL_STATE_CONSTRAINT, LOCAL_STATE_ENABLE_DEBUG, LOCAL_STATE_ENABLE_REGEX } from "src/constants";
-import { ConstraintState } from "src/types";
-import { CustomSelect } from "src/components/CustomSelect";
+import { Storage } from "../../utils/storage";
+import { LOCAL_STATE_CONSTRAINT, LOCAL_STATE_ENABLE_DEBUG, LOCAL_STATE_ENABLE_REGEX } from "../../constants";
+import { ConstraintState } from "../../types";
+import { CustomSelect } from "../../components/CustomSelect";
 
 interface Props {
     isRegexChecked: string | null;
@@ -81,6 +81,7 @@ export const SchemaSettings = ({
                 <div className="mb-1 flex items-baseline">
                     <Checkbox
                         className="m-0"
+                        aria-label="Enable Regex"
                         label="Enable Regex"
                         checked={isRegexChecked === "true"}
                         onChange={onChangeRegexCheckbox}
@@ -93,6 +94,7 @@ export const SchemaSettings = ({
                                     className="underline"
                                     href="https://neo4j.com/docs/graphql-manual/current/filtering/#filtering-regex"
                                     target="_blank"
+                                    rel="noreferrer"
                                 >
                                     here
                                 </a>
@@ -105,6 +107,7 @@ export const SchemaSettings = ({
                     <Checkbox
                         data-test-schema-debug-checkbox
                         className="m-0"
+                        aria-label="Enable Debug"
                         label="Enable Debug"
                         checked={isDebugChecked === "true"}
                         onChange={onChangeDebugCheckbox}
@@ -112,11 +115,12 @@ export const SchemaSettings = ({
                     <InfoToolTip
                         text={
                             <span>
-                                Also enable "verbose" logging in browser. Instructions:{" "}
+                                Also enable &quot;verbose&quot; logging in browser. Instructions:{" "}
                                 <a
                                     className="underline"
                                     href="https://github.com/debug-js/debug#browser-support"
                                     target="_blank"
+                                    rel="noreferrer"
                                 >
                                     here
                                 </a>
@@ -136,6 +140,7 @@ export const SchemaSettings = ({
                                         className="underline"
                                         href="https://neo4j.com/docs/graphql-manual/current/type-definitions/indexes-and-constraints/#type-definitions-indexes-and-constraints-asserting"
                                         target="_blank"
+                                        rel="noreferrer"
                                     >
                                         here
                                     </a>

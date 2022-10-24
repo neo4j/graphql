@@ -24,8 +24,11 @@ import { Where } from "../../clauses/sub-clauses/Where";
 import type { NodeRef } from "../../variables/NodeRef";
 import { Clause } from "../../clauses/Clause";
 import { WithReturn } from "../../clauses/mixins/WithReturn";
-import { applyMixins } from "../../clauses/utils/apply-mixin";
+import { mixin } from "../../clauses/utils/mixin";
 
+export interface FullTextQueryNodes extends WithReturn {}
+
+@mixin(WithReturn)
 export class FullTextQueryNodes extends Clause {
     private targetNode: NodeRef;
     private indexName: string;
@@ -52,7 +55,7 @@ export class FullTextQueryNodes extends Clause {
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const targetId = env.getVariableId(this.targetNode);
+        const targetId = env.getReferenceId(this.targetNode);
 
         const whereStr = this.whereClause?.getCypher(env) || "";
         const returnStr = this.returnStatement?.getCypher(env) || "";
@@ -68,6 +71,3 @@ export class FullTextQueryNodes extends Clause {
         `;
     }
 }
-
-export interface FullTextQueryNodes extends WithReturn {}
-applyMixins(FullTextQueryNodes, [WithReturn]);

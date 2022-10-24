@@ -74,9 +74,9 @@ describe("Connections Alias", () => {
                 WITH { node: { __resolveType: \\"Actor\\" } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS actors
+                RETURN { edges: edges, totalCount: totalCount } AS this_actors
             }
-            RETURN this { actors: actors } as this"
+            RETURN this { actors: this_actors } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -122,7 +122,7 @@ describe("Connections Alias", () => {
                 WITH { screenTime: this_connection_hanksthis0.screenTime, node: { name: this_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS hanks
+                RETURN { edges: edges, totalCount: totalCount } AS this_hanks
             }
             CALL {
                 WITH this
@@ -131,9 +131,9 @@ describe("Connections Alias", () => {
                 WITH { screenTime: this_connection_jennythis0.screenTime, node: { name: this_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS jenny
+                RETURN { edges: edges, totalCount: totalCount } AS this_jenny
             }
-            RETURN this { .title, hanks: hanks, jenny: jenny } as this"
+            RETURN this { .title, hanks: this_hanks, jenny: this_jenny } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

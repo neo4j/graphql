@@ -69,7 +69,7 @@ describe("Cypher Aggregations where edge with Time", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_edge.someTime = $aggr_edge_someTime_EQUAL
             \\", { this: this, aggr_edge_someTime_EQUAL: $aggr_edge_someTime_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -104,7 +104,7 @@ describe("Cypher Aggregations where edge with Time", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_edge._someTimeAlias = $aggr_edge_someTimeAlias_EQUAL
             \\", { this: this, aggr_edge_someTimeAlias_EQUAL: $aggr_edge_someTimeAlias_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -139,7 +139,7 @@ describe("Cypher Aggregations where edge with Time", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_edge.someTime > $aggr_edge_someTime_GT
             \\", { this: this, aggr_edge_someTime_GT: $aggr_edge_someTime_GT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -174,7 +174,7 @@ describe("Cypher Aggregations where edge with Time", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_edge.someTime >= $aggr_edge_someTime_GTE
             \\", { this: this, aggr_edge_someTime_GTE: $aggr_edge_someTime_GTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -209,7 +209,7 @@ describe("Cypher Aggregations where edge with Time", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_edge.someTime < $aggr_edge_someTime_LT
             \\", { this: this, aggr_edge_someTime_LT: $aggr_edge_someTime_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -244,7 +244,7 @@ describe("Cypher Aggregations where edge with Time", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_edge.someTime <= $aggr_edge_someTime_LTE
             \\", { this: this, aggr_edge_someTime_LTE: $aggr_edge_someTime_LTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -279,7 +279,7 @@ describe("Cypher Aggregations where edge with Time", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  min(aggr_edge.someTime) = $aggr_edge_someTime_MIN_EQUAL
             \\", { this: this, aggr_edge_someTime_MIN_EQUAL: $aggr_edge_someTime_MIN_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -314,7 +314,7 @@ describe("Cypher Aggregations where edge with Time", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  min(aggr_edge.someTime) > $aggr_edge_someTime_MIN_GT
             \\", { this: this, aggr_edge_someTime_MIN_GT: $aggr_edge_someTime_MIN_GT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -349,7 +349,7 @@ describe("Cypher Aggregations where edge with Time", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  min(aggr_edge.someTime) >= $aggr_edge_someTime_MIN_GTE
             \\", { this: this, aggr_edge_someTime_MIN_GTE: $aggr_edge_someTime_MIN_GTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -384,7 +384,7 @@ describe("Cypher Aggregations where edge with Time", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  min(aggr_edge.someTime) < $aggr_edge_someTime_MIN_LT
             \\", { this: this, aggr_edge_someTime_MIN_LT: $aggr_edge_someTime_MIN_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -419,7 +419,7 @@ describe("Cypher Aggregations where edge with Time", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  min(aggr_edge.someTime) <= $aggr_edge_someTime_MIN_LTE
             \\", { this: this, aggr_edge_someTime_MIN_LTE: $aggr_edge_someTime_MIN_LTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -454,7 +454,7 @@ describe("Cypher Aggregations where edge with Time", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  max(aggr_edge.someTime) = $aggr_edge_someTime_MAX_EQUAL
             \\", { this: this, aggr_edge_someTime_MAX_EQUAL: $aggr_edge_someTime_MAX_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -489,7 +489,7 @@ describe("Cypher Aggregations where edge with Time", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  max(aggr_edge.someTime) > $aggr_edge_someTime_MAX_GT
             \\", { this: this, aggr_edge_someTime_MAX_GT: $aggr_edge_someTime_MAX_GT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -524,7 +524,7 @@ describe("Cypher Aggregations where edge with Time", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  max(aggr_edge.someTime) >= $aggr_edge_someTime_MAX_GTE
             \\", { this: this, aggr_edge_someTime_MAX_GTE: $aggr_edge_someTime_MAX_GTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -559,7 +559,7 @@ describe("Cypher Aggregations where edge with Time", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  max(aggr_edge.someTime) < $aggr_edge_someTime_MAX_LT
             \\", { this: this, aggr_edge_someTime_MAX_LT: $aggr_edge_someTime_MAX_LT })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -594,7 +594,7 @@ describe("Cypher Aggregations where edge with Time", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN  max(aggr_edge.someTime) <= $aggr_edge_someTime_MAX_LTE
             \\", { this: this, aggr_edge_someTime_MAX_LTE: $aggr_edge_someTime_MAX_LTE })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

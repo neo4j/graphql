@@ -18,7 +18,7 @@
  */
 
 import type { DocumentNode } from "graphql";
-import gql from "graphql-tag";
+import { gql } from "graphql-tag";
 import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
@@ -41,6 +41,11 @@ describe("tck/rfcs/query-limits", () => {
 
             type Show @queryOptions(limit: { max: 2 }) {
                 id: ID!
+            }
+
+            type Festival {
+                name: String!
+                shows: [Show!]! @relationship(type: "PART_OF", direction: IN)
             }
         `;
 
@@ -68,7 +73,7 @@ describe("tck/rfcs/query-limits", () => {
                 "MATCH (this:\`Movie\`)
                 WITH *
                 LIMIT $this_limit
-                RETURN this { .id } as this"
+                RETURN this { .id } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -99,7 +104,7 @@ describe("tck/rfcs/query-limits", () => {
                 "MATCH (this:\`Show\`)
                 WITH *
                 LIMIT $this_limit
-                RETURN this { .id } as this"
+                RETURN this { .id } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -130,7 +135,7 @@ describe("tck/rfcs/query-limits", () => {
                 "MATCH (this:\`Show\`)
                 WITH *
                 LIMIT $this_limit
-                RETURN this { .id } as this"
+                RETURN this { .id } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -168,18 +173,22 @@ describe("tck/rfcs/query-limits", () => {
                 LIMIT $this_limit
                 CALL {
                     WITH this
-                    MATCH (this_actors:\`Person\`)-[thisthis0:ACTED_IN]->(this)
+                    MATCH (this_actors:\`Person\`)-[this0:ACTED_IN]->(this)
                     WITH this_actors { .id } AS this_actors
-                    LIMIT 2
+                    LIMIT $param1
                     RETURN collect(this_actors) AS this_actors
                 }
-                RETURN this { .id, actors: this_actors } as this"
+                RETURN this { .id, actors: this_actors } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_limit\\": {
                         \\"low\\": 3,
+                        \\"high\\": 0
+                    },
+                    \\"param1\\": {
+                        \\"low\\": 2,
                         \\"high\\": 0
                     }
                 }"
@@ -217,19 +226,137 @@ describe("tck/rfcs/query-limits", () => {
                     WITH { node: { id: this_Person.id } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    UNWIND edges AS edge
-                    WITH edge, totalCount
-                    LIMIT 2
-                    WITH collect(edge) AS edges, totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS actorsConnection
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge
+                        LIMIT $this_connection_actorsConnectionparam0
+                        RETURN collect(edge) AS this_connection_actorsConnectionvar1
+                    }
+                    WITH this_connection_actorsConnectionvar1 AS edges, totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
                 }
-                RETURN this { .id, actorsConnection: actorsConnection } as this"
+                RETURN this { .id, actorsConnection: this_actorsConnection } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_limit\\": {
                         \\"low\\": 3,
+                        \\"high\\": 0
+                    },
+                    \\"this_connection_actorsConnectionparam0\\": {
+                        \\"low\\": 2,
+                        \\"high\\": 0
+                    }
+                }"
+            `);
+        });
+
+        test("should extend the limit to the connection field if `first` provided", async () => {
+            const query = gql`
+                query {
+                    movies {
+                        id
+                        actorsConnection(first: 4) {
+                            edges {
+                                node {
+                                    id
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const req = createJwtRequest(secret, {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Movie\`)
+                WITH *
+                LIMIT $this_limit
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this_connection_actorsConnectionthis0:ACTED_IN]-(this_Person:\`Person\`)
+                    WITH { node: { id: this_Person.id } } AS edge
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge
+                        LIMIT $this_connection_actorsConnectionparam0
+                        RETURN collect(edge) AS this_connection_actorsConnectionvar1
+                    }
+                    WITH this_connection_actorsConnectionvar1 AS edges, totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
+                }
+                RETURN this { .id, actorsConnection: this_actorsConnection } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"this_limit\\": {
+                        \\"low\\": 3,
+                        \\"high\\": 0
+                    },
+                    \\"this_connection_actorsConnectionparam0\\": {
+                        \\"low\\": 4,
+                        \\"high\\": 0
+                    }
+                }"
+            `);
+        });
+
+        test("should extend the limit to the connection field if `first` provided, honouring the `max` argument", async () => {
+            const query = gql`
+                query {
+                    festivals {
+                        name
+                        showsConnection(first: 3) {
+                            edges {
+                                node {
+                                    id
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const req = createJwtRequest(secret, {});
+            const result = await translateQuery(neoSchema, query, {
+                req,
+            });
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "MATCH (this:\`Festival\`)
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this_connection_showsConnectionthis0:PART_OF]-(this_Show:\`Show\`)
+                    WITH { node: { id: this_Show.id } } AS edge
+                    WITH collect(edge) AS edges
+                    WITH edges, size(edges) AS totalCount
+                    CALL {
+                        WITH edges
+                        UNWIND edges AS edge
+                        WITH edge
+                        LIMIT $this_connection_showsConnectionparam0
+                        RETURN collect(edge) AS this_connection_showsConnectionvar1
+                    }
+                    WITH this_connection_showsConnectionvar1 AS edges, totalCount
+                    RETURN { edges: edges, totalCount: totalCount } AS this_showsConnection
+                }
+                RETURN this { .name, showsConnection: this_showsConnection } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"this_connection_showsConnectionparam0\\": {
+                        \\"low\\": 2,
                         \\"high\\": 0
                     }
                 }"
@@ -259,18 +386,22 @@ describe("tck/rfcs/query-limits", () => {
                 LIMIT $this_limit
                 CALL {
                     WITH this
-                    MATCH (this_actors:\`Person\`)-[thisthis0:ACTED_IN]->(this)
+                    MATCH (this_actors:\`Person\`)-[this0:ACTED_IN]->(this)
                     WITH this_actors { .id } AS this_actors
-                    LIMIT 2
+                    LIMIT $param1
                     RETURN collect(this_actors) AS this_actors
                 }
-                RETURN this { .id, actors: this_actors } as this"
+                RETURN this { .id, actors: this_actors } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"this_limit\\": {
                         \\"low\\": 3,
+                        \\"high\\": 0
+                    },
+                    \\"param1\\": {
+                        \\"low\\": 2,
                         \\"high\\": 0
                     }
                 }"

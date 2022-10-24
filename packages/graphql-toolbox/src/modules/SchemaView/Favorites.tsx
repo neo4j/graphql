@@ -20,7 +20,7 @@
 import { HeroIcon } from "@neo4j-ndl/react";
 import { Storage } from "../../utils/storage";
 import { Favorite } from "../../types";
-import { LOCAL_STATE_FAVORITES } from "src/constants";
+import { LOCAL_STATE_FAVORITES } from "../../constants";
 import { Fragment, useState } from "react";
 
 interface NameComponentProps {
@@ -48,7 +48,13 @@ const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps)
 
     return (
         <Fragment>
-            <div className="w-full" onClick={() => onSelectFavorite()}>
+            <div
+                className="w-full"
+                onClick={() => onSelectFavorite()}
+                onKeyDown={() => onSelectFavorite()}
+                role="button"
+                tabIndex={0}
+            >
                 {editMode ? (
                     <input
                         className="w-64"

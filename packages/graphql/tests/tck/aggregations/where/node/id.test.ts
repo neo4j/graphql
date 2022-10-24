@@ -66,7 +66,7 @@ describe("Cypher Aggregations where node with ID", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_node.id = $aggr_node_id_EQUAL
             \\", { this: this, aggr_node_id_EQUAL: $aggr_node_id_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -95,7 +95,7 @@ describe("Cypher Aggregations where node with ID", () => {
             WHERE apoc.cypher.runFirstColumnSingle(\\" MATCH (this)<-[aggr_edge:LIKES]-(aggr_node:User)
             RETURN aggr_node._someIdAlias = $aggr_node_someIdAlias_EQUAL
             \\", { this: this, aggr_node_someIdAlias_EQUAL: $aggr_node_someIdAlias_EQUAL })
-            RETURN this { .content } as this"
+            RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

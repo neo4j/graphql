@@ -80,6 +80,7 @@ describe("Cypher Auth Projection On Connections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WHERE apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_postsConnectionthis0:HAS_POST]->(this_Post:\`Post\`)
@@ -87,16 +88,15 @@ describe("Cypher Auth Projection On Connections", () => {
                 WITH { node: { content: this_Post.content } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS postsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_postsConnection
             }
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .name, postsConnection: postsConnection } as this"
+            RETURN this { .name, postsConnection: this_postsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_connection_postsConnectionparam0\\": \\"super_admin\\",
-                \\"thisauth_param0\\": \\"super_admin\\"
+                \\"param0\\": \\"super_admin\\",
+                \\"this_connection_postsConnectionparam0\\": \\"super_admin\\"
             }"
         `);
     });
@@ -131,6 +131,7 @@ describe("Cypher Auth Projection On Connections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
+            WHERE apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_postsConnectionthis0:HAS_POST]->(this_Post:\`Post\`)
@@ -142,22 +143,21 @@ describe("Cypher Auth Projection On Connections", () => {
                     WITH { node: { name: this_Post_User.name } } AS edge
                     WITH collect(edge) AS edges
                     WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS creatorConnection
+                    RETURN { edges: edges, totalCount: totalCount } AS this_Post_creatorConnection
                 }
-                WITH { node: { content: this_Post.content, creatorConnection: creatorConnection } } AS edge
+                WITH { node: { content: this_Post.content, creatorConnection: this_Post_creatorConnection } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS postsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_postsConnection
             }
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this { .name, postsConnection: postsConnection } as this"
+            RETURN this { .name, postsConnection: this_postsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"param0\\": \\"super_admin\\",
                 \\"this_connection_postsConnectionparam0\\": \\"super_admin\\",
-                \\"this_Post_connection_creatorConnectionparam0\\": \\"super_admin\\",
-                \\"thisauth_param0\\": \\"super_admin\\"
+                \\"this_Post_connection_creatorConnectionparam0\\": \\"super_admin\\"
             }"
         `);
     });

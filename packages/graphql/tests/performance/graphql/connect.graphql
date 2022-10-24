@@ -1,0 +1,13 @@
+mutation createAndConnect {
+    createMovies(
+        input: { title: "My Movie", id: 5, actors: { connect: { where: { node: { name_CONTAINS: "Shark" } } } } }
+    ) {
+        movies {
+            title
+        }
+        info {
+            nodesCreated
+            relationshipsCreated
+        }
+    }
+}

@@ -69,9 +69,9 @@ describe("QueryDirection in relationships connection", () => {
                 WITH { node: { __resolveType: \\"User\\" } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS friendsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_friendsConnection
             }
-            RETURN this { friendsConnection: friendsConnection } as this"
+            RETURN this { friendsConnection: this_friendsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -116,9 +116,9 @@ describe("QueryDirection in relationships connection", () => {
                 WITH { node: { __resolveType: \\"User\\" } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS friendsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_friendsConnection
             }
-            RETURN this { friendsConnection: friendsConnection } as this"
+            RETURN this { friendsConnection: this_friendsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -162,9 +162,9 @@ describe("QueryDirection in relationships connection", () => {
                 WITH { node: { __resolveType: \\"User\\" } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS friendsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS this_friendsConnection
             }
-            RETURN this { friendsConnection: friendsConnection } as this"
+            RETURN this { friendsConnection: this_friendsConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

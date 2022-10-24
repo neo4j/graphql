@@ -21,13 +21,14 @@ import { CypherASTNode } from "../../../CypherASTNode";
 import type { Clause } from "../../../clauses/Clause";
 import type { Variable } from "../../../variables/Variable";
 import type { CypherEnvironment } from "../../../Environment";
+import type { MapExpr } from "../../map/MapExpr";
 
 export class RunFirstColumn extends CypherASTNode {
-    private innerClause: Clause;
-    private variables: Variable[];
+    private innerClause: Clause | string;
+    private variables: Variable[] | MapExpr;
     private expectMultipleValues: boolean;
 
-    constructor(clause: Clause, variables: Variable[], expectMultipleValues = true) {
+    constructor(clause: Clause | string, variables: Variable[] | MapExpr, expectMultipleValues = true) {
         super();
         this.innerClause = clause;
         this.expectMultipleValues = expectMultipleValues;
@@ -35,31 +36,46 @@ export class RunFirstColumn extends CypherASTNode {
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const clauseStr = this.innerClause.getRoot().getCypher(env);
-
-        const params: Record<string, string> = {};
-        for (const variable of this.variables) {
-            const globalScopeName = variable.getCypher(env);
-            const key = env.getVariableId(variable);
-            params[key] = globalScopeName;
+        let clauseStr: string;
+        let paramsStr: string;
+        if (typeof this.innerClause === "string") {
+            clauseStr = this.innerClause;
+        } else {
+            clauseStr = this.innerClause.getRoot().getCypher(env);
         }
 
-        const paramsStr = Object.entries(params)
-            .map(([key, value]) => {
-                return `${key}: ${value}`;
-            })
-            .join(", ");
+        if (Array.isArray(this.variables)) {
+            paramsStr = this.convertArrayToParams(env, this.variables);
+        } else {
+            paramsStr = this.variables.getCypher(env);
+        }
 
         if (this.expectMultipleValues) {
-            return `apoc.cypher.runFirstColumnMany("${this.escapeQuery(clauseStr)}", { ${paramsStr} })`;
+            return `apoc.cypher.runFirstColumnMany("${this.escapeQuery(clauseStr)}", ${paramsStr})`;
         }
 
-        return `apoc.cypher.runFirstColumnSingle("${this.escapeQuery(clauseStr)}", { ${paramsStr} })`;
+        return `apoc.cypher.runFirstColumnSingle("${this.escapeQuery(clauseStr)}", ${paramsStr})`;
     }
 
     private escapeQuery(query: string): string {
         // TODO: Should single quotes be escaped?
         // return query.replace(/("|')/g, "\\$1");
         return query.replace(/("|\\)/g, "\\$1");
+    }
+
+    private convertArrayToParams(env: CypherEnvironment, variables: Variable[]): string {
+        const params = variables.reduce((acc, variable) => {
+            const globalScopeName = variable.getCypher(env);
+            const key = env.getReferenceId(variable);
+            acc[key] = globalScopeName;
+            return acc;
+        }, {} as Record<string, string>);
+
+        const paramsStr = Object.entries(params)
+            .map(([key, value]) => {
+                return `${key}: ${value}`;
+            })
+            .join(", ");
+        return `{ ${paramsStr} }`;
     }
 }

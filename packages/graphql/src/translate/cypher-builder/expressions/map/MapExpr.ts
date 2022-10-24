@@ -23,9 +23,9 @@ import { serializeMap } from "../../utils/serialize-map";
 
 /** Represents a Map */
 export class MapExpr implements CypherCompilable {
-    private value: Record<string, Expr>;
+    private value: Record<string, Expr | undefined>;
 
-    constructor(value: Record<string, Expr> = {}) {
+    constructor(value: Record<string, Expr | undefined> = {}) {
         this.value = value;
     }
 

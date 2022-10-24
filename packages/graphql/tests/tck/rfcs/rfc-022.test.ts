@@ -82,12 +82,12 @@ describe("tck/rfs/022 subquery projection", () => {
                 WHERE this.released = $param0
                 CALL {
                     WITH this
-                    MATCH (this_actors:\`Person\`)-[thisthis0:ACTED_IN]->(this)
-                    WHERE this_actors.name = $thisparam0
+                    MATCH (this_actors:\`Person\`)-[this0:ACTED_IN]->(this)
+                    WHERE this_actors.name = $param1
                     WITH this_actors { .name } AS this_actors
                     RETURN collect(this_actors) AS this_actors
                 }
-                RETURN this { .title, actors: this_actors } as this"
+                RETURN this { .title, actors: this_actors } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -96,7 +96,7 @@ describe("tck/rfs/022 subquery projection", () => {
                         \\"low\\": 1999,
                         \\"high\\": 0
                     },
-                    \\"thisparam0\\": \\"Keanu Reeves\\"
+                    \\"param1\\": \\"Keanu Reeves\\"
                 }"
             `);
         });
@@ -127,18 +127,18 @@ describe("tck/rfs/022 subquery projection", () => {
                 WHERE this.released = $param0
                 CALL {
                     WITH this
-                    MATCH (this_actors:\`Person\`)-[thisthis0:ACTED_IN]->(this)
-                    WHERE this_actors.name = $thisparam0
+                    MATCH (this_actors:\`Person\`)-[this0:ACTED_IN]->(this)
+                    WHERE this_actors.name = $param1
                     CALL {
                         WITH this_actors
-                        MATCH (this_actors)-[thisthis1:DIRECTED]->(this_actors_directed:\`Movie\`)
+                        MATCH (this_actors)-[this1:DIRECTED]->(this_actors_directed:\`Movie\`)
                         WITH this_actors_directed { .title, .released } AS this_actors_directed
                         RETURN collect(this_actors_directed) AS this_actors_directed
                     }
                     WITH this_actors { .name, directed: this_actors_directed } AS this_actors
                     RETURN collect(this_actors) AS this_actors
                 }
-                RETURN this { .title, actors: this_actors } as this"
+                RETURN this { .title, actors: this_actors } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -147,7 +147,7 @@ describe("tck/rfs/022 subquery projection", () => {
                         \\"low\\": 1999,
                         \\"high\\": 0
                     },
-                    \\"thisparam0\\": \\"Keanu Reeves\\"
+                    \\"param1\\": \\"Keanu Reeves\\"
                 }"
             `);
         });
@@ -217,12 +217,12 @@ describe("tck/rfs/022 subquery projection", () => {
                 WHERE this.released = $param0
                 CALL {
                     WITH this
-                    MATCH (this_actors:\`Person\`)-[thisthis0:ACTED_IN]->(this)
-                    WHERE ((this_actors.name = $thisparam0 AND (any(thisvar2 IN [\\"admin\\"] WHERE any(thisvar1 IN $auth.roles WHERE thisvar1 = thisvar2)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND (this_actors.name IS NOT NULL AND this_actors.name = $thisparam3))) AND apoc.util.validatePredicate(NOT ((any(thisvar3 IN [\\"admin\\"] WHERE any(thisvar2 IN $auth.roles WHERE thisvar2 = thisvar3)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND (this_actors.name IS NOT NULL AND this_actors.name = $thisparam6))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                    MATCH (this_actors:\`Person\`)-[this0:ACTED_IN]->(this)
+                    WHERE ((this_actors.name = $param1 AND (any(var2 IN [\\"admin\\"] WHERE any(var1 IN $auth.roles WHERE var1 = var2)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND (this_actors.name IS NOT NULL AND this_actors.name = $param4))) AND apoc.util.validatePredicate(NOT ((any(var3 IN [\\"admin\\"] WHERE any(var2 IN $auth.roles WHERE var2 = var3)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND (this_actors.name IS NOT NULL AND this_actors.name = $param7))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                     WITH this_actors { .name } AS this_actors
                     RETURN collect(this_actors) AS this_actors
                 }
-                RETURN this { .title, actors: this_actors } as this"
+                RETURN this { .title, actors: this_actors } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -231,9 +231,9 @@ describe("tck/rfs/022 subquery projection", () => {
                         \\"low\\": 1999,
                         \\"high\\": 0
                     },
-                    \\"thisparam0\\": \\"Keanu Reeves\\",
-                    \\"thisparam3\\": \\"The Matrix\\",
-                    \\"thisparam6\\": \\"my-test\\",
+                    \\"param1\\": \\"Keanu Reeves\\",
+                    \\"param4\\": \\"The Matrix\\",
+                    \\"param7\\": \\"my-test\\",
                     \\"auth\\": {
                         \\"isAuthenticated\\": true,
                         \\"roles\\": [],

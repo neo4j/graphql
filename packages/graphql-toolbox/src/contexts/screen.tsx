@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import React, { Dispatch, useState, SetStateAction } from "react";
+import React, { useState } from "react";
 
 export enum Screen {
     TYPEDEFS,
@@ -32,15 +32,12 @@ export interface State {
 export const ScreenContext = React.createContext({} as State);
 
 export function ScreenProvider(props: React.PropsWithChildren<any>) {
-    let value: State | undefined;
-    let setValue: Dispatch<SetStateAction<State>>;
-
-    [value, setValue] = useState<State>({
+    const [value, setValue] = useState<State>({
         view: Screen.TYPEDEFS,
         setScreen: (view: Screen) => {
             setValue((values) => ({ ...values, view }));
         },
     });
 
-    return <ScreenContext.Provider value={value as State}>{props.children}</ScreenContext.Provider>;
+    return <ScreenContext.Provider value={value}>{props.children}</ScreenContext.Provider>;
 }

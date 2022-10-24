@@ -142,7 +142,7 @@ export function createFieldAggregation({
     const nodeFields = aggregationFields.node;
     if (nodeFields) {
         projectionMap.set({
-            node: new CypherBuilder.RawCypher((_env) => {
+            node: new CypherBuilder.RawCypher(() => {
                 return [
                     createAggregationQuery({
                         nodeLabel,
@@ -160,7 +160,7 @@ export function createFieldAggregation({
     const edgeFields = aggregationFields.edge;
     if (edgeFields) {
         projectionMap.set({
-            edge: new CypherBuilder.RawCypher((_env) => {
+            edge: new CypherBuilder.RawCypher(() => {
                 return [
                     createAggregationQuery({
                         nodeLabel,
