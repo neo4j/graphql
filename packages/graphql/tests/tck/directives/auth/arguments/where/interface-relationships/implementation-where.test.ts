@@ -161,25 +161,25 @@ describe("Cypher Auth Where", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
-            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-            WITH *
-            CALL {
-            WITH this
-            CALL {
-                WITH this
-                MATCH (this)-[this0:HAS_CONTENT]->(this_Comment:\`Comment\`)
-                RETURN { __resolveType: \\"Comment\\" } AS this_content
-                UNION
-                WITH this
-                MATCH (this)-[this1:HAS_CONTENT]->(this_Post:\`Post\`)
-                WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this2 IN [(this_Post)<-[:HAS_CONTENT]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param1)))
-                RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS this_content
-            }
-            RETURN collect(this_content) AS this_content
-            }
-            RETURN this { .id, content: this_content } AS this"
-        `);
+"MATCH (this:\`User\`)
+WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+WITH *
+CALL {
+WITH *
+CALL {
+    WITH this
+    MATCH (this)-[this0:HAS_CONTENT]->(this_Comment:\`Comment\`)
+    RETURN { __resolveType: \\"Comment\\" } AS this_content
+    UNION
+    WITH this
+    MATCH (this)-[this1:HAS_CONTENT]->(this_Post:\`Post\`)
+    WHERE (exists((this_Post)<-[:HAS_CONTENT]-(:\`User\`)) AND all(this2 IN [(this_Post)<-[:HAS_CONTENT]-(this2:\`User\`) | this2] WHERE (this2.id IS NOT NULL AND this2.id = $param1)))
+    RETURN { __resolveType: \\"Post\\", id: this_Post.id } AS this_content
+}
+RETURN collect(this_content) AS this_content
+}
+RETURN this { .id, content: this_content } AS this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

@@ -211,8 +211,18 @@ describe("issues/635", () => {
           }
         `;
 
+        const resolvers = {
+            User: {
+                fullName: () => "User's full name",
+            },
+            Customer: {
+                fullName: () => "Customer's full name",
+            },
+        };
+
         const ogm = new OGM({
             typeDefs,
+            resolvers,
             // @ts-ignore
             driver: {},
         });

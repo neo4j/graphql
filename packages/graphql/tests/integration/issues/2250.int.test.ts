@@ -41,9 +41,9 @@ describe("https://github.com/neo4j/graphql/issues/2250", () => {
     });
 
     beforeEach(async () => {
-        Actor = generateUniqueType("Actor");
         Movie = generateUniqueType("Movie");
         Person = generateUniqueType("Person");
+        Actor = generateUniqueType("Actor");
         session = await neo4j.getSession();
 
         const typeDefs = `

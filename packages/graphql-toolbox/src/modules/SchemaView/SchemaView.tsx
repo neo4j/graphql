@@ -149,10 +149,10 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
         }
     }, [buildSchema, refForEditorMirror.current, auth.selectedDatabaseName]);
 
-    const onSubmit = useCallback(() => {
+    const onSubmit = useCallback(async () => {
         const value = refForEditorMirror.current?.getValue();
         if (value) {
-            buildSchema(value);
+            await buildSchema(value);
         }
     }, [buildSchema]);
 
@@ -173,12 +173,14 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     onIntrospect={() => {
                         setShowIntrospectionModal(false);
                         auth.setShowIntrospectionPrompt(false);
+                        // eslint-disable-next-line @typescript-eslint/no-floating-promises
                         introspect();
                     }}
                 />
             ) : null}
             <div className={`flex flex-col ${showRightPanel ? "w-content-container" : "w-full"}`}>
                 <div className="h-12 w-full bg-white">
+                    {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
                     <ActionElementsBar hasSchema={hasSchema} loading={loading} onSubmit={onSubmit} />
                 </div>
                 <div className="flex">

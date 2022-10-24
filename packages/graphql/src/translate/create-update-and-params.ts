@@ -394,26 +394,28 @@ export default function createUpdateAndParams({
                             const nodeName = `${baseName}_node`;
                             const propertiesName = `${baseName}_relationship`;
 
-                            let createNodeAndInputParams = {
-                                node: refNode,
+                            let createNodeInput = {
                                 input: create.node,
                             };
+
                             if (relationField.interface) {
-                                createNodeAndInputParams = {
-                                    node: node,
-                                    input: { [key]: create.node },
+                                const nodeFields = create.node[refNode.name];
+                                if (!nodeFields) return; // Interface specific type not defined
+                                createNodeInput = {
+                                    input: nodeFields,
                                 };
                             }
 
                             const createAndParams = createCreateAndParams({
                                 context,
+                                node: refNode,
+
                                 callbackBucket,
                                 varName: nodeName,
                                 withVars: [...withVars, nodeName],
                                 includeRelationshipValidation: false,
-                                ...createNodeAndInputParams,
+                                ...createNodeInput,
                             });
-
                             subquery.push(createAndParams[0]);
                             res.params = { ...res.params, ...createAndParams[1] };
                             const relationVarName = create.edge || context.subscriptionsEnabled ? propertiesName : "";
