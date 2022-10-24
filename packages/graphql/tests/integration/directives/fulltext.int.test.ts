@@ -21,12 +21,14 @@ import { gql } from "apollo-server";
 import type { Driver, Session } from "neo4j-driver";
 import { graphql, GraphQLSchema } from "graphql";
 import { generate } from "randomstring";
+import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
 import { upperFirst } from "../../../src/utils/upper-first";
 import { delay } from "../../../src/utils/utils";
 import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
+import { createJwtRequest } from "../../utils/create-jwt-request";
 
 function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): string {
     return `
@@ -383,7 +385,7 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personType.name].name).toBe(person1.name);
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
-            expect((gqlResult.data?.[queryType] as any[])).toBeArrayOfSize(1);
+            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
         test("Filters node to multiple results", async () => {
             const query = `
@@ -464,7 +466,7 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personType.name].name).toBe("This is a different name");
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
-            expect((gqlResult.data?.[queryType] as any[])).toBeArrayOfSize(1);
+            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
         test("Filters score to multiple results", async () => {
             const query = `
@@ -492,7 +494,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
                 (gqlResult.data?.[queryType] as any[])[1].score
             );
-            expect((gqlResult.data?.[queryType] as any[])).toBeArrayOfSize(2);
+            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
         });
         test("Filters score to no results", async () => {
             const query = `
@@ -540,7 +542,7 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personType.name].name).toBe("this is a name");
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
-            expect((gqlResult.data?.[queryType] as any[])).toBeArrayOfSize(1);
+            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
         test("Filters score with max score of 0", async () => {
             const query = `
@@ -633,7 +635,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
                 (gqlResult.data?.[queryType] as any[])[1].score
             );
-            expect((gqlResult.data?.[queryType] as any[])).toBeArrayOfSize(2);
+            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
         });
         test("Filters a related node to a single value", async () => {
             const query = `
@@ -1088,7 +1090,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeLessThanOrEqual(
                 (gqlResult.data?.[queryType] as any[])[1].score
             );
-            expect((gqlResult.data?.[queryType] as any[])).toBeArrayOfSize(2);
+            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
         });
         test("Limiting is possible", async () => {
             const query = `
@@ -1167,7 +1169,7 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personType.name]).toEqual(person2);
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
-            expect((gqlResult.data?.[queryType] as any[])).toBeArrayOfSize(1);
+            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
         test("Throws error if invalid sort", async () => {
             const query = `
@@ -1321,7 +1323,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[1].score).toBeNumber();
             expect((gqlResult.data?.[queryType] as any[])[0][personType.name]).toBeUndefined();
             expect((gqlResult.data?.[queryType] as any[])[1][personType.name]).toBeUndefined();
-            expect((gqlResult.data?.[queryType] as any[])).toBeArrayOfSize(2);
+            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
         });
         test("Filters by node when node is not returned", async () => {
             const query = `
@@ -1343,7 +1345,7 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
             expect((gqlResult.data?.[queryType] as any[])[0][personType.name]).toBeUndefined();
-            expect((gqlResult.data?.[queryType] as any[])).toBeArrayOfSize(1);
+            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
         test("Filters by score when no score is returned", async () => {
             const query = `
@@ -1377,6 +1379,128 @@ describe("@fulltext directive", () => {
                     },
                 },
             ]);
+        });
+        test("Works with @auth 'where' when authenticated", async () => {
+            const typeDefs = `
+                type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
+                @auth(rules: [{ where: { name: "$jwt.name" } }]) {
+                    name: String!
+                    born: Int!
+                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+
+                type ${movieType.name} {
+                    title: String!
+                    released: Int!
+                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+            `;
+            const secret = "This is a secret";
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
+            });
+            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            });
+
+            const query = `
+                query {
+                    ${queryType}(phrase: "a name") {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
+                }
+            `;
+
+            const req = createJwtRequest(secret, { name: person1.name });
+
+            const gqlResult = await graphql({
+                schema: generatedSchema,
+                source: query,
+                contextValue: {
+                    req,
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect((gqlResult.data?.[queryType] as any[])[0][personType.name]).toEqual({
+                name: person1.name,
+            });
+            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
+            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
+        });
+        test("Works with @auth 'where' when unauthenticated", async () => {
+            const typeDefs = `
+                type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
+                @auth(rules: [{ where: { name: "$jwt.name" } }]) {
+                    name: String!
+                    born: Int!
+                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+
+                type ${movieType.name} {
+                    title: String!
+                    released: Int!
+                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+            `;
+            const secret = "This is a secret";
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
+            });
+            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            });
+
+            const query = `
+                query {
+                    ${queryType}(phrase: "a name") {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
+                }
+            `;
+
+            const req = createJwtRequest(secret, { name: "Not a name" });
+
+            const gqlResult = await graphql({
+                schema: generatedSchema,
+                source: query,
+                contextValue: {
+                    req,
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(0);
         });
     });
     describe("Index Creation", () => {
