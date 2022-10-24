@@ -91,24 +91,24 @@ describe("Auth projections for interface relationship fields", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Actor\`)
-            WITH *
-            CALL {
-            WITH this
-            CALL {
-                WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this_Movie:\`Movie\`)
-                RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS this_actedIn
-                UNION
-                WITH this
-                MATCH (this)-[this1:ACTED_IN]->(this_Series:\`Series\`)
-                WHERE apoc.util.validatePredicate(NOT ((this_Series.episodes IS NOT NULL AND this_Series.episodes = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS this_actedIn
-            }
-            RETURN collect(this_actedIn) AS this_actedIn
-            }
-            RETURN this { actedIn: this_actedIn } AS this"
-        `);
+"MATCH (this:\`Actor\`)
+WITH *
+CALL {
+WITH *
+CALL {
+    WITH this
+    MATCH (this)-[this0:ACTED_IN]->(this_Movie:\`Movie\`)
+    RETURN { __resolveType: \\"Movie\\", runtime: this_Movie.runtime, title: this_Movie.title } AS this_actedIn
+    UNION
+    WITH this
+    MATCH (this)-[this1:ACTED_IN]->(this_Series:\`Series\`)
+    WHERE apoc.util.validatePredicate(NOT ((this_Series.episodes IS NOT NULL AND this_Series.episodes = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+    RETURN { __resolveType: \\"Series\\", episodes: this_Series.episodes, title: this_Series.title } AS this_actedIn
+}
+RETURN collect(this_actedIn) AS this_actedIn
+}
+RETURN this { actedIn: this_actedIn } AS this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
