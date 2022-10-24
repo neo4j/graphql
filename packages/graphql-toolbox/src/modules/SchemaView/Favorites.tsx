@@ -48,7 +48,13 @@ const NameComponent = ({ name, saveName, onSelectFavorite }: NameComponentProps)
 
     return (
         <Fragment>
-            <div className="w-full" onClick={() => onSelectFavorite()}>
+            <div
+                className="w-full"
+                onClick={() => onSelectFavorite()}
+                onKeyDown={() => onSelectFavorite()}
+                role="button"
+                tabIndex={0}
+            >
                 {editMode ? (
                     <input
                         className="w-64"
