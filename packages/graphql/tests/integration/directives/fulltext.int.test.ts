@@ -1502,6 +1502,315 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(0);
         });
+        test("Works with @auth 'roles' when authenticated", async () => {
+            const typeDefs = `
+                type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
+                @auth(rules: [{ roles: ["admin"] }]) {
+                    name: String!
+                    born: Int!
+                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+
+                type ${movieType.name} {
+                    title: String!
+                    released: Int!
+                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+            `;
+            const secret = "This is a secret";
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
+            });
+            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            });
+
+            const query = `
+                query {
+                    ${queryType}(phrase: "a name") {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
+                }
+            `;
+
+            const req = createJwtRequest(secret, { roles: ["admin"] });
+
+            const gqlResult = await graphql({
+                schema: generatedSchema,
+                source: query,
+                contextValue: {
+                    req,
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect((gqlResult.data?.[queryType] as any[])[0][personType.name]).toEqual({
+                name: person1.name,
+            });
+            expect((gqlResult.data?.[queryType] as any[])[1][personType.name]).toEqual({
+                name: person2.name,
+            });
+            expect((gqlResult.data?.[queryType] as any[])[2][personType.name]).toEqual({
+                name: person3.name,
+            });
+            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1].score
+            );
+            expect((gqlResult.data?.[queryType] as any[])[1].score).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[2].score
+            );
+            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(3);
+        });
+        test("Works with @auth 'roles' when unauthenticated", async () => {
+            const typeDefs = `
+                type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
+                @auth(rules: [{ roles: ["admin"] }]) {
+                    name: String!
+                    born: Int!
+                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+
+                type ${movieType.name} {
+                    title: String!
+                    released: Int!
+                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+            `;
+            const secret = "This is a secret";
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
+            });
+            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            });
+
+            const query = `
+                query {
+                    ${queryType}(phrase: "a name") {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
+                }
+            `;
+
+            const req = createJwtRequest(secret, { roles: ["not_admin"] });
+
+            const gqlResult = await graphql({
+                schema: generatedSchema,
+                source: query,
+                contextValue: {
+                    req,
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+
+            expect(gqlResult.errors).toBeDefined();
+        });
+        test("Works with @auth 'allow' when all match", async () => {
+            const typeDefs = `
+                type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
+                @auth(rules: [{ allow: { name: "$jwt.name" } }]) {
+                    name: String!
+                    born: Int!
+                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+
+                type ${movieType.name} {
+                    title: String!
+                    released: Int!
+                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+            `;
+            const secret = "This is a secret";
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
+            });
+            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            });
+
+            const query = `
+                query {
+                    ${queryType}(phrase: "a name", where: { ${personType.name}: { name: "${person2.name}" } }) {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
+                }
+            `;
+
+            const req = createJwtRequest(secret, { name: person2.name });
+
+            const gqlResult = await graphql({
+                schema: generatedSchema,
+                source: query,
+                contextValue: {
+                    req,
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+
+            expect(gqlResult.errors).toBeUndefined();
+            expect((gqlResult.data?.[queryType] as any[])[0][personType.name].name).toBe(person2.name);
+            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
+            expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
+        });
+        test("Works with @auth 'allow' when one match", async () => {
+            const typeDefs = `
+                type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
+                @auth(rules: [{ allow: { name: "$jwt.name" } }]) {
+                    name: String!
+                    born: Int!
+                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+
+                type ${movieType.name} {
+                    title: String!
+                    released: Int!
+                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+            `;
+            const secret = "This is a secret";
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
+            });
+            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            });
+
+            const query = `
+                query {
+                    ${queryType}(phrase: "a name") {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
+                }
+            `;
+
+            const req = createJwtRequest(secret, { name: person2.name });
+
+            const gqlResult = await graphql({
+                schema: generatedSchema,
+                source: query,
+                contextValue: {
+                    req,
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+
+            expect(gqlResult.errors).toBeDefined();
+        });
+        test("Works with @auth 'roles' when only READ operation is specified", async () => {
+            const typeDefs = `
+                type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
+                @auth(rules: [{ roles: ["admin"], operations: [READ] }]) {
+                    name: String!
+                    born: Int!
+                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+
+                type ${movieType.name} {
+                    title: String!
+                    released: Int!
+                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+            `;
+            const secret = "This is a secret";
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+                plugins: {
+                    auth: new Neo4jGraphQLAuthJWTPlugin({
+                        secret,
+                    }),
+                },
+            });
+            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            });
+
+            const query = `
+                query {
+                    ${queryType}(phrase: "a name") {
+                        score
+                        ${personType.name} {
+                            name
+                        } 
+                    }
+                }
+            `;
+
+            const req = createJwtRequest(secret, { roles: ["not_admin"] });
+
+            const gqlResult = await graphql({
+                schema: generatedSchema,
+                source: query,
+                contextValue: {
+                    req,
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+
+            expect(gqlResult.errors).toBeDefined();
+        });
     });
     describe("Index Creation", () => {
         let type: UniqueType;
