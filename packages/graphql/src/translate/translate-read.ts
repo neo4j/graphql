@@ -21,6 +21,7 @@ import type { Integer } from "neo4j-driver";
 import { int } from "neo4j-driver";
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
+import { lowerFirst } from "../utils/lower-first";
 import createProjectionAndParams, { ProjectionResult } from "./create-projection-and-params";
 import type { GraphQLOptionsArg, GraphQLSortArg, SortDirection, Context } from "../types";
 import { createAuthPredicates } from "./create-auth-and-params";
@@ -247,7 +248,7 @@ function mapFulltextSorts(
     if (field === "score") {
         return `${scoreVariableStringToReplace} ${input}`;
     }
-    if (field === node.name) {
+    if (field === lowerFirst(node.name)) {
         return Object.entries(input)
             .map(([field, direction]) => {
                 if (node.cypherFields.some((f) => f.fieldName === field)) {

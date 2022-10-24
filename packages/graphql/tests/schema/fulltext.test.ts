@@ -205,19 +205,19 @@ describe("@fulltext schema", () => {
 
             \\"\\"\\"The result of a fulltext search on an index of Movie\\"\\"\\"
             type movieFulltextResult {
-              Movie: Movie
+              movie: Movie
               score: Float
             }
 
             \\"\\"\\"The input for sorting a fulltext query on an index of Movie\\"\\"\\"
             input movieFulltextSort {
-              Movie: MovieSort
+              movie: MovieSort
               score: SortDirection
             }
 
             \\"\\"\\"The input for filtering a fulltext query on an index of Movie\\"\\"\\"
             input movieFulltextWhere {
-              Movie: MovieWhere
+              movie: MovieWhere
               score: FulltextScoreWhere
             }"
         `);

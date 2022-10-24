@@ -468,7 +468,7 @@ describe("generate", () => {
             export type UserFulltextResult = {
               __typename?: \\"userFulltextResult\\";
               score?: Maybe<Scalars[\\"Float\\"]>;
-              User?: Maybe<User>;
+              user?: Maybe<User>;
             };
 
             export type UsersConnection = {
@@ -495,13 +495,13 @@ describe("generate", () => {
             /** The input for sorting a fulltext query on an index of User */
             export type UserFulltextSort = {
               score?: InputMaybe<SortDirection>;
-              User?: InputMaybe<UserSort>;
+              user?: InputMaybe<UserSort>;
             };
 
             /** The input for filtering a fulltext query on an index of User */
             export type UserFulltextWhere = {
               score?: InputMaybe<FulltextScoreWhere>;
-              User?: InputMaybe<UserWhere>;
+              user?: InputMaybe<UserWhere>;
             };
 
             export type UserOptions = {

@@ -20,6 +20,7 @@
 import type { AuthOperations, Context, GraphQLWhereArg } from "../types";
 import type { Node } from "../classes";
 import { createAuthAndParams } from "./create-auth-and-params";
+import { lowerFirst } from "../utils/lower-first";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { createWherePredicate } from "./where/create-where-predicate";
 
@@ -76,7 +77,7 @@ export function createMatchClause({
         if (andChecks) matchQuery.where(andChecks);
     } else if (context.fulltextIndex) {
         matchQuery = createFulltextMatchClause(matchNode, whereInput, node, context);
-        whereInput = whereInput?.[node.name];
+        whereInput = whereInput?.[lowerFirst(node.name)];
     } else {
         matchQuery = new CypherBuilder.Match(matchNode);
     }
@@ -123,7 +124,7 @@ function createFulltextMatchClause(
         context.fulltextIndex.name,
         phraseParam,
         undefined,
-        scoreVar,
+        scoreVar
     );
 
     const labelsChecks = node.getLabels(context).map((label) => {

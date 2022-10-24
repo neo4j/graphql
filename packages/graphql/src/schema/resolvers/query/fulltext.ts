@@ -20,6 +20,7 @@
 import type { ObjectTypeComposerFieldConfigDefinition } from "graphql-compose";
 import type { GraphQLResolveInfo } from "graphql";
 import { execute } from "../../../utils";
+import { lowerFirst } from "../../../utils/lower-first";
 import { translateRead } from "../../../translate";
 import type { Node } from "../../../classes";
 import type { Context, FulltextIndex } from "../../../types";
@@ -32,14 +33,13 @@ export function fulltextResolver(
 ): ObjectTypeComposerFieldConfigDefinition<any, any, any> {
     async function resolve(_root: any, args: any, _context: unknown, info: GraphQLResolveInfo) {
         const context = createFulltextContext(index, args, _context, info);
-        const { cypher, params } = translateRead({ context, node }, node.name);
+        const { cypher, params } = translateRead({ context, node }, lowerFirst(node.name));
         const executeResult = await execute({
             cypher,
             params,
             defaultAccessMode: "READ",
             context,
         });
-
         return executeResult.records;
     }
 

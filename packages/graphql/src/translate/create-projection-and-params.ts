@@ -24,6 +24,7 @@ import type { GraphQLOptionsArg, GraphQLWhereArg, Context, RelationField } from 
 import { createAuthAndParams } from "./create-auth-and-params";
 import { createDatetimeElement } from "./projection/elements/create-datetime-element";
 import createPointElement from "./projection/elements/create-point-element";
+import { lowerFirst } from "../utils/lower-first";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { createFieldAggregation } from "./field-aggregations/create-field-aggregation";
 import { addGlobalIdField } from "../utils/global-node-projection";
@@ -444,7 +445,7 @@ function createFulltextProjection({
     literalElements?: boolean;
     resolveType?: boolean;
 }): ProjectionResult {
-    if (!resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.name]) {
+    if (!resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][lowerFirst(node.name)]) {
         return {
             projection: "{ }",
             params: {},
@@ -455,7 +456,7 @@ function createFulltextProjection({
     }
 
     const nodeResolveTree = {
-        ...resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.name],
+        ...resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][lowerFirst(node.name)],
     };
 
     const nodeContext = { ...context };
@@ -470,6 +471,4 @@ function createFulltextProjection({
         literalElements,
         resolveType,
     });
-
-    // return nodeProjectionAndParams;
 }

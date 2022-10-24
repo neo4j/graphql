@@ -20,28 +20,29 @@
 import { translateRead } from "./translate-read";
 import type { Context } from "../types";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import { lowerFirst } from "../utils/lower-first";
 import type { Node } from "../classes";
 
 export function translateFulltext({ node, context }: { node: Node; context: Context }): CypherBuilder.CypherResult {
     const scoreVariable = new CypherBuilder.Variable();
     const { resolveTree } = context;
     let result: CypherBuilder.CypherResult;
-    if (resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.name]) {
+    if (resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][lowerFirst(node.name)]) {
         context.fulltextIndex.scoreVariable = scoreVariable;
-        context.resolveTree = { ...resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.name] };
+        context.resolveTree = { ...resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][lowerFirst(node.name)] };
         context.resolveTree.args = { ...resolveTree.args };
         // Sort context
         context.resolveTree.args.options = context.resolveTree.args.options || {};
-        if (resolveTree.args.sort?.[node.name]) {
+        if (resolveTree.args.sort?.[lowerFirst(node.name)]) {
             (context.resolveTree.args.options as Record<string, any>).sort = [
                 {
-                    ...resolveTree.args.sort?.[node.name],
+                    ...resolveTree.args.sort?.[lowerFirst(node.name)],
                 },
             ];
         }
-        result = translateRead({ node, context }, node.name);
+        result = translateRead({ node, context }, lowerFirst(node.name));
     } else {
-        result = translateRead({ node, context }, node.name);
+        result = translateRead({ node, context }, lowerFirst(node.name));
     }
     if (resolveTree.fieldsByTypeName[node.fulltextTypeNames.result].score) {
         // TODO move into translateRead so var0 can be replaced by the actual var reference

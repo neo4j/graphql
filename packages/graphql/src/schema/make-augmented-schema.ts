@@ -37,7 +37,7 @@ import { numericalResolver } from "./resolvers/field/numerical";
 import { aggregateResolver } from "./resolvers/query/aggregate";
 import { findResolver } from "./resolvers/query/read";
 import { rootConnectionResolver } from "./resolvers/query/root-connection";
-import { fulltextResolver } from "./resolvers/query/fulltext";
+import { fulltextResolver } from "./resolvers/query/fulltext"
 import { createResolver } from "./resolvers/mutation/create";
 import { deleteResolver } from "./resolvers/mutation/delete";
 import { updateResolver } from "./resolvers/mutation/update";
@@ -60,6 +60,7 @@ import {
 } from "./to-compose";
 import getUniqueFields from "./get-unique-fields";
 import getWhereFields from "./get-where-fields";
+import { lowerFirst } from "../utils/lower-first";
 import { upperFirst } from "../utils/upper-first";
 import { ensureNonEmptyInput } from "./ensure-non-empty-input";
 import { getDocument } from "./get-document";
@@ -687,7 +688,7 @@ function makeAugmentedSchema(
                 description: fulltextSortDescription,
                 fields: {
                     score: "SortDirection",
-                    [node.name]: nodeSortTypeName,
+                    [lowerFirst(node.name)]: nodeSortTypeName,
                 },
             });
 
@@ -696,7 +697,7 @@ function makeAugmentedSchema(
                 description: fulltextWhereDescription,
                 fields: {
                     score: "FulltextScoreWhere",
-                    [node.name]: nodeWhereTypeName,
+                    [lowerFirst(node.name)]: nodeWhereTypeName,
                 },
             });
 
@@ -705,7 +706,7 @@ function makeAugmentedSchema(
                 description: fulltextResultDescription,
                 fields: {
                     score: "Float",
-                    [node.name]: `${node.name}`,
+                    [lowerFirst(node.name)]: node.name,
                 },
             });
 
