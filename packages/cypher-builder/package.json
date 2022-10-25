@@ -1,7 +1,7 @@
 {
     "name": "@neo4j/cypher-builder",
     "version": "0.0.1",
-    "description": "A cypher builder",
+    "description": "Neo4j Cypher query builder",
     "exports": "./dist/index.js",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
@@ -13,7 +13,7 @@
     ],
     "scripts": {
         "test": "jest",
-        "build": "tsc --build src/tsconfig.production.json"
+        "build": "tsc --build tsconfig.production.json"
     },
     "repository": {
         "type": "git",
@@ -30,5 +30,8 @@
     "bugs": {
         "url": "https://github.com/neo4j/graphql/issues"
     },
-    "homepage": "https://github.com/neo4j/graphql#readme"
+    "homepage": "https://github.com/neo4j/graphql/packages/cypher-builder#readme",
+    "devDependencies": {
+        "typescript": "^4.8.4"
+    }
 }

@@ -108,6 +108,6 @@ export type { CompositeClause } from "./clauses/utils/concat";
 // utils
 import { escapeLabel } from "./utils/escape-label";
 
-export const Utils = {
+export const utils = {
     escapeLabel,
 };

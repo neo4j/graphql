@@ -69,6 +69,6 @@ export class NodeDirective {
     }
 
     private escapeLabel(label: string): string {
-        return Cypher.Utils.escapeLabel(label);
+        return Cypher.utils.escapeLabel(label);
     }
 }

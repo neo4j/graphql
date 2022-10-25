@@ -19,9 +19,9 @@
 
 import Cypher from "../src";
 
-describe("Cypher.Utils", () => {
+describe("Cypher.utils", () => {
     test("escapeLabel", () => {
-        const label = Cypher.Utils.escapeLabel("TestLabel");
+        const label = Cypher.utils.escapeLabel("TestLabel");
         expect(label).toBe("`TestLabel`");
     });
 });
