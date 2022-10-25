@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import { gql } from "apollo-server";
 import type { DocumentNode } from "graphql";
+import { gql } from "apollo-server";
 import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+
 
 describe("Batch Create", () => {
     let typeDefs: DocumentNode;
@@ -115,7 +116,7 @@ describe("Batch Create", () => {
         `);
     });
 
-    test("website", async () => {
+    test.only("website", async () => {
         const query = gql`
             mutation {
                 createMovies(

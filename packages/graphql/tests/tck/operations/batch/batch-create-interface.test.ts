@@ -141,7 +141,7 @@ describe("Batch Create on interface", () => {
                         {
                             id: "2"
                             workers: {
-                                create: [{ node: { Actor: { id: "2", name: "actor 2" } }, edge: { year: 2022 } }]
+                                create: [{ node: { Modeler: { id: "2", name: "modeler 1" } }, edge: { year: 2022 } }]
                             }
                         }
                     ]
@@ -193,18 +193,18 @@ describe("Batch Create on interface", () => {
             CREATE (this1:Movie)
             SET this1.id = $this1_id
             WITH this1
-            CREATE (this1_workersActor0_node:Actor)
-            SET this1_workersActor0_node.id = $this1_workersActor0_node_id
-            SET this1_workersActor0_node.name = $this1_workersActor0_node_name
-            MERGE (this1)<-[this1_workersActor0_relationship:EMPLOYED]-(this1_workersActor0_node)
-            SET this1_workersActor0_relationship.year = $this1_workersActor0_relationship_year
-            WITH this1, this1_workersActor0_node
+            CREATE (this1_workersModeler0_node:Modeler)
+            SET this1_workersModeler0_node.id = $this1_workersModeler0_node_id
+            SET this1_workersModeler0_node.name = $this1_workersModeler0_node_name
+            MERGE (this1)<-[this1_workersModeler0_relationship:EMPLOYED]-(this1_workersModeler0_node)
+            SET this1_workersModeler0_relationship.year = $this1_workersModeler0_relationship_year
+            WITH this1, this1_workersModeler0_node
             CALL {
-            	WITH this1_workersActor0_node
-            	MATCH (this1_workersActor0_node)-[this1_workersActor0_node_website_Website_unique:HAS_WEBSITE]->(:Website)
-            	WITH count(this1_workersActor0_node_website_Website_unique) as c
-            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDActor.website must be less than or equal to one', [0])
-            	RETURN c AS this1_workersActor0_node_website_Website_unique_ignored
+            	WITH this1_workersModeler0_node
+            	MATCH (this1_workersModeler0_node)-[this1_workersModeler0_node_website_Website_unique:HAS_WEBSITE]->(:Website)
+            	WITH count(this1_workersModeler0_node_website_Website_unique) as c
+            	CALL apoc.util.validate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDModeler.website must be less than or equal to one', [0])
+            	RETURN c AS this1_workersModeler0_node_website_Website_unique_ignored
             }
             WITH this1
             CALL {
@@ -259,9 +259,9 @@ describe("Batch Create on interface", () => {
                     \\"high\\": 0
                 },
                 \\"this1_id\\": \\"2\\",
-                \\"this1_workersActor0_node_id\\": \\"2\\",
-                \\"this1_workersActor0_node_name\\": \\"actor 2\\",
-                \\"this1_workersActor0_relationship_year\\": {
+                \\"this1_workersModeler0_node_id\\": \\"2\\",
+                \\"this1_workersModeler0_node_name\\": \\"modeler 1\\",
+                \\"this1_workersModeler0_relationship_year\\": {
                     \\"low\\": 2022,
                     \\"high\\": 0
                 },
