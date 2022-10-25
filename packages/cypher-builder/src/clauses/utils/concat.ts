@@ -22,14 +22,24 @@ import type { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import { Clause } from "../Clause";
 
-class CompositeClause extends Clause {
+export class CompositeClause extends Clause {
     private children: CypherASTNode[];
 
-    constructor(children: Clause[], private separator: string) {
+    constructor(children: Array<Clause | undefined>, private separator: string) {
         super();
-        const childrenRoots = children.map((c) => c.getRoot());
+        this.children = [];
+        this.concat(...children);
+    }
+
+    public concat(...clauses: Array<Clause | undefined>): this {
+        const childrenRoots = filterTruthy(clauses).map((c) => c.getRoot());
         this.addChildren(...childrenRoots);
-        this.children = childrenRoots;
+        this.children = [...this.children, ...childrenRoots];
+        return this;
+    }
+
+    public get empty(): boolean {
+        return this.children.length === 0;
     }
 
     public getCypher(env: CypherEnvironment): string {
@@ -39,6 +49,6 @@ class CompositeClause extends Clause {
 }
 
 /** Concatenates multiple clauses into a clause */
-export function concat(...clauses: Array<Clause | undefined>): Clause {
-    return new CompositeClause(filterTruthy(clauses), "\n");
+export function concat(...clauses: Array<Clause | undefined>): CompositeClause {
+    return new CompositeClause(clauses, "\n");
 }

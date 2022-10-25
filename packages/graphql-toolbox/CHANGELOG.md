@@ -1,5 +1,16 @@
 # @neo4j/graphql-toolbox
 
+## 1.3.0
+
+### Minor Changes
+
+-   [#2248](https://github.com/neo4j/graphql/pull/2248) [`1b5dc3695`](https://github.com/neo4j/graphql/commit/1b5dc3695501373acafcf483c7a9540d1fbda485) Thanks [@tbwiss](https://github.com/tbwiss)! - feat: GraphQL Toolbox product usage tracking - UX parts
+
+### Patch Changes
+
+-   Updated dependencies [[`8eff620b9`](https://github.com/neo4j/graphql/commit/8eff620b93d86d544d4594b69c5058a9092347c0), [`c769933cb`](https://github.com/neo4j/graphql/commit/c769933cba76d16c4f14b2c18aaf5c47415b05d9), [`44fc500eb`](https://github.com/neo4j/graphql/commit/44fc500ebbaff3f8cdfcc676bd2ef8cad2fd58ec), [`b37376e38`](https://github.com/neo4j/graphql/commit/b37376e38e13ab2ed6f0e0eeb99f2d9f17161fd7), [`5ce80724f`](https://github.com/neo4j/graphql/commit/5ce80724f4d45a38e5d4b5d0d369384a4599d51f), [`2c8f3ec37`](https://github.com/neo4j/graphql/commit/2c8f3ec37ce57f281972ddc107a9490392c482df), [`94512c90e`](https://github.com/neo4j/graphql/commit/94512c90e5e37601a4d260f1153ac043639ceb6f), [`74e6fee11`](https://github.com/neo4j/graphql/commit/74e6fee119c8f0c7d30384422e722754411135b9), [`4ee4d40ad`](https://github.com/neo4j/graphql/commit/4ee4d40ad5aca514ddc08091b2501bfa699294e9), [`e7bcf4f0b`](https://github.com/neo4j/graphql/commit/e7bcf4f0b69a75c10e0ee0a604fd35cab09fcfaf)]:
+    -   @neo4j/graphql@3.11.0
+
 ## 1.2.5
 
 ### Patch Changes

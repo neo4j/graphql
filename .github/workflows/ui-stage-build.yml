@@ -22,6 +22,8 @@ jobs:
       - name: UI build
         env:
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
+          SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE: ${{ secrets.SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE }}
+          SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE: ${{ secrets.SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE }}
         run: |
           yarn
           yarn build

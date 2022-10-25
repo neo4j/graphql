@@ -84,6 +84,7 @@ export function translateRead({
     const projectionSubqueriesBeforeSort = Cypher.concat(...projection.subqueriesBeforeSort);
 
     let withAndOrder: Cypher.Clause | undefined;
+    let orderClause: Cypher.Clause | undefined;
 
     const optionsInput = (resolveTree.args.options || {}) as GraphQLOptionsArg;
 
@@ -91,12 +92,16 @@ export function translateRead({
         optionsInput.limit = node.queryOptions.getLimit(optionsInput.limit); // TODO: improve this
     }
 
-    if (optionsInput.sort || optionsInput.limit || optionsInput.offset) {
-        withAndOrder = getSortClause({
+    const hasOrdering = optionsInput.sort || optionsInput.limit || optionsInput.offset;
+
+    if (hasOrdering) {
+        orderClause = getSortClause({
             context,
             varName,
             node,
         });
+
+        withAndOrder = Cypher.concat(new Cypher.With("*"), orderClause);
     }
 
     const projectionExpression = new Cypher.RawCypher(() => {
@@ -137,15 +142,26 @@ export function translateRead({
 
         projectionClause = Cypher.concat(withTotalCount, connectionClause, returnClause);
     }
+
     const readQuery = Cypher.concat(
         topLevelMatch,
         projAuth,
         connectionPreClauses,
         projectionSubqueriesBeforeSort,
-        withAndOrder,
+        withAndOrder, // Required for performance optimization
         projectionSubqueries,
         projectionClause
     );
+
+    if (!projectionSubqueries.empty && hasOrdering) {
+        const postOrder = getSortClause({
+            context,
+            varName,
+            node,
+        });
+
+        readQuery.concat(postOrder);
+    }
 
     return readQuery.build(undefined, context.cypherParams ? { cypherParams: context.cypherParams } : {});
 }
@@ -163,7 +179,7 @@ function getSortClause({ context, varName, node }: { context: Context; varName: 
     const params = {} as Record<string, any>;
     const hasOffset = Boolean(optionsInput.offset) || optionsInput.offset === 0;
 
-    const sortOffsetLimit: string[] = [`WITH *`];
+    const sortOffsetLimit: string[] = [];
 
     if (optionsInput.sort && optionsInput.sort.length) {
         const sortArr = optionsInput.sort.reduce((res: string[], sort: GraphQLSortArg) => {
