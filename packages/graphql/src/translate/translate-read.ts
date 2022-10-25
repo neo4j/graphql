@@ -243,7 +243,7 @@ function getSortClause({
             return [
                 sortOffsetLimit
                     .join("\n")
-                    .replace(scoreVariableStringToReplace, env.getReferenceId(context.fulltextIndex?.scoreVariable)),
+                    .replace(scoreVariableStringToReplace, env.getReferenceId(context.fulltextIndex.scoreVariable)),
                 params,
             ];
         });
