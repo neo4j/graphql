@@ -2810,7 +2810,7 @@ describe("Connect Subscription", () => {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix", imdbId: 1 },
                     event: "CONNECT",
                     direction: "IN",
-                    relationshipName: "Review",
+                    relationshipName: "reviewers",
                     relationship: {
                         actors: null,
                         directors: null,
@@ -2827,7 +2827,7 @@ describe("Connect Subscription", () => {
         ]);
     });
 
-    test.only("connect via create - connect subscription simple case + interface by common field", async () => {
+    test("connect via create - connect subscription simple case + interface by common field", async () => {
         // 1. create resources that will be connected
         await supertest(server.path)
             .post("")
@@ -2966,7 +2966,7 @@ describe("Connect Subscription", () => {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix", imdbId: 1 },
                     event: "CONNECT",
                     direction: "IN",
-                    relationshipName: "Review",
+                    relationshipName: "reviewers",
                     relationship: {
                         actors: null,
                         directors: null,
@@ -3313,7 +3313,7 @@ describe("Connect Subscription", () => {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix", imdbId: 1 },
                     event: "CONNECT",
                     direction: "IN",
-                    relationshipName: "Review",
+                    relationshipName: "reviewers",
                     relationship: {
                         actors: null,
                         directors: null,
@@ -3332,7 +3332,7 @@ describe("Connect Subscription", () => {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix", imdbId: 1 },
                     event: "CONNECT",
                     direction: "IN",
-                    relationshipName: "Review",
+                    relationshipName: "reviewers",
                     relationship: {
                         actors: null,
                         directors: null,
@@ -3518,7 +3518,7 @@ describe("Connect Subscription", () => {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix", imdbId: 1 },
                     event: "CONNECT",
                     direction: "IN",
-                    relationshipName: "Review",
+                    relationshipName: "reviewers",
                     relationship: {
                         actors: null,
                         directors: null,
@@ -3537,7 +3537,7 @@ describe("Connect Subscription", () => {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix", imdbId: 1 },
                     event: "CONNECT",
                     direction: "IN",
-                    relationshipName: "Review",
+                    relationshipName: "reviewers",
                     relationship: {
                         actors: null,
                         directors: null,
