@@ -18,7 +18,7 @@
  */
 
 import type { RelationField, Context, PrimitiveField } from "../types";
-import type { Node, Relationship } from "../classes";
+import { Neo4jGraphQLError, Node, Relationship } from "../classes";
 import type { CallbackBucket } from "../classes/CallbackBucket";
 import { createAuthAndParams } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
@@ -26,6 +26,7 @@ import { asArray, omitFields } from "../utils/utils";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { convertToCypherParams } from "./cypher-builder/utils/convert-to-cypher-params";
 import { addCallbackAndSetParamCypher } from "./utils/callback-utils";
+import { findConflictingProperties } from "../utils/is-property-clash";
 
 type CreateOrConnectInput = {
     where?: {
@@ -56,6 +57,20 @@ export function createConnectOrCreateAndParams({
     withVars: string[];
     callbackBucket: CallbackBucket;
 }): CypherBuilder.CypherResult {
+    asArray(input).forEach((connectOrCreateItem) => {
+        const conflictingProperties = findConflictingProperties({
+            node: refNode,
+            input: connectOrCreateItem.onCreate?.node,
+        });
+        if (conflictingProperties.length > 0) {
+            throw new Neo4jGraphQLError(
+                `Conflicting modification of ${conflictingProperties.map((n) => `[[${n}]]`).join(", ")} on type ${
+                    refNode.name
+                }`
+            );
+        }
+    });
+
     const withVarsVariables = withVars.map((name) => new CypherBuilder.NamedVariable(name));
 
     const statements = asArray(input).map((inputItem, index) => {

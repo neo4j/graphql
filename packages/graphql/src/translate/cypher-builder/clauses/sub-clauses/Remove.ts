@@ -19,7 +19,7 @@
 
 import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
-import type { PropertyRef } from "../../expressions/PropertyRef";
+import type { PropertyRef } from "../../variables/PropertyRef";
 
 // TODO: Remove label
 export type RemoveInput = Array<PropertyRef>;

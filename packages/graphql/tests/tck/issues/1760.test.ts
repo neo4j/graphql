@@ -124,7 +124,7 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`ApplicationVariant\`)
-            WHERE this.current = $param0
+            WHERE (this.current = $param0 AND apoc.util.validatePredicate(NOT ((any(var1 IN [\\"ALL\\"] WHERE any(var0 IN $auth.roles WHERE var0 = var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
                 WITH this
                 UNWIND apoc.cypher.runFirstColumnSingle(\\"MATCH (this)<-[:HAS_BASE]-(n:BaseObject) RETURN n.id\\", { this: this, auth: $auth }) AS this_relatedId
@@ -134,7 +134,6 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
             ORDER BY this_relatedId ASC
             SKIP $this_offset
             LIMIT $this_limit
-            CALL apoc.util.validate(NOT ((any(auth_var1 IN [\\"ALL\\"] WHERE any(auth_var0 IN $auth.roles WHERE auth_var0 = auth_var1)) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 MATCH (this)-[this_connection_nameDetailsConnectionthis0:HAS_NAME]->(this_NameDetails:\`NameDetails\`)
@@ -171,7 +170,10 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_baseObjectConnection
             }
-            RETURN this { relatedId: this_relatedId, nameDetailsConnection: this_nameDetailsConnection, marketsConnection: this_marketsConnection, baseObjectConnection: this_baseObjectConnection } as this"
+            RETURN this { relatedId: this_relatedId, nameDetailsConnection: this_nameDetailsConnection, marketsConnection: this_marketsConnection, baseObjectConnection: this_baseObjectConnection } AS this
+            ORDER BY this_relatedId ASC
+            SKIP $this_offset
+            LIMIT $this_limit"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

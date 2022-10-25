@@ -75,11 +75,11 @@ describe("Cypher alias directive", () => {
             "MATCH (this:\`Actor\`)
             CALL {
                 WITH this
-                MATCH (this)-[thisthis0:ACTED_IN]->(this_actedIn:\`Movie\`)
+                MATCH (this)-[this0:ACTED_IN]->(this_actedIn:\`Movie\`)
                 WITH this_actedIn { .title, rating: this_actedIn.ratingPropInDb } AS this_actedIn
                 RETURN collect(this_actedIn) AS this_actedIn
             }
-            RETURN this { .name, city: this.cityPropInDb, actedIn: this_actedIn } as this"
+            RETURN this { .name, city: this.cityPropInDb, actedIn: this_actedIn } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -120,7 +120,7 @@ describe("Cypher alias directive", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_actedInConnection
             }
-            RETURN this { .name, city: this.cityPropInDb, actedInConnection: this_actedInConnection } as this"
+            RETURN this { .name, city: this.cityPropInDb, actedInConnection: this_actedInConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

@@ -83,6 +83,7 @@ export const Login = () => {
                     <img src={Icon} alt="Neo4j Logo" className="h-12 w-12 mb-3 mx-auto" />
                     <h2 className="mt-1 text-3xl">Neo4j GraphQL Toolbox</h2>
                 </div>
+                {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
                 <form onSubmit={onSubmit} className="flex flex-col gap-4">
                     <FormInput
                         testtag="data-test-login-username"
@@ -128,6 +129,7 @@ export const Login = () => {
                             type="submit"
                             loading={loading}
                             disabled={loading}
+                            // eslint-disable-next-line @typescript-eslint/no-empty-function
                             onClick={() => {}} // INFO: To prevent warning in browser console
                         >
                             Connect

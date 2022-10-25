@@ -25,10 +25,11 @@ import { compileCypherIfExists, padBlock } from "../utils/utils";
 import { ImportWith } from "./sub-clauses/ImportWith";
 import { WithReturn } from "./mixins/WithReturn";
 import { mixin } from "./utils/mixin";
+import { WithWith } from "./mixins/WithWith";
 
-export interface Call extends WithReturn {}
+export interface Call extends WithReturn, WithWith {}
 
-@mixin(WithReturn)
+@mixin(WithReturn, WithWith)
 export class Call extends Clause {
     private subQuery: CypherASTNode;
     private importWith: ImportWith | undefined;
@@ -49,10 +50,11 @@ export class Call extends Clause {
 
     public getCypher(env: CypherEnvironment): string {
         const subQueryStr = this.subQuery.getCypher(env);
-        const withCypher = compileCypherIfExists(this.importWith, env, { suffix: "\n" });
+        const innerWithCypher = compileCypherIfExists(this.importWith, env, { suffix: "\n" });
         const returnCypher = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
-        const inCallBlock = `${withCypher}${subQueryStr}`;
+        const withCypher = compileCypherIfExists(this.withStatement, env, { prefix: "\n" });
+        const inCallBlock = `${innerWithCypher}${subQueryStr}`;
 
-        return `CALL {\n${padBlock(inCallBlock)}\n}${returnCypher}`;
+        return `CALL {\n${padBlock(inCallBlock)}\n}${withCypher}${returnCypher}`;
     }
 }

@@ -18,13 +18,14 @@
  */
 
 import * as neo4j from "neo4j-driver";
+import * as base from "@playwright/test";
 import { generate } from "randomstring";
 import { Login } from "./pages/Login";
-import { test, describe, expect, beforeAll, afterAll } from "./utils/pagemodel";
+import { test, expect, beforeAll, afterAll } from "./utils/pagemodel";
 
 const { NEO_USER = "admin", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
-describe("URL query parameters", () => {
+base.test.describe("URL query parameters", () => {
     const randomString = generate({
         charset: "alphabetic",
         length: 8,

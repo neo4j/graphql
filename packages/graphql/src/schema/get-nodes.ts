@@ -17,13 +17,15 @@
  * limitations under the License.
  */
 
+import type { IResolvers } from "@graphql-tools/utils";
 import type { DirectiveNode, NamedTypeNode } from "graphql";
-import type { Exclude} from "../classes";
+import type { Exclude } from "../classes";
 import { Node } from "../classes";
 import type { NodeDirective } from "../classes/NodeDirective";
 import type { QueryOptionsDirective } from "../classes/QueryOptionsDirective";
 import type { Auth, FullText, Neo4jGraphQLCallbacks } from "../types";
 import getObjFieldMeta from "./get-obj-field-meta";
+import parsePluralDirective from "./parse/parse-plural-directive";
 import { parseQueryOptionsDirective } from "./parse/parse-query-options-directive";
 import parseFulltextDirective from "./parse/parse-fulltext-directive";
 import parseNodeDirective from "./parse-node-directive";
@@ -39,7 +41,10 @@ type Nodes = {
     interfaceRelationshipNames: Set<string>;
 };
 
-function getNodes(definitionNodes: DefinitionNodes, options: { callbacks?: Neo4jGraphQLCallbacks }): Nodes {
+function getNodes(
+    definitionNodes: DefinitionNodes,
+    options: { callbacks?: Neo4jGraphQLCallbacks; userCustomResolvers?: IResolvers | Array<IResolvers> }
+): Nodes {
     let pointInTypeDefs = false;
     let cartesianPointInTypeDefs = false;
 
@@ -48,11 +53,12 @@ function getNodes(definitionNodes: DefinitionNodes, options: { callbacks?: Neo4j
 
     const nodes = definitionNodes.objectTypes.map((definition) => {
         const otherDirectives = (definition.directives || []).filter(
-            (x) => !["auth", "exclude", "node", "fulltext", "queryOptions"].includes(x.name.value)
+            (x) => !["auth", "exclude", "node", "fulltext", "queryOptions", "plural"].includes(x.name.value)
         );
         const authDirective = (definition.directives || []).find((x) => x.name.value === "auth");
         const excludeDirective = (definition.directives || []).find((x) => x.name.value === "exclude");
         const nodeDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "node");
+        const pluralDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "plural");
         const fulltextDirectiveDefinition = (definition.directives || []).find((x) => x.name.value === "fulltext");
         const queryOptionsDirectiveDefinition = (definition.directives || []).find(
             (x) => x.name.value === "queryOptions"
@@ -119,11 +125,12 @@ function getNodes(definitionNodes: DefinitionNodes, options: { callbacks?: Neo4j
             scalars: definitionNodes.scalarTypes,
             unions: definitionNodes.unionTypes,
             callbacks: options.callbacks,
+            customResolvers: options.userCustomResolvers?.[definition.name.value],
         });
 
         // Ensure that all required fields are returning either a scalar type or an enum
 
-        const violativeRequiredField = nodeFields.computedFields
+        const violativeRequiredField = nodeFields.customResolverFields
             .filter((f) => f.requiredFields.length)
             .map((f) => f.requiredFields)
             .flat()
@@ -213,7 +220,6 @@ function getNodes(definitionNodes: DefinitionNodes, options: { callbacks?: Neo4j
                 `Fields decorated with the "@id" directive must be unique in the database. Please remove it, or consider making the field unique`
             );
         }
-
         const node = new Node({
             name: definition.name.value,
             interfaces: nodeInterfaces,
@@ -232,6 +238,7 @@ function getNodes(definitionNodes: DefinitionNodes, options: { callbacks?: Neo4j
             isGlobalNode: Boolean(globalIdField),
             globalIdField: globalIdField?.fieldName,
             globalIdFieldIsInt: globalIdField?.typeMeta?.name === "Int",
+            plural: parsePluralDirective(pluralDirectiveDefinition),
         });
 
         return node;

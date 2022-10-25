@@ -55,7 +55,7 @@ describe("Cypher -> fulltext -> Match", () => {
                 $param0
             ) YIELD node as this
                         WHERE \\"Movie\\" IN labels(this)
-            RETURN this { .title } as this"
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -85,7 +85,7 @@ describe("Cypher -> fulltext -> Match", () => {
                 $param1
             ) YIELD node as this
                         WHERE (\\"Movie\\" IN labels(this) AND this.title = $param0)
-            RETURN this { .title } as this"
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

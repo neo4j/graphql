@@ -76,7 +76,7 @@ describe("Connections Alias", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_actors
             }
-            RETURN this { actors: this_actors } as this"
+            RETURN this { actors: this_actors } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -133,7 +133,7 @@ describe("Connections Alias", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_jenny
             }
-            RETURN this { .title, hanks: this_hanks, jenny: this_jenny } as this"
+            RETURN this { .title, hanks: this_hanks, jenny: this_jenny } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

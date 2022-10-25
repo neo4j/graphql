@@ -23,7 +23,7 @@ import { Neo4jGraphQL } from "../../../src";
 import { createJwtRequest } from "../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
-describe("Cypher computed directive", () => {
+describe("Cypher customResolver directive", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -32,12 +32,19 @@ describe("Cypher computed directive", () => {
             type User {
                 firstName: String!
                 lastName: String!
-                fullName: String! @computed(from: ["firstName", "lastName"])
+                fullName: String! @customResolver(requires: ["firstName", "lastName"])
             }
         `;
 
+        const resolvers = {
+            User: {
+                fullName: () => "The user's full name",
+            },
+        };
+
         neoSchema = new Neo4jGraphQL({
             typeDefs,
+            resolvers,
             config: { enableRegex: true },
         });
     });
@@ -59,9 +66,9 @@ describe("Cypher computed directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
-            RETURN this { .firstName, .lastName, .fullName } as this"
-        `);
+"MATCH (this:\`User\`)
+RETURN this { .firstName, .lastName, .fullName } AS this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -81,9 +88,9 @@ describe("Cypher computed directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`User\`)
-            RETURN this { .fullName, .firstName, .lastName } as this"
-        `);
+"MATCH (this:\`User\`)
+RETURN this { .fullName, .firstName, .lastName } AS this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });

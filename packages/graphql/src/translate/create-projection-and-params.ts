@@ -208,7 +208,7 @@ export default function createProjectionAndParams({
                         collect: false,
                     });
 
-                    const unionWith = new CypherBuilder.With(parentNode);
+                    const unionWith = new CypherBuilder.With("*");
                     unionSubqueries.push(CypherBuilder.concat(unionWith, subquery));
                 }
 
@@ -407,7 +407,7 @@ const generateMissingOrAliasedRequiredFields = ({
     selection: Record<string, ResolveTree>;
 }): Record<string, ResolveTree> => {
     const requiredFields = removeDuplicates(
-        filterFieldsInSelection({ fields: node.computedFields, selection })
+        filterFieldsInSelection({ fields: node.customResolverFields, selection })
             .map((f) => f.requiredFields)
             .flat()
     );

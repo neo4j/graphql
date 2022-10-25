@@ -20,9 +20,9 @@
 import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import { gql } from "apollo-server";
 import type { DocumentNode } from "graphql";
-import { Neo4jGraphQL } from "../../../../src";
-import { createJwtRequest } from "../../../utils/create-jwt-request";
-import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../../src";
+import { createJwtRequest } from "../../utils/create-jwt-request";
+import { formatCypher, translateQuery, formatParams } from "../utils/tck-test-utils";
 
 describe("Plural in Node directive", () => {
     const secret = "secret";
@@ -63,7 +63,7 @@ describe("Plural in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Tech\`)
-            RETURN this { .name } as this"
+            RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -198,7 +198,7 @@ describe("Plural in Node directive", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`Tech\`)
-            RETURN this { .name } as this"
+            RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

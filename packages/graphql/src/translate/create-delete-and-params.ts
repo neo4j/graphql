@@ -230,7 +230,12 @@ function createDeleteAndParams({
                         );
                     }
 
-                    res.strs.push(`FOREACH(x IN ${variableName}_to_delete | DETACH DELETE x)`);
+                    res.strs.push("CALL {");
+                    res.strs.push(`\tWITH ${variableName}_to_delete`);
+                    res.strs.push(`\tUNWIND ${variableName}_to_delete AS x`);
+                    res.strs.push(`\tDETACH DELETE x`);
+                    res.strs.push("\tRETURN count(*) AS _"); // Avoids CANNOT END WITH DETACH DELETE ERROR
+                    res.strs.push("}");
                     // TODO - relationship validation
                 });
             });

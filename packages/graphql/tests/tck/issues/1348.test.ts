@@ -81,27 +81,27 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`ProgrammeItem\`)
-            WITH *
-            CALL {
-            WITH this
-            CALL {
-                WITH this
-                MATCH (this)-[thisthis0:RELATES_TO]-(this_Series:\`Series\`)
-                RETURN { __resolveType: \\"Series\\", productTitle: this_Series.productTitle } AS this_releatsTo
-                UNION
-                WITH this
-                MATCH (this)-[thisthis1:RELATES_TO]-(this_Season:\`Season\`)
-                RETURN { __resolveType: \\"Season\\", productTitle: this_Season.productTitle } AS this_releatsTo
-                UNION
-                WITH this
-                MATCH (this)-[thisthis2:RELATES_TO]-(this_ProgrammeItem:\`ProgrammeItem\`)
-                RETURN { __resolveType: \\"ProgrammeItem\\", productTitle: this_ProgrammeItem.productTitle } AS this_releatsTo
-            }
-            RETURN collect(this_releatsTo) AS this_releatsTo
-            }
-            RETURN this { .productTitle, .episodeNumber, releatsTo: this_releatsTo } as this"
-        `);
+"MATCH (this:\`ProgrammeItem\`)
+WITH *
+CALL {
+WITH *
+CALL {
+    WITH this
+    MATCH (this)-[this0:RELATES_TO]-(this_Series:\`Series\`)
+    RETURN { __resolveType: \\"Series\\", productTitle: this_Series.productTitle } AS this_releatsTo
+    UNION
+    WITH this
+    MATCH (this)-[this1:RELATES_TO]-(this_Season:\`Season\`)
+    RETURN { __resolveType: \\"Season\\", productTitle: this_Season.productTitle } AS this_releatsTo
+    UNION
+    WITH this
+    MATCH (this)-[this2:RELATES_TO]-(this_ProgrammeItem:\`ProgrammeItem\`)
+    RETURN { __resolveType: \\"ProgrammeItem\\", productTitle: this_ProgrammeItem.productTitle } AS this_releatsTo
+}
+RETURN collect(this_releatsTo) AS this_releatsTo
+}
+RETURN this { .productTitle, .episodeNumber, releatsTo: this_releatsTo } AS this"
+`);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -157,7 +157,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
                 WITH edges, size(edges) AS totalCount
                 RETURN { edges: edges, totalCount: totalCount } AS this_releatsToConnection
             }
-            RETURN this { .productTitle, .episodeNumber, releatsToConnection: this_releatsToConnection } as this"
+            RETURN this { .productTitle, .episodeNumber, releatsToConnection: this_releatsToConnection } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

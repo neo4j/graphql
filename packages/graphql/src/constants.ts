@@ -26,9 +26,7 @@ export const REQUIRED_APOC_FUNCTIONS = [
     "apoc.util.validatePredicate",
     "apoc.cypher.runFirstColumnSingle",
     "apoc.cypher.runFirstColumnMany",
-    "apoc.coll.flatten",
     "apoc.date.convertFormat",
-    "apoc.map.values",
 ];
 export const REQUIRED_APOC_PROCEDURES = ["apoc.util.validate", "apoc.do.when", "apoc.cypher.doIt"];
 export const DEBUG_ALL = `${DEBUG_PREFIX}:*`;
@@ -105,4 +103,5 @@ export enum RelationshipQueryDirectionOption {
 export const META_CYPHER_VARIABLE = "meta";
 export const META_OLD_PROPS_CYPHER_VARIABLE = "oldProps";
 
-export const DBMS_COMPONENTS_QUERY = "CALL dbms.components() YIELD versions, edition UNWIND versions AS version RETURN version, edition";
+export const DBMS_COMPONENTS_QUERY =
+    "CALL dbms.components() YIELD versions, edition UNWIND versions AS version RETURN version, edition";

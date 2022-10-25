@@ -6,6 +6,7 @@
  */
 
 import { GraphQLList, GraphQLNonNull, GraphQLType, GraphQLNamedType } from "graphql";
+import { Fragment } from "react";
 import { OnClickTypeFunction, Maybe } from "./types";
 
 type TypeLinkProps = {
@@ -37,15 +38,18 @@ function renderType(type: Maybe<GraphQLType>, onClick: OnClickTypeFunction) {
         );
     }
     return (
-        <a
-            className="type-name"
-            onClick={(event) => {
-                event.preventDefault();
-                onClick(type as GraphQLNamedType, event);
-            }}
-            href="#"
-        >
-            {type?.name}
-        </a>
+        <Fragment>
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+            <a
+                className="type-name"
+                onClick={(event) => {
+                    event.preventDefault();
+                    onClick(type as GraphQLNamedType, event);
+                }}
+                href="#"
+            >
+                {type?.name}
+            </a>
+        </Fragment>
     );
 }
