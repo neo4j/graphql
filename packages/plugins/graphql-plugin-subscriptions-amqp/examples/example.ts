@@ -73,7 +73,11 @@ const neoSchema = new Neo4jGraphQL({
     typeDefs: typeDefs,
     driver,
     plugins: {
-        subscriptions: new Neo4jGraphQLSubscriptionsAMQPPlugin({ connection: AMQP_CONFIG }),
+        subscriptions: new Neo4jGraphQLSubscriptionsAMQPPlugin({
+            connection: AMQP_CONFIG,
+            reconnectTimeout: 1000,
+            log: true,
+        }),
     },
 });
 

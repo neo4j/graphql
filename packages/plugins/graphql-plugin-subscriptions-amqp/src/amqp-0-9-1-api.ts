@@ -23,29 +23,36 @@ export type ConnectionOptions = amqp.Options.Connect | string;
 
 type AmqpApiOptions = {
     exchange: string;
+    reconnectTimeout?: number;
+    log: boolean;
 };
 
 enum Status {
     RUNNING,
     STOPPED,
-    CONNECTING,
 }
 
 export class AmqpApi<T> {
     public channel: amqp.Channel | undefined;
     public readonly exchange: string;
     public connection?: amqp.Connection;
-    private status: Status = Status.STOPPED;
 
-    constructor({ exchange }: AmqpApiOptions) {
+    private status: Status = Status.STOPPED;
+    private reconnectTimeout: number | undefined;
+    private shouldLog: boolean;
+
+    constructor({ exchange, reconnectTimeout, log = false }: AmqpApiOptions) {
         this.exchange = exchange;
+        this.reconnectTimeout = reconnectTimeout;
+        this.shouldLog = log;
     }
 
     public async connect(amqpConnection: ConnectionOptions, cb: (msg: T) => void): Promise<void> {
-        this.status = Status.CONNECTING;
         this.connection = await amqp.connect(amqpConnection);
+        this.log("[RabbitMQ] Connected");
         this.connection.on("close", () => {
             this.channel = undefined;
+            this.warn("[RabbitMQ] Connection closed");
             if (this.status === Status.RUNNING) {
                 this.reconnect(amqpConnection, cb);
             }
@@ -62,14 +69,6 @@ export class AmqpApi<T> {
         this.status = Status.RUNNING;
     }
 
-    private reconnect(amqpConnection: ConnectionOptions, cb: (msg: T) => void): void {
-        setTimeout(() => {
-            this.connect(amqpConnection, cb).catch(() => {
-                this.reconnect(amqpConnection, cb);
-            });
-        }, 1000);
-    }
-
     public publish(message: T): void {
         if (!this.channel) throw new Error("AMQP Channel does not exists");
         const serializedMessage = JSON.stringify(message);
@@ -82,6 +81,16 @@ export class AmqpApi<T> {
         await this.connection?.close();
         this.channel = undefined;
         this.connection = undefined;
+    }
+
+    private reconnect(amqpConnection: ConnectionOptions, cb: (msg: T) => void): void {
+        if (this.reconnectTimeout === undefined) return;
+        this.log("[RabbitMQ] Reconnection Attempt");
+        setTimeout(() => {
+            this.connect(amqpConnection, cb).catch(() => {
+                this.reconnect(amqpConnection, cb);
+            });
+        }, this.reconnectTimeout);
     }
 
     private async createChannel(connection: amqp.Connection): Promise<amqp.Channel> {
@@ -103,9 +112,16 @@ export class AmqpApi<T> {
         try {
             cb(messageBody);
         } catch (err) {
-            console.warn("Error consuming message", err);
+            this.warn("Error consuming message", err);
         } finally {
             this.channel?.ack(msg);
         }
+    }
+
+    private log(...message: unknown[]) {
+        if (this.shouldLog) console.log(...message);
+    }
+    private warn(...message: unknown[]) {
+        if (this.shouldLog) console.warn(...message);
     }
 }
