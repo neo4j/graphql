@@ -1915,18 +1915,32 @@ describe("@fulltext directive", () => {
             );
         });
         test("Custom query name", async () => {
+            personType = generateUniqueType("Person");
+            personTypeLowerFirst = lowerFirst(personType.name);
             queryType = "CustomQueryName";
+
+            session = driver.session({ database: databaseName });
+
+            try {
+                await session.run(
+                    `
+                    CREATE (person1:${personType.name})
+                    CREATE (person2:${personType.name})
+                    CREATE (person3:${personType.name})
+                    SET person1 = $person1
+                    SET person2 = $person2
+                    SET person3 = $person3
+                `,
+                    { person1, person2, person3 }
+                );
+            } finally {
+                await session.close();
+            }
+
             const typeDefs = `
-                type ${personType.name} @fulltext(indexes: [{ queryName: "${queryType}", name: "${movieType.name}CustomIndex", fields: ["name"] }]) {
+                type ${personType.name} @fulltext(indexes: [{ queryName: "${queryType}", name: "${personType.name}CustomIndex", fields: ["name"] }]) {
                     name: String!
                     born: Int!
-                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                }
-
-                type ${movieType.name} {
-                    title: String!
-                    released: Int!
-                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
             `;
 
@@ -1981,17 +1995,10 @@ describe("@fulltext directive", () => {
             const moveTypeLowerFirst = lowerFirst(movieType.name);
             queryType = "SomeCustomQueryName";
             const typeDefs = `
-                type ${personType.name} {
-                    name: String!
-                    born: Int!
-                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                }
-
-                type ${movieType.name} @fulltext(queryName: "${queryType}", indexes: [{ name: "${movieType.name}Index", fields: ["title", "description"] }]) {
+                type ${movieType.name} @fulltext(indexes: [{ queryName: "${queryType}", name: "${movieType.name}Index", fields: ["title", "description"] }]) {
                     title: String!
                     description: String
                     released: Int!
-                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
                 }
             `;
 
@@ -2038,54 +2045,6 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
                 (gqlResult.data?.[queryType] as any[])[1].score
             );
-        });
-        test("Throws error for invalid query name", async () => {
-            queryType = "CustomQueryName";
-            const typeDefs = `
-                type ${personType.name} @fulltext(indexes: [{ queryName: ["not", "a", "string"], name: "${movieType.name}CustomIndex", fields: ["name"] }]) {
-                    name: String!
-                    born: Int!
-                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                }
-
-                type ${movieType.name} {
-                    title: String!
-                    released: Int!
-                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
-                }
-            `;
-
-            neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                driver,
-            });
-            generatedSchema = await neoSchema.getSchema();
-            await neoSchema.assertIndexesAndConstraints({
-                driver,
-                driverConfig: { database: databaseName },
-                options: { create: true },
-            });
-
-            const query = `
-                query {
-                    ${queryType}(phrase: "a different name") {
-                        score
-                        ${personTypeLowerFirst} {
-                            name
-                        } 
-                    }
-                }
-            `;
-            const gqlResult = await graphql({
-                schema: generatedSchema,
-                source: query,
-                contextValue: {
-                    driver,
-                    driverConfig: { database: databaseName },
-                },
-            });
-
-            expect(gqlResult.errors).toBeDefined();
         });
     });
     describe("Index Creation", () => {

@@ -711,7 +711,10 @@ function makeAugmentedSchema(
             });
 
             node.fulltextDirective.indexes.forEach((index) => {
-                const queryName = `${node.plural}Fulltext${upperFirst(index.name)}`;
+                let queryName = `${node.plural}Fulltext${upperFirst(index.name)}`;
+                if (index.queryName) {
+                    queryName = index.queryName;
+                }
                 composer.Query.addFields({
                     [queryName]: fulltextResolver(
                         { node },

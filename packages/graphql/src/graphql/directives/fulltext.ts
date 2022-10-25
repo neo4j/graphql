@@ -43,6 +43,9 @@ export const fulltextDirective = new GraphQLDirective({
                             fields: {
                                 type: new GraphQLNonNull(new GraphQLList(GraphQLString)),
                             },
+                            queryName: {
+                                type: GraphQLString,
+                            }
                         },
                     })
                 )

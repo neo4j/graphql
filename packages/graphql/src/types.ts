@@ -81,6 +81,7 @@ export type FulltextIndex = {
     name: string;
     fields: string[];
     queryType: string;
+    queryName: string | undefined;
 };
 
 export type FullText = {
