@@ -81,10 +81,6 @@ export const safeParse = (str: string | null | undefined, fallback: Record<strin
     }
 };
 
-export const queryIsMutation = (query: string): boolean => {
-    return (query.match(/mutation (.*?){/g) || []).length === 1;
-};
-
 export const calculateQueryComplexity = (schema: GraphQLSchema, query: string, variables: string): number => {
     try {
         const complexity = getComplexity({
