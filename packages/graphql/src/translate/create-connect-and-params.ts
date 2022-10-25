@@ -25,7 +25,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import createSetRelationshipPropertiesAndParams from "./create-set-relationship-properties-and-params";
 import createRelationshipValidationString from "./create-relationship-validation-string";
 import type { CallbackBucket } from "../classes/CallbackBucket";
-import { createRelEventMeta } from "./subscriptions/rel-create-event-meta";
+import { createRelEventMeta, createRelEventMetaObject } from "./subscriptions/rel-create-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 
 interface Res {
@@ -47,7 +47,10 @@ function createConnectAndParams({
     fromCreate,
     insideDoWhen,
     includeRelationshipValidation,
-}: {
+    level = 1,
+    lastLevel = 1,
+}: // recursiveCall = false,
+{
     withVars: string[];
     value: any;
     varName: string;
@@ -61,14 +64,17 @@ function createConnectAndParams({
     fromCreate?: boolean;
     insideDoWhen?: boolean;
     includeRelationshipValidation?: boolean;
+    level?: number;
+    lastLevel?: number;
+    // recursiveCall?: boolean;
 }): [string, any] {
     function createSubqueryContents(
         relatedNode: Node,
         connect: any,
-        index: number
+        index: number,
+        level: number
     ): { subquery: string; params: Record<string, any> } {
         let params = {};
-
         const baseName = `${varName}${index}`;
         const nodeName = `${baseName}_node`;
         const relationshipName = `${baseName}_relationship`;
@@ -82,7 +88,11 @@ function createConnectAndParams({
         const labels = relatedNode.getLabelString(context);
         const label = labelOverride ? `:${labelOverride}` : labels;
 
-        subquery.push(`\tWITH ${withVars.join(", ")}`); //blaa
+        subquery.push(`\tWITH ${withVars.join(", ")}`);
+        if (context.subscriptionsEnabled) {
+            const innerMetaStr = `, [] as meta${level}`;
+            subquery.push(`\tWITH ${withVars.join(", ")}${innerMetaStr}`); //blaa
+        }
         subquery.push(`\tOPTIONAL MATCH (${nodeName}${label})`);
 
         const whereStrs: string[] = [];
@@ -211,18 +221,26 @@ function createConnectAndParams({
            Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
         */
+        // ------------------- | CALL WITH * INNER
         subquery.push("\tCALL {");
         subquery.push("\t\tWITH *");
-        subquery.push(
-            `\t\tWITH ${[
-                ...withVars.filter((v) => v !== parentVar),
-                `collect(${nodeName}) as connectedNodes`,
-                `collect(${parentVar}) as parentNodes`,
-            ].join(", ")}`
-        );
-        subquery.push(`\t\tUNWIND parentNodes as ${parentVar}`);
-        subquery.push(`\t\tUNWIND connectedNodes as ${nodeName}`);
-        subquery.push(`\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
+        const withVarsInner = [
+            ...withVars.filter((v) => v !== parentVar),
+            `collect(${nodeName}) as connectedNodes`,
+            `collect(${parentVar}) as parentNodes`,
+        ];
+        if (context.subscriptionsEnabled) {
+            withVarsInner.push(`[] as meta${level + 1}`);
+        }
+        subquery.push(`\t\tWITH ${withVarsInner.join(", ")}`);
+
+        // ------------------- | INNER CALL
+        subquery.push("\t\tCALL {"); //
+        subquery.push("\t\t\tWITH connectedNodes, parentNodes"); //
+
+        subquery.push(`\t\t\tUNWIND parentNodes as ${parentVar}`);
+        subquery.push(`\t\t\tUNWIND connectedNodes as ${nodeName}`);
+        subquery.push(`\t\t\tMERGE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
         if (relationField.properties) {
             const relationship = context.relationships.find(
@@ -235,7 +253,7 @@ function createConnectAndParams({
                 operation: "CREATE",
                 callbackBucket,
             });
-            subquery.push(`\t\t${setA[0]}`);
+            subquery.push(`\t\t\t${setA[0]}`);
             params = { ...params, ...setA[1] };
         }
 
@@ -246,7 +264,7 @@ function createConnectAndParams({
                 relationField.direction === "IN"
                     ? [relatedNode.name, parentNode.name]
                     : [parentNode.name, relatedNode.name];
-            const eventWithMetaStr = createRelEventMeta({
+            const eventWithMetaStr = createRelEventMetaObject({
                 event: "connect",
                 relVariable: relationshipName,
                 fromVariable,
@@ -255,13 +273,29 @@ function createConnectAndParams({
                 fromTypename,
                 toTypename,
             });
-            subquery.push(`\t\tWITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, nodeName]).join(", ")}`);
-            subquery.push(`\t\tRETURN meta as update_meta`);
+            // subquery.push(`\t\tWITH ${eventWithMetaStr}, ${filterMetaVariable([...withVars, nodeName]).join(", ")}`);
+            subquery.push(`\t\t\tWITH ${eventWithMetaStr} as meta`);
+            subquery.push(`\t\t\tRETURN collect(meta) as update_meta`);
+        }
+
+        subquery.push("\t\t}");
+        // ------------------- INNER CALL |
+
+        if (context.subscriptionsEnabled) {
+            subquery.push(`\t\tWITH meta${level + 1} + update_meta as meta${level + 1}`);
+            subquery.push(`\t\tRETURN meta${level + 1}`);
             subquery.push("\t}");
-            subquery.push("\tWITH *, update_meta as meta");
         } else {
             subquery.push(`\t\tRETURN count(*) AS _`);
             subquery.push("\t}");
+        }
+        // ------------------- CALL WITH * INNER |
+
+        let innerMetaStr = "";
+        // let recursiveCall = false;
+        if (context.subscriptionsEnabled) {
+            // TODO: make dynamic
+            innerMetaStr = `, meta${level}, meta${level + 1}`;
         }
 
         if (includeRelationshipValidation) {
@@ -283,10 +317,12 @@ function createConnectAndParams({
             });
 
             if (relValidationStrs.length) {
-                subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}`);
+                subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}${innerMetaStr}`);
                 subquery.push(relValidationStrs.join("\n"));
             }
         }
+
+        subquery.push(`WITH ${[...withVars, nodeName].join(", ")}${innerMetaStr}`);
 
         if (connect.connect) {
             const connects = (Array.isArray(connect.connect) ? connect.connect : [connect.connect]) as any[];
@@ -326,7 +362,9 @@ function createConnectAndParams({
                                 newRefNodes.push(context.nodes.find((x) => x.name === relField.typeMeta.name) as Node);
                             }
 
-                            newRefNodes.forEach((newRefNode) => {
+                            newRefNodes.forEach((newRefNode, i) => {
+                                console.log("recursing", 1);
+                                recursiveCall = true;
                                 const recurse = createConnectAndParams({
                                     withVars: [...withVars, nodeName],
                                     value: relField.union ? v[newRefNode.name] : v,
@@ -339,6 +377,9 @@ function createConnectAndParams({
                                     parentNode: relatedNode,
                                     labelOverride: relField.union ? newRefNode.name : "",
                                     includeRelationshipValidation: true,
+                                    level: level + 2 + i,
+                                    lastLevel: level,
+                                    // recursiveCall: true,
                                 });
                                 r.connects.push(recurse[0]);
                                 r.params = { ...r.params, ...recurse[1] };
@@ -357,9 +398,11 @@ function createConnectAndParams({
                         ? c._on[relatedNode.name]
                         : [c._on[relatedNode.name]];
 
+                    console.log("HERE");
+
                     onConnects.forEach((onConnect, onConnectIndex) => {
                         const onReduced = Object.entries(onConnect).reduce(
-                            (r: Res, [k, v]: [string, any]) => {
+                            (r: Res, [k, v]: [string, any], index: number) => {
                                 const relField = relatedNode.relationFields.find((x) =>
                                     k.startsWith(x.fieldName)
                                 ) as RelationField;
@@ -375,7 +418,9 @@ function createConnectAndParams({
                                     );
                                 }
 
-                                newRefNodes.forEach((newRefNode) => {
+                                newRefNodes.forEach((newRefNode, i) => {
+                                    console.log("recursing", 2);
+                                    recursiveCall = true;
                                     const recurse = createConnectAndParams({
                                         withVars: [...withVars, nodeName],
                                         value: relField.union ? v[newRefNode.name] : v,
@@ -387,7 +432,11 @@ function createConnectAndParams({
                                         refNodes: [newRefNode],
                                         parentNode: relatedNode,
                                         labelOverride: relField.union ? newRefNode.name : "",
+                                        level: level + 2 + index + i,
+                                        lastLevel: level,
+                                        // recursiveCall: true,
                                     });
+                                    console.log("REC", recurse);
                                     r.connects.push(recurse[0]);
                                     r.params = { ...r.params, ...recurse[1] };
                                 });
@@ -396,7 +445,6 @@ function createConnectAndParams({
                             },
                             { connects: [], params: {} }
                         );
-
                         subquery.push(onReduced.connects.join("\n"));
                         params = { ...params, ...onReduced.params };
                     });
@@ -443,12 +491,14 @@ function createConnectAndParams({
             params = { ...params, ...postAuth.params };
         }
 
-        let returnMetaStr = "";
         if (context.subscriptionsEnabled) {
-            // subquery.push(`\tWITH update_meta as meta`);
-            returnMetaStr = ", meta as update_meta";
+            if (!recursiveCall) {
+                subquery.push(`\tWITH meta${level} + meta${level + 1} as meta${level}`);
+            }
+            subquery.push(`\tRETURN meta${level}`);
+        } else {
+            subquery.push(`\tRETURN count(*) AS connect_${varName}_${relatedNode.name}`);
         }
-        subquery.push(`\tRETURN count(*) AS connect_${varName}_${relatedNode.name}${returnMetaStr}`);
 
         return { subquery: subquery.join("\n"), params };
     }
@@ -468,33 +518,27 @@ function createConnectAndParams({
             }
         }
 
-        res.connects.push(`WITH ${withVars.join(", ")}`);
+        if (level === 1) {
+            res.connects.push(`WITH ${withVars.join(", ")}`); // abc
+        }
         const inner: string[] = [];
         // res.connects.push("CALL {");
 
-        // console.log("here now");
         if (relationField.interface) {
-            // console.log(
-            //     "here now: INTERFACE",
-            //     refNodes.map((n) => n.name)
-            // );
             const subqueries: string[] = [];
-            refNodes.forEach((refNode) => {
-                const subquery = createSubqueryContents(refNode, connect, index);
+            refNodes.forEach((refNode, i) => {
+                const subquery = createSubqueryContents(refNode, connect, i, level);
                 if (subquery.subquery) {
                     subqueries.push(subquery.subquery);
                     res.params = { ...res.params, ...subquery.params };
                 }
             });
-            // console.log("here now: INTERFACE >>> sq", subqueries);
             // res.connects.push(subqueries.join("\n}\nCALL {\n\t"));
             if (subqueries.length > 0) {
                 inner.push(subqueries.join("\n}\nCALL {\n\t"));
             }
         } else {
-            // console.log("here now: NOT I", refNodes[0].name);
-            const subquery = createSubqueryContents(refNodes[0], connect, index);
-            // console.log("here now: NOT I >>> SQ", subquery);
+            const subquery = createSubqueryContents(refNodes[0], connect, index, level);
             // res.connects.push(subquery.subquery);
             inner.push(subquery.subquery);
             res.params = { ...res.params, ...subquery.params };
@@ -507,14 +551,29 @@ function createConnectAndParams({
             res.connects.push(...inner);
             res.connects.push("}");
 
+            console.log("INNER", inner);
+
             if (context.subscriptionsEnabled) {
-                res.connects.push(`WITH update_meta as meta, ${filterMetaVariable(withVars).join(", ")}`);
+                const levelRange = [...Array(level + 1).keys()]
+                    .slice(lastLevel)
+                    .map((l) => `meta${l}`)
+                    .join("+");
+                if (level === lastLevel) {
+                    res.connects.push(`WITH meta + ${levelRange} as meta, ${filterMetaVariable(withVars).join(", ")}`);
+                } else {
+                    // if (!recursiveCall) {
+                    //TODO: uncomment
+                    res.connects.push(`WITH ${levelRange} as meta${lastLevel}, ${withVars.join(", ")}`);
+                    // }
+                    // `WITH ${levelRange} as meta${lastLevel}, ${filterMetaVariable(withVars).join(", ")}`
+                }
             }
         }
 
         return res;
     }
 
+    let recursiveCall = false;
     const { connects, params } = ((relationField.typeMeta.array ? value : [value]) as any[]).reduce(reducer, {
         connects: [],
         params: {},
