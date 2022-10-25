@@ -179,6 +179,40 @@ The above query would produce results in the following format:
 }
 ----
 
+Additionally, it is possible to define a custom query name as part of the `@fulltext` directive, using the `queryName` argument as shown below:
+
+[source, graphql, indent=0]
+----
+type Product @fulltext(indexes: [{ queryName: "CustomProductFulltextQuery", name: "ProductName", fields: ["name"] }]) {
+    name: String!
+    color: Color! @relationship(type: "OF_COLOR", direction: OUT)
+}
+----
+
+This would then produce the following top-level query:
+
+[source, graphql, indent=0]
+----
+type Query {
+    CustomProductFulltextQuery(phrase: String!, where: productFulltextWhere, sort: [productFulltextSort!],
+    limit: Int, offset: Int): [productFulltextResult!]!
+}
+----
+
+This query can then be used as shown below:
+
+[source, graphql, indent=0]
+----
+query {
+  CustomProductFulltextQuery(phrase: "Hot sauce", sort: [{ score: ASC }]) {
+    score
+    product {
+      name
+    }
+  }
+}
+----
+
 ==== Deprecated usage
 
 
