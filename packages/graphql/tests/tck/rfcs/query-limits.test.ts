@@ -178,7 +178,8 @@ describe("tck/rfcs/query-limits", () => {
                     LIMIT $param1
                     RETURN collect(this_actors) AS this_actors
                 }
-                RETURN this { .id, actors: this_actors } AS this"
+                RETURN this { .id, actors: this_actors } AS this
+                LIMIT $this_limit"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -236,7 +237,8 @@ describe("tck/rfcs/query-limits", () => {
                     WITH this_connection_actorsConnectionvar1 AS edges, totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
                 }
-                RETURN this { .id, actorsConnection: this_actorsConnection } AS this"
+                RETURN this { .id, actorsConnection: this_actorsConnection } AS this
+                LIMIT $this_limit"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -294,7 +296,8 @@ describe("tck/rfcs/query-limits", () => {
                     WITH this_connection_actorsConnectionvar1 AS edges, totalCount
                     RETURN { edges: edges, totalCount: totalCount } AS this_actorsConnection
                 }
-                RETURN this { .id, actorsConnection: this_actorsConnection } AS this"
+                RETURN this { .id, actorsConnection: this_actorsConnection } AS this
+                LIMIT $this_limit"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -391,7 +394,8 @@ describe("tck/rfcs/query-limits", () => {
                     LIMIT $param1
                     RETURN collect(this_actors) AS this_actors
                 }
-                RETURN this { .id, actors: this_actors } AS this"
+                RETURN this { .id, actors: this_actors } AS this
+                LIMIT $this_limit"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
