@@ -44,8 +44,8 @@ class Tracking {
         this.fireTrackingEvent("ux", "editor-theme");
     };
 
-    public trackFavorites = () => {
-        this.fireTrackingEvent("ux", "favorites");
+    public trackSaveFavorite = () => {
+        this.fireTrackingEvent("ux", "save-favorite");
     };
 
     public trackSchemaDebugToggle = () => {
