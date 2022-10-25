@@ -27,12 +27,13 @@ describe("simpleTypeDefinitionsAnalytics", () => {
             }
         `;
 
-        const { numberOfDirectives, numberOfInterfaces, numberOfTypes, numberOfUnions } =
+        const { numberOfDirectives, numberOfInterfaces, numberOfTypes, numberOfUnions, quantityOfDirectiveUsage } =
             simpleTypeDefinitionsAnalytics(typeDefinitions);
         expect(numberOfTypes).toBe(1);
         expect(numberOfDirectives).toBe(0);
         expect(numberOfUnions).toBe(0);
         expect(numberOfInterfaces).toBe(0);
+        expect(quantityOfDirectiveUsage).toBe(0);
     });
 
     test("should count interfaces correctly", () => {
@@ -80,12 +81,13 @@ describe("simpleTypeDefinitionsAnalytics", () => {
             }
         `;
 
-        const { numberOfDirectives, numberOfInterfaces, numberOfTypes, numberOfUnions } =
+        const { numberOfDirectives, numberOfInterfaces, numberOfTypes, numberOfUnions, quantityOfDirectiveUsage } =
             simpleTypeDefinitionsAnalytics(typeDefinitions);
         expect(numberOfTypes).toBe(4);
         expect(numberOfDirectives).toBe(0);
         expect(numberOfUnions).toBe(1);
         expect(numberOfInterfaces).toBe(4);
+        expect(quantityOfDirectiveUsage).toBe(7);
     });
 
     test("should count directives correctly", () => {
@@ -102,12 +104,13 @@ describe("simpleTypeDefinitionsAnalytics", () => {
             }
         `;
 
-        const { numberOfDirectives, numberOfInterfaces, numberOfTypes, numberOfUnions } =
+        const { numberOfDirectives, numberOfInterfaces, numberOfTypes, numberOfUnions, quantityOfDirectiveUsage } =
             simpleTypeDefinitionsAnalytics(typeDefinitions);
         expect(numberOfTypes).toBe(1);
         expect(numberOfDirectives).toBe(2);
         expect(numberOfUnions).toBe(0);
         expect(numberOfInterfaces).toBe(0);
+        expect(quantityOfDirectiveUsage).toBe(2);
     });
 
     test("should count unions correctly", () => {
@@ -135,11 +138,45 @@ describe("simpleTypeDefinitionsAnalytics", () => {
             }
         `;
 
-        const { numberOfDirectives, numberOfInterfaces, numberOfTypes, numberOfUnions } =
+        const { numberOfDirectives, numberOfInterfaces, numberOfTypes, numberOfUnions, quantityOfDirectiveUsage } =
             simpleTypeDefinitionsAnalytics(typeDefinitions);
         expect(numberOfTypes).toBe(2);
         expect(numberOfDirectives).toBe(0);
         expect(numberOfUnions).toBe(2);
         expect(numberOfInterfaces).toBe(1);
+        expect(quantityOfDirectiveUsage).toBe(5);
+    });
+
+    test("should count directive usage correctly", () => {
+        const typeDefinitions = `
+              interface Product {
+                id: ID! @id
+                uri: String!
+              }
+              
+              type ProgrammeItem implements Product {
+                id: ID! @id
+                uri: String! @cypher(statement: "RETURN 'example://programme-item/' + this.id")
+                editions: [Edition!]! @relationship(type: "HAS_EDITION", direction: OUT)
+              }
+              
+              type Edition {
+                id: ID! @id @unique
+                uri: String! @cypher(statement: "RETURN 'example://edition/' + this.id")
+                product: Product! @relationship(type: "HAS_EDITION", direction: IN)
+              }
+
+              type Test {
+                id: ID! @id @unique @cypher(statement: "RETURN 'example://edition/' + this.id")
+              }
+        `;
+
+        const { numberOfDirectives, numberOfInterfaces, numberOfTypes, numberOfUnions, quantityOfDirectiveUsage } =
+            simpleTypeDefinitionsAnalytics(typeDefinitions);
+        expect(numberOfTypes).toBe(3);
+        expect(numberOfDirectives).toBe(0);
+        expect(numberOfUnions).toBe(0);
+        expect(numberOfInterfaces).toBe(1);
+        expect(quantityOfDirectiveUsage).toBe(11);
     });
 });

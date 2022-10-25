@@ -22,6 +22,7 @@ export interface TypeDefinitionsAnalyticsResults {
     numberOfUnions: number;
     numberOfInterfaces: number;
     numberOfDirectives: number;
+    quantityOfDirectiveUsage: number;
 }
 
 export const simpleTypeDefinitionsAnalytics = (typeDefinitions: string): TypeDefinitionsAnalyticsResults => {
@@ -29,11 +30,14 @@ export const simpleTypeDefinitionsAnalytics = (typeDefinitions: string): TypeDef
     const numberOfInterfaces = (typeDefinitions.match(/interface (.*?){/g) || []).length;
     const numberOfDirectives = (typeDefinitions.match(/directive @/g) || []).length;
     const numberOfUnions = (typeDefinitions.match(/union (.*?)=/g) || []).length;
+    const usedDirectives = (typeDefinitions.match(/@(.*?)[(\s]/g) || []).length;
+    const quantityOfDirectiveUsage = usedDirectives - numberOfDirectives; // INFO: in case there are directives defined, remove them from the usage count
 
     return {
         numberOfTypes,
         numberOfUnions,
         numberOfInterfaces,
         numberOfDirectives,
+        quantityOfDirectiveUsage,
     };
 };

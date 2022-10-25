@@ -18,7 +18,7 @@
  */
 
 import { LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING } from "../constants";
-import { Storage } from "./storage";
+import { Storage } from "../utils/storage";
 
 class Tracking {
     public trackFavorites = () => {
