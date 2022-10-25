@@ -15,6 +15,7 @@
     },
     "include": ["src/**/*"],
     "references": [
+        { "path": "../cypher-builder/tsconfig.production.json" },
         { "path": "../graphql/src/tsconfig.production.json" },
         { "path": "../introspector/tsconfig.production.json" }
     ]
