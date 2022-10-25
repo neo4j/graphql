@@ -1,5 +1,31 @@
 # @neo4j/graphql
 
+## 3.11.0
+
+### Minor Changes
+
+-   [#2220](https://github.com/neo4j/graphql/pull/2220) [`44fc500eb`](https://github.com/neo4j/graphql/commit/44fc500ebbaff3f8cdfcc676bd2ef8cad2fd58ec) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Added the `@plural` directive and depreacted the `plural` argument of the `@node` directive.
+
+-   [#2225](https://github.com/neo4j/graphql/pull/2225) [`b37376e38`](https://github.com/neo4j/graphql/commit/b37376e38e13ab2ed6f0e0eeb99f2d9f17161fd7) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Added the `@customResolver` directive and deprecated the `@computed` directive.
+
+-   [#2232](https://github.com/neo4j/graphql/pull/2232) [`94512c90e`](https://github.com/neo4j/graphql/commit/94512c90e5e37601a4d260f1153ac043639ceb6f) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Added checks for custom resolvers for fields with the `@customResolver` directive.
+
+-   [#2214](https://github.com/neo4j/graphql/pull/2214) [`4ee4d40ad`](https://github.com/neo4j/graphql/commit/4ee4d40ad5aca514ddc08091b2501bfa699294e9) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Added the `@populatedBy` directive to replace the `@callback` directive and deprecated the `@callback` directive.
+
+### Patch Changes
+
+-   [#2268](https://github.com/neo4j/graphql/pull/2268) [`8eff620b9`](https://github.com/neo4j/graphql/commit/8eff620b93d86d544d4594b69c5058a9092347c0) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix invalid nested results on sorted connections without edges #2262
+
+-   [#2200](https://github.com/neo4j/graphql/pull/2200) [`c769933cb`](https://github.com/neo4j/graphql/commit/c769933cba76d16c4f14b2c18aaf5c47415b05d9) Thanks [@a-alle](https://github.com/a-alle)! - Throw an error when the same db property is being modified at once
+
+-   [#2260](https://github.com/neo4j/graphql/pull/2260) [`5ce80724f`](https://github.com/neo4j/graphql/commit/5ce80724f4d45a38e5d4b5d0d369384a4599d51f) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix invalid Cypher on nested update operations with interfaces
+
+-   [#2252](https://github.com/neo4j/graphql/pull/2252) [`2c8f3ec37`](https://github.com/neo4j/graphql/commit/2c8f3ec37ce57f281972ddc107a9490392c482df) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix nested update with subscriptions invalid Cypher
+
+-   [#2274](https://github.com/neo4j/graphql/pull/2274) [`74e6fee11`](https://github.com/neo4j/graphql/commit/74e6fee119c8f0c7d30384422e722754411135b9) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix ordering with nested interface fields #2267
+
+-   [#2266](https://github.com/neo4j/graphql/pull/2266) [`e7bcf4f0b`](https://github.com/neo4j/graphql/commit/e7bcf4f0b69a75c10e0ee0a604fd35cab09fcfaf) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix error of queries with mixed nested fields and cypher elements #2261
+
 ## 3.10.1
 
 ### Patch Changes
