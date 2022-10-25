@@ -123,10 +123,12 @@ describe("@fulltext directive", () => {
         };
         const movie1 = {
             title: "Some Title",
+            description: "some other description",
             released: 2001,
         };
         const movie2 = {
             title: "Another Title",
+            description: "this is a description",
             released: 2002,
         };
 
@@ -374,9 +376,7 @@ describe("@fulltext directive", () => {
         test("Filters node to single result", async () => {
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name: "${
-                person1.name
-            }" } }) {
+                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name: "${person1.name}" } }) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -401,9 +401,7 @@ describe("@fulltext directive", () => {
         test("Filters node to multiple results", async () => {
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { born_GTE: ${
-                person2.born
-            } } }) {
+                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { born_GTE: ${person2.born} } }) {
                         ${personTypeLowerFirst} {
                             name
                         } 
@@ -1371,9 +1369,7 @@ describe("@fulltext directive", () => {
         test("Filters by node when node is not returned", async () => {
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name: "${
-                person1.name
-            }" } }) {
+                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name: "${person1.name}" } }) {
                         score
                     }
                 }
@@ -1714,9 +1710,7 @@ describe("@fulltext directive", () => {
 
             const query = `
                 query {
-                    ${queryType}(phrase: "a name", where: { ${personTypeLowerFirst}: { name: "${
-                person2.name
-            }" } }) {
+                    ${queryType}(phrase: "a name", where: { ${personTypeLowerFirst}: { name: "${person2.name}" } }) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -1851,6 +1845,241 @@ describe("@fulltext directive", () => {
                 source: query,
                 contextValue: {
                     req,
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+
+            expect(gqlResult.errors).toBeDefined();
+        });
+        test("Multiple fulltext index fields", async () => {
+            const moveTypeLowerFirst = lowerFirst(movieType.name);
+            queryType = `${movieType.plural}Fulltext${upperFirst(movieType.name)}Index`;
+            const typeDefs = `
+                type ${personType.name} {
+                    name: String!
+                    born: Int!
+                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+
+                type ${movieType.name} @fulltext(indexes: [{ name: "${movieType.name}Index", fields: ["title", "description"] }]) {
+                    title: String!
+                    description: String
+                    released: Int!
+                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+            `;
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+            });
+            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            });
+
+            const query = `
+                query {
+                    ${queryType}(phrase: "some description") {
+                        score
+                        ${moveTypeLowerFirst} {
+                            title
+                            description
+                        } 
+                    }
+                }
+            `;
+            const gqlResult = await graphql({
+                schema: generatedSchema,
+                source: query,
+                contextValue: {
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect((gqlResult.data?.[queryType] as any[])[0][moveTypeLowerFirst]).toEqual({
+                title: movie1.title,
+                description: movie1.description,
+            });
+            expect((gqlResult.data?.[queryType] as any[])[1][moveTypeLowerFirst]).toEqual({
+                title: movie2.title,
+                description: movie2.description,
+            });
+            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1].score
+            );
+        });
+        test("Custom query name", async () => {
+            queryType = "CustomQueryName";
+            const typeDefs = `
+                type ${personType.name} @fulltext(indexes: [{ queryName: "${queryType}", name: "${movieType.name}CustomIndex", fields: ["name"] }]) {
+                    name: String!
+                    born: Int!
+                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+
+                type ${movieType.name} {
+                    title: String!
+                    released: Int!
+                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+            `;
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+            });
+            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            });
+
+            const query = `
+                query {
+                    ${queryType}(phrase: "a different name") {
+                        score
+                        ${personTypeLowerFirst} {
+                            name
+                        } 
+                    }
+                }
+            `;
+            const gqlResult = await graphql({
+                schema: generatedSchema,
+                source: query,
+                contextValue: {
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual({
+                name: "This is a different name",
+            });
+            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst]).toEqual({
+                name: "this is a name",
+            });
+            expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst]).toEqual({
+                name: "Another name",
+            });
+            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1].score
+            );
+            expect((gqlResult.data?.[queryType] as any[])[1].score).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[2].score
+            );
+        });
+        test("Multiple index fields with custom query name", async () => {
+            const moveTypeLowerFirst = lowerFirst(movieType.name);
+            queryType = "SomeCustomQueryName";
+            const typeDefs = `
+                type ${personType.name} {
+                    name: String!
+                    born: Int!
+                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+
+                type ${movieType.name} @fulltext(queryName: "${queryType}", indexes: [{ name: "${movieType.name}Index", fields: ["title", "description"] }]) {
+                    title: String!
+                    description: String
+                    released: Int!
+                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+            `;
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+            });
+            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            });
+
+            const query = `
+                query {
+                    ${queryType}(phrase: "some description") {
+                        score
+                        ${moveTypeLowerFirst} {
+                            title
+                            description
+                        } 
+                    }
+                }
+            `;
+            const gqlResult = await graphql({
+                schema: generatedSchema,
+                source: query,
+                contextValue: {
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+            expect((gqlResult.data?.[queryType] as any[])[0][moveTypeLowerFirst]).toEqual({
+                title: movie1.title,
+                description: movie1.description,
+            });
+            expect((gqlResult.data?.[queryType] as any[])[1][moveTypeLowerFirst]).toEqual({
+                title: movie2.title,
+                description: movie2.description,
+            });
+            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1].score
+            );
+        });
+        test("Throws error for invalid query name", async () => {
+            queryType = "CustomQueryName";
+            const typeDefs = `
+                type ${personType.name} @fulltext(indexes: [{ queryName: ["not", "a", "string"], name: "${movieType.name}CustomIndex", fields: ["name"] }]) {
+                    name: String!
+                    born: Int!
+                    actedInMovies: [${movieType.name}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                }
+
+                type ${movieType.name} {
+                    title: String!
+                    released: Int!
+                    actors: [${personType.name}!]! @relationship(type: "ACTED_IN", direction: IN)
+                }
+            `;
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+            });
+            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            });
+
+            const query = `
+                query {
+                    ${queryType}(phrase: "a different name") {
+                        score
+                        ${personTypeLowerFirst} {
+                            name
+                        } 
+                    }
+                }
+            `;
+            const gqlResult = await graphql({
+                schema: generatedSchema,
+                source: query,
+                contextValue: {
                     driver,
                     driverConfig: { database: databaseName },
                 },
