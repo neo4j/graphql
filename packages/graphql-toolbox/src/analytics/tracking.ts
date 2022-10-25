@@ -19,6 +19,7 @@
 
 import { LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING } from "../constants";
 import { Storage } from "../utils/storage";
+import { TypeDefinitionsAnalyticsResults } from "./analytics";
 
 export enum TrackingExecutionTypeExplorer {
     QUERY,
@@ -32,6 +33,9 @@ export enum TrackingSchemaConstraintTypes {
 }
 
 class Tracking {
+    //
+    // UX product usage tracking
+    //
     public trackIntrospectionInSchemaView = () => {
         this.fireTrackingEvent("ux", "introspection-schema-view");
     };
@@ -48,23 +52,23 @@ class Tracking {
         this.fireTrackingEvent("ux", "save-favorite");
     };
 
-    public trackSchemaDebugToggle = () => {
-        this.fireTrackingEvent("ux", "schema-debug-toggle");
+    public trackSchemaDebugEnabled = () => {
+        this.fireTrackingEvent("ux", "schema-debug-enabled");
     };
 
-    public trackSchemaRegexToggle = () => {
-        this.fireTrackingEvent("ux", "schema-regex-toggle");
+    public trackSchemaRegexEnabled = () => {
+        this.fireTrackingEvent("ux", "schema-regex-enabled");
     };
 
-    public trackSchemaConstraints = ({ constraintType }: { constraintType: TrackingSchemaConstraintTypes }) => {
-        this.fireTrackingEvent("ux", "schema-regex-toggle", { constraintType });
+    public trackSchemaConstraints = (constraintType: TrackingSchemaConstraintTypes) => {
+        this.fireTrackingEvent("ux", "schema-constraints", { constraintType });
     };
 
     public trackChangeDatabase = () => {
         this.fireTrackingEvent("ux", "change-database");
     };
 
-    public trackAddExecutionTypeInExplorer = ({ type }: { type: TrackingExecutionTypeExplorer }) => {
+    public trackAddExecutionTypeInExplorer = (type: TrackingExecutionTypeExplorer) => {
         this.fireTrackingEvent("ux", "add-explorer-query-mutation", { type });
     };
 
@@ -74,6 +78,17 @@ class Tracking {
 
     public trackOpenSchemaDocsExplorer = () => {
         this.fireTrackingEvent("ux", "open-schema-docs-explorer");
+    };
+
+    //
+    // GraphQL metadata product usage tracking
+    //
+    public trackTypeDefinitionMetadata = (analytics: TypeDefinitionsAnalyticsResults) => {
+        this.fireTrackingEvent("data", "type-definition-metadata", analytics);
+    };
+
+    public trackQueryComplexity = (complexity: number) => {
+        this.fireTrackingEvent("data", "query-complexity", { complexity });
     };
 
     private fireTrackingEvent = (eventCategory: string, eventLabel: string, eventProperties = {}) => {
