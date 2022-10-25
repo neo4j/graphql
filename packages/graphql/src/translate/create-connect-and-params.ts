@@ -88,10 +88,10 @@ function createConnectAndParams({
         const labels = relatedNode.getLabelString(context);
         const label = labelOverride ? `:${labelOverride}` : labels;
 
-        subquery.push(`\tWITH ${withVars.join(", ")}`);
+        subquery.push(`\tWITH ${filterMetaVariable(withVars).join(", ")}`);
         if (context.subscriptionsEnabled) {
-            const innerMetaStr = `, [] as meta${level}`;
-            subquery.push(`\tWITH ${withVars.join(", ")}${innerMetaStr}`); //blaa
+            const innerMetaStr = `, [] as meta`;
+            subquery.push(`\tWITH ${filterMetaVariable(withVars).join(", ")}${innerMetaStr}`); //blaa
         }
         subquery.push(`\tOPTIONAL MATCH (${nodeName}${label})`);
 
@@ -230,9 +230,9 @@ function createConnectAndParams({
             `collect(${parentVar}) as parentNodes`,
         ];
         if (context.subscriptionsEnabled) {
-            withVarsInner.push(`[] as meta${level + 1}`);
+            withVarsInner.push(`[] as meta`);
         }
-        subquery.push(`\t\tWITH ${withVarsInner.join(", ")}`);
+        subquery.push(`\t\tWITH ${filterMetaVariable(withVarsInner).join(", ")}`);
 
         // ------------------- | INNER CALL
         subquery.push("\t\tCALL {"); //
@@ -282,8 +282,8 @@ function createConnectAndParams({
         // ------------------- INNER CALL |
 
         if (context.subscriptionsEnabled) {
-            subquery.push(`\t\tWITH meta${level + 1} + update_meta as meta${level + 1}`);
-            subquery.push(`\t\tRETURN meta${level + 1}`);
+            subquery.push(`\t\tWITH meta + update_meta as meta`);
+            subquery.push(`\t\tRETURN meta AS connect_meta`);
             subquery.push("\t}");
         } else {
             subquery.push(`\t\tRETURN count(*) AS _`);
@@ -295,7 +295,8 @@ function createConnectAndParams({
         // let recursiveCall = false;
         if (context.subscriptionsEnabled) {
             // TODO: make dynamic
-            innerMetaStr = `, meta${level}, meta${level + 1}`;
+            // innerMetaStr = `, meta${level}, meta${level + 1}`;
+            innerMetaStr = `, connect_meta + meta AS meta`;
         }
 
         if (includeRelationshipValidation) {
@@ -317,12 +318,12 @@ function createConnectAndParams({
             });
 
             if (relValidationStrs.length) {
-                subquery.push(`\tWITH ${[...withVars, nodeName].join(", ")}${innerMetaStr}`);
+                subquery.push(`\tWITH ${[...filterMetaVariable(withVars), nodeName].join(", ")}${innerMetaStr}`);
                 subquery.push(relValidationStrs.join("\n"));
             }
         }
 
-        subquery.push(`WITH ${[...withVars, nodeName].join(", ")}${innerMetaStr}`);
+        subquery.push(`WITH ${[...filterMetaVariable(withVars), nodeName].join(", ")}${innerMetaStr}`);
 
         if (connect.connect) {
             const connects = (Array.isArray(connect.connect) ? connect.connect : [connect.connect]) as any[];
@@ -363,7 +364,6 @@ function createConnectAndParams({
                             }
 
                             newRefNodes.forEach((newRefNode, i) => {
-                                console.log("recursing", 1);
                                 recursiveCall = true;
                                 const recurse = createConnectAndParams({
                                     withVars: [...withVars, nodeName],
@@ -398,8 +398,6 @@ function createConnectAndParams({
                         ? c._on[relatedNode.name]
                         : [c._on[relatedNode.name]];
 
-                    console.log("HERE");
-
                     onConnects.forEach((onConnect, onConnectIndex) => {
                         const onReduced = Object.entries(onConnect).reduce(
                             (r: Res, [k, v]: [string, any], index: number) => {
@@ -419,7 +417,6 @@ function createConnectAndParams({
                                 }
 
                                 newRefNodes.forEach((newRefNode, i) => {
-                                    console.log("recursing", 2);
                                     recursiveCall = true;
                                     const recurse = createConnectAndParams({
                                         withVars: [...withVars, nodeName],
@@ -436,7 +433,6 @@ function createConnectAndParams({
                                         lastLevel: level,
                                         // recursiveCall: true,
                                     });
-                                    console.log("REC", recurse);
                                     r.connects.push(recurse[0]);
                                     r.params = { ...r.params, ...recurse[1] };
                                 });
@@ -492,10 +488,11 @@ function createConnectAndParams({
         }
 
         if (context.subscriptionsEnabled) {
-            if (!recursiveCall) {
-                subquery.push(`\tWITH meta${level} + meta${level + 1} as meta${level}`);
-            }
-            subquery.push(`\tRETURN meta${level}`);
+            subquery.push("\tRETURN meta AS connect_meta");
+            // if (!recursiveCall) {
+            //     subquery.push(`\tWITH meta${level} + meta${level + 1} as meta${level}`);
+            // }
+            // subquery.push(`\tRETURN meta${level}`);
         } else {
             subquery.push(`\tRETURN count(*) AS connect_${varName}_${relatedNode.name}`);
         }
@@ -535,7 +532,13 @@ function createConnectAndParams({
             });
             // res.connects.push(subqueries.join("\n}\nCALL {\n\t"));
             if (subqueries.length > 0) {
-                inner.push(subqueries.join("\n}\nCALL {\n\t"));
+                if (context.subscriptionsEnabled) {
+                    const withStmt = `WITH ${filterMetaVariable(withVars).join(", ")}, connect_meta + meta AS meta`;
+
+                    inner.push(subqueries.join(`\n}\n${withStmt}\nCALL {\n\t`));
+                } else {
+                    inner.push(subqueries.join("\n}\nCALL {\n\t"));
+                }
             }
         } else {
             const subquery = createSubqueryContents(refNodes[0], connect, index, level);
@@ -551,22 +554,21 @@ function createConnectAndParams({
             res.connects.push(...inner);
             res.connects.push("}");
 
-            console.log("INNER", inner);
-
             if (context.subscriptionsEnabled) {
-                const levelRange = [...Array(level + 1).keys()]
-                    .slice(lastLevel)
-                    .map((l) => `meta${l}`)
-                    .join("+");
-                if (level === lastLevel) {
-                    res.connects.push(`WITH meta + ${levelRange} as meta, ${filterMetaVariable(withVars).join(", ")}`);
-                } else {
-                    // if (!recursiveCall) {
-                    //TODO: uncomment
-                    res.connects.push(`WITH ${levelRange} as meta${lastLevel}, ${withVars.join(", ")}`);
-                    // }
-                    // `WITH ${levelRange} as meta${lastLevel}, ${filterMetaVariable(withVars).join(", ")}`
-                }
+                res.connects.push(`WITH connect_meta + meta AS meta, ${filterMetaVariable(withVars).join(", ")}`);
+                // const levelRange = [...Array(level + 1).keys()]
+                //     .slice(lastLevel)
+                //     .map((l) => `meta${l}`)
+                //     .join("+");
+                // if (level === lastLevel) {
+                //     res.connects.push(`WITH meta + ${levelRange} as meta, ${filterMetaVariable(withVars).join(", ")}`);
+                // } else {
+                //     // if (!recursiveCall) {
+                //     //TODO: uncomment
+                //     res.connects.push(`WITH ${levelRange} as meta${lastLevel}, ${withVars.join(", ")}`);
+                //     // }
+                //     // `WITH ${levelRange} as meta${lastLevel}, ${filterMetaVariable(withVars).join(", ")}`
+                // }
             }
         }
 
