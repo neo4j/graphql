@@ -2657,7 +2657,7 @@ __metadata:
     koa-jwt: 4.0.3
     koa-router: 12.0.0
     libnpmsearch: 5.0.4
-    mock-jwks: 1.0.3
+    mock-jwks: 1.0.8
     nock: 13.2.9
     npm-run-all: 4.1.5
     pluralize: ^8.0.0
@@ -4904,14 +4904,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"asn1@npm:0.2.3":
-  version: 0.2.3
-  resolution: "asn1@npm:0.2.3"
-  checksum: 6580b5d5c1b84830011428dffee9b84eb8358cc155cd31ff0d14f03774695e5e183466aad87f525a77bfe6ae32c40b1cac8264839586419694a33a0c5c5eca1a
-  languageName: node
-  linkType: hard
-
-"asn1@npm:~0.2.3":
+"asn1@npm:^0.2.4, asn1@npm:~0.2.3":
   version: 0.2.6
   resolution: "asn1@npm:0.2.6"
   dependencies:
@@ -5325,7 +5318,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"base64-url@npm:^2.2.0":
+"base64-url@npm:^2.3.3":
   version: 2.3.3
   resolution: "base64-url@npm:2.3.3"
   checksum: 3b231b4b5e82ae8834a1616a53b6eb5666e5604072bc0d631826be28ce0c8181cc1fbbb96591a3060777bff3c6000c70068c4f89ee29145e24011b0531cc5353
@@ -12494,7 +12487,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonwebtoken@npm:8.5.1, jsonwebtoken@npm:^8.2.0, jsonwebtoken@npm:^8.5.1":
+"jsonwebtoken@npm:8.5.1, jsonwebtoken@npm:^8.5.1":
   version: 8.5.1
   resolution: "jsonwebtoken@npm:8.5.1"
   dependencies:
@@ -14135,17 +14128,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mock-jwks@npm:1.0.3":
-  version: 1.0.3
-  resolution: "mock-jwks@npm:1.0.3"
+"mock-jwks@npm:1.0.8":
+  version: 1.0.8
+  resolution: "mock-jwks@npm:1.0.8"
   dependencies:
-    base64-url: ^2.2.0
-    jsonwebtoken: ^8.2.0
-    node-forge: ^1.0.0
-    node-rsa: ^0.4.2
+    base64-url: ^2.3.3
+    jsonwebtoken: ^8.5.1
+    node-forge: ^1.3.1
+    node-rsa: ^1.1.1
   peerDependencies:
     nock: ^11 || ^12 || ^13
-  checksum: 92e5bc02d9f0dc7e4ba246e1bdf98cee3c8b8a5a029bacf071af7b9b789e832bf1ea10f41a82ea33970ed22180bf3cc74388ab31678bad59750e7ec20ec832e5
+  checksum: b28e3c2e57e67d4a0ca55ff594d544829056fdf3b9c2161924c75f926e1a8590904503cd0b0ef6a25ffa3f43b9d96b6a03890c2041c53e800cae8f5e9bc62efc
   languageName: node
   linkType: hard
 
@@ -14471,7 +14464,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-forge@npm:^1, node-forge@npm:^1.0.0":
+"node-forge@npm:^1, node-forge@npm:^1.3.1":
   version: 1.3.1
   resolution: "node-forge@npm:1.3.1"
   checksum: 08fb072d3d670599c89a1704b3e9c649ff1b998256737f0e06fbd1a5bf41cae4457ccaee32d95052d80bbafd9ffe01284e078c8071f0267dc9744e51c5ed42a9
@@ -14561,12 +14554,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-rsa@npm:^0.4.2":
-  version: 0.4.2
-  resolution: "node-rsa@npm:0.4.2"
+"node-rsa@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "node-rsa@npm:1.1.1"
   dependencies:
-    asn1: 0.2.3
-  checksum: cf5ef735d49e3ac93c465e28790bab117b21587de3362419836ee5ee8156fd588c4b07caa2249b05bd08b61b71c7c68133963c52b466f93360e5256ca35512b4
+    asn1: ^0.2.4
+  checksum: c03a6c8f69557326d2110086ce9610b4b17ef0fd594f76202225b7eb93fc0b342fb31714f6b3cf8d38320cf63c4790a3034e5d47a12f2c27d1900599ec9bd545
   languageName: node
   linkType: hard
 
