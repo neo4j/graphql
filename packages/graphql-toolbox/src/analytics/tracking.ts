@@ -20,9 +20,60 @@
 import { LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING } from "../constants";
 import { Storage } from "../utils/storage";
 
+export enum TrackingExecutionTypeExplorer {
+    QUERY,
+    MUTATION,
+}
+
+export enum TrackingSchemaConstraintTypes {
+    CHECK,
+    CREATE,
+    NONE,
+}
+
 class Tracking {
+    public trackIntrospectionInSchemaView = () => {
+        this.fireTrackingEvent("ux", "introspection-schema-view");
+    };
+
+    public trackIntrospectionInModal = () => {
+        this.fireTrackingEvent("ux", "introspection-modal");
+    };
+
+    public trackChangeEditorTheme = () => {
+        this.fireTrackingEvent("ux", "editor-theme");
+    };
+
     public trackFavorites = () => {
         this.fireTrackingEvent("ux", "favorites");
+    };
+
+    public trackSchemaDebugToggle = () => {
+        this.fireTrackingEvent("ux", "schema-debug-toggle");
+    };
+
+    public trackSchemaRegexToggle = () => {
+        this.fireTrackingEvent("ux", "schema-regex-toggle");
+    };
+
+    public trackSchemaConstraints = ({ constraintType }: { constraintType: TrackingSchemaConstraintTypes }) => {
+        this.fireTrackingEvent("ux", "schema-regex-toggle", { constraintType });
+    };
+
+    public trackChangeDatabase = () => {
+        this.fireTrackingEvent("ux", "change-database");
+    };
+
+    public trackAddExecutionTypeInExplorer = ({ type }: { type: TrackingExecutionTypeExplorer }) => {
+        this.fireTrackingEvent("ux", "add-explorer-query-mutation", { type });
+    };
+
+    public trackOpenSchemaDocsDrawer = () => {
+        this.fireTrackingEvent("ux", "open-schema-docs-drawer");
+    };
+
+    public trackOpenSchemaDocsExplorer = () => {
+        this.fireTrackingEvent("ux", "open-schema-docs-explorer");
     };
 
     private fireTrackingEvent = (eventCategory: string, eventLabel: string, eventProperties = {}) => {
