@@ -100,7 +100,6 @@ export function translateRead(
 
     const hasOrdering = optionsInput.sort || optionsInput.limit || optionsInput.offset;
 
-    // May be needed for performance
     if (hasOrdering) {
         orderClause = new CypherBuilder.With("*");
         addSortAndLimitOptionsToClause({
