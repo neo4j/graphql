@@ -25,7 +25,7 @@ export interface TypeDefinitionsAnalyticsResults {
     quantityOfDirectiveUsage: number;
 }
 
-export const simpleTypeDefinitionsAnalytics = (typeDefinitions: string): TypeDefinitionsAnalyticsResults => {
+export const rudimentaryTypeDefinitionsAnalytics = (typeDefinitions: string): TypeDefinitionsAnalyticsResults => {
     const numberOfTypes = (typeDefinitions.match(/type (.*?){/g) || []).length;
     const numberOfInterfaces = (typeDefinitions.match(/interface (.*?){/g) || []).length;
     const numberOfDirectives = (typeDefinitions.match(/directive @/g) || []).length;

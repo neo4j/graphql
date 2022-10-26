@@ -47,6 +47,7 @@ import { ConstraintState, Favorite } from "../../types";
 import { Favorites } from "./Favorites";
 import { IntrospectionPrompt } from "./IntrospectionPrompt";
 import { tracking } from "../../analytics/tracking";
+import { rudimentaryTypeDefinitionsAnalytics } from "../../analytics/analytics";
 
 export interface Props {
     hasSchema: boolean;
@@ -121,7 +122,8 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: true } });
                 }
 
-                // tracking.trackBuildSchema({ })
+                const analyticsResults = rudimentaryTypeDefinitionsAnalytics(typeDefs);
+                tracking.trackBuildSchema({ screen: "type definitions", ...analyticsResults });
 
                 onChange(schema);
             } catch (error) {
@@ -147,9 +149,12 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
             const typeDefs = await toGraphQLTypeDefs(sessionFactory);
 
             refForEditorMirror.current?.setValue(typeDefs);
+
+            tracking.trackDatabaseIntrospection({ screen: "type definitions", status: "success" });
         } catch (error) {
             const msg = (error as GraphQLError).message;
             setError(msg);
+            tracking.trackDatabaseIntrospection({ screen: "type definitions", status: "failure" });
         } finally {
             setLoading(false);
             setIsIntrospecting(false);
@@ -162,6 +167,11 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
             await buildSchema(value);
         }
     }, [buildSchema]);
+
+    const onClickIntrospect = async () => {
+        await introspect();
+        tracking.trackDatabaseIntrospection({ screen: "type definitions", status: "success" });
+    };
 
     return (
         <div className="w-full flex">
@@ -182,6 +192,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                         auth.setShowIntrospectionPrompt(false);
                         // eslint-disable-next-line @typescript-eslint/no-floating-promises
                         introspect();
+                        tracking.trackDatabaseIntrospection({ screen: "initial modal", status: "success" });
                     }}
                 />
             ) : null}
@@ -217,7 +228,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                                 loading={loading}
                                 isIntrospecting={isIntrospecting}
                                 formatTheCode={formatTheCode}
-                                introspect={introspect}
+                                introspect={onClickIntrospect}
                                 saveAsFavorite={saveAsFavorite}
                             />
                             {!appSettings.hideProductUsageMessage ? (

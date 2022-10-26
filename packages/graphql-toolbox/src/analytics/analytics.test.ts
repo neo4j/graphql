@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-import { simpleTypeDefinitionsAnalytics } from "./analytics";
+import { rudimentaryTypeDefinitionsAnalytics } from "./analytics";
 
-describe("simpleTypeDefinitionsAnalytics", () => {
+describe("rudimentaryTypeDefinitionsAnalytics", () => {
     test("should count types correctly for very simple type definitions", () => {
         const typeDefinitions = `
             type Query {
@@ -28,7 +28,7 @@ describe("simpleTypeDefinitionsAnalytics", () => {
         `;
 
         const { numberOfDirectives, numberOfInterfaces, numberOfTypes, numberOfUnions, quantityOfDirectiveUsage } =
-            simpleTypeDefinitionsAnalytics(typeDefinitions);
+            rudimentaryTypeDefinitionsAnalytics(typeDefinitions);
         expect(numberOfTypes).toBe(1);
         expect(numberOfDirectives).toBe(0);
         expect(numberOfUnions).toBe(0);
@@ -82,7 +82,7 @@ describe("simpleTypeDefinitionsAnalytics", () => {
         `;
 
         const { numberOfDirectives, numberOfInterfaces, numberOfTypes, numberOfUnions, quantityOfDirectiveUsage } =
-            simpleTypeDefinitionsAnalytics(typeDefinitions);
+            rudimentaryTypeDefinitionsAnalytics(typeDefinitions);
         expect(numberOfTypes).toBe(4);
         expect(numberOfDirectives).toBe(0);
         expect(numberOfUnions).toBe(1);
@@ -105,7 +105,7 @@ describe("simpleTypeDefinitionsAnalytics", () => {
         `;
 
         const { numberOfDirectives, numberOfInterfaces, numberOfTypes, numberOfUnions, quantityOfDirectiveUsage } =
-            simpleTypeDefinitionsAnalytics(typeDefinitions);
+            rudimentaryTypeDefinitionsAnalytics(typeDefinitions);
         expect(numberOfTypes).toBe(1);
         expect(numberOfDirectives).toBe(2);
         expect(numberOfUnions).toBe(0);
@@ -139,7 +139,7 @@ describe("simpleTypeDefinitionsAnalytics", () => {
         `;
 
         const { numberOfDirectives, numberOfInterfaces, numberOfTypes, numberOfUnions, quantityOfDirectiveUsage } =
-            simpleTypeDefinitionsAnalytics(typeDefinitions);
+            rudimentaryTypeDefinitionsAnalytics(typeDefinitions);
         expect(numberOfTypes).toBe(2);
         expect(numberOfDirectives).toBe(0);
         expect(numberOfUnions).toBe(2);
@@ -172,7 +172,7 @@ describe("simpleTypeDefinitionsAnalytics", () => {
         `;
 
         const { numberOfDirectives, numberOfInterfaces, numberOfTypes, numberOfUnions, quantityOfDirectiveUsage } =
-            simpleTypeDefinitionsAnalytics(typeDefinitions);
+            rudimentaryTypeDefinitionsAnalytics(typeDefinitions);
         expect(numberOfTypes).toBe(3);
         expect(numberOfDirectives).toBe(0);
         expect(numberOfUnions).toBe(0);

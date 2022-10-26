@@ -17,66 +17,60 @@
  * limitations under the License.
  */
 
+import { Screen } from "src/contexts/screen";
 import { TypeDefinitionsAnalyticsResults } from "./analytics";
 
 export interface TrackingTBIntrospect {
-    screen: "query editor" | "type definitions" | "initial modal";
+    screen: Screen | "query editor" | "type definitions" | "initial modal";
     status?: "success" | "failure";
     errorMessage?: string;
 }
 
 export interface TrackingTBEditorThemeToggle {
-    screen: "query editor" | "type definitions";
-    theme: "light" | "dark";
+    screen: Screen | "query editor" | "type definitions";
+    theme: "dark" | "light";
 }
 
 export interface TrackingTBFavorite {
-    screen: "query editor" | "type definitions";
+    screen: Screen | "query editor" | "type definitions";
 }
 
 export interface TrackingTBSchemaSettingsCheckbox {
-    screen: "query editor" | "type definitions";
+    screen: Screen | "query editor" | "type definitions";
     box: "debug" | "regex";
     action: "check" | "uncheck";
 }
 
 export interface TrackingTBSchemaConstraints {
-    screen: "query editor" | "type definitions";
-    value: "check" | "create" | "ignore";
+    screen: Screen | "query editor" | "type definitions";
+    value: string;
 }
 
 export interface TrackingTBChangeDatabase {
-    screen: "query editor" | "type definitions";
+    screen: Screen | "query editor" | "type definitions";
 }
 
 export interface TrackingTBExplorerExecutionTypeAdd {
-    screen: "query editor" | "type definitions";
+    screen: Screen | "query editor" | "type definitions";
     actionLabel: "query" | "mutation";
 }
 
 export interface TrackingTBSchemaDocsToggle {
-    screen: "query editor" | "type definitions";
+    screen: Screen | "query editor" | "type definitions";
     action: "on" | "off";
     origin: "explorer" | "help drawer";
 }
 
 export interface TrackingTBHelpLearnLinkClick {
-    screen: "query editor" | "type definitions";
-    actionLabel:
-        | "schema documentation"
-        | "github repository"
-        | "issue tracker"
-        | "library documentation"
-        | "neo4j graph academy"
-        | "community"
-        | "send feedback";
+    screen: Screen | "query editor" | "type definitions";
+    actionLabel: string;
 }
 
 export interface TrackingTBBuildSchemaClick extends TypeDefinitionsAnalyticsResults {
-    screen: "query editor" | "type definitions";
+    screen: Screen | "query editor" | "type definitions";
 }
 
 export interface TrackingTBExecuteQuery {
-    screen: "query editor" | "type definitions";
-    queryComplexity: number;
+    screen: Screen | "query editor" | "type definitions";
+    queryComplexity?: number;
 }

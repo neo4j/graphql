@@ -1,5 +1,7 @@
-import { Fragment } from "react";
+import { Fragment, useContext } from "react";
 import { HeroIcon } from "@neo4j-ndl/react";
+import { tracking } from "../../analytics/tracking";
+import { Screen, ScreenContext } from "../../contexts/screen";
 
 interface Props {
     showSchemaView: boolean;
@@ -8,6 +10,7 @@ interface Props {
 interface ResourceLinksBlockProps {
     listBlockTitle: string;
     links: Links[];
+    screen: Screen;
 }
 
 interface Links {
@@ -70,7 +73,7 @@ const linksDocumentation: Links[] = [
     },
 ];
 
-const ResourceLinksBlock = ({ listBlockTitle, links }: ResourceLinksBlockProps): JSX.Element => {
+const ResourceLinksBlock = ({ listBlockTitle, links, screen }: ResourceLinksBlockProps): JSX.Element => {
     return (
         <Fragment>
             <div className="flex items-center">
@@ -86,6 +89,13 @@ const ResourceLinksBlock = ({ listBlockTitle, links }: ResourceLinksBlockProps):
                                 href={link.href}
                                 target="_blank"
                                 rel="noreferrer"
+                                onClick={() => {
+                                    const screenValue = screen === Screen.EDITOR ? "query editor" : "type definitions";
+                                    tracking.trackHelpLearnFeatureLinks({
+                                        screen: screenValue,
+                                        actionLabel: link.label,
+                                    });
+                                }}
                             >
                                 {/* @ts-ignore - iconName is a string */}
                                 <HeroIcon className="h-6 w-6 mr-2 stroke-1" type="outline" iconName={link.iconName} />
@@ -100,19 +110,24 @@ const ResourceLinksBlock = ({ listBlockTitle, links }: ResourceLinksBlockProps):
 };
 
 export const Resources = ({ showSchemaView }: Props): JSX.Element => {
+    const screen = useContext(ScreenContext);
     const linksForResources = showSchemaView ? linksResources.slice(1) : linksResources;
 
     return (
         <div data-test-help-drawer-resources-list>
             {showSchemaView ? (
                 <Fragment>
-                    <ResourceLinksBlock listBlockTitle="Documentation" links={linksDocumentation} />
+                    <ResourceLinksBlock
+                        listBlockTitle="Documentation"
+                        links={linksDocumentation}
+                        screen={screen.view}
+                    />
                     <hr className="mb-6" />
                 </Fragment>
             ) : null}
-            <ResourceLinksBlock listBlockTitle="Github" links={linksGithub} />
+            <ResourceLinksBlock listBlockTitle="Github" links={linksGithub} screen={screen.view} />
             <hr className="mb-6" />
-            <ResourceLinksBlock listBlockTitle="Resources" links={linksForResources} />
+            <ResourceLinksBlock listBlockTitle="Resources" links={linksForResources} screen={screen.view} />
         </div>
     );
 };

@@ -21,6 +21,7 @@ import { useContext } from "react";
 import { Checkbox, Radio } from "@neo4j-ndl/react";
 import { Theme, ThemeContext } from "../../contexts/theme";
 import { AppSettingsContext } from "../..//contexts/appsettings";
+import { tracking } from "../../analytics/tracking";
 
 interface Props {
     onClickClose: () => void;
@@ -33,6 +34,8 @@ export const AppSettings = ({ onClickClose }: Props) => {
     const handleOnChangeEditorTheme = (event: any) => {
         const next = event?.target?.id === Theme.LIGHT.toString() ? Theme.LIGHT : Theme.DARK;
         theme.setTheme(next);
+        const trackingThemeValue = next === Theme.DARK ? "dark" : "light";
+        tracking.trackChangeEditorTheme({ screen: "type definitions", theme: trackingThemeValue });
     };
 
     const onChangeShowLintMarkers = (): void => {

@@ -42,6 +42,7 @@ import { AppSettings } from "../AppSettings/AppSettings";
 import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
 import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
 import { Storage } from "../../utils/storage";
+import { tracking } from "../../analytics/tracking";
 
 const DEBOUNCE_TIMEOUT = 500;
 
@@ -73,14 +74,18 @@ export const Editor = ({ schema }: Props) => {
         formatCode(refForQueryEditorMirror.current, ParserOptions.GRAPH_QL);
     };
 
+    const handleShowDocs = () => {
+        setShowDocs(!showDocs);
+        const actionValue = showDocs ? "on" : "off";
+        tracking.trackOpenSchemaDocs({ screen: "query editor", origin: "explorer", action: actionValue });
+    };
+
     const onSubmit = useCallback(
         async (override?: string) => {
             let result: string;
 
             setLoading(true);
             if (!schema) return;
-
-            calculateQueryComplexity(schema, override || query || "", variableValues);
 
             try {
                 const response = await graphql({
@@ -94,6 +99,9 @@ export const Editor = ({ schema }: Props) => {
             } catch (error) {
                 result = JSON.stringify({ errors: [error] });
             }
+
+            const complexity = calculateQueryComplexity(schema, override || query || "", variableValues);
+            tracking.trackExecuteQuery({ screen: "query editor", queryComplexity: complexity });
 
             setTimeout(() => {
                 setOutput(result);
@@ -135,7 +143,7 @@ export const Editor = ({ schema }: Props) => {
                                             data-test-explorer-show-docs-switch
                                             label="Docs"
                                             checked={showDocs}
-                                            onChange={() => setShowDocs(!showDocs)}
+                                            onChange={handleShowDocs}
                                         />
                                     </div>
                                     <GraphiQLExplorer
