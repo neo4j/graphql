@@ -89,33 +89,43 @@ describe("Relationship Properties Create Cypher", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.title = $this0_title
-            WITH this0
-            CREATE (this0_actors0_node:Actor)
-            SET this0_actors0_node.name = $this0_actors0_node_name
-            MERGE (this0)<-[this0_actors0_relationship:ACTED_IN]-(this0_actors0_node)
-            SET this0_actors0_relationship.screenTime = $this0_actors0_relationship_screenTime
-            RETURN this0
+            "UNWIND [ { title: $create_param0, actors: { create: [ { node: { name: $create_param1 }, edge: { screenTime: $create_param2 } } ] } } ] AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.title = create_var1.title
+                WITH create_this0, create_var1
+                CALL {
+                    WITH create_this0, create_var1
+                    UNWIND create_var1.actors.create AS create_var2
+                    WITH create_var2.node AS create_var3, create_var2.edge AS create_var4, create_this0
+                    CREATE (create_this5:\`Actor\`)
+                    SET
+                        create_this5.name = create_var3.name
+                    MERGE (create_this5)-[create_this6:ACTED_IN]->(create_this0)
+                    SET
+                        create_this6.screenTime = create_var4.screenTime
+                    RETURN collect(NULL)
+                }
+                RETURN create_this0
             }
             CALL {
-                WITH this0
-                MATCH (this0)<-[this0_connection_actorsConnectionthis0:ACTED_IN]-(this0_Actor:\`Actor\`)
-                WITH { screenTime: this0_connection_actorsConnectionthis0.screenTime, node: { name: this0_Actor.name } } AS edge
+                WITH create_this0
+                MATCH (create_this0)<-[create_this0_connection_actorsConnectionthis0:ACTED_IN]-(create_this0_Actor:\`Actor\`)
+                WITH { screenTime: create_this0_connection_actorsConnectionthis0.screenTime, node: { name: create_this0_Actor.name } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this0_actorsConnection
+                RETURN { edges: edges, totalCount: totalCount } AS create_this0_actorsConnection
             }
-            RETURN [
-            this0 { .title, actorsConnection: this0_actorsConnection }] AS data"
+            RETURN collect(create_this0 { .title, actorsConnection: create_this0_actorsConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_title\\": \\"Forrest Gump\\",
-                \\"this0_actors0_node_name\\": \\"Tom Hanks\\",
-                \\"this0_actors0_relationship_screenTime\\": {
+                \\"create_param0\\": \\"Forrest Gump\\",
+                \\"create_param1\\": \\"Tom Hanks\\",
+                \\"create_param2\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
                 },

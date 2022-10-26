@@ -213,21 +213,23 @@ describe("Cypher Points", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:PointContainer)
-            SET this0.points = [p in $this0_points | point(p)]
-            RETURN this0
+            "UNWIND [ { points: $create_param0 } ] AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`PointContainer\`)
+                SET
+                    create_this0.points = [create_var2 IN create_var1.points | point(create_var2)]
+                RETURN create_this0
             }
-            RETURN [
-            this0 { points: (CASE
-                WHEN this0.points IS NOT NULL THEN [p_var0 IN this0.points | { point: p_var0, crs: p_var0.crs }]
+            RETURN collect(create_this0 { points: (CASE
+                WHEN create_this0.points IS NOT NULL THEN [p_var0 IN create_this0.points | { point: p_var0, crs: p_var0.crs }]
                 ELSE NULL
-            END) }] AS data"
+            END) }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_points\\": [
+                \\"create_param0\\": [
                     {
                         \\"longitude\\": 1,
                         \\"latitude\\": 2

@@ -171,45 +171,55 @@ describe("Cypher alias directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Actor)
-            SET this0.name = $this0_name
-            SET this0.cityPropInDb = $this0_city
-            WITH this0
-            CREATE (this0_actedIn0_node:Movie)
-            SET this0_actedIn0_node.title = $this0_actedIn0_node_title
-            SET this0_actedIn0_node.ratingPropInDb = $this0_actedIn0_node_rating
-            MERGE (this0)-[this0_actedIn0_relationship:ACTED_IN]->(this0_actedIn0_node)
-            SET this0_actedIn0_relationship.characterPropInDb = $this0_actedIn0_relationship_character
-            SET this0_actedIn0_relationship.screenTime = $this0_actedIn0_relationship_screenTime
-            RETURN this0
+            "UNWIND [ { name: $create_param0, city: $create_param1, actedIn: { create: [ { node: { title: $create_param2, rating: $create_param3 }, edge: { character: $create_param4, screenTime: $create_param5 } } ] } } ] AS create_var2
+            CALL {
+                WITH create_var2
+                CREATE (create_this1:\`Actor\`)
+                SET
+                    create_this1.name = create_var2.name,
+                    create_this1.cityPropInDb = create_var2.city
+                WITH create_this1, create_var2
+                CALL {
+                    WITH create_this1, create_var2
+                    UNWIND create_var2.actedIn.create AS create_var3
+                    WITH create_var3.node AS create_var4, create_var3.edge AS create_var5, create_this1
+                    CREATE (create_this6:\`Movie\`)
+                    SET
+                        create_this6.title = create_var4.title,
+                        create_this6.ratingPropInDb = create_var4.rating
+                    MERGE (create_this1)-[create_this7:ACTED_IN]->(create_this6)
+                    SET
+                        create_this7.characterPropInDb = create_var5.character,
+                        create_this7.screenTime = create_var5.screenTime
+                    RETURN collect(NULL)
+                }
+                RETURN create_this1
             }
             CALL {
-                WITH this0
-                MATCH (this0)-[create_this0:ACTED_IN]->(this0_actedIn:\`Movie\`)
-                WITH this0_actedIn { .title, rating: this0_actedIn.ratingPropInDb } AS this0_actedIn
-                RETURN collect(this0_actedIn) AS this0_actedIn
+                WITH create_this1
+                MATCH (create_this1)-[create_this0:ACTED_IN]->(create_this1_actedIn:\`Movie\`)
+                WITH create_this1_actedIn { .title, rating: create_this1_actedIn.ratingPropInDb } AS create_this1_actedIn
+                RETURN collect(create_this1_actedIn) AS create_this1_actedIn
             }
             CALL {
-                WITH this0
-                MATCH (this0)-[this0_connection_actedInConnectionthis0:ACTED_IN]->(this0_Movie:\`Movie\`)
-                WITH { character: this0_connection_actedInConnectionthis0.characterPropInDb, screenTime: this0_connection_actedInConnectionthis0.screenTime, node: { title: this0_Movie.title, rating: this0_Movie.ratingPropInDb } } AS edge
+                WITH create_this1
+                MATCH (create_this1)-[create_this1_connection_actedInConnectionthis0:ACTED_IN]->(create_this1_Movie:\`Movie\`)
+                WITH { character: create_this1_connection_actedInConnectionthis0.characterPropInDb, screenTime: create_this1_connection_actedInConnectionthis0.screenTime, node: { title: create_this1_Movie.title, rating: create_this1_Movie.ratingPropInDb } } AS edge
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS this0_actedInConnection
+                RETURN { edges: edges, totalCount: totalCount } AS create_this1_actedInConnection
             }
-            RETURN [
-            this0 { .name, city: this0.cityPropInDb, actedIn: this0_actedIn, actedInConnection: this0_actedInConnection }] AS data"
+            RETURN collect(create_this1 { .name, city: create_this1.cityPropInDb, actedIn: create_this1_actedIn, actedInConnection: create_this1_actedInConnection }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_name\\": \\"Molly\\",
-                \\"this0_city\\": \\"Sjömarken\\",
-                \\"this0_actedIn0_node_title\\": \\"Molly's game\\",
-                \\"this0_actedIn0_node_rating\\": 5,
-                \\"this0_actedIn0_relationship_character\\": \\"Molly\\",
-                \\"this0_actedIn0_relationship_screenTime\\": {
+                \\"create_param0\\": \\"Molly\\",
+                \\"create_param1\\": \\"Sjömarken\\",
+                \\"create_param2\\": \\"Molly's game\\",
+                \\"create_param3\\": 5,
+                \\"create_param4\\": \\"Molly\\",
+                \\"create_param5\\": {
                     \\"low\\": 120,
                     \\"high\\": 0
                 },

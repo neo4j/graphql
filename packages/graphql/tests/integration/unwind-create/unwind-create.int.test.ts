@@ -407,4 +407,166 @@ describe("unwind-create", () => {
             await session.close();
         }
     });
+
+    test("should set properties defined with the directive @alias", async () => {
+        const session = await neo4j.getSession();
+
+        const Movie = generateUniqueType("Movie");
+        const Actor = generateUniqueType("Actor");
+
+        const actedIn = generate({
+            charset: "alphabetic",
+        });
+
+        const typeDefs = `
+ 
+            type ${Actor}  {
+                name: String!
+                nickname: String @alias(property: "alternativeName")
+            }
+
+            type ${Movie} {
+                id: ID!
+                name: String @alias(property: "title")
+                actors: [${Actor}!]! @relationship(type: "${actedIn}", direction: IN, properties: "ActedIn")
+            }
+        
+            interface ActedIn @relationshipProperties {
+                year: Int
+                pay: Int @alias(property: "salary")
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const movieName = "Matrix";
+
+        const id2 = generate({
+            charset: "alphabetic",
+        });
+
+        const movie2Name = "Matrix 2";
+
+        const actorName = generate({
+            charset: "alphabetic",
+        });
+
+        const actorNickname = generate({
+            charset: "alphabetic",
+        });
+
+        const actorPay = 10200;
+
+        const actor2Name = generate({
+            charset: "alphabetic",
+        });
+
+        const actor2Nickname = generate({
+            charset: "alphabetic",
+        });
+        const actor2Pay = 1232;
+
+        const query = `
+        mutation(
+            $id: ID!,
+            $movieName: String,
+            $id2: ID!,
+            $movie2Name: String,
+            $actorName: String!, 
+            $actorNickname: String!, 
+            $actorPay: Int, 
+            $actor2Name: String!, 
+            $actor2Nickname: String!, 
+            $actor2Pay: Int
+        ) {
+            ${Movie.operations.create}(input: [
+                { 
+                    id: $id,
+                    name: $movieName,
+                    actors: {
+                        create: { node:  { name: $actorName, nickname: $actorNickname }, edge: { year: 2022, pay: $actorPay } } 
+                    } 
+                },
+                { 
+                    id: $id2,
+                    name: $movie2Name,
+                    actors: { 
+                        create: { node: { name: $actor2Name, nickname: $actor2Nickname }, edge: { year: 2021, pay: $actor2Pay } } 
+                    } 
+                }
+            ]) {
+                ${Movie.plural} {
+                    id
+                    name
+                    actors {
+                        name
+                        nickname
+                    }
+                }
+            }
+          }
+        `;
+
+        try {
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                variableValues: {
+                    id,
+                    movieName,
+                    id2,
+                    movie2Name,
+                    actorName,
+                    actorNickname,
+                    actorPay,
+                    actor2Name,
+                    actor2Nickname,
+                    actor2Pay,
+                },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.[Movie.operations.create]?.[Movie.plural]).toEqual(
+                expect.arrayContaining([
+                    { id, name: movieName, actors: [{ name: actorName, nickname: actorNickname }] },
+                    { id: id2, name: movie2Name, actors: [{ name: actor2Name, nickname: actor2Nickname }] },
+                ])
+            );
+
+            const reFind = await session.run(
+                `
+              MATCH (m:${Movie})<-[r:${actedIn}]-(a)
+              RETURN m,r,a
+            `,
+                {}
+            );
+
+            const records = reFind.records.map((record) => record.toObject());
+
+            expect(records).toEqual(
+                expect.arrayContaining([
+                    {
+                        m: expect.objectContaining({ properties: { id, title: movieName } }),
+                        r: expect.objectContaining({ properties: { year: int(2022), salary: int(actorPay) } }),
+                        a: expect.objectContaining({ properties: { name: actorName, alternativeName: actorNickname } }),
+                    },
+                    {
+                        m: expect.objectContaining({ properties: { id: id2, title: movie2Name } }),
+                        r: expect.objectContaining({ properties: { year: int(2021), salary: int(actor2Pay) } }),
+                        a: expect.objectContaining({
+                            properties: { name: actor2Name, alternativeName: actor2Nickname },
+                        }),
+                    },
+                ])
+            );
+        } finally {
+            await session.close();
+        }
+    });
 });

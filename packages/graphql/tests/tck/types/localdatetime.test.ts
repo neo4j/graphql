@@ -128,18 +128,20 @@ describe("Cypher LocalDateTime", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.localDT = $this0_localDT
-            RETURN this0
+            "UNWIND [ { localDT: $create_param0 } ] AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.localDT = create_var1.localDT
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .localDT }] AS data"
+            RETURN collect(create_this0 { .localDT }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_localDT\\": {
+                \\"create_param0\\": {
                     \\"year\\": 1974,
                     \\"month\\": 5,
                     \\"day\\": 1,

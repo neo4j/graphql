@@ -120,18 +120,20 @@ describe("Cypher Date", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.date = $this0_date
-            RETURN this0
+            "UNWIND [ { date: $create_param0 } ] AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.date = create_var1.date
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .date }] AS data"
+            RETURN collect(create_this0 { .date }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_date\\": {
+                \\"create_param0\\": {
                     \\"year\\": 1970,
                     \\"month\\": 1,
                     \\"day\\": 1

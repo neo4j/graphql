@@ -154,7 +154,7 @@ describe("TreeDescriptor Parser", () => {
         });
     });
 
-    test("it should possible to obtain homogenous TreeDescriptor from an heterogenous GraphQL input", () => {
+    test("it should possible to obtain homogenous TreeDescriptor from an heterogeneous GraphQL input", () => {
         const graphQLInput = {
             id: 3,
             website: {
@@ -258,7 +258,7 @@ describe("TreeDescriptor Parser", () => {
                                     childrens: {
                                         node: {
                                             properties: new Set(["id"]),
-                                            childrens: {}
+                                            childrens: {},
                                         },
                                     },
                                 },
@@ -272,9 +272,8 @@ describe("TreeDescriptor Parser", () => {
                                     childrens: {
                                         node: {
                                             properties: new Set(["id"]),
-                                            childrens: {}
-                                        }
-                   
+                                            childrens: {},
+                                        },
                                     },
                                 },
                                 onCreate: {
@@ -283,7 +282,7 @@ describe("TreeDescriptor Parser", () => {
                                         node: {
                                             properties: new Set(["name"]),
                                             childrens: {},
-                                        }
+                                        },
                                     },
                                 },
                             },
@@ -303,22 +302,22 @@ describe("TreeDescriptor Parser", () => {
                         node: {
                             name: "Keanu",
                             create: int(123),
-                            edge: {x: 10, y: 10 },
+                            edge: { x: 10, y: 10 },
                             website: {
                                 create: {
                                     node: {
                                         create: int(123),
-                                        edge: {x: 10, y: 10 },
-                                    }
-                                }
-                            }
+                                        edge: { x: 10, y: 10 },
+                                    },
+                                },
+                            },
                         },
                         edge: {
                             year: 1992,
                             create: int(123),
-                            edge: {x: 10, y: 10 }
+                            edge: { x: 10, y: 10 },
                         },
-                    }
+                    },
                 ],
             },
         };
@@ -353,12 +352,12 @@ describe("TreeDescriptor Parser", () => {
                                                     childrens: {
                                                         node: {
                                                             properties: new Set(["create", "edge"]),
-                                                            childrens: {}
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
+                                                            childrens: {},
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
                                     },
                                 },
                                 edge: {

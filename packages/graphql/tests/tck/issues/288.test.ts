@@ -64,20 +64,22 @@ describe("#288", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:USER)
-            SET this0.USERID = $this0_USERID
-            SET this0.COMPANYID = $this0_COMPANYID
-            RETURN this0
+            "UNWIND [ { USERID: $create_param0, COMPANYID: $create_param1 } ] AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`USER\`)
+                SET
+                    create_this0.USERID = create_var1.USERID,
+                    create_this0.COMPANYID = create_var1.COMPANYID
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .USERID, .COMPANYID }] AS data"
+            RETURN collect(create_this0 { .USERID, .COMPANYID }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_USERID\\": \\"userid\\",
-                \\"this0_COMPANYID\\": \\"companyid\\",
+                \\"create_param0\\": \\"userid\\",
+                \\"create_param1\\": \\"companyid\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

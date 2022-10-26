@@ -122,18 +122,20 @@ describe("Cypher LocalTime", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.time = $this0_time
-            RETURN this0
+            "UNWIND [ { time: $create_param0 } ] AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.time = create_var1.time
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .time }] AS data"
+            RETURN collect(create_this0 { .time }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_time\\": {
+                \\"create_param0\\": {
                     \\"hour\\": 22,
                     \\"minute\\": 0,
                     \\"second\\": 15,

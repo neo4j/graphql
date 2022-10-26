@@ -24,7 +24,7 @@ import { Neo4jGraphQL } from "../../../../src";
 import { createJwtRequest } from "../../../utils/create-jwt-request";
 import { formatCypher, translateQuery, formatParams } from "../../utils/tck-test-utils";
 
-describe("Batch Create with Auth", () => {
+describe("Batch Create, Auth", () => {
     let typeDefs: DocumentNode;
     let neoSchema: Neo4jGraphQL;
 
@@ -64,7 +64,7 @@ describe("Batch Create with Auth", () => {
         });
     });
 
-    test("simple batch (auth)", async () => {
+    test("no nested batch", async () => {
         const query = gql`
             mutation {
                 createMovies(input: [{ id: "1" }, { id: "2" }]) {
@@ -134,7 +134,7 @@ describe("Batch Create with Auth", () => {
         `);
     });
 
-    test("Simple Nested  (auth)", async () => {
+    test("nested batch", async () => {
         const query = gql`
             mutation {
                 createMovies(
@@ -264,7 +264,7 @@ describe("Batch Create with Auth", () => {
         `);
     });
 
-    test("non-uniform batch (auth)", async () => {
+    test("heterogeneous batch", async () => {
         const query = gql`
             mutation {
                 createMovies(
@@ -390,11 +390,14 @@ describe("Batch Create with Auth", () => {
             	WHERE this3_actors_connect0_node.id = $this3_actors_connect0_node_param0
             	WITH this3, this3_actors_connect0_node
             	CALL apoc.util.validate(NOT ((this3_actors_connect0_node.id IS NOT NULL AND this3_actors_connect0_node.id = $this3_actors_connect0_nodeauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	FOREACH(_ IN CASE WHEN this3 IS NULL THEN [] ELSE [1] END |
-            		FOREACH(_ IN CASE WHEN this3_actors_connect0_node IS NULL THEN [] ELSE [1] END |
-            			MERGE (this3)<-[this3_actors_connect0_relationship:ACTED_IN]-(this3_actors_connect0_node)
-            		)
-            	)
+            	CALL {
+            		WITH *
+            		WITH collect(this3_actors_connect0_node) as connectedNodes, collect(this3) as parentNodes
+            		UNWIND parentNodes as this3
+            		UNWIND connectedNodes as this3_actors_connect0_node
+            		MERGE (this3)<-[this3_actors_connect0_relationship:ACTED_IN]-(this3_actors_connect0_node)
+            		RETURN count(*) AS _
+            	}
             	RETURN count(*) AS connect_this3_actors_connect_Actor
             }
             WITH this3
@@ -415,11 +418,12 @@ describe("Batch Create with Auth", () => {
             WITH this4
             CALL {
                 WITH this4
-                CALL apoc.util.validate(NOT ((this4_actors_connectOrCreate0.id IS NOT NULL AND this4_actors_connectOrCreate0.id = $this4_actors_connectOrCreate0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                MERGE (this4_actors_connectOrCreate_this0:\`Actor\` { id: $this4_actors_connectOrCreate_param1 })
+                MERGE (this4_actors_connectOrCreate0:\`Actor\` { id: $this4_actors_connectOrCreate_param0 })
                 ON CREATE SET
-                    this4_actors_connectOrCreate_this0.name = $this4_actors_connectOrCreate_param2
-                MERGE (this4_actors_connectOrCreate_this0)-[this4_actors_connectOrCreate_this1:ACTED_IN]->(this4)
+                    this4_actors_connectOrCreate0.name = $this4_actors_connectOrCreate_param1
+                MERGE (this4_actors_connectOrCreate0)-[this4_actors_connectOrCreate_this0:ACTED_IN]->(this4)
+                WITH *
+                CALL apoc.util.validate(NOT ((this4_actors_connectOrCreate0.id IS NOT NULL AND this4_actors_connectOrCreate0.id = $this4_actors_connectOrCreate0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN COUNT(*) AS _
             }
             WITH this4
@@ -528,9 +532,9 @@ describe("Batch Create with Auth", () => {
                 \\"this3_actors_connect0_node_param0\\": \\"2\\",
                 \\"this3_actors_connect0_nodeauth_param0\\": \\"1\\",
                 \\"this4_id\\": \\"5\\",
+                \\"this4_actors_connectOrCreate_param0\\": \\"2\\",
+                \\"this4_actors_connectOrCreate_param1\\": \\"actor 2\\",
                 \\"this4_actors_connectOrCreate0auth_param0\\": \\"1\\",
-                \\"this4_actors_connectOrCreate_param1\\": \\"2\\",
-                \\"this4_actors_connectOrCreate_param2\\": \\"actor 2\\",
                 \\"resolvedCallbacks\\": {},
                 \\"auth\\": {
                     \\"isAuthenticated\\": true,

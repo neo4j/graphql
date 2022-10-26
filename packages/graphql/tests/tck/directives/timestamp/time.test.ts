@@ -67,21 +67,23 @@ describe("Cypher TimeStamps On Time Fields", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.createdAt = time()
-            SET this0.interfaceTimestamp = time()
-            SET this0.overrideTimestamp = time()
-            SET this0.id = $this0_id
-            RETURN this0
+            "UNWIND [ { id: $create_param0 } ] AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.id = create_var1.id,
+                    create_this0.createdAt = time(),
+                    create_this0.interfaceTimestamp = time(),
+                    create_this0.overrideTimestamp = time()
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .id }] AS data"
+            RETURN collect(create_this0 { .id }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"123\\",
+                \\"create_param0\\": \\"123\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

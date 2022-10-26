@@ -100,67 +100,39 @@ describe("Cypher Projection", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Product)
-            SET this0.id = $this0_id
-            RETURN this0
+            "UNWIND [ { id: $create_param3 }, { id: $create_param4 } ] AS create_var4
+            CALL {
+                WITH create_var4
+                CREATE (create_this3:\`Product\`)
+                SET
+                    create_this3.id = create_var4.id
+                RETURN create_this3
             }
             CALL {
-            CREATE (this1:Product)
-            SET this1.id = $this1_id
-            RETURN this1
-            }
-            CALL {
-                WITH this0
-                MATCH (this0)-[create_this0:HAS_PHOTO]->(this0_photos:\`Photo\`)
-                WHERE this0_photos.url = $create_param0
-                WITH this0_photos { .url, location: (CASE
-                    WHEN this0_photos.location IS NOT NULL THEN { point: this0_photos.location }
+                WITH create_this3
+                MATCH (create_this3)-[create_this0:HAS_PHOTO]->(create_this3_photos:\`Photo\`)
+                WHERE create_this3_photos.url = $create_param0
+                WITH create_this3_photos { .url, location: (CASE
+                    WHEN create_this3_photos.location IS NOT NULL THEN { point: create_this3_photos.location }
                     ELSE NULL
-                END) } AS this0_photos
-                RETURN collect(this0_photos) AS this0_photos
+                END) } AS create_this3_photos
+                RETURN collect(create_this3_photos) AS create_this3_photos
             }
             CALL {
-                WITH this0
-                MATCH (this0)-[create_this1:HAS_COLOR]->(this0_colors:\`Color\`)
-                WHERE this0_colors.id = $create_param1
-                WITH this0_colors { .id } AS this0_colors
-                RETURN collect(this0_colors) AS this0_colors
+                WITH create_this3
+                MATCH (create_this3)-[create_this1:HAS_COLOR]->(create_this3_colors:\`Color\`)
+                WHERE create_this3_colors.id = $create_param1
+                WITH create_this3_colors { .id } AS create_this3_colors
+                RETURN collect(create_this3_colors) AS create_this3_colors
             }
             CALL {
-                WITH this0
-                MATCH (this0)-[create_this2:HAS_SIZE]->(this0_sizes:\`Size\`)
-                WHERE this0_sizes.name = $create_param2
-                WITH this0_sizes { .name } AS this0_sizes
-                RETURN collect(this0_sizes) AS this0_sizes
+                WITH create_this3
+                MATCH (create_this3)-[create_this2:HAS_SIZE]->(create_this3_sizes:\`Size\`)
+                WHERE create_this3_sizes.name = $create_param2
+                WITH create_this3_sizes { .name } AS create_this3_sizes
+                RETURN collect(create_this3_sizes) AS create_this3_sizes
             }
-            CALL {
-                WITH this1
-                MATCH (this1)-[create_this0:HAS_PHOTO]->(this1_photos:\`Photo\`)
-                WHERE this1_photos.url = $create_param0
-                WITH this1_photos { .url, location: (CASE
-                    WHEN this1_photos.location IS NOT NULL THEN { point: this1_photos.location }
-                    ELSE NULL
-                END) } AS this1_photos
-                RETURN collect(this1_photos) AS this1_photos
-            }
-            CALL {
-                WITH this1
-                MATCH (this1)-[create_this1:HAS_COLOR]->(this1_colors:\`Color\`)
-                WHERE this1_colors.id = $create_param1
-                WITH this1_colors { .id } AS this1_colors
-                RETURN collect(this1_colors) AS this1_colors
-            }
-            CALL {
-                WITH this1
-                MATCH (this1)-[create_this2:HAS_SIZE]->(this1_sizes:\`Size\`)
-                WHERE this1_sizes.name = $create_param2
-                WITH this1_sizes { .name } AS this1_sizes
-                RETURN collect(this1_sizes) AS this1_sizes
-            }
-            RETURN [
-            this0 { .id, photos: this0_photos, colors: this0_colors, sizes: this0_sizes },
-            this1 { .id, photos: this1_photos, colors: this1_colors, sizes: this1_sizes }] AS data"
+            RETURN collect(create_this3 { .id, photos: create_this3_photos, colors: create_this3_colors, sizes: create_this3_sizes }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -168,8 +140,8 @@ describe("Cypher Projection", () => {
                 \\"create_param0\\": \\"url.com\\",
                 \\"create_param1\\": \\"123\\",
                 \\"create_param2\\": \\"small\\",
-                \\"this0_id\\": \\"1\\",
-                \\"this1_id\\": \\"2\\",
+                \\"create_param3\\": \\"1\\",
+                \\"create_param4\\": \\"2\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

@@ -134,18 +134,20 @@ describe("Cypher Duration", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:Movie)
-            SET this0.duration = $this0_duration
-            RETURN this0
+            "UNWIND [ { duration: $create_param0 } ] AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Movie\`)
+                SET
+                    create_this0.duration = create_var1.duration
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .duration }] AS data"
+            RETURN collect(create_this0 { .duration }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_duration\\": {
+                \\"create_param0\\": {
                     \\"months\\": 24,
                     \\"days\\": 0,
                     \\"seconds\\": {

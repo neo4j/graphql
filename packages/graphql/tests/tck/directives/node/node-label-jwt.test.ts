@@ -135,18 +135,20 @@ describe("Label in Node directive", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-            CREATE (this0:\`Film\`)
-            SET this0.title = $this0_title
-            RETURN this0
+            "UNWIND [ { title: $create_param0 } ] AS create_var1
+            CALL {
+                WITH create_var1
+                CREATE (create_this0:\`Film\`)
+                SET
+                    create_this0.title = create_var1.title
+                RETURN create_this0
             }
-            RETURN [
-            this0 { .title }] AS data"
+            RETURN collect(create_this0 { .title }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_title\\": \\"Titanic\\",
+                \\"create_param0\\": \\"Titanic\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
