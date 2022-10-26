@@ -10,6 +10,7 @@
         "noEmit": false,
         "paths": {
             "@neo4j/graphql": ["../graphql/src"],
+            "@neo4j/cypher-builder": ["../cypher-builder/src"],
             "@neo4j/introspector": ["../introspector/src"]
         }
     },
