@@ -1391,7 +1391,7 @@ subscription SubscriptionPerson {
     // ==============FIX===ME===================
 
     // FIX: no actor events?!
-    test("connect via nested create - connect subscription sends events both ways", async () => {
+    test.only("connect via nested create - connect subscription sends events both ways", async () => {
         // 1. create resources that will be connected
         await supertest(server.path)
             .post("")
@@ -3977,17 +3977,34 @@ subscription SubscriptionPerson {
                     ${typePerson.operations.create}(
                         input: [
                             {
-                                name: "Ana",
-                                reputation: 100
-                            },
-                            {
-                                name: "Ana",
+                                name: "John",
                                 reputation: 100
                             }
                         ]
                     ) {
                         ${typePerson.plural} {
                             reputation
+                            name
+                        }
+                    }
+                }
+            `,
+            })
+            .expect(200);
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                mutation {
+                    ${typeActor.operations.create}(
+                        input: [
+                            {
+                                name: "Tom"
+                            }
+                        ]
+                    ) {
+                        ${typeActor.plural} {
                             name
                         }
                     }
@@ -4025,7 +4042,7 @@ subscription SubscriptionPerson {
                                         connect: [
                                           {
                                             directors: {
-                                              Actor: [
+                                              ${typeActor.name}: [
                                                 {
                                                   edge: {
                                                     year: 2019
@@ -4037,14 +4054,15 @@ subscription SubscriptionPerson {
                                                   }
                                                 }
                                               ],
-                                              Person: [
+                                              ${typePerson.name}: [
                                                 {
                                                   edge: {
                                                     year: 2020
                                                   },
                                                   where: {
                                                     node: {
-                                                      name: "John"
+                                                      name: "John",
+                                                      reputation: 100
                                                     }
                                                   }
                                                 }
@@ -4068,21 +4086,42 @@ subscription SubscriptionPerson {
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
-        expect(wsClient.events).toEqual([]);
+        expect(wsClient.events).toHaveLength(1);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typePerson.operations.subscribe.connected]: {
+                    [typePerson.operations.subscribe.payload.connected]: { title: "John Wick" },
+                    event: "CONNECT",
+                    direction: "OUT",
+                    relationshipName: "movies",
+                    relationship: {
+                        movies: {
+                            year: 2020,
+                            node: {
+                                name: "John",
+                                reputation: 100,
+                            },
+                        },
+                        directors: null,
+                        reviewers: null,
+                    },
+                },
+            },
+        ]);
 
         expect(wsClient2.events).toHaveLength(3);
         expect(wsClient2.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Mulan" },
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
                     event: "CONNECT",
                     direction: "IN",
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 1234,
+                            screenTime: 420,
                             node: {
-                                name: "Donnie Yen",
+                                name: "Keanu Reeves",
                             },
                         },
                         directors: null,
@@ -4099,9 +4138,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 2014,
+                            year: 2019,
                             node: {
-                                name: "Donnie Yen",
+                                name: "Tom",
                             },
                         },
                         reviewers: null,
@@ -4117,10 +4156,10 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 2014,
+                            year: 2020,
                             node: {
-                                name: "Chad",
-                                reputation: 120,
+                                name: "John",
+                                reputation: 100,
                             },
                         },
                         reviewers: null,
