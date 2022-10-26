@@ -102,11 +102,12 @@ export function translateRead(
     if (node.queryOptions) {
         optionsInput.limit = node.queryOptions.getLimit(optionsInput.limit); // TODO: improve this
         resolveTree.args.options = resolveTree.args.options || {};
-        (resolveTree.args.options as Record<string, any>).limit = optionsInput.limit
+        (resolveTree.args.options as Record<string, any>).limit = optionsInput.limit;
     }
 
     const hasOrdering = optionsInput.sort || optionsInput.limit || optionsInput.offset;
 
+    // May be needed for performance
     // if (hasOrdering) {
     //     orderClause = getSortClause({
     //         projectionClause: new CypherBuilder.With("*"),
@@ -133,15 +134,11 @@ export function translateRead(
     let projectionClause: CypherBuilder.Clause = returnClause; // TODO: avoid reassign
 
     if (hasOrdering) {
-        projectionClause = getSortClause({
-            projectionClause: returnClause,
-            target: nodeVarRef,
-            context,
-            varName,
+        addSortAndLimitOptionsToClause(
+            { optionsInput, target: nodeVarRef, projectionClause: returnClause },
             node,
-        });
-
-        // readQuery.concat(postOrder);
+            context
+        );
     }
 
     let connectionPreClauses: CypherBuilder.Clause | undefined;
@@ -174,31 +171,16 @@ export function translateRead(
             nodeVarRef,
         ]);
 
-        let sortedReturnClause: CypherBuilder.Clause = returnClause;
-
         if (!projectionSubqueries.empty && hasOrdering) {
-            sortedReturnClause = getSortClause({
-                projectionClause: returnClause,
-                target: nodeVarRef,
-                context,
-                varName,
+            addSortAndLimitOptionsToClause(
+                { optionsInput, target: nodeVarRef, projectionClause: returnClause },
                 node,
-            });
-
-            // readQuery.concat(postOrder);
+                context
+            );
         }
 
-        projectionClause = CypherBuilder.concat(withTotalCount, connectionClause, sortedReturnClause);
+        projectionClause = CypherBuilder.concat(withTotalCount, connectionClause, returnClause);
     }
-
-    // if (context.fulltextIndex?.scoreVariable) {
-    //     projectionClause = CypherBuilder.concat(
-    //         projectionClause,
-    //         new CypherBuilder.RawCypher((env) => {
-    //             return `, ${env.getReferenceId(context.fulltextIndex.scoreVariable)} as score`;
-    //         })
-    //     );
-    // }
 
     const readQuery = CypherBuilder.concat(
         topLevelMatch,
@@ -210,118 +192,7 @@ export function translateRead(
         projectionClause
     );
 
-    // if (!projectionSubqueries.empty && hasOrdering) {
-    //     readQuery = getSortClause({
-    //         projectionClause: readQuery,
-    //         target: nodeVarRef,
-    //         context,
-    //         varName,
-    //         node,
-    //     });
-
-    //     // readQuery.concat(postOrder);
-    // }
-
     return readQuery.build(undefined, context.cypherParams ? { cypherParams: context.cypherParams } : {});
-}
-
-function getSortClause({
-    projectionClause,
-    target,
-    context,
-    varName,
-    node,
-}: {
-    projectionClause: CypherBuilder.With | CypherBuilder.Return;
-    target: CypherBuilder.NamedNode;
-    context: Context;
-    varName: string;
-    node: Node;
-}): CypherBuilder.Clause {
-    const { resolveTree } = context;
-    const optionsInput = (resolveTree.args.options || {}) as GraphQLOptionsArg;
-
-    let limit: number | Integer | undefined = optionsInput.limit;
-    if (node.queryOptions) {
-        limit = node.queryOptions.getLimit(optionsInput.limit);
-    }
-
-    const hasLimit = Boolean(limit) || limit === 0;
-    const params = {} as Record<string, any>;
-    const hasOffset = Boolean(optionsInput.offset) || optionsInput.offset === 0;
-
-    const sortOffsetLimit: string[] = [];
-
-    if (optionsInput.sort && optionsInput.sort.length) {
-        const sortArr = optionsInput.sort.reduce((res: string[], sort: GraphQLSortArg) => {
-            return [
-                ...res,
-                ...Object.entries(sort).map(([field, input]) => {
-                    if (node.cypherFields.some((f) => f.fieldName === field)) {
-                        return `${varName}_${field} ${input}`;
-                    }
-                    if (context.fulltextIndex?.scoreVariable) {
-                        return mapFulltextSorts(field, input, node, varName);
-                    }
-                    return `${varName}.${field} ${input}`;
-                }),
-            ];
-        }, []);
-
-        sortOffsetLimit.push(`ORDER BY ${sortArr.join(", ")}`);
-    }
-
-    if (hasOffset) {
-        params[`${varName}_offset`] = optionsInput.offset;
-        sortOffsetLimit.push(`SKIP $${varName}_offset`);
-    }
-
-    if (hasLimit) {
-        params[`${varName}_limit`] = limit;
-        sortOffsetLimit.push(`LIMIT $${varName}_limit`);
-    }
-
-    // const projectionClause = new CypherBuilder.With("*");
-
-    addSortAndLimitOptionsToClause({ optionsInput, target, projectionClause }, node, context);
-    return projectionClause;
-
-    // if (context.fulltextIndex?.scoreVariable) {
-    //     return new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
-    //         return [
-    //             sortOffsetLimit
-    //                 .join("\n")
-    //                 .replace(scoreVariableStringToReplace, env.getReferenceId(context.fulltextIndex.scoreVariable)),
-    //             params,
-    //         ];
-    //     });
-    // }
-
-    // return new CypherBuilder.RawCypher(() => {
-    //     return [sortOffsetLimit.join("\n"), params];
-    // });
-}
-
-function mapFulltextSorts(
-    field: string,
-    input: SortDirection | NestedSortDirection,
-    node: Node,
-    varName: string
-): string {
-    if (field === "score") {
-        return `${scoreVariableStringToReplace} ${input}`;
-    }
-    if (field === lowerFirst(node.name)) {
-        return Object.entries(input)
-            .map(([field, direction]) => {
-                if (node.cypherFields.some((f) => f.fieldName === field)) {
-                    return `${varName}_${field} ${direction}`;
-                }
-                return `${varName}.${field} ${direction}`;
-            })
-            .join(", ");
-    }
-    throw new Error(`Unknown sort argument ${field}`);
 }
 
 function getConnectionSortClause({
