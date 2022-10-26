@@ -47,18 +47,14 @@ export const SchemaSettings = ({
         const next = isRegexChecked === "true" ? "false" : "true";
         setIsRegexChecked(next);
         Storage.store(LOCAL_STATE_ENABLE_REGEX, next);
-
-        const actionValue = isRegexChecked === "true" ? "check" : "uncheck";
-        tracking.trackSchemaSettingsCheckbox({ screen: "type definitions", action: actionValue, box: "regex" });
+        tracking.trackSchemaSettingsCheckbox({ screen: "type definitions", action: next, box: "regex" });
     };
 
     const onChangeDebugCheckbox = (): void => {
         const next = isDebugChecked === "true" ? "false" : "true";
         setIsDebugChecked(next);
         Storage.store(LOCAL_STATE_ENABLE_DEBUG, next);
-
-        const actionValue = isDebugChecked === "true" ? "check" : "uncheck";
-        tracking.trackSchemaSettingsCheckbox({ screen: "type definitions", action: actionValue, box: "debug" });
+        tracking.trackSchemaSettingsCheckbox({ screen: "type definitions", action: next, box: "debug" });
     };
 
     const onChangeConstraintState = (nextConstraintState: string): void => {

@@ -17,60 +17,61 @@
  * limitations under the License.
  */
 
-import { Screen } from "src/contexts/screen";
+import { Screen } from "../contexts/screen";
+import { Theme } from "../contexts/theme";
 import { TypeDefinitionsAnalyticsResults } from "./analytics";
 
 export interface TrackingTBIntrospect {
-    screen: Screen | "query editor" | "type definitions" | "initial modal";
+    screen: "query editor" | "type definitions" | "initial modal";
     status?: "success" | "failure";
     errorMessage?: string;
 }
 
 export interface TrackingTBEditorThemeToggle {
-    screen: Screen | "query editor" | "type definitions";
-    theme: "dark" | "light";
+    screen: "query editor" | "type definitions";
+    theme: Theme;
 }
 
 export interface TrackingTBFavorite {
-    screen: Screen | "query editor" | "type definitions";
+    screen: "query editor" | "type definitions";
 }
 
 export interface TrackingTBSchemaSettingsCheckbox {
-    screen: Screen | "query editor" | "type definitions";
+    screen: "query editor" | "type definitions";
     box: "debug" | "regex";
-    action: "check" | "uncheck";
+    action: "true" | "false";
 }
 
 export interface TrackingTBSchemaConstraints {
-    screen: Screen | "query editor" | "type definitions";
+    screen: "query editor" | "type definitions";
     value: string;
 }
 
 export interface TrackingTBChangeDatabase {
-    screen: Screen | "query editor" | "type definitions";
+    screen: "query editor" | "type definitions";
 }
 
 export interface TrackingTBExplorerExecutionTypeAdd {
-    screen: Screen | "query editor" | "type definitions";
+    screen: "query editor" | "type definitions";
     actionLabel: "query" | "mutation";
 }
 
 export interface TrackingTBSchemaDocsToggle {
-    screen: Screen | "query editor" | "type definitions";
-    action: "on" | "off";
+    screen: "query editor" | "type definitions";
+    action: boolean;
     origin: "explorer" | "help drawer";
 }
 
 export interface TrackingTBHelpLearnLinkClick {
-    screen: Screen | "query editor" | "type definitions";
+    screen: Screen;
     actionLabel: string;
 }
 
 export interface TrackingTBBuildSchemaClick extends TypeDefinitionsAnalyticsResults {
-    screen: Screen | "query editor" | "type definitions";
+    screen: "query editor" | "type definitions";
 }
 
 export interface TrackingTBExecuteQuery {
-    screen: Screen | "query editor" | "type definitions";
+    screen: "query editor" | "type definitions";
     queryComplexity?: number;
 }

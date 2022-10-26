@@ -89,13 +89,12 @@ const ResourceLinksBlock = ({ listBlockTitle, links, screen }: ResourceLinksBloc
                                 href={link.href}
                                 target="_blank"
                                 rel="noreferrer"
-                                onClick={() => {
-                                    const screenValue = screen === Screen.EDITOR ? "query editor" : "type definitions";
+                                onClick={() =>
                                     tracking.trackHelpLearnFeatureLinks({
-                                        screen: screenValue,
+                                        screen,
                                         actionLabel: link.label,
-                                    });
-                                }}
+                                    })
+                                }
                             >
                                 {/* @ts-ignore - iconName is a string */}
                                 <HeroIcon className="h-6 w-6 mr-2 stroke-1" type="outline" iconName={link.iconName} />

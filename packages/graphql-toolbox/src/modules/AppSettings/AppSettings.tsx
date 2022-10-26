@@ -34,8 +34,7 @@ export const AppSettings = ({ onClickClose }: Props) => {
     const handleOnChangeEditorTheme = (event: any) => {
         const next = event?.target?.id === Theme.LIGHT.toString() ? Theme.LIGHT : Theme.DARK;
         theme.setTheme(next);
-        const trackingThemeValue = next === Theme.DARK ? "dark" : "light";
-        tracking.trackChangeEditorTheme({ screen: "type definitions", theme: trackingThemeValue });
+        tracking.trackChangeEditorTheme({ screen: "type definitions", theme: next });
     };
 
     const onChangeShowLintMarkers = (): void => {

@@ -24,6 +24,7 @@ import { Screen, ScreenContext } from "../../contexts/screen";
 import { Resources } from "./Resources";
 import { Keybindings } from "./Keybindings";
 import { DocExplorerComponent } from "./DocExplorerComponent";
+import { tracking } from "../../analytics/tracking";
 
 enum EditorViewTiles {
     SCHEMA_DOCS,
@@ -35,7 +36,7 @@ interface Props {
     schema?: GraphQLSchema;
 }
 
-const CannyFeedbackButton = (): JSX.Element => {
+const CannyFeedbackButton = ({ screen }: { screen: Screen }): JSX.Element => {
     return (
         <a
             data-test-help-drawer-canny-button
@@ -43,6 +44,7 @@ const CannyFeedbackButton = (): JSX.Element => {
             href="https://feedback.neo4j.com/graphql"
             target="_blank"
             rel="noreferrer"
+            onClick={() => tracking.trackHelpLearnFeatureLinks({ screen, actionLabel: "Send Feedback" })}
         >
             <HeroIcon className="h-6 w-6 mr-2" type="outline" iconName="ChatIcon" />
             <p className="p-0 m-0">Send feedback</p>
@@ -209,7 +211,7 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
                 )}
                 {!showSubComponent ? (
                     <div className="absolute bottom-8 right-28 n-text-primary-40 font-bold text-sm">
-                        <CannyFeedbackButton />
+                        <CannyFeedbackButton screen={screen.view} />
                     </div>
                 ) : null}
             </Fragment>

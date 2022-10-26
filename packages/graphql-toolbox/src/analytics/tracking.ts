@@ -32,6 +32,8 @@ import {
     TrackingTBSchemaDocsToggle,
     TrackingTBSchemaSettingsCheckbox,
 } from "./tracking-types";
+import { Screen } from "../contexts/screen";
+import { Theme } from "../contexts/theme";
 
 class Tracking {
     public trackDatabaseIntrospection = (properties: TrackingTBIntrospect) => {
@@ -39,7 +41,8 @@ class Tracking {
     };
 
     public trackChangeEditorTheme = (properties: TrackingTBEditorThemeToggle) => {
-        this.fireTrackingEvent("TB", "EDITOR_THEME_TOGGLE", properties);
+        const trackingThemeValue = properties.theme === Theme.DARK ? "dark" : "light";
+        this.fireTrackingEvent("TB", "EDITOR_THEME_TOGGLE", { ...properties, theme: trackingThemeValue });
     };
 
     public trackSaveFavorite = (properties: TrackingTBFavorite) => {
@@ -47,7 +50,8 @@ class Tracking {
     };
 
     public trackSchemaSettingsCheckbox = (properties: TrackingTBSchemaSettingsCheckbox) => {
-        this.fireTrackingEvent("TB", "SCHEMA_SETTINGS_CHECKBOX", properties);
+        const actionValue = properties.action === "true" ? "check" : "uncheck";
+        this.fireTrackingEvent("TB", "SCHEMA_SETTINGS_CHECKBOX", { ...properties, action: actionValue });
     };
 
     public trackSchemaConstraints = (properties: TrackingTBSchemaConstraints) => {
@@ -63,11 +67,13 @@ class Tracking {
     };
 
     public trackOpenSchemaDocs = (properties: TrackingTBSchemaDocsToggle) => {
-        this.fireTrackingEvent("TB", "SCHEMA_DOCS_TOGGLE", properties);
+        const actionValue = properties.action ? "on" : "off";
+        this.fireTrackingEvent("TB", "SCHEMA_DOCS_TOGGLE", { ...properties, action: actionValue });
     };
 
     public trackHelpLearnFeatureLinks = (properties: TrackingTBHelpLearnLinkClick) => {
-        this.fireTrackingEvent("TB", "HELP_LEARN_LINK_CLICK", properties);
+        const screenValue = properties.screen === Screen.EDITOR ? "query editor" : "type definitions";
+        this.fireTrackingEvent("TB", "HELP_LEARN_LINK_CLICK", { ...properties, screen: screenValue });
     };
 
     public trackBuildSchema = (properties: TrackingTBBuildSchemaClick) => {
