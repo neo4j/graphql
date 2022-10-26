@@ -18,7 +18,7 @@
  */
 
 import type { GraphQLOptionsArg, GraphQLSortArg } from "../../../types";
-import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import * as neo4j from "neo4j-driver";
 
 export function addLimitOrOffsetOptionsToClause({
@@ -26,13 +26,13 @@ export function addLimitOrOffsetOptionsToClause({
     projectionClause,
 }: {
     optionsInput: GraphQLOptionsArg;
-    projectionClause: CypherBuilder.Return | CypherBuilder.With;
+    projectionClause: Cypher.Return | Cypher.With;
 }): void {
     if (optionsInput.limit) {
-        projectionClause.limit(new CypherBuilder.Param(neo4j.int(optionsInput.limit)));
+        projectionClause.limit(new Cypher.Param(neo4j.int(optionsInput.limit)));
     }
     if (optionsInput.offset) {
-        projectionClause.skip(new CypherBuilder.Param(neo4j.int(optionsInput.offset)));
+        projectionClause.skip(new Cypher.Param(neo4j.int(optionsInput.offset)));
     }
 }
 
@@ -42,8 +42,8 @@ export function addSortAndLimitOptionsToClause({
     projectionClause,
 }: {
     optionsInput: GraphQLOptionsArg;
-    target: CypherBuilder.Variable | CypherBuilder.PropertyRef;
-    projectionClause: CypherBuilder.Return | CypherBuilder.With;
+    target: Cypher.Variable | Cypher.PropertyRef;
+    projectionClause: Cypher.Return | Cypher.With;
 }): void {
     if (optionsInput.sort) {
         const orderByParams = createOrderByParams({
@@ -65,8 +65,8 @@ function createOrderByParams({
     target,
 }: {
     optionsInput: GraphQLOptionsArg;
-    target: CypherBuilder.Variable | CypherBuilder.PropertyRef;
-}): Array<[CypherBuilder.Expr, CypherBuilder.Order]> {
+    target: Cypher.Variable | Cypher.PropertyRef;
+}): Array<[Cypher.Expr, Cypher.Order]> {
     const orderList = (optionsInput.sort || []).flatMap((arg: GraphQLSortArg): Array<[string, "ASC" | "DESC"]> => {
         return Object.entries(arg);
     });

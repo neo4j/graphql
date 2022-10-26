@@ -27,7 +27,7 @@ import type Relationship from "../../classes/Relationship";
 import { createRelationshipPropertyValue } from "../projection/elements/create-relationship-property-element";
 import { AUTH_FORBIDDEN_ERROR } from "../../constants";
 import { generateMissingOrAliasedFields } from "../utils/resolveTree";
-import * as CypherBuilder from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 
 export function createEdgeProjection({
     resolveTree,
@@ -41,17 +41,17 @@ export function createEdgeProjection({
 }: {
     resolveTree: ResolveTree;
     field: ConnectionField;
-    relationshipRef: CypherBuilder.Relationship;
+    relationshipRef: Cypher.Relationship;
     relatedNodeVariableName: string;
     context: Context;
     relatedNode: Node;
     resolveType?: boolean;
     extraFields?: Array<string>;
-}): { projection: CypherBuilder.Map; subqueries: CypherBuilder.Clause[] } {
+}): { projection: Cypher.Map; subqueries: Cypher.Clause[] } {
     const connection = resolveTree.fieldsByTypeName[field.typeMeta.name];
 
-    const edgeProjectionProperties = new CypherBuilder.Map();
-    const subqueries: CypherBuilder.Clause[] = [];
+    const edgeProjectionProperties = new Cypher.Map();
+    const subqueries: Cypher.Clause[] = [];
     if (connection.edges) {
         const relationship = context.relationships.find((r) => r.name === field.relationshipTypeName) as Relationship;
         const relationshipFieldsByTypeName = connection.edges.fieldsByTypeName[field.relationshipTypeName];
@@ -93,8 +93,8 @@ export function createEdgeProjection({
         // This ensures that totalCount calculation is accurate if edges are not asked for
 
         return {
-            projection: new CypherBuilder.Map({
-                node: new CypherBuilder.Map({ __resolveType: new CypherBuilder.Literal(relatedNode.name) }),
+            projection: new Cypher.Map({
+                node: new Cypher.Map({ __resolveType: new Cypher.Literal(relatedNode.name) }),
             }),
             subqueries,
         };
@@ -117,7 +117,7 @@ function createConnectionNodeProjection({
     node: Node;
     resolveType?: boolean;
     resolveTree: ResolveTree; // Global resolve tree
-}): { projection: CypherBuilder.Expr; subqueries: CypherBuilder.Clause[] } {
+}): { projection: Cypher.Expr; subqueries: Cypher.Clause[] } {
     const selectedFields: Record<string, ResolveTree> = mergeDeep([
         nodeResolveTree.fieldsByTypeName[node.name],
         ...node.interfaces.map((i) => nodeResolveTree?.fieldsByTypeName[i.name.value]),
@@ -155,14 +155,14 @@ function createConnectionNodeProjection({
 
     if (projectionMeta?.authValidateStrs?.length) {
         const authStrs = projectionMeta.authValidateStrs;
-        const projectionAuth = new CypherBuilder.RawCypher(() => {
+        const projectionAuth = new Cypher.RawCypher(() => {
             return `CALL apoc.util.validate(NOT (${authStrs.join(" AND ")}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
         });
         projectionSubqueries.push(projectionAuth);
     }
     return {
         subqueries: projectionSubqueries,
-        projection: new CypherBuilder.RawCypher(() => {
+        projection: new Cypher.RawCypher(() => {
             return [`${nodeProjectionAndParams.projection}`, nodeProjectionAndParams.params];
         }),
     };

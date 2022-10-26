@@ -20,7 +20,7 @@
 import type { AuthOperations, Context, GraphQLWhereArg } from "../types";
 import type { Node } from "../classes";
 import { createAuthAndParams } from "./create-auth-and-params";
-import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
 
 export function translateTopLevelMatch({
@@ -33,7 +33,7 @@ export function translateTopLevelMatch({
     node: Node;
     varName: string;
     operation: AuthOperations;
-}): CypherBuilder.CypherResult {
+}): Cypher.CypherResult {
     const matchQuery = createMatchClause({ node, context, varName, operation });
 
     const result = matchQuery.build();
@@ -50,14 +50,14 @@ export function createMatchClause({
     node: Node;
     varName: string;
     operation: AuthOperations;
-}): CypherBuilder.Match | CypherBuilder.db.FullTextQueryNodes {
+}): Cypher.Match | Cypher.db.FullTextQueryNodes {
     const { resolveTree } = context;
     const whereInput = resolveTree.args.where as GraphQLWhereArg;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
 
-    const matchNode = new CypherBuilder.NamedNode(varName, { labels: node.getLabels(context) });
+    const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
 
-    let matchQuery: CypherBuilder.Match<CypherBuilder.Node> | CypherBuilder.db.FullTextQueryNodes;
+    let matchQuery: Cypher.Match<Cypher.Node> | Cypher.db.FullTextQueryNodes;
 
     if (Object.entries(fulltextInput).length) {
         // This is only for fulltext search
@@ -65,18 +65,18 @@ export function createMatchClause({
             throw new Error("Can only call one search at any given time");
         }
         const [indexName, indexInput] = Object.entries(fulltextInput)[0];
-        const phraseParam = new CypherBuilder.Param(indexInput.phrase);
+        const phraseParam = new Cypher.Param(indexInput.phrase);
 
-        matchQuery = new CypherBuilder.db.FullTextQueryNodes(matchNode, indexName, phraseParam);
+        matchQuery = new Cypher.db.FullTextQueryNodes(matchNode, indexName, phraseParam);
 
         const labelsChecks = node.getLabels(context).map((label) => {
-            return CypherBuilder.in(new CypherBuilder.Literal(label), CypherBuilder.labels(matchNode));
+            return Cypher.in(new Cypher.Literal(label), Cypher.labels(matchNode));
         });
 
-        const andChecks = CypherBuilder.and(...labelsChecks);
+        const andChecks = Cypher.and(...labelsChecks);
         if (andChecks) matchQuery.where(andChecks);
     } else {
-        matchQuery = new CypherBuilder.Match(matchNode);
+        matchQuery = new Cypher.Match(matchNode);
     }
 
     if (whereInput) {
@@ -97,7 +97,7 @@ export function createMatchClause({
         where: { varName, node },
     });
     if (whereAuth[0]) {
-        const authQuery = new CypherBuilder.RawCypher(() => {
+        const authQuery = new Cypher.RawCypher(() => {
             return whereAuth;
         });
 
