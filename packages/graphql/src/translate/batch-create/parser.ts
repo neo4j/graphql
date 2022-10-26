@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ *
+ * This file is part of Neo4j.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import type { Context, RelationField } from "../../types";
 import type { CreateInput, TreeDescriptor } from "./types";
 import { UnsupportedUnwindOptimisation } from "./types";
@@ -7,28 +26,47 @@ import { getRelationshipFields } from "./utils";
 import { AST, CreateAST, NestedCreateAST } from "./GraphQLInputAST/GraphQLInputAST";
 import mapToDbProperty from "../../utils/map-to-db-property";
 
-// TODO: refactor this tree traversal
 export function inputTreeToCypherMap(
     input: CreateInput[] | CreateInput,
     node: Node,
-    context: Context
+    context: Context,
+    parentKey?: string,
+    relationship?: Relationship
 ): CypherBuilder.List | CypherBuilder.Map {
     if (Array.isArray(input)) {
         return new CypherBuilder.List(
-            input.map((createInput: CreateInput) => inputTreeToCypherMap(createInput, node, context))
+            input.map((createInput: CreateInput) =>
+                inputTreeToCypherMap(createInput, node, context, parentKey, relationship)
+            )
         );
     }
-
     const properties = (Object.entries(input) as CreateInput).reduce(
         (obj: Record<string, CypherBuilder.Expr>, [key, value]: [string, Record<string, any>]) => {
             const [relationField, relatedNodes] = getRelationshipFields(node, key, {}, context);
-            const RESERVED_NAMES = ["node", "edge", "create", "connect", "connectOrCreate"];
-            // TODO: supports union/interfaces
-            if (typeof value === "object" && value !== null && (relationField || RESERVED_NAMES.includes(key))) {
+            if (relationField && relationField.properties) {
+                relationship = context.relationships.find(
+                    (x) => x.properties === relationField.properties
+                ) as unknown as Relationship;
+            }
+            let scalar = false;
+            if (parentKey === "edge") {
+                scalar = isScalar(key, relationship as Relationship);
+            } 
+            // it assume that if parentKey is not defined then it means that the key belong to a Node
+            else if (parentKey === "node" || parentKey === undefined) {
+                scalar = isScalar(key, node);
+            }
+            if (typeof value === "object" && value !== null && (relationField || !scalar)) {
                 if (Array.isArray(value)) {
                     obj[key] = new CypherBuilder.List(
                         value.map((createInput: CreateInput) =>
-                            inputTreeToCypherMap(createInput, relationField ? relatedNodes[0] : node, context)
+                            inputTreeToCypherMap(
+                                createInput,
+                                relationField ? relatedNodes[0] : node,
+                                context,
+                                key,
+                                relationship
+                            )
                         )
                     );
                     return obj;
@@ -36,7 +74,9 @@ export function inputTreeToCypherMap(
                 obj[key] = inputTreeToCypherMap(
                     value as CreateInput[] | CreateInput,
                     relationField ? relatedNodes[0] : node,
-                    context
+                    context,
+                    key,
+                    relationship
                 ) as CypherBuilder.Map;
                 return obj;
             }
@@ -48,19 +88,14 @@ export function inputTreeToCypherMap(
     return new CypherBuilder.Map(properties);
 }
 
-function isScalar(fieldName: string, node: Node, relationship?: Relationship) {
+function isScalar(fieldName: string, graphElement: GraphElement) {
     const predicate = (x) => x.fieldName === fieldName;
-    const scalarFields = [node.primitiveFields, node.temporalFields, node.pointFields, node.scalarFields];
-    if (relationship) {
-        scalarFields.push(
-            ...[
-                relationship.primitiveFields,
-                relationship.temporalFields,
-                relationship.pointFields,
-                relationship.scalarFields,
-            ]
-        );
-    }
+    const scalarFields = [
+        graphElement.primitiveFields,
+        graphElement.temporalFields,
+        graphElement.pointFields,
+        graphElement.scalarFields,
+    ];
     return scalarFields.flat().some(predicate);
 }
 
@@ -68,6 +103,7 @@ export function getTreeDescriptor(
     input: CreateInput,
     node: Node,
     context: Context,
+    parentKey?: string,
     relationship?: Relationship
 ): TreeDescriptor {
     return Object.entries(input).reduce(
@@ -78,21 +114,31 @@ export function getTreeDescriptor(
                     (x) => x.properties === relationField.properties
                 ) as unknown as Relationship;
             }
-            /* 
-                TODO: Using this approach to distinguish between "Children" and "Properties"
-                could lead to bugs in case ofwith properties with same name as the Operation name.
-                For isntance: { create: {node: { create: true } } }
-            */
-            if (typeof value === "object" && value !== null && !isScalar(key, node, relationship)) {
+
+            let scalar = false;
+            if (parentKey === "edge") {
+                scalar = isScalar(key, relationship as Relationship);
+            } 
+            // it assume that if parentKey is not defined then it means that the key belong to a Node
+            else if (parentKey === "node" || parentKey === undefined) {
+                scalar = isScalar(key, node);
+            }
+            if (typeof value === "object" && value !== null && !scalar) {
                 // TODO: supports union/interfaces
                 const innerNode = relationField ? relatedNodes[0] : node;
                 if (Array.isArray(value)) {
                     previous.childrens[key] = mergeTreeDescriptors(
-                        value.map((el) => getTreeDescriptor(el as CreateInput, innerNode, context, relationship))
+                        value.map((el) => getTreeDescriptor(el as CreateInput, innerNode, context, key, relationship))
                     );
                     return previous;
                 }
-                previous.childrens[key] = getTreeDescriptor(value as CreateInput, innerNode, context, relationship);
+                previous.childrens[key] = getTreeDescriptor(
+                    value as CreateInput,
+                    innerNode,
+                    context,
+                    key,
+                    relationship
+                );
                 return previous;
             }
             previous.properties.add(key);
@@ -180,8 +226,12 @@ function raiseAttributeAmbiguity(properties: Set<string> | Array<string>, graphE
     const hash = {};
     properties.forEach((property) => {
         const dbName = mapToDbProperty(graphElement, property);
-        if (hash[dbName]) {            
-            throw new Neo4jGraphQLError(`Conflicting modification of ${[hash[dbName], property].map((n) => `[[${n}]]`).join(", ")} on type ${graphElement.name}`);
+        if (hash[dbName]) {
+            throw new Neo4jGraphQLError(
+                `Conflicting modification of ${[hash[dbName], property].map((n) => `[[${n}]]`).join(", ")} on type ${
+                    graphElement.name
+                }`
+            );
         }
         hash[dbName] = property;
     });
@@ -239,41 +289,3 @@ function parseNestedCreate(
     }
     return nestedCreateAST;
 }
-
-/* export function parseConnect(
-    input: TreeDescriptor,
-    node: Node,
-    context: Context,
-    parentNode: Node,
-    relationshipPropertyPath: string,
-    relationship: [RelationField | undefined, Node[]]
-) {
-    const edgeProperties = input.childrens.edge ? input.childrens.edge.properties : [];
-    const where = input.childrens.where;
-    const connect = input.childrens.connect;
-    const connectAST = new ConnectAST(
-        node,
-        parentNode,
-        [...edgeProperties],
-        where,
-        connect,
-        relationshipPropertyPath,
-        relationship
-    );
-    // TODO: remove it
-    console.info(context);
-    return connectAST;
-} */
-/* 
-export function parseConnectOrCreate(input: TreeDescriptor, node: Node, context: Context, parentNode: Node) {
-    const where = input.childrens.where;
-    const onCreate = input.childrens.onCreate;
-    const connectOrCreateAST = new ConnectOrCreateAST(parentNode, where, onCreate);
-
-    // TODO: remove it
-    console.info(node);
-    console.info(context);
-
-    return connectOrCreateAST;
-}
- */

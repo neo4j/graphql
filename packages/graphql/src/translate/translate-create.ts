@@ -44,7 +44,6 @@ export default async function translateCreate({
         }
     }
 
-
     const { resolveTree } = context;
     const mutationInputs = resolveTree.args.input as any[];
     const connectionStrs: string[] = [];
@@ -210,11 +209,7 @@ export default async function translateCreate({
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
         cypher: createQueryCypher.cypher,
     });
-/*     console.log(`Old Cypher: ${cypher}`);
-    console.log(`Old Params: ${JSON.stringify({
-        ...createQueryCypher.params,
-        resolvedCallbacks,
-    })}`); */
+
     return {
         cypher,
         params: {

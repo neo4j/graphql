@@ -16,11 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { Node } from "../classes";
+
+import { Neo4jGraphQLError, Node } from "../classes";
 import type { Context } from "../types";
 import type { CreateInput } from "./batch-create/batch-create";
 import createProjectionAndParams from "./create-projection-and-params";
-import { AUTH_FORBIDDEN_ERROR, META_CYPHER_VARIABLE } from "../constants";
+import {  META_CYPHER_VARIABLE } from "../constants";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
@@ -31,7 +32,7 @@ import {
     getTreeDescriptor,
     parseCreate,
     UnwindCreateVisitor,
-    UnsupportedUnwindOptimisation
+    UnsupportedUnwindOptimisation,
 } from "./batch-create/batch-create";
 
 export default async function unwindCreate({
@@ -73,7 +74,7 @@ export default async function unwindCreate({
 
     const [rootNodeVariable, createPhase] = unwindCreateVisitor.build();
     if (!rootNodeVariable || !createPhase) {
-        throw new Error("Generic Error");
+        throw new Neo4jGraphQLError("Generic Error");
     }
     const createUnwind = CypherBuilder.concat(unwindQuery, createPhase);
 
@@ -87,9 +88,6 @@ export default async function unwindCreate({
 
     let projectionSubquery: CypherBuilder.Clause | undefined;
     if (nodeProjection) {
-        let projAuth = "";
-        // TODO Remove it
-        console.info(projAuth);
         const projection = createProjectionAndParams({
             node,
             context,
@@ -97,11 +95,6 @@ export default async function unwindCreate({
             varName: "REPLACE_ME",
         });
         projectionSubquery = CypherBuilder.concat(...projection.subqueries);
-        if (projection.meta?.authValidateStrs?.length) {
-            projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
-                " AND "
-            )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
-        }
 
         replacedProjectionParams = Object.entries(projection.params).reduce((res, [key, value]) => {
             return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
@@ -116,10 +109,6 @@ export default async function unwindCreate({
                 .replace(/REPLACE_ME/g, `${rootNodeVariable.getCypher(env)}`)}`;
         });
 
-        /*      TODO: AUTH
-        authCalls = createStrs
-            .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
-            .join("\n"); */
     }
 
     const replacedConnectionStrs = connectionStrs.length
@@ -138,30 +127,6 @@ export default async function unwindCreate({
           })
         : undefined;
 
-    // TODO: support it
-    /*     const replacedConnectionParams = connectionParams
-        ? createStrs.reduce((res1, _, i) => {
-              return {
-                  ...res1,
-                  ...Object.entries(connectionParams).reduce((res2, [key, value]) => {
-                      return { ...res2, [key.replace("REPLACE_ME", `this${i}`)]: value };
-                  }, {}),
-              };
-          }, {})
-
-        : {}; */
-
-    /*     const replacedInterfaceParams = interfaceParams
-        ? createStrs.reduce((res1, _, i) => {
-              return {
-                  ...res1,
-                  ...Object.entries(interfaceParams).reduce((res2, [key, value]) => {
-                      return { ...res2, [key.replace("REPLACE_ME", `this${i}`)]: value };
-                  }, {}),
-              };
-          }, {})
-        : {}; */
-
     const returnStatement = generateCreateReturnStatementCypher(projectionCypher, context.subscriptionsEnabled);
     const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
 
@@ -169,7 +134,6 @@ export default async function unwindCreate({
         const projectionSubqueryStr = compileCypherIfExists(projectionSubquery, env);
         const projectionConnectionStrs = compileCypherIfExists(replacedConnectionStrs, env);
         const projectionInterfaceStrs = compileCypherIfExists(replacedInterfaceStrs, env);
-        // TODO: avoid REPLACE_ME
 
         const replacedProjectionSubqueryStrs = projectionSubqueryStr
             .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
@@ -199,11 +163,7 @@ export default async function unwindCreate({
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
         cypher: createQueryCypher.cypher,
     });
-/*     console.log(`Cypher: ${cypher}`)
-    console.log(`Params: ${JSON.stringify({
-            ...createQueryCypher.params,
-            resolvedCallbacks,
-        })}`); */
+
     return {
         cypher,
         params: {
