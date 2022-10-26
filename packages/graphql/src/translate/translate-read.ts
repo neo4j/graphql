@@ -28,6 +28,7 @@ import { createAuthPredicates } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createMatchClause } from "./translate-top-level-match";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
+import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 
 type NestedSortDirection = {
     [s: string]: SortDirection;
@@ -94,32 +95,54 @@ export function translateRead(
     const projectionSubqueries = CypherBuilder.concat(...projection.subqueries);
     const projectionSubqueriesBeforeSort = CypherBuilder.concat(...projection.subqueriesBeforeSort);
 
-    let withAndOrder: CypherBuilder.Clause | undefined;
     let orderClause: CypherBuilder.Clause | undefined;
 
     const optionsInput = (resolveTree.args.options || {}) as GraphQLOptionsArg;
 
     if (node.queryOptions) {
         optionsInput.limit = node.queryOptions.getLimit(optionsInput.limit); // TODO: improve this
+        resolveTree.args.options = resolveTree.args.options || {};
+        (resolveTree.args.options as Record<string, any>).limit = optionsInput.limit
     }
 
     const hasOrdering = optionsInput.sort || optionsInput.limit || optionsInput.offset;
 
-    if (hasOrdering) {
-        orderClause = getSortClause({
-            context,
-            varName,
-            node,
-        });
-
-        withAndOrder = CypherBuilder.concat(new CypherBuilder.With("*"), orderClause);
-    }
+    // if (hasOrdering) {
+    //     orderClause = getSortClause({
+    //         projectionClause: new CypherBuilder.With("*"),
+    //         target: nodeVarRef,
+    //         context,
+    //         varName,
+    //         node,
+    //     });
+    // }
 
     const projectionExpression = new CypherBuilder.RawCypher(() => {
         return [`${varName} ${projection.projection}`, projection.params];
     });
 
-    let projectionClause: CypherBuilder.Clause = new CypherBuilder.Return([projectionExpression, varName]); // TODO: avoid reassign
+    let returnClause = new CypherBuilder.Return([projectionExpression, varName]);
+
+    if (context.fulltextIndex?.scoreVariable) {
+        returnClause = new CypherBuilder.Return(
+            [projectionExpression, varName],
+            [context.fulltextIndex?.scoreVariable, "score"]
+        );
+    }
+
+    let projectionClause: CypherBuilder.Clause = returnClause; // TODO: avoid reassign
+
+    if (hasOrdering) {
+        projectionClause = getSortClause({
+            projectionClause: returnClause,
+            target: nodeVarRef,
+            context,
+            varName,
+            node,
+        });
+
+        // readQuery.concat(postOrder);
+    }
 
     let connectionPreClauses: CypherBuilder.Clause | undefined;
 
@@ -151,46 +174,66 @@ export function translateRead(
             nodeVarRef,
         ]);
 
-        projectionClause = CypherBuilder.concat(withTotalCount, connectionClause, returnClause);
+        let sortedReturnClause: CypherBuilder.Clause = returnClause;
+
+        if (!projectionSubqueries.empty && hasOrdering) {
+            sortedReturnClause = getSortClause({
+                projectionClause: returnClause,
+                target: nodeVarRef,
+                context,
+                varName,
+                node,
+            });
+
+            // readQuery.concat(postOrder);
+        }
+
+        projectionClause = CypherBuilder.concat(withTotalCount, connectionClause, sortedReturnClause);
     }
 
-    if (context.fulltextIndex?.scoreVariable) {
-        projectionClause = CypherBuilder.concat(
-            projectionClause,
-            new CypherBuilder.RawCypher((env) => {
-                return `, ${env.getReferenceId(context.fulltextIndex.scoreVariable)} as score`;
-            })
-        );
-    }
+    // if (context.fulltextIndex?.scoreVariable) {
+    //     projectionClause = CypherBuilder.concat(
+    //         projectionClause,
+    //         new CypherBuilder.RawCypher((env) => {
+    //             return `, ${env.getReferenceId(context.fulltextIndex.scoreVariable)} as score`;
+    //         })
+    //     );
+    // }
 
     const readQuery = CypherBuilder.concat(
         topLevelMatch,
         projAuth,
         connectionPreClauses,
         projectionSubqueriesBeforeSort,
-        withAndOrder, // Required for performance optimization
+        orderClause, // Required for performance optimization
         projectionSubqueries,
         projectionClause
     );
 
-    if (!projectionSubqueries.empty && hasOrdering) {
-        const postOrder = getSortClause({
-            context,
-            varName,
-            node,
-        });
+    // if (!projectionSubqueries.empty && hasOrdering) {
+    //     readQuery = getSortClause({
+    //         projectionClause: readQuery,
+    //         target: nodeVarRef,
+    //         context,
+    //         varName,
+    //         node,
+    //     });
 
-        readQuery.concat(postOrder);
-    }
+    //     // readQuery.concat(postOrder);
+    // }
 
     return readQuery.build(undefined, context.cypherParams ? { cypherParams: context.cypherParams } : {});
 }
 
 function getSortClause({
+    projectionClause,
+    target,
     context,
     varName,
     node,
 }: {
+    projectionClause: CypherBuilder.With | CypherBuilder.Return;
+    target: CypherBuilder.NamedNode;
     context: Context;
     varName: string;
     node: Node;
@@ -238,20 +281,25 @@ function getSortClause({
         sortOffsetLimit.push(`LIMIT $${varName}_limit`);
     }
 
-    if (context.fulltextIndex?.scoreVariable) {
-        return new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
-            return [
-                sortOffsetLimit
-                    .join("\n")
-                    .replace(scoreVariableStringToReplace, env.getReferenceId(context.fulltextIndex.scoreVariable)),
-                params,
-            ];
-        });
-    }
+    // const projectionClause = new CypherBuilder.With("*");
 
-    return new CypherBuilder.RawCypher(() => {
-        return [sortOffsetLimit.join("\n"), params];
-    });
+    addSortAndLimitOptionsToClause({ optionsInput, target, projectionClause }, node, context);
+    return projectionClause;
+
+    // if (context.fulltextIndex?.scoreVariable) {
+    //     return new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+    //         return [
+    //             sortOffsetLimit
+    //                 .join("\n")
+    //                 .replace(scoreVariableStringToReplace, env.getReferenceId(context.fulltextIndex.scoreVariable)),
+    //             params,
+    //         ];
+    //     });
+    // }
+
+    // return new CypherBuilder.RawCypher(() => {
+    //     return [sortOffsetLimit.join("\n"), params];
+    // });
 }
 
 function mapFulltextSorts(
