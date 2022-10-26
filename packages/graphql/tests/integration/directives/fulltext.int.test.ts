@@ -194,13 +194,13 @@ describe("@fulltext directive", () => {
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual({
-                name: "This is a different name",
+                name: person2.name,
             });
             expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst]).toEqual({
-                name: "this is a name",
+                name: person1.name,
             });
             expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst]).toEqual({
-                name: "Another name",
+                name: person3.name,
             });
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
                 (gqlResult.data?.[queryType] as any[])[1].score
@@ -231,13 +231,13 @@ describe("@fulltext directive", () => {
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual({
-                name: "Another name",
+                name: person3.name,
             });
             expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst]).toEqual({
-                name: "this is a name",
+                name: person1.name,
             });
             expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst]).toEqual({
-                name: "This is a different name",
+                name: person2.name,
             });
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
                 (gqlResult.data?.[queryType] as any[])[1].score
@@ -269,17 +269,17 @@ describe("@fulltext directive", () => {
             expect(gqlResult.data?.[queryType]).toEqual([
                 {
                     [personTypeLowerFirst]: {
-                        name: "Another name",
+                        name: person3.name,
                     },
                 },
                 {
                     [personTypeLowerFirst]: {
-                        name: "this is a name",
+                        name: person1.name,
                     },
                 },
                 {
                     [personTypeLowerFirst]: {
-                        name: "This is a different name",
+                        name: person2.name,
                     },
                 },
             ]);
@@ -421,12 +421,12 @@ describe("@fulltext directive", () => {
             expect(gqlResult.data?.[queryType]).toEqual([
                 {
                     [personTypeLowerFirst]: {
-                        name: "This is a different name",
+                        name: person2.name,
                     },
                 },
                 {
                     [personTypeLowerFirst]: {
-                        name: "Another name",
+                        name: person3.name,
                     },
                 },
             ]);
@@ -478,7 +478,7 @@ describe("@fulltext directive", () => {
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(
-                "This is a different name"
+                person2.name
             );
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
@@ -504,8 +504,8 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe("this is a name");
-            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].name).toBe("Another name");
+            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person1.name);
+            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].name).toBe(person3.name);
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
                 (gqlResult.data?.[queryType] as any[])[1].score
             );
@@ -555,7 +555,7 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe("this is a name");
+            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person1.name);
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
@@ -632,23 +632,23 @@ describe("@fulltext directive", () => {
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(
-                "This is a different name"
+                person2.name
             );
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].actedInMovies).toEqual([
                 {
-                    title: "Some Title",
-                    released: 2001,
+                    title: movie1.title,
+                    released: movie1.released,
                 },
             ]);
-            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].name).toBe("this is a name");
+            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].name).toBe(person1.name);
             expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].actedInMovies).toEqual([
                 {
-                    title: "Another Title",
-                    released: 2002,
+                    title: movie2.title,
+                    released: movie2.released,
                 },
                 {
-                    title: "Some Title",
-                    released: 2001,
+                    title: movie1.title,
+                    released: movie1.released,
                 },
             ]);
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
@@ -685,11 +685,11 @@ describe("@fulltext directive", () => {
             expect(gqlResult.data?.[queryType]).toEqual([
                 {
                     [personTypeLowerFirst]: {
-                        name: "This is a different name",
+                        name: person2.name,
                         actedInMovies: [
                             {
-                                title: "Some Title",
-                                released: 2001,
+                                title: movie1.title,
+                                released: movie1.released,
                             },
                         ],
                     },
@@ -800,10 +800,10 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe("Another name");
-            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].name).toBe("this is a name");
+            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person3.name);
+            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].name).toBe(person1.name);
             expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst].name).toBe(
-                "This is a different name"
+                person2.name
             );
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeLessThanOrEqual(
                 (gqlResult.data?.[queryType] as any[])[1].score
@@ -835,11 +835,11 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe("Another name");
+            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person3.name);
             expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].name).toBe(
-                "This is a different name"
+                person2.name
             );
-            expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst].name).toBe("this is a name");
+            expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst].name).toBe(person1.name);
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
             expect((gqlResult.data?.[queryType] as any[])[1].score).toBeNumber();
             expect((gqlResult.data?.[queryType] as any[])[2].score).toBeNumber();
@@ -869,16 +869,10 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([
                 {
-                    [personTypeLowerFirst]: {
-                        born: 1984,
-                        name: "this is a name",
-                    },
+                    [personTypeLowerFirst]: person1,
                 },
                 {
-                    [personTypeLowerFirst]: {
-                        born: 1985,
-                        name: "This is a different name",
-                    },
+                    [personTypeLowerFirst]: person2,
                 },
             ]);
         });
@@ -1067,37 +1061,37 @@ describe("@fulltext directive", () => {
             expect(gqlResult.data?.[queryType]).toEqual([
                 {
                     [personTypeLowerFirst]: {
-                        name: "this is a name",
+                        name: person1.name,
                         actedInMovies: [
                             {
-                                title: "Some Title",
-                                released: 2001,
+                                title: movie1.title,
+                                released: movie1.released,
                             },
                             {
-                                title: "Another Title",
-                                released: 2002,
-                            },
-                        ],
-                    },
-                },
-                {
-                    [personTypeLowerFirst]: {
-                        name: "This is a different name",
-                        actedInMovies: [
-                            {
-                                title: "Some Title",
-                                released: 2001,
+                                title: movie2.title,
+                                released: movie2.released,
                             },
                         ],
                     },
                 },
                 {
                     [personTypeLowerFirst]: {
-                        name: "Another name",
+                        name: person2.name,
                         actedInMovies: [
                             {
-                                title: "Another Title",
-                                released: 2002,
+                                title: movie1.title,
+                                released: movie1.released,
+                            },
+                        ],
+                    },
+                },
+                {
+                    [personTypeLowerFirst]: {
+                        name: person3.name,
+                        actedInMovies: [
+                            {
+                                title: movie2.title,
+                                released: movie2.released,
                             },
                         ],
                     },
@@ -1179,10 +1173,7 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([
                 {
-                    [personTypeLowerFirst]: {
-                        name: "Another name",
-                        born: 1986,
-                    },
+                    [personTypeLowerFirst]: person3,
                 },
             ]);
         });
@@ -1327,17 +1318,17 @@ describe("@fulltext directive", () => {
             expect(gqlResult.data?.[queryType]).toEqual([
                 {
                     [personTypeLowerFirst]: {
-                        name: "Another name",
+                        name: person3.name,
                     },
                 },
                 {
                     [personTypeLowerFirst]: {
-                        name: "this is a name",
+                        name: person1.name,
                     },
                 },
                 {
                     [personTypeLowerFirst]: {
-                        name: "This is a different name",
+                        name: person2.name,
                     },
                 },
             ]);
@@ -1411,12 +1402,12 @@ describe("@fulltext directive", () => {
             expect(gqlResult.data?.[queryType]).toEqual([
                 {
                     [personTypeLowerFirst]: {
-                        name: "this is a name",
+                        name: person1.name,
                     },
                 },
                 {
                     [personTypeLowerFirst]: {
-                        name: "Another name",
+                        name: person3.name,
                     },
                 },
             ]);
@@ -1976,13 +1967,13 @@ describe("@fulltext directive", () => {
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual({
-                name: "This is a different name",
+                name: person2.name,
             });
             expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst]).toEqual({
-                name: "this is a name",
+                name: person1.name,
             });
             expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst]).toEqual({
-                name: "Another name",
+                name: person3.name,
             });
             expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
                 (gqlResult.data?.[queryType] as any[])[1].score
