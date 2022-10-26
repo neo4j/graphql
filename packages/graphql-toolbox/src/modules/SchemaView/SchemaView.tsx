@@ -46,7 +46,7 @@ import { SchemaEditor } from "./SchemaEditor";
 import { ConstraintState, Favorite } from "../../types";
 import { Favorites } from "./Favorites";
 import { IntrospectionPrompt } from "./IntrospectionPrompt";
-import { tracking } from "../../utils/tracking";
+import { tracking } from "../../analytics/tracking";
 
 export interface Props {
     hasSchema: boolean;
@@ -82,7 +82,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
         ];
         setFavorites(newFavorites);
         Storage.storeJSON(LOCAL_STATE_FAVORITES, newFavorites);
-        tracking.trackFavorites();
+        tracking.trackSaveFavorite({ screen: "type definitions" });
     };
 
     const setTypeDefsFromFavorite = (typeDefs: string) => {
@@ -120,6 +120,8 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                 if (constraintState === ConstraintState.create.toString()) {
                     await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: true } });
                 }
+
+                // tracking.trackBuildSchema({ })
 
                 onChange(schema);
             } catch (error) {

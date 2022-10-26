@@ -25,7 +25,7 @@ import { SchemaView } from "../SchemaView/SchemaView";
 import { Editor } from "../EditorView/Editor";
 import { AuthContext } from "../../contexts/auth";
 import { ScreenContext, Screen } from "../../contexts/screen";
-import { invokeSegmentAnalytics } from "src/utils/segmentSnippet";
+import { invokeSegmentAnalytics } from "../../analytics/segment-snippet";
 
 export const Main = () => {
     const auth = useContext(AuthContext);

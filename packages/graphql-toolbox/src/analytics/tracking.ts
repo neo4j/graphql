@@ -19,76 +19,63 @@
 
 import { LOCAL_STATE_ENABLE_PRODUCT_USAGE_TRACKING } from "../constants";
 import { Storage } from "../utils/storage";
-import { TypeDefinitionsAnalyticsResults } from "./analytics";
-
-export enum TrackingExecutionTypeExplorer {
-    QUERY,
-    MUTATION,
-}
-
-export enum TrackingSchemaConstraintTypes {
-    CHECK,
-    CREATE,
-    NONE,
-}
+import {
+    TrackingTBBuildSchemaClick,
+    TrackingTBChangeDatabase,
+    TrackingTBEditorThemeToggle,
+    TrackingTBExecuteQuery,
+    TrackingTBExplorerExecutionTypeAdd,
+    TrackingTBFavorite,
+    TrackingTBHelpLearnLinkClick,
+    TrackingTBIntrospect,
+    TrackingTBSchemaConstraints,
+    TrackingTBSchemaDocsToggle,
+    TrackingTBSchemaSettingsCheckbox,
+} from "./tracking-types";
 
 class Tracking {
-    //
-    // UX product usage tracking
-    //
-    public trackIntrospectionInSchemaView = () => {
-        this.fireTrackingEvent("ux", "introspection-schema-view");
+    public trackDatabaseIntrospection = (properties: TrackingTBIntrospect) => {
+        this.fireTrackingEvent("TB", "INTROSPECT", properties);
     };
 
-    public trackIntrospectionInModal = () => {
-        this.fireTrackingEvent("ux", "introspection-modal");
+    public trackChangeEditorTheme = (properties: TrackingTBEditorThemeToggle) => {
+        this.fireTrackingEvent("TB", "EDITOR_THEME_TOGGLE", properties);
     };
 
-    public trackChangeEditorTheme = () => {
-        this.fireTrackingEvent("ux", "editor-theme");
+    public trackSaveFavorite = (properties: TrackingTBFavorite) => {
+        this.fireTrackingEvent("TB", "FAVORITE", properties);
     };
 
-    public trackSaveFavorite = () => {
-        this.fireTrackingEvent("ux", "save-favorite");
+    public trackSchemaSettingsCheckbox = (properties: TrackingTBSchemaSettingsCheckbox) => {
+        this.fireTrackingEvent("TB", "SCHEMA_SETTINGS_CHECKBOX", properties);
     };
 
-    public trackSchemaDebugEnabled = () => {
-        this.fireTrackingEvent("ux", "schema-debug-enabled");
+    public trackSchemaConstraints = (properties: TrackingTBSchemaConstraints) => {
+        this.fireTrackingEvent("TB", "SCHEMA_CONSTRAINTS_DROPDOWN", properties);
     };
 
-    public trackSchemaRegexEnabled = () => {
-        this.fireTrackingEvent("ux", "schema-regex-enabled");
+    public trackChangeDatabase = (properties: TrackingTBChangeDatabase) => {
+        this.fireTrackingEvent("TB", "CHANGE_DATABASE", properties);
     };
 
-    public trackSchemaConstraints = (constraintType: TrackingSchemaConstraintTypes) => {
-        this.fireTrackingEvent("ux", "schema-constraints", { constraintType });
+    public trackAddExecutionTypeInExplorer = (properties: TrackingTBExplorerExecutionTypeAdd) => {
+        this.fireTrackingEvent("TB", "EXPLORER_EXECUTION_TYPE_ADD", properties);
     };
 
-    public trackChangeDatabase = () => {
-        this.fireTrackingEvent("ux", "change-database");
+    public trackOpenSchemaDocs = (properties: TrackingTBSchemaDocsToggle) => {
+        this.fireTrackingEvent("TB", "SCHEMA_DOCS_TOGGLE", properties);
     };
 
-    public trackAddExecutionTypeInExplorer = (type: TrackingExecutionTypeExplorer) => {
-        this.fireTrackingEvent("ux", "add-explorer-query-mutation", { type });
+    public trackHelpLearnFeatureLinks = (properties: TrackingTBHelpLearnLinkClick) => {
+        this.fireTrackingEvent("TB", "HELP_LEARN_LINK_CLICK", properties);
     };
 
-    public trackOpenSchemaDocsDrawer = () => {
-        this.fireTrackingEvent("ux", "open-schema-docs-drawer");
+    public trackBuildSchema = (properties: TrackingTBBuildSchemaClick) => {
+        this.fireTrackingEvent("TB", "BUILD_SCHEMA_CLICK", properties);
     };
 
-    public trackOpenSchemaDocsExplorer = () => {
-        this.fireTrackingEvent("ux", "open-schema-docs-explorer");
-    };
-
-    //
-    // GraphQL metadata product usage tracking
-    //
-    public trackTypeDefinitionMetadata = (analytics: TypeDefinitionsAnalyticsResults) => {
-        this.fireTrackingEvent("data", "type-definition-metadata", analytics);
-    };
-
-    public trackQueryComplexity = (complexity: number) => {
-        this.fireTrackingEvent("data", "query-complexity", { complexity });
+    public trackExecuteQuery = (properties: TrackingTBExecuteQuery) => {
+        this.fireTrackingEvent("TB", "EXECUTE_QUERY", properties);
     };
 
     private fireTrackingEvent = (eventCategory: string, eventLabel: string, eventProperties = {}) => {
@@ -102,7 +89,7 @@ class Tracking {
             graphQLToolboxVersion: process.env.VERSION,
             neo4jGraphQLLibraryVersion: process.env.NEO4J_GRAPHQL_VERSION,
         };
-        window.analytics.track(`${eventCategory}-${eventLabel}`, enrichedEventProperties);
+        window.analytics.track(`${eventCategory}_${eventLabel}`, enrichedEventProperties);
     };
 }
 
