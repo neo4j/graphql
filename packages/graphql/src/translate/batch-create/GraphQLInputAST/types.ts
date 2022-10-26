@@ -24,7 +24,7 @@ import type { Node, Relationship } from "../../../classes";
 export interface IAST {
     childrens: IAST[];
     addChildren: (children: IAST) => void;
-    accept: <R>(visitor: Visitor) => void;
+    accept: (visitor: Visitor) => void;
 }
 
 export interface IConnectAST extends IAST {

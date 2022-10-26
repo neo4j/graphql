@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
+/* 
 import type { TreeDescriptor } from "../types";
 import type { RelationField } from "../../../types";
 import type { Visitor, IConnectAST } from "./types";
 import type { Node } from "../../../classes";
 import { AST } from "./AST";
-/* 
+
 export class ConnectAST extends AST implements IConnectAST {
     node: Node;
     parent: Node;

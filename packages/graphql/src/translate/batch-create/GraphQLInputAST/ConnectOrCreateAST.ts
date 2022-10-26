@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
+/* 
 import type { TreeDescriptor } from "../types";
 import type { Visitor, IConnectOrCreateAST } from "./types";
 import type { Node } from "../../../classes";
 import { AST } from "./AST";
 
-/* export class ConnectOrCreateAST extends AST implements IConnectOrCreateAST {
+export class ConnectOrCreateAST extends AST implements IConnectOrCreateAST {
     parent: Node;
     where: TreeDescriptor;
     onCreate: TreeDescriptor;

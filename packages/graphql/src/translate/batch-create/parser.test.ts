@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { parseCreate, mergeTreeDescriptors, getTreeDescriptor } from "./parser";
+import { mergeTreeDescriptors, getTreeDescriptor } from "./parser";
 import { Neo4jGraphQL } from "../../../src";
 import { gql } from "apollo-server";
 import type { CreateInput } from "./types";
