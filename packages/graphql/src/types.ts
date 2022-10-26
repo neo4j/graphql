@@ -224,6 +224,10 @@ export interface GraphQLSortArg {
     [field: string]: SortDirection;
 }
 
+export interface NestedGraphQLSortArg {
+    [field: string]: GraphQLSortArg;
+}
+
 export interface ConnectionSortArg {
     node?: GraphQLSortArg;
     edge?: GraphQLSortArg;
