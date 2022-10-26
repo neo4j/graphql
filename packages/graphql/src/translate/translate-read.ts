@@ -21,21 +21,14 @@ import type { Integer } from "neo4j-driver";
 import { int } from "neo4j-driver";
 import { cursorToOffset } from "graphql-relay";
 import type { Node } from "../classes";
-import { lowerFirst } from "../utils/lower-first";
 import createProjectionAndParams, { ProjectionResult } from "./create-projection-and-params";
-import type { GraphQLOptionsArg, GraphQLSortArg, SortDirection, Context } from "../types";
+import type { GraphQLOptionsArg, GraphQLSortArg, Context } from "../types";
 import { createAuthPredicates } from "./create-auth-and-params";
 import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createMatchClause } from "./translate-top-level-match";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
 
-type NestedSortDirection = {
-    [s: string]: SortDirection;
-};
-
-// TODO add ordering/pagination to cypher builder so this can be avoided!
-const scoreVariableStringToReplace = "REPLACE_ME";
 
 export function translateRead(
     {
@@ -131,8 +124,6 @@ export function translateRead(
         );
     }
 
-    let projectionClause: CypherBuilder.Clause = returnClause; // TODO: avoid reassign
-
     if (hasOrdering) {
         addSortAndLimitOptionsToClause(
             { optionsInput, target: nodeVarRef, projectionClause: returnClause },
@@ -141,6 +132,7 @@ export function translateRead(
         );
     }
 
+    let projectionClause: CypherBuilder.Clause = returnClause; // TODO avoid reassign
     let connectionPreClauses: CypherBuilder.Clause | undefined;
 
     if (isRootConnectionField) {
