@@ -21,7 +21,7 @@ import { GraphQLFloat, GraphQLNonNull, GraphQLString } from "graphql";
 import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import type { Node } from "../../classes";
 import { EventType } from "../../graphql/enums/EventType";
-import { generateSubscriptionWhereType } from "./generate-subscription-where-type";
+import { generateSubscriptionWhereType, generateSubscriptionRelWhereType } from "./generate-subscription-where-type";
 import { generateEventPayloadType } from "./generate-event-payload-type";
 import { generateSubscribeMethod, generateSubscriptionResolver } from "../resolvers/subscriptions/subscribe";
 import type {
@@ -186,7 +186,9 @@ export function generateSubscriptionTypes({
                     type: new GraphQLNonNull(GraphQLString),
                     resolve: (source: SubscriptionsEvent) => {
                         const trueSource = source as RelationSubscriptionsEvent;
-                        return node.relationFields.find((f) => f.type === trueSource.relationshipName)?.properties;
+                        const r = node.relationFields.find((f) => f.type === trueSource.relationshipName)?.fieldName;
+                        console.log("r", r);
+                        return r;
                     },
                 },
                 direction: {
@@ -296,9 +298,11 @@ export function generateSubscriptionTypes({
             },
         });
 
+        // const relWhere = generateSubscriptionRelWhereType(node, schemaComposer, relationshipFields);
         if (node.relationFields.length > 0) {
             subscriptionComposer.addFields({
                 [subscribeOperation.connected]: {
+                    // args: { where: relWhere },
                     args: { where },
                     type: relationConnectedEvent.NonNull,
                     subscribe: generateSubscribeMethod(node, "connect"),
@@ -332,6 +336,10 @@ function _buildRelationDestinationUnionNodeType({
     if (!atLeastOneTypeHasProperties) {
         return null;
     }
+    // const inputs = unionNodes.reduce((acc, u) => {
+    //     acc[u.getTypeName()] = u.getITC();
+    //     return acc;
+    // }, {});
     return schemaComposer.createUnionTC({
         name: `${relationNodeTypeName}EventPayload`,
         types: unionNodes,
@@ -467,6 +475,7 @@ function getConnectedTypes({
     nodeNameToEventPayloadTypes: Record<string, ObjectTypeComposer>;
 }) {
     const { name, relationFields } = node;
+
     return relationFields
         .map((relationField) => {
             const fieldName = relationField.fieldName;
@@ -477,6 +486,7 @@ function getConnectedTypes({
                 relationProperties,
                 schemaComposer,
             });
+
             const nodeTo = _buildRelationFieldDestinationTypes({
                 relationField,
                 interfaceFieldsabc,
@@ -486,6 +496,7 @@ function getConnectedTypes({
             if (nodeTo) {
                 relationFieldType.addFields({ node: nodeTo });
             }
+
             return {
                 relationFieldType,
                 fieldName,
