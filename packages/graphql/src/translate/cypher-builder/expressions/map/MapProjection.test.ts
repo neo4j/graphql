@@ -31,20 +31,6 @@ describe("Map Projection", () => {
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
     });
 
-    test("Project map with variables and nodes in projection", () => {
-        const var1 = new CypherBuilder.Variable();
-        const var2 = new CypherBuilder.NamedVariable("NamedVar");
-        const node = new CypherBuilder.Node({});
-
-        const mapProjection = new CypherBuilder.MapProjection(new CypherBuilder.Variable(), [var1, var2, node]);
-
-        const queryResult = new TestClause(mapProjection).build();
-
-        expect(queryResult.cypher).toMatchInlineSnapshot(`"var0 { .var1, .NamedVar, .this2 }"`);
-
-        expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
-    });
-
     test("Project map with extra values only", () => {
         const var1 = new CypherBuilder.Variable();
         const var2 = new CypherBuilder.NamedVariable("NamedVar");
@@ -61,35 +47,31 @@ describe("Map Projection", () => {
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
     });
 
-    test("Project map with variables in projection and extra values", () => {
-        const var1 = new CypherBuilder.Variable();
-        const var2 = new CypherBuilder.NamedVariable("NamedVar");
+    test("Project map with properties in projection and extra values", () => {
         const node = new CypherBuilder.Node({});
 
-        const mapProjection = new CypherBuilder.MapProjection(new CypherBuilder.Variable(), [var1, var2], {
+        const mapProjection = new CypherBuilder.MapProjection(new CypherBuilder.Variable(), [".title", ".name"], {
             namedValue: CypherBuilder.count(node),
         });
         const queryResult = new TestClause(mapProjection).build();
 
-        expect(queryResult.cypher).toMatchInlineSnapshot(`"var0 { .var2, .NamedVar, namedValue: count(this1) }"`);
+        expect(queryResult.cypher).toMatchInlineSnapshot(`"var0 { .title, .name, namedValue: count(this1) }"`);
 
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
     });
 
     test("Map Projection in return", () => {
         const mapVar = new CypherBuilder.Variable();
-        const var1 = new CypherBuilder.Variable();
-        const var2 = new CypherBuilder.NamedVariable("NamedVar");
         const node = new CypherBuilder.Node({});
 
-        const mapProjection = new CypherBuilder.MapProjection(mapVar, [var1, var2], {
+        const mapProjection = new CypherBuilder.MapProjection(mapVar, [".title", ".name"], {
             namedValue: CypherBuilder.count(node),
         });
 
         const queryResult = new CypherBuilder.Return([mapProjection, mapVar]).build();
 
         expect(queryResult.cypher).toMatchInlineSnapshot(
-            `"RETURN var0 { .var2, .NamedVar, namedValue: count(this1) } AS var0"`
+            `"RETURN var0 { .title, .name, namedValue: count(this1) } AS var0"`
         );
 
         expect(queryResult.params).toMatchInlineSnapshot(`Object {}`);
