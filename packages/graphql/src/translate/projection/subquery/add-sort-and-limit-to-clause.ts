@@ -38,28 +38,29 @@ export function addLimitOrOffsetOptionsToClause({
     }
 }
 
-export function addSortAndLimitOptionsToClause(
-    {
-        optionsInput,
-        target,
-        projectionClause,
-    }: {
-        optionsInput: GraphQLOptionsArg;
-        target: CypherBuilder.Variable | CypherBuilder.PropertyRef;
-        projectionClause: CypherBuilder.Return | CypherBuilder.With;
-    },
-    node?: Node,
-    context?: Context
-): void {
+export function addSortAndLimitOptionsToClause({
+    optionsInput,
+    target,
+    projectionClause,
+    varName,
+    node,
+    context,
+}: {
+    optionsInput: GraphQLOptionsArg;
+    target: CypherBuilder.Variable | CypherBuilder.PropertyRef;
+    projectionClause: CypherBuilder.Return | CypherBuilder.With;
+    varName?: string;
+    node?: Node;
+    context?: Context;
+}): void {
     if (optionsInput.sort) {
-        const orderByParams = createOrderByParams(
-            {
-                optionsInput,
-                target, // This works because targetNode uses alias
-            },
+        const orderByParams = createOrderByParams({
+            optionsInput,
+            target, // This works because targetNode uses alias
+            varName,
             node,
-            context
-        );
+            context,
+        });
         if (orderByParams.length > 0) {
             projectionClause.orderBy(...orderByParams);
         }
@@ -70,17 +71,19 @@ export function addSortAndLimitOptionsToClause(
     });
 }
 
-function createOrderByParams(
-    {
-        optionsInput,
-        target,
-    }: {
-        optionsInput: GraphQLOptionsArg;
-        target: CypherBuilder.Variable | CypherBuilder.PropertyRef;
-    },
-    node?: Node,
-    context?: Context
-): Array<[CypherBuilder.Expr, CypherBuilder.Order]> {
+function createOrderByParams({
+    optionsInput,
+    target,
+    varName,
+    node,
+    context,
+}: {
+    optionsInput: GraphQLOptionsArg;
+    target: CypherBuilder.Variable | CypherBuilder.PropertyRef;
+    varName?: string;
+    node?: Node;
+    context?: Context;
+}): Array<[CypherBuilder.Expr, CypherBuilder.Order]> {
     let sortOptions = optionsInput.sort || [];
     if (node?.name && optionsInput.sort?.[lowerFirst(node?.name)]) {
         sortOptions = optionsInput.sort?.[lowerFirst(node?.name)];
@@ -99,6 +102,9 @@ function createOrderByParams(
         }
     );
     return orderList.map(([field, order]) => {
+        if (varName && node?.cypherFields.some((f) => f.fieldName === field)) {
+            return [new CypherBuilder.NamedVariable(`${varName}_${field}`), order];
+        }
         if (context?.fulltextIndex && field === "score") {
             return [context.fulltextIndex.scoreVariable, order];
         }

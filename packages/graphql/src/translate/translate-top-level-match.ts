@@ -25,28 +25,32 @@ import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { createWherePredicate } from "./where/create-where-predicate";
 
 export function translateTopLevelMatch({
+    matchNode,
     node,
     context,
     varName,
     operation,
 }: {
+    matchNode?: CypherBuilder.NamedNode;
     context: Context;
     node: Node;
     varName: string;
     operation: AuthOperations;
 }): CypherBuilder.CypherResult {
-    const matchQuery = createMatchClause({ node, context, varName, operation });
+    const matchQuery = createMatchClause({ matchNode, node, context, varName, operation });
 
     const result = matchQuery.build();
     return result;
 }
 
 export function createMatchClause({
+    matchNode,
     node,
     context,
     varName,
     operation,
 }: {
+    matchNode?: CypherBuilder.NamedNode;
     context: Context;
     node: Node;
     varName: string;
@@ -54,8 +58,7 @@ export function createMatchClause({
 }): CypherBuilder.Match | CypherBuilder.db.FullTextQueryNodes {
     const { resolveTree } = context;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
-    const matchNode = new CypherBuilder.NamedNode(varName, { labels: node.getLabels(context) });
-
+    matchNode = matchNode || new CypherBuilder.NamedNode(varName, { labels: node.getLabels(context) });
     let matchQuery: CypherBuilder.Match<CypherBuilder.Node> | CypherBuilder.db.FullTextQueryNodes;
     let whereInput = resolveTree.args.where as GraphQLWhereArg | undefined;
 
@@ -70,7 +73,7 @@ export function createMatchClause({
         matchQuery = new CypherBuilder.db.FullTextQueryNodes(matchNode, indexName, phraseParam);
 
         const labelsChecks = node.getLabels(context).map((label) => {
-            return CypherBuilder.in(new CypherBuilder.Literal(label), CypherBuilder.labels(matchNode));
+            return CypherBuilder.in(new CypherBuilder.Literal(label), CypherBuilder.labels(matchNode as CypherBuilder.NamedNode));
         });
 
         const andChecks = CypherBuilder.and(...labelsChecks);
