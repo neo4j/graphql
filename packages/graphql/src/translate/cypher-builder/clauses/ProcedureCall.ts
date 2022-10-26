@@ -35,4 +35,4 @@ export class ProcedureCall extends Clause {
     }
 }
 
-export interface ProcedureCall {};
+export interface ProcedureCall {}
