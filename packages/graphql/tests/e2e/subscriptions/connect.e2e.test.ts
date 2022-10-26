@@ -1391,7 +1391,7 @@ subscription SubscriptionPerson {
     // ==============FIX===ME===================
 
     // FIX: no actor events?!
-    test.skip("connect via nested create - connect subscription sends events both ways", async () => {
+    test("connect via nested create - connect subscription sends events both ways", async () => {
         // 1. create resources that will be connected
         await supertest(server.path)
             .post("")
@@ -2363,7 +2363,7 @@ subscription SubscriptionPerson {
         ]);
     });
 
-    test.skip("connect via create - connect subscription simple case with duplicate nodes + interface (NW)", async () => {
+    test("connect via create - connect subscription simple case with duplicate nodes + interface (NW)", async () => {
         // 1. create resources that will be connected
         await supertest(server.path)
             .post("")
@@ -2446,7 +2446,7 @@ subscription SubscriptionPerson {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
                     direction: "IN",
-                    relationshipName: "Review",
+                    relationshipName: "reviewers",
                     relationship: {
                         actors: null,
                         directors: null,
@@ -2465,126 +2465,7 @@ subscription SubscriptionPerson {
                     [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
                     event: "CONNECT",
                     direction: "IN",
-                    relationshipName: "Review",
-                    relationship: {
-                        actors: null,
-                        directors: null,
-                        reviewers: {
-                            score: 10,
-                            node: {
-                                name: "Ana",
-                                reputation: 100,
-                            },
-                        },
-                    },
-                },
-            },
-        ]);
-    });
-
-    test.skip("2connect via create - connect subscription simple case with duplicate nodes + interface (NW)", async () => {
-        // 1. create resources that will be connected
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                mutation {
-                    ${typePerson.operations.create}(
-                        input: [
-                            {
-                                name: "Ana",
-                                reputation: 100
-                            },
-                            {
-                                name: "Bob",
-                                reputation: 100
-                            }
-                        ]
-                    ) {
-                        ${typePerson.plural} {
-                            reputation
-                            name
-                        }
-                    }
-                }
-            `,
-            })
-            .expect(200);
-
-        await wsClient.subscribe(actorSubscriptionQuery(typeActor));
-
-        await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
-
-        await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeMovie.operations.create}(
-                            input: [
-                                {
-                                    title: "Matrix",
-                                    imdbId: 1,
-                                    reviewers: {
-                                      connect: [
-                                        {
-                                          where: {
-                                            node: {
-                                              _on: {
-                                                ${typePerson.name}: {
-                                                  reputation: 100
-                                                }
-                                              }
-                                            }
-                                          },
-                                          edge: {
-                                            score: 10
-                                          }
-                                        }
-                                      ]
-                                    }
-                                }
-                        ]
-                        ) {
-                            ${typeMovie.plural} {
-                                title
-                            }
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-
-        expect(wsClient.errors).toEqual([]);
-        expect(wsClient2.errors).toEqual([]);
-        expect(wsClient2.events).toHaveLength(2);
-        expect(wsClient.events).toEqual([]);
-        expect(wsClient2.events).toIncludeSameMembers([
-            {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "Review",
-                    relationship: {
-                        actors: null,
-                        directors: null,
-                        reviewers: {
-                            score: 10,
-                            node: {
-                                name: "Ana",
-                                reputation: 100,
-                            },
-                        },
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "Matrix" },
-                    event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "Review",
+                    relationshipName: "reviewers",
                     relationship: {
                         actors: null,
                         directors: null,
@@ -2882,7 +2763,7 @@ subscription SubscriptionPerson {
         ]);
     });
 
-    test.skip("connect via create - connect subscription simple case with 2 matching nodes + interface (NW)", async () => {
+    test("connect via create - connect subscription simple case with 2 matching nodes + interface (NW)", async () => {
         // 1. create resources that will be connected
         await supertest(server.path)
             .post("")
@@ -2987,7 +2868,7 @@ subscription SubscriptionPerson {
                         reviewers: {
                             score: 10,
                             node: {
-                                name: "Ana",
+                                name: "Bob",
                                 reputation: 100,
                             },
                         },
@@ -2997,7 +2878,7 @@ subscription SubscriptionPerson {
         ]);
     });
 
-    test.skip("connect via create - connect subscription simple case with nodes of different type + interface", async () => {
+    test("connect via create - connect subscription simple case with nodes of different type + interface", async () => {
         // 1. create resources that will be connected
         await supertest(server.path)
             .post("")
@@ -4053,7 +3934,7 @@ subscription SubscriptionPerson {
 
     // update-connect
 
-    test.only("connect via update - connect subscription sends events one way: union type", async () => {
+    test.skip("connect via update - connect subscription sends events one way: union type", async () => {
         // 1. create
         await supertest(server.path)
             .post("")

@@ -488,7 +488,12 @@ function createConnectAndParams({
         }
 
         if (context.subscriptionsEnabled) {
-            subquery.push("\tRETURN meta AS connect_meta");
+            // subquery.push("\tRETURN meta AS connect_meta");
+
+            subquery.push(`WITH collect(meta) AS connect_meta`);
+            // accumulator = initial, variable IN list | expression
+            subquery.push(`RETURN REDUCE(m=[],m1 IN connect_meta | m+m1 ) as connect_meta`);
+
             // if (!recursiveCall) {
             //     subquery.push(`\tWITH meta${level} + meta${level + 1} as meta${level}`);
             // }

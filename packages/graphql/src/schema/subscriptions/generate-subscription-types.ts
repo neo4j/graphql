@@ -187,7 +187,6 @@ export function generateSubscriptionTypes({
                     resolve: (source: SubscriptionsEvent) => {
                         const trueSource = source as RelationSubscriptionsEvent;
                         const r = node.relationFields.find((f) => f.type === trueSource.relationshipName)?.fieldName;
-                        console.log("r", r);
                         return r;
                     },
                 },
