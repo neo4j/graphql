@@ -57,7 +57,7 @@ export interface TrackingTBExplorerExecutionTypeAdd {
 }
 
 export interface TrackingTBSchemaDocsToggle {
-    screen: "query editor" | "type definitions";
+    screen: Screen;
     action: boolean;
     origin: "explorer" | "help drawer";
 }

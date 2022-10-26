@@ -126,17 +126,20 @@ const EditorScreenDrawer = ({
     onClickClose,
     setShowSubComponent,
     schema,
+    screen,
 }: {
     showSubComponent: boolean;
     onClickClose: () => void;
     setShowSubComponent: Dispatch<SetStateAction<boolean>>;
     schema?: GraphQLSchema;
+    screen: Screen;
 }) => {
     const [selectedTile, setSelectedTile] = useState<string>("");
 
     const handleOnClickSchemaDocTile = () => {
         setSelectedTile(EditorViewTiles.SCHEMA_DOCS.toString());
         setShowSubComponent(true);
+        tracking.trackOpenSchemaDocs({ screen, action: true, origin: "help drawer" });
     };
     const handleOnClickKeybindingsTile = () => {
         setSelectedTile(EditorViewTiles.KEYBINDINGS.toString());
@@ -207,6 +210,7 @@ export const HelpDrawer = ({ onClickClose, schema }: Props) => {
                         onClickClose={onClickClose}
                         setShowSubComponent={setShowSubComponent}
                         schema={schema}
+                        screen={screen.view}
                     />
                 )}
                 {!showSubComponent ? (

@@ -43,6 +43,7 @@ import { HelpDrawer } from "../HelpDrawer/HelpDrawer";
 import { DocExplorerComponent } from "../HelpDrawer/DocExplorerComponent";
 import { Storage } from "../../utils/storage";
 import { tracking } from "../../analytics/tracking";
+import { Screen } from "../../contexts/screen";
 
 const DEBOUNCE_TIMEOUT = 500;
 
@@ -76,8 +77,7 @@ export const Editor = ({ schema }: Props) => {
 
     const handleShowDocs = () => {
         setShowDocs(!showDocs);
-        const actionValue = showDocs ? "on" : "off";
-        tracking.trackOpenSchemaDocs({ screen: "query editor", origin: "explorer", action: actionValue });
+        tracking.trackOpenSchemaDocs({ screen: Screen.EDITOR, origin: "explorer", action: !showDocs });
     };
 
     const onSubmit = useCallback(

@@ -135,31 +135,34 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
         [isDebugChecked, constraintState, isRegexChecked, auth.selectedDatabaseName]
     );
 
-    const introspect = useCallback(async () => {
-        try {
-            setLoading(true);
-            setIsIntrospecting(true);
+    const introspect = useCallback(
+        async ({ screen }: { screen: "query editor" | "type definitions" | "initial modal" }) => {
+            try {
+                setLoading(true);
+                setIsIntrospecting(true);
 
-            const sessionFactory = () =>
-                auth?.driver?.session({
-                    defaultAccessMode: neo4j.session.READ,
-                    database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
-                }) as neo4j.Session;
+                const sessionFactory = () =>
+                    auth?.driver?.session({
+                        defaultAccessMode: neo4j.session.READ,
+                        database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
+                    }) as neo4j.Session;
 
-            const typeDefs = await toGraphQLTypeDefs(sessionFactory);
+                const typeDefs = await toGraphQLTypeDefs(sessionFactory);
 
-            refForEditorMirror.current?.setValue(typeDefs);
+                refForEditorMirror.current?.setValue(typeDefs);
 
-            tracking.trackDatabaseIntrospection({ screen: "type definitions", status: "success" });
-        } catch (error) {
-            const msg = (error as GraphQLError).message;
-            setError(msg);
-            tracking.trackDatabaseIntrospection({ screen: "type definitions", status: "failure" });
-        } finally {
-            setLoading(false);
-            setIsIntrospecting(false);
-        }
-    }, [buildSchema, refForEditorMirror.current, auth.selectedDatabaseName]);
+                tracking.trackDatabaseIntrospection({ screen, status: "success" });
+            } catch (error) {
+                const msg = (error as GraphQLError).message;
+                setError(msg);
+                tracking.trackDatabaseIntrospection({ screen, status: "failure" });
+            } finally {
+                setLoading(false);
+                setIsIntrospecting(false);
+            }
+        },
+        [buildSchema, refForEditorMirror.current, auth.selectedDatabaseName]
+    );
 
     const onSubmit = useCallback(async () => {
         const value = refForEditorMirror.current?.getValue();
@@ -169,8 +172,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
     }, [buildSchema]);
 
     const onClickIntrospect = async () => {
-        await introspect();
-        tracking.trackDatabaseIntrospection({ screen: "type definitions", status: "success" });
+        await introspect({ screen: "type definitions" });
     };
 
     return (
@@ -191,8 +193,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                         setShowIntrospectionModal(false);
                         auth.setShowIntrospectionPrompt(false);
                         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                        introspect();
-                        tracking.trackDatabaseIntrospection({ screen: "initial modal", status: "success" });
+                        introspect({ screen: "initial modal" });
                     }}
                 />
             ) : null}

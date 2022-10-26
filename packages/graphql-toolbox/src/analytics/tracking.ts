@@ -67,8 +67,9 @@ class Tracking {
     };
 
     public trackOpenSchemaDocs = (properties: TrackingTBSchemaDocsToggle) => {
+        const screenValue = properties.screen === Screen.EDITOR ? "query editor" : "type definitions";
         const actionValue = properties.action ? "on" : "off";
-        this.fireTrackingEvent("TB", "SCHEMA_DOCS_TOGGLE", { ...properties, action: actionValue });
+        this.fireTrackingEvent("TB", "SCHEMA_DOCS_TOGGLE", { ...properties, screen: screenValue, action: actionValue });
     };
 
     public trackHelpLearnFeatureLinks = (properties: TrackingTBHelpLearnLinkClick) => {

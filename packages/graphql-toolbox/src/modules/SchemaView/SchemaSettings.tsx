@@ -60,7 +60,7 @@ export const SchemaSettings = ({
     const onChangeConstraintState = (nextConstraintState: string): void => {
         setConstraintState(nextConstraintState);
         Storage.store(LOCAL_STATE_CONSTRAINT, nextConstraintState);
-        tracking.trackSchemaConstraints({ screen: "type definitions", value: nextConstraintState });
+        tracking.trackSchemaConstraints({ screen: "type definitions", value: ConstraintState[nextConstraintState] });
     };
 
     const InfoToolTip = ({ text, width }: { text: React.ReactNode; width: number }): JSX.Element => {
