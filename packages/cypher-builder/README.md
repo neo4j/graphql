@@ -1,4 +1,4 @@
-# Cypher Builder
+# Cypher Builder - Beta
 
 This is an internal utility to build Cypher queries, part of `@neo4j/graphql`. This is only intended for internal usage and it is **not** feature complete.
 
