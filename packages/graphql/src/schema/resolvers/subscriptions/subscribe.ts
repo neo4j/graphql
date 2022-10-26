@@ -49,7 +49,7 @@ export function generateSubscriptionResolver(
             };
             // (payload[0] as any).relationship = relationship;
         }
-        // console.log("payload!", payload[0]);
+        console.log("payload!", payload[0]);
         return payload[0];
     };
 }

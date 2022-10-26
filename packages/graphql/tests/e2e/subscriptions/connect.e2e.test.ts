@@ -976,7 +976,7 @@ subscription SubscriptionPerson {
     });
 
     // FIXME: no event; apocDoWhen
-    test.skip("connect via update - update - create subscription sends events one way: union type", async () => {
+    test("connect via update - update - create subscription sends events one way: union type", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
@@ -1391,7 +1391,7 @@ subscription SubscriptionPerson {
     // ==============FIX===ME===================
 
     // FIX: no actor events?!
-    test.only("connect via nested create - connect subscription sends events both ways", async () => {
+    test("connect via nested create - connect subscription sends events both ways", async () => {
         // 1. create resources that will be connected
         await supertest(server.path)
             .post("")
@@ -3934,7 +3934,7 @@ subscription SubscriptionPerson {
 
     // update-connect
 
-    test.skip("connect via update - connect subscription sends events one way: union type", async () => {
+    test("connect via update - connect subscription sends events one way: union type", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
@@ -4086,28 +4086,7 @@ subscription SubscriptionPerson {
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
 
-        expect(wsClient.events).toHaveLength(1);
-        expect(wsClient.events).toIncludeSameMembers([
-            {
-                [typePerson.operations.subscribe.connected]: {
-                    [typePerson.operations.subscribe.payload.connected]: { title: "John Wick" },
-                    event: "CONNECT",
-                    direction: "OUT",
-                    relationshipName: "movies",
-                    relationship: {
-                        movies: {
-                            year: 2020,
-                            node: {
-                                name: "John",
-                                reputation: 100,
-                            },
-                        },
-                        directors: null,
-                        reviewers: null,
-                    },
-                },
-            },
-        ]);
+        expect(wsClient.events).toHaveLength(0);
 
         expect(wsClient2.events).toHaveLength(3);
         expect(wsClient2.events).toIncludeSameMembers([
