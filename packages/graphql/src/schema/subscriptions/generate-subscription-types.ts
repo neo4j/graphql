@@ -21,7 +21,7 @@ import { GraphQLFloat, GraphQLNonNull, GraphQLString } from "graphql";
 import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import type { Node } from "../../classes";
 import { EventType } from "../../graphql/enums/EventType";
-import { generateSubscriptionWhereType, generateSubscriptionRelWhereType } from "./generate-subscription-where-type";
+import { generateSubscriptionWhereType } from "./generate-subscription-where-type";
 import { generateEventPayloadType } from "./generate-event-payload-type";
 import { generateSubscribeMethod, generateSubscriptionResolver } from "../resolvers/subscriptions/subscribe";
 import type {
