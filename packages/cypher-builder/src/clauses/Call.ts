@@ -21,11 +21,12 @@ import type { CypherEnvironment } from "../Environment";
 import type { CypherASTNode } from "../CypherASTNode";
 import type { Variable } from "../variables/Variable";
 import { Clause } from "./Clause";
-import { compileCypherIfExists, padBlock } from "../utils/utils";
+import { padBlock } from "../utils/utils";
 import { ImportWith } from "./sub-clauses/ImportWith";
 import { WithReturn } from "./mixins/WithReturn";
 import { mixin } from "./utils/mixin";
 import { WithWith } from "./mixins/WithWith";
+import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 
 export interface Call extends WithReturn, WithWith {}
 

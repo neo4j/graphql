@@ -19,7 +19,8 @@
 
 import type { CypherEnvironment } from "../Environment";
 import { CypherASTNode } from "../CypherASTNode";
-import { compileCypherIfExists, padBlock } from "../utils/utils";
+import { padBlock } from "../utils/utils";
+import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import type { Expr, Predicate } from "../types";
 
 /** Case statement <https://neo4j.com/docs/cypher-manual/current/syntax/expressions/#query-syntax-case> */
