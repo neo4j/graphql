@@ -51,7 +51,6 @@ export type Expr =
     | MapExpr // NOTE this cannot be set as a property in a node
     | MapProjection // NOTE this cannot be set as a property in a node
     | ListExpr
-    | RunFirstColumn;
     | ApocExpr;
 
 /** Represents a predicate statement (i.e returns a boolean). Note that RawCypher is only added for compatibility */

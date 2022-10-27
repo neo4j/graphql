@@ -19,7 +19,7 @@
 
 import { Neo4jGraphQLError, Node } from "../classes";
 import type { Context } from "../types";
-import type { CreateInput } from "./batch-create/batch-create";
+import type { GraphQLCreateInput } from "./batch-create/batch-create";
 import createProjectionAndParams from "./create-projection-and-params";
 import { META_CYPHER_VARIABLE } from "../constants";
 import { filterTruthy } from "../utils/utils";
@@ -46,10 +46,10 @@ export default async function unwindCreate({
     }
 
     const { resolveTree } = context;
-    const input = resolveTree.args.input as CreateInput | CreateInput[];
+    const input = resolveTree.args.input as GraphQLCreateInput | GraphQLCreateInput[];
 
     const treeDescriptor = Array.isArray(input)
-        ? mergeTreeDescriptors(input.map((el: CreateInput) => getTreeDescriptor(el, node, context)))
+        ? mergeTreeDescriptors(input.map((el: GraphQLCreateInput) => getTreeDescriptor(el, node, context)))
         : getTreeDescriptor(input, node, context);
     const createNodeAST = parseCreate(treeDescriptor, node, context);
 

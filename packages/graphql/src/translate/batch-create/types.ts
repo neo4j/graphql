@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-export type CreateInput = Record<string, any>;
+export type GraphQLCreateInput = Record<string, any>;
 
 export interface TreeDescriptor {
     properties: Set<string>;

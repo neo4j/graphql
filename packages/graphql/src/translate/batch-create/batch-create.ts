@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-export type { CreateInput, TreeDescriptor } from "./types";
+export type { GraphQLCreateInput, TreeDescriptor } from "./types";
 export { UnsupportedUnwindOptimization } from "./types";
 
 export { getTreeDescriptor, mergeTreeDescriptors, inputTreeToCypherMap, parseCreate } from "./parser";

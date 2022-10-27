@@ -68,7 +68,7 @@ The unwind-create optimization is built on top of different phases.
 
 ### Parse the GraphQLCreateInput to obtain the unique TreeDescriptor
 
-This phase consists in parsing the GraphQLCreateInput to obtain a TreeDescriptor that holds all the operations and the properties impacted by the operation. 
+This phase consists in parsing the GraphQLCreateInput to obtain a TreeDescriptor that holds all the operations and the properties impacted by the operation.
 This phase provides an early mechanism to identify operations not yet supported by the optimization.
 The TreeDescriptor keeps a clear separation between scalar properties and nested operations.
 
@@ -82,7 +82,7 @@ At this phase, GraphQLCreateInput is translated into the UNWIND Cypher statement
 
 ### Visit the GraphQLInputAST with the UnwindCrateVisitor
 
-The UnwindCreateVisitor traverses the GraphQLInputAST and generates all the nodes and edges described in the GraphQLCreateInput.
+The UnwindCreateVisitor traverses the GraphQLInputAST and generates all the nodes and edges described in the GraphQLInputAST.
 The final output obtained from the UnwindCreateVisitor generates a single Cypher variable rather than one for any Nodes created in the Mutation, this means that the client needs to translate the SelectionSet accordingly.
 
 

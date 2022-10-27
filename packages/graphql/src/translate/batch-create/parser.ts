@@ -18,7 +18,7 @@
  */
 
 import type { Context, RelationField } from "../../types";
-import type { CreateInput, TreeDescriptor } from "./types";
+import type { GraphQLCreateInput, TreeDescriptor } from "./types";
 import { UnsupportedUnwindOptimization } from "./types";
 import { GraphElement, Neo4jGraphQLError, Node, Relationship } from "../../classes";
 import Cypher from "@neo4j/cypher-builder";
@@ -27,7 +27,7 @@ import { AST, CreateAST, NestedCreateAST } from "./GraphQLInputAST/GraphQLInputA
 import mapToDbProperty from "../../utils/map-to-db-property";
 
 export function inputTreeToCypherMap(
-    input: CreateInput[] | CreateInput,
+    input: GraphQLCreateInput[] | GraphQLCreateInput,
     node: Node,
     context: Context,
     parentKey?: string,
@@ -35,12 +35,12 @@ export function inputTreeToCypherMap(
 ): Cypher.List | Cypher.Map {
     if (Array.isArray(input)) {
         return new Cypher.List(
-            input.map((createInput: CreateInput) =>
-                inputTreeToCypherMap(createInput, node, context, parentKey, relationship)
+            input.map((GraphQLCreateInput: GraphQLCreateInput) =>
+                inputTreeToCypherMap(GraphQLCreateInput, node, context, parentKey, relationship)
             )
         );
     }
-    const properties = (Object.entries(input) as CreateInput).reduce(
+    const properties = (Object.entries(input) as GraphQLCreateInput).reduce(
         (obj: Record<string, Cypher.Expr>, [key, value]: [string, Record<string, any>]) => {
             const [relationField, relatedNodes] = getRelationshipFields(node, key, {}, context);
             if (relationField && relationField.properties) {
@@ -59,9 +59,9 @@ export function inputTreeToCypherMap(
             if (typeof value === "object" && value !== null && (relationField || !scalar)) {
                 if (Array.isArray(value)) {
                     obj[key] = new Cypher.List(
-                        value.map((createInput: CreateInput) =>
+                        value.map((GraphQLCreateInput: GraphQLCreateInput) =>
                             inputTreeToCypherMap(
-                                createInput,
+                                GraphQLCreateInput,
                                 relationField ? relatedNodes[0] : node,
                                 context,
                                 key,
@@ -72,7 +72,7 @@ export function inputTreeToCypherMap(
                     return obj;
                 }
                 obj[key] = inputTreeToCypherMap(
-                    value as CreateInput[] | CreateInput,
+                    value as GraphQLCreateInput[] | GraphQLCreateInput,
                     relationField ? relatedNodes[0] : node,
                     context,
                     key,
@@ -100,7 +100,7 @@ function isScalar(fieldName: string, graphElement: GraphElement) {
 }
 
 export function getTreeDescriptor(
-    input: CreateInput,
+    input: GraphQLCreateInput,
     node: Node,
     context: Context,
     parentKey?: string,
@@ -128,12 +128,12 @@ export function getTreeDescriptor(
                 const innerNode = relationField ? relatedNodes[0] : node;
                 if (Array.isArray(value)) {
                     previous.childrens[key] = mergeTreeDescriptors(
-                        value.map((el) => getTreeDescriptor(el as CreateInput, innerNode, context, key, relationship))
+                        value.map((el) => getTreeDescriptor(el as GraphQLCreateInput, innerNode, context, key, relationship))
                     );
                     return previous;
                 }
                 previous.childrens[key] = getTreeDescriptor(
-                    value as CreateInput,
+                    value as GraphQLCreateInput,
                     innerNode,
                     context,
                     key,
