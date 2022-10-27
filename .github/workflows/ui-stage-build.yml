@@ -24,6 +24,7 @@ jobs:
         with:
           envkey_SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE: ${{ secrets.SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE }}
           envkey_SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE: ${{ secrets.SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE }}
+          envkey_TEST: "test"
           file_name: .env
           fail_on_empty: false
           directory: packages/graphql-toolbox
