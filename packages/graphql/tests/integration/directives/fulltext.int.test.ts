@@ -30,6 +30,7 @@ import { upperFirst } from "../../../src/utils/upper-first";
 import { delay } from "../../../src/utils/utils";
 import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
 import { createJwtRequest } from "../../utils/create-jwt-request";
+import { SCORE_FIELD } from "../../../src/graphql/directives/fulltext"
 
 function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): string {
     return `
@@ -202,11 +203,11 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst]).toEqual({
                 name: person3.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1].score
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
             );
-            expect((gqlResult.data?.[queryType] as any[])[1].score).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[2].score
+            expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
             );
         });
         test("Order updates when using a different phrase", async () => {
@@ -239,11 +240,11 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst]).toEqual({
                 name: person2.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1].score
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
             );
-            expect((gqlResult.data?.[queryType] as any[])[1].score).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[2].score
+            expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
             );
         });
         test("Score isn't returned if not requested", async () => {
@@ -305,11 +306,11 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toBeUndefined();
             expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst]).toBeUndefined();
             expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst]).toBeUndefined();
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1].score
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
             );
-            expect((gqlResult.data?.[queryType] as any[])[1].score).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[2].score
+            expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
             );
         });
         test("Throws error if no return is requested", async () => {
@@ -395,7 +396,7 @@ describe("@fulltext directive", () => {
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person1.name);
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
         test("Filters node to multiple results", async () => {
@@ -480,7 +481,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(
                 person2.name
             );
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
         test("Filters score to multiple results", async () => {
@@ -506,8 +507,8 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person1.name);
             expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].name).toBe(person3.name);
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1].score
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
             );
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
         });
@@ -556,7 +557,7 @@ describe("@fulltext directive", () => {
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person1.name);
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
         test("Filters score with max score of 0", async () => {
@@ -651,8 +652,8 @@ describe("@fulltext directive", () => {
                     released: movie1.released,
                 },
             ]);
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1].score
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
             );
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
         });
@@ -805,11 +806,11 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst].name).toBe(
                 person2.name
             );
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeLessThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1].score
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeLessThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
             );
-            expect((gqlResult.data?.[queryType] as any[])[1].score).toBeLessThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[2].score
+            expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeLessThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
             );
         });
         test("Sorting by node", async () => {
@@ -840,9 +841,9 @@ describe("@fulltext directive", () => {
                 person2.name
             );
             expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst].name).toBe(person1.name);
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
-            expect((gqlResult.data?.[queryType] as any[])[1].score).toBeNumber();
-            expect((gqlResult.data?.[queryType] as any[])[2].score).toBeNumber();
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
+            expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeNumber();
+            expect((gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]).toBeNumber();
         });
         test("Unordered sorting", async () => {
             const query = `
@@ -1026,13 +1027,13 @@ describe("@fulltext directive", () => {
             expect(gqlResult1.errors).toBeFalsy();
             expect(gqlResult2.errors).toBeFalsy();
             expect((gqlResult1.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual(person2);
-            expect((gqlResult1.data?.[queryType] as any[])[0].score).toBeNumber();
+            expect((gqlResult1.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect((gqlResult1.data?.[queryType] as any[])[1][personTypeLowerFirst]).toEqual(person1);
-            expect((gqlResult1.data?.[queryType] as any[])[1].score).toBeNumber();
+            expect((gqlResult1.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeNumber();
             expect((gqlResult2.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual(person1);
-            expect((gqlResult2.data?.[queryType] as any[])[0].score).toBeNumber();
+            expect((gqlResult2.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect((gqlResult2.data?.[queryType] as any[])[1][personTypeLowerFirst]).toEqual(person2);
-            expect((gqlResult2.data?.[queryType] as any[])[1].score).toBeNumber();
+            expect((gqlResult2.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeNumber();
         });
         test("Sort on nested field", async () => {
             const query = `
@@ -1122,8 +1123,8 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual(person2);
             expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst]).toEqual(person1);
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeLessThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1].score
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeLessThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
             );
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
         });
@@ -1200,7 +1201,7 @@ describe("@fulltext directive", () => {
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual(person2);
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
         test("Throws error if invalid sort", async () => {
@@ -1351,8 +1352,8 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
-            expect((gqlResult.data?.[queryType] as any[])[1].score).toBeNumber();
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
+            expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeNumber();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toBeUndefined();
             expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst]).toBeUndefined();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
@@ -1375,7 +1376,7 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toBeUndefined();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
@@ -1472,7 +1473,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toEqual({
                 name: person1.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
         test("Works with @auth 'where' when unauthenticated", async () => {
@@ -1600,11 +1601,11 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst]).toEqual({
                 name: person3.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1].score
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
             );
-            expect((gqlResult.data?.[queryType] as any[])[1].score).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[2].score
+            expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
             );
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(3);
         });
@@ -1724,7 +1725,7 @@ describe("@fulltext directive", () => {
 
             expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person2.name);
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeNumber();
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
         test("Works with @auth 'allow' when one match", async () => {
@@ -1901,8 +1902,8 @@ describe("@fulltext directive", () => {
                 title: movie2.title,
                 description: movie2.description,
             });
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1].score
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
             );
         });
         test("Custom query name", async () => {
@@ -1975,11 +1976,11 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst]).toEqual({
                 name: person3.name,
             });
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1].score
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
             );
-            expect((gqlResult.data?.[queryType] as any[])[1].score).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[2].score
+            expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
             );
         });
         test("Multiple index fields with custom query name", async () => {
@@ -2033,8 +2034,8 @@ describe("@fulltext directive", () => {
                 title: movie2.title,
                 description: movie2.description,
             });
-            expect((gqlResult.data?.[queryType] as any[])[0].score).toBeGreaterThanOrEqual(
-                (gqlResult.data?.[queryType] as any[])[1].score
+            expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
             );
         });
     });

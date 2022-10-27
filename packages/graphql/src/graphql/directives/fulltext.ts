@@ -26,6 +26,8 @@ import {
     GraphQLString,
 } from "graphql";
 
+export const SCORE_FIELD = "score"
+
 export const fulltextDirective = new GraphQLDirective({
     name: "fulltext",
     description:

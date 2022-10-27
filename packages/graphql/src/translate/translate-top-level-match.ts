@@ -23,6 +23,7 @@ import { createAuthAndParams } from "./create-auth-and-params";
 import { lowerFirst } from "../utils/lower-first";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { createWherePredicate } from "./where/create-where-predicate";
+import { SCORE_FIELD } from "../graphql/directives/fulltext";
 
 export function translateTopLevelMatch({
     matchNode,
@@ -134,13 +135,13 @@ function createFulltextMatchClause(
         return CypherBuilder.in(new CypherBuilder.Literal(label), CypherBuilder.labels(matchNode));
     });
 
-    if (whereInput?.score) {
-        if (whereInput.score.min || whereInput.score.min === 0) {
-            const scoreMinOp = CypherBuilder.gte(scoreVar, new CypherBuilder.Param(whereInput.score.min));
+    if (whereInput?.[SCORE_FIELD]) {
+        if (whereInput[SCORE_FIELD].min || whereInput[SCORE_FIELD].min === 0) {
+            const scoreMinOp = CypherBuilder.gte(scoreVar, new CypherBuilder.Param(whereInput[SCORE_FIELD].min));
             if (scoreMinOp) matchQuery.where(scoreMinOp);
         }
-        if (whereInput.score.max || whereInput.score.max === 0) {
-            const scoreMaxOp = CypherBuilder.lte(scoreVar, new CypherBuilder.Param(whereInput.score.max));
+        if (whereInput[SCORE_FIELD].max || whereInput[SCORE_FIELD].max === 0) {
+            const scoreMaxOp = CypherBuilder.lte(scoreVar, new CypherBuilder.Param(whereInput[SCORE_FIELD].max));
             if (scoreMaxOp) matchQuery.where(scoreMaxOp);
         }
     }

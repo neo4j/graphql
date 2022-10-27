@@ -28,6 +28,7 @@ import { AUTH_FORBIDDEN_ERROR } from "../constants";
 import { createMatchClause } from "./translate-top-level-match";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { addSortAndLimitOptionsToClause } from "./projection/subquery/add-sort-and-limit-to-clause";
+import { SCORE_FIELD } from "../graphql/directives/fulltext";
 
 export function translateRead(
     {
@@ -121,7 +122,7 @@ export function translateRead(
     if (context.fulltextIndex?.scoreVariable) {
         returnClause = new CypherBuilder.Return(
             [projectionExpression, varName],
-            [context.fulltextIndex?.scoreVariable, "score"]
+            [context.fulltextIndex?.scoreVariable, SCORE_FIELD]
         );
     }
 
@@ -140,6 +141,13 @@ export function translateRead(
 
     if (isRootConnectionField) {
         // TODO: unify with createConnectionClause
+        // projectionClause = createConnectionClause({
+        //     resolveTree,
+        //     field,
+        //     context,
+        //     nodeVariable,
+        //     returnVariable,
+        // });
         const edgesVar = new CypherBuilder.NamedVariable("edges");
         const edgeVar = new CypherBuilder.NamedVariable("edge");
         const totalCountVar = new CypherBuilder.NamedVariable("totalCount");

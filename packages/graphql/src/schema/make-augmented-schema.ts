@@ -66,6 +66,7 @@ import { ensureNonEmptyInput } from "./ensure-non-empty-input";
 import { getDocument } from "./get-document";
 import { getDefinitionNodes } from "./get-definition-nodes";
 import { isRootType } from "../utils/is-root-type";
+import { SCORE_FIELD } from "../graphql/directives/fulltext";
 
 // GraphQL type imports
 import { CreateInfo } from "../graphql/objects/CreateInfo";
@@ -687,7 +688,7 @@ function makeAugmentedSchema(
                 name: node.fulltextTypeNames.sort,
                 description: fulltextSortDescription,
                 fields: {
-                    score: "SortDirection",
+                    [SCORE_FIELD]: "SortDirection",
                     [lowerFirst(node.name)]: nodeSortTypeName,
                 },
             });
@@ -696,7 +697,7 @@ function makeAugmentedSchema(
                 name: node.fulltextTypeNames.where,
                 description: fulltextWhereDescription,
                 fields: {
-                    score: "FulltextScoreWhere",
+                    [SCORE_FIELD]: "FulltextScoreWhere",
                     [lowerFirst(node.name)]: nodeWhereTypeName,
                 },
             });
@@ -705,7 +706,7 @@ function makeAugmentedSchema(
                 name: node.fulltextTypeNames.result,
                 description: fulltextResultDescription,
                 fields: {
-                    score: "Float",
+                    [SCORE_FIELD]: "Float",
                     [lowerFirst(node.name)]: node.name,
                 },
             });

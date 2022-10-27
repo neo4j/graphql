@@ -22,6 +22,7 @@ import type { Context, GraphQLOptionsArg, GraphQLSortArg, NestedGraphQLSortArg }
 import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
 import type { Node } from "../../../classes";
 import { lowerFirst } from "../../../utils/lower-first";
+import { SCORE_FIELD } from "../../../graphql/directives/fulltext";
 
 export function addLimitOrOffsetOptionsToClause({
     optionsInput,
@@ -105,7 +106,7 @@ function createOrderByParams({
         if (varName && node?.cypherFields.some((f) => f.fieldName === field)) {
             return [new CypherBuilder.NamedVariable(`${varName}_${field}`), order];
         }
-        if (context?.fulltextIndex && field === "score") {
+        if (context?.fulltextIndex && field === SCORE_FIELD) {
             return [context.fulltextIndex.scoreVariable, order];
         }
         return [target.property(field), order];
