@@ -2484,7 +2484,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/cypher-builder@workspace:packages/cypher-builder"
   dependencies:
-    "@types/dedent": ^0
+    "@types/dedent": ^0.7.0
     "@types/jest": ^29.2.0
     "@types/node": ^18.11.5
     dedent: ^0.7.0
@@ -3239,7 +3239,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/dedent@npm:^0":
+"@types/dedent@npm:^0.7.0":
   version: 0.7.0
   resolution: "@types/dedent@npm:0.7.0"
   checksum: b9b7f0c42d99da764be75dd00b2f2be162f5a0ca43aafe0c740efa76b5f37f8a4f4e2ccc84883054e06e05c1169733aa8ee7750da0334c9cba26d9e10ae844f1
