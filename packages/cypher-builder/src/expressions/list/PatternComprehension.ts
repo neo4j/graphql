@@ -23,8 +23,9 @@ import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import { MatchableElement, Pattern } from "../../Pattern";
 import type { Expr } from "../../types";
-import { compileCypherIfExists } from "../../utils/utils";
+import { compileCypherIfExists } from "../../utils/compile-cypher-if-exists";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PatternComprehension extends WithWhere {}
 
 @mixin(WithWhere)

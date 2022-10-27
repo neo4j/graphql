@@ -17,14 +17,17 @@
  * limitations under the License.
  */
 
-/** Adds spaces to the left of the string, returns empty string is variable is undefined or empty string */
-export function padLeft(str: string | undefined): string {
-    if (!str) return "";
-    return ` ${str}`;
-}
+import type { CypherEnvironment } from "../Environment";
+import type { CypherCompilable } from "../types";
 
-export function padBlock(block: string, spaces = 4): string {
-    const paddingStr = " ".repeat(spaces);
-    const paddedNewLines = block.replace(/\n/g, `\n${paddingStr}`);
-    return `${paddingStr}${paddedNewLines}`;
+/** Compiles the cypher of an element, if the resulting cypher is not empty adds a prefix */
+export function compileCypherIfExists(
+    element: CypherCompilable | undefined,
+    env: CypherEnvironment,
+    { prefix = "", suffix = "" }: { prefix?: string; suffix?: string } = {}
+): string {
+    if (!element) return "";
+    const cypher = element.getCypher(env);
+    if (!cypher) return "";
+    return `${prefix}${cypher}${suffix}`;
 }
