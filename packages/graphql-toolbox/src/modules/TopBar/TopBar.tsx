@@ -26,6 +26,7 @@ import { CustomSelect } from "../../components/CustomSelect";
 import { AuthContext } from "../../contexts/auth";
 import { Screen, ScreenContext } from "../../contexts/screen";
 import { SettingsContext } from "../../contexts/settings";
+import { tracking } from "../../analytics/tracking";
 
 export const TopBar = () => {
     const auth = useContext(AuthContext);
@@ -40,6 +41,11 @@ export const TopBar = () => {
 
     const handleSettingsClick = () => {
         settings.setIsShowSettingsDrawer(!settings.isShowSettingsDrawer);
+    };
+
+    const handleSetSelectedDatabaseName = (databaseName: string) => {
+        auth.setSelectedDatabaseName(databaseName);
+        tracking.trackChangeDatabase({ screen: "type definitions" });
     };
 
     const constructDbmsUrlWithUsername = (): string => {
@@ -74,7 +80,7 @@ export const TopBar = () => {
                             <CustomSelect
                                 value={auth.selectedDatabaseName}
                                 disabled={screen.view !== Screen.TYPEDEFS}
-                                onChange={(event) => auth.setSelectedDatabaseName(event.target.value)}
+                                onChange={(event) => handleSetSelectedDatabaseName(event.target.value)}
                                 testTag="data-test-topbar-database-selection"
                             >
                                 {auth.databases.map((db) => {

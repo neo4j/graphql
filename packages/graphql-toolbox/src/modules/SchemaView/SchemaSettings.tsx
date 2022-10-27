@@ -24,6 +24,7 @@ import { Storage } from "../../utils/storage";
 import { LOCAL_STATE_CONSTRAINT, LOCAL_STATE_ENABLE_DEBUG, LOCAL_STATE_ENABLE_REGEX } from "../../constants";
 import { ConstraintState } from "../../types";
 import { CustomSelect } from "../../components/CustomSelect";
+import { tracking } from "../../analytics/tracking";
 
 interface Props {
     isRegexChecked: string | null;
@@ -46,17 +47,20 @@ export const SchemaSettings = ({
         const next = isRegexChecked === "true" ? "false" : "true";
         setIsRegexChecked(next);
         Storage.store(LOCAL_STATE_ENABLE_REGEX, next);
+        tracking.trackSchemaSettingsCheckbox({ screen: "type definitions", action: next, box: "regex" });
     };
 
     const onChangeDebugCheckbox = (): void => {
         const next = isDebugChecked === "true" ? "false" : "true";
         setIsDebugChecked(next);
         Storage.store(LOCAL_STATE_ENABLE_DEBUG, next);
+        tracking.trackSchemaSettingsCheckbox({ screen: "type definitions", action: next, box: "debug" });
     };
 
     const onChangeConstraintState = (nextConstraintState: string): void => {
         setConstraintState(nextConstraintState);
         Storage.store(LOCAL_STATE_CONSTRAINT, nextConstraintState);
+        tracking.trackSchemaConstraints({ screen: "type definitions", value: ConstraintState[nextConstraintState] });
     };
 
     const InfoToolTip = ({ text, width }: { text: React.ReactNode; width: number }): JSX.Element => {
