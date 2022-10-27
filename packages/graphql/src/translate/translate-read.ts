@@ -139,13 +139,6 @@ export function translateRead(
 
     if (isRootConnectionField) {
         // TODO: unify with createConnectionClause
-        // projectionClause = createConnectionClause({
-        //     resolveTree,
-        //     field,
-        //     context,
-        //     nodeVariable,
-        //     returnVariable,
-        // });
         const edgesVar = new Cypher.NamedVariable("edges");
         const edgeVar = new Cypher.NamedVariable("edge");
         const totalCountVar = new Cypher.NamedVariable("totalCount");
