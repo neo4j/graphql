@@ -25,9 +25,7 @@ jobs:
           SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE: ${{ secrets.SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE }}
           SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE: ${{ secrets.SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE }}
         run: |
-          yarn
-          echo "SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE=$SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE" >> ./.env
-          echo "SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE=$SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE" >> ./.env
+          yarn install
           yarn build
           echo "$PULL_REQUEST_NUMBER" > ./dist/prnumber
         working-directory: packages/graphql-toolbox
