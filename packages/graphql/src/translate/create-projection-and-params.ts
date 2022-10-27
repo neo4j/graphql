@@ -109,8 +109,6 @@ export default function createProjectionAndParams({
                     res.meta.authValidateStrs?.push(allowAndParams[0]);
                     res.params = { ...res.params, ...allowAndParams[1] };
                 }
-                res.meta.authValidateStrs?.push(allowAndParams[0]);
-                res.params = { ...res.params, ...allowAndParams[1] };
             }
         }
 

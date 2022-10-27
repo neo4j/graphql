@@ -74,7 +74,7 @@ describe("Cypher Auth Projection", () => {
             CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.id = $this_update_id
             WITH *
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0) AND (this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -114,8 +114,8 @@ describe("Cypher Auth Projection", () => {
             SET this1.id = $this1_id
             RETURN this1
             }
-            CALL apoc.util.validate(NOT ((this0.id IS NOT NULL AND this0.id = $projectionauth_param0) AND (this0.id IS NOT NULL AND this0.id = $projectionauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ((this1.id IS NOT NULL AND this1.id = $projectionauth_param0) AND (this1.id IS NOT NULL AND this1.id = $projectionauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this0.id IS NOT NULL AND this0.id = $projectionauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this1.id IS NOT NULL AND this1.id = $projectionauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN [
             this0 { .id },
             this1 { .id }] AS data"

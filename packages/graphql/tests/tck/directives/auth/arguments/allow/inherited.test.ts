@@ -127,7 +127,7 @@ describe("@auth allow when inherited from interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:\`User\`)
             WHERE apoc.util.validatePredicate(NOT ((this.id IS NOT NULL AND this.id = $param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0) AND (this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ((this.id IS NOT NULL AND this.id = $thisauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .password } AS this"
         `);
 
@@ -199,7 +199,7 @@ describe("@auth allow when inherited from interface", () => {
             CALL {
                 WITH this
                 MATCH (this_creator:\`User\`)-[this1:HAS_POST]->(this)
-                WHERE (apoc.util.validatePredicate(NOT ((this_creator.id IS NOT NULL AND this_creator.id = $param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ((this_creator.id IS NOT NULL AND this_creator.id = $this_creatorauth_param0) AND (this_creator.id IS NOT NULL AND this_creator.id = $this_creatorauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WHERE (apoc.util.validatePredicate(NOT ((this_creator.id IS NOT NULL AND this_creator.id = $param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ((this_creator.id IS NOT NULL AND this_creator.id = $this_creatorauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 WITH this_creator { .password } AS this_creator
                 RETURN head(collect(this_creator)) AS this_creator
             }
