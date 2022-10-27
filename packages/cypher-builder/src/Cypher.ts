@@ -114,7 +114,7 @@ export type { CompositeClause } from "./clauses/utils/concat";
 
 // utils
 import { escapeLabel } from "./utils/escape-label";
-import { compileCypherIfExists } from "./utils/utils";
+import { compileCypherIfExists } from "./utils/compile-cypher-if-exists";
 
 export const utils = {
     escapeLabel,

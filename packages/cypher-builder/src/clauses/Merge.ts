@@ -26,7 +26,7 @@ import { OnCreate, OnCreateParam } from "./sub-clauses/OnCreate";
 import { WithReturn } from "./mixins/WithReturn";
 import { mixin } from "./utils/mixin";
 import { WithSet } from "./mixins/WithSet";
-import { compileCypherIfExists } from "../utils/utils";
+import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import { SetClause } from "./sub-clauses/Set";
 
 export interface Merge extends WithReturn, WithSet {}
