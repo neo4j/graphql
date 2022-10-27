@@ -73,24 +73,6 @@ export const TopBar = () => {
                     <Label className="ml-3" color="info" fill="outlined">
                         Beta
                     </Label>
-                    <div className="ml-6 n-text-primary-50 text-sm">
-                        <a
-                            data-test-top-bar-canny-button
-                            className="flex justify-start items-center"
-                            href="https://feedback.neo4j.com/graphql"
-                            target="_blank"
-                            rel="noreferrer"
-                            onClick={() =>
-                                tracking.trackHelpLearnFeatureLinks({
-                                    screen: screen.view,
-                                    actionLabel: "Send Feedback",
-                                })
-                            }
-                        >
-                            <p className="p-0 m-0 leading-6">Send feedback</p>
-                            <HeroIcon className="h-6 w-6 ml-2" type="outline" iconName="ChatIcon" />
-                        </a>
-                    </div>
                 </div>
             </div>
             <div className="flex-1 flex justify-center">
