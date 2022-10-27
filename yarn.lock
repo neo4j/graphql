@@ -2471,7 +2471,7 @@ __metadata:
     "@neo4j/graphql": ^3.11.1
     "@neo4j/graphql-plugin-auth": ^1.1.0
     "@types/jest": 29.2.0
-    "@types/node": 16.18.0
+    "@types/node": 16.18.2
     camelcase: 6.3.0
     graphql-tag: 2.12.6
     jest: 29.2.2
@@ -2497,7 +2497,7 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/jest": 29.2.0
     "@types/jsonwebtoken": 8.5.9
-    "@types/node": 16.18.0
+    "@types/node": 16.18.2
     debug: ^4.3.4
     jest: 29.2.2
     jsonwebtoken: ^8.5.1
@@ -2515,7 +2515,7 @@ __metadata:
     "@types/amqplib": 0.8.2
     "@types/debug": 4.1.7
     "@types/jest": 29.2.0
-    "@types/node": 16.18.0
+    "@types/node": 16.18.2
     amqplib: 0.10.3
     apollo-server: 3.10.3
     apollo-server-express: 3.10.3
@@ -2613,7 +2613,7 @@ __metadata:
     "@types/is-uuid": 1.0.0
     "@types/jest": 29.2.0
     "@types/jsonwebtoken": 8.5.9
-    "@types/node": 16.18.0
+    "@types/node": 16.18.2
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
     "@types/semver": 7.3.12
@@ -2663,7 +2663,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": ^3.8.0
     "@types/jest": 29.2.0
-    "@types/node": 16.18.0
+    "@types/node": 16.18.2
     "@types/pluralize": 0.0.29
     camelcase: ^6.3.0
     debug: ^4.3.4
@@ -3512,10 +3512,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:16.18.0":
-  version: 16.18.0
-  resolution: "@types/node@npm:16.18.0"
-  checksum: 4eb4b88012c7d3f527c1b4989cf085479d44ce418fb047fb8d3b545601a3e1fc436de8491b9734debeda8eae241963fb802cea87a5a5698bf5f6f3d489d446a8
+"@types/node@npm:16.18.2":
+  version: 16.18.2
+  resolution: "@types/node@npm:16.18.2"
+  checksum: d21bb6614916b88242300abb23f11ae8bdaabd60c8f7c5edac21f3bf4b1f3ebfbd2a9019a664dd28e5b5730145c069074d70e7a2ab063e80a2fa9ab12de9797a
   languageName: node
   linkType: hard
 
@@ -14172,7 +14172,7 @@ __metadata:
     "@types/express": 4.17.14
     "@types/jest": 29.2.0
     "@types/jsonwebtoken": 8.5.9
-    "@types/node": 16.18.0
+    "@types/node": 16.18.2
     "@types/uuid": 8.3.4
     apollo-server-express: 3.10.3
     bcrypt: 5.1.0
