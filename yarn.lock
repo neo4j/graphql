@@ -2480,7 +2480,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/cypher-builder@^0.1.1, @neo4j/cypher-builder@workspace:packages/cypher-builder":
+"@neo4j/cypher-builder@0.1.1, @neo4j/cypher-builder@workspace:packages/cypher-builder":
   version: 0.0.0-use.local
   resolution: "@neo4j/cypher-builder@workspace:packages/cypher-builder"
   dependencies:
@@ -2638,7 +2638,7 @@ __metadata:
     "@graphql-tools/resolvers-composition": ^6.5.3
     "@graphql-tools/schema": 9.0.4
     "@graphql-tools/utils": ^8.10.0
-    "@neo4j/cypher-builder": ^0.1.1
+    "@neo4j/cypher-builder": 0.1.1
     "@neo4j/graphql-plugin-auth": ^1.1.0
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
