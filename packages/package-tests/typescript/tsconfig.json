@@ -1,10 +1,14 @@
 {
-    "extends": "../../../tsconfig.json",
+    "extends": "../../../tsconfig.base.json",
     "baseUrl": "./",
     "sourceRoot": "./",
     "compilerOptions": {
         "outDir": "./dist",
         "rootDir": "./src"
     },
-    "include": ["src/**/*"]
+    "paths": {
+        "@neo4j/cypher-builder": ["../../cypher-builder/src"]
+    },
+    "include": ["src/**/*"],
+    "references": [{ "path": "../../cypher-builder/tsconfig.json" }]
 }

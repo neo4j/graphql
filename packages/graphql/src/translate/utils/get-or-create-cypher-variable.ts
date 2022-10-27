@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-import * as CypherBuilder from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 
-export function getOrCreateCypherNode(nameOrNode: CypherBuilder.Node | string): CypherBuilder.Node {
-    if (typeof nameOrNode === "string") return new CypherBuilder.NamedNode(nameOrNode);
+export function getOrCreateCypherNode(nameOrNode: Cypher.Node | string): Cypher.Node {
+    if (typeof nameOrNode === "string") return new Cypher.NamedNode(nameOrNode);
     return nameOrNode;
 }
 
-export function getOrCreateCypherVariable(nameOrVariable: CypherBuilder.Variable | string): CypherBuilder.Variable {
-    if (typeof nameOrVariable === "string") return new CypherBuilder.NamedVariable(nameOrVariable);
+export function getOrCreateCypherVariable(nameOrVariable: Cypher.Variable | string): Cypher.Variable {
+    if (typeof nameOrVariable === "string") return new Cypher.NamedVariable(nameOrVariable);
     return nameOrVariable;
 }

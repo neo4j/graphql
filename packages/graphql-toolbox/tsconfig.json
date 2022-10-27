@@ -10,11 +10,13 @@
         "noEmit": false,
         "paths": {
             "@neo4j/graphql": ["../graphql/src"],
+            "@neo4j/cypher-builder": ["../cypher-builder/src"],
             "@neo4j/introspector": ["../introspector/src"]
         }
     },
     "include": ["src/**/*"],
     "references": [
+        { "path": "../cypher-builder/tsconfig.production.json" },
         { "path": "../graphql/src/tsconfig.production.json" },
         { "path": "../introspector/tsconfig.production.json" }
     ]
