@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import dedent from "dedent";
 import type { CypherEnvironment } from "../../Environment";
 import { Where } from "../../clauses/sub-clauses/Where";
 import type { NodeRef } from "../../variables/NodeRef";

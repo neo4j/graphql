@@ -18,7 +18,6 @@
  */
 
 import type { CypherEnvironment } from "../../Environment";
-
 import { CypherASTNode } from "../../CypherASTNode";
 import type { Expr } from "../../types";
 import { compileCypherIfExists } from "../../utils/compile-cypher-if-exists";
