@@ -19,23 +19,13 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
-      - name: Create the env file
-        uses: SpicyPizza/create-envfile@041383d6577d09916e24632ef274f18ec2909b4f # tag=v1.3.1
-        with:
-          envkey_SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE: ${{ secrets.SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE }}
-          envkey_SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE: ${{ secrets.SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE }}
-          envkey_TEST: "test"
-          file_name: .env
-          fail_on_empty: false
-          directory: packages/graphql-toolbox
       - name: UI build
         env:
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
           SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE: ${{ secrets.SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE }}
           SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE: ${{ secrets.SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE }}
-          TEST_T: "test_t"
         run: |
-          yarn install
+          yarn
           yarn build
           echo "$PULL_REQUEST_NUMBER" > ./dist/prnumber
         working-directory: packages/graphql-toolbox

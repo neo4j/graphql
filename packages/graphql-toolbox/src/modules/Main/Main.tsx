@@ -37,10 +37,6 @@ export const Main = () => {
             process.env.NODE_ENV === "production"
                 ? process.env.SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE
                 : process.env.SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE;
-        console.log("NODE_ENV", process.env.NODE_ENV);
-        console.log("p", !!process.env.SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE);
-        console.log("d", !!process.env.SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE);
-        console.log("t", process.env.TEST_T);
         if (!segmentKey) return;
         invokeSegmentAnalytics(segmentKey);
         console.log("Initialized app");
