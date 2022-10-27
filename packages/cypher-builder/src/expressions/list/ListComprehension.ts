@@ -25,7 +25,6 @@ import type { Expr } from "../../types";
 import { compileCypherIfExists } from "../../utils/utils";
 import type { Variable } from "../../variables/Variable";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ListComprehension extends WithWhere {}
 
 @mixin(WithWhere)

@@ -25,7 +25,6 @@ import { MatchableElement, Pattern } from "../../Pattern";
 import type { Expr } from "../../types";
 import { compileCypherIfExists } from "../../utils/utils";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PatternComprehension extends WithWhere {}
 
 @mixin(WithWhere)
