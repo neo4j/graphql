@@ -266,7 +266,7 @@ These are functions that can be used as [predicates](#predicates):
 -   **single**
 -   **exists**
 
-# Under the hood \*cue rock riff\*
+# Under the hood
 
 This section describes some of the mechanism on how the CypherBuilder works under the hood.
 

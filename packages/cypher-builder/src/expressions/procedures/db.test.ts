@@ -31,20 +31,37 @@ describe("db procedures", () => {
 
             const { cypher, params } = fulltextClause.build();
 
-            expect(cypher).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(
-                    \\"my-text-index\\",
-                    $param0
-                ) YIELD node as this0
-
-                            
-
-                            
-                        "
-            `);
+            expect(cypher).toMatchInlineSnapshot(
+                `"CALL db.index.fulltext.queryNodes(\\"my-text-index\\", $param0) YIELD node as this0"`
+            );
             expect(params).toMatchInlineSnapshot(`
                 Object {
                   "param0": "This is a lovely phrase",
+                }
+            `);
+        });
+
+        test("Fulltext with where and return", () => {
+            const targetNode = new Cypher.Node({ labels: ["Movie"] });
+            const fulltextClause = new Cypher.db.FullTextQueryNodes(
+                targetNode,
+                "my-text-index",
+                new Param("This is a lovely phrase")
+            )
+                .where(Cypher.eq(targetNode.property("title"), new Cypher.Param("The Matrix")))
+                .return(targetNode);
+
+            const { cypher, params } = fulltextClause.build();
+
+            expect(cypher).toMatchInlineSnapshot(`
+                "CALL db.index.fulltext.queryNodes(\\"my-text-index\\", $param1) YIELD node as this0
+                WHERE this0.title = $param0
+                RETURN this0"
+            `);
+            expect(params).toMatchInlineSnapshot(`
+                Object {
+                  "param0": "The Matrix",
+                  "param1": "This is a lovely phrase",
                 }
             `);
         });
