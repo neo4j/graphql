@@ -1,6 +1,6 @@
 # Cypher Builder - Beta
 
-This is an internal utility to build Cypher queries, part of `@neo4j/graphql`. This is only intended for internal usage and it is **not** feature complete.
+A programatic API for building [Cypher](https://neo4j.com/docs/cypher-manual/current/) queries for [Neo4j](https://neo4j.com/).
 
 > Note that this is still under development.
 
