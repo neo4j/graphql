@@ -21,7 +21,7 @@ import type { CypherEnvironment } from "../../Environment";
 
 import { CypherASTNode } from "../../CypherASTNode";
 import type { Expr } from "../../types";
-import { compileCypherIfExists } from "../../utils/utils";
+import { compileCypherIfExists } from "../../utils/compile-cypher-if-exists";
 import type { Param } from "../../variables/Param";
 import type { Variable } from "../../variables/Variable";
 import { normalizeVariable } from "../../utils/normalize-variable";

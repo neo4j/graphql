@@ -2484,8 +2484,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/cypher-builder@workspace:packages/cypher-builder"
   dependencies:
+    "@types/dedent": ^0
     "@types/jest": ^29.2.0
     "@types/node": ^18.11.5
+    dedent: ^0.7.0
     jest: ^29.2.2
     ts-jest: ^29.0.3
     typescript: ^4.8.4
@@ -3234,6 +3236,13 @@ __metadata:
   dependencies:
     "@types/ms": "*"
   checksum: 0a7b89d8ed72526858f0b61c6fd81f477853e8c4415bb97f48b1b5545248d2ae389931680b94b393b993a7cfe893537a200647d93defe6d87159b96812305adc
+  languageName: node
+  linkType: hard
+
+"@types/dedent@npm:^0":
+  version: 0.7.0
+  resolution: "@types/dedent@npm:0.7.0"
+  checksum: b9b7f0c42d99da764be75dd00b2f2be162f5a0ca43aafe0c740efa76b5f37f8a4f4e2ccc84883054e06e05c1169733aa8ee7750da0334c9cba26d9e10ae844f1
   languageName: node
   linkType: hard
 

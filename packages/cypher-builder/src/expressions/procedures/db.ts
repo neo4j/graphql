@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import dedent from "dedent";
 import type { CypherEnvironment } from "../../Environment";
 import { Where } from "../../clauses/sub-clauses/Where";
 import type { NodeRef } from "../../variables/NodeRef";
@@ -61,8 +62,7 @@ export class FullTextQueryNodes extends Clause {
         const whereStr = this.whereClause?.getCypher(env) || "";
         const returnStr = this.returnStatement?.getCypher(env) || "";
 
-        // TODO: dendent
-        const textSearchStr = `CALL db.index.fulltext.queryNodes(
+        const textSearchStr = dedent`CALL db.index.fulltext.queryNodes(
             "${this.indexName}",
             ${this.phrase.getCypher(env)}
         ) YIELD node as ${targetId}`;
