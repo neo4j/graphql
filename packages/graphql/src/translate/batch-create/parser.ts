@@ -21,7 +21,7 @@ import type { Context, RelationField } from "../../types";
 import type { CreateInput, TreeDescriptor } from "./types";
 import { UnsupportedUnwindOptimisation } from "./types";
 import { GraphElement, Neo4jGraphQLError, Node, Relationship } from "../../classes";
-import * as CypherBuilder from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { getRelationshipFields } from "./utils";
 import { AST, CreateAST, NestedCreateAST } from "./GraphQLInputAST/GraphQLInputAST";
 import mapToDbProperty from "../../utils/map-to-db-property";
@@ -32,16 +32,16 @@ export function inputTreeToCypherMap(
     context: Context,
     parentKey?: string,
     relationship?: Relationship
-): CypherBuilder.List | CypherBuilder.Map {
+): Cypher.List | Cypher.Map {
     if (Array.isArray(input)) {
-        return new CypherBuilder.List(
+        return new Cypher.List(
             input.map((createInput: CreateInput) =>
                 inputTreeToCypherMap(createInput, node, context, parentKey, relationship)
             )
         );
     }
     const properties = (Object.entries(input) as CreateInput).reduce(
-        (obj: Record<string, CypherBuilder.Expr>, [key, value]: [string, Record<string, any>]) => {
+        (obj: Record<string, Cypher.Expr>, [key, value]: [string, Record<string, any>]) => {
             const [relationField, relatedNodes] = getRelationshipFields(node, key, {}, context);
             if (relationField && relationField.properties) {
                 relationship = context.relationships.find(
@@ -58,7 +58,7 @@ export function inputTreeToCypherMap(
             }
             if (typeof value === "object" && value !== null && (relationField || !scalar)) {
                 if (Array.isArray(value)) {
-                    obj[key] = new CypherBuilder.List(
+                    obj[key] = new Cypher.List(
                         value.map((createInput: CreateInput) =>
                             inputTreeToCypherMap(
                                 createInput,
@@ -77,15 +77,15 @@ export function inputTreeToCypherMap(
                     context,
                     key,
                     relationship
-                ) as CypherBuilder.Map;
+                ) as Cypher.Map;
                 return obj;
             }
-            obj[key] = new CypherBuilder.Param(value);
+            obj[key] = new Cypher.Param(value);
             return obj;
         },
-        {} as Record<string, CypherBuilder.Expr>
-    ) as Record<string, CypherBuilder.Expr>;
-    return new CypherBuilder.Map(properties);
+        {} as Record<string, Cypher.Expr>
+    ) as Record<string, Cypher.Expr>;
+    return new Cypher.Map(properties);
 }
 
 function isScalar(fieldName: string, graphElement: GraphElement) {

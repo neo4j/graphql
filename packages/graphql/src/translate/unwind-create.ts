@@ -24,8 +24,7 @@ import createProjectionAndParams from "./create-projection-and-params";
 import {  META_CYPHER_VARIABLE } from "../constants";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
-import * as CypherBuilder from "./cypher-builder/CypherBuilder";
-import { compileCypherIfExists } from "./cypher-builder/utils/utils";
+import Cypher from "@neo4j/cypher-builder";
 import {
     inputTreeToCypherMap,
     mergeTreeDescriptors,
@@ -66,9 +65,9 @@ export default async function unwindCreate({
     const metaNames: string[] = [];
 
     const createNodeAST = parsedInput;
-    const unwindVar = new CypherBuilder.Variable();
+    const unwindVar = new Cypher.Variable();
     const unwind = inputTreeToCypherMap(input, node, context);
-    const unwindQuery = new CypherBuilder.Unwind([unwind, unwindVar]);
+    const unwindQuery = new Cypher.Unwind([unwind, unwindVar]);
     const unwindCreateVisitor = new UnwindCreateVisitor(unwindVar, callbackBucket, context, input);
     createNodeAST.accept(unwindCreateVisitor);
 
@@ -76,17 +75,17 @@ export default async function unwindCreate({
     if (!rootNodeVariable || !createPhase) {
         throw new Neo4jGraphQLError("Generic Error");
     }
-    const createUnwind = CypherBuilder.concat(unwindQuery, createPhase);
+    const createUnwind = Cypher.concat(unwindQuery, createPhase);
 
     let replacedProjectionParams: Record<string, unknown> = {};
-    let projectionCypher: CypherBuilder.Expr | undefined;
+    let projectionCypher: Cypher.Expr | undefined;
     let authCalls: string | undefined;
 
     if (metaNames.length > 0) {
         projectionWith.push(`${metaNames.join(" + ")} AS meta`);
     }
 
-    let projectionSubquery: CypherBuilder.Clause | undefined;
+    let projectionSubquery: Cypher.Clause | undefined;
     if (nodeProjection) {
         const projection = createProjectionAndParams({
             node,
@@ -94,13 +93,13 @@ export default async function unwindCreate({
             resolveTree: nodeProjection,
             varName: "REPLACE_ME",
         });
-        projectionSubquery = CypherBuilder.concat(...projection.subqueries);
+        projectionSubquery = Cypher.concat(...projection.subqueries);
 
         replacedProjectionParams = Object.entries(projection.params).reduce((res, [key, value]) => {
             return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
         }, {});
 
-        projectionCypher = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+        projectionCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
             return `${rootNodeVariable.getCypher(env)} ${projection.projection
                 // First look to see if projection param is being reassigned
                 // e.g. in an apoc.cypher.runFirstColumn function call used in createProjection->connectionField
@@ -112,7 +111,7 @@ export default async function unwindCreate({
     }
 
     const replacedConnectionStrs = connectionStrs.length
-        ? new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+        ? new Cypher.RawCypher((env: Cypher.Environment) => {
               return connectionStrs
                   .map((connectionStr) => connectionStr.replace(/REPLACE_ME/g, `${rootNodeVariable.getCypher(env)}`))
                   .join("\n");
@@ -120,7 +119,7 @@ export default async function unwindCreate({
         : undefined;
 
     const replacedInterfaceStrs = interfaceStrs.length
-        ? new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+        ? new Cypher.RawCypher((env: Cypher.Environment) => {
               return interfaceStrs
                   .map((interfaceStr) => interfaceStr.replace(/REPLACE_ME/g, `${rootNodeVariable.getCypher(env)}`))
                   .join("\n");
@@ -130,10 +129,10 @@ export default async function unwindCreate({
     const returnStatement = generateCreateReturnStatementCypher(projectionCypher, context.subscriptionsEnabled);
     const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
 
-    const createQuery = new CypherBuilder.RawCypher((env) => {
-        const projectionSubqueryStr = compileCypherIfExists(projectionSubquery, env);
-        const projectionConnectionStrs = compileCypherIfExists(replacedConnectionStrs, env);
-        const projectionInterfaceStrs = compileCypherIfExists(replacedInterfaceStrs, env);
+    const createQuery = new Cypher.RawCypher((env) => {
+        const projectionSubqueryStr = Cypher.utils.compileCypherIfExists(projectionSubquery, env);
+        const projectionConnectionStrs = Cypher.utils.compileCypherIfExists(replacedConnectionStrs, env);
+        const projectionInterfaceStrs = Cypher.utils.compileCypherIfExists(replacedInterfaceStrs, env);
 
         const replacedProjectionSubqueryStrs = projectionSubqueryStr
             .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
@@ -174,10 +173,10 @@ export default async function unwindCreate({
 }
 
 function generateCreateReturnStatementCypher(
-    projection: CypherBuilder.Expr | undefined,
+    projection: Cypher.Expr | undefined,
     subscriptionsEnabled: boolean
-): CypherBuilder.Expr {
-    return new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+): Cypher.Expr {
+    return new Cypher.RawCypher((env: Cypher.Environment) => {
         const statements: string[] = [];
 
         if (projection) {

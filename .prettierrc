@@ -1,5 +1,13 @@
 {
     "endOfLine": "auto",
     "tabWidth": 4,
-    "printWidth": 120
+    "printWidth": 120,
+    "overrides": [
+        {
+            "files": ["*.yaml", "*.yml"],
+            "options": {
+                "tabWidth": 2
+            }
+        }
+    ]
 }
