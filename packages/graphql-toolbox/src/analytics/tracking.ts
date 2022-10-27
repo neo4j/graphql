@@ -86,7 +86,7 @@ class Tracking {
         this.fireTrackingEvent("TB", "EXECUTE_QUERY", properties);
     };
 
-    public trackExplorerGraphQLaaSLink = (properties: TrackingTBExploreGraphQLaaSLinkClick) => {
+    public trackExploreGraphQLaaSLink = (properties: TrackingTBExploreGraphQLaaSLinkClick) => {
         const screenValue = properties.screen === Screen.EDITOR ? "query editor" : "type definitions";
         this.fireTrackingEvent("TB", "TB_EXPLORE_GRAPHQLAAS_LINK_CLICK", { ...properties, screen: screenValue });
     };

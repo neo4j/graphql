@@ -50,7 +50,7 @@ export const TopBar = () => {
 
     const handleExploreGraphQLaaSClick = () => {
         window.open("https://forms.gle/uQgai8zaemJz6X4B6", "_blank");
-        tracking.trackExplorerGraphQLaaSLink({ screen: screen.view });
+        tracking.trackExploreGraphQLaaSLink({ screen: screen.view });
     };
 
     const constructDbmsUrlWithUsername = (): string => {
