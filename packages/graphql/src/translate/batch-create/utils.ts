@@ -19,7 +19,7 @@
 
 import type { Context, RelationField } from "../../types";
 import type { Node, Relationship } from "../../classes";
-import Cypher from "@neo4j/cypher-builder";
+import Cypher, { Expr, Map, MapProjection } from "@neo4j/cypher-builder";
 import mapToDbProperty from "../../utils/map-to-db-property";
 
 export function getRelationshipFields(
@@ -78,7 +78,7 @@ export function fieldToSetParam(
     graphQLElement: Node | Relationship,
     cypherNodeRef: Cypher.Node | Cypher.Relationship,
     key: string,
-    value: Cypher.Expr
+    value: Exclude<Expr, Map | MapProjection>
 ): Cypher.SetParam {
     const pointField = graphQLElement.pointFields.find((x) => key === x.fieldName);
     const dbName = mapToDbProperty(graphQLElement, key);
