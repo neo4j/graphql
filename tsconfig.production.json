@@ -1,6 +1,7 @@
 {
     "files": [],
     "references": [
+        { "path": "./packages/cypher-builder/tsconfig.production.json" },
         { "path": "./packages/graphql/src/tsconfig.production.json" },
         { "path": "./packages/ogm/tsconfig.production.json" },
         { "path": "./packages/introspector/tsconfig.production.json" },
