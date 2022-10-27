@@ -43,7 +43,7 @@ export function translateRead(
     varName = "this"
 ): Cypher.CypherResult {
     const { resolveTree } = context;
-    const matchNode = new Cypher.NamedNode(varName);
+    const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
 
     let projAuth: Cypher.Clause | undefined;
 

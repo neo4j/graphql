@@ -137,16 +137,16 @@ function createFulltextMatchClause(
 
     if (whereInput?.[SCORE_FIELD]) {
         if (whereInput[SCORE_FIELD].min || whereInput[SCORE_FIELD].min === 0) {
-            const scoreMinOp = Cypher.gte(scoreVar, new CypherBuilder.Param(whereInput[SCORE_FIELD].min));
+            const scoreMinOp = Cypher.gte(scoreVar, new Cypher.Param(whereInput[SCORE_FIELD].min));
             if (scoreMinOp) matchQuery.where(scoreMinOp);
         }
         if (whereInput[SCORE_FIELD].max || whereInput[SCORE_FIELD].max === 0) {
-            const scoreMaxOp = CypherBuilder.lte(scoreVar, new CypherBuilder.Param(whereInput[SCORE_FIELD].max));
+            const scoreMaxOp = Cypher.lte(scoreVar, new Cypher.Param(whereInput[SCORE_FIELD].max));
             if (scoreMaxOp) matchQuery.where(scoreMaxOp);
         }
     }
 
-    const andChecks = CypherBuilder.and(...labelsChecks);
+    const andChecks = Cypher.and(...labelsChecks);
     if (andChecks) matchQuery.where(andChecks);
 
     return matchQuery;

@@ -25,7 +25,7 @@ import { translateRead } from "../../../translate";
 import type { Node } from "../../../classes";
 import type { Context, FulltextIndex } from "../../../types";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
-import * as CypherBuilder from "../../../translate/cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 
 export function fulltextResolver(
     { node }: { node: Node },
@@ -65,6 +65,6 @@ function createFulltextContext(index: FulltextIndex, args: any, _context: unknow
         offset: context.resolveTree.args.offset,
     };
     context.fulltextIndex = index;
-    context.fulltextIndex.scoreVariable = new CypherBuilder.Variable();
+    context.fulltextIndex.scoreVariable = new Cypher.Variable();
     return context;
 }

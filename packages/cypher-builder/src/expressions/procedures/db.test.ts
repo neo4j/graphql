@@ -17,7 +17,8 @@
  * limitations under the License.
  */
 
-import Cypher, { Param } from "../..";
+import Cypher from "../../index";
+import { Param } from "../../variables/Param";
 
 describe("db procedures", () => {
     describe("FullTextQueryNodes", () => {
@@ -31,9 +32,12 @@ describe("db procedures", () => {
 
             const { cypher, params } = fulltextClause.build();
 
-            expect(cypher).toMatchInlineSnapshot(
-                `"CALL db.index.fulltext.queryNodes(\\"my-text-index\\", $param0) YIELD node as this0"`
-            );
+            expect(cypher).toMatchInlineSnapshot(`
+                "CALL db.index.fulltext.queryNodes(
+                            \\"my-text-index\\",
+                            $param0
+                        ) YIELD node AS this0"
+            `);
             expect(params).toMatchInlineSnapshot(`
                 Object {
                   "param0": "This is a lovely phrase",
@@ -54,14 +58,17 @@ describe("db procedures", () => {
             const { cypher, params } = fulltextClause.build();
 
             expect(cypher).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"my-text-index\\", $param1) YIELD node as this0
-                WHERE this0.title = $param0
+                "CALL db.index.fulltext.queryNodes(
+                            \\"my-text-index\\",
+                            $param0
+                        ) YIELD node AS this0
+                WHERE this0.title = $param1
                 RETURN this0"
             `);
             expect(params).toMatchInlineSnapshot(`
                 Object {
-                  "param0": "The Matrix",
-                  "param1": "This is a lovely phrase",
+                  "param0": "This is a lovely phrase",
+                  "param1": "The Matrix",
                 }
             `);
         });
