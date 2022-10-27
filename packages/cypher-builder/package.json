@@ -30,7 +30,7 @@
     "bugs": {
         "url": "https://github.com/neo4j/graphql/issues"
     },
-    "homepage": "https://github.com/neo4j/graphql/packages/cypher-builder#readme",
+    "homepage": "https://github.com/neo4j/graphql/tree/dev/packages/cypher-builder#readme",
     "devDependencies": {
         "@types/jest": "^29.2.0",
         "@types/node": "^18.11.5",

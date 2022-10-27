@@ -22,9 +22,10 @@ import { mixin } from "../../clauses/utils/mixin";
 import { CypherASTNode } from "../../CypherASTNode";
 import type { CypherEnvironment } from "../../Environment";
 import type { Expr } from "../../types";
-import { compileCypherIfExists } from "../../utils/utils";
+import { compileCypherIfExists } from "../../utils/compile-cypher-if-exists";
 import type { Variable } from "../../variables/Variable";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ListComprehension extends WithWhere {}
 
 @mixin(WithWhere)

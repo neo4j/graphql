@@ -22,7 +22,7 @@ import { mixin } from "./utils/mixin";
 import { Projection, ProjectionColumn } from "./sub-clauses/Projection";
 import type { CypherEnvironment } from "../Environment";
 import { Clause } from "./Clause";
-import { compileCypherIfExists } from "../utils/utils";
+import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Return extends WithOrder {}
