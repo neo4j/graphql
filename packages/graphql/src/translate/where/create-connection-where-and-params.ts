@@ -19,7 +19,7 @@
 
 import type { Node, Relationship } from "../../classes";
 import type { ConnectionWhereArg, Context } from "../../types";
-import * as CypherBuilder from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { createConnectionWherePropertyOperation } from "./property-operations/create-connection-operation";
 
 export default function createConnectionWhereAndParams({
@@ -39,8 +39,8 @@ export default function createConnectionWhereAndParams({
     relationshipVariable: string;
     parameterPrefix: string;
 }): [string, any] {
-    const nodeRef = new CypherBuilder.NamedNode(nodeVariable);
-    const edgeRef = new CypherBuilder.NamedVariable(relationshipVariable);
+    const nodeRef = new Cypher.NamedNode(nodeVariable);
+    const edgeRef = new Cypher.NamedVariable(relationshipVariable);
 
     const andOp = createConnectionWherePropertyOperation({
         context,
@@ -51,7 +51,7 @@ export default function createConnectionWhereAndParams({
         edge: relationship,
     });
 
-    const whereCypher = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+    const whereCypher = new Cypher.RawCypher((env: Cypher.Environment) => {
         const cypher = andOp?.getCypher(env) || "";
 
         return [cypher, {}];

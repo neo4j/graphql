@@ -22,7 +22,7 @@ import type { Node } from "../../classes";
 import type { Context, RelationField, GraphQLWhereArg } from "../../types";
 
 import { getRelationshipDirection } from "../../utils/get-relationship-direction";
-import * as CypherBuilder from "../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "../where/create-where-predicate";
 
 export function createCountExpression({
@@ -34,15 +34,15 @@ export function createCountExpression({
     authCallWhere,
     targetNode,
 }: {
-    sourceNode: CypherBuilder.Node;
+    sourceNode: Cypher.Node;
     referenceNode: Node;
     context: Context;
     relationAggregationField: RelationField;
     field: ResolveTree;
-    authCallWhere: CypherBuilder.Predicate | undefined;
-    targetNode: CypherBuilder.Node;
-}): CypherBuilder.Expr {
-    const relationship = new CypherBuilder.Relationship({
+    authCallWhere: Cypher.Predicate | undefined;
+    targetNode: Cypher.Node;
+}): Cypher.Expr {
+    const relationship = new Cypher.Relationship({
         source: sourceNode,
         target: targetNode,
         type: relationAggregationField.type,
@@ -63,7 +63,7 @@ export function createCountExpression({
         targetElement: targetNode,
     });
 
-    const patternComprehension = new CypherBuilder.PatternComprehension(relationshipPattern, targetNode);
+    const patternComprehension = new Cypher.PatternComprehension(relationshipPattern, targetNode);
 
     if (wherePredicate) {
         patternComprehension.where(wherePredicate);
@@ -72,5 +72,5 @@ export function createCountExpression({
         patternComprehension.and(authCallWhere);
     }
 
-    return CypherBuilder.size(patternComprehension);
+    return Cypher.size(patternComprehension);
 }

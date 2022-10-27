@@ -48,6 +48,9 @@ jobs:
   toolbox-tests:
     uses: ./.github/workflows/reusable-toolbox-tests.yml
 
+  cypher-builder-tests:
+    uses: ./.github/workflows/reusable-cypher-builder-tests.yml
+
   aura-free-tests:
     uses: ./.github/workflows/reusable-aura-tests.yml
     secrets:

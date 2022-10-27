@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
 import { Neo4jGraphQLAuthenticationError } from "../classes";
 import type { AuthOperations, BaseField, AuthRule, BaseAuthRule, Context, RelationField } from "../types";
@@ -24,25 +25,24 @@ import { isPredicateJoin, PREDICATE_JOINS } from "../utils/join-predicates";
 import ContextParser from "../utils/context-parser";
 import { isString } from "../utils/utils";
 import { NodeAuth } from "../classes/NodeAuth";
-import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { AUTH_UNAUTHENTICATED_ERROR } from "../constants";
 import { getOrCreateCypherNode } from "./utils/get-or-create-cypher-variable";
 
 interface Allow {
-    varName: string | CypherBuilder.Node;
+    varName: string | Cypher.Node;
     parentNode: Node;
     chainStr?: string;
 }
 
 interface Bind {
-    varName: string | CypherBuilder.Node;
+    varName: string | Cypher.Node;
     parentNode: Node;
     chainStr?: string;
 }
 
 interface Where {
-    varName: string | CypherBuilder.Node;
+    varName: string | Cypher.Node;
     node: Node;
     chainStr?: string;
 }
@@ -81,7 +81,7 @@ export function createAuthAndParams({
     });
     if (!authPredicate) return ["", {}];
 
-    const authPredicateExpr = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+    const authPredicateExpr = new Cypher.RawCypher((env: Cypher.Environment) => {
         return authPredicate.getCypher(env);
     });
 
@@ -93,7 +93,7 @@ export function createAuthAndParams({
     return [authCypher.cypher, authCypher.params];
 }
 
-function generateUniqueChainStr(varNames: Array<string | CypherBuilder.Node | undefined>): string {
+function generateUniqueChainStr(varNames: Array<string | Cypher.Node | undefined>): string {
     return varNames
         .map((v) => {
             return typeof v === "string" ? v : "";
@@ -121,7 +121,7 @@ export function createAuthPredicates({
     escapeQuotes?: boolean;
     bind?: Bind;
     where?: Where;
-}): CypherBuilder.Predicate | undefined {
+}): Cypher.Predicate | undefined {
     if (!entity.auth) {
         return undefined;
     }
@@ -151,10 +151,10 @@ export function createAuthPredicates({
         return predicate;
     });
 
-    const orPredicates = CypherBuilder.or(...subPredicates);
+    const orPredicates = Cypher.or(...subPredicates);
     if (!orPredicates) return undefined;
 
-    const authPredicate = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
+    const authPredicate = new Cypher.RawCypher((env: Cypher.Environment) => {
         return orPredicates.getCypher(env);
     });
     return authPredicate;
@@ -178,9 +178,9 @@ function createSubPredicate({
     escapeQuotes?: boolean;
     bind?: Bind;
     where?: Where;
-}): CypherBuilder.Predicate | undefined {
-    const thisPredicates: CypherBuilder.Predicate[] = [];
-    const authParam = new CypherBuilder.NamedParam("auth");
+}): Cypher.Predicate | undefined {
+    const thisPredicates: Cypher.Predicate[] = [];
+    const authParam = new Cypher.NamedParam("auth");
 
     if (!skipRoles && authRule.roles) {
         const rolesPredicate = createRolesPredicate(authRule.roles, authParam.property("roles"));
@@ -216,7 +216,7 @@ function createSubPredicate({
             return;
         }
 
-        const predicates: CypherBuilder.Predicate[] = [];
+        const predicates: Cypher.Predicate[] = [];
 
         value.forEach((v) => {
             const predicate = createSubPredicate({
@@ -237,11 +237,11 @@ function createSubPredicate({
             predicates.push(predicate);
         });
 
-        let joinedPredicate: CypherBuilder.Predicate | undefined;
+        let joinedPredicate: Cypher.Predicate | undefined;
         if (key === "AND") {
-            joinedPredicate = CypherBuilder.and(...predicates);
+            joinedPredicate = Cypher.and(...predicates);
         } else if (key === "OR") {
-            joinedPredicate = CypherBuilder.or(...predicates);
+            joinedPredicate = Cypher.or(...predicates);
         }
         if (joinedPredicate) {
             thisPredicates.push(joinedPredicate);
@@ -278,7 +278,7 @@ function createSubPredicate({
         }
     }
 
-    return CypherBuilder.and(...thisPredicates);
+    return Cypher.and(...thisPredicates);
 }
 
 function createAuthPredicate({
@@ -289,21 +289,21 @@ function createAuthPredicate({
     kind,
 }: {
     context: Context;
-    nodeRef: CypherBuilder.Node;
+    nodeRef: Cypher.Node;
     node: Node;
     rule: AuthRule;
     kind: "allow" | "bind" | "where";
-}): CypherBuilder.Predicate | undefined {
+}): Cypher.Predicate | undefined {
     if (!rule[kind]) {
         return undefined;
     }
 
     const { allowUnauthenticated } = rule;
-    const predicates: CypherBuilder.Predicate[] = [];
+    const predicates: Cypher.Predicate[] = [];
 
     Object.entries(rule[kind] as Record<string, any>).forEach(([key, value]) => {
         if (isPredicateJoin(key)) {
-            const inner: CypherBuilder.Predicate[] = [];
+            const inner: Cypher.Predicate[] = [];
 
             (value as any[]).forEach((v) => {
                 const authPredicate = createAuthPredicate({
@@ -321,11 +321,11 @@ function createAuthPredicate({
                 }
             });
 
-            let operator: CypherBuilder.Predicate | undefined;
+            let operator: Cypher.Predicate | undefined;
             if (key === "AND") {
-                operator = CypherBuilder.and(...inner);
+                operator = Cypher.and(...inner);
             } else if (key === "OR") {
-                operator = CypherBuilder.or(...inner);
+                operator = Cypher.or(...inner);
             }
             if (operator) predicates.push(operator);
         }
@@ -347,7 +347,7 @@ function createAuthPredicate({
                 throw new Neo4jGraphQLAuthenticationError("Unauthenticated");
             }
             const fieldPredicate = createAuthField({
-                param: new CypherBuilder.Param(paramValue),
+                param: new Cypher.Param(paramValue),
                 key,
                 node,
                 elementRef: nodeRef,
@@ -360,7 +360,7 @@ function createAuthPredicate({
 
         if (relationField) {
             const refNode = context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node;
-            const relationshipNodeRef = new CypherBuilder.Node({
+            const relationshipNodeRef = new Cypher.Node({
                 labels: refNode.getLabels(context),
             });
             Object.entries(value as Record<string, any>).forEach(([k, v]: [string, any]) => {
@@ -388,7 +388,7 @@ function createAuthPredicate({
         }
     });
 
-    return CypherBuilder.and(...predicates);
+    return Cypher.and(...predicates);
 }
 
 function createRelationshipPredicate({
@@ -398,13 +398,13 @@ function createRelationshipPredicate({
     authPredicate,
     kind,
 }: {
-    nodeRef: CypherBuilder.Node;
+    nodeRef: Cypher.Node;
     relationField: RelationField;
-    targetNodeRef: CypherBuilder.Node;
-    authPredicate: CypherBuilder.Predicate;
+    targetNodeRef: Cypher.Node;
+    authPredicate: Cypher.Predicate;
     kind: string;
-}): CypherBuilder.Predicate {
-    const relationship = new CypherBuilder.Relationship({
+}): Cypher.Predicate {
+    const relationship = new Cypher.Relationship({
         source: nodeRef,
         target: targetNodeRef,
         type: relationField.type,
@@ -438,49 +438,47 @@ function createRelationshipPredicate({
         existsPattern.reverse();
     }
 
-    let predicateFunction: CypherBuilder.PredicateFunction;
+    let predicateFunction: Cypher.PredicateFunction;
     if (kind === "allow") {
-        predicateFunction = CypherBuilder.any(
+        predicateFunction = Cypher.any(
             targetNodeRef,
-            new CypherBuilder.PatternComprehension(innerPattern, targetNodeRef),
+            new Cypher.PatternComprehension(innerPattern, targetNodeRef),
             authPredicate
         );
     } else {
-        predicateFunction = CypherBuilder.all(
+        predicateFunction = Cypher.all(
             targetNodeRef,
-            new CypherBuilder.PatternComprehension(innerPattern, targetNodeRef),
+            new Cypher.PatternComprehension(innerPattern, targetNodeRef),
             authPredicate
         );
     }
 
-    const existsFunction = CypherBuilder.exists(existsPattern);
+    const existsFunction = Cypher.exists(existsPattern);
 
-    return CypherBuilder.and(existsFunction, predicateFunction);
+    return Cypher.and(existsFunction, predicateFunction);
 }
 
 function createRolesPredicate(
     roles: string[],
-    rolesParam: CypherBuilder.Param | CypherBuilder.PropertyRef
-): CypherBuilder.PredicateFunction {
-    const roleVar = new CypherBuilder.Variable();
-    const rolesList = new CypherBuilder.Literal(roles);
+    rolesParam: Cypher.Param | Cypher.PropertyRef
+): Cypher.PredicateFunction {
+    const roleVar = new Cypher.Variable();
+    const rolesList = new Cypher.Literal(roles);
 
     const roleInParamPredicate = isValueInListCypher(roleVar, rolesParam);
 
-    const rolesInListComprehension = CypherBuilder.any(roleVar, rolesList, roleInParamPredicate);
+    const rolesInListComprehension = Cypher.any(roleVar, rolesList, roleInParamPredicate);
 
     return rolesInListComprehension;
 }
 
 function createAuthenticatedPredicate(
     authenticated: boolean,
-    authenticatedParam: CypherBuilder.Variable | CypherBuilder.PropertyRef
-): CypherBuilder.Predicate {
-    const authenticatedPredicate = CypherBuilder.not(
-        CypherBuilder.eq(authenticatedParam, new CypherBuilder.Literal(authenticated))
-    );
+    authenticatedParam: Cypher.Variable | Cypher.PropertyRef
+): Cypher.Predicate {
+    const authenticatedPredicate = Cypher.not(Cypher.eq(authenticatedParam, new Cypher.Literal(authenticated)));
 
-    return new CypherBuilder.apoc.ValidatePredicate(authenticatedPredicate, AUTH_UNAUTHENTICATED_ERROR);
+    return new Cypher.apoc.ValidatePredicate(authenticatedPredicate, AUTH_UNAUTHENTICATED_ERROR);
 }
 
 function createAuthField({
@@ -491,25 +489,25 @@ function createAuthField({
 }: {
     node: Node;
     key: string;
-    elementRef: CypherBuilder.Node | CypherBuilder.Relationship;
-    param: CypherBuilder.Param;
-}): CypherBuilder.Predicate {
+    elementRef: Cypher.Node | Cypher.Relationship;
+    param: Cypher.Param;
+}): Cypher.Predicate {
     const dbFieldName = mapToDbProperty(node, key);
     const fieldPropertyRef = elementRef.property(dbFieldName);
     if (param.value === undefined) {
-        return new CypherBuilder.Literal(false);
+        return new Cypher.Literal(false);
     }
 
     if (param.value === null) {
-        return CypherBuilder.isNull(fieldPropertyRef);
+        return Cypher.isNull(fieldPropertyRef);
     }
 
-    const isNotNull = CypherBuilder.isNotNull(fieldPropertyRef);
-    const equalsToParam = CypherBuilder.eq(fieldPropertyRef, param);
-    return CypherBuilder.and(isNotNull, equalsToParam);
+    const isNotNull = Cypher.isNotNull(fieldPropertyRef);
+    const equalsToParam = Cypher.eq(fieldPropertyRef, param);
+    return Cypher.and(isNotNull, equalsToParam);
 }
 
-function isValueInListCypher(value: CypherBuilder.Variable, list: CypherBuilder.Expr): CypherBuilder.PredicateFunction {
-    const listItemVar = new CypherBuilder.Variable();
-    return CypherBuilder.any(listItemVar, list, CypherBuilder.eq(listItemVar, value));
+function isValueInListCypher(value: Cypher.Variable, list: Cypher.Expr): Cypher.PredicateFunction {
+    const listItemVar = new Cypher.Variable();
+    return Cypher.any(listItemVar, list, Cypher.eq(listItemVar, value));
 }
