@@ -25,6 +25,7 @@ import { WithReturn } from "../../clauses/mixins/WithReturn";
 import { mixin } from "../../clauses/utils/mixin";
 import type { Variable } from "../../variables/Variable";
 import type { Predicate } from "../../types";
+import { compileCypherIfExists } from "../../utils/compile-cypher-if-exists";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface FullTextQueryNodes extends WithReturn {}
@@ -58,18 +59,13 @@ export class FullTextQueryNodes extends Clause {
     public getCypher(env: CypherEnvironment): string {
         const targetId = env.getReferenceId(this.targetNode);
 
-        const whereStr = this.whereClause?.getCypher(env) || "";
-        const returnStr = this.returnStatement?.getCypher(env) || "";
+        const whereStr = compileCypherIfExists(this.whereClause, env, { prefix: "\n" });
+        const returnStr = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
 
-        // TODO: dendent
-        const textSearchStr = `CALL db.index.fulltext.queryNodes(
-            "${this.indexName}",
-            ${this.phrase.getCypher(env)}
-        ) YIELD node as ${targetId}`;
+        const textSearchStr = `CALL db.index.fulltext.queryNodes("${this.indexName}", ${this.phrase.getCypher(
+            env
+        )}) YIELD node as ${targetId}`;
 
-        return `${textSearchStr}\n
-            ${whereStr}\n
-            ${returnStr}
-        `;
+        return `${textSearchStr}${whereStr}${returnStr}`;
     }
 }

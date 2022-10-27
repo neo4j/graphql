@@ -2480,15 +2480,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/cypher-builder@^0.1.1, @neo4j/cypher-builder@workspace:packages/cypher-builder":
+"@neo4j/cypher-builder@workspace:packages/cypher-builder, @neo4j/cypher-builder@~0.1.1":
   version: 0.0.0-use.local
   resolution: "@neo4j/cypher-builder@workspace:packages/cypher-builder"
   dependencies:
-    "@types/jest": ^29.2.0
-    "@types/node": ^18.11.5
-    jest: ^29.2.2
-    ts-jest: ^29.0.3
-    typescript: ^4.8.4
+    "@types/jest": 29.2.0
+    "@types/node": 18.11.5
+    jest: 29.2.2
+    ts-jest: 29.0.3
+    typescript: 4.8.4
   languageName: unknown
   linkType: soft
 
@@ -2638,7 +2638,7 @@ __metadata:
     "@graphql-tools/resolvers-composition": ^6.5.3
     "@graphql-tools/schema": 9.0.4
     "@graphql-tools/utils": ^8.10.0
-    "@neo4j/cypher-builder": ^0.1.1
+    "@neo4j/cypher-builder": ~0.1.1
     "@neo4j/graphql-plugin-auth": ^1.1.0
     "@types/deep-equal": 1.0.1
     "@types/is-uuid": 1.0.0
@@ -3399,7 +3399,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:29.2.0, @types/jest@npm:^29.2.0":
+"@types/jest@npm:29.2.0":
   version: 29.2.0
   resolution: "@types/jest@npm:29.2.0"
   dependencies:
@@ -3550,6 +3550,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:18.11.5":
+  version: 18.11.5
+  resolution: "@types/node@npm:18.11.5"
+  checksum: ac54e9287dd4549ea3dc8aabc0cf7bfa04c52f02925d7fd68414789617ec770f034c8ae2e111e8bd00d446a46fcac42587b5a316a1303e2f6ea094854248c9ff
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:^10.1.0":
   version: 10.17.60
   resolution: "@types/node@npm:10.17.60"
@@ -3561,13 +3568,6 @@ __metadata:
   version: 12.20.55
   resolution: "@types/node@npm:12.20.55"
   checksum: e4f86785f4092706e0d3b0edff8dca5a13b45627e4b36700acd8dfe6ad53db71928c8dee914d4276c7fd3b6ccd829aa919811c9eb708a2c8e4c6eb3701178c37
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^18.11.5":
-  version: 18.11.5
-  resolution: "@types/node@npm:18.11.5"
-  checksum: ac54e9287dd4549ea3dc8aabc0cf7bfa04c52f02925d7fd68414789617ec770f034c8ae2e111e8bd00d446a46fcac42587b5a316a1303e2f6ea094854248c9ff
   languageName: node
   linkType: hard
 
@@ -12259,7 +12259,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest@npm:29.2.2, jest@npm:^29.2.2":
+"jest@npm:29.2.2":
   version: 29.2.2
   resolution: "jest@npm:29.2.2"
   dependencies:
@@ -19598,7 +19598,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:29.0.3, ts-jest@npm:^29.0.3":
+"ts-jest@npm:29.0.3":
   version: 29.0.3
   resolution: "ts-jest@npm:29.0.3"
   dependencies:
@@ -19911,7 +19911,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:4.8.4, typescript@npm:^4.8.4":
+"typescript@npm:4.8.4":
   version: 4.8.4
   resolution: "typescript@npm:4.8.4"
   bin:
@@ -19921,7 +19921,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@4.8.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.8.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@4.8.4#~builtin<compat/typescript>":
   version: 4.8.4
   resolution: "typescript@patch:typescript@npm%3A4.8.4#~builtin<compat/typescript>::version=4.8.4&hash=701156"
   bin:

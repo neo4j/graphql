@@ -19,7 +19,7 @@
 
 import { MatchableElement, MatchParams, Pattern } from "../Pattern";
 import { Clause } from "./Clause";
-import { compileCypherIfExists } from "../utils/utils";
+import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 import { WithReturn } from "./mixins/WithReturn";
 import { mixin } from "./utils/mixin";
 import { WithWhere } from "./mixins/WithWhere";
