@@ -27,7 +27,7 @@ import type { BooleanOp } from "./expressions/operations/boolean";
 import type { ComparisonOp } from "./expressions/operations/comparison";
 import type { RawCypher } from "./clauses/RawCypher";
 import type { PredicateFunction } from "./expressions/functions/PredicateFunctions";
-import type { ApocExpr, ApocPredicate } from "./expressions/procedures/apoc/apoc";
+import type { ApocExpr, ApocPredicate, ValidatePredicate } from "./expressions/procedures/apoc/apoc";
 import type { Case } from "./expressions/Case";
 import type { MathOp } from "./expressions/operations/math";
 import type { ListComprehension } from "./expressions/list/ListComprehension";
