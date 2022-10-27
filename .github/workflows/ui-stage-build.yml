@@ -33,6 +33,7 @@ jobs:
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
           SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE: ${{ secrets.SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE }}
           SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE: ${{ secrets.SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE }}
+          TEST_T: "test_t"
         run: |
           yarn install
           yarn build
