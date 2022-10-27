@@ -26,7 +26,7 @@ import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
 import unwindCreate from "./unwind-create";
-import { UnsupportedUnwindOptimisation } from "./batch-create/batch-create";
+import { UnsupportedUnwindOptimization } from "./batch-create/batch-create";
 
 export default async function translateCreate({
     context,
@@ -38,7 +38,7 @@ export default async function translateCreate({
     try {
         return await unwindCreate({ context, node });
     } catch (error) {
-        if (!(error instanceof UnsupportedUnwindOptimisation)) {
+        if (!(error instanceof UnsupportedUnwindOptimization)) {
             throw error;
         }
     }

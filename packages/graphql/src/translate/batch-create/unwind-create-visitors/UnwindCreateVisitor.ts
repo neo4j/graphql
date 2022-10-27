@@ -177,6 +177,7 @@ export class UnwindCreateVisitor implements Visitor {
             }
             return cypher.join("\n");
         });
+
         if (nestedCreate.childrens) {
             const clauses = nestedCreate.childrens.map((children) => {
                 const nestedVisitor = new UnwindCreateVisitor(

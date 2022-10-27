@@ -18,13 +18,8 @@
  */
 
 export type { CreateInput, TreeDescriptor } from "./types";
-export { UnsupportedUnwindOptimisation } from "./types";
+export { UnsupportedUnwindOptimization } from "./types";
 
-export {
-    getTreeDescriptor,
-    mergeTreeDescriptors,
-    inputTreeToCypherMap,
-    parseCreate
-} from "./parser";
+export { getTreeDescriptor, mergeTreeDescriptors, inputTreeToCypherMap, parseCreate } from "./parser";
 
-export { UnwindCreateVisitor } from "./unwind-create-visitors/UnwidCreateVisitor";
+export { UnwindCreateVisitor } from "./unwind-create-visitors/UnwindCreateVisitor";

@@ -21,7 +21,7 @@ import { Neo4jGraphQLError, Node } from "../classes";
 import type { Context } from "../types";
 import type { CreateInput } from "./batch-create/batch-create";
 import createProjectionAndParams from "./create-projection-and-params";
-import {  META_CYPHER_VARIABLE } from "../constants";
+import { META_CYPHER_VARIABLE } from "../constants";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
@@ -31,7 +31,7 @@ import {
     getTreeDescriptor,
     parseCreate,
     UnwindCreateVisitor,
-    UnsupportedUnwindOptimisation,
+    UnsupportedUnwindOptimization,
 } from "./batch-create/batch-create";
 
 export default async function unwindCreate({
@@ -42,7 +42,7 @@ export default async function unwindCreate({
     node: Node;
 }): Promise<{ cypher: string; params: Record<string, any> }> {
     if (context.subscriptionsEnabled) {
-        throw new UnsupportedUnwindOptimisation("Unwind does not yet support subscriptions");
+        throw new UnsupportedUnwindOptimization("Unwind create optimisation does not yet support subscriptions");
     }
 
     const { resolveTree } = context;
@@ -51,7 +51,7 @@ export default async function unwindCreate({
     const treeDescriptor = Array.isArray(input)
         ? mergeTreeDescriptors(input.map((el: CreateInput) => getTreeDescriptor(el, node, context)))
         : getTreeDescriptor(input, node, context);
-    const parsedInput = parseCreate(treeDescriptor, node, context);
+    const createNodeAST = parseCreate(treeDescriptor, node, context);
 
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
@@ -64,18 +64,16 @@ export default async function unwindCreate({
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
 
-    const createNodeAST = parsedInput;
     const unwindVar = new Cypher.Variable();
     const unwind = inputTreeToCypherMap(input, node, context);
     const unwindQuery = new Cypher.Unwind([unwind, unwindVar]);
     const unwindCreateVisitor = new UnwindCreateVisitor(unwindVar, callbackBucket, context, input);
     createNodeAST.accept(unwindCreateVisitor);
 
-    const [rootNodeVariable, createPhase] = unwindCreateVisitor.build();
-    if (!rootNodeVariable || !createPhase) {
+    const [rootNodeVariable, createCypher] = unwindCreateVisitor.build();
+    if (!rootNodeVariable || !createCypher) {
         throw new Neo4jGraphQLError("Generic Error");
     }
-    const createUnwind = Cypher.concat(unwindQuery, createPhase);
 
     let replacedProjectionParams: Record<string, unknown> = {};
     let projectionCypher: Cypher.Expr | undefined;
@@ -107,7 +105,6 @@ export default async function unwindCreate({
                 .replace(/\$REPLACE_ME/g, "$projection")
                 .replace(/REPLACE_ME/g, `${rootNodeVariable.getCypher(env)}`)}`;
         });
-
     }
 
     const replacedConnectionStrs = connectionStrs.length
@@ -126,6 +123,7 @@ export default async function unwindCreate({
           })
         : undefined;
 
+    const unwindCreate = Cypher.concat(unwindQuery, createCypher);
     const returnStatement = generateCreateReturnStatementCypher(projectionCypher, context.subscriptionsEnabled);
     const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
 
@@ -140,7 +138,7 @@ export default async function unwindCreate({
             .replace(/REPLACE_ME/g, `${rootNodeVariable.getCypher(env)}`);
 
         const cypher = filterTruthy([
-            createUnwind.getCypher(env),
+            unwindCreate.getCypher(env),
             projectionWithStr,
             authCalls,
             projectionConnectionStrs,

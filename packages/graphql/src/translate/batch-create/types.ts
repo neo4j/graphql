@@ -25,7 +25,7 @@ export interface TreeDescriptor {
     path: string;
 }
 
-export class UnsupportedUnwindOptimisation extends Error {
+export class UnsupportedUnwindOptimization extends Error {
     readonly name;
 
     constructor(message: string) {
@@ -33,7 +33,7 @@ export class UnsupportedUnwindOptimisation extends Error {
 
         // if no name provided, use the default. defineProperty ensures that it stays non-enumerable
         if (!this.name) {
-            Object.defineProperty(this, "name", { value: "UnsupportedUnwindOptimisation" });
+            Object.defineProperty(this, "name", { value: "UnsupportedUnwindOptimization" });
         }
     }
 }

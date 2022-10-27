@@ -19,7 +19,7 @@
 
 import type { Context, RelationField } from "../../types";
 import type { CreateInput, TreeDescriptor } from "./types";
-import { UnsupportedUnwindOptimisation } from "./types";
+import { UnsupportedUnwindOptimization } from "./types";
 import { GraphElement, Neo4jGraphQLError, Node, Relationship } from "../../classes";
 import Cypher from "@neo4j/cypher-builder";
 import { getRelationshipFields } from "./utils";
@@ -51,7 +51,7 @@ export function inputTreeToCypherMap(
             let scalar = false;
             if (parentKey === "edge") {
                 scalar = isScalar(key, relationship as Relationship);
-            } 
+            }
             // it assume that if parentKey is not defined then it means that the key belong to a Node
             else if (parentKey === "node" || parentKey === undefined) {
                 scalar = isScalar(key, node);
@@ -89,14 +89,14 @@ export function inputTreeToCypherMap(
 }
 
 function isScalar(fieldName: string, graphElement: GraphElement) {
-    const predicate = (x) => x.fieldName === fieldName;
+    const scalarPredicate = (x) => x.fieldName === fieldName;
     const scalarFields = [
         graphElement.primitiveFields,
         graphElement.temporalFields,
         graphElement.pointFields,
         graphElement.scalarFields,
     ];
-    return scalarFields.flat().some(predicate);
+    return scalarFields.flat().some(scalarPredicate);
 }
 
 export function getTreeDescriptor(
@@ -118,7 +118,7 @@ export function getTreeDescriptor(
             let scalar = false;
             if (parentKey === "edge") {
                 scalar = isScalar(key, relationship as Relationship);
-            } 
+            }
             // it assume that if parentKey is not defined then it means that the key belong to a Node
             else if (parentKey === "node" || parentKey === undefined) {
                 scalar = isScalar(key, node);
@@ -170,7 +170,7 @@ export function mergeTreeDescriptors(input: TreeDescriptor[]): TreeDescriptor {
 
 function parser(input: TreeDescriptor, node: Node, context: Context, parentASTNode: AST): AST {
     if (node.auth) {
-        throw new UnsupportedUnwindOptimisation("Not supported operation: Auth");
+        throw new UnsupportedUnwindOptimization("Not supported operation: Auth");
     }
     Object.entries(input.childrens).forEach(([key, value]) => {
         const [relationField, relatedNodes] = getRelationshipFields(node, key, {}, context);
@@ -183,7 +183,7 @@ function parser(input: TreeDescriptor, node: Node, context: Context, parentASTNo
                 ) as unknown as Relationship;
             }
             if (relationField.interface || relationField.union) {
-                throw new UnsupportedUnwindOptimisation(`Not supported operation: Interface or Union`);
+                throw new UnsupportedUnwindOptimization(`Not supported operation: Interface or Union`);
             }
             Object.entries(value.childrens).forEach(([operation, description]) => {
                 switch (operation) {
@@ -214,7 +214,7 @@ function parser(input: TreeDescriptor, node: Node, context: Context, parentASTNo
                         break;
                     */
                     default:
-                        throw new UnsupportedUnwindOptimisation(`Not supported operation: ${operation}`);
+                        throw new UnsupportedUnwindOptimization(`Not supported operation: ${operation}`);
                 }
             });
         }
@@ -240,10 +240,10 @@ function raiseAttributeAmbiguity(properties: Set<string> | Array<string>, graphE
 function raiseOnNotSupportedProperty(graphElement: GraphElement) {
     graphElement.primitiveFields.forEach((property) => {
         if (property.callback && property.callback.operations.includes("CREATE")) {
-            throw new UnsupportedUnwindOptimisation("Not supported operation: Callback");
+            throw new UnsupportedUnwindOptimization("Not supported operation: Callback");
         }
         if (property.auth) {
-            throw new UnsupportedUnwindOptimisation("Not supported operation: Auth");
+            throw new UnsupportedUnwindOptimization("Not supported operation: Auth");
         }
     });
 }
