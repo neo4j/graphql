@@ -5,9 +5,13 @@
         "baseUrl": ".",
         "outDir": "dist",
         "paths": {
-            "@neo4j/graphql-plugin-auth": ["../plugins/graphql-plugin-auth/src"]
+            "@neo4j/graphql-plugin-auth": ["../plugins/graphql-plugin-auth/src"],
+            "@neo4j/cypher-builder": ["../cypher-builder/src"]
         }
     },
     "include": ["global.d.ts", "package.json", "src/**/*", "tests/**/*"],
-    "references": [{ "path": "../plugins/graphql-plugin-auth/tsconfig.json" }]
+    "references": [
+        { "path": "../plugins/graphql-plugin-auth/tsconfig.json" },
+        { "path": "../cypher-builder/tsconfig.json" }
+    ]
 }

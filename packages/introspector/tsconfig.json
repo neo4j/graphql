@@ -5,7 +5,8 @@
         "baseUrl": ".",
         "outDir": "dist",
         "paths": {
-            "@neo4j/graphql": ["../graphql/src"]
+            "@neo4j/graphql": ["../graphql/src"],
+            "@neo4j/cypher-builder": ["../cypher-builder/src"]
         }
     },
     "include": ["src/**/*", "tests/**/*"],
