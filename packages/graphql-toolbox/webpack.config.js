@@ -60,7 +60,7 @@ module.exports = {
         path: path.resolve(__dirname, "dist"),
     },
     plugins: [
-        new Dotenv(),
+        new Dotenv({ systemvars: true }),
         new DefinePlugin({
             "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
             "process.env.VERSION": JSON.stringify(packageJson.version),

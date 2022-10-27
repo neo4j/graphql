@@ -1,5 +1,11 @@
 # @neo4j/cypher-builder
 
+## 0.1.2
+
+### Patch Changes
+
+-   [#2301](https://github.com/neo4j/graphql/pull/2301) [`42771f950`](https://github.com/neo4j/graphql/commit/42771f950badfc33e8babf07f85931ebd6018749) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix indentation on apoc.fulltext
+
 ## 0.1.0
 
 ### Minor Changes

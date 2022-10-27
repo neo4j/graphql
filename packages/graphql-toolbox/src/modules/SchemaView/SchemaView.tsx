@@ -46,7 +46,8 @@ import { SchemaEditor } from "./SchemaEditor";
 import { ConstraintState, Favorite } from "../../types";
 import { Favorites } from "./Favorites";
 import { IntrospectionPrompt } from "./IntrospectionPrompt";
-import { tracking } from "../../utils/tracking";
+import { tracking } from "../../analytics/tracking";
+import { rudimentaryTypeDefinitionsAnalytics } from "../../analytics/analytics";
 
 export interface Props {
     hasSchema: boolean;
@@ -82,7 +83,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
         ];
         setFavorites(newFavorites);
         Storage.storeJSON(LOCAL_STATE_FAVORITES, newFavorites);
-        tracking.trackFavorites();
+        tracking.trackSaveFavorite({ screen: "type definitions" });
     };
 
     const setTypeDefsFromFavorite = (typeDefs: string) => {
@@ -121,6 +122,9 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                     await neoSchema.assertIndexesAndConstraints({ driver: auth.driver, options: { create: true } });
                 }
 
+                const analyticsResults = rudimentaryTypeDefinitionsAnalytics(typeDefs);
+                tracking.trackBuildSchema({ screen: "type definitions", ...analyticsResults });
+
                 onChange(schema);
             } catch (error) {
                 setError(error as GraphQLError);
@@ -131,28 +135,34 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
         [isDebugChecked, constraintState, isRegexChecked, auth.selectedDatabaseName]
     );
 
-    const introspect = useCallback(async () => {
-        try {
-            setLoading(true);
-            setIsIntrospecting(true);
+    const introspect = useCallback(
+        async ({ screen }: { screen: "query editor" | "type definitions" | "initial modal" }) => {
+            try {
+                setLoading(true);
+                setIsIntrospecting(true);
 
-            const sessionFactory = () =>
-                auth?.driver?.session({
-                    defaultAccessMode: neo4j.session.READ,
-                    database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
-                }) as neo4j.Session;
+                const sessionFactory = () =>
+                    auth?.driver?.session({
+                        defaultAccessMode: neo4j.session.READ,
+                        database: auth.selectedDatabaseName || DEFAULT_DATABASE_NAME,
+                    }) as neo4j.Session;
 
-            const typeDefs = await toGraphQLTypeDefs(sessionFactory);
+                const typeDefs = await toGraphQLTypeDefs(sessionFactory);
 
-            refForEditorMirror.current?.setValue(typeDefs);
-        } catch (error) {
-            const msg = (error as GraphQLError).message;
-            setError(msg);
-        } finally {
-            setLoading(false);
-            setIsIntrospecting(false);
-        }
-    }, [buildSchema, refForEditorMirror.current, auth.selectedDatabaseName]);
+                refForEditorMirror.current?.setValue(typeDefs);
+
+                tracking.trackDatabaseIntrospection({ screen, status: "success" });
+            } catch (error) {
+                const msg = (error as GraphQLError).message;
+                setError(msg);
+                tracking.trackDatabaseIntrospection({ screen, status: "failure" });
+            } finally {
+                setLoading(false);
+                setIsIntrospecting(false);
+            }
+        },
+        [buildSchema, refForEditorMirror.current, auth.selectedDatabaseName]
+    );
 
     const onSubmit = useCallback(async () => {
         const value = refForEditorMirror.current?.getValue();
@@ -160,6 +170,10 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
             await buildSchema(value);
         }
     }, [buildSchema]);
+
+    const onClickIntrospect = async () => {
+        await introspect({ screen: "type definitions" });
+    };
 
     return (
         <div className="w-full flex">
@@ -179,7 +193,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                         setShowIntrospectionModal(false);
                         auth.setShowIntrospectionPrompt(false);
                         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                        introspect();
+                        introspect({ screen: "initial modal" });
                     }}
                 />
             ) : null}
@@ -215,7 +229,7 @@ export const SchemaView = ({ hasSchema, onChange }: Props) => {
                                 loading={loading}
                                 isIntrospecting={isIntrospecting}
                                 formatTheCode={formatTheCode}
-                                introspect={introspect}
+                                introspect={onClickIntrospect}
                                 saveAsFavorite={saveAsFavorite}
                             />
                             {!appSettings.hideProductUsageMessage ? (
