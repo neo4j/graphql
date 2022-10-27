@@ -1,5 +1,14 @@
 # @neo4j/graphql
 
+## 3.11.1
+
+### Patch Changes
+
+-   [#2304](https://github.com/neo4j/graphql/pull/2304) [`2c6d986a1`](https://github.com/neo4j/graphql/commit/2c6d986a19061fd8bc7739a2dd4737e7828e20d0) Thanks [@angrykoala](https://github.com/angrykoala)! - Use @neo4j/cypher-builder for cypher generation
+
+-   Updated dependencies [[`42771f950`](https://github.com/neo4j/graphql/commit/42771f950badfc33e8babf07f85931ebd6018749)]:
+    -   @neo4j/cypher-builder@0.1.2
+
 ## 3.11.0
 
 ### Minor Changes
