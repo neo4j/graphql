@@ -32,8 +32,6 @@ jobs:
         env:
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          [ -f ./.env ] && echo "exists" || echo 0
-          cat ./.env
           yarn install
           yarn build
           echo "$PULL_REQUEST_NUMBER" > ./dist/prnumber
