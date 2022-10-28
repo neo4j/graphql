@@ -13,5 +13,8 @@
     "references": [
         { "path": "../plugins/graphql-plugin-auth/tsconfig.json" },
         { "path": "../cypher-builder/tsconfig.json" }
-    ]
+    ],
+    "ts-node": {
+        "require": ["tsconfig-paths/register"]
+    }
 }
