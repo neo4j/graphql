@@ -28,16 +28,14 @@ export function translateTopLevelMatch({
     matchNode,
     node,
     context,
-    varName,
     operation,
 }: {
-    matchNode?: Cypher.NamedNode;
+    matchNode: Cypher.Node;
     context: Context;
     node: Node;
-    varName: string;
     operation: AuthOperations;
 }): Cypher.CypherResult {
-    const matchQuery = createMatchClause({ matchNode, node, context, varName, operation });
+    const matchQuery = createMatchClause({ matchNode, node, context, operation });
 
     const result = matchQuery.build();
     return result;
@@ -47,18 +45,15 @@ export function createMatchClause({
     matchNode,
     node,
     context,
-    varName,
     operation,
 }: {
-    matchNode?: Cypher.NamedNode;
+    matchNode: Cypher.Node;
     context: Context;
     node: Node;
-    varName: string;
     operation: AuthOperations;
 }): Cypher.Match | Cypher.db.FullTextQueryNodes {
     const { resolveTree } = context;
     const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
-    matchNode = matchNode || new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
     let matchQuery: Cypher.Match<Cypher.Node> | Cypher.db.FullTextQueryNodes;
     let whereInput = resolveTree.args.where as GraphQLWhereArg | undefined;
 
@@ -73,7 +68,7 @@ export function createMatchClause({
         matchQuery = new Cypher.db.FullTextQueryNodes(matchNode, indexName, phraseParam);
 
         const labelsChecks = node.getLabels(context).map((label) => {
-            return Cypher.in(new Cypher.Literal(label), Cypher.labels(matchNode as Cypher.NamedNode));
+            return Cypher.in(new Cypher.Literal(label), Cypher.labels(matchNode));
         });
 
         const andChecks = Cypher.and(...labelsChecks);
@@ -100,7 +95,7 @@ export function createMatchClause({
         operations: operation,
         entity: node,
         context,
-        where: { varName, node },
+        where: { varName: matchNode, node },
     });
     if (whereAuth[0]) {
         const authQuery = new Cypher.RawCypher(() => {
@@ -114,7 +109,7 @@ export function createMatchClause({
 }
 
 function createFulltextMatchClause(
-    matchNode: Cypher.NamedNode,
+    matchNode: Cypher.Node,
     whereInput: GraphQLWhereArg | undefined,
     node: Node,
     context: Context
@@ -138,8 +133,7 @@ function createFulltextMatchClause(
         }
     }
 
-    const andChecks = Cypher.and(labelsChecks);
-    if (andChecks) matchQuery.where(andChecks);
+    if (labelsChecks) matchQuery.where(labelsChecks);
 
     return matchQuery;
 }

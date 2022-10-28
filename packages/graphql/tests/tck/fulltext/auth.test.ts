@@ -65,14 +65,14 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this
-            WHERE (\\"Movie\\" IN labels(this) AND (exists((this)<-[:DIRECTED]-(:\`Person\`)) AND all(auth_this0 IN [(this)<-[:DIRECTED]-(auth_this0:\`Person\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $thisauth_param0))))
+            WHERE (\\"Movie\\" IN labels(this) AND (exists((this)<-[:DIRECTED]-(:\`Person\`)) AND all(auth_this0 IN [(this)<-[:DIRECTED]-(auth_this0:\`Person\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $auth_param0))))
             RETURN this { .title } AS this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`
             Object {
+              "auth_param0": "my-sub",
               "param0": "something AND something",
-              "thisauth_param0": "my-sub",
             }
         `);
     });

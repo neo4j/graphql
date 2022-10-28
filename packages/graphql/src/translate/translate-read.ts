@@ -51,7 +51,6 @@ export function translateRead(
         matchNode,
         node,
         context,
-        varName,
         operation: "READ",
     });
 
