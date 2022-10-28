@@ -75,3 +75,7 @@ export interface TrackingTBExecuteQuery {
     screen: "query editor" | "type definitions";
     queryComplexity?: number;
 }
+
+export interface TrackingTBExploreGraphQLaaSLinkClick {
+    screen: Screen;
+}
