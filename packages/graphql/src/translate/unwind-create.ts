@@ -44,37 +44,29 @@ export default async function unwindCreate({
     if (context.subscriptionsEnabled) {
         throw new UnsupportedUnwindOptimization("Unwind create optimisation does not yet support subscriptions");
     }
-
     const { resolveTree } = context;
     const input = resolveTree.args.input as GraphQLCreateInput | GraphQLCreateInput[];
-
     const treeDescriptor = Array.isArray(input)
         ? mergeTreeDescriptors(input.map((el: GraphQLCreateInput) => getTreeDescriptor(el, node, context)))
         : getTreeDescriptor(input, node, context);
     const createNodeAST = parseCreate(treeDescriptor, node, context);
-
-    const connectionStrs: string[] = [];
-    const interfaceStrs: string[] = [];
-
-    const projectionWith: string[] = [];
     const callbackBucket = new CallbackBucket(context);
-
-    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
-
-    const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
-    const metaNames: string[] = [];
-
     const unwindVar = new Cypher.Variable();
     const unwind = inputTreeToCypherMap(input, node, context);
     const unwindQuery = new Cypher.Unwind([unwind, unwindVar]);
     const unwindCreateVisitor = new UnwindCreateVisitor(unwindVar, callbackBucket, context);
     createNodeAST.accept(unwindCreateVisitor);
-
     const [rootNodeVariable, createCypher] = unwindCreateVisitor.build();
+    
     if (!rootNodeVariable || !createCypher) {
         throw new Neo4jGraphQLError("Generic Error");
     }
-
+    const connectionStrs: string[] = [];
+    const interfaceStrs: string[] = [];
+    const projectionWith: string[] = [];
+    const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
+    const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
+    const metaNames: string[] = [];
     let replacedProjectionParams: Record<string, unknown> = {};
     let projectionCypher: Cypher.Expr | undefined;
     let authCalls: string | undefined;

@@ -102,7 +102,7 @@ describe("unwind-create", () => {
         }
     });
 
-    test("should create a batch of movies and nested actors", async () => {
+    test("should create a batch of movies with nested actors", async () => {
         const session = await neo4j.getSession();
 
         const Movie = generateUniqueType("Movie");
@@ -195,7 +195,141 @@ describe("unwind-create", () => {
         }
     });
 
-    test("should create a batch of movies and nested actors with edge properties", async () => {
+    test("should create a batch of movies with nested actors with nested movies", async () => {
+        const session = await neo4j.getSession();
+
+        const Movie = generateUniqueType("Movie");
+        const Actor = generateUniqueType("Actor");
+
+        const typeDefs = `
+            type ${Actor} {
+                name: String!
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+            type ${Movie} {
+                id: ID!
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const id2 = generate({
+            charset: "alphabetic",
+        });
+
+        const id3 = generate({
+            charset: "alphabetic",
+        });
+
+        const id4 = generate({
+            charset: "alphabetic",
+        });
+
+        const actor1Name = generate({
+            charset: "alphabetic",
+        });
+
+        const actor2Name = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+        mutation($id: ID!, $id2: ID!, $id3: ID!, $id4: ID!, $actor1Name: String!, $actor2Name: String!) {
+            ${Movie.operations.create}(input: [
+                { 
+                    id: $id, 
+                    actors: { 
+                        create: { 
+                            node: {                            
+                                name: $actor1Name,                            
+                                movies: {                            
+                                    create: { node: { id: $id3 } }                            
+                                }                
+                            } 
+                        } 
+                    }
+                },
+                { 
+                    id: $id2,
+                    actors: { 
+                        create: {
+                            node: {
+                                name: $actor2Name,
+                                movies: { 
+                                    create: { node: { id: $id4 } }
+                                } 
+                            } 
+                        } 
+                    } 
+                }
+            ]) {
+                ${Movie.plural} {
+                    id
+                    actors {
+                        name
+                    }
+                }
+            }
+          }
+        `;
+
+        try {
+            const gqlResult = await graphql({
+                schema: await neoSchema.getSchema(),
+                source: query,
+                variableValues: { id, id2, id3, id4, actor1Name, actor2Name },
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+            });
+
+            expect(gqlResult.errors).toBeFalsy();
+
+            expect(gqlResult?.data?.[Movie.operations.create]?.[Movie.plural]).toEqual(
+                expect.arrayContaining([
+                    { id, actors: [{ name: actor1Name }] },
+                    { id: id2, actors: [{ name: actor2Name }] },
+                ])
+            );
+
+            const reFind = await session.run(
+                `
+              MATCH (m:${Movie})<-[:ACTED_IN]-(a:${Actor})
+              RETURN m,a
+            `,
+                {}
+            );
+
+            const records = reFind.records.map((record) => record.toObject());
+            expect(records).toEqual(
+                expect.arrayContaining([
+                    {
+                        m: expect.objectContaining({ properties: { id } }),
+                        a: expect.objectContaining({ properties: { name: actor1Name } }),
+                    },
+                    {
+                        m: expect.objectContaining({ properties: { id: id2 } }),
+                        a: expect.objectContaining({ properties: { name: actor2Name } }),
+                    },
+                    {
+                        m: expect.objectContaining({ properties: { id: id3 } }),
+                        a: expect.objectContaining({ properties: { name: actor1Name } }),
+                    },
+                    {
+                        m: expect.objectContaining({ properties: { id: id4 } }),
+                        a: expect.objectContaining({ properties: { name: actor2Name } }),
+                    },
+                ])
+            );
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should create a batch of movies with nested actors with edge properties", async () => {
         const session = await neo4j.getSession();
 
         const Movie = generateUniqueType("Movie");
@@ -294,7 +428,7 @@ describe("unwind-create", () => {
         }
     });
 
-    test("should create a batch of movies and nested persons using interface", async () => {
+    test("should create a batch of movies with nested persons using interface", async () => {
         const session = await neo4j.getSession();
 
         const Movie = generateUniqueType("Movie");
@@ -565,6 +699,111 @@ describe("unwind-create", () => {
                     },
                 ])
             );
+        } finally {
+            await session.close();
+        }
+    });
+
+    test("should a batch of actors with nested movies and resolve actorsConnection", async () => {
+        const session = await neo4j.getSession();
+
+        const Movie = generateUniqueType("Movie");
+        const Actor = generateUniqueType("Actor");
+
+        const typeDefs = `
+            type ${Actor} {
+                name: String!
+                movies: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+            }
+
+            type ${Movie} {
+                title: String!
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+        const schema = await neoSchema.getSchema();
+
+        const movieTitle = generate({ charset: "alphabetic" });
+        const movie2Title = generate({ charset: "alphabetic" });
+        const actorName = generate({ charset: "alphabetic" });
+        const actor2Name = generate({ charset: "alphabetic" });
+
+        const query = `
+            mutation ($movieTitle: String!, $actorName: String!, $movie2Title: String!, $actor2Name: String!) {
+                ${Actor.operations.create}(
+                    input: [
+                        {
+                            name: $actorName
+                            movies: { create: { node: { title: $movieTitle } } }
+                        },
+                        {
+                            name: $actor2Name
+                            movies: { create: { node: { title: $movie2Title } } }
+                        },
+
+                ]) {
+                    ${Actor.plural} {
+                        name
+                        movies {
+                            title
+                            actorsConnection(where: { node: { name: $actor2Name } }) {
+                                totalCount
+                                edges {
+                                    node {
+                                        name
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+        try {
+            const result = await graphql({
+                schema,
+                source: query,
+                contextValue: neo4j.getContextValuesWithBookmarks(session.lastBookmark()),
+                variableValues: { movieTitle, actorName, movie2Title, actor2Name },
+            });
+
+            expect(result.errors).toBeFalsy();
+            expect(result.data?.[Actor.operations.create]).toEqual({
+                [Actor.plural]: expect.arrayContaining([
+                    {
+                        name: actorName,
+                        movies: [
+                            {
+                                title: movieTitle,
+                                actorsConnection: {
+                                    totalCount: 0,
+                                    edges: [],
+                                },
+                            },
+                        ],
+                    },
+                    {
+                        name: actor2Name,
+                        movies: [
+                            {
+                                title: movie2Title,
+                                actorsConnection: {
+                                    totalCount: 1,
+                                    edges: [
+                                        {
+                                            node: {
+                                                name: actor2Name,
+                                            },
+                                        },
+                                    ],
+                                },
+                            },
+                        ],
+                    },
+                ]),
+            });
         } finally {
             await session.close();
         }
