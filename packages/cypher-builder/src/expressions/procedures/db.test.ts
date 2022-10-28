@@ -32,12 +32,9 @@ describe("db procedures", () => {
 
             const { cypher, params } = fulltextClause.build();
 
-            expect(cypher).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(
-                            \\"my-text-index\\",
-                            $param0
-                        ) YIELD node AS this0"
-            `);
+            expect(cypher).toMatchInlineSnapshot(
+                `"CALL db.index.fulltext.queryNodes(\\"my-text-index\\", $param0) YIELD node AS this0"`
+            );
             expect(params).toMatchInlineSnapshot(`
                 Object {
                   "param0": "This is a lovely phrase",
@@ -58,10 +55,7 @@ describe("db procedures", () => {
             const { cypher, params } = fulltextClause.build();
 
             expect(cypher).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(
-                            \\"my-text-index\\",
-                            $param0
-                        ) YIELD node AS this0
+                "CALL db.index.fulltext.queryNodes(\\"my-text-index\\", $param0) YIELD node AS this0
                 WHERE this0.title = $param1
                 RETURN this0"
             `);
