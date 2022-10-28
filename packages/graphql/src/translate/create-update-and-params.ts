@@ -481,7 +481,6 @@ export default function createUpdateAndParams({
 
                     if (relationField.interface) {
                         const returnStatement = `RETURN count(*) AS update_${varName}_${refNode.name}`;
-                        console.log("here:", returnMetaStatement);
                         if (context.subscriptionsEnabled && returnMetaStatement) {
                             subquery.push(returnStatement.concat(", ").concat(returnMetaStatement));
                         } else {

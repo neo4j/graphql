@@ -20,23 +20,18 @@
 import { on } from "events";
 import { Neo4jGraphQLError } from "../../../classes";
 import type Node from "../../../classes/Node";
-import type { Context, NodeSubscriptionsEvent, RelationSubscriptionsEvent, SubscriptionsEvent } from "../../../types";
+import type { NodeSubscriptionsEvent, RelationSubscriptionsEvent, SubscriptionsEvent } from "../../../types";
 import { filterAsyncIterator } from "./filter-async-iterator";
 import { SubscriptionAuth } from "./subscription-auth";
 import type { SubscriptionContext } from "./types";
 import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionWhere } from "./where";
 
-export function generateSubscriptionResolver(
-    node: Node,
-    type: "create" | "update" | "delete" | "connect" | "disconnect"
-) {
-    return (payload: [SubscriptionsEvent], context: Context): SubscriptionsEvent => {
-        if (!payload) {
-            throw new Neo4jGraphQLError("Payload is undefined. Can't call subscriptions resolver directly.");
-        }
-        return payload[0];
-    };
+export function subscriptionResolve(payload: [SubscriptionsEvent]): SubscriptionsEvent {
+    if (!payload) {
+        throw new Neo4jGraphQLError("Payload is undefined. Can't call subscriptions resolver directly.");
+    }
+    return payload[0];
 }
 
 type SubscriptionArgs = {

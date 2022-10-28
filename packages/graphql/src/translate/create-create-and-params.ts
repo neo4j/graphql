@@ -198,7 +198,6 @@ function createCreateAndParams({
                 }
 
                 if (!relationField.interface && v.connect) {
-                    console.log("enter createConnectAndParams from create-create");
                     const connectAndParams = createConnectAndParams({
                         withVars,
                         value: v.connect,

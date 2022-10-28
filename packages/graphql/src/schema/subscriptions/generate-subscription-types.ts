@@ -26,7 +26,7 @@ import {
     generateSubscriptionConnectionWhereType,
 } from "./generate-subscription-where-type";
 import { generateEventPayloadType } from "./generate-event-payload-type";
-import { generateSubscribeMethod, generateSubscriptionResolver } from "../resolvers/subscriptions/subscribe";
+import { generateSubscribeMethod, subscriptionResolve } from "../resolvers/subscriptions/subscribe";
 import type {
     NodeSubscriptionsEvent,
     RelationField,
@@ -273,19 +273,19 @@ export function generateSubscriptionTypes({
                 args: { where },
                 type: nodeCreatedEvent.NonNull,
                 subscribe: generateSubscribeMethod(node, "create"),
-                resolve: generateSubscriptionResolver(node, "create"),
+                resolve: subscriptionResolve,
             },
             [subscribeOperation.updated]: {
                 args: { where },
                 type: nodeUpdatedEvent.NonNull,
                 subscribe: generateSubscribeMethod(node, "update"),
-                resolve: generateSubscriptionResolver(node, "update"),
+                resolve: subscriptionResolve,
             },
             [subscribeOperation.deleted]: {
                 args: { where },
                 type: nodeDeletedEvent.NonNull,
                 subscribe: generateSubscribeMethod(node, "delete"),
-                resolve: generateSubscriptionResolver(node, "delete"),
+                resolve: subscriptionResolve,
             },
         });
 
@@ -301,13 +301,13 @@ export function generateSubscriptionTypes({
                     args: { where: connectionWhere },
                     type: relationConnectedEvent.NonNull,
                     subscribe: generateSubscribeMethod(node, "connect"),
-                    resolve: generateSubscriptionResolver(node, "connect"),
+                    resolve: subscriptionResolve,
                 },
                 [subscribeOperation.disconnected]: {
                     args: { where: connectionWhere },
                     type: relationDisconnectedEvent.NonNull,
                     subscribe: generateSubscribeMethod(node, "disconnect"),
-                    resolve: generateSubscriptionResolver(node, "disconnect"),
+                    resolve: subscriptionResolve,
                 },
             });
         }
@@ -358,7 +358,6 @@ function _buildRelationDestinationInterfaceNodeType({
         fields: interfaceComposeFields,
     });
     interfaceNodes?.forEach((interfaceNodeType) => {
-        // console.log("interfaceNodes", interfaceNodeType.getTypeName(), interfaceNodeType.getFields());
         nodeTo.addTypeResolver(interfaceNodeType, () => true);
         interfaceNodeType.addFields(interfaceConnectionComposeFields);
     });
@@ -386,7 +385,6 @@ function _buildRelationDestinationAbstractType({
     const interfaceNodeTypeNames = relationField.interface?.implementations;
     if (interfaceNodeTypeNames) {
         const relevantInterfaceFields = interfaceCommonFields.get(relationNodeTypeName) || ({} as ObjectFields);
-        // console.log("interfaceNodeTypeNames", interfaceNodeTypeNames, relationNodeTypeName, relevantInterfaceFields);
         const interfaceNodes = interfaceNodeTypeNames.map((name: string) => nodeNameToEventPayloadTypes[name]);
         return _buildRelationDestinationInterfaceNodeType({
             schemaComposer,

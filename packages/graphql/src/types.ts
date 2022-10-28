@@ -382,17 +382,6 @@ export type EventMeta = (NodeMeta | RelationMeta) & {
     timestamp: Integer | string | number;
 };
 
-// export type EventMeta = {
-//     event: "create" | "update" | "delete";
-//     properties: {
-//         old: Record<string, any>;
-//         new: Record<string, any>;
-//     };
-//     typename: string;
-//     id: Integer | string | number;
-//     timestamp: Integer | string | number;
-// };
-
 export type NodeSubscriptionsEvent =
     | {
           event: "create";
