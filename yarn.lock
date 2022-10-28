@@ -1809,6 +1809,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@graphql-tools/merge@npm:8.3.7":
+  version: 8.3.7
+  resolution: "@graphql-tools/merge@npm:8.3.7"
+  dependencies:
+    "@graphql-tools/utils": 8.13.0
+    tslib: ^2.4.0
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 037f83162a47bbfc621ecd9ad0f24f8343adb406848f68d8202f531770f9603dc79d3c9c539d91a4c6365868507398e8d605189930a79f6da97dd5c3957e8e88
+  languageName: node
+  linkType: hard
+
 "@graphql-tools/mock@npm:^8.1.2":
   version: 8.7.6
   resolution: "@graphql-tools/mock@npm:8.7.6"
@@ -1889,6 +1901,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@graphql-tools/schema@npm:9.0.5":
+  version: 9.0.5
+  resolution: "@graphql-tools/schema@npm:9.0.5"
+  dependencies:
+    "@graphql-tools/merge": 8.3.7
+    "@graphql-tools/utils": 8.13.0
+    tslib: ^2.4.0
+    value-or-promise: 1.0.11
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: c8f99a3eaed00aa8ee0c5189d19e7893728a6a559b422c69db609ead7a76c3d702f792040010540b91e2f8517137363cb74a37f1cec5238f6c18f8da4e9956c4
+  languageName: node
+  linkType: hard
+
 "@graphql-tools/utils@npm:8.12.0, @graphql-tools/utils@npm:^8.10.0, @graphql-tools/utils@npm:^8.8.0":
   version: 8.12.0
   resolution: "@graphql-tools/utils@npm:8.12.0"
@@ -1897,6 +1923,17 @@ __metadata:
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
   checksum: 24edc6ba3bcfa9a4c1d1d37117c3f96d847beed9638325083c32c6ec9674729dc89fc8cc389d317ae5d9dba22e91443bd9788f1dc8de91a1b6f1e592112bd48f
+  languageName: node
+  linkType: hard
+
+"@graphql-tools/utils@npm:8.13.0":
+  version: 8.13.0
+  resolution: "@graphql-tools/utils@npm:8.13.0"
+  dependencies:
+    tslib: ^2.4.0
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 8806bcda40cbda02577fe57c383ababb8961e3800be9ef228c9773793318477e5a706b6141803ea6dd68da0f39cff186d124039b742b519cbfb45cd6d15ccb22
   languageName: node
   linkType: hard
 
@@ -2471,7 +2508,7 @@ __metadata:
     "@neo4j/graphql": ^3.11.1
     "@neo4j/graphql-plugin-auth": ^1.1.0
     "@types/jest": 29.2.0
-    "@types/node": 16.18.0
+    "@types/node": 16.18.2
     camelcase: 6.3.0
     graphql-tag: 2.12.6
     jest: 29.2.2
@@ -2497,7 +2534,7 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/jest": 29.2.0
     "@types/jsonwebtoken": 8.5.9
-    "@types/node": 16.18.0
+    "@types/node": 16.18.2
     debug: ^4.3.4
     jest: 29.2.2
     jsonwebtoken: ^8.5.1
@@ -2515,7 +2552,7 @@ __metadata:
     "@types/amqplib": 0.8.2
     "@types/debug": 4.1.7
     "@types/jest": 29.2.0
-    "@types/node": 16.18.0
+    "@types/node": 16.18.2
     amqplib: 0.10.3
     apollo-server: 3.10.3
     apollo-server-express: 3.10.3
@@ -2548,9 +2585,9 @@ __metadata:
     "@types/lodash.debounce": 4.0.7
     "@types/markdown-it": 12.2.3
     "@types/prettier": 2.7.1
-    "@types/react-dom": 18.0.7
+    "@types/react-dom": 18.0.8
     "@types/webpack": 5.28.0
-    autoprefixer: 10.4.12
+    autoprefixer: 10.4.13
     codemirror: 5.65.9
     codemirror-graphql: 2.0.0
     compression-webpack-plugin: 10.0.0
@@ -2605,7 +2642,7 @@ __metadata:
     "@faker-js/faker": 7.6.0
     "@graphql-tools/merge": ^8.3.3
     "@graphql-tools/resolvers-composition": ^6.5.3
-    "@graphql-tools/schema": 9.0.4
+    "@graphql-tools/schema": 9.0.5
     "@graphql-tools/utils": ^8.10.0
     "@neo4j/cypher-builder": ~0.1.2
     "@neo4j/graphql-plugin-auth": ^1.1.0
@@ -2613,7 +2650,7 @@ __metadata:
     "@types/is-uuid": 1.0.0
     "@types/jest": 29.2.0
     "@types/jsonwebtoken": 8.5.9
-    "@types/node": 16.18.0
+    "@types/node": 16.18.2
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
     "@types/semver": 7.3.12
@@ -2663,7 +2700,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": ^3.8.0
     "@types/jest": 29.2.0
-    "@types/node": 16.18.0
+    "@types/node": 16.18.2
     "@types/pluralize": 0.0.29
     camelcase: ^6.3.0
     debug: ^4.3.4
@@ -3512,10 +3549,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:16.18.0":
-  version: 16.18.0
-  resolution: "@types/node@npm:16.18.0"
-  checksum: 4eb4b88012c7d3f527c1b4989cf085479d44ce418fb047fb8d3b545601a3e1fc436de8491b9734debeda8eae241963fb802cea87a5a5698bf5f6f3d489d446a8
+"@types/node@npm:16.18.2":
+  version: 16.18.2
+  resolution: "@types/node@npm:16.18.2"
+  checksum: d21bb6614916b88242300abb23f11ae8bdaabd60c8f7c5edac21f3bf4b1f3ebfbd2a9019a664dd28e5b5730145c069074d70e7a2ab063e80a2fa9ab12de9797a
   languageName: node
   linkType: hard
 
@@ -3596,12 +3633,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.0.7":
-  version: 18.0.7
-  resolution: "@types/react-dom@npm:18.0.7"
+"@types/react-dom@npm:18.0.8":
+  version: 18.0.8
+  resolution: "@types/react-dom@npm:18.0.8"
   dependencies:
     "@types/react": "*"
-  checksum: 4fd47dd114d61e7228637de9bee685b81ea18b89b220a67662b05ebe74f69aad7cd929ebe69e8fd572cc8e0e9adf9bba1ea5586cfd37eb9045778851e78bcd66
+  checksum: 522e5e949d05f35c6037a2290838c9c7ff92a9d06f7d96b993c7c3f5a86d8f3a6337e059c94e6fb0920227f445e5d1ce10fbfe3d9bbd95fb82a5539249d90646
   languageName: node
   linkType: hard
 
@@ -5004,12 +5041,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"autoprefixer@npm:10.4.12":
-  version: 10.4.12
-  resolution: "autoprefixer@npm:10.4.12"
+"autoprefixer@npm:10.4.13":
+  version: 10.4.13
+  resolution: "autoprefixer@npm:10.4.13"
   dependencies:
     browserslist: ^4.21.4
-    caniuse-lite: ^1.0.30001407
+    caniuse-lite: ^1.0.30001426
     fraction.js: ^4.2.0
     normalize-range: ^0.1.2
     picocolors: ^1.0.0
@@ -5018,7 +5055,7 @@ __metadata:
     postcss: ^8.1.0
   bin:
     autoprefixer: bin/autoprefixer
-  checksum: 6ae79cbacd31fb3d464ec64eb6ad2600f4f689c3080bbe62c5536d539b41b472083a2e941ef99d14aa11142370d6c16e8b05a62f077374933ed991aceb5943d2
+  checksum: dcb1cb7ae96a3363d65d82e52f9a0a7d8c982256f6fd032d7e1ec311f099c23acfebfd517ff8e96bf93f716a66c4ea2b80c60aa19efd2f474ce434bd75ef7b79
   languageName: node
   linkType: hard
 
@@ -5826,7 +5863,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001400, caniuse-lite@npm:^1.0.30001407":
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001400, caniuse-lite@npm:^1.0.30001426":
   version: 1.0.30001426
   resolution: "caniuse-lite@npm:1.0.30001426"
   checksum: e8b9c14ee33410d95b27da619f50648f373a7be712748970643f25d95fa80687b4755ba365f34a7a1cea00f9137193943aa6e742eedf0a4d7857f83809f49435
@@ -14133,7 +14170,7 @@ __metadata:
     "@fortawesome/free-solid-svg-icons": 6.2.0
     "@fortawesome/react-fontawesome": 0.2.0
     "@tsconfig/create-react-app": 1.0.2
-    "@types/react-dom": 18.0.7
+    "@types/react-dom": 18.0.8
     "@types/react-router-dom": 5.3.3
     "@types/showdown": 2.0.0
     "@webpack-cli/serve": 1.7.0
@@ -14172,7 +14209,7 @@ __metadata:
     "@types/express": 4.17.14
     "@types/jest": 29.2.0
     "@types/jsonwebtoken": 8.5.9
-    "@types/node": 16.18.0
+    "@types/node": 16.18.2
     "@types/uuid": 8.3.4
     apollo-server-express: 3.10.3
     bcrypt: 5.1.0
