@@ -75,6 +75,9 @@ jobs:
   unit-tests:
     uses: ./.github/workflows/reusable-unit-tests.yml
 
+  cypher-builder-tests:
+    uses: ./.github/workflows/reusable-cypher-builder-tests.yml
+
   e2e-tests-plugins:
     uses: ./.github/workflows/reusable-subscriptions-plugin-amqp-e2e-test.yml
 

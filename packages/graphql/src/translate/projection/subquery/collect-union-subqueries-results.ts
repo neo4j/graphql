@@ -18,7 +18,7 @@
  */
 
 import type { GraphQLOptionsArg } from "../../../types";
-import * as CypherBuilder from "../../cypher-builder/CypherBuilder";
+import Cypher from "@neo4j/cypher-builder";
 import { addSortAndLimitOptionsToClause } from "./add-sort-and-limit-to-clause";
 
 export function collectUnionSubqueriesResults({
@@ -26,27 +26,24 @@ export function collectUnionSubqueriesResults({
     optionsInput,
     isArray,
 }: {
-    resultVariable: CypherBuilder.Variable;
+    resultVariable: Cypher.Variable;
     optionsInput: GraphQLOptionsArg;
     isArray: boolean;
-}): CypherBuilder.Clause {
+}): Cypher.Clause {
     const withSortClause = createWithSortAndPaginationClauses(resultVariable, optionsInput);
 
-    let returnProjection = CypherBuilder.collect(resultVariable);
+    let returnProjection = Cypher.collect(resultVariable);
     if (!isArray) {
-        returnProjection = CypherBuilder.head(returnProjection);
+        returnProjection = Cypher.head(returnProjection);
     }
 
-    const returnClause = new CypherBuilder.Return([returnProjection, resultVariable]);
+    const returnClause = new Cypher.Return([returnProjection, resultVariable]);
 
-    return CypherBuilder.concat(withSortClause, returnClause);
+    return Cypher.concat(withSortClause, returnClause);
 }
 
-function createWithSortAndPaginationClauses(
-    variable: CypherBuilder.Variable,
-    optionsInput: GraphQLOptionsArg
-): CypherBuilder.With {
-    const withSortClause = new CypherBuilder.With(variable);
+function createWithSortAndPaginationClauses(variable: Cypher.Variable, optionsInput: GraphQLOptionsArg): Cypher.With {
+    const withSortClause = new Cypher.With(variable);
 
     addSortAndLimitOptionsToClause({
         optionsInput,

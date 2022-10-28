@@ -14,7 +14,7 @@
     },
     "devDependencies": {
         "@babel/core": "7.19.6",
-        "@babel/node": "7.19.1",
+        "@babel/node": "7.20.0",
         "@babel/preset-env": "7.19.4"
     }
 }

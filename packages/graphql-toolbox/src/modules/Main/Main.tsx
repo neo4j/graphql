@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GraphQLSchema } from "graphql";
 import { TopBar } from "../TopBar/TopBar";
 import { Login } from "../Login/Login";
@@ -25,11 +25,22 @@ import { SchemaView } from "../SchemaView/SchemaView";
 import { Editor } from "../EditorView/Editor";
 import { AuthContext } from "../../contexts/auth";
 import { ScreenContext, Screen } from "../../contexts/screen";
+import { invokeSegmentAnalytics } from "../../analytics/segment-snippet";
 
 export const Main = () => {
     const auth = useContext(AuthContext);
     const screen = useContext(ScreenContext);
     const [schema, setSchema] = useState<GraphQLSchema | undefined>(undefined);
+
+    useEffect(() => {
+        const segmentKey =
+            process.env.NODE_ENV === "production"
+                ? process.env.SEGMENT_GRAPHQL_TOOLBOX_PROD_SOURCE
+                : process.env.SEGMENT_GRAPHQL_TOOLBOX_DEV_SOURCE;
+        if (!segmentKey) return;
+        invokeSegmentAnalytics(segmentKey);
+        console.log("Initialized app.");
+    }, []);
 
     if (!auth.driver) {
         return (
