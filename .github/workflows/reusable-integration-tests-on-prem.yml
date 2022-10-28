@@ -27,7 +27,6 @@ jobs:
           - 4.3-enterprise
           - 4.4-enterprise
           - 5-enterprise
-          - 5-community
         graphql-version:
           - "^15.0.0"
           - "^16.0.0"
