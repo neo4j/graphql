@@ -1131,7 +1131,7 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toBeArrayOfSize(2);
         });
-        test("Offesetting is possible", async () => {
+        test("Offsetting is possible", async () => {
             const query = `
                 query {
                     ${queryType}(phrase: "a name", offset: 2) {
