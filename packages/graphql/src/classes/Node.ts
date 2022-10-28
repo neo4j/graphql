@@ -243,9 +243,9 @@ class Node extends GraphElement {
 
     public get fulltextTypeNames(): FulltextTypeNames {
         return {
-            result: `${pascalCaseSingular}FulltextResult`,
-            where: `${pascalCaseSingular}FulltextWhere`,
-            sort: `${pascalCaseSingular}FulltextSort`,
+            result: `${this.pascalCaseSingular}FulltextResult`,
+            where: `${this.pascalCaseSingular}FulltextWhere`,
+            sort: `${this.pascalCaseSingular}FulltextSort`,
         };
     }
 

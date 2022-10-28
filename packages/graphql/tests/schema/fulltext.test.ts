@@ -95,6 +95,24 @@ describe("@fulltext schema", () => {
               MovieTitle: MovieMovieTitleFulltext
             }
 
+            \\"\\"\\"The result of a fulltext search on an index of Movie\\"\\"\\"
+            type MovieFulltextResult {
+              movie: Movie
+              score: Float
+            }
+
+            \\"\\"\\"The input for sorting a fulltext query on an index of Movie\\"\\"\\"
+            input MovieFulltextSort {
+              movie: MovieSort
+              score: SortDirection
+            }
+
+            \\"\\"\\"The input for filtering a fulltext query on an index of Movie\\"\\"\\"
+            input MovieFulltextWhere {
+              movie: MovieWhere
+              score: FulltextScoreWhere
+            }
+
             input MovieMovieDescriptionFulltext {
               phrase: String!
             }
@@ -174,8 +192,8 @@ describe("@fulltext schema", () => {
               movies(fulltext: MovieFulltext, options: MovieOptions, where: MovieWhere): [Movie!]!
               moviesAggregate(fulltext: MovieFulltext, where: MovieWhere): MovieAggregateSelection!
               moviesConnection(after: String, first: Int, fulltext: MovieFulltext, sort: [MovieSort], where: MovieWhere): MoviesConnection!
-              moviesFulltextMovieDescription(limit: Int, offset: Int, phrase: String!, sort: [movieFulltextSort!], where: movieFulltextWhere): [movieFulltextResult!]!
-              moviesFulltextMovieTitle(limit: Int, offset: Int, phrase: String!, sort: [movieFulltextSort!], where: movieFulltextWhere): [movieFulltextResult!]!
+              moviesFulltextMovieDescription(limit: Int, offset: Int, phrase: String!, sort: [MovieFulltextSort!], where: MovieFulltextWhere): [MovieFulltextResult!]!
+              moviesFulltextMovieTitle(limit: Int, offset: Int, phrase: String!, sort: [MovieFulltextSort!], where: MovieFulltextWhere): [MovieFulltextResult!]!
             }
 
             enum SortDirection {
@@ -201,24 +219,6 @@ describe("@fulltext schema", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }
-
-            \\"\\"\\"The result of a fulltext search on an index of Movie\\"\\"\\"
-            type movieFulltextResult {
-              movie: Movie
-              score: Float
-            }
-
-            \\"\\"\\"The input for sorting a fulltext query on an index of Movie\\"\\"\\"
-            input movieFulltextSort {
-              movie: MovieSort
-              score: SortDirection
-            }
-
-            \\"\\"\\"The input for filtering a fulltext query on an index of Movie\\"\\"\\"
-            input movieFulltextWhere {
-              movie: MovieWhere
-              score: FulltextScoreWhere
             }"
         `);
     });
