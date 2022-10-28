@@ -90,6 +90,10 @@ export function translateRead(
 
     const optionsInput = (resolveTree.args.options || {}) as GraphQLOptionsArg;
 
+    if (context.fulltextIndex) {
+        optionsInput.sort = optionsInput.sort?.[node?.singular] || optionsInput.sort;
+    }
+
     if (node.queryOptions) {
         optionsInput.limit = node.queryOptions.getLimit(optionsInput.limit); // TODO: improve this
         resolveTree.args.options = resolveTree.args.options || {};
@@ -104,9 +108,10 @@ export function translateRead(
             optionsInput,
             target: matchNode,
             projectionClause: orderClause as Cypher.With,
+            nodeField: node.singular,
+            fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
+            cypherFields: node.cypherFields,
             varName,
-            node,
-            context,
         });
     }
 
@@ -128,8 +133,8 @@ export function translateRead(
             optionsInput,
             target: matchNode,
             projectionClause: returnClause,
-            node,
-            context,
+            nodeField: node.singular,
+            fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
         });
     }
 
@@ -169,8 +174,8 @@ export function translateRead(
                 optionsInput,
                 target: matchNode,
                 projectionClause: returnClause,
-                node,
-                context,
+                nodeField: node.singular,
+                fulltextScoreVariable: context.fulltextIndex?.scoreVariable,
             });
         }
 
