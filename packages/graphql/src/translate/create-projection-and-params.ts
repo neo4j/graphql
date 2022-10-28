@@ -448,9 +448,7 @@ function createFulltextProjection({
         };
     }
 
-    const nodeResolveTree = {
-        ...resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.singular],
-    };
+    const nodeResolveTree = resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][node.singular];
 
     const nodeContext = { ...context, fulltextIndex: false };
 
