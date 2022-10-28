@@ -127,7 +127,6 @@ function createFulltextMatchClause(
         matchNode,
         context.fulltextIndex.name,
         phraseParam,
-        undefined,
         scoreVar
     );
 
