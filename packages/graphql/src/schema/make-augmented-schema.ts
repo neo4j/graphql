@@ -168,7 +168,7 @@ function makeAugmentedSchema(
     );
 
     const relationshipFields = new Map<string, ObjectFields>();
-    const interfaceFieldsabc = new Map<string, ObjectFields>();
+    const interfaceCommonFields = new Map<string, ObjectFields>();
 
     relationshipProperties.forEach((relationship) => {
         const authDirective = (relationship.directives || []).find((x) => x.name.value === "auth");
@@ -307,8 +307,7 @@ function makeAugmentedSchema(
             fields: objectComposeFields,
         });
 
-        //   TODO: rename map
-        interfaceFieldsabc.set(interfaceRelationship.name.value, interfaceFields);
+        interfaceCommonFields.set(interfaceRelationship.name.value, interfaceFields);
 
         const interfaceOptionsInput = composer.getOrCreateITC(`${interfaceRelationship.name.value}Options`, (tc) => {
             tc.addFields({
@@ -780,7 +779,7 @@ function makeAugmentedSchema(
     });
 
     if (generateSubscriptions) {
-        generateSubscriptionTypes({ schemaComposer: composer, nodes, relationshipFields, interfaceFieldsabc });
+        generateSubscriptionTypes({ schemaComposer: composer, nodes, relationshipFields, interfaceCommonFields });
     }
 
     ["Mutation", "Query"].forEach((type) => {

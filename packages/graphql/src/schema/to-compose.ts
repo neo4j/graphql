@@ -120,7 +120,6 @@ export function objectFieldsToSubscriptionsWhereInputFields(
         const ifAnyTypeExceptArrayAndBoolean = !f.typeMeta.array && f.typeMeta.name !== "Boolean";
         const isOneOfNumberTypes = ["Int", "Float", "BigInt"].includes(f.typeMeta.name) && !f.typeMeta.array;
         const isOneOfStringTypes = ["String", "ID"].includes(f.typeMeta.name) && !f.typeMeta.array;
-
         return {
             ...res,
             AND: `[${typeName}SubscriptionWhere!]`,
@@ -132,8 +131,8 @@ export function objectFieldsToSubscriptionsWhereInputFields(
                 [`${f.fieldName}_NOT_INCLUDES`]: f.typeMeta.name,
             }),
             ...(ifAnyTypeExceptArrayAndBoolean && {
-                [`${f.fieldName}_IN`]: `[${f.typeMeta.name}]`,
-                [`${f.fieldName}_NOT_IN`]: `[${f.typeMeta.name}]`,
+                [`${f.fieldName}_IN`]: `[${f.typeMeta.name}${f.typeMeta.required ? "!" : ""}]`,
+                [`${f.fieldName}_NOT_IN`]: `[${f.typeMeta.name}${f.typeMeta.required ? "!" : ""}]`,
             }),
             ...(isOneOfNumberTypes && {
                 [`${f.fieldName}_LT`]: fieldType,

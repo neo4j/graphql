@@ -92,37 +92,44 @@ describe("createConnectAndParams", () => {
         });
 
         expect(result[0]).toMatchInlineSnapshot(`
-"WITH this
-CALL {
-	WITH this
-	OPTIONAL MATCH (this0_node:Movie)
-	WHERE this0_node.title = $this0_node_param0
-	CALL {
-		WITH *
-		WITH collect(this0_node) as connectedNodes, collect(this) as parentNodes
-		UNWIND parentNodes as this
-		UNWIND connectedNodes as this0_node
-		MERGE (this)-[:SIMILAR]->(this0_node)
-		RETURN count(*) AS _
-	}
-WITH this, this0_node
-CALL {
-	WITH this, this0_node
-	OPTIONAL MATCH (this0_node_similarMovies0_node:Movie)
-	WHERE this0_node_similarMovies0_node.title = $this0_node_similarMovies0_node_param0
-	CALL {
-		WITH *
-		WITH this, collect(this0_node_similarMovies0_node) as connectedNodes, collect(this0_node) as parentNodes
-		UNWIND parentNodes as this0_node
-		UNWIND connectedNodes as this0_node_similarMovies0_node
-		MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node)
-		RETURN count(*) AS _
-	}
-	RETURN count(*) AS connect_this0_node_similarMovies_Movie
-}
-	RETURN count(*) AS connect_this_Movie
-}"
-`);
+            "WITH this
+            CALL {
+            	WITH this
+            	OPTIONAL MATCH (this0_node:Movie)
+            	WHERE this0_node.title = $this0_node_param0
+            	CALL {
+            		WITH *
+            		WITH collect(this0_node) as connectedNodes, collect(this) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this0_node
+            			MERGE (this)-[:SIMILAR]->(this0_node)
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this, this0_node
+            CALL {
+            	WITH this, this0_node
+            	OPTIONAL MATCH (this0_node_similarMovies0_node:Movie)
+            	WHERE this0_node_similarMovies0_node.title = $this0_node_similarMovies0_node_param0
+            	CALL {
+            		WITH *
+            		WITH this, collect(this0_node_similarMovies0_node) as connectedNodes, collect(this0_node) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0_node
+            			UNWIND connectedNodes as this0_node_similarMovies0_node
+            			MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node)
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this, this0_node, this0_node_similarMovies0_node
+            	RETURN count(*) AS connect_this0_node_similarMovies_Movie
+            }
+            	RETURN count(*) AS connect_this_Movie
+            }"
+        `);
 
         expect(result[1]).toMatchObject({
             this0_node_param0: "abc",

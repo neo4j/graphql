@@ -35,21 +35,6 @@ export function generateSubscriptionResolver(
         if (!payload) {
             throw new Neo4jGraphQLError("Payload is undefined. Can't call subscriptions resolver directly.");
         }
-        // TODO delete this?
-        if (["connect", "disconnect"].includes(type)) {
-            const relationEventPayload = payload[0] as RelationSubscriptionsEvent;
-            const relationFieldName = node.relationFields.find(
-                (r) => r.type === relationEventPayload.relationshipName
-            )?.fieldName;
-
-            const relationship = {
-                [relationFieldName as string]: {
-                    ...relationEventPayload.properties.relationship,
-                },
-            };
-            // (payload[0] as any).relationship = relationship;
-        }
-        console.log("payload!", payload[0]);
         return payload[0];
     };
 }
@@ -96,7 +81,7 @@ export function generateSubscribeMethod(node: Node, type: "create" | "update" | 
                     (r) => r.type === relationEventPayload.relationshipName
                 )?.fieldName;
 
-                return !!relationFieldName;
+                return !!relationFieldName && subscriptionWhere(args.where, data[0], node);
             });
         }
 

@@ -27,7 +27,7 @@ import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { convertToCypherParams } from "./cypher-builder/utils/convert-to-cypher-params";
 import { addCallbackAndSetParamCypher } from "./utils/callback-utils";
 import { findConflictingProperties } from "../utils/is-property-clash";
-import { createRelEventMeta } from "./subscriptions/rel-create-event-meta";
+import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 
 type CreateOrConnectInput = {
@@ -249,15 +249,13 @@ function mergeStatement({
 
     const relationshipMerge = new CypherBuilder.Merge(relationship).onCreate(...onCreateRelationshipParams);
 
-    // TODO:
-    // improve namings
     let withClause: CypherBuilder.Clause | undefined;
     if (context.subscriptionsEnabled) {
         const [fromTypename, toTypename] =
             relationField.direction === "IN" ? [refNode.name, parentRefNode.name] : [parentRefNode.name, refNode.name];
 
         withClause = new CypherBuilder.RawCypher((env: CypherBuilder.Environment) => {
-            const eventWithMetaStr = createRelEventMeta({
+            const eventWithMetaStr = createConnectionEventMeta({
                 event: "connect",
                 relVariable: relationship.getCypher(env),
                 fromVariable: relationship.source.getCypher(env),

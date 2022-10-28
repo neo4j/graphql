@@ -31,11 +31,11 @@ type EventMetaParameters = {
     toTypename: string;
 };
 
-export function createRelEventMeta(params: EventMetaParameters): string {
-    return `${META_CYPHER_VARIABLE} + ${createRelEventMetaObject(params)} AS ${META_CYPHER_VARIABLE}`;
+export function createConnectionEventMeta(params: EventMetaParameters): string {
+    return `${META_CYPHER_VARIABLE} + ${createConnectionEventMetaObject(params)} AS ${META_CYPHER_VARIABLE}`;
 }
 
-export function createRelEventMetaObject({
+export function createConnectionEventMetaObject({
     event,
     relVariable,
     fromVariable,
@@ -45,7 +45,6 @@ export function createRelEventMetaObject({
     toTypename,
 }: EventMetaParameters): string {
     const idsAndProperties = createEventMetaIdsAndProperties({ relVariable, fromVariable, toVariable });
-    // { event: "connect", id_from: id(this0), id_to: id(this0_actedIn0_node), id: id(r), properties: {...} ,timestamp: timestamp(), relationshipName: "ACTED_IN" }
     return `{ event: "${event}", ${idsAndProperties}, timestamp: timestamp(), relationshipName: "${typename}", fromTypename: "${fromTypename}", toTypename: "${toTypename}" }`;
 }
 

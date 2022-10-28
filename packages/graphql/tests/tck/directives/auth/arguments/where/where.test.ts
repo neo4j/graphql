@@ -320,22 +320,22 @@ describe("Cypher Auth Where", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`User\`)
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-CALL {
-    WITH this
-    CALL {
-        WITH *
-        MATCH (this)-[this0:HAS_POST]->(this_content:\`Post\`)
-        WHERE (exists((this_content)<-[:HAS_POST]-(:\`User\`)) AND all(this1 IN [(this_content)<-[:HAS_POST]-(this1:\`User\`) | this1] WHERE (this1.id IS NOT NULL AND this1.id = $param1)))
-        WITH this_content  { __resolveType: \\"Post\\",  .id } AS this_content
-        RETURN this_content AS this_content
-    }
-    WITH this_content
-    RETURN collect(this_content) AS this_content
-}
-RETURN this { .id, content: this_content } AS this"
-`);
+            "MATCH (this:\`User\`)
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            CALL {
+                WITH this
+                CALL {
+                    WITH *
+                    MATCH (this)-[this0:HAS_POST]->(this_content:\`Post\`)
+                    WHERE (exists((this_content)<-[:HAS_POST]-(:\`User\`)) AND all(this1 IN [(this_content)<-[:HAS_POST]-(this1:\`User\`) | this1] WHERE (this1.id IS NOT NULL AND this1.id = $param1)))
+                    WITH this_content  { __resolveType: \\"Post\\",  .id } AS this_content
+                    RETURN this_content AS this_content
+                }
+                WITH this_content
+                RETURN collect(this_content) AS this_content
+            }
+            RETURN this { .id, content: this_content } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -668,20 +668,20 @@ RETURN this { .id, content: this_content } AS this"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`User\`)
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-WITH this
-OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
-WHERE (exists((this_posts0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_posts0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts0auth_param0)))
-WITH this, collect(DISTINCT this_posts0) as this_posts0_to_delete
-CALL {
-	WITH this_posts0_to_delete
-	UNWIND this_posts0_to_delete AS x
-	DETACH DELETE x
-	RETURN count(*) AS _
-}
-DETACH DELETE this"
-`);
+            "MATCH (this:\`User\`)
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WITH this
+            OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
+            WHERE (exists((this_posts0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_posts0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts0auth_param0)))
+            WITH this, collect(DISTINCT this_posts0) as this_posts0_to_delete
+            CALL {
+            	WITH this_posts0_to_delete
+            	UNWIND this_posts0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*) AS _
+            }
+            DETACH DELETE this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -712,31 +712,35 @@ DETACH DELETE this"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"CALL {
-CREATE (this0:User)
-SET this0.id = $this0_id
-SET this0.name = $this0_name
-SET this0.password = $this0_password
-WITH this0
-CALL {
-	WITH this0
-	OPTIONAL MATCH (this0_posts_connect0_node:Post)
-	WHERE (exists((this0_posts_connect0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this0_posts_connect0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this0_posts_connect0_nodeauth_param0)))
-	CALL {
-		WITH *
-		WITH collect(this0_posts_connect0_node) as connectedNodes, collect(this0) as parentNodes
-		UNWIND parentNodes as this0
-		UNWIND connectedNodes as this0_posts_connect0_node
-		MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
-		RETURN count(*) AS _
-	}
-	RETURN count(*) AS connect_this0_posts_connect_Post
-}
-RETURN this0
-}
-RETURN [
-this0 { .id }] AS data"
-`);
+            "CALL {
+            CREATE (this0:User)
+            SET this0.id = $this0_id
+            SET this0.name = $this0_name
+            SET this0.password = $this0_password
+            WITH this0
+            CALL {
+            	WITH this0
+            	OPTIONAL MATCH (this0_posts_connect0_node:Post)
+            	WHERE (exists((this0_posts_connect0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this0_posts_connect0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this0_posts_connect0_nodeauth_param0)))
+            	CALL {
+            		WITH *
+            		WITH collect(this0_posts_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_posts_connect0_node
+            			MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this0, this0_posts_connect0_node
+            	RETURN count(*) AS connect_this0_posts_connect_Post
+            }
+            RETURN this0
+            }
+            RETURN [
+            this0 { .id }] AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -775,31 +779,35 @@ this0 { .id }] AS data"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"CALL {
-CREATE (this0:User)
-SET this0.id = $this0_id
-SET this0.name = $this0_name
-SET this0.password = $this0_password
-WITH this0
-CALL {
-	WITH this0
-	OPTIONAL MATCH (this0_posts_connect0_node:Post)
-	WHERE this0_posts_connect0_node.id = $this0_posts_connect0_node_param0 AND (exists((this0_posts_connect0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this0_posts_connect0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this0_posts_connect0_nodeauth_param0)))
-	CALL {
-		WITH *
-		WITH collect(this0_posts_connect0_node) as connectedNodes, collect(this0) as parentNodes
-		UNWIND parentNodes as this0
-		UNWIND connectedNodes as this0_posts_connect0_node
-		MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
-		RETURN count(*) AS _
-	}
-	RETURN count(*) AS connect_this0_posts_connect_Post
-}
-RETURN this0
-}
-RETURN [
-this0 { .id }] AS data"
-`);
+            "CALL {
+            CREATE (this0:User)
+            SET this0.id = $this0_id
+            SET this0.name = $this0_name
+            SET this0.password = $this0_password
+            WITH this0
+            CALL {
+            	WITH this0
+            	OPTIONAL MATCH (this0_posts_connect0_node:Post)
+            	WHERE this0_posts_connect0_node.id = $this0_posts_connect0_node_param0 AND (exists((this0_posts_connect0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this0_posts_connect0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this0_posts_connect0_nodeauth_param0)))
+            	CALL {
+            		WITH *
+            		WITH collect(this0_posts_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_posts_connect0_node
+            			MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this0, this0_posts_connect0_node
+            	RETURN count(*) AS connect_this0_posts_connect_Post
+            }
+            RETURN this0
+            }
+            RETURN [
+            this0 { .id }] AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -830,27 +838,31 @@ this0 { .id }] AS data"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`User\`)
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-WITH this
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-WITH this
-CALL {
-	WITH this
-	OPTIONAL MATCH (this_posts0_connect0_node:Post)
-	WHERE (exists((this_posts0_connect0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_posts0_connect0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts0_connect0_nodeauth_param0)))
-	CALL {
-		WITH *
-		WITH collect(this_posts0_connect0_node) as connectedNodes, collect(this) as parentNodes
-		UNWIND parentNodes as this
-		UNWIND connectedNodes as this_posts0_connect0_node
-		MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
-		RETURN count(*) AS _
-	}
-	RETURN count(*) AS connect_this_posts0_connect_Post
-}
-RETURN collect(DISTINCT this { .id }) AS data"
-`);
+            "MATCH (this:\`User\`)
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WITH this
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WITH this
+            CALL {
+            	WITH this
+            	OPTIONAL MATCH (this_posts0_connect0_node:Post)
+            	WHERE (exists((this_posts0_connect0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_posts0_connect0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts0_connect0_nodeauth_param0)))
+            	CALL {
+            		WITH *
+            		WITH collect(this_posts0_connect0_node) as connectedNodes, collect(this) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_posts0_connect0_node
+            			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this, this_posts0_connect0_node
+            	RETURN count(*) AS connect_this_posts0_connect_Post
+            }
+            RETURN collect(DISTINCT this { .id }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -878,27 +890,31 @@ RETURN collect(DISTINCT this { .id }) AS data"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`User\`)
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-WITH this
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-WITH this
-CALL {
-	WITH this
-	OPTIONAL MATCH (this_posts0_connect0_node:Post)
-	WHERE this_posts0_connect0_node.id = $this_posts0_connect0_node_param0 AND (exists((this_posts0_connect0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_posts0_connect0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts0_connect0_nodeauth_param0)))
-	CALL {
-		WITH *
-		WITH collect(this_posts0_connect0_node) as connectedNodes, collect(this) as parentNodes
-		UNWIND parentNodes as this
-		UNWIND connectedNodes as this_posts0_connect0_node
-		MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
-		RETURN count(*) AS _
-	}
-	RETURN count(*) AS connect_this_posts0_connect_Post
-}
-RETURN collect(DISTINCT this { .id }) AS data"
-`);
+            "MATCH (this:\`User\`)
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WITH this
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WITH this
+            CALL {
+            	WITH this
+            	OPTIONAL MATCH (this_posts0_connect0_node:Post)
+            	WHERE this_posts0_connect0_node.id = $this_posts0_connect0_node_param0 AND (exists((this_posts0_connect0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_posts0_connect0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts0_connect0_nodeauth_param0)))
+            	CALL {
+            		WITH *
+            		WITH collect(this_posts0_connect0_node) as connectedNodes, collect(this) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_posts0_connect0_node
+            			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this, this_posts0_connect0_node
+            	RETURN count(*) AS connect_this_posts0_connect_Post
+            }
+            RETURN collect(DISTINCT this { .id }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -927,28 +943,32 @@ RETURN collect(DISTINCT this { .id }) AS data"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`User\`)
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-WITH this
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-WITH this
-CALL {
-	WITH this
-	OPTIONAL MATCH (this_connect_posts0_node:Post)
-	WHERE (exists((this_connect_posts0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_posts0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_posts0_nodeauth_param0)))
-	CALL {
-		WITH *
-		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
-		UNWIND parentNodes as this
-		UNWIND connectedNodes as this_connect_posts0_node
-		MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
-		RETURN count(*) AS _
-	}
-	RETURN count(*) AS connect_this_connect_posts_Post
-}
-WITH *
-RETURN collect(DISTINCT this { .id }) AS data"
-`);
+            "MATCH (this:\`User\`)
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WITH this
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WITH this
+            CALL {
+            	WITH this
+            	OPTIONAL MATCH (this_connect_posts0_node:Post)
+            	WHERE (exists((this_connect_posts0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_posts0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_posts0_nodeauth_param0)))
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_posts0_node
+            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this, this_connect_posts0_node
+            	RETURN count(*) AS connect_this_connect_posts_Post
+            }
+            WITH *
+            RETURN collect(DISTINCT this { .id }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -976,28 +996,32 @@ RETURN collect(DISTINCT this { .id }) AS data"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`User\`)
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-WITH this
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-WITH this
-CALL {
-	WITH this
-	OPTIONAL MATCH (this_connect_posts0_node:Post)
-	WHERE this_connect_posts0_node.id = $this_connect_posts0_node_param0 AND (exists((this_connect_posts0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_posts0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_posts0_nodeauth_param0)))
-	CALL {
-		WITH *
-		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
-		UNWIND parentNodes as this
-		UNWIND connectedNodes as this_connect_posts0_node
-		MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
-		RETURN count(*) AS _
-	}
-	RETURN count(*) AS connect_this_connect_posts_Post
-}
-WITH *
-RETURN collect(DISTINCT this { .id }) AS data"
-`);
+            "MATCH (this:\`User\`)
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WITH this
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WITH this
+            CALL {
+            	WITH this
+            	OPTIONAL MATCH (this_connect_posts0_node:Post)
+            	WHERE this_connect_posts0_node.id = $this_connect_posts0_node_param0 AND (exists((this_connect_posts0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_posts0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_posts0_nodeauth_param0)))
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_posts0_node
+            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this, this_connect_posts0_node
+            	RETURN count(*) AS connect_this_connect_posts_Post
+            }
+            WITH *
+            RETURN collect(DISTINCT this { .id }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -1026,26 +1050,26 @@ RETURN collect(DISTINCT this { .id }) AS data"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`User\`)
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-WITH this
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-WITH this
-CALL {
-WITH this
-OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post)
-WHERE (exists((this_posts0_disconnect0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_posts0_disconnect0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts0_disconnect0auth_param0)))
-CALL {
-	WITH this_posts0_disconnect0, this_posts0_disconnect0_rel
-	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel
-	UNWIND this_posts0_disconnect0 as x
-	DELETE this_posts0_disconnect0_rel
-	RETURN count(*) AS _
-}
-RETURN count(*) AS disconnect_this_posts0_disconnect_Post
-}
-RETURN collect(DISTINCT this { .id }) AS data"
-`);
+            "MATCH (this:\`User\`)
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WITH this
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WITH this
+            CALL {
+            WITH this
+            OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post)
+            WHERE (exists((this_posts0_disconnect0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_posts0_disconnect0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts0_disconnect0auth_param0)))
+            CALL {
+            	WITH this_posts0_disconnect0, this_posts0_disconnect0_rel
+            	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel
+            	UNWIND this_posts0_disconnect0 as x
+            	DELETE this_posts0_disconnect0_rel
+            	RETURN count(*) AS _
+            }
+            RETURN count(*) AS disconnect_this_posts0_disconnect_Post
+            }
+            RETURN collect(DISTINCT this { .id }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -1073,26 +1097,26 @@ RETURN collect(DISTINCT this { .id }) AS data"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`User\`)
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-WITH this
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-WITH this
-CALL {
-WITH this
-OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post)
-WHERE this_posts0_disconnect0.id = $updateUsers_args_update_posts0_disconnect0_where_Postparam0 AND (exists((this_posts0_disconnect0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_posts0_disconnect0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts0_disconnect0auth_param0)))
-CALL {
-	WITH this_posts0_disconnect0, this_posts0_disconnect0_rel
-	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel
-	UNWIND this_posts0_disconnect0 as x
-	DELETE this_posts0_disconnect0_rel
-	RETURN count(*) AS _
-}
-RETURN count(*) AS disconnect_this_posts0_disconnect_Post
-}
-RETURN collect(DISTINCT this { .id }) AS data"
-`);
+            "MATCH (this:\`User\`)
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WITH this
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WITH this
+            CALL {
+            WITH this
+            OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post)
+            WHERE this_posts0_disconnect0.id = $updateUsers_args_update_posts0_disconnect0_where_Postparam0 AND (exists((this_posts0_disconnect0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_posts0_disconnect0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_posts0_disconnect0auth_param0)))
+            CALL {
+            	WITH this_posts0_disconnect0, this_posts0_disconnect0_rel
+            	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel
+            	UNWIND this_posts0_disconnect0 as x
+            	DELETE this_posts0_disconnect0_rel
+            	RETURN count(*) AS _
+            }
+            RETURN count(*) AS disconnect_this_posts0_disconnect_Post
+            }
+            RETURN collect(DISTINCT this { .id }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -1140,27 +1164,27 @@ RETURN collect(DISTINCT this { .id }) AS data"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`User\`)
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-WITH this
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-WITH this
-CALL {
-WITH this
-OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
-WHERE (exists((this_disconnect_posts0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_posts0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_posts0auth_param0)))
-CALL {
-	WITH this_disconnect_posts0, this_disconnect_posts0_rel
-	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel
-	UNWIND this_disconnect_posts0 as x
-	DELETE this_disconnect_posts0_rel
-	RETURN count(*) AS _
-}
-RETURN count(*) AS disconnect_this_disconnect_posts_Post
-}
-WITH *
-RETURN collect(DISTINCT this { .id }) AS data"
-`);
+            "MATCH (this:\`User\`)
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WITH this
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WITH this
+            CALL {
+            WITH this
+            OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
+            WHERE (exists((this_disconnect_posts0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_posts0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_posts0auth_param0)))
+            CALL {
+            	WITH this_disconnect_posts0, this_disconnect_posts0_rel
+            	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel
+            	UNWIND this_disconnect_posts0 as x
+            	DELETE this_disconnect_posts0_rel
+            	RETURN count(*) AS _
+            }
+            RETURN count(*) AS disconnect_this_disconnect_posts_Post
+            }
+            WITH *
+            RETURN collect(DISTINCT this { .id }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -1199,27 +1223,27 @@ RETURN collect(DISTINCT this { .id }) AS data"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`User\`)
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-WITH this
-WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
-WITH this
-CALL {
-WITH this
-OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
-WHERE this_disconnect_posts0.id = $updateUsers_args_disconnect_posts0_where_Postparam0 AND (exists((this_disconnect_posts0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_posts0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_posts0auth_param0)))
-CALL {
-	WITH this_disconnect_posts0, this_disconnect_posts0_rel
-	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel
-	UNWIND this_disconnect_posts0 as x
-	DELETE this_disconnect_posts0_rel
-	RETURN count(*) AS _
-}
-RETURN count(*) AS disconnect_this_disconnect_posts_Post
-}
-WITH *
-RETURN collect(DISTINCT this { .id }) AS data"
-`);
+            "MATCH (this:\`User\`)
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WITH this
+            WHERE (this.id IS NOT NULL AND this.id = $thisauth_param0)
+            WITH this
+            CALL {
+            WITH this
+            OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
+            WHERE this_disconnect_posts0.id = $updateUsers_args_disconnect_posts0_where_Postparam0 AND (exists((this_disconnect_posts0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_posts0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_posts0auth_param0)))
+            CALL {
+            	WITH this_disconnect_posts0, this_disconnect_posts0_rel
+            	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel
+            	UNWIND this_disconnect_posts0 as x
+            	DELETE this_disconnect_posts0_rel
+            	RETURN count(*) AS _
+            }
+            RETURN count(*) AS disconnect_this_disconnect_posts_Post
+            }
+            WITH *
+            RETURN collect(DISTINCT this { .id }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

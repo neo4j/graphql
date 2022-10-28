@@ -411,26 +411,30 @@ describe("Cypher Auth isAuthenticated", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`User\`)
-WITH this
-CALL {
-	WITH this
-	OPTIONAL MATCH (this_connect_posts0_node:Post)
-	WITH this, this_connect_posts0_node
-	CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-	CALL {
-		WITH *
-		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
-		UNWIND parentNodes as this
-		UNWIND connectedNodes as this_connect_posts0_node
-		MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
-		RETURN count(*) AS _
-	}
-	RETURN count(*) AS connect_this_connect_posts_Post
-}
-WITH *
-RETURN collect(DISTINCT this { .id }) AS data"
-`);
+            "MATCH (this:\`User\`)
+            WITH this
+            CALL {
+            	WITH this
+            	OPTIONAL MATCH (this_connect_posts0_node:Post)
+            	WITH this, this_connect_posts0_node
+            	CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_posts0_node) as connectedNodes, collect(this) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_posts0_node
+            			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this, this_connect_posts0_node
+            	RETURN count(*) AS connect_this_connect_posts_Post
+            }
+            WITH *
+            RETURN collect(DISTINCT this { .id }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -468,25 +472,25 @@ RETURN collect(DISTINCT this { .id }) AS data"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`User\`)
-WITH this
-CALL {
-WITH this
-OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
-WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
-CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-CALL {
-	WITH this_disconnect_posts0, this_disconnect_posts0_rel
-	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel
-	UNWIND this_disconnect_posts0 as x
-	DELETE this_disconnect_posts0_rel
-	RETURN count(*) AS _
-}
-RETURN count(*) AS disconnect_this_disconnect_posts_Post
-}
-WITH *
-RETURN collect(DISTINCT this { .id }) AS data"
-`);
+            "MATCH (this:\`User\`)
+            WITH this
+            CALL {
+            WITH this
+            OPTIONAL MATCH (this)-[this_disconnect_posts0_rel:HAS_POST]->(this_disconnect_posts0:Post)
+            WITH this, this_disconnect_posts0, this_disconnect_posts0_rel
+            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0]) AND apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL {
+            	WITH this_disconnect_posts0, this_disconnect_posts0_rel
+            	WITH collect(this_disconnect_posts0) as this_disconnect_posts0, this_disconnect_posts0_rel
+            	UNWIND this_disconnect_posts0 as x
+            	DELETE this_disconnect_posts0_rel
+            	RETURN count(*) AS _
+            }
+            RETURN count(*) AS disconnect_this_disconnect_posts_Post
+            }
+            WITH *
+            RETURN collect(DISTINCT this { .id }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -570,22 +574,22 @@ RETURN collect(DISTINCT this { .id }) AS data"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`User\`)
-WITH this
-OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
-WITH this, this_posts0
-CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-WITH this, collect(DISTINCT this_posts0) as this_posts0_to_delete
-CALL {
-	WITH this_posts0_to_delete
-	UNWIND this_posts0_to_delete AS x
-	DETACH DELETE x
-	RETURN count(*) AS _
-}
-WITH this
-CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-DETACH DELETE this"
-`);
+            "MATCH (this:\`User\`)
+            WITH this
+            OPTIONAL MATCH (this)-[this_posts0_relationship:HAS_POST]->(this_posts0:Post)
+            WITH this, this_posts0
+            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH this, collect(DISTINCT this_posts0) as this_posts0_to_delete
+            CALL {
+            	WITH this_posts0_to_delete
+            	UNWIND this_posts0_to_delete AS x
+            	DETACH DELETE x
+            	RETURN count(*) AS _
+            }
+            WITH this
+            CALL apoc.util.validate(NOT (apoc.util.validatePredicate(NOT ($auth.isAuthenticated = true), \\"@neo4j/graphql/UNAUTHENTICATED\\", [0])), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            DETACH DELETE this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

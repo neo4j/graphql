@@ -33,7 +33,7 @@ import createRelationshipValidationStr from "./create-relationship-validation-st
 import { CallbackBucket } from "../classes/CallbackBucket";
 import * as CypherBuilder from "./cypher-builder/CypherBuilder";
 import { compileCypherIfExists } from "./cypher-builder/utils/utils";
-import { createRelEventMeta } from "../translate/subscriptions/rel-create-event-meta";
+import { createConnectionEventMeta } from "../translate/subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "../translate/subscriptions/filter-meta-variable";
 
 export default async function translateUpdate({
@@ -315,14 +315,12 @@ export default async function translateUpdate({
                         cypherParams = { ...cypherParams, ...setA[1] };
                     }
 
-                    // TODO:
-                    // improve namings
                     if (context.subscriptionsEnabled) {
                         const [fromVariable, toVariable] =
                             relationField.direction === "IN" ? [nodeName, varName] : [varName, nodeName];
                         const [fromTypename, toTypename] =
                             relationField.direction === "IN" ? [refNode.name, node.name] : [node.name, refNode.name];
-                        const eventWithMetaStr = createRelEventMeta({
+                        const eventWithMetaStr = createConnectionEventMeta({
                             event: "connect",
                             relVariable: propertiesName,
                             fromVariable,

@@ -29,7 +29,7 @@ import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 import { createEventMeta } from "./subscriptions/create-event-meta";
-import { createRelEventMeta } from "./subscriptions/rel-create-event-meta";
+import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
 import { findConflictingProperties } from "../utils/is-property-clash";
@@ -164,8 +164,6 @@ function createCreateAndParams({
                             res.params = { ...res.params, ...setA[1] };
                         }
 
-                        // TODO:
-                        // improve namings
                         if (context.subscriptionsEnabled) {
                             const [fromVariable, toVariable] =
                                 relationField.direction === "IN" ? [nodeName, varName] : [varName, nodeName];
@@ -173,7 +171,7 @@ function createCreateAndParams({
                                 relationField.direction === "IN"
                                     ? [refNode.name, node.name]
                                     : [node.name, refNode.name];
-                            const eventWithMetaStr = createRelEventMeta({
+                            const eventWithMetaStr = createConnectionEventMeta({
                                 event: "connect",
                                 relVariable: propertiesName,
                                 fromVariable,
@@ -200,6 +198,7 @@ function createCreateAndParams({
                 }
 
                 if (!relationField.interface && v.connect) {
+                    console.log("enter createConnectAndParams from create-create");
                     const connectAndParams = createConnectAndParams({
                         withVars,
                         value: v.connect,

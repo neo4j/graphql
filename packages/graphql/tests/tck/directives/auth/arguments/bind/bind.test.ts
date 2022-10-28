@@ -332,36 +332,40 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`Post\`)
-WHERE this.id = $param0
-WITH this
-CALL {
-	WITH this
-	OPTIONAL MATCH (this_connect_creator0_node:User)
-	WHERE this_connect_creator0_node.id = $this_connect_creator0_node_param0
-	CALL {
-		WITH *
-		WITH collect(this_connect_creator0_node) as connectedNodes, collect(this) as parentNodes
-		UNWIND parentNodes as this
-		UNWIND connectedNodes as this_connect_creator0_node
-		MERGE (this)<-[:HAS_POST]-(this_connect_creator0_node)
-		RETURN count(*) AS _
-	}
-	WITH this, this_connect_creator0_node
-	CALL apoc.util.validate(NOT ((exists((this_connect_creator0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_creator0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_creator0_nodeauth_param0))) AND (this_connect_creator0_node.id IS NOT NULL AND this_connect_creator0_node.id = $this_connect_creator0_nodeauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-	RETURN count(*) AS connect_this_connect_creator_User
-}
-WITH *
-WITH *
-CALL {
-	WITH this
-	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
-	WITH count(this_creator_User_unique) as c
-	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
-	RETURN c AS this_creator_User_unique_ignored
-}
-RETURN collect(DISTINCT this { .id }) AS data"
-`);
+            "MATCH (this:\`Post\`)
+            WHERE this.id = $param0
+            WITH this
+            CALL {
+            	WITH this
+            	OPTIONAL MATCH (this_connect_creator0_node:User)
+            	WHERE this_connect_creator0_node.id = $this_connect_creator0_node_param0
+            	CALL {
+            		WITH *
+            		WITH collect(this_connect_creator0_node) as connectedNodes, collect(this) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this
+            			UNWIND connectedNodes as this_connect_creator0_node
+            			MERGE (this)<-[:HAS_POST]-(this_connect_creator0_node)
+            		}
+            		RETURN count(*) AS _
+            	}
+            WITH this, this_connect_creator0_node
+            	WITH this, this_connect_creator0_node
+            	CALL apoc.util.validate(NOT ((exists((this_connect_creator0_node)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_connect_creator0_node)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_connect_creator0_nodeauth_param0))) AND (this_connect_creator0_node.id IS NOT NULL AND this_connect_creator0_node.id = $this_connect_creator0_nodeauth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            	RETURN count(*) AS connect_this_connect_creator_User
+            }
+            WITH *
+            WITH *
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
+            	WITH count(this_creator_User_unique) as c
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	RETURN c AS this_creator_User_unique_ignored
+            }
+            RETURN collect(DISTINCT this { .id }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -390,35 +394,35 @@ RETURN collect(DISTINCT this { .id }) AS data"
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-"MATCH (this:\`Post\`)
-WHERE this.id = $param0
-WITH this
-CALL {
-WITH this
-OPTIONAL MATCH (this)<-[this_disconnect_creator0_rel:HAS_POST]-(this_disconnect_creator0:User)
-WHERE this_disconnect_creator0.id = $updatePosts_args_disconnect_creator_where_Userparam0
-CALL {
-	WITH this_disconnect_creator0, this_disconnect_creator0_rel
-	WITH collect(this_disconnect_creator0) as this_disconnect_creator0, this_disconnect_creator0_rel
-	UNWIND this_disconnect_creator0 as x
-	DELETE this_disconnect_creator0_rel
-	RETURN count(*) AS _
-}
-WITH this, this_disconnect_creator0
-CALL apoc.util.validate(NOT ((exists((this_disconnect_creator0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_creator0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_creator0auth_param0))) AND (this_disconnect_creator0.id IS NOT NULL AND this_disconnect_creator0.id = $this_disconnect_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-RETURN count(*) AS disconnect_this_disconnect_creator_User
-}
-WITH *
-WITH *
-CALL {
-	WITH this
-	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
-	WITH count(this_creator_User_unique) as c
-	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
-	RETURN c AS this_creator_User_unique_ignored
-}
-RETURN collect(DISTINCT this { .id }) AS data"
-`);
+            "MATCH (this:\`Post\`)
+            WHERE this.id = $param0
+            WITH this
+            CALL {
+            WITH this
+            OPTIONAL MATCH (this)<-[this_disconnect_creator0_rel:HAS_POST]-(this_disconnect_creator0:User)
+            WHERE this_disconnect_creator0.id = $updatePosts_args_disconnect_creator_where_Userparam0
+            CALL {
+            	WITH this_disconnect_creator0, this_disconnect_creator0_rel
+            	WITH collect(this_disconnect_creator0) as this_disconnect_creator0, this_disconnect_creator0_rel
+            	UNWIND this_disconnect_creator0 as x
+            	DELETE this_disconnect_creator0_rel
+            	RETURN count(*) AS _
+            }
+            WITH this, this_disconnect_creator0
+            CALL apoc.util.validate(NOT ((exists((this_disconnect_creator0)<-[:HAS_POST]-(:\`User\`)) AND all(auth_this0 IN [(this_disconnect_creator0)<-[:HAS_POST]-(auth_this0:\`User\`) | auth_this0] WHERE (auth_this0.id IS NOT NULL AND auth_this0.id = $this_disconnect_creator0auth_param0))) AND (this_disconnect_creator0.id IS NOT NULL AND this_disconnect_creator0.id = $this_disconnect_creator0auth_param0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            RETURN count(*) AS disconnect_this_disconnect_creator_User
+            }
+            WITH *
+            WITH *
+            CALL {
+            	WITH this
+            	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
+            	WITH count(this_creator_User_unique) as c
+            	CALL apoc.util.validate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required', [0])
+            	RETURN c AS this_creator_User_unique_ignored
+            }
+            RETURN collect(DISTINCT this { .id }) AS data"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

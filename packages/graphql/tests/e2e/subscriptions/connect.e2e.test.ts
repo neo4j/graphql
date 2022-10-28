@@ -27,6 +27,7 @@ import { TestSubscriptionsPlugin } from "../../utils/TestSubscriptionPlugin";
 import { WebSocketTestClient } from "../setup/ws-client";
 import Neo4j from "../setup/neo4j";
 import { cleanNodes } from "../../utils/clean-nodes";
+import { delay } from "../../../src/utils/utils";
 
 describe("Connect Subscription", () => {
     let neo4j: Neo4j;
@@ -140,7 +141,9 @@ describe("Connect Subscription", () => {
             }
             relationship {
                 movies {
-                    screenTime
+                    edge {
+                        screenTime
+                    }
                     node {
                         title
                     }
@@ -161,7 +164,9 @@ subscription SubscriptionMovie {
         }
         relationship {
             reviewers {
-                score
+                edge {
+                    score
+                }
                 node {
                     ... on ${typePerson.name}EventPayload {
                         name
@@ -173,13 +178,17 @@ subscription SubscriptionMovie {
                 }
             }
             actors {
-                screenTime
+                edge {
+                    screenTime
+                }
                 node {
                     name
                 }
             }
             directors {
-                year
+                edge {
+                    year
+                }
                 node {
                     ... on ${typePerson.name}EventPayload {
                         name
@@ -206,7 +215,9 @@ subscription SubscriptionPerson {
         }
         relationship {
             movies {
-                score
+                edge {
+                    score
+                }
                 node {
                     title
                 }
@@ -215,18 +226,6 @@ subscription SubscriptionPerson {
     }
 }
 `;
-    // TODO: filtering! [wip]
-    // TODO: tests for filters
-    // TODO: filtering relationships - union types cannot be inputs
-
-    // TODO next-up: connect with create [wip] - same node gets one event only sent; apoc do when
-    // TODO next-up: connect with update
-    // TODO: test connect with auth
-    // TODO next-up: connectorCreate onConnect [done?]
-    // TODO next-up: wrap up connect events (refactor)
-
-    // TODO next-up: disconnect on update
-    // TODO: add test to Node? connect/disconnect
 
     test("connect via create subscription sends events both ways", async () => {
         await wsClient.subscribe(actorSubscriptionQuery(typeActor));
@@ -242,14 +241,14 @@ subscription SubscriptionPerson {
                             input: [
                                 {
                                     actors: {
-                                    create: [
-                                        {
-                                        node: {
-                                            name: "Keanu"
-                                        },
-                                        edge: {
-                                            screenTime: 1000
-                                        }
+                                        create: [
+                                            {
+                                            node: {
+                                                name: "Keanu"
+                                            },
+                                            edge: {
+                                                screenTime: 1000
+                                            }
                                         }
                                     ]
                                     },
@@ -279,7 +278,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 1000,
+                            edge: {
+                                screenTime: 1000,
+                            },
                             node: {
                                 title: "Matrix",
                             },
@@ -297,7 +298,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 1000,
+                            edge: {
+                                screenTime: 1000,
+                            },
                             node: {
                                 name: "Keanu",
                             },
@@ -417,7 +420,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 1200,
+                            edge: {
+                                screenTime: 1200,
+                            },
                             node: {
                                 name: "Keanu Reeves",
                             },
@@ -435,7 +440,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 4200,
+                            edge: {
+                                screenTime: 4200,
+                            },
                             node: {
                                 name: "Keanu Reeves",
                             },
@@ -455,7 +462,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 1200,
+                            edge: {
+                                screenTime: 1200,
+                            },
                             node: {
                                 title: "The Matrix",
                             },
@@ -471,7 +480,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 4200,
+                            edge: {
+                                screenTime: 4200,
+                            },
                             node: {
                                 title: "John Wick",
                             },
@@ -538,7 +549,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 9,
+                            edge: {
+                                score: 9,
+                            },
                             node: {
                                 name: "Valeria",
                                 reputation: 99,
@@ -557,7 +570,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 9,
+                            edge: {
+                                score: 9,
+                            },
                             node: {
                                 url: "cool.guy",
                                 reputation: 1,
@@ -620,7 +635,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         reviewers: null,
                         directors: {
-                            year: 2020,
+                            edge: {
+                                year: 2020,
+                            },
                             node: {
                                 name: "Tim",
                             },
@@ -748,7 +765,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 420,
+                            edge: {
+                                screenTime: 420,
+                            },
                             node: {
                                 name: "Keanu Reeves",
                             },
@@ -766,7 +785,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 12,
+                            edge: {
+                                screenTime: 12,
+                            },
                             node: {
                                 name: "Jose Molina",
                             },
@@ -786,7 +807,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 420,
+                            edge: {
+                                screenTime: 420,
+                            },
                             node: {
                                 title: "Constantine",
                             },
@@ -802,7 +825,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 12,
+                            edge: {
+                                screenTime: 12,
+                            },
                             node: {
                                 title: "Constantine",
                             },
@@ -925,7 +950,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 1234,
+                            edge: {
+                                screenTime: 1234,
+                            },
                             node: {
                                 name: "Donnie Yen",
                             },
@@ -944,7 +971,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 2014,
+                            edge: {
+                                year: 2014,
+                            },
                             node: {
                                 name: "Donnie Yen",
                             },
@@ -962,7 +991,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 2014,
+                            edge: {
+                                year: 2014,
+                            },
                             node: {
                                 name: "Chad",
                                 reputation: 120,
@@ -975,7 +1006,6 @@ subscription SubscriptionPerson {
         ]);
     });
 
-    // FIXME: no event; apocDoWhen
     test("connect via update - update - create subscription sends events one way: union type", async () => {
         // 1. create
         await supertest(server.path)
@@ -986,17 +1016,20 @@ subscription SubscriptionPerson {
                     ${typeMovie.operations.create}(
                         input: [
                             {
-                                actors: {
-                                    create: [
-                                        {
-                                            node: {
-                                                name: "Keanu Reeves"
-                                            },
-                                            edge: {
-                                                screenTime: 42
+                                directors: {
+                                    ${typeActor.name}: {
+                                        create: [
+                                            {
+                                                node: {
+                                                    name: "Keanu Reeves"
+                                                },
+                                                edge: {
+                                                    year: 2018
+                                                }
                                             }
-                                        }
-                                    ]
+                                        ]
+                                    }
+                                    
                                 },
                                 title: "John Wick",
                             }
@@ -1075,7 +1108,7 @@ subscription SubscriptionPerson {
         expect(wsClient2.errors).toEqual([]);
 
         expect(wsClient.events).toEqual([]);
-        expect(wsClient2.events).toHaveLength(2);
+        expect(wsClient2.events).toHaveLength(1);
         expect(wsClient2.events).toIncludeSameMembers([
             {
                 [typeMovie.operations.subscribe.connected]: {
@@ -1085,30 +1118,14 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 2345,
+                            edge: {
+                                screenTime: 2345,
+                            },
                             node: {
                                 name: "KEANU Reeves",
                             },
                         },
                         directors: null,
-                        reviewers: null,
-                    },
-                },
-            },
-            {
-                [typeMovie.operations.subscribe.connected]: {
-                    [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
-                    event: "CONNECT",
-                    direction: "IN",
-                    relationshipName: "directors",
-                    relationship: {
-                        actors: null,
-                        directors: {
-                            year: 2020,
-                            node: {
-                                name: "KEANU Reeves",
-                            },
-                        },
                         reviewers: null,
                     },
                 },
@@ -1207,7 +1224,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -1322,7 +1341,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -1341,7 +1362,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 9,
+                            edge: {
+                                score: 9,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -1361,7 +1384,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 title: "John Wick",
                             },
@@ -1377,7 +1402,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            score: 9,
+                            edge: {
+                                score: 9,
+                            },
                             node: {
                                 title: "Matrix",
                             },
@@ -1388,9 +1415,6 @@ subscription SubscriptionPerson {
         ]);
     });
 
-    // ==============FIX===ME===================
-
-    // FIX: no actor events?!
     test("connect via nested create - connect subscription sends events both ways", async () => {
         // 1. create resources that will be connected
         await supertest(server.path)
@@ -1604,22 +1628,44 @@ subscription SubscriptionPerson {
             })
             .expect(200);
 
+        // TODO: avoid this
+        await delay(50);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
         expect(wsClient2.events).toHaveLength(7);
-        expect(wsClient.events).toHaveLength(3);
+        expect(wsClient.events).toHaveLength(2);
         expect(wsClient.events).toIncludeSameMembers([
             {
                 [typeActor.operations.subscribe.connected]: {
-                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu Reeves" },
+                    [typeActor.operations.subscribe.payload.connected]: { name: "Keanu" },
                     event: "CONNECT",
                     direction: "OUT",
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 1200,
+                            edge: {
+                                screenTime: 250,
+                            },
                             node: {
-                                title: "The Matrix",
+                                title: "Matrix",
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typeActor.operations.subscribe.connected]: {
+                    [typeActor.operations.subscribe.payload.connected]: { name: "Marion" },
+                    event: "CONNECT",
+                    direction: "OUT",
+                    relationshipName: "movies",
+                    relationship: {
+                        movies: {
+                            edge: {
+                                screenTime: 199,
+                            },
+                            node: {
+                                title: "Matrix",
                             },
                         },
                     },
@@ -1635,7 +1681,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 250,
+                            edge: {
+                                screenTime: 250,
+                            },
                             node: {
                                 name: "Keanu",
                             },
@@ -1653,7 +1701,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 199,
+                            edge: {
+                                screenTime: 199,
+                            },
                             node: {
                                 name: "Marion",
                             },
@@ -1672,7 +1722,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 2015,
+                            edge: {
+                                year: 2015,
+                            },
                             node: {
                                 name: "Marion",
                             },
@@ -1691,7 +1743,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 8,
+                            edge: {
+                                score: 8,
+                            },
                             node: {
                                 name: "Bob",
                                 reputation: 98,
@@ -1710,7 +1764,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 9,
+                            edge: {
+                                score: 9,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -1729,7 +1785,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 name: "Bob",
                                 reputation: 98,
@@ -1748,7 +1806,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -1946,7 +2006,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 250,
+                            edge: {
+                                screenTime: 250,
+                            },
                             node: {
                                 title: "Matrix",
                             },
@@ -1962,7 +2024,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 199,
+                            edge: {
+                                screenTime: 199,
+                            },
                             node: {
                                 title: "Matrix",
                             },
@@ -1980,7 +2044,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 250,
+                            edge: {
+                                screenTime: 250,
+                            },
                             node: {
                                 name: "Keanu",
                             },
@@ -1998,7 +2064,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 199,
+                            edge: {
+                                screenTime: 199,
+                            },
                             node: {
                                 name: "Marion",
                             },
@@ -2017,7 +2085,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 2015,
+                            edge: {
+                                year: 2015,
+                            },
                             node: {
                                 name: "Marion",
                             },
@@ -2036,7 +2106,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2055,7 +2127,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 9,
+                            edge: {
+                                score: 9,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2144,7 +2218,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 250,
+                            edge: {
+                                screenTime: 250,
+                            },
                             node: {
                                 name: "Keanu",
                             },
@@ -2164,7 +2240,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 250,
+                            edge: {
+                                screenTime: 250,
+                            },
                             node: {
                                 title: "Matrix",
                             },
@@ -2259,7 +2337,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2351,7 +2431,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2451,7 +2533,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2470,7 +2554,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2570,7 +2656,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2714,7 +2802,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2733,7 +2823,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 9,
+                            edge: {
+                                score: 9,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2750,7 +2842,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 205,
+                            edge: {
+                                screenTime: 205,
+                            },
                             node: {
                                 name: "Keanu",
                             },
@@ -2847,7 +2941,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -2866,7 +2962,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 name: "Bob",
                                 reputation: 100,
@@ -2988,7 +3086,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -3007,7 +3107,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 url: "/bob",
                                 reputation: 98,
@@ -3137,7 +3239,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 250,
+                            edge: {
+                                screenTime: 250,
+                            },
                             node: {
                                 name: "Keanu",
                             },
@@ -3157,7 +3261,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -3176,7 +3282,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 250,
+                            edge: {
+                                screenTime: 250,
+                            },
                             node: {
                                 title: "Matrix",
                             },
@@ -3327,7 +3435,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 250,
+                            edge: {
+                                screenTime: 250,
+                            },
                             node: {
                                 name: "Keanu",
                             },
@@ -3347,7 +3457,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -3366,7 +3478,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 9,
+                            edge: {
+                                score: 9,
+                            },
                             node: {
                                 name: "Ana",
                                 reputation: 100,
@@ -3385,7 +3499,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 250,
+                            edge: {
+                                screenTime: 250,
+                            },
                             node: {
                                 title: "Matrix",
                             },
@@ -3528,7 +3644,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 250,
+                            edge: {
+                                screenTime: 250,
+                            },
                             node: {
                                 name: "Keanu",
                             },
@@ -3546,7 +3664,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 199,
+                            edge: {
+                                screenTime: 199,
+                            },
                             node: {
                                 name: "Marion",
                             },
@@ -3565,7 +3685,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 2015,
+                            edge: {
+                                year: 2015,
+                            },
                             node: {
                                 name: "Marion",
                             },
@@ -3584,7 +3706,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 250,
+                            edge: {
+                                screenTime: 250,
+                            },
                             node: {
                                 title: "Matrix",
                             },
@@ -3600,7 +3724,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 199,
+                            edge: {
+                                screenTime: 199,
+                            },
                             node: {
                                 title: "Matrix",
                             },
@@ -3809,7 +3935,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 250,
+                            edge: {
+                                screenTime: 250,
+                            },
                             node: {
                                 name: "Keanu",
                             },
@@ -3827,7 +3955,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 199,
+                            edge: {
+                                screenTime: 199,
+                            },
                             node: {
                                 name: "Marion",
                             },
@@ -3846,7 +3976,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 2015,
+                            edge: {
+                                year: 2015,
+                            },
                             node: {
                                 name: "Marion",
                             },
@@ -3865,7 +3997,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 10,
+                            edge: {
+                                score: 10,
+                            },
                             node: {
                                 name: "Bob",
                                 reputation: 98,
@@ -3884,7 +4018,9 @@ subscription SubscriptionPerson {
                         actors: null,
                         directors: null,
                         reviewers: {
-                            score: 8,
+                            edge: {
+                                score: 8,
+                            },
                             node: {
                                 name: "Bob",
                                 reputation: 98,
@@ -3903,7 +4039,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 250,
+                            edge: {
+                                screenTime: 250,
+                            },
                             node: {
                                 title: "Matrix",
                             },
@@ -3919,7 +4057,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 199,
+                            edge: {
+                                screenTime: 199,
+                            },
                             node: {
                                 title: "Matrix",
                             },
@@ -3930,11 +4070,7 @@ subscription SubscriptionPerson {
         ]);
     });
 
-    // =========================================
-
-    // update-connect
-
-    test("connect via update - connect subscription sends events one way: union type", async () => {
+    test("connect via update - connect subscription sends events both ways: union type", async () => {
         // 1. create
         await supertest(server.path)
             .post("")
@@ -3947,12 +4083,12 @@ subscription SubscriptionPerson {
                                 actors: {
                                     create: [
                                         {
-                                        node: {
-                                            name: "Keanu Reeves"
-                                        },
-                                        edge: {
-                                            screenTime: 42
-                                        }
+                                            node: {
+                                                name: "Keanu Reeves"
+                                            },
+                                            edge: {
+                                                screenTime: 42
+                                            }
                                         }
                                     ]
                                 },
@@ -4085,9 +4221,7 @@ subscription SubscriptionPerson {
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient2.errors).toEqual([]);
-
         expect(wsClient.events).toHaveLength(0);
-
         expect(wsClient2.events).toHaveLength(3);
         expect(wsClient2.events).toIncludeSameMembers([
             {
@@ -4098,7 +4232,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 420,
+                            edge: {
+                                screenTime: 420,
+                            },
                             node: {
                                 name: "Keanu Reeves",
                             },
@@ -4117,7 +4253,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 2019,
+                            edge: {
+                                year: 2019,
+                            },
                             node: {
                                 name: "Tom",
                             },
@@ -4135,7 +4273,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 2020,
+                            edge: {
+                                year: 2020,
+                            },
                             node: {
                                 name: "John",
                                 reputation: 100,
@@ -4148,7 +4288,244 @@ subscription SubscriptionPerson {
         ]);
     });
 
-    // =========================================
+    test("connect via update - connect subscription sends events both ways: interface type", async () => {
+        // 1. create
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                mutation {
+                    ${typeMovie.operations.create}(
+                        input: [
+                            {
+                                actors: {
+                                    create: [
+                                        {
+                                            node: {
+                                                name: "Keanu Reeves"
+                                            },
+                                            edge: {
+                                                screenTime: 42
+                                            }
+                                        }
+                                    ]
+                                },
+                                title: "John Wick",
+                            }
+                        ]
+                    ) {
+                        ${typeMovie.plural} {
+                            title
+                        }
+                    }
+                }
+            `,
+            })
+            .expect(200);
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                mutation {
+                    ${typePerson.operations.create}(
+                        input: [
+                            {
+                                name: "Ana",
+                                reputation: 100
+                            }
+                        ]
+                    ) {
+                        ${typePerson.plural} {
+                            reputation
+                            name
+                        }
+                    }
+                }
+            `,
+            })
+            .expect(200);
+
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                mutation {
+                    ${typeInfluencer.operations.create}(
+                        input: [
+                            {
+                                url: "/bob",
+                                reputation: 100
+                            }
+                        ]
+                    ) {
+                        ${typeInfluencer.plural} {
+                            reputation
+                            url
+                        }
+                    }
+                }
+            `,
+            })
+            .expect(200);
+
+        // 2. subscribe both ways
+        await wsClient2.subscribe(movieSubscriptionQuery({ typeInfluencer, typeMovie, typePerson }));
+
+        await wsClient.subscribe(personSubscriptionQuery(typePerson));
+
+        // 3. perform update on created node
+        await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeActor.operations.update}(
+                                where: {
+                                  name: "Keanu Reeves"
+                                },
+                                update: {
+                                    name: "Keanu R",
+                                    movies: [
+                                      {
+                                        where: {
+                                            node: {
+                                                title: "John Wick"
+                                            }
+                                        },
+                                        update: {
+                                          edge: {
+                                            screenTime: 420
+                                          },
+                                          node: {
+                                            reviewers: [
+                                              {
+                                                connect: [
+                                                  {
+                                                    where: {
+                                                      node: {
+                                                        reputation: 100,
+                                                        _on: {
+                                                          ${typePerson.name}: {
+                                                            name: "Ana"
+                                                          },
+                                                          ${typeInfluencer.name}: {
+                                                            url: "/bob"
+                                                          }
+                                                        }
+                                                      }
+                                                    },
+                                                    edge: {
+                                                      score: 10
+                                                    },
+                                                    connect: {
+                                                      _on: {
+                                                        ${typePerson.name}: [
+                                                          {
+                                                            movies: [
+                                                              {
+                                                                where: {
+                                                                  node: {
+                                                                    title: "Matrix"
+                                                                  }
+                                                                },
+                                                                edge: {
+                                                                  score: 9
+                                                                }
+                                                              }
+                                                            ]
+                                                          }
+                                                        ]
+                                                      }
+                                                    }
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      }
+                                    ]
+                                }
+                        ) {
+                            ${typeActor.plural} {
+                                name
+                            }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+
+        expect(wsClient.errors).toEqual([]);
+        expect(wsClient2.errors).toEqual([]);
+        expect(wsClient2.events).toHaveLength(2);
+        expect(wsClient.events).toHaveLength(1);
+        expect(wsClient2.events).toIncludeSameMembers([
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
+                    event: "CONNECT",
+                    direction: "IN",
+                    relationshipName: "reviewers",
+                    relationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            edge: {
+                                score: 10,
+                            },
+                            node: {
+                                name: "Ana",
+                                reputation: 100,
+                            },
+                        },
+                    },
+                },
+            },
+            {
+                [typeMovie.operations.subscribe.connected]: {
+                    [typeMovie.operations.subscribe.payload.connected]: { title: "John Wick" },
+                    event: "CONNECT",
+                    direction: "IN",
+                    relationshipName: "reviewers",
+                    relationship: {
+                        actors: null,
+                        directors: null,
+                        reviewers: {
+                            edge: {
+                                score: 10,
+                            },
+                            node: {
+                                url: "/bob",
+                                reputation: 100,
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.events).toIncludeSameMembers([
+            {
+                [typePerson.operations.subscribe.connected]: {
+                    [typePerson.operations.subscribe.payload.connected]: { name: "Ana" },
+                    event: "CONNECT",
+                    direction: "OUT",
+                    relationshipName: "movies",
+                    relationship: {
+                        movies: {
+                            edge: {
+                                score: 10,
+                            },
+                            node: {
+                                title: "John Wick",
+                            },
+                        },
+                    },
+                },
+            },
+        ]);
+    });
 
     test("connect via create - connectOrCreate, onCreate subscription sends events both ways", async () => {
         await wsClient.subscribe(actorSubscriptionQuery(typeActor));
@@ -4209,7 +4586,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 1200,
+                            edge: {
+                                screenTime: 1200,
+                            },
                             node: {
                                 title: "The Matrix",
                             },
@@ -4227,7 +4606,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 1200,
+                            edge: {
+                                screenTime: 1200,
+                            },
                             node: {
                                 name: "Keanu Reeves",
                             },
@@ -4324,7 +4705,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 4200,
+                            edge: {
+                                screenTime: 4200,
+                            },
                             node: {
                                 title: "The Matrix",
                             },
@@ -4340,7 +4723,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 200,
+                            edge: {
+                                screenTime: 200,
+                            },
                             node: {
                                 title: "The Matrix",
                             },
@@ -4356,7 +4741,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 500,
+                            edge: {
+                                screenTime: 500,
+                            },
                             node: {
                                 title: "Constantine",
                             },
@@ -4374,7 +4761,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 4200,
+                            edge: {
+                                screenTime: 4200,
+                            },
                             node: {
                                 name: "Keanu",
                             },
@@ -4392,7 +4781,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 200,
+                            edge: {
+                                screenTime: 200,
+                            },
                             node: {
                                 name: "Tom",
                             },
@@ -4410,7 +4801,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 500,
+                            edge: {
+                                screenTime: 500,
+                            },
                             node: {
                                 name: "Tom",
                             },
@@ -4506,7 +4899,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 1990,
+                            edge: {
+                                year: 1990,
+                            },
                             node: {
                                 name: "Edgar",
                             },
@@ -4524,7 +4919,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 1990,
+                            edge: {
+                                year: 1990,
+                            },
                             node: {
                                 name: "Poe",
                                 reputation: 100,
@@ -4643,7 +5040,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 1234,
+                            edge: {
+                                screenTime: 1234,
+                            },
                             node: {
                                 title: "The Raven",
                             },
@@ -4659,7 +5058,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 420,
+                            edge: {
+                                screenTime: 420,
+                            },
                             node: {
                                 title: "The House of Usher",
                             },
@@ -4677,7 +5078,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 1234,
+                            edge: {
+                                screenTime: 1234,
+                            },
                             node: {
                                 name: "Edgar",
                             },
@@ -4695,7 +5098,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 420,
+                            edge: {
+                                screenTime: 420,
+                            },
                             node: {
                                 name: "Allen",
                             },
@@ -4714,7 +5119,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 1980,
+                            edge: {
+                                year: 1980,
+                            },
                             node: {
                                 name: "Allen",
                             },
@@ -4732,7 +5139,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 1678,
+                            edge: {
+                                year: 1678,
+                            },
                             node: {
                                 name: "Poe",
                                 reputation: 100,
@@ -4875,7 +5284,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 100,
+                            edge: {
+                                screenTime: 100,
+                            },
                             node: {
                                 title: "The Raven",
                             },
@@ -4893,7 +5304,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 100,
+                            edge: {
+                                screenTime: 100,
+                            },
                             node: {
                                 name: "Lenore",
                             },
@@ -4912,7 +5325,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 1845,
+                            edge: {
+                                year: 1845,
+                            },
                             node: {
                                 name: "Nevermore",
                             },
@@ -4930,7 +5345,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 1845,
+                            edge: {
+                                year: 1845,
+                            },
                             node: {
                                 name: "Raven",
                                 reputation: 99,
@@ -5171,7 +5588,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 1254,
+                            edge: {
+                                screenTime: 1254,
+                            },
                             node: {
                                 title: "The Fall",
                             },
@@ -5189,7 +5608,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 1254,
+                            edge: {
+                                screenTime: 1254,
+                            },
                             node: {
                                 name: "Allen Poe",
                             },
@@ -5208,7 +5629,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 1950,
+                            edge: {
+                                year: 1950,
+                            },
                             node: {
                                 name: "Edgar Allen Poe",
                                 reputation: 110,
@@ -5227,7 +5650,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 1951,
+                            edge: {
+                                year: 1951,
+                            },
                             node: {
                                 name: "Madeleine",
                             },
@@ -5320,7 +5745,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 1200,
+                            edge: {
+                                screenTime: 1200,
+                            },
                             node: {
                                 title: "The Matrix",
                             },
@@ -5338,7 +5765,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 1200,
+                            edge: {
+                                screenTime: 1200,
+                            },
                             node: {
                                 name: "Keanu Reeves",
                             },
@@ -5500,7 +5929,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 1234,
+                            edge: {
+                                screenTime: 1234,
+                            },
                             node: {
                                 title: "The Raven",
                             },
@@ -5516,7 +5947,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 420,
+                            edge: {
+                                screenTime: 420,
+                            },
                             node: {
                                 title: "The House of Usher",
                             },
@@ -5534,7 +5967,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 1234,
+                            edge: {
+                                screenTime: 1234,
+                            },
                             node: {
                                 name: "Edgar",
                             },
@@ -5552,7 +5987,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 420,
+                            edge: {
+                                screenTime: 420,
+                            },
                             node: {
                                 name: "Allen",
                             },
@@ -5571,7 +6008,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 1980,
+                            edge: {
+                                year: 1980,
+                            },
                             node: {
                                 name: "Allen",
                             },
@@ -5589,7 +6028,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 1678,
+                            edge: {
+                                year: 1678,
+                            },
                             node: {
                                 name: "Poe",
                                 reputation: 100,
@@ -5732,7 +6173,9 @@ subscription SubscriptionPerson {
                     relationshipName: "movies",
                     relationship: {
                         movies: {
-                            screenTime: 100,
+                            edge: {
+                                screenTime: 100,
+                            },
                             node: {
                                 title: "The Raven",
                             },
@@ -5750,7 +6193,9 @@ subscription SubscriptionPerson {
                     relationshipName: "actors",
                     relationship: {
                         actors: {
-                            screenTime: 100,
+                            edge: {
+                                screenTime: 100,
+                            },
                             node: {
                                 name: "Lenore",
                             },
@@ -5769,7 +6214,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 1845,
+                            edge: {
+                                year: 1845,
+                            },
                             node: {
                                 name: "Nevermore",
                             },
@@ -5787,7 +6234,9 @@ subscription SubscriptionPerson {
                     relationship: {
                         actors: null,
                         directors: {
-                            year: 1845,
+                            edge: {
+                                year: 1845,
+                            },
                             node: {
                                 name: "Raven",
                                 reputation: 99,

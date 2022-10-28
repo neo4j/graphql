@@ -33,7 +33,7 @@ import mapToDbProperty from "../utils/map-to-db-property";
 import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createRelationshipValidationStr from "./create-relationship-validation-string";
 import { createEventMeta } from "./subscriptions/create-event-meta";
-import { createRelEventMeta } from "./subscriptions/rel-create-event-meta";
+import { createConnectionEventMeta } from "./subscriptions/create-connection-event-meta";
 import { filterMetaVariable } from "./subscriptions/filter-meta-variable";
 import { escapeQuery } from "./utils/escape-query";
 import type { CallbackBucket } from "../classes/CallbackBucket";
@@ -345,6 +345,10 @@ export default function createUpdateAndParams({
                             parentNode: node,
                         });
                         subquery.push(connectAndParams[0]);
+                        if (context.subscriptionsEnabled) {
+                            returnMetaStatement = `meta as update${idx}_meta`;
+                            intermediateWithMetaStatements.push(`WITH *, update${idx}_meta as meta`);
+                        }
                         res.params = { ...res.params, ...connectAndParams[1] };
                     }
 
@@ -438,8 +442,6 @@ export default function createUpdateAndParams({
                                 subquery.push(setA);
                             }
 
-                            // TODO:
-                            // improve namings
                             if (context.subscriptionsEnabled) {
                                 const [fromVariable, toVariable] =
                                     relationField.direction === "IN" ? [nodeName, varName] : [varName, nodeName];
@@ -447,7 +449,7 @@ export default function createUpdateAndParams({
                                     relationField.direction === "IN"
                                         ? [refNode.name, node.name]
                                         : [node.name, refNode.name];
-                                const eventWithMetaStr = createRelEventMeta({
+                                const eventWithMetaStr = createConnectionEventMeta({
                                     event: "connect",
                                     relVariable: propertiesName,
                                     fromVariable,
@@ -479,6 +481,7 @@ export default function createUpdateAndParams({
 
                     if (relationField.interface) {
                         const returnStatement = `RETURN count(*) AS update_${varName}_${refNode.name}`;
+                        console.log("here:", returnMetaStatement);
                         if (context.subscriptionsEnabled && returnMetaStatement) {
                             subquery.push(returnStatement.concat(", ").concat(returnMetaStatement));
                         } else {
@@ -494,7 +497,6 @@ export default function createUpdateAndParams({
             if (relationField.interface) {
                 res.strs.push(`WITH ${withVars.join(", ")}`);
                 res.strs.push(`CALL {\n\t WITH ${withVars.join(", ")}\n\t`);
-                // TODO:
                 const subqueriesWithMetaPassedOn = subqueries.map(
                     (each, i) => each + `\n}\n${intermediateWithMetaStatements[i] || ""}`
                 );
