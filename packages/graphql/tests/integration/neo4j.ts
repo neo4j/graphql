@@ -55,10 +55,10 @@ class Neo4j {
         }
 
         const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
-        this.driver = neo4j.driver(NEO_URL, auth);
+        const driver = neo4j.driver(NEO_URL, auth);
 
         try {
-            await this.driver.verifyConnectivity({ database: INT_TEST_DB_NAME });
+            await driver.verifyConnectivity({ database: INT_TEST_DB_NAME });
             this.hasIntegrationTestDb = true;
         } catch (error: any) {
             if (
@@ -68,14 +68,16 @@ class Neo4j {
                 ) ||
                 error.message.includes(`Database does not exist. Database name: '${INT_TEST_DB_NAME}'`)
             ) {
-                await this.checkConnectivityToDefaultDatabase(this.driver, NEO_URL);
+                await this.checkConnectivityToDefaultDatabase(driver, NEO_URL);
             } else {
+                await driver.close();
                 throw new Error(
                     `Could not connect to neo4j @ ${NEO_URL}, database ${INT_TEST_DB_NAME}, Error: ${error.message}`
                 );
             }
         }
 
+        this.driver = driver;
         return this.driver;
     }
 
