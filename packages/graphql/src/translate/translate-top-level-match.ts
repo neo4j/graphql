@@ -124,9 +124,8 @@ function createFulltextMatchClause(
 
     const matchQuery = new Cypher.db.FullTextQueryNodes(matchNode, context.fulltextIndex.name, phraseParam, scoreVar);
 
-    const labelsChecks = node.getLabels(context).map((label) => {
-        return Cypher.in(new Cypher.Literal(label), Cypher.labels(matchNode));
-    });
+    const expectedLabels = node.getLabels(context);
+    const labelsChecks=matchNode.hasLabels(...expectedLabels);
 
     if (whereInput?.[SCORE_FIELD]) {
         if (whereInput[SCORE_FIELD].min || whereInput[SCORE_FIELD].min === 0) {
