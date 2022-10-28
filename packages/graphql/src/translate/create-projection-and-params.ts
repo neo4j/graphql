@@ -453,8 +453,7 @@ function createFulltextProjection({
         ...resolveTree.fieldsByTypeName[node.fulltextTypeNames.result][lowerFirst(node.name)],
     };
 
-    const nodeContext = { ...context };
-    nodeContext.fulltextIndex = false;
+    const nodeContext = { ...context, fulltextIndex: false };
 
     return createProjectionAndParams({
         resolveTree: nodeResolveTree,
