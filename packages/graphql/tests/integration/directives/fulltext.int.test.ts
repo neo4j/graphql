@@ -1158,7 +1158,7 @@ describe("@fulltext directive", () => {
                 },
             ]);
         });
-        test("Combined limiting and offesetting is possible", async () => {
+        test("Combined limiting and offsetting is possible", async () => {
             const query = `
                 query {
                     ${queryType}(phrase: "a name", limit: 1, offset: 1) {
