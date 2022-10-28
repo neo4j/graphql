@@ -1,5 +1,5 @@
 ---
-"@neo4j/graphql-plugin-subscriptions-amqp": major
+"@neo4j/graphql-plugin-subscriptions-amqp": minor
 "@neo4j/graphql": patch
 ---
 
