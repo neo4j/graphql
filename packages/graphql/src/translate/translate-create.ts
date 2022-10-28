@@ -45,25 +45,32 @@ export default async function translateCreate({
 
     const { resolveTree } = context;
     const mutationInputs = resolveTree.args.input as any[];
+
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
     const projectionWith: string[] = [];
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
+
     let connectionParams: any;
     let interfaceParams: any;
+
     const mutationResponse = resolveTree.fieldsByTypeName[node.mutationResponseTypeNames.create];
+
     const nodeProjection = Object.values(mutationResponse).find((field) => field.name === node.plural);
     const metaNames: string[] = [];
+
     const { createStrs, params } = mutationInputs.reduce(
         (res, input, index) => {
             const varName = `this${index}`;
             const create = [`CALL {`];
             const withVars = [varName];
             projectionWith.push(varName);
+
             if (context.subscriptionsEnabled) {
                 create.push(`WITH [] AS ${META_CYPHER_VARIABLE}`);
                 withVars.push(META_CYPHER_VARIABLE);
             }
+
             const createAndParams = createCreateAndParams({
                 input,
                 node,
@@ -75,6 +82,7 @@ export default async function translateCreate({
                 callbackBucket,
             });
             create.push(`${createAndParams[0]}`);
+    
             if (context.subscriptionsEnabled) {
                 const metaVariable = `${varName}_${META_CYPHER_VARIABLE}`;
                 create.push(`RETURN ${varName}, ${META_CYPHER_VARIABLE} AS ${metaVariable}`);
@@ -82,6 +90,7 @@ export default async function translateCreate({
             } else {
                 create.push(`RETURN ${varName}`);
             }
+    
             create.push(`}`);
             res.createStrs.push(create.join("\n"));
             res.params = { ...res.params, ...createAndParams[1] };
@@ -92,9 +101,11 @@ export default async function translateCreate({
         createStrs: string[];
         params: any;
     };
+
     let replacedProjectionParams: Record<string, unknown> = {};
     let projectionStr: string | undefined;
     let authCalls: string | undefined;
+
     if (metaNames.length > 0) {
         projectionWith.push(`${metaNames.join(" + ")} AS meta`);
     }
@@ -108,15 +119,18 @@ export default async function translateCreate({
             resolveTree: nodeProjection,
             varName: "REPLACE_ME",
         });
+
         projectionSubquery = Cypher.concat(...projection.subqueriesBeforeSort, ...projection.subqueries);
         if (projection.meta?.authValidateStrs?.length) {
             projAuth = `CALL apoc.util.validate(NOT (${projection.meta.authValidateStrs.join(
                 " AND "
             )}), "${AUTH_FORBIDDEN_ERROR}", [0])`;
         }
+    
         replacedProjectionParams = Object.entries(projection.params).reduce((res, [key, value]) => {
             return { ...res, [key.replace("REPLACE_ME", "projection")]: value };
         }, {});
+    
         projectionStr = createStrs
             .map(
                 (_, i) =>
@@ -128,6 +142,7 @@ export default async function translateCreate({
                         .replace(/REPLACE_ME/g, `this${i}`)}`
             )
             .join(", ");
+
         authCalls = createStrs
             .map((_, i) => projAuth.replace(/\$REPLACE_ME/g, "$projection").replace(/REPLACE_ME/g, `this${i}`))
             .join("\n");
@@ -142,6 +157,7 @@ export default async function translateCreate({
                   .join("\n");
           })
         : [];
+
     const replacedInterfaceStrs = interfaceStrs.length
         ? createStrs.map((_, i) => {
               return interfaceStrs
@@ -151,6 +167,7 @@ export default async function translateCreate({
                   .join("\n");
           })
         : [];
+
     const replacedConnectionParams = connectionParams
         ? createStrs.reduce((res1, _, i) => {
               return {
@@ -161,6 +178,7 @@ export default async function translateCreate({
               };
           }, {})
         : {};
+
     const replacedInterfaceParams = interfaceParams
         ? createStrs.reduce((res1, _, i) => {
               return {
@@ -171,6 +189,7 @@ export default async function translateCreate({
               };
           }, {})
         : {};
+
     const returnStatement = generateCreateReturnStatement(projectionStr, context.subscriptionsEnabled);
     const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
 
@@ -206,6 +225,7 @@ export default async function translateCreate({
             },
         ];
     });
+
     const createQueryCypher = createQuery.build("create_");
     const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
         cypher: createQueryCypher.cypher,
@@ -221,14 +241,18 @@ export default async function translateCreate({
 }
 function generateCreateReturnStatement(projectionStr: string | undefined, subscriptionsEnabled: boolean): string {
     const statements: string[] = [];
+
     if (projectionStr) {
         statements.push(`[${projectionStr}] AS data`);
     }
+
     if (subscriptionsEnabled) {
         statements.push(META_CYPHER_VARIABLE);
     }
+
     if (statements.length === 0) {
         statements.push("'Query cannot conclude with CALL'");
     }
+
     return `RETURN ${statements.join(", ")}`;
 }
