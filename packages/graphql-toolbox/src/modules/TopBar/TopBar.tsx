@@ -48,6 +48,11 @@ export const TopBar = () => {
         tracking.trackChangeDatabase({ screen: "type definitions" });
     };
 
+    const handleExploreGraphQLaaSClick = () => {
+        window.open("https://forms.gle/uQgai8zaemJz6X4B6", "_blank");
+        tracking.trackExploreGraphQLaaSLink({ screen: screen.view });
+    };
+
     const constructDbmsUrlWithUsername = (): string => {
         if (!auth || !auth.connectUrl || !auth.username) return DEFAULT_BOLT_URL;
         const { connectUrl, username } = auth;
@@ -97,6 +102,16 @@ export const TopBar = () => {
             </div>
             <div className="flex-1 flex justify-end">
                 <div className="flex items-center text-sm">
+                    <Button
+                        data-test-graphqlaas-interest-button
+                        className="w-52 mr-4"
+                        color="primary"
+                        fill="outlined"
+                        onClick={handleExploreGraphQLaaSClick}
+                    >
+                        <HeroIcon className="w-full h-full" iconName="SparklesIcon" type="outline" />
+                        <span className="whitespace-nowrap">Explore GraphQLaaS</span>
+                    </Button>
                     {!auth.isNeo4jDesktop ? (
                         <div className="mr-4 pr-4 border-r border-gray-700">
                             <Button

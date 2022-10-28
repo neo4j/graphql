@@ -14,11 +14,11 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@apollo/client": "3.7.0",
+        "@apollo/client": "3.7.1",
         "@fortawesome/fontawesome-svg-core": "6.2.0",
         "@fortawesome/free-solid-svg-icons": "6.2.0",
         "@fortawesome/react-fontawesome": "0.2.0",
-        "@types/react-dom": "18.0.7",
+        "@types/react-dom": "18.0.8",
         "@types/react-router-dom": "5.3.3",
         "@types/showdown": "2.0.0",
         "css-loader": "6.7.1",
