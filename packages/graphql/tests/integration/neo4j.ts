@@ -65,7 +65,8 @@ class Neo4j {
                 error.message.includes("Could not perform discovery. No routing servers available.") ||
                 error.message.includes(
                     `Unable to get a routing table for database '${INT_TEST_DB_NAME}' because this database does not exist`
-                )
+                ) ||
+                error.message.includes(`Database does not exist. Database name: '${INT_TEST_DB_NAME}'`)
             ) {
                 await this.checkConnectivityToDefaultDatabase(this.driver, NEO_URL);
             } else {
