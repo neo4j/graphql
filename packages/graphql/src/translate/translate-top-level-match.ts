@@ -20,7 +20,6 @@
 import type { AuthOperations, Context, GraphQLWhereArg } from "../types";
 import type { Node } from "../classes";
 import { createAuthAndParams } from "./create-auth-and-params";
-import { lowerFirst } from "../utils/lower-first";
 import Cypher from "@neo4j/cypher-builder";
 import { createWherePredicate } from "./where/create-where-predicate";
 import { SCORE_FIELD } from "../graphql/directives/fulltext";
@@ -81,7 +80,7 @@ export function createMatchClause({
         if (andChecks) matchQuery.where(andChecks);
     } else if (context.fulltextIndex) {
         matchQuery = createFulltextMatchClause(matchNode, whereInput, node, context);
-        whereInput = whereInput?.[lowerFirst(node.name)];
+        whereInput = whereInput?.[node.singular];
     } else {
         matchQuery = new Cypher.Match(matchNode);
     }
@@ -123,12 +122,7 @@ function createFulltextMatchClause(
     const phraseParam = new Cypher.Param(context.resolveTree.args.phrase);
     const scoreVar = context.fulltextIndex.scoreVariable;
 
-    const matchQuery = new Cypher.db.FullTextQueryNodes(
-        matchNode,
-        context.fulltextIndex.name,
-        phraseParam,
-        scoreVar
-    );
+    const matchQuery = new Cypher.db.FullTextQueryNodes(matchNode, context.fulltextIndex.name, phraseParam, scoreVar);
 
     const labelsChecks = node.getLabels(context).map((label) => {
         return Cypher.in(new Cypher.Literal(label), Cypher.labels(matchNode));

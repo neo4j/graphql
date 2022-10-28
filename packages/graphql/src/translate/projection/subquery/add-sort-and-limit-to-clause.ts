@@ -21,7 +21,6 @@ import * as neo4j from "neo4j-driver";
 import type { Context, GraphQLOptionsArg, GraphQLSortArg, NestedGraphQLSortArg } from "../../../types";
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../../../classes";
-import { lowerFirst } from "../../../utils/lower-first";
 import { SCORE_FIELD } from "../../../graphql/directives/fulltext";
 
 export function addLimitOrOffsetOptionsToClause({
@@ -86,18 +85,13 @@ function createOrderByParams({
     context?: Context;
 }): Array<[Cypher.Expr, Cypher.Order]> {
     let sortOptions = optionsInput.sort || [];
-    if (node?.name && optionsInput.sort?.[lowerFirst(node?.name)]) {
-        sortOptions = optionsInput.sort?.[lowerFirst(node?.name)];
+    if (node?.name && optionsInput.sort?.[node?.singular]) {
+        sortOptions = optionsInput.sort?.[node?.singular];
     }
     const orderList = sortOptions.flatMap(
         (arg: GraphQLSortArg | NestedGraphQLSortArg): Array<[string, "ASC" | "DESC"]> => {
-            if (
-                context?.fulltextIndex &&
-                node?.name &&
-                arg[lowerFirst(node.name)] &&
-                typeof arg[lowerFirst(node.name)] === "object"
-            ) {
-                return Object.entries(arg[lowerFirst(node.name)] as GraphQLSortArg);
+            if (context?.fulltextIndex && node?.name && arg[node.singular] && typeof arg[node.singular] === "object") {
+                return Object.entries(arg[node.singular] as GraphQLSortArg);
             }
             return Object.entries(arg);
         }

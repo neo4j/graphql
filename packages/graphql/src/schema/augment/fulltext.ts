@@ -1,7 +1,6 @@
 import type { SchemaComposer } from "graphql-compose";
 import type { Node } from "../../classes";
 import { fulltextResolver } from "../resolvers/query/fulltext";
-import { lowerFirst } from "../../utils/lower-first";
 import { upperFirst } from "../../utils/upper-first";
 import { SCORE_FIELD } from "../../graphql/directives/fulltext";
 
@@ -50,7 +49,7 @@ export function augmentFulltextSchema(
             description: fulltextSortDescription,
             fields: {
                 [SCORE_FIELD]: "SortDirection",
-                [lowerFirst(node.name)]: nodeSortTypeName,
+                [node.singular]: nodeSortTypeName,
             },
         });
 
@@ -59,7 +58,7 @@ export function augmentFulltextSchema(
             description: fulltextWhereDescription,
             fields: {
                 [SCORE_FIELD]: fulltextScoreWhereType,
-                [lowerFirst(node.name)]: nodeWhereTypeName,
+                [node.singular]: nodeWhereTypeName,
             },
         });
 
@@ -68,7 +67,7 @@ export function augmentFulltextSchema(
             description: fulltextResultDescription,
             fields: {
                 [SCORE_FIELD]: "Float",
-                [lowerFirst(node.name)]: node.name,
+                [node.singular]: node.name,
             },
         });
 

@@ -25,12 +25,11 @@ import { Neo4jGraphQLAuthJWTPlugin } from "@neo4j/graphql-plugin-auth";
 import Neo4j from "../neo4j";
 import { Neo4jGraphQL } from "../../../src/classes";
 import { generateUniqueType, UniqueType } from "../../utils/graphql-types";
-import { lowerFirst } from "../../../src/utils/lower-first";
 import { upperFirst } from "../../../src/utils/upper-first";
 import { delay } from "../../../src/utils/utils";
 import { isMultiDbUnsupportedError } from "../../utils/is-multi-db-unsupported-error";
 import { createJwtRequest } from "../../utils/create-jwt-request";
-import { SCORE_FIELD } from "../../../src/graphql/directives/fulltext"
+import { SCORE_FIELD } from "../../../src/graphql/directives/fulltext";
 
 function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): string {
     return `
@@ -95,7 +94,7 @@ describe("@fulltext directive", () => {
 
         await driver.close();
     });
-    describe("Functionality", () => {
+    describe("Query Tests", () => {
         // Skip if multi-db not supported
         if (!MULTIDB_SUPPORT) {
             console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
@@ -137,7 +136,7 @@ describe("@fulltext directive", () => {
             personType = generateUniqueType("Person");
             movieType = generateUniqueType("Movie");
             queryType = `${personType.plural}Fulltext${upperFirst(personType.name)}Index`;
-            personTypeLowerFirst = lowerFirst(personType.name);
+            personTypeLowerFirst = personType.singular;
 
             const typeDefs = generatedTypeDefs(personType, movieType);
 
@@ -435,9 +434,7 @@ describe("@fulltext directive", () => {
         test("Filters node to no results", async () => {
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${lowerFirst(
-                personType.name
-            )}: { name_CONTAINS: "not in anything!!" } }) {
+                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { name_CONTAINS: "not in anything!!" } }) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -478,9 +475,7 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(
-                person2.name
-            );
+            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person2.name);
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
@@ -608,9 +603,7 @@ describe("@fulltext directive", () => {
         test("Filters a related node to multiple values", async () => {
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${lowerFirst(
-                personType.name
-            )}: { actedInMovies_SOME: { title: "${movie1.title}" } } }) {
+                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_SOME: { title: "${movie1.title}" } } }) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -632,9 +625,7 @@ describe("@fulltext directive", () => {
             });
 
             expect(gqlResult.errors).toBeFalsy();
-            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(
-                person2.name
-            );
+            expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person2.name);
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].actedInMovies).toEqual([
                 {
                     title: movie1.title,
@@ -660,9 +651,7 @@ describe("@fulltext directive", () => {
         test("Filters a related node to a single value", async () => {
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${lowerFirst(
-                personType.name
-            )}: { actedInMovies_ALL: { released: ${movie1.released} } } }) {
+                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_ALL: { released: ${movie1.released} } } }) {
                         ${personTypeLowerFirst} {
                             name
                             actedInMovies {
@@ -700,9 +689,7 @@ describe("@fulltext directive", () => {
         test("Filters a related node to no values", async () => {
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { ${lowerFirst(
-                personType.name
-            )}: { actedInMovies_ALL: { released_NOT_IN: [${movie1.released}, ${movie2.released}] } } }) {
+                    ${queryType}(phrase: "a different name", where: { ${personTypeLowerFirst}: { actedInMovies_ALL: { released_NOT_IN: [${movie1.released}, ${movie2.released}] } } }) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -755,9 +742,7 @@ describe("@fulltext directive", () => {
         test("Throws an error for an invalid where", async () => {
             const query = `
                 query {
-                    ${queryType}(phrase: "some name", where: { ${lowerFirst(
-                personType.name
-            )}: { not_a_field: "invalid" } }) {
+                    ${queryType}(phrase: "some name", where: { ${personTypeLowerFirst}: { not_a_field: "invalid" } }) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -803,9 +788,7 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person3.name);
             expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].name).toBe(person1.name);
-            expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst].name).toBe(
-                person2.name
-            );
+            expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst].name).toBe(person2.name);
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeLessThanOrEqual(
                 (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
             );
@@ -816,9 +799,7 @@ describe("@fulltext directive", () => {
         test("Sorting by node", async () => {
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", sort: [{ ${lowerFirst(
-                personType.name
-            )}: { name: ASC } }]) {
+                    ${queryType}(phrase: "a different name", sort: [{ ${personTypeLowerFirst}: { name: ASC } }]) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -837,9 +818,7 @@ describe("@fulltext directive", () => {
 
             expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person3.name);
-            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].name).toBe(
-                person2.name
-            );
+            expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst].name).toBe(person2.name);
             expect((gqlResult.data?.[queryType] as any[])[2][personTypeLowerFirst].name).toBe(person1.name);
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeNumber();
@@ -848,9 +827,7 @@ describe("@fulltext directive", () => {
         test("Unordered sorting", async () => {
             const query = `
                 query {
-                    ${queryType}(phrase: "this is", sort: { ${lowerFirst(
-                personType.name
-            )}: { born: ASC, name: DESC } }) {
+                    ${queryType}(phrase: "this is", sort: { ${personTypeLowerFirst}: { born: ASC, name: DESC } }) {
                         ${personTypeLowerFirst} {
                             name
                             born
@@ -905,9 +882,7 @@ describe("@fulltext directive", () => {
 
             const query1 = `
                 query {
-                    ${queryType}(phrase: "b", sort: [{ ${personTypeLowerFirst}: { born: DESC } }, { ${lowerFirst(
-                personType.name
-            )}: { name: ASC } }]) {
+                    ${queryType}(phrase: "b", sort: [{ ${personTypeLowerFirst}: { born: DESC } }, { ${personTypeLowerFirst}: { name: ASC } }]) {
                         ${personTypeLowerFirst} {
                             name
                             born
@@ -917,9 +892,7 @@ describe("@fulltext directive", () => {
             `;
             const query2 = `
                 query {
-                    ${queryType}(phrase: "b", sort: [{ ${personTypeLowerFirst}: { name: ASC } }, { ${lowerFirst(
-                personType.name
-            )}: { born: DESC } }]) {
+                    ${queryType}(phrase: "b", sort: [{ ${personTypeLowerFirst}: { name: ASC } }, { ${personTypeLowerFirst}: { born: DESC } }]) {
                         ${personTypeLowerFirst} {
                             name
                             born
@@ -983,9 +956,7 @@ describe("@fulltext directive", () => {
 
             const query1 = `
                 query {
-                    ${queryType}(phrase: "b d", sort: [{ score: DESC }, { ${lowerFirst(
-                personType.name
-            )}: { name: ASC } }]) {
+                    ${queryType}(phrase: "b d", sort: [{ score: DESC }, { ${personTypeLowerFirst}: { name: ASC } }]) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -996,9 +967,7 @@ describe("@fulltext directive", () => {
             `;
             const query2 = `
                 query {
-                    ${queryType}(phrase: "b d", sort: [{ ${lowerFirst(
-                personType.name
-            )}: { name: ASC } }, { score: DESC }]) {
+                    ${queryType}(phrase: "b d", sort: [{ ${personTypeLowerFirst}: { name: ASC } }, { score: DESC }]) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -1845,7 +1814,7 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeDefined();
         });
         test("Multiple fulltext index fields", async () => {
-            const moveTypeLowerFirst = lowerFirst(movieType.name);
+            const moveTypeLowerFirst = movieType.singular;
             queryType = `${movieType.plural}Fulltext${upperFirst(movieType.name)}Index`;
             const typeDefs = `
                 type ${personType.name} {
@@ -1908,7 +1877,7 @@ describe("@fulltext directive", () => {
         });
         test("Custom query name", async () => {
             personType = generateUniqueType("Person");
-            personTypeLowerFirst = lowerFirst(personType.name);
+            personTypeLowerFirst = personType.singular;
             queryType = "CustomQueryName";
 
             session = driver.session({ database: databaseName });
@@ -1984,7 +1953,7 @@ describe("@fulltext directive", () => {
             );
         });
         test("Multiple index fields with custom query name", async () => {
-            const moveTypeLowerFirst = lowerFirst(movieType.name);
+            const moveTypeLowerFirst = movieType.singular;
             queryType = "SomeCustomQueryName";
             const typeDefs = `
                 type ${movieType.name} @fulltext(indexes: [{ queryName: "${queryType}", name: "${movieType.name}Index", fields: ["title", "description"] }]) {
