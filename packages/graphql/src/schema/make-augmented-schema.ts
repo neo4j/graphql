@@ -37,11 +37,11 @@ import { numericalResolver } from "./resolvers/field/numerical";
 import { aggregateResolver } from "./resolvers/query/aggregate";
 import { findResolver } from "./resolvers/query/read";
 import { rootConnectionResolver } from "./resolvers/query/root-connection";
-import { fulltextResolver } from "./resolvers/query/fulltext"
 import { createResolver } from "./resolvers/mutation/create";
 import { deleteResolver } from "./resolvers/mutation/delete";
 import { updateResolver } from "./resolvers/mutation/update";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
+import { augmentFulltextSchema } from "./augment/fulltext";
 import * as constants from "../constants";
 import * as Scalars from "../graphql/scalars";
 import type { Node } from "../classes";
@@ -60,13 +60,11 @@ import {
 } from "./to-compose";
 import getUniqueFields from "./get-unique-fields";
 import getWhereFields from "./get-where-fields";
-import { lowerFirst } from "../utils/lower-first";
 import { upperFirst } from "../utils/upper-first";
 import { ensureNonEmptyInput } from "./ensure-non-empty-input";
 import { getDocument } from "./get-document";
 import { getDefinitionNodes } from "./get-definition-nodes";
 import { isRootType } from "../utils/is-root-type";
-import { SCORE_FIELD } from "../graphql/directives/fulltext";
 
 // GraphQL type imports
 import { CreateInfo } from "../graphql/objects/CreateInfo";
@@ -528,7 +526,6 @@ function makeAugmentedSchema(
         }
     });
 
-    let fulltextScoreWhereCreated = false;
     nodes.forEach((node) => {
         const nodeFields = objectFieldsToComposeFields([
             ...node.primitiveFields,
@@ -649,81 +646,7 @@ function makeAugmentedSchema(
             fields: node.isGlobalNode ? { id: "ID", ...queryFields } : queryFields,
         });
 
-        if (node.fulltextDirective) {
-            const fields = node.fulltextDirective.indexes.reduce(
-                (res, index) => ({
-                    ...res,
-                    [index.name]: composer.createInputTC({
-                        name: `${node.name}${upperFirst(index.name)}Fulltext`,
-                        fields: {
-                            phrase: "String!",
-                        },
-                    }),
-                }),
-                {}
-            );
-
-            const fulltextResultDescription = `The result of a fulltext search on an index of ${node.name}`;
-            const fulltextWhereDescription = `The input for filtering a fulltext query on an index of ${node.name}`;
-            const fulltextSortDescription = `The input for sorting a fulltext query on an index of ${node.name}`;
-
-            composer.createInputTC({
-                name: `${node.name}Fulltext`,
-                fields,
-            });
-
-            if (!fulltextScoreWhereCreated) {
-                composer.createInputTC({
-                    name: "FulltextScoreWhere",
-                    description: "The input for filtering the score of a fulltext search",
-                    fields: {
-                        min: "Float",
-                        max: "Float",
-                    },
-                });
-                fulltextScoreWhereCreated = true;
-            }
-
-            composer.createInputTC({
-                name: node.fulltextTypeNames.sort,
-                description: fulltextSortDescription,
-                fields: {
-                    [SCORE_FIELD]: "SortDirection",
-                    [lowerFirst(node.name)]: nodeSortTypeName,
-                },
-            });
-
-            composer.createInputTC({
-                name: node.fulltextTypeNames.where,
-                description: fulltextWhereDescription,
-                fields: {
-                    [SCORE_FIELD]: "FulltextScoreWhere",
-                    [lowerFirst(node.name)]: nodeWhereTypeName,
-                },
-            });
-
-            composer.createObjectTC({
-                name: node.fulltextTypeNames.result,
-                description: fulltextResultDescription,
-                fields: {
-                    [SCORE_FIELD]: "Float",
-                    [lowerFirst(node.name)]: node.name,
-                },
-            });
-
-            node.fulltextDirective.indexes.forEach((index) => {
-                let queryName = `${node.plural}Fulltext${upperFirst(index.name)}`;
-                if (index.queryName) {
-                    queryName = index.queryName;
-                }
-                composer.Query.addFields({
-                    [queryName]: fulltextResolver(
-                        { node },
-                        index,
-                    ),
-                });
-            });
-        }
+        augmentFulltextSchema(node, composer, nodeWhereTypeName, nodeSortTypeName);
 
         const uniqueFields = getUniqueFields(node);
 
