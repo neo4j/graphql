@@ -38,7 +38,7 @@ export class FullTextQueryNodes extends Clause {
     private scoreVar: Variable | undefined;
     private whereClause: Where | undefined;
 
-    constructor(targetNode: NodeRef, indexName: string, phrase: Variable, parent?: Clause, scoreVar?: Variable) {
+    constructor(targetNode: NodeRef, indexName: string, phrase: Variable, scoreVar?: Variable, parent?: Clause) {
         super(parent);
         this.targetNode = targetNode;
         this.indexName = indexName;
