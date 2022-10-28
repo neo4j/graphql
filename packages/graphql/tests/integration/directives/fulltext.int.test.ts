@@ -2007,6 +2007,108 @@ describe("@fulltext directive", () => {
                 (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
             );
         });
+        test("Creating and querying multiple indexes", async () => {
+            movieType = generateUniqueType("Movie");
+            const movieTypeLowerFirst = movieType.singular;
+            const queryType1 = "CustomQueryName";
+            const queryType2 = "CustomQueryName2";
+
+            session = driver.session({ database: databaseName });
+
+            try {
+                await session.run(
+                    `
+                    CREATE (movie1:${movieType.name})
+                    CREATE (movie2:${movieType.name})
+                    SET movie1 = $movie1
+                    SET movie2 = $movie2
+                `,
+                    { movie1, movie2 }
+                );
+            } finally {
+                await session.close();
+            }
+
+            const typeDefs = `
+                type ${movieType.name} @fulltext(indexes: [
+                        { queryName: "${queryType1}", name: "${movieType.name}CustomIndex", fields: ["title"] },
+                        { queryName: "${queryType2}", name: "${movieType.name}CustomIndex2", fields: ["description"] }
+                    ]) {
+                    title: String!
+                    description: String!
+                }
+            `;
+
+            neoSchema = new Neo4jGraphQL({
+                typeDefs,
+                driver,
+            });
+            generatedSchema = await neoSchema.getSchema();
+            await neoSchema.assertIndexesAndConstraints({
+                driver,
+                driverConfig: { database: databaseName },
+                options: { create: true },
+            });
+
+            const query1 = `
+                query {
+                    ${queryType1}(phrase: "some title") {
+                        score
+                        ${movieTypeLowerFirst} {
+                            title
+                        } 
+                    }
+                }
+            `;
+            const query2 = `
+                query {
+                    ${queryType2}(phrase: "some description") {
+                        score
+                        ${movieTypeLowerFirst} {
+                            title
+                        } 
+                    }
+                }
+            `;
+            const gqlResult1 = await graphql({
+                schema: generatedSchema,
+                source: query1,
+                contextValue: {
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+            const gqlResult2 = await graphql({
+                schema: generatedSchema,
+                source: query2,
+                contextValue: {
+                    driver,
+                    driverConfig: { database: databaseName },
+                },
+            });
+
+            expect(gqlResult1.errors).toBeFalsy();
+            expect((gqlResult1.data?.[queryType1] as any[])[0][movieTypeLowerFirst]).toEqual({
+                title: movie1.title,
+            });
+            expect((gqlResult1.data?.[queryType1] as any[])[1][movieTypeLowerFirst]).toEqual({
+                title: movie2.title,
+            });
+            expect((gqlResult1.data?.[queryType1] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult1.data?.[queryType1] as any[])[1][SCORE_FIELD]
+            );
+
+            expect(gqlResult2.errors).toBeFalsy();
+            expect((gqlResult2.data?.[queryType2] as any[])[0][movieTypeLowerFirst]).toEqual({
+                title: movie1.title,
+            });
+            expect((gqlResult2.data?.[queryType2] as any[])[1][movieTypeLowerFirst]).toEqual({
+                title: movie2.title,
+            });
+            expect((gqlResult2.data?.[queryType2] as any[])[0][SCORE_FIELD]).toBeGreaterThanOrEqual(
+                (gqlResult2.data?.[queryType2] as any[])[1][SCORE_FIELD]
+            );
+        });
     });
     describe("Index Creation", () => {
         // Skip if multi-db not supported
