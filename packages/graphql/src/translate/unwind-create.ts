@@ -67,7 +67,7 @@ export default async function unwindCreate({
     const unwindVar = new Cypher.Variable();
     const unwind = inputTreeToCypherMap(input, node, context);
     const unwindQuery = new Cypher.Unwind([unwind, unwindVar]);
-    const unwindCreateVisitor = new UnwindCreateVisitor(unwindVar, callbackBucket, context, input);
+    const unwindCreateVisitor = new UnwindCreateVisitor(unwindVar, callbackBucket, context);
     createNodeAST.accept(unwindCreateVisitor);
 
     const [rootNodeVariable, createCypher] = unwindCreateVisitor.build();

@@ -22,6 +22,7 @@ import type { RelationField } from "../../../types";
 import type { Node, Relationship } from "../../../classes";
 
 export interface IAST {
+    id: string;
     childrens: IAST[];
     addChildren: (children: IAST) => void;
     accept: (visitor: Visitor) => void;

@@ -18,8 +18,10 @@
  */
 
 import type { IAST, Visitor } from "./types";
+import { randomUUID } from 'crypto';
 
 export abstract class AST implements IAST {
+    id = randomUUID();
     childrens: IAST[] = [];
 
     addChildren(node: IAST): void {
