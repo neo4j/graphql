@@ -1,0 +1,27 @@
+[[bulk-create]]
+= Bulk create
+
+It's possible using the Neo4jGraphQL library to create several nodes and relationships in a single mutation, however,
+it's well known that performance issues are present in performing this task.
+Solutions for this issue are already implemented without any input from the user, see https://github.com/neo4j/graphql/blob/dev/docs/rfcs/rfc-024-unwind-create.md.
+However, there are still several situations where this kind of optimization is not achievable.
+
+== Subscriptions enabled
+
+No optimizations are available if a Subscription plugin it's being used.
+
+== @populated_by
+
+No optimizations are available if a Node affected by the mutation has a field with the directive @populated_by.
+
+== @auth
+
+No optimizations are available if a Node or Field affected by the mutation is secured with the directive @auth.
+
+== Connect/ConnectOrCreate operation
+
+No optimizations are available if the GraphQL input contains the connect/connectOrCreate operation.
+
+== @auth
+
+No optimizations are available if a Node or Field affected by the mutation is secured with the directive @auth.
