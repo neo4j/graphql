@@ -68,6 +68,8 @@ export function cypherDatetime(): CypherFunction {
     return new CypherFunction("datetime");
 }
 
+// TODO: Add optional input to date functions - https://neo4j.com/docs/cypher-manual/current/functions/#header-query-functions-temporal-instant-types
+
 export function cypherDate(): CypherFunction {
     return new CypherFunction("date");
 }

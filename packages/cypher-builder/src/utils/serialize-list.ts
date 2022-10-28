@@ -22,7 +22,7 @@ import type { CypherEnvironment } from "../Environment";
 
 export function serializeList(env: CypherEnvironment, obj: Expr[], omitSquareBrackets = false): string {
     const valuesList = obj.map(expr => {
-        return `${expr.getCypher(env)}`;
+        return expr.getCypher(env);
     });
 
     const serializedContent = valuesList.join(", ");
