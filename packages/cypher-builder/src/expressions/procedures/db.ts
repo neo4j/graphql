@@ -58,12 +58,8 @@ export class FullTextQueryNodes extends Clause {
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const targetId = env.getReferenceId(this.targetNode);
-        let scoreYield = "";
-        if (this.scoreVar) {
-            const scoreId = env.getReferenceId(this.scoreVar);
-            scoreYield = `, score AS ${scoreId}`;
-        }
+        const targetId = this.targetNode.getCypher(env);
+        const scoreYield = compileCypherIfExists(this.scoreVar, env, { prefix: ", score AS " });
 
         const textSearchStr = `CALL db.index.fulltext.queryNodes(
             "${this.indexName}",
