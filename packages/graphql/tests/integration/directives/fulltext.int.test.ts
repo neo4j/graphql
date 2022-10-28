@@ -327,7 +327,7 @@ describe("@fulltext directive", () => {
                 },
             });
 
-            expect(gqlResult.errors).toBeDefined();
+            expect((gqlResult.errors as any[])[0].message).toStartWith("Syntax Error");
         });
         test("Throws error if no phrase argument", async () => {
             const query = `
@@ -348,7 +348,9 @@ describe("@fulltext directive", () => {
                 },
             });
 
-            expect(gqlResult.errors).toBeDefined();
+            expect((gqlResult.errors as any[])[0].message).toBe(
+                `Field "${queryType}" argument "phrase" of type "String!" is required, but it was not provided.`
+            );
         });
         test("No results if phrase doesn't match", async () => {
             const query = `
@@ -579,9 +581,10 @@ describe("@fulltext directive", () => {
             expect(gqlResult.data?.[queryType]).toEqual([]);
         });
         test("Throws error if score filtered with a non-number", async () => {
+            const nonNumberScoreInput = "not a number";
             const query = `
                 query {
-                    ${queryType}(phrase: "a different name", where: { score: { max: "not a number" } }) {
+                    ${queryType}(phrase: "a different name", where: { score: { max: "${nonNumberScoreInput}" } }) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -598,7 +601,9 @@ describe("@fulltext directive", () => {
                 },
             });
 
-            expect(gqlResult.errors).toBeDefined();
+            expect((gqlResult.errors as any[])[0].message).toBe(
+                `Float cannot represent non numeric value: "${nonNumberScoreInput}"`
+            );
         });
         test("Filters a related node to multiple values", async () => {
             const query = `
@@ -714,9 +719,10 @@ describe("@fulltext directive", () => {
             expect(gqlResult.data?.[queryType]).toEqual([]);
         });
         test("Throws an error for a non-string phrase", async () => {
+            const nonStringValue = '["not", "a", "string"]';
             const query = `
                 query {
-                    ${queryType}(phrase: ["not", "a", "string"]) {
+                    ${queryType}(phrase: ${nonStringValue}) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -737,12 +743,15 @@ describe("@fulltext directive", () => {
                 },
             });
 
-            expect(gqlResult.errors).toBeDefined();
+            expect((gqlResult.errors as any[])[0].message).toBe(
+                `String cannot represent a non string value: ${nonStringValue}`
+            );
         });
         test("Throws an error for an invalid where", async () => {
+            const invalidField = "not_a_field";
             const query = `
                 query {
-                    ${queryType}(phrase: "some name", where: { ${personTypeLowerFirst}: { not_a_field: "invalid" } }) {
+                    ${queryType}(phrase: "some name", where: { ${personTypeLowerFirst}: { ${invalidField}: "invalid" } }) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -763,7 +772,9 @@ describe("@fulltext directive", () => {
                 },
             });
 
-            expect(gqlResult.errors).toBeDefined();
+            expect((gqlResult.errors as any[])[0].message).toStartWith(
+                `Field "${invalidField}" is not defined by type`
+            );
         });
         test("Sorting by score ascending", async () => {
             const query = `
@@ -1174,9 +1185,10 @@ describe("@fulltext directive", () => {
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
         test("Throws error if invalid sort", async () => {
+            const invalidSortEnum = "not valid";
             const query = `
                 query {
-                    ${queryType}(phrase: "a name", sort: { score: "not valid" }) {
+                    ${queryType}(phrase: "a name", sort: { score: "${invalidSortEnum}" }) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -1194,12 +1206,15 @@ describe("@fulltext directive", () => {
                 },
             });
 
-            expect(gqlResult.errors).toBeDefined();
+            expect((gqlResult.errors as any[])[0].message).toBe(
+                `Enum "SortDirection" cannot represent non-enum value: "${invalidSortEnum}".`
+            );
         });
         test("Throws error if invalid offset", async () => {
+            const notAnInt = 0.5;
             const query = `
                 query {
-                    ${queryType}(phrase: "a name", offset: 0.5) {
+                    ${queryType}(phrase: "a name", offset: ${notAnInt}) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -1217,9 +1232,10 @@ describe("@fulltext directive", () => {
                 },
             });
 
-            expect(gqlResult.errors).toBeDefined();
+            expect((gqlResult.errors as any[])[0].message).toBe(`Int cannot represent non-integer value: ${notAnInt}`);
         });
         test("Throws error if invalid limit", async () => {
+            const notAnInt = 0.5;
             const query = `
                 query {
                     ${queryType}(phrase: "a name", limit: 0.5) {
@@ -1240,12 +1256,13 @@ describe("@fulltext directive", () => {
                 },
             });
 
-            expect(gqlResult.errors).toBeDefined();
+            expect((gqlResult.errors as any[])[0].message).toBe(`Int cannot represent non-integer value: ${notAnInt}`);
         });
         test("Throws error if if invalid argument is suplied", async () => {
+            const invalidArgument = "not_a_valid_argument";
             const query = `
                 query {
-                    ${queryType}(phrase: "a name", not_a_valid_argument: [1, 2, 3]) {
+                    ${queryType}(phrase: "a name", ${invalidArgument}: [1, 2, 3]) {
                         score
                         ${personTypeLowerFirst} {
                             name
@@ -1263,7 +1280,9 @@ describe("@fulltext directive", () => {
                 },
             });
 
-            expect(gqlResult.errors).toBeDefined();
+            expect((gqlResult.errors as any[])[0].message).toStartWith(
+                `Unknown argument "${invalidArgument}" on field`
+            );
         });
         test("Sorting by score when the score is not returned", async () => {
             const query = `
@@ -1634,7 +1653,7 @@ describe("@fulltext directive", () => {
                 },
             });
 
-            expect(gqlResult.errors).toBeDefined();
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
         test("Works with @auth 'allow' when all match", async () => {
             const typeDefs = `
@@ -1692,7 +1711,7 @@ describe("@fulltext directive", () => {
                 },
             });
 
-            expect(gqlResult.errors).toBeUndefined();
+            expect(gqlResult.errors).toBeFalsy();
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst].name).toBe(person2.name);
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
@@ -1753,7 +1772,7 @@ describe("@fulltext directive", () => {
                 },
             });
 
-            expect(gqlResult.errors).toBeDefined();
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
         test("Works with @auth 'roles' when only READ operation is specified", async () => {
             const typeDefs = `
@@ -1811,7 +1830,7 @@ describe("@fulltext directive", () => {
                 },
             });
 
-            expect(gqlResult.errors).toBeDefined();
+            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
         test("Multiple fulltext index fields", async () => {
             const moveTypeLowerFirst = movieType.singular;
