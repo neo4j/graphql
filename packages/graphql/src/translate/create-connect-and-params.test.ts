@@ -105,6 +105,7 @@ describe("createConnectAndParams", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this0_node
             			MERGE (this)-[:SIMILAR]->(this0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
@@ -121,6 +122,7 @@ describe("createConnectAndParams", () => {
             			UNWIND parentNodes as this0_node
             			UNWIND connectedNodes as this0_node_similarMovies0_node
             			MERGE (this0_node)-[:SIMILAR]->(this0_node_similarMovies0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
