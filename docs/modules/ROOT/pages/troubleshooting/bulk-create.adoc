@@ -1,9 +1,9 @@
 [[bulk-create]]
 = Bulk create
 
-It's possible using the Neo4jGraphQL library to create several nodes and relationships in a single mutation, however,
+It's possible to use the Neo4jGraphQL library to create several nodes and relationships in a single mutation, however,
 it's well known that performance issues are present in performing this task.
-Solutions for this issue are already implemented without any input from the user, see https://github.com/neo4j/graphql/blob/dev/docs/rfcs/rfc-024-unwind-create.md.
+A solution has been implemented that doesn't require any changes from the user, see https://github.com/neo4j/graphql/blob/dev/docs/rfcs/rfc-024-unwind-create.md.
 However, there are still several situations where this kind of optimization is not achievable.
 
 == Subscriptions enabled

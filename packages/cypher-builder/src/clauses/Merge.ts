@@ -27,7 +27,6 @@ import { WithReturn } from "./mixins/WithReturn";
 import { mixin } from "./utils/mixin";
 import { WithSet } from "./mixins/WithSet";
 import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
-import { SetClause } from "./sub-clauses/Set";
 
 export interface Merge extends WithReturn, WithSet {}
 
@@ -46,7 +45,6 @@ export class Merge<T extends NodeRef | RelationshipRef = any> extends Clause {
             target: addLabelsOption,
         }).withParams(params);
         this.onCreateClause = new OnCreate(this);
-        this.setSubClause = new SetClause(this);
     }
 
     public onCreate(...onCreateParams: OnCreateParam[]): this {

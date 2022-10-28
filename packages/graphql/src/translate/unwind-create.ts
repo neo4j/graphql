@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQLError, Node } from "../classes";
+import type { Node } from "../classes";
 import type { Context } from "../types";
 import type { GraphQLCreateInput } from "./batch-create/batch-create";
 import createProjectionAndParams from "./create-projection-and-params";
@@ -56,11 +56,8 @@ export default async function unwindCreate({
     const unwindQuery = new Cypher.Unwind([unwind, unwindVar]);
     const unwindCreateVisitor = new UnwindCreateVisitor(unwindVar, callbackBucket, context);
     createNodeAST.accept(unwindCreateVisitor);
-    const [rootNodeVariable, createCypher] = unwindCreateVisitor.build();
-    
-    if (!rootNodeVariable || !createCypher) {
-        throw new Neo4jGraphQLError("Generic Error");
-    }
+    const [rootNodeVariable, createCypher] = unwindCreateVisitor.build() as [Cypher.Node, Cypher.Clause];
+
     const connectionStrs: string[] = [];
     const interfaceStrs: string[] = [];
     const projectionWith: string[] = [];

@@ -1,4 +1,4 @@
-mutation BatchCreate_only {
+mutation BatchCreate {
     createMovies(
         input: [
             { id: 0, title: "The Matrix 0" }

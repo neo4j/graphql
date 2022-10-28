@@ -21,7 +21,7 @@ import type { CypherEnvironment } from "../Environment";
 import { Clause } from "./Clause";
 import type { Procedure } from "../types";
 
-export class ProcedureCall extends Clause {
+export class CallProcedure extends Clause {
     private procedure: Procedure;
 
     constructor(procedure: Procedure) {
