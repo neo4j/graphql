@@ -138,7 +138,7 @@ function createFulltextMatchClause(
         }
     }
 
-    const andChecks = Cypher.and(...labelsChecks);
+    const andChecks = Cypher.and(labelsChecks);
     if (andChecks) matchQuery.where(andChecks);
 
     return matchQuery;
