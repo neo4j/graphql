@@ -370,6 +370,7 @@ describe("Label in Node directive", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_actors0_node
             			MERGE (this)<-[:ACTED_IN]-(this_connect_actors0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}

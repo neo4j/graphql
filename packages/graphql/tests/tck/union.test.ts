@@ -333,6 +333,7 @@ describe("Cypher Union", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_search_Genre_connect0_node
             			MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
@@ -603,6 +604,7 @@ describe("Cypher Union", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_search_Genre0_node
             			MERGE (this)-[:SEARCH]->(this_connect_search_Genre0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}

@@ -787,6 +787,7 @@ describe("@auth allow when inherited from interface", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_posts0_node
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}

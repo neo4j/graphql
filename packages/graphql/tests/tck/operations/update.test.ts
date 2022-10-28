@@ -292,6 +292,7 @@ describe("Cypher Update", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_actors0_node
             			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
@@ -348,6 +349,7 @@ describe("Cypher Update", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_actors0_node
             			MERGE (this)<-[this_connect_actors0_relationship:ACTED_IN]-(this_connect_actors0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
@@ -367,6 +369,7 @@ describe("Cypher Update", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_actors1_node
             			MERGE (this)<-[this_connect_actors1_relationship:ACTED_IN]-(this_connect_actors1_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}

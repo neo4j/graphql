@@ -347,6 +347,7 @@ describe("Cypher Auth Allow", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_creator0_node
             			MERGE (this)<-[:HAS_POST]-(this_connect_creator0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}

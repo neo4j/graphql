@@ -215,6 +215,7 @@ describe("Cypher Auth isAuthenticated", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content0_node
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
@@ -234,6 +235,7 @@ describe("Cypher Auth isAuthenticated", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_content1_node
             			MERGE (this)-[:HAS_CONTENT]->(this_connect_content1_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}

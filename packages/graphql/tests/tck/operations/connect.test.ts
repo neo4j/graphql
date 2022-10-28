@@ -130,6 +130,7 @@ describe("Cypher Connect", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_colors_connect0_node
             			MERGE (this0)-[:HAS_COLOR]->(this0_colors_connect0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
@@ -146,6 +147,7 @@ describe("Cypher Connect", () => {
             			UNWIND parentNodes as this0_colors_connect0_node
             			UNWIND connectedNodes as this0_colors_connect0_node_photos0_node
             			MERGE (this0_colors_connect0_node)<-[:OF_COLOR]-(this0_colors_connect0_node_photos0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
@@ -170,6 +172,7 @@ describe("Cypher Connect", () => {
             			UNWIND parentNodes as this0_colors_connect0_node_photos0_node
             			UNWIND connectedNodes as this0_colors_connect0_node_photos0_node_color0_node
             			MERGE (this0_colors_connect0_node_photos0_node)-[:OF_COLOR]->(this0_colors_connect0_node_photos0_node_color0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
@@ -201,6 +204,7 @@ describe("Cypher Connect", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_photos_connect0_node
             			MERGE (this0)-[:HAS_PHOTO]->(this0_photos_connect0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
@@ -217,6 +221,7 @@ describe("Cypher Connect", () => {
             			UNWIND parentNodes as this0_photos_connect0_node
             			UNWIND connectedNodes as this0_photos_connect0_node_color0_node
             			MERGE (this0_photos_connect0_node)-[:OF_COLOR]->(this0_photos_connect0_node_color0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
@@ -246,6 +251,7 @@ describe("Cypher Connect", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_photos_connect1_node
             			MERGE (this0)-[:HAS_PHOTO]->(this0_photos_connect1_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
@@ -262,6 +268,7 @@ describe("Cypher Connect", () => {
             			UNWIND parentNodes as this0_photos_connect1_node
             			UNWIND connectedNodes as this0_photos_connect1_node_color0_node
             			MERGE (this0_photos_connect1_node)-[:OF_COLOR]->(this0_photos_connect1_node_color0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}

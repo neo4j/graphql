@@ -115,6 +115,7 @@ describe("#324", () => {
             			UNWIND parentNodes as this_car0_manufacturer0
             			UNWIND connectedNodes as this_car0_manufacturer0_logo0_connect0_node
             			MERGE (this_car0_manufacturer0)-[:LOGO]->(this_car0_manufacturer0_logo0_connect0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}

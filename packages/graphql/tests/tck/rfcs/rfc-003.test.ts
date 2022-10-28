@@ -958,6 +958,7 @@ describe("tck/rfs/003", () => {
                         			UNWIND parentNodes as this0
                         			UNWIND connectedNodes as this0_director_connect0_node
                         			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
+                        			RETURN count(*) AS _
                         		}
                         		RETURN count(*) AS _
                         	}
@@ -1034,6 +1035,7 @@ describe("tck/rfs/003", () => {
                         			UNWIND parentNodes as this0
                         			UNWIND connectedNodes as this0_director_connect0_node
                         			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
+                        			RETURN count(*) AS _
                         		}
                         		RETURN count(*) AS _
                         	}
@@ -1128,6 +1130,7 @@ describe("tck/rfs/003", () => {
                             			UNWIND parentNodes as this0
                             			UNWIND connectedNodes as this0_director_connect0_node
                             			MERGE (this0)<-[:DIRECTED]-(this0_director_connect0_node)
+                            			RETURN count(*) AS _
                             		}
                             		RETURN count(*) AS _
                             	}
@@ -1144,6 +1147,7 @@ describe("tck/rfs/003", () => {
                             			UNWIND parentNodes as this0_director_connect0_node
                             			UNWIND connectedNodes as this0_director_connect0_node_address0_node
                             			MERGE (this0_director_connect0_node)-[:HAS_ADDRESS]->(this0_director_connect0_node_address0_node)
+                            			RETURN count(*) AS _
                             		}
                             		RETURN count(*) AS _
                             	}
@@ -1329,6 +1333,7 @@ describe("tck/rfs/003", () => {
                         			UNWIND parentNodes as this
                         			UNWIND connectedNodes as this_connect_director0_node
                         			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
+                        			RETURN count(*) AS _
                         		}
                         		RETURN count(*) AS _
                         	}
@@ -1449,6 +1454,7 @@ describe("tck/rfs/003", () => {
                         			UNWIND parentNodes as this
                         			UNWIND connectedNodes as this_connect_director0_node
                         			MERGE (this)<-[:DIRECTED]-(this_connect_director0_node)
+                        			RETURN count(*) AS _
                         		}
                         		RETURN count(*) AS _
                         	}

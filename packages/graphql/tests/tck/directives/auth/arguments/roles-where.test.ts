@@ -885,6 +885,7 @@ describe("Cypher Auth Where with Roles", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_posts_connect0_node
             			MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
@@ -966,6 +967,7 @@ describe("Cypher Auth Where with Roles", () => {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_posts_connect0_node
             			MERGE (this0)-[:HAS_POST]->(this0_posts_connect0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
@@ -1040,6 +1042,7 @@ describe("Cypher Auth Where with Roles", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_posts0_connect0_node
             			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
@@ -1108,6 +1111,7 @@ describe("Cypher Auth Where with Roles", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_posts0_connect0_node
             			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
@@ -1175,6 +1179,7 @@ describe("Cypher Auth Where with Roles", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_posts0_node
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
@@ -1242,6 +1247,7 @@ describe("Cypher Auth Where with Roles", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_posts0_node
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}

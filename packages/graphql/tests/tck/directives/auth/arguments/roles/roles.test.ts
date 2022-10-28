@@ -432,6 +432,7 @@ describe("Cypher Auth Roles", () => {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_connect_posts0_node
             			MERGE (this)-[:HAS_POST]->(this_connect_posts0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}
@@ -501,6 +502,7 @@ describe("Cypher Auth Roles", () => {
             			UNWIND parentNodes as this_post0
             			UNWIND connectedNodes as this_post0_creator0_connect0_node
             			MERGE (this_post0)-[:HAS_POST]->(this_post0_creator0_connect0_node)
+            			RETURN count(*) AS _
             		}
             		RETURN count(*) AS _
             	}

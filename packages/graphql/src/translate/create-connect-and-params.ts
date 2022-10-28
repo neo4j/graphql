@@ -268,6 +268,8 @@ function createConnectAndParams({
             });
             subquery.push(`\t\t\tWITH ${eventWithMetaStr} as meta`);
             subquery.push(`\t\t\tRETURN collect(meta) as update_meta`);
+        } else {
+            subquery.push(`\t\t\tRETURN count(*) AS _`);
         }
 
         subquery.push("\t\t}");
