@@ -172,6 +172,7 @@ describe("@fulltext directive", () => {
                 await session.close();
             }
         });
+
         test("Orders by score DESC as default", async () => {
             const query = `
                 query {
@@ -209,6 +210,7 @@ describe("@fulltext directive", () => {
                 (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
             );
         });
+
         test("Order updates when using a different phrase", async () => {
             const query = `
                 query {
@@ -246,6 +248,7 @@ describe("@fulltext directive", () => {
                 (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
             );
         });
+
         test("No results if phrase doesn't match", async () => {
             const query = `
                 query {
@@ -269,6 +272,7 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([]);
         });
+
         test("Filters node to single result", async () => {
             const query = `
                 query {
@@ -294,6 +298,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
+
         test("Filters node to multiple results", async () => {
             const query = `
                 query {
@@ -327,6 +332,7 @@ describe("@fulltext directive", () => {
                 },
             ]);
         });
+
         test("Filters node to no results", async () => {
             const query = `
                 query {
@@ -350,6 +356,7 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([]);
         });
+
         test("Filters score to single result", async () => {
             const query = `
                 query {
@@ -375,6 +382,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
+
         test("Filters score to multiple results", async () => {
             const query = `
                 query {
@@ -403,6 +411,7 @@ describe("@fulltext directive", () => {
             );
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
         });
+
         test("Filters score to no results", async () => {
             const query = `
                 query {
@@ -426,6 +435,7 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([]);
         });
+
         test("Filters score with combined min and max", async () => {
             const query = `
                 query {
@@ -451,6 +461,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
+
         test("Filters score with max score of 0", async () => {
             const query = `
                 query {
@@ -474,6 +485,7 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([]);
         });
+
         test("Throws error if score filtered with a non-number", async () => {
             const nonNumberScoreInput = "not a number";
             const query = `
@@ -499,6 +511,7 @@ describe("@fulltext directive", () => {
                 `Float cannot represent non numeric value: "${nonNumberScoreInput}"`
             );
         });
+
         test("Filters a related node to multiple values", async () => {
             const query = `
                 query {
@@ -547,6 +560,7 @@ describe("@fulltext directive", () => {
             );
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
         });
+
         test("Filters a related node to a single value", async () => {
             const query = `
                 query {
@@ -585,6 +599,7 @@ describe("@fulltext directive", () => {
                 },
             ]);
         });
+
         test("Filters a related node to no values", async () => {
             const query = `
                 query {
@@ -612,6 +627,7 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toEqual([]);
         });
+
         test("Throws an error for a non-string phrase", async () => {
             const nonStringValue = '["not", "a", "string"]';
             const query = `
@@ -641,6 +657,7 @@ describe("@fulltext directive", () => {
                 `String cannot represent a non string value: ${nonStringValue}`
             );
         });
+
         test("Throws an error for an invalid where", async () => {
             const invalidField = "not_a_field";
             const query = `
@@ -670,6 +687,7 @@ describe("@fulltext directive", () => {
                 `Field "${invalidField}" is not defined by type`
             );
         });
+
         test("Sorting by score ascending", async () => {
             const query = `
                 query {
@@ -701,6 +719,7 @@ describe("@fulltext directive", () => {
                 (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
             );
         });
+
         test("Sorting by node", async () => {
             const query = `
                 query {
@@ -729,6 +748,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeNumber();
             expect((gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]).toBeNumber();
         });
+
         test("Unordered sorting", async () => {
             const query = `
                 query {
@@ -759,6 +779,7 @@ describe("@fulltext directive", () => {
                 },
             ]);
         });
+
         test("Ordered sorting, no score", async () => {
             const person1 = {
                 name: "a b c",
@@ -833,6 +854,7 @@ describe("@fulltext directive", () => {
                 { [personTypeLowerFirst]: person2 },
             ]);
         });
+
         test("Ordered sorting, with score", async () => {
             const person1 = {
                 name: "a b c",
@@ -909,6 +931,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult2.data?.[queryType] as any[])[1][personTypeLowerFirst]).toEqual(person2);
             expect((gqlResult2.data?.[queryType] as any[])[1][SCORE_FIELD]).toBeNumber();
         });
+
         test("Sort on nested field", async () => {
             const query = `
                 query {
@@ -973,6 +996,7 @@ describe("@fulltext directive", () => {
                 },
             ]);
         });
+
         test("Combined filter and sort", async () => {
             const query = `
                 query {
@@ -1002,6 +1026,7 @@ describe("@fulltext directive", () => {
             );
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
         });
+
         test("Limiting is possible", async () => {
             const query = `
                 query {
@@ -1025,6 +1050,7 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType]).toBeArrayOfSize(2);
         });
+
         test("Offsetting is possible", async () => {
             const query = `
                 query {
@@ -1052,6 +1078,7 @@ describe("@fulltext directive", () => {
                 },
             ]);
         });
+
         test("Combined limiting and offsetting is possible", async () => {
             const query = `
                 query {
@@ -1078,6 +1105,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
+
         test("Sorting by score when the score is not returned", async () => {
             const query = `
                 query {
@@ -1116,6 +1144,7 @@ describe("@fulltext directive", () => {
                 },
             ]);
         });
+
         test("Sort by node when node is not returned", async () => {
             const query = `
                 query {
@@ -1140,6 +1169,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[1][personTypeLowerFirst]).toBeUndefined();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(2);
         });
+
         test("Filters by node when node is not returned", async () => {
             const query = `
                 query {
@@ -1162,6 +1192,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[0][personTypeLowerFirst]).toBeUndefined();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
+
         test("Filters by score when no score is returned", async () => {
             const query = `
                 query {
@@ -1195,6 +1226,7 @@ describe("@fulltext directive", () => {
                 },
             ]);
         });
+
         test("Works with @auth 'where' when authenticated", async () => {
             const typeDefs = `
                 type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
@@ -1258,6 +1290,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
+
         test("Works with @auth 'where' when unauthenticated", async () => {
             const typeDefs = `
                 type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
@@ -1317,6 +1350,7 @@ describe("@fulltext directive", () => {
             expect(gqlResult.errors).toBeFalsy();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(0);
         });
+
         test("Works with @auth 'roles' when authenticated", async () => {
             const typeDefs = `
                 type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
@@ -1391,6 +1425,7 @@ describe("@fulltext directive", () => {
             );
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(3);
         });
+
         test("Works with @auth 'roles' when unauthenticated", async () => {
             const typeDefs = `
                 type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
@@ -1449,6 +1484,7 @@ describe("@fulltext directive", () => {
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
+
         test("Works with @auth 'allow' when all match", async () => {
             const typeDefs = `
                 type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
@@ -1510,6 +1546,7 @@ describe("@fulltext directive", () => {
             expect((gqlResult.data?.[queryType] as any[])[0][SCORE_FIELD]).toBeNumber();
             expect(gqlResult.data?.[queryType] as any[]).toBeArrayOfSize(1);
         });
+
         test("Works with @auth 'allow' when one match", async () => {
             const typeDefs = `
                 type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
@@ -1568,6 +1605,7 @@ describe("@fulltext directive", () => {
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
+
         test("Works with @auth 'roles' when only READ operation is specified", async () => {
             const typeDefs = `
                 type ${personType.name} @fulltext(indexes: [{ name: "${personType.name}Index", fields: ["name"] }])
@@ -1626,6 +1664,7 @@ describe("@fulltext directive", () => {
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
+
         test("Multiple fulltext index fields", async () => {
             const moveTypeLowerFirst = movieType.singular;
             queryType = `${movieType.plural}Fulltext${upperFirst(movieType.name)}Index`;
@@ -1688,6 +1727,7 @@ describe("@fulltext directive", () => {
                 (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
             );
         });
+
         test("Custom query name", async () => {
             personType = generateUniqueType("Person");
             personTypeLowerFirst = personType.singular;
@@ -1765,6 +1805,7 @@ describe("@fulltext directive", () => {
                 (gqlResult.data?.[queryType] as any[])[2][SCORE_FIELD]
             );
         });
+
         test("Multiple index fields with custom query name", async () => {
             const moveTypeLowerFirst = movieType.singular;
             queryType = "SomeCustomQueryName";
@@ -1820,6 +1861,7 @@ describe("@fulltext directive", () => {
                 (gqlResult.data?.[queryType] as any[])[1][SCORE_FIELD]
             );
         });
+
         test("Creating and querying multiple indexes", async () => {
             movieType = generateUniqueType("Movie");
             const movieTypeLowerFirst = movieType.singular;
@@ -2011,6 +2053,7 @@ describe("@fulltext directive", () => {
                 await session.close();
             }
         });
+
         test("Creates two index's if they dont exist", async () => {
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }, { name: "${indexName2}", fields: ["description"] }]) {
@@ -2053,6 +2096,7 @@ describe("@fulltext directive", () => {
                 await session.close();
             }
         });
+
         test("When using the node label, creates index if it doesn't exist", async () => {
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }]) @node(label: "${label}") {
@@ -2087,6 +2131,7 @@ describe("@fulltext directive", () => {
                 await session.close();
             }
         });
+
         test("When using the field alias, creates index if it doesn't exist", async () => {
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }]) @node(label: "${label}") {
@@ -2121,6 +2166,7 @@ describe("@fulltext directive", () => {
                 await session.close();
             }
         });
+
         test("Throws when missing index (create index and constraint option not true)", async () => {
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }]) {
@@ -2138,6 +2184,7 @@ describe("@fulltext directive", () => {
                 })
             ).rejects.toThrow(`Missing @fulltext index '${indexName1}' on Node '${type.name}'`);
         });
+
         test("Throws when an index is missing fields", async () => {
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title", "description"] }]) {
@@ -2170,6 +2217,7 @@ describe("@fulltext directive", () => {
                 })
             ).rejects.toThrow(`@fulltext index '${indexName1}' on Node '${type.name}' is missing field 'description'`);
         });
+
         test("When using the field alias, throws when index is missing fields", async () => {
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title", "description"] }]) {
@@ -2204,6 +2252,7 @@ describe("@fulltext directive", () => {
                 `@fulltext index '${indexName1}' on Node '${type.name}' is missing field 'description' aliased to field '${aliasName}'`
             );
         });
+
         test("Doesn't throw if an index exists", async () => {
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title"] }]) {
@@ -2229,6 +2278,7 @@ describe("@fulltext directive", () => {
                 })
             ).resolves.not.toThrow();
         });
+
         test("Throws when index is missing fields when used with create option", async () => {
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["title", "description"] }]) {
@@ -2264,6 +2314,7 @@ describe("@fulltext directive", () => {
                 `@fulltext index '${indexName1}' on Node '${type.name}' already exists, but is missing field 'description'`
             );
         });
+
         test("Create index for ID field if it doesn't exist", async () => {
             const typeDefs = gql`
                 type ${type.name} @fulltext(indexes: [{ name: "${indexName1}", fields: ["id"] }]) {
