@@ -26,14 +26,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@antora/asciidoc-loader@npm:3.1.1":
-  version: 3.1.1
-  resolution: "@antora/asciidoc-loader@npm:3.1.1"
+"@antora/asciidoc-loader@npm:3.1.2":
+  version: 3.1.2
+  resolution: "@antora/asciidoc-loader@npm:3.1.2"
   dependencies:
-    "@antora/logger": 3.1.1
+    "@antora/logger": 3.1.2
     "@antora/user-require-helper": ~2.0
     "@asciidoctor/core": ~2.2
-  checksum: 3efeff85be6d0ec6990ba7c835c15610594c2df8acb198a44ec5ff98080f15a1ed7e3bbe5a25ecfc1766413d5374d18e0c901e041d322bf9c6d092bcf57aa82a
+  checksum: 880c49c32fbdb32bd5483727a1dd2a5be7995f35eddb3a1fcb15936653e8e69c5ed4683c0c4074fe88d16729b2683f310ecbf84fecbe042f9f308bf4f5efd540
   languageName: node
   linkType: hard
 
@@ -51,18 +51,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@antora/content-aggregator@npm:3.1.1":
-  version: 3.1.1
-  resolution: "@antora/content-aggregator@npm:3.1.1"
+"@antora/content-aggregator@npm:3.1.2":
+  version: 3.1.2
+  resolution: "@antora/content-aggregator@npm:3.1.2"
   dependencies:
     "@antora/expand-path-helper": ~2.0
-    "@antora/logger": 3.1.1
+    "@antora/logger": 3.1.2
     "@antora/user-require-helper": ~2.0
     braces: ~3.0
     cache-directory: ~2.0
     glob-stream: ~7.0
-    hpagent: ~1.0
-    isomorphic-git: ~1.19
+    hpagent: ~1.1
+    isomorphic-git: ~1.21
     js-yaml: ~4.1
     multi-progress: ~4.0
     picomatch: ~2.3
@@ -70,28 +70,28 @@ __metadata:
     should-proxy: ~1.0
     simple-get: ~4.0
     vinyl: ~2.2
-  checksum: 487f4c9fb3b048878c32b13a9e2532c2a33afd84c754577de6e8aed564579f197e01477855ecc59c6bdd1a086c0b421b01f0070d87d525f3fca8d338c647c2d0
+  checksum: 62f4ad5972136f1fa0dba0fec36cc9d584bd9638639169cb971772342fcebd21c84e7c56df29d35d9306ea027e034779b6d0deb57940e107ef897f7888e2fa13
   languageName: node
   linkType: hard
 
-"@antora/content-classifier@npm:3.1.1":
-  version: 3.1.1
-  resolution: "@antora/content-classifier@npm:3.1.1"
+"@antora/content-classifier@npm:3.1.2":
+  version: 3.1.2
+  resolution: "@antora/content-classifier@npm:3.1.2"
   dependencies:
-    "@antora/asciidoc-loader": 3.1.1
-    "@antora/logger": 3.1.1
+    "@antora/asciidoc-loader": 3.1.2
+    "@antora/logger": 3.1.2
     mime-types: ~2.1
     vinyl: ~2.2
-  checksum: 906fd118fdad6dfb438db4a110ba063f68c54a744db904094238708a04d1c6938aea0b06bb7022a36ac62bdb2ef640c13db4a6f8961268a65e705da791192363
+  checksum: b428ac4f2a58c19788dba0faa25c9ff485f872b33e393b050441b7b752413b4460b0f329ce8acd29140c7cdcfba22cb54a5acb49092dc8a97963e1babd3360bd
   languageName: node
   linkType: hard
 
-"@antora/document-converter@npm:3.1.1":
-  version: 3.1.1
-  resolution: "@antora/document-converter@npm:3.1.1"
+"@antora/document-converter@npm:3.1.2":
+  version: 3.1.2
+  resolution: "@antora/document-converter@npm:3.1.2"
   dependencies:
-    "@antora/asciidoc-loader": 3.1.1
-  checksum: 5f3276468be4ee70311bebdab757e45703679919a84c6286a2d00b18c6f724aa4810b68ed22845e3ea41a76ac574c80223219c50d5d4f5cca8d13cd4de514ac8
+    "@antora/asciidoc-loader": 3.1.2
+  checksum: 508c1d4fb868b1699e065f2aad7e481cc03987af15df7affe1d78be19b43b2ba3de71199b4b23221132bb645f8d486a07558bd12c571a17de712dc18ec3f929b
   languageName: node
   linkType: hard
 
@@ -102,28 +102,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@antora/file-publisher@npm:3.1.1":
-  version: 3.1.1
-  resolution: "@antora/file-publisher@npm:3.1.1"
+"@antora/file-publisher@npm:3.1.2":
+  version: 3.1.2
+  resolution: "@antora/file-publisher@npm:3.1.2"
   dependencies:
     "@antora/expand-path-helper": ~2.0
     "@antora/user-require-helper": ~2.0
     gulp-vinyl-zip: ~2.5
     vinyl: ~2.2
     vinyl-fs: ~3.0
-  checksum: 022c987632cd09abc52d71b70a5c23caff58dd8fa6b4449671ec9935b5783467a62daff45b9c9501e359a2f3732d69af55671a2a6e42c040bfc0ca09d8674be9
-  languageName: node
-  linkType: hard
-
-"@antora/logger@npm:3.1.1":
-  version: 3.1.1
-  resolution: "@antora/logger@npm:3.1.1"
-  dependencies:
-    "@antora/expand-path-helper": ~2.0
-    pino: ~8.4
-    pino-pretty: ~9.0
-    sonic-boom: ~3.2
-  checksum: 1d5878e0cede3cb96f80a0d986344d89b5d2e57cd25a1f39286bba71f5b2f755a4289eb9b8b13152b1dfa9aa89fdef0ecd47ff0a2989b5d5e55ed098df26fa71
+  checksum: dbaff6bb07582500f0b304345c764bb0d85a9e7a14430515f65914d37ca33060847694956143d0330b23a9bfbb0145d1ff3d44b324c45e14cc0696dad74c9116
   languageName: node
   linkType: hard
 
@@ -139,35 +127,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@antora/navigation-builder@npm:3.1.1":
-  version: 3.1.1
-  resolution: "@antora/navigation-builder@npm:3.1.1"
+"@antora/navigation-builder@npm:3.1.2":
+  version: 3.1.2
+  resolution: "@antora/navigation-builder@npm:3.1.2"
   dependencies:
-    "@antora/asciidoc-loader": 3.1.1
-  checksum: c6331b60b29b639ebb9a6ab8d2da7d86b05bb3a89c2e5443579b33e17c8ea7728703e350a3f981b63c4c33ee257ff2d4c57dddb1336743b4e0f2ae383b882742
+    "@antora/asciidoc-loader": 3.1.2
+  checksum: 3ca6e4f89b6441e35a7434678e45051ab896c9b06afb5451b3f592434fb29f383e28252d43bc93736f91c61996765b377356c97cf88e457c4effdb38ea923644
   languageName: node
   linkType: hard
 
-"@antora/page-composer@npm:3.1.1":
-  version: 3.1.1
-  resolution: "@antora/page-composer@npm:3.1.1"
+"@antora/page-composer@npm:3.1.2":
+  version: 3.1.2
+  resolution: "@antora/page-composer@npm:3.1.2"
   dependencies:
-    "@antora/logger": 3.1.1
+    "@antora/logger": 3.1.2
     handlebars: ~4.7
     require-from-string: ~2.0
-  checksum: 925c99d761c1bb52b7b078b5836865815ab25fa958669b13c2980cf40f17f0bd1287984b6e957688ccd02bc2b8de7ea58506bd44ee165ee2a1420ce5a7b1c55a
-  languageName: node
-  linkType: hard
-
-"@antora/playbook-builder@npm:3.1.1":
-  version: 3.1.1
-  resolution: "@antora/playbook-builder@npm:3.1.1"
-  dependencies:
-    "@iarna/toml": ~2.2
-    convict: ~6.2
-    js-yaml: ~4.1
-    json5: ~2.2
-  checksum: 3bc50bd45d9224774a1cadf48a4ff59076a260b000b9fb3d9b25357977a78a44a5ca566e6249a2669e12d47c561979099035676952313393b46642a220af9b3a
+  checksum: 4baef8530a4bd50398744b0f5ab9466d3f0b339e179127b591b38914eeb3bac6134e6d950d913bc91c2abbffdd4ea6bced3a00d6fc12de1a7b2531d167b46a5b
   languageName: node
   linkType: hard
 
@@ -183,81 +159,81 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@antora/redirect-producer@npm:3.1.1":
-  version: 3.1.1
-  resolution: "@antora/redirect-producer@npm:3.1.1"
+"@antora/redirect-producer@npm:3.1.2":
+  version: 3.1.2
+  resolution: "@antora/redirect-producer@npm:3.1.2"
   dependencies:
     vinyl: ~2.2
-  checksum: 61d2c3a24f9a0f9a286fe802bcf343cc5c7a5f5f87e7f1cb4e7f8a1cf6fb79d220ef7ebfa5ed6741efd2e8a1e7ead8c5875ff30aa1eb0d12b0c451452b753998
+  checksum: 4ad7cf805795bc0b5e9db89d96b73601b83144234a173236ee8e4e8aa2d51072fe6a3c62798d43cc680a344e8c7b13691f34dab3f4966012f36c897f60c50da6
   languageName: node
   linkType: hard
 
-"@antora/site-generator-default@npm:3.1.1":
-  version: 3.1.1
-  resolution: "@antora/site-generator-default@npm:3.1.1"
+"@antora/site-generator-default@npm:3.1.2":
+  version: 3.1.2
+  resolution: "@antora/site-generator-default@npm:3.1.2"
   dependencies:
-    "@antora/site-generator": 3.1.1
-  checksum: 16764a509d539e90ceb54f08d371a8940c7676f5ccf285d1fc4a08d451fa1d182de928bd3f993cfc2da152ee150b0ab6bfeeb8a780928b79eba4f12d1584eada
+    "@antora/site-generator": 3.1.2
+  checksum: 1af85d0e8bb59daf07c3c526cde8d4a638060624dd3764d02c493c32c1c9e376d886838e947c84375b7f80e2f8f3fa17f7e5dccba94668ff6d64adb9efc7c86e
   languageName: node
   linkType: hard
 
-"@antora/site-generator@npm:3.1.1":
-  version: 3.1.1
-  resolution: "@antora/site-generator@npm:3.1.1"
+"@antora/site-generator@npm:3.1.2":
+  version: 3.1.2
+  resolution: "@antora/site-generator@npm:3.1.2"
   dependencies:
-    "@antora/asciidoc-loader": 3.1.1
-    "@antora/content-aggregator": 3.1.1
-    "@antora/content-classifier": 3.1.1
-    "@antora/document-converter": 3.1.1
-    "@antora/file-publisher": 3.1.1
-    "@antora/logger": 3.1.1
-    "@antora/navigation-builder": 3.1.1
-    "@antora/page-composer": 3.1.1
-    "@antora/playbook-builder": 3.1.1
-    "@antora/redirect-producer": 3.1.1
-    "@antora/site-mapper": 3.1.1
-    "@antora/site-publisher": 3.1.1
-    "@antora/ui-loader": 3.1.1
+    "@antora/asciidoc-loader": 3.1.2
+    "@antora/content-aggregator": 3.1.2
+    "@antora/content-classifier": 3.1.2
+    "@antora/document-converter": 3.1.2
+    "@antora/file-publisher": 3.1.2
+    "@antora/logger": 3.1.2
+    "@antora/navigation-builder": 3.1.2
+    "@antora/page-composer": 3.1.2
+    "@antora/playbook-builder": 3.1.2
+    "@antora/redirect-producer": 3.1.2
+    "@antora/site-mapper": 3.1.2
+    "@antora/site-publisher": 3.1.2
+    "@antora/ui-loader": 3.1.2
     "@antora/user-require-helper": ~2.0
-  checksum: 8d8326b90b0d25ea0cc83e912f430f7201e6db5b9e32d4795f871738d146b057c2ccd10eba938c0efc51de00bb892b0756ab53929003443d87b1eba7ca41d18f
+  checksum: 5c0ee775ea07e28695716d3a52db6457f4c2c56fec08d7e5a7d04bc64eb3f89baafbc661f3821c85b7477798e0f084c485e32d1c5c4726489b0826a7fe539b25
   languageName: node
   linkType: hard
 
-"@antora/site-mapper@npm:3.1.1":
-  version: 3.1.1
-  resolution: "@antora/site-mapper@npm:3.1.1"
+"@antora/site-mapper@npm:3.1.2":
+  version: 3.1.2
+  resolution: "@antora/site-mapper@npm:3.1.2"
   dependencies:
-    "@antora/content-classifier": 3.1.1
+    "@antora/content-classifier": 3.1.2
     vinyl: ~2.2
-  checksum: f630e5749caab016b3c9cf4dcbe408debe153cafa1dae82721817ad603b8eb4fb3c3388cc772f53475f9025fb73822507e5d0fdaafa7f4831e0497b7f12596e3
+  checksum: 5b54cc6aa8f4c5ac6b9be14e3544d8399c12bb346add9a822773d22aee4939fb02066684ed3249907630bfdd1886e8430b754f2e82fc6f2467b3771e154b4311
   languageName: node
   linkType: hard
 
-"@antora/site-publisher@npm:3.1.1":
-  version: 3.1.1
-  resolution: "@antora/site-publisher@npm:3.1.1"
+"@antora/site-publisher@npm:3.1.2":
+  version: 3.1.2
+  resolution: "@antora/site-publisher@npm:3.1.2"
   dependencies:
-    "@antora/file-publisher": 3.1.1
-  checksum: 1289c2f5e0c2b6d11e42bb688b0afba64dce6ed576feed317d54b9d775d281182424f6870f280abfb1400a637e43e286dbb0cb80a055380ae629d639dbc37346
+    "@antora/file-publisher": 3.1.2
+  checksum: 5c545604210c694f4917b7a69f205275ff317f57d0c0c06d32b80ed388351a8cc5a528de21eee108d5f9b21bbaab807e94ae2439c8bd87601cf0911d224caedb
   languageName: node
   linkType: hard
 
-"@antora/ui-loader@npm:3.1.1":
-  version: 3.1.1
-  resolution: "@antora/ui-loader@npm:3.1.1"
+"@antora/ui-loader@npm:3.1.2":
+  version: 3.1.2
+  resolution: "@antora/ui-loader@npm:3.1.2"
   dependencies:
     "@antora/expand-path-helper": ~2.0
     braces: ~3.0
     cache-directory: ~2.0
     glob-stream: ~7.0
     gulp-vinyl-zip: ~2.5
-    hpagent: ~1.0
+    hpagent: ~1.1
     js-yaml: ~4.1
     picomatch: ~2.3
     should-proxy: ~1.0
     simple-get: ~4.0
     vinyl: ~2.2
-  checksum: e215596518a4f345bfc1fefca5dcc5bfc942be0adf72e2a30d397d8f9025755990e2dd5ae20ea641ae20ee34a3f741ce99a73619fdeaed768cd2d3a6ae6ce28f
+  checksum: a6ec6e1c2d14937d25a63f4092f11f6dff99bf3bb28d6340cb3921fe40496fa5f1b367167a881b9d5f9a7ef470c4bd8802cc1845f4316c1b894d9ad9062224d0
   languageName: node
   linkType: hard
 
@@ -8791,13 +8767,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-copy@npm:^2.1.1":
-  version: 2.1.7
-  resolution: "fast-copy@npm:2.1.7"
-  checksum: af8016c174b02bd4f706ffdf9f138511b17b748665b291fec6c5ca1922cb55da35cf86ded46b31890930bcf9b1c2481c03c793a47110ab81ec385e14972b9d7e
-  languageName: node
-  linkType: hard
-
 "fast-copy@npm:^3.0.0":
   version: 3.0.0
   resolution: "fast-copy@npm:3.0.0"
@@ -9779,7 +9748,7 @@ __metadata:
   resolution: "graphql-manual@workspace:docs"
   dependencies:
     "@antora/cli": 3.1.2
-    "@antora/site-generator-default": 3.1.1
+    "@antora/site-generator-default": 3.1.2
     "@neo4j-antora/antora-add-notes": ^0.3.0
     "@neo4j-antora/antora-modify-sitemaps": ^0.4.3
     "@neo4j-documentation/macros": ^1.0.2
@@ -10191,10 +10160,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hpagent@npm:~1.0":
-  version: 1.0.0
-  resolution: "hpagent@npm:1.0.0"
-  checksum: 911a9ba612747f5c9403fb60c1abd0c47a27fa634826caad9aecad41b899533489da36c92758b5cd83576e2bf9e84e23a4374a40aa513106d5450f62856c4b2d
+"hpagent@npm:~1.1":
+  version: 1.1.0
+  resolution: "hpagent@npm:1.1.0"
+  checksum: 94303242b073795ad6ca8a1235d7338d8e84d34830fe521d3b6b3c4d438dbc169077f2717fb5f68b9989ef3d03422683ae6745af71804b726e03e90243c7a77a
   languageName: node
   linkType: hard
 
@@ -11529,9 +11498,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isomorphic-git@npm:~1.19":
-  version: 1.19.3
-  resolution: "isomorphic-git@npm:1.19.3"
+"isomorphic-git@npm:~1.21":
+  version: 1.21.0
+  resolution: "isomorphic-git@npm:1.21.0"
   dependencies:
     async-lock: ^1.1.0
     clean-git-ref: ^2.0.1
@@ -11546,7 +11515,7 @@ __metadata:
     simple-get: ^4.0.1
   bin:
     isogit: cli.cjs
-  checksum: ed075c95f802b656f3dc64d868924921c6157a68e8a3f6dda99cb8f3d0355e376193586dd24e1b747e044ddf7c8fcd77349666ddae2e8c0da431c4057baeaec2
+  checksum: afbdf98000c586fdcb96f84c054d6ada392b0d2422a7b7baad89e5f5881a79426f8555bdadeebe25202be18bb8eaee3881f8c04b6a289d04b916790bdd5dd5df
   languageName: node
   linkType: hard
 
@@ -15689,30 +15658,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino-pretty@npm:~9.0":
-  version: 9.0.1
-  resolution: "pino-pretty@npm:9.0.1"
-  dependencies:
-    colorette: ^2.0.7
-    dateformat: ^4.6.3
-    fast-copy: ^2.1.1
-    fast-safe-stringify: ^2.1.1
-    help-me: ^4.0.1
-    joycon: ^3.1.1
-    minimist: ^1.2.6
-    on-exit-leak-free: ^2.1.0
-    pino-abstract-transport: ^1.0.0
-    pump: ^3.0.0
-    readable-stream: ^4.0.0
-    secure-json-parse: ^2.4.0
-    sonic-boom: ^3.0.0
-    strip-json-comments: ^3.1.1
-  bin:
-    pino-pretty: bin.js
-  checksum: 60344b50b1a51f96b7b4be068fba3a31112324d26c0d9ed47ccf0e79f2b1fc5cca315bd67080dac4c2e5143f2b775d13c5b00fae7f401e6b5cfb0258d1f7e58c
-  languageName: node
-  linkType: hard
-
 "pino-pretty@npm:~9.1":
   version: 9.1.1
   resolution: "pino-pretty@npm:9.1.1"
@@ -15741,27 +15686,6 @@ __metadata:
   version: 6.0.0
   resolution: "pino-std-serializers@npm:6.0.0"
   checksum: d9dc1779b3870cdbe00dc2dff15e3931eb126bb144bc9f746d83a2c1174a28e366ed0abe63379dee2fee474e6018a088bfbb2c4b57c1e206601918f5a61e276f
-  languageName: node
-  linkType: hard
-
-"pino@npm:~8.4":
-  version: 8.4.2
-  resolution: "pino@npm:8.4.2"
-  dependencies:
-    atomic-sleep: ^1.0.0
-    fast-redact: ^3.1.1
-    on-exit-leak-free: ^2.1.0
-    pino-abstract-transport: v1.0.0
-    pino-std-serializers: ^6.0.0
-    process-warning: ^2.0.0
-    quick-format-unescaped: ^4.0.3
-    real-require: ^0.2.0
-    safe-stable-stringify: ^2.3.1
-    sonic-boom: ^3.1.0
-    thread-stream: ^2.0.0
-  bin:
-    pino: bin.js
-  checksum: 870ee673d54a8e0b03766f39800e9805023f7f5efbbd33f61142febcdc556e24463d1d2af182c9b504e44ffa82bf692d67e4c284a64ea2cf96e166a13d77a0bc
   languageName: node
   linkType: hard
 
