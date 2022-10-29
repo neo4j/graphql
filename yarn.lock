@@ -2559,7 +2559,7 @@ __metadata:
     camelcase: 6.3.0
     graphql-ws: 5.11.2
     jest: 29.2.2
-    neo4j-driver: 5.1.0
+    neo4j-driver: 5.2.0
     pluralize: 8.0.0
     randomstring: 1.2.3
     supertest: 6.3.1
@@ -2608,7 +2608,7 @@ __metadata:
     jest-environment-jsdom: 29.2.2
     lodash.debounce: 4.0.8
     markdown-it: 13.0.1
-    neo4j-driver: 5.1.0
+    neo4j-driver: 5.2.0
     node-polyfill-webpack-plugin: 2.0.1
     parse5: 5.1.1
     postcss: 8.4.18
@@ -13741,7 +13741,7 @@ __metadata:
     "@neo4j/graphql": ^3.5.0
     apollo-server: 3.10.3
     graphql: 16.6.0
-    neo4j-driver: 5.1.0
+    neo4j-driver: 5.2.0
   languageName: unknown
   linkType: soft
 
@@ -14214,7 +14214,7 @@ __metadata:
     graphql: 16.6.0
     jest: 29.2.2
     jsonwebtoken: 8.5.1
-    neo4j-driver: 5.1.0
+    neo4j-driver: 5.2.0
     nodemon: 2.0.20
     randomstring: 1.2.3
     ts-jest: 29.0.3
@@ -14224,33 +14224,33 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"neo4j-driver-bolt-connection@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "neo4j-driver-bolt-connection@npm:5.1.0"
+"neo4j-driver-bolt-connection@npm:^5.2.0":
+  version: 5.2.0
+  resolution: "neo4j-driver-bolt-connection@npm:5.2.0"
   dependencies:
     buffer: ^6.0.3
-    neo4j-driver-core: ^5.1.0
+    neo4j-driver-core: ^5.2.0
     string_decoder: ^1.3.0
-  checksum: 74d334567dceea4242040ff3b5656f154f63ae9f5f099e02b646daf716366278a283873e3d988c8f4faa538f770513e0c4c415a8ed0323e9d4328a20d3a652ba
+  checksum: 2a803155404ca15361889fd26f5cd81a1eb4364a232f123227922e19dbc1c1ce0f184d4a06778cfac155b8a307df7db26a68039a5f2cc933a6abe943bed8d66c
   languageName: node
   linkType: hard
 
-"neo4j-driver-core@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "neo4j-driver-core@npm:5.1.0"
-  checksum: e078573513449d1694976bf4e58b2b2c8dc2b95a6f8c6b0cd0069b96e33185822574cc57950b66e24fc9215331de6746ab168fa7e5119587a20b595d5f4f55f5
+"neo4j-driver-core@npm:^5.2.0":
+  version: 5.2.0
+  resolution: "neo4j-driver-core@npm:5.2.0"
+  checksum: 0f57edec725f29b7f6f3376e0897ed65152750f63f841b2f9147c00f0abf59a5a0fedcb4924e16c00bc27db33b530a4e18af01da6b4a67621106d549b2a1331c
   languageName: node
   linkType: hard
 
-"neo4j-driver@npm:5.1.0":
-  version: 5.1.0
-  resolution: "neo4j-driver@npm:5.1.0"
+"neo4j-driver@npm:5.2.0":
+  version: 5.2.0
+  resolution: "neo4j-driver@npm:5.2.0"
   dependencies:
     "@babel/runtime": ^7.17.8
-    neo4j-driver-bolt-connection: ^5.1.0
-    neo4j-driver-core: ^5.1.0
+    neo4j-driver-bolt-connection: ^5.2.0
+    neo4j-driver-core: ^5.2.0
     rxjs: ^7.5.5
-  checksum: 613175ff13c4a30a1dc6e139f266f319059d88f30115f8a6bde348236d8bd7f83918a58c31a08db328293e0e3984dbf6db31079df2d10e6600a3df06563a158f
+  checksum: d989869b79ba4df00ca6ec615e3ce617721a14a5b2dab2cbf3ef8aeaae78717cf4550a7fdb700338e34a788c53b9c5cff7ed3204716db7925f2bf650dd69de9e
   languageName: node
   linkType: hard
 
@@ -14278,7 +14278,7 @@ __metadata:
     husky: 8.0.1
     jest: 29.2.2
     lint-staged: 13.0.3
-    neo4j-driver: 5.1.0
+    neo4j-driver: 5.2.0
     npm-run-all: 4.1.5
     prettier: 2.7.1
     set-tz: 0.2.0
