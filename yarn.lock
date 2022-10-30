@@ -2490,7 +2490,7 @@ __metadata:
   resolution: "@neo4j/cypher-builder@workspace:packages/cypher-builder"
   dependencies:
     "@types/jest": 29.2.0
-    "@types/node": 18.11.5
+    "@types/node": 18.11.8
     jest: 29.2.2
     ts-jest: 29.0.3
     typescript: 4.8.4
@@ -2508,7 +2508,7 @@ __metadata:
     "@neo4j/graphql": ^3.11.1
     "@neo4j/graphql-plugin-auth": ^1.1.0
     "@types/jest": 29.2.0
-    "@types/node": 16.18.2
+    "@types/node": 18.11.8
     camelcase: 6.3.0
     graphql-tag: 2.12.6
     jest: 29.2.2
@@ -2534,7 +2534,7 @@ __metadata:
     "@types/debug": 4.1.7
     "@types/jest": 29.2.0
     "@types/jsonwebtoken": 8.5.9
-    "@types/node": 16.18.2
+    "@types/node": 18.11.8
     debug: ^4.3.4
     jest: 29.2.2
     jsonwebtoken: ^8.5.1
@@ -2552,7 +2552,7 @@ __metadata:
     "@types/amqplib": 0.8.2
     "@types/debug": 4.1.7
     "@types/jest": 29.2.0
-    "@types/node": 16.18.2
+    "@types/node": 18.11.8
     amqplib: 0.10.3
     apollo-server: 3.10.3
     apollo-server-express: 3.10.3
@@ -2650,7 +2650,7 @@ __metadata:
     "@types/is-uuid": 1.0.0
     "@types/jest": 29.2.0
     "@types/jsonwebtoken": 8.5.9
-    "@types/node": 16.18.2
+    "@types/node": 18.11.8
     "@types/pluralize": 0.0.29
     "@types/randomstring": 1.1.8
     "@types/semver": 7.3.13
@@ -2700,7 +2700,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": ^3.8.0
     "@types/jest": 29.2.0
-    "@types/node": 16.18.2
+    "@types/node": 18.11.8
     "@types/pluralize": 0.0.29
     camelcase: ^6.3.0
     debug: ^4.3.4
@@ -3549,17 +3549,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:16.18.2":
-  version: 16.18.2
-  resolution: "@types/node@npm:16.18.2"
-  checksum: d21bb6614916b88242300abb23f11ae8bdaabd60c8f7c5edac21f3bf4b1f3ebfbd2a9019a664dd28e5b5730145c069074d70e7a2ab063e80a2fa9ab12de9797a
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:18.11.5":
-  version: 18.11.5
-  resolution: "@types/node@npm:18.11.5"
-  checksum: ac54e9287dd4549ea3dc8aabc0cf7bfa04c52f02925d7fd68414789617ec770f034c8ae2e111e8bd00d446a46fcac42587b5a316a1303e2f6ea094854248c9ff
+"@types/node@npm:18.11.8":
+  version: 18.11.8
+  resolution: "@types/node@npm:18.11.8"
+  checksum: 60b358f97c1a029722dc785811b217615ef20249c3fbde60a65869cfd7a5cd5b1872ee95c79c187ef70e5a078f4ac7670d2129803985268b1f021ad6e8040af8
   languageName: node
   linkType: hard
 
@@ -14202,7 +14195,7 @@ __metadata:
     "@types/express": 4.17.14
     "@types/jest": 29.2.0
     "@types/jsonwebtoken": 8.5.9
-    "@types/node": 16.18.2
+    "@types/node": 18.11.8
     "@types/uuid": 8.3.4
     apollo-server-express: 3.10.3
     bcrypt: 5.1.0
