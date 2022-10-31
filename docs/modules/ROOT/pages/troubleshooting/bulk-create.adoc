@@ -12,16 +12,12 @@ No optimizations are available if a Subscription plugin it's being used.
 
 == `@populated_by`
 
-No optimizations are available if a Node affected by the mutation has a field with the directive @populated_by.
+No optimizations are available if a Node affected by the mutation has a field with the directive `@populated_by`.
 
 == `@auth`
 
-No optimizations are available if a Node or Field affected by the mutation is secured with the directive @auth.
+No optimizations are available if a Node or Field affected by the mutation is secured with the directive `@auth`.
 
-== Connect/ConnectOrCreate operation
+== `connect` and `connectOrCreate` operations
 
-No optimizations are available if the GraphQL input contains the connect/connectOrCreate operation.
-
-== @auth
-
-No optimizations are available if a Node or Field affected by the mutation is secured with the directive @auth.
+No optimizations are available if the GraphQL input contains the `connect` or `connectOrCreate` operation.
