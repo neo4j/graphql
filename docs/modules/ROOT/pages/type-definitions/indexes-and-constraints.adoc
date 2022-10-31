@@ -108,30 +108,30 @@ the following query and types would be generated:
 [source, graphql, indent=0]
 ----
 type Query {
-    productsFulltextProductName(phrase: String!, where: productFulltextWhere, sort: [productFulltextSort!],
-    limit: Int, offset: Int): [productFulltextResult!]!
+    productsFulltextProductName(phrase: String!, where: ProductFulltextWhere, sort: [ProductFulltextSort!],
+    limit: Int, offset: Int): [ProductFulltextResult!]!
 }
 
 """The result of a fulltext search on an index of Product"""
-type productFulltextResult {
+type ProductFulltextResult {
   score: Float
   product: Product
 }
 
 """The input for filtering a fulltext query on an index of Product"""
-input productFulltextWhere {
+input ProductFulltextWhere {
   score: FulltextScoreWhere
   product: ProductWhere
 }
 
 """The input for sorting a fulltext query on an index of Product"""
-input productFulltextSort {
+input ProductFulltextSort {
   score: SortDirection
   product: ProductSort
 }
 
 """The input for filtering the score of a fulltext search"""
-input FulltextScoreWhere {
+input FloatWhere {
   min: Float
   max: Float
 }
@@ -196,8 +196,8 @@ This would then produce the following top-level query:
 [source, graphql, indent=0]
 ----
 type Query {
-    CustomProductFulltextQuery(phrase: String!, where: productFulltextWhere, sort: [productFulltextSort!],
-    limit: Int, offset: Int): [productFulltextResult!]!
+    CustomProductFulltextQuery(phrase: String!, where: ProductFulltextWhere, sort: [ProductFulltextSort!],
+    limit: Int, offset: Int): [ProductFulltextResult!]!
 }
 ----
 
