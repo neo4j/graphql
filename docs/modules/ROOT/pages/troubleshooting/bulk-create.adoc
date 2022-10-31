@@ -1,5 +1,5 @@
-[[bulk-create]]
-= Bulk create
+[[optimizing-create-operations]]
+= Optimizing create operations
 
 It's possible to use the Neo4jGraphQL library to create several nodes and relationships in a single mutation, however,
 it's well known that performance issues are present in performing this task.
