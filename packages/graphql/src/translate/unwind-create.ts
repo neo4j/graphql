@@ -19,20 +19,15 @@
 
 import type { Node } from "../classes";
 import type { Context } from "../types";
-import type { GraphQLCreateInput } from "./batch-create/batch-create";
+import type { GraphQLCreateInput } from "./batch-create/types";
+import { UnsupportedUnwindOptimization } from "./batch-create/types";
+import { inputTreeToCypherMap, mergeTreeDescriptors, getTreeDescriptor, parseCreate } from "./batch-create/parser";
+import { UnwindCreateVisitor } from "./batch-create/unwind-create-visitors/UnwindCreateVisitor";
 import createProjectionAndParams from "./create-projection-and-params";
 import { META_CYPHER_VARIABLE } from "../constants";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
-import {
-    inputTreeToCypherMap,
-    mergeTreeDescriptors,
-    getTreeDescriptor,
-    parseCreate,
-    UnwindCreateVisitor,
-    UnsupportedUnwindOptimization,
-} from "./batch-create/batch-create";
 
 export default async function unwindCreate({
     context,
