@@ -21,13 +21,14 @@ import type { Node } from "../classes";
 import type { Context } from "../types";
 import type { GraphQLCreateInput } from "./batch-create/types";
 import { UnsupportedUnwindOptimization } from "./batch-create/types";
-import { inputTreeToCypherMap, mergeTreeDescriptors, getTreeDescriptor, parseCreate } from "./batch-create/parser";
+import { mergeTreeDescriptors, getTreeDescriptor, parseCreate } from "./batch-create/parser";
 import { UnwindCreateVisitor } from "./batch-create/unwind-create-visitors/UnwindCreateVisitor";
 import createProjectionAndParams from "./create-projection-and-params";
 import { META_CYPHER_VARIABLE } from "../constants";
 import { filterTruthy } from "../utils/utils";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import Cypher from "@neo4j/cypher-builder";
+import { compileCypherIfExists } from "../utils/compile-cypher-if-exists";
 
 export default async function unwindCreate({
     context,
@@ -47,7 +48,7 @@ export default async function unwindCreate({
     const createNodeAST = parseCreate(treeDescriptor, node, context);
     const callbackBucket = new CallbackBucket(context);
     const unwindVar = new Cypher.Variable();
-    const unwind = inputTreeToCypherMap(input, node, context);
+    const unwind = new Cypher.Param(input); 
     const unwindQuery = new Cypher.Unwind([unwind, unwindVar]);
     const unwindCreateVisitor = new UnwindCreateVisitor(unwindVar, callbackBucket, context);
     createNodeAST.accept(unwindCreateVisitor);
@@ -112,9 +113,9 @@ export default async function unwindCreate({
     const projectionWithStr = context.subscriptionsEnabled ? `WITH ${projectionWith.join(", ")}` : "";
 
     const createQuery = new Cypher.RawCypher((env) => {
-        const projectionSubqueryStr = Cypher.utils.compileCypherIfExists(projectionSubquery, env);
-        const projectionConnectionStrs = Cypher.utils.compileCypherIfExists(replacedConnectionStrs, env);
-        const projectionInterfaceStrs = Cypher.utils.compileCypherIfExists(replacedInterfaceStrs, env);
+        const projectionSubqueryStr = compileCypherIfExists(projectionSubquery, env);
+        const projectionConnectionStrs = compileCypherIfExists(replacedConnectionStrs, env);
+        const projectionInterfaceStrs = compileCypherIfExists(replacedInterfaceStrs, env);
 
         const replacedProjectionSubqueryStrs = projectionSubqueryStr
             .replace(/REPLACE_ME(?=\w+: \$REPLACE_ME)/g, "projection")
