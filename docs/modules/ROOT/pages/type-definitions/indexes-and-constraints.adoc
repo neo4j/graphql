@@ -119,7 +119,7 @@ type productFulltextResult {
 }
 
 """The input for filtering a fulltext query on an index of Product"""
-input productFulltextWhere {
+input ProductFulltextWhere {
   score: FulltextScoreWhere
   product: ProductWhere
 }
