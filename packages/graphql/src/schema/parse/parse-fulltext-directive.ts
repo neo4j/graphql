@@ -43,6 +43,9 @@ function parseFulltextDirective({
         if (indexName === undefined) {
             throw new Error("The name of the fulltext index should be defined using the indexName argument.");
         }
+        if (index.name) {
+            console.warn("The @fulltext name argument has been deprecated and will be removed in 4.0. Please use indexName instead.")
+        }
         const names = value.filter((i) => (indexName === i.indexName) || (indexName === i.name));
         if (names.length > 1) {
             throw new Error(`Node '${definition.name.value}' @fulltext index contains duplicate name '${indexName}'`);
