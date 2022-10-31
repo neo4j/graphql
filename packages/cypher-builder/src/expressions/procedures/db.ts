@@ -35,14 +35,15 @@ export class FullTextQueryNodes extends Clause {
     private targetNode: NodeRef;
     private indexName: string;
     private phrase: Variable;
-
+    private scoreVar: Variable | undefined;
     private whereClause: Where | undefined;
 
-    constructor(targetNode: NodeRef, indexName: string, phrase: Variable, parent?: Clause) {
+    constructor(targetNode: NodeRef, indexName: string, phrase: Variable, scoreVar?: Variable, parent?: Clause) {
         super(parent);
         this.targetNode = targetNode;
         this.indexName = indexName;
         this.phrase = phrase;
+        this.scoreVar = scoreVar;
     }
 
     public where(input: Predicate): this {
@@ -57,14 +58,13 @@ export class FullTextQueryNodes extends Clause {
     }
 
     public getCypher(env: CypherEnvironment): string {
-        const targetId = env.getReferenceId(this.targetNode);
+        const targetId = this.targetNode.getCypher(env);
+        const scoreYield = compileCypherIfExists(this.scoreVar, env, { prefix: ", score AS " });
+
+        const textSearchStr = `CALL db.index.fulltext.queryNodes("${this.indexName}", ${this.phrase.getCypher(env)}) YIELD node AS ${targetId}${scoreYield}`;
 
         const whereStr = compileCypherIfExists(this.whereClause, env, { prefix: "\n" });
         const returnStr = compileCypherIfExists(this.returnStatement, env, { prefix: "\n" });
-
-        const textSearchStr = `CALL db.index.fulltext.queryNodes("${this.indexName}", ${this.phrase.getCypher(
-            env
-        )}) YIELD node as ${targetId}`;
 
         return `${textSearchStr}${whereStr}${returnStr}`;
     }

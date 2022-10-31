@@ -165,3 +165,26 @@ query DeeplyNestedWithRelationshipSingleFilters {
         name
     }
 }
+
+query Fulltext {
+    movieTaglineFulltextQuery(phrase: "the real world") {
+        movie {
+            title
+            tagline
+        }
+        score
+    }
+}
+
+query FulltextWithNestedQuery {
+    movieTaglineFulltextQuery(phrase: "the real world") {
+        movie {
+            title
+            tagline
+            actors {
+                name
+            }
+        }
+        score
+    }
+}

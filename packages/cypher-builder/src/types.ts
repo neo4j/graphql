@@ -33,7 +33,7 @@ import type { MathOp } from "./expressions/operations/math";
 import type { ListComprehension } from "./expressions/list/ListComprehension";
 import type { PatternComprehension } from "./expressions/list/PatternComprehension";
 import type { ListExpr } from "./expressions/list/ListExpr";
-import type { MapProjection } from ".";
+import type { MapProjection } from "./expressions/map/MapProjection";
 import type { HasLabel } from "./expressions/HasLabel";
 import type { Reference } from "./variables/Reference";
 
