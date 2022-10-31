@@ -9,6 +9,6 @@
             "@neo4j/cypher-builder": ["../../cypher-builder/src"]
         }
     },
-    "include": ["src/**/*", "tests/**/*"],
+    "include": ["src/**/*", "tests/**/*", "examples/**/*"],
     "references": [{ "path": "../../cypher-builder/tsconfig.json" }, { "path": "../../graphql/tsconfig.json" }]
 }

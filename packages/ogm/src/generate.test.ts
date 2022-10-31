@@ -331,14 +331,24 @@ describe("generate", () => {
               Boolean: boolean;
               /** The \`Int\` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. */
               Int: number;
+              /** The \`Float\` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point). */
               Float: number;
             };
 
             export type Query = {
               __typename?: \\"Query\\";
+              usersFulltextUserName: Array<UserFulltextResult>;
               users: Array<User>;
               usersAggregate: UserAggregateSelection;
               usersConnection: UsersConnection;
+            };
+
+            export type QueryUsersFulltextUserNameArgs = {
+              phrase: Scalars[\\"String\\"];
+              where?: InputMaybe<UserFulltextWhere>;
+              sort?: InputMaybe<Array<UserFulltextSort>>;
+              limit?: InputMaybe<Scalars[\\"Int\\"]>;
+              offset?: InputMaybe<Scalars[\\"Int\\"]>;
             };
 
             export type QueryUsersArgs = {
@@ -454,11 +464,24 @@ describe("generate", () => {
               node: User;
             };
 
+            /** The result of a fulltext search on an index of User */
+            export type UserFulltextResult = {
+              __typename?: \\"UserFulltextResult\\";
+              score: Scalars[\\"Float\\"];
+              user: User;
+            };
+
             export type UsersConnection = {
               __typename?: \\"UsersConnection\\";
               totalCount: Scalars[\\"Int\\"];
               pageInfo: PageInfo;
               edges: Array<UserEdge>;
+            };
+
+            /** The input for filtering a float */
+            export type FloatWhere = {
+              min?: InputMaybe<Scalars[\\"Float\\"]>;
+              max?: InputMaybe<Scalars[\\"Float\\"]>;
             };
 
             export type UserCreateInput = {
@@ -467,6 +490,18 @@ describe("generate", () => {
 
             export type UserFulltext = {
               UserName?: InputMaybe<UserUserNameFulltext>;
+            };
+
+            /** The input for sorting a fulltext query on an index of User */
+            export type UserFulltextSort = {
+              score?: InputMaybe<SortDirection>;
+              user?: InputMaybe<UserSort>;
+            };
+
+            /** The input for filtering a fulltext query on an index of User */
+            export type UserFulltextWhere = {
+              score?: InputMaybe<FloatWhere>;
+              user?: InputMaybe<UserWhere>;
             };
 
             export type UserOptions = {

@@ -1,4 +1,4 @@
-require('dotenv').config()
+require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
 const { createServer } = require("http");
@@ -28,8 +28,8 @@ async function main() {
         plugins: {
             subscriptions: plugin,
             auth: new Neo4jGraphQLAuthJWTPlugin({
-                secret: "super-secret42"
-            })
+                secret: "super-secret42",
+            }),
         },
     });
 

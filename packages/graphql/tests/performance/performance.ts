@@ -45,7 +45,7 @@ const typeDefs = gql`
         likes: [Likable!]! @relationship(type: "LIKES", direction: OUT)
     }
 
-    type Movie {
+    type Movie @fulltext(indexes: [{ queryName: "movieTaglineFulltextQuery", name: "MovieTaglineFulltextIndex", fields: ["tagline"] }]) {
         id: ID!
         title: String!
         tagline: String
