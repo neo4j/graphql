@@ -22,6 +22,8 @@ import type { FullText, FulltextIndex } from "../../types";
 import type { ObjectFields } from "../get-obj-field-meta";
 import parseValueNode from "../parse-value-node";
 
+let deprecationWarningShown = false;
+
 function parseFulltextDirective({
     directive,
     nodeFields,
@@ -43,10 +45,13 @@ function parseFulltextDirective({
         if (indexName === undefined) {
             throw new Error("The name of the fulltext index should be defined using the indexName argument.");
         }
-        if (index.name) {
-            console.warn("The @fulltext name argument has been deprecated and will be removed in 4.0. Please use indexName instead.")
+        if (index.name && !deprecationWarningShown) {
+            console.warn(
+                "The @fulltext name argument has been deprecated and will be removed in 4.0. Please use indexName instead."
+            );
+            deprecationWarningShown = true;
         }
-        const names = value.filter((i) => (indexName === i.indexName) || (indexName === i.name));
+        const names = value.filter((i) => indexName === i.indexName || indexName === i.name);
         if (names.length > 1) {
             throw new Error(`Node '${definition.name.value}' @fulltext index contains duplicate name '${indexName}'`);
         }
