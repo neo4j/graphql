@@ -113,7 +113,7 @@ type Query {
 }
 
 """The result of a fulltext search on an index of Product"""
-type productFulltextResult {
+type ProductFulltextResult {
   score: Float
   product: Product
 }
