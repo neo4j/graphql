@@ -131,7 +131,7 @@ input ProductFulltextSort {
 }
 
 """The input for filtering the score of a fulltext search"""
-input FulltextScoreWhere {
+input FloatWhere {
   min: Float
   max: Float
 }
