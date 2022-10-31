@@ -478,8 +478,8 @@ describe("generate", () => {
               edges: Array<UserEdge>;
             };
 
-            /** The input for filtering the score of a fulltext search */
-            export type FulltextScoreWhere = {
+            /** The input for filtering a float */
+            export type FloatWhere = {
               min?: InputMaybe<Scalars[\\"Float\\"]>;
               max?: InputMaybe<Scalars[\\"Float\\"]>;
             };
@@ -500,7 +500,7 @@ describe("generate", () => {
 
             /** The input for filtering a fulltext query on an index of User */
             export type UserFulltextWhere = {
-              score?: InputMaybe<FulltextScoreWhere>;
+              score?: InputMaybe<FloatWhere>;
               user?: InputMaybe<UserWhere>;
             };
 

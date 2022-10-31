@@ -85,6 +85,7 @@ import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { addMathOperatorsToITC } from "./math";
 import { addArrayMethodsToITC } from "./array-methods";
+import { FloatWhere } from "../graphql/input-objects/FloatWhere";
 
 function makeAugmentedSchema(
     typeDefs: TypeSource,
@@ -152,7 +153,7 @@ function makeAugmentedSchema(
 
     const getNodesResult = getNodes(definitionNodes, { callbacks, userCustomResolvers });
 
-    const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames } = getNodesResult;
+    const { nodes, relationshipPropertyInterfaceNames, interfaceRelationshipNames, floatWhereInTypeDefs } = getNodesResult;
 
     // graphql-compose will break if the Point and CartesianPoint types are created but not used,
     // because it will purge the unused types but leave behind orphaned field resolvers
@@ -511,6 +512,10 @@ function makeAugmentedSchema(
         composer.createObjectTC(CartesianPoint);
         composer.createInputTC(CartesianPointInput);
         composer.createInputTC(CartesianPointDistance);
+    }
+
+    if (floatWhereInTypeDefs) {
+        composer.createInputTC(FloatWhere);
     }
 
     unionTypes.forEach((union) => {

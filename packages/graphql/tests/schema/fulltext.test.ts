@@ -63,8 +63,8 @@ describe("@fulltext schema", () => {
               relationshipsDeleted: Int!
             }
 
-            \\"\\"\\"The input for filtering the score of a fulltext search\\"\\"\\"
-            input FulltextScoreWhere {
+            \\"\\"\\"The input for filtering a float\\"\\"\\"
+            input FloatWhere {
               max: Float
               min: Float
             }
@@ -110,7 +110,7 @@ describe("@fulltext schema", () => {
             \\"\\"\\"The input for filtering a fulltext query on an index of Movie\\"\\"\\"
             input MovieFulltextWhere {
               movie: MovieWhere
-              score: FulltextScoreWhere
+              score: FloatWhere
             }
 
             input MovieMovieDescriptionFulltext {

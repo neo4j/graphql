@@ -21,9 +21,8 @@ import type { SchemaComposer } from "graphql-compose";
 import type { Node } from "../../classes";
 import { fulltextResolver } from "../resolvers/query/fulltext";
 import { upperFirst } from "../../utils/upper-first";
+import { FloatWhere } from "../../graphql/input-objects/FloatWhere";
 import { SCORE_FIELD } from "../../graphql/directives/fulltext";
-
-const fulltextScoreWhereType = "FulltextScoreWhere";
 
 export function augmentFulltextSchema(
     node: Node,
@@ -55,15 +54,6 @@ export function augmentFulltextSchema(
         });
 
         composer.createInputTC({
-            name: fulltextScoreWhereType,
-            description: "The input for filtering the score of a fulltext search",
-            fields: {
-                min: "Float",
-                max: "Float",
-            },
-        });
-
-        composer.createInputTC({
             name: node.fulltextTypeNames.sort,
             description: fulltextSortDescription,
             fields: {
@@ -76,7 +66,7 @@ export function augmentFulltextSchema(
             name: node.fulltextTypeNames.where,
             description: fulltextWhereDescription,
             fields: {
-                [SCORE_FIELD]: fulltextScoreWhereType,
+                [SCORE_FIELD]: FloatWhere.name,
                 [node.singular]: nodeWhereTypeName,
             },
         });
