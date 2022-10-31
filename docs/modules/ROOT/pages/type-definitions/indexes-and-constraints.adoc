@@ -125,7 +125,7 @@ input ProductFulltextWhere {
 }
 
 """The input for sorting a fulltext query on an index of Product"""
-input productFulltextSort {
+input ProductFulltextSort {
   score: SortDirection
   product: ProductSort
 }
