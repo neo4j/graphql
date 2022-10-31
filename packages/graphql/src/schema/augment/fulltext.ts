@@ -85,8 +85,8 @@ export function augmentFulltextSchema(
             name: node.fulltextTypeNames.result,
             description: fulltextResultDescription,
             fields: {
-                [SCORE_FIELD]: "Float",
-                [node.singular]: node.name,
+                [SCORE_FIELD]: "Float!",
+                [node.singular]: `${node.name}!`,
             },
         });
 

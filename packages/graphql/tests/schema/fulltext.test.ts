@@ -97,8 +97,8 @@ describe("@fulltext schema", () => {
 
             \\"\\"\\"The result of a fulltext search on an index of Movie\\"\\"\\"
             type MovieFulltextResult {
-              movie: Movie
-              score: Float
+              movie: Movie!
+              score: Float!
             }
 
             \\"\\"\\"The input for sorting a fulltext query on an index of Movie\\"\\"\\"

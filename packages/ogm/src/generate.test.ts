@@ -467,8 +467,8 @@ describe("generate", () => {
             /** The result of a fulltext search on an index of User */
             export type UserFulltextResult = {
               __typename?: \\"UserFulltextResult\\";
-              score?: Maybe<Scalars[\\"Float\\"]>;
-              user?: Maybe<User>;
+              score: Scalars[\\"Float\\"];
+              user: User;
             };
 
             export type UsersConnection = {
