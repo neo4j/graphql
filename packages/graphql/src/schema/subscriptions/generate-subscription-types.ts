@@ -217,7 +217,7 @@ export function generateSubscriptionTypes({
                     type: new GraphQLNonNull(GraphQLString),
                     resolve: (source: SubscriptionsEvent) => {
                         const trueSource = source as RelationSubscriptionsEvent;
-                        return node.relationFields.find((f) => f.type === trueSource.relationshipName)?.properties;
+                        return node.relationFields.find((f) => f.type === trueSource.relationshipName)?.fieldName;
                     },
                 },
                 direction: {

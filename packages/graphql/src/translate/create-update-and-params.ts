@@ -281,6 +281,11 @@ export default function createUpdateAndParams({
 
                             const updateStr = updateStrs.join("\n").replace(/REPLACE_ME/g, `, ${paramsString}`);
                             subquery.push(updateStr);
+
+                            if (context.subscriptionsEnabled) {
+                                returnMetaStatement = `meta as update${idx}_meta`;
+                                intermediateWithMetaStatements.push(`WITH *, update${idx}_meta as meta`);
+                            }
                         }
 
                         if (update.update.edge) {
@@ -309,6 +314,11 @@ export default function createUpdateAndParams({
                             updateStrs.push(`", "", ${apocArgs})`);
                             updateStrs.push(`YIELD value AS ${relationshipVariable}_${key}${index}_edge`);
                             subquery.push(updateStrs.join("\n"));
+
+                            if (context.subscriptionsEnabled) {
+                                returnMetaStatement = `meta as update${idx}_meta`;
+                                intermediateWithMetaStatements.push(`WITH *, update${idx}_meta as meta`);
+                            }
                         }
                     }
 
