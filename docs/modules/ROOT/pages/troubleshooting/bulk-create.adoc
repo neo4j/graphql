@@ -10,7 +10,7 @@ However, there are still several situations where this kind of optimization is n
 
 No optimizations are available if a Subscription plugin it's being used.
 
-== @populated_by
+== `@populated_by`
 
 No optimizations are available if a Node affected by the mutation has a field with the directive @populated_by.
 
