@@ -117,16 +117,16 @@ describe("TreeDescriptor Parser", () => {
 
         expect(treeDescriptor).toEqual({
             properties: new Set(["id"]),
-            childrens: {
+            children: {
                 website: {
                     properties: new Set(),
-                    childrens: {
+                    children: {
                         create: {
                             properties: new Set(),
-                            childrens: {
+                            children: {
                                 node: {
                                     properties: new Set(["address"]),
-                                    childrens: {},
+                                    children: {},
                                 },
                             },
                         },
@@ -134,17 +134,17 @@ describe("TreeDescriptor Parser", () => {
                 },
                 actors: {
                     properties: new Set(),
-                    childrens: {
+                    children: {
                         create: {
                             properties: new Set(),
-                            childrens: {
+                            children: {
                                 node: {
                                     properties: new Set(["name"]),
-                                    childrens: {},
+                                    children: {},
                                 },
                                 edge: {
                                     properties: new Set(["year"]),
-                                    childrens: {},
+                                    children: {},
                                 },
                             },
                         },
@@ -219,16 +219,16 @@ describe("TreeDescriptor Parser", () => {
 
         expect(treeDescriptor).toEqual({
             properties: new Set(["id"]),
-            childrens: {
+            children: {
                 website: {
                     properties: new Set(),
-                    childrens: {
+                    children: {
                         create: {
                             properties: new Set(),
-                            childrens: {
+                            children: {
                                 node: {
                                     properties: new Set(["address"]),
-                                    childrens: {},
+                                    children: {},
                                 },
                             },
                         },
@@ -236,29 +236,29 @@ describe("TreeDescriptor Parser", () => {
                 },
                 actors: {
                     properties: new Set(),
-                    childrens: {
+                    children: {
                         create: {
                             properties: new Set(),
-                            childrens: {
+                            children: {
                                 node: {
                                     properties: new Set(["name", "height", "age"]),
-                                    childrens: {},
+                                    children: {},
                                 },
                                 edge: {
                                     properties: new Set(["year"]),
-                                    childrens: {},
+                                    children: {},
                                 },
                             },
                         },
                         connect: {
                             properties: new Set(),
-                            childrens: {
+                            children: {
                                 where: {
                                     properties: new Set(),
-                                    childrens: {
+                                    children: {
                                         node: {
                                             properties: new Set(["id"]),
-                                            childrens: {},
+                                            children: {},
                                         },
                                     },
                                 },
@@ -266,22 +266,22 @@ describe("TreeDescriptor Parser", () => {
                         },
                         connectOrCreate: {
                             properties: new Set(),
-                            childrens: {
+                            children: {
                                 where: {
                                     properties: new Set(),
-                                    childrens: {
+                                    children: {
                                         node: {
                                             properties: new Set(["id"]),
-                                            childrens: {},
+                                            children: {},
                                         },
                                     },
                                 },
                                 onCreate: {
                                     properties: new Set(),
-                                    childrens: {
+                                    children: {
                                         node: {
                                             properties: new Set(["name"]),
-                                            childrens: {},
+                                            children: {},
                                         },
                                     },
                                 },
@@ -334,25 +334,25 @@ describe("TreeDescriptor Parser", () => {
 
         expect(treeDescriptor).toEqual({
             properties: new Set(["id"]),
-            childrens: {
+            children: {
                 actors: {
                     properties: new Set(),
-                    childrens: {
+                    children: {
                         create: {
                             properties: new Set(),
-                            childrens: {
+                            children: {
                                 node: {
                                     properties: new Set(["name", "create", "edge"]),
-                                    childrens: {
+                                    children: {
                                         website: {
                                             properties: new Set(),
-                                            childrens: {
+                                            children: {
                                                 create: {
                                                     properties: new Set(),
-                                                    childrens: {
+                                                    children: {
                                                         node: {
                                                             properties: new Set(["create", "edge"]),
-                                                            childrens: {},
+                                                            children: {},
                                                         },
                                                     },
                                                 },
@@ -362,7 +362,7 @@ describe("TreeDescriptor Parser", () => {
                                 },
                                 edge: {
                                     properties: new Set(["year", "create", "edge"]),
-                                    childrens: {},
+                                    children: {},
                                 },
                             },
                         },

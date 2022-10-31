@@ -81,13 +81,13 @@ export class UnwindCreateVisitor implements Visitor {
             return cypher.join("\n");
         });
         let nestedClauses;
-        if (create.childrens) {
-            const childrensRefs = create.childrens.map((children) => {
+        if (create.children) {
+            const childrenRefs = create.children.map((children) => {
                 this.environment[children.id] = { unwindVar: unwindVar, parentVar: currentNode };
                 children.accept(this);
                 return children.id;
             });
-            nestedClauses = childrensRefs.map((childrensRef) => this.environment[childrensRef].clause);
+            nestedClauses = childrenRefs.map((childrenRef) => this.environment[childrenRef].clause);
         }
         this.rootNode = currentNode;
         const clause = Cypher.concat(
@@ -179,13 +179,13 @@ export class UnwindCreateVisitor implements Visitor {
 
         let nestedClauses;
 
-        if (nestedCreate.childrens) {
-            const childrensRefs = nestedCreate.childrens.map((children) => {
+        if (nestedCreate.children) {
+            const childrenRefs = nestedCreate.children.map((children) => {
                 this.environment[children.id] = { unwindVar: nodeVar, parentVar: currentNode };
                 children.accept(this);
                 return children.id;
             });
-            nestedClauses = childrensRefs.map((childrensRef) => this.environment[childrensRef].clause);
+            nestedClauses = childrenRefs.map((childrenRef) => this.environment[childrenRef].clause);
             subQueryStatements.push(...nestedClauses);
         }
         subQueryStatements.push(relationshipValidationClause);

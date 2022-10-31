@@ -22,10 +22,10 @@ import { randomUUID } from 'crypto';
 
 export abstract class AST implements IAST {
     id = randomUUID();
-    childrens: IAST[] = [];
+    children: IAST[] = [];
 
     addChildren(node: IAST): void {
-        this.childrens.push(node);
+        this.children.push(node);
     }
 
     abstract accept(visitor: Visitor): void

@@ -23,7 +23,7 @@ import type { Node, Relationship } from "../../../classes";
 
 export interface IAST {
     id: string;
-    childrens: IAST[];
+    children: IAST[];
     addChildren: (children: IAST) => void;
     accept: (visitor: Visitor) => void;
 }

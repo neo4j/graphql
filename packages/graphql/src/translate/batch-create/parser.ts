@@ -127,12 +127,12 @@ export function getTreeDescriptor(
                 // TODO: supports union/interfaces
                 const innerNode = relationField ? relatedNodes[0] : node;
                 if (Array.isArray(value)) {
-                    previous.childrens[key] = mergeTreeDescriptors(
+                    previous.children[key] = mergeTreeDescriptors(
                         value.map((el) => getTreeDescriptor(el as GraphQLCreateInput, innerNode, context, key, relationship))
                     );
                     return previous;
                 }
-                previous.childrens[key] = getTreeDescriptor(
+                previous.children[key] = getTreeDescriptor(
                     value as GraphQLCreateInput,
                     innerNode,
                     context,
@@ -144,7 +144,7 @@ export function getTreeDescriptor(
             previous.properties.add(key);
             return previous;
         },
-        { properties: new Set(), childrens: {} } as TreeDescriptor
+        { properties: new Set(), children: {} } as TreeDescriptor
     );
 }
 
@@ -152,19 +152,19 @@ export function mergeTreeDescriptors(input: TreeDescriptor[]): TreeDescriptor {
     return input.reduce(
         (previous: TreeDescriptor, node: TreeDescriptor) => {
             previous.properties = new Set([...previous.properties, ...node.properties]);
-            const entries = [...new Set([...Object.keys(previous.childrens), ...Object.keys(node.childrens)])].map(
+            const entries = [...new Set([...Object.keys(previous.children), ...Object.keys(node.children)])].map(
                 (childrenKey) => {
                     const previousChildren: TreeDescriptor =
-                        previous.childrens[childrenKey] ?? ({ properties: new Set(), childrens: {} } as TreeDescriptor);
+                        previous.children[childrenKey] ?? ({ properties: new Set(), children: {} } as TreeDescriptor);
                     const nodeChildren: TreeDescriptor =
-                        node.childrens[childrenKey] ?? ({ properties: new Set(), childrens: {} } as TreeDescriptor);
+                        node.children[childrenKey] ?? ({ properties: new Set(), children: {} } as TreeDescriptor);
                     return [childrenKey, mergeTreeDescriptors([previousChildren, nodeChildren])];
                 }
             );
-            previous.childrens = Object.fromEntries(entries);
+            previous.children = Object.fromEntries(entries);
             return previous;
         },
-        { properties: new Set(), childrens: {} } as TreeDescriptor
+        { properties: new Set(), children: {} } as TreeDescriptor
     );
 }
 
@@ -172,7 +172,7 @@ function parser(input: TreeDescriptor, node: Node, context: Context, parentASTNo
     if (node.auth) {
         throw new UnsupportedUnwindOptimization("Not supported operation: Auth");
     }
-    Object.entries(input.childrens).forEach(([key, value]) => {
+    Object.entries(input.children).forEach(([key, value]) => {
         const [relationField, relatedNodes] = getRelationshipFields(node, key, {}, context);
 
         if (relationField) {
@@ -185,7 +185,7 @@ function parser(input: TreeDescriptor, node: Node, context: Context, parentASTNo
             if (relationField.interface || relationField.union) {
                 throw new UnsupportedUnwindOptimization(`Not supported operation: Interface or Union`);
             }
-            Object.entries(value.childrens).forEach(([operation, description]) => {
+            Object.entries(value.children).forEach(([operation, description]) => {
                 switch (operation) {
                     case "create":
                         parentASTNode.addChildren(
@@ -266,8 +266,8 @@ function parseNestedCreate(
     relationship: [RelationField | undefined, Node[]],
     edge?: Relationship
 ) {
-    const nodeProperties = input.childrens.node.properties;
-    const edgeProperties = input.childrens.edge ? input.childrens.edge.properties : [];
+    const nodeProperties = input.children.node.properties;
+    const edgeProperties = input.children.edge ? input.children.edge.properties : [];
     raiseOnNotSupportedProperty(node);
     raiseAttributeAmbiguity(nodeProperties, node);
     if (edge) {
@@ -284,8 +284,8 @@ function parseNestedCreate(
         relationship,
         edge
     );
-    if (input.childrens.node) {
-        parser(input.childrens.node, node, context, nestedCreateAST);
+    if (input.children.node) {
+        parser(input.children.node, node, context, nestedCreateAST);
     }
     return nestedCreateAST;
 }
