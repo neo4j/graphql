@@ -40,7 +40,7 @@ import type Exclude from "./Exclude";
 import type { GraphElementConstructor } from "./GraphElement";
 import { GraphElement } from "./GraphElement";
 import type { NodeDirective } from "./NodeDirective";
-import type { DecodedGlobalId} from "../utils/global-ids";
+import type { DecodedGlobalId } from "../utils/global-ids";
 import { fromGlobalId, toGlobalId } from "../utils/global-ids";
 import type { QueryOptionsDirective } from "./QueryOptionsDirective";
 import { upperFirst } from "../utils/upper-first";
@@ -106,6 +106,12 @@ export type RootTypeFieldNames = {
         updated: string;
         deleted: string;
     };
+};
+
+export type FulltextTypeNames = {
+    result: string;
+    where: string;
+    sort: string;
 };
 
 export type AggregateTypeNames = {
@@ -232,6 +238,14 @@ class Node extends GraphElement {
                 updated: `${this.singular}Updated`,
                 deleted: `${this.singular}Deleted`,
             },
+        };
+    }
+
+    public get fulltextTypeNames(): FulltextTypeNames {
+        return {
+            result: `${this.pascalCaseSingular}FulltextResult`,
+            where: `${this.pascalCaseSingular}FulltextWhere`,
+            sort: `${this.pascalCaseSingular}FulltextSort`,
         };
     }
 

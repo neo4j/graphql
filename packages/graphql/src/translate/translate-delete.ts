@@ -41,7 +41,8 @@ export function translateDelete({ context, node }: { context: Context; node: Nod
         withVars.push(META_CYPHER_VARIABLE);
     }
 
-    const topLevelMatch = translateTopLevelMatch({ node, context, varName, operation: "DELETE" });
+    const matchNode = new Cypher.NamedNode(varName, { labels: node.getLabels(context) });
+    const topLevelMatch = translateTopLevelMatch({ matchNode, node, context, operation: "DELETE" });
     matchAndWhereStr = topLevelMatch.cypher;
     cypherParams = { ...cypherParams, ...topLevelMatch.params };
 
