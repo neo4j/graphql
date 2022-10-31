@@ -196,8 +196,8 @@ This would then produce the following top-level query:
 [source, graphql, indent=0]
 ----
 type Query {
-    CustomProductFulltextQuery(phrase: String!, where: productFulltextWhere, sort: [productFulltextSort!],
-    limit: Int, offset: Int): [productFulltextResult!]!
+    CustomProductFulltextQuery(phrase: String!, where: ProductFulltextWhere, sort: [ProductFulltextSort!],
+    limit: Int, offset: Int): [ProductFulltextResult!]!
 }
 ----
 
